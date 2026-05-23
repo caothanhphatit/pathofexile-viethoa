@@ -1076,6 +1076,22 @@ const EXACT_SKILL_TEXT_TRANSLATIONS = new Map([
     "Khi đang active, các đòn Attack lên kẻ địch sẽ tích lũy Glory. Khi đạt Glory tối đa, bạn có thể cắm một chiếc cờ Banner truyền cảm hứng trong một thời lượng, tạo ra một Aura giúp cấp cho bạn và Allies lân cận Elemental Ailment Threshold, Maximum Elemental Resistances và Flask Charge."
   ],
   [
+    "While active, Attacking enemies builds Glory. When you have maximum Glory, you can place an inspiring Banner for a duration with an Aura that grants you and nearby Allies Attack damage, Attack speed and Accuracy.",
+    "Khi đang active, các đòn Attack lên kẻ địch sẽ tích lũy Glory. Khi đạt Glory tối đa, bạn có thể cắm một chiếc cờ Banner truyền cảm hứng trong một thời lượng, tạo Aura cấp Attack Damage, Attack Speed và Accuracy cho bạn cùng Allies lân cận."
+  ],
+  [
+    "While active, Attacking enemies builds Glory. When you have maximum Glory, you can place an inspiring Banner for a duration with an Aura that grants you and nearby Allies Armour, Evasion and movement speed.",
+    "Khi đang active, các đòn Attack lên kẻ địch sẽ tích lũy Glory. Khi đạt Glory tối đa, bạn có thể cắm một chiếc cờ Banner truyền cảm hứng trong một thời lượng, tạo Aura cấp Armour, Evasion và Movement Speed cho bạn cùng Allies lân cận."
+  ],
+  [
+    "While active, gains Energy when your Energy Shield is damaged by Enemy Hits. Using the Invocation once sufficient Energy is gathered will consume the Energy to trigger socketed Spells, and can trigger them multiple times if it has enough Energy.",
+    "Khi đang active, nhận Energy khi Energy Shield của bạn nhận Damage từ Enemy Hit. Dùng Invocation sau khi tích đủ Energy sẽ Consume Energy để Trigger Spells được socket, và có thể Trigger nhiều lần nếu còn đủ Energy."
+  ],
+  [
+    "Activate to summon hard-hitting, Reviving Skeletal Brutes that can Stun Primed enemies and Warcry on Command. This Warcry Intimidates nearby enemies and Consumes Freeze on enemies and allies to deal damage in an Area around them.",
+    "Activate để summon các Reviving Skeletal Brute đánh mạnh, có thể Stun kẻ địch đã Primed và Warcry theo Command. Warcry này Intimidate kẻ địch gần đó, Consume Freeze trên kẻ địch và Allies để gây Damage trong vùng quanh chúng."
+  ],
+  [
     "Tap into a current of raw and unpredictable Elemental power, causing you to deal greatly more damage of a randomly chosen Element. The Element affected changes frequently, though the same Element can be affected multiple times in succession.",
     "Khai thác luồng Elemental power thô sơ và không thể đoán trước, giúp bạn gây thêm cực kỳ nhiều damage thuộc về một Element được chọn ngẫu nhiên. Element chịu ảnh hưởng sẽ thay đổi liên tục, mặc dù một Element vẫn có thể được chọn nhiều lần liên tiếp."
   ],
@@ -1106,6 +1122,86 @@ const EXACT_SKILL_TEXT_TRANSLATIONS = new Map([
 ]);
 
 for (const [source, translation] of [
+  [
+    "Manifest a copy of your main hand Melee Martial Weapon as an immortal Companion to fight by your side. In addition to its standard Strikes, the Manifested Weapon gains an additional Attack depending on its weapon type.",
+    "Manifest một bản sao Melee Martial Weapon tay chính của bạn dưới dạng Companion bất tử chiến đấu cạnh bạn. Ngoài các Strike cơ bản, Manifested Weapon nhận thêm một Attack tùy theo loại weapon."
+  ],
+  [
+    "Sacrifice the Corpse of a Rare Monster to grant you its Modifiers for a duration.",
+    "Sacrifice Corpse của một Rare Monster để cấp Modifiers của Rare Monster đó cho bạn trong một thời lượng."
+  ],
+  [
+    "Place a Sigil on the ground, providing a powerful Spell Damage Buff to you and Allies while standing in it. The Buff becomes more powerful the more mana you spend while standing in the Sigil.",
+    "Đặt một Sigil lên mặt đất, cấp Spell Damage Buff mạnh cho bạn và Allies khi đứng trong vùng Sigil. Buff mạnh hơn theo lượng Mana bạn tiêu khi đứng trong Sigil."
+  ],
+  [
+    "Whip up a twister with a flick of your Spear. The twister moves forward erratically, Blinding and repeatedly Hitting enemies within. If a twister touches a Whirlwind from your other skills, it Consumes the Whirlwind to create additional twisters that deal more damage. Passing over Elemental Ground Surfaces or Consuming an elemental Whirlwind will grant twisters extra damage of that element.",
+    "Tạo một twister bằng cú vung Spear của bạn. Twister di chuyển thất thường về phía trước, Blind và liên tục Hit kẻ địch trong phạm vi. Nếu twister chạm Whirlwind từ Skill khác của bạn, twister Consume Whirlwind đó để tạo thêm các twister gây nhiều Damage hơn. Khi đi qua Elemental Ground Surface hoặc Consume Whirlwind elemental, twister nhận thêm Damage thuộc element đó."
+  ],
+  [
+    "Gain Unbound Fury by inflicting Elemental Ailments with Hits on enemies. Once you reach maximum Unbound Fury, consume it to become Unbound for a duration, vastly augmenting your Elemental prowess.",
+    "Nhận Unbound Fury khi gây Elemental Ailment bằng Hit lên kẻ địch. Khi đạt Unbound Fury tối đa, Consume Unbound Fury để trở thành Unbound trong một thời lượng, tăng mạnh sức mạnh Elemental của bạn."
+  ],
+  [
+    "Consume a Corpse to create a volatile core that seeks out enemies and Ignites enemies near it. The core explodes at the end of its duration.",
+    "Consume một Corpse để tạo volatile core tự tìm kẻ địch và Ignite kẻ địch gần đó. Core phát nổ khi hết thời lượng."
+  ],
+  [
+    "Perform a circular slash that kicks up a Whirlwind around you, Slowing enemies and Blinding them in its area of effect. Leaving the area collapses the storm, dealing damage and causing Knockback.",
+    "Thực hiện một nhát slash vòng tròn tạo Whirlwind quanh bạn, Slow kẻ địch và Blind chúng trong Area of Effect. Rời khỏi khu vực sẽ làm storm sụp lại, gây Damage và Knockback."
+  ],
+  [
+    "Fire a Projectile that applies a powerful Chaos damage over time debuff to enemies it hits.",
+    "Bắn một Projectile áp dụng Chaos Damage over Time Debuff mạnh lên kẻ địch bị Projectile đó Hit."
+  ],
+  [
+    "Plant a seed of Fire inside an enemy. Dealing enough damage to the enemy, or killing it outright, causes the seed to explode, dealing damage in an area and leaving behind a Fire Infusion Remnant.",
+    "Gieo một seed Fire bên trong kẻ địch. Gây đủ Damage lên kẻ địch đó, hoặc giết thẳng mục tiêu, sẽ khiến seed phát nổ, gây Damage trong vùng và để lại Fire Infusion Remnant."
+  ],
+  [
+    "Create an Orb of electricity that fires Chaining Lightning bolts at nearby enemies. The Orb leaves behind a Lightning Infusion Remnant when it expires.",
+    "Tạo một Orb điện bắn Chaining Lightning bolts vào kẻ địch gần đó. Orb để lại Lightning Infusion Remnant khi hết hạn."
+  ],
+  [
+    "Raise a Totem that Slams the ground around it, repeatedly damaging nearby enemies. Jagged Ground erupts when hit by this Slam, damaging enemies standing on it. The Totem cannot create Jagged Ground. This Skill can be used while Shapeshifted.",
+    "Dựng một Totem Slam mặt đất xung quanh nó, liên tục gây Damage lên kẻ địch gần đó. Jagged Ground trồi lên khi bị Slam này Hit, gây Damage lên kẻ địch đứng trên đó. Totem không thể tạo Jagged Ground. Skill này có thể dùng khi Shapeshifted."
+  ],
+  [
+    "While active, causes you to periodically gain Ghost Shrouds. If you are Hit while you have a Ghost Shroud, it is immediately consumed to recover Energy Shield based on your Evasion.",
+    "Khi active, bạn định kỳ nhận Ghost Shroud. Nếu bị Hit khi đang có Ghost Shroud, Ghost Shroud đó lập tức bị Consume để hồi Energy Shield dựa trên Evasion của bạn."
+  ],
+  [
+    "Gouge molten rock from the ground and fling it at the target. The Projectile explodes on collision, damaging enemies and scattering shrapnel in a cone behind it.",
+    "Khoét đá nóng chảy từ mặt đất và phóng vào mục tiêu. Projectile phát nổ khi va chạm, gây Damage lên kẻ địch và bắn mảnh văng theo hình nón phía sau."
+  ],
+  [
+    "Skewer a Skeleton on a bone spike to send nearby Minions into a frenzy as long as the spike remains, making their skills faster and harder hitting. The bone spike is itself a Minion. If it dies, the effect ends immediately.",
+    "Xiên một Skeleton lên gai xương để đưa Minions gần đó vào frenzy miễn là gai còn tồn tại, giúp Skill của chúng nhanh hơn và Hit mạnh hơn. Gai xương cũng là một Minion. Nếu gai chết, hiệu ứng kết thúc ngay."
+  ],
+  [
+    "Slam the ground, sending out a fissure that deals area damage to enemies it passes under and thrusts a spike from the ground when it ends. Warcries performed near the spike will cause it to shatter, damaging surrounding enemies.",
+    "Nện xuống đất, phóng ra một khe nứt gây area Damage lên kẻ địch nằm trên đường đi và đẩy một spike trồi lên khi kết thúc. Warcry gần spike sẽ khiến spike shatter, gây Damage lên kẻ địch xung quanh."
+  ],
+  [
+    "Fire a noxious arrow at the ground, creating a cloud of flammable poisonous gas at the end of its flight. The cloud will detonate if hit by a Detonator skill or if an Ignited enemy touches it, creating a fiery explosion.",
+    "Bắn một noxious arrow xuống mặt đất, tạo cloud khí độc dễ cháy ở cuối đường bay. Cloud sẽ detonate nếu bị Hit bởi Detonator Skill hoặc nếu kẻ địch Ignited chạm vào, tạo vụ nổ lửa."
+  ],
+  [
+    "Slam the ground, creating a branching Molten Fissure that deals damage as it travels and remains for a duration. Using a different Slam on a Molten Fissure creates a spreading Aftershock.",
+    "Nện xuống đất, tạo một Molten Fissure phân nhánh gây Damage khi lan đi và tồn tại trong một thời lượng. Dùng một Slam khác lên Molten Fissure sẽ tạo Aftershock lan rộng."
+  ],
+  [
+    "While active, killing a Poisoned enemy spreads its Poison to other nearby enemies, and has a chance to also Hinder them.",
+    "Khi active, giết kẻ địch Poisoned sẽ lan Poison của mục tiêu sang kẻ địch gần đó khác, và có chance Hinder chúng."
+  ],
+  [
+    "Build Combo by successfully Striking Enemies with other skills. After reaching maximum Combo, use this skill to Empower your next Quarterstaff Attack, causing it to deal additional Chaos damage. Each kill with the Empowered Attack grants Purple Flames of Chayula for a duration.",
+    "Build Combo bằng cách Strike kẻ địch thành công với các Skill khác. Sau khi đạt Combo tối đa, dùng Skill này để Empower Quarterstaff Attack tiếp theo của bạn, khiến Attack đó gây thêm Chaos Damage. Mỗi kill bằng Empowered Attack cấp Purple Flames of Chayula trong một thời lượng."
+  ],
+  [
+    "Create a storm that sucks in enemies and deals Physical damage over time. A Tornado that overlaps an Elemental Ground Surface absorbs that surface's Debuff, applying it to enemies inside the Tornado and causing the Tornado to deal extra damage of that element.",
+    "Tạo một storm hút kẻ địch vào trong và gây Physical Damage over Time. Tornado chồng lên Elemental Ground Surface sẽ hấp thụ Debuff của surface đó, áp dụng Debuff lên kẻ địch bên trong Tornado và khiến Tornado gây thêm Damage thuộc element đó."
+  ],
   [
     "Create a wall of Fire in front of the character, which Ignites everything within its area. Any Projectiles fired through the wall by you and Allies deal added Fire damage. Consumes a Lightning Infusion if possible to also add Lightning damage to the Projectiles.",
     "Tạo một tường Fire trước mặt nhân vật, Ignite mọi thứ trong vùng. Projectiles của bạn và Allies bay xuyên qua tường sẽ có thêm Fire Damage. Nếu có thể, Consume Lightning Infusion để thêm Lightning Damage cho các Projectiles."
@@ -2067,6 +2163,21 @@ export const translateSkillDetailLine = (line = "") => {
     [/^Attack Damage:\s*(.+)$/i, ([, value]) => `Attack Damage: ${formatSkillStatValue(value, "attack-damage")}`],
     [/^Critical Hit Chance:\s*(.+)$/i, ([, value]) => `Critical Hit Chance: ${formatSkillStatValue(value)}`],
     [/^Projectile Speed:\s*(.+)$/i, ([, value]) => `Projectile Speed: ${formatSkillStatValue(value)}`],
+    [/^Explodes after enemy is dealt damage equal to (.+?) of its Ailment Threshold$/i, ([, amount]) => `Phát nổ sau khi kẻ địch nhận Damage bằng ${amount} Ailment Threshold của mục tiêu`],
+    [/^Marked target takes (.+?) increased damage for each of its enemies within (.+?) metres of it, up to (.+)$/i, ([, amount, metres, cap]) => `Mục tiêu bị Mark nhận ${amount} increased Damage cho mỗi kẻ địch của mục tiêu trong phạm vi ${metres} mét, tối đa ${cap}`],
+    [/^This Attack is Triggered by Fortifying Cry and counts as Empowered by it$/i, () => "Attack này được Trigger bởi Fortifying Cry và được tính là Empowered bởi Fortifying Cry"],
+    [/^Gains a Stage when you Spend a total of (.+?) of your Maximum Mana while in Area$/i, ([, amount]) => `Nhận một Stage khi bạn tiêu tổng cộng ${amount} Mana tối đa trong vùng`],
+    [/^Elemental Damage from Hits is taken from the Barrier before your Life, Mana or Energy Shield Barrier can take Elemental Damage up to (.+?) of your Armour and Evasion Rating$/i, ([, amount]) => `Elemental Damage từ Hits được Barrier nhận trước Life, Mana hoặc Energy Shield của bạn. Barrier có thể nhận Elemental Damage tối đa ${amount} Armour và Evasion Rating của bạn`],
+    [/^(.+?) increased Chaos Damage taken$/i, ([, amount]) => `${amount} increased Chaos Damage nhận vào`],
+    [/^Oasis grants (.+?) of damage taken Recouped as (Life|Mana)$/i, ([, amount, resource]) => `Oasis cấp Recoup ${amount} Damage nhận vào dưới dạng ${resource}`],
+    [/^(.+?) of recovery from your Flasks is also granted to Allies in your Presence$/i, ([, amount]) => `${amount} recovery từ Flasks của bạn cũng cấp cho Allies trong Presence của bạn`],
+    [/^Barrier recharges after (.+?) seconds$/i, ([, seconds]) => `Barrier recharge sau ${seconds} giây`],
+    [/^Blood Boil applies to non-Unique enemies in your Presence every (.+?) seconds$/i, ([, seconds]) => `Blood Boil áp dụng lên kẻ địch Non-Unique trong Presence của bạn mỗi ${seconds} giây`],
+    [/^(.+?) more Damage with Hits for (Shockwaves|explosions|blasts|pulses) originating from a Unique enemy$/i, ([, amount, source]) => `${amount} more Damage với Hits cho ${formatSkillStatSubject(source)} phát ra từ kẻ địch Unique`],
+    [/^Consumes Freeze on (Non-Unique|Unique) enemies to deal (.+)$/i, ([, rarity, value]) => `Consume Freeze trên kẻ địch ${rarity} để gây ${value}`],
+    [/^You have Culling Strike against Rare and Unique enemies that have been in your Presence for a total of at least (.+?) seconds$/i, ([, seconds]) => `Bạn có Culling Strike lên kẻ địch Rare và Unique đã ở trong Presence của bạn tổng cộng ít nhất ${seconds} giây`],
+    [/^You deal (.+?) more Hit damage to Rare and Unique enemies for every (.+?) seconds they have ever been in your Presence, up to (.+)$/i, ([, damage, seconds, cap]) => `Bạn gây ${damage} more Hit Damage lên kẻ địch Rare và Unique cho mỗi ${seconds} giây chúng từng ở trong Presence của bạn, tối đa ${cap}`],
+    [/^Blessing recovers (.+?) Life and removes Curses and Elemental Ailments$/i, ([, amount]) => `Blessing hồi ${amount} Life và xóa Curses cùng Elemental Ailments`],
     [/^(.+?) second delay between Visage$/i, ([, seconds]) => `${seconds} giây trễ giữa các Visage`],
     [/^(.+?) increased Visage frequency per Spell Visages could cast$/i, ([, amount]) => `${amount} increased tần suất Visage cho mỗi Spell mà Visage có thể cast`],
     [/^(.+?) increased Visage frequency$/i, ([, amount]) => `${amount} increased tần suất Visage`],

@@ -1,5 +1,5 @@
 window.POE2_SKILL_GEMS = {
-  "generated_at": "2026-05-23T07:57:30.882Z",
+  "generated_at": "2026-05-23T18:05:52.779Z",
   "source_url": "https://poe2db.tw/us/Skill_Gems",
   "latest_run": {
     "id": "7",
@@ -1627,7 +1627,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "Blood Boil applies to non-Unique enemies in your Presence every (1.53—2) seconds",
-            "vi": "Blood Boil áp dụng lên Non-Unique enemy trong Presence của bạn mỗi (1.53—2) giây"
+            "vi": "Blood Boil áp dụng lên kẻ địch Non-Unique trong Presence của bạn mỗi (1.53—2) giây"
           },
           {
             "en": "20% more Corrupted Blood infliction Area of Effect per Blood Boil on slain Enemy",
@@ -1663,7 +1663,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Blood Boil applies to non-Unique enemies in your Presence every (1.53—2) seconds",
-                "vi": "Blood Boil áp dụng lên Non-Unique enemy trong Presence của bạn mỗi (1.53—2) giây"
+                "vi": "Blood Boil áp dụng lên kẻ địch Non-Unique trong Presence của bạn mỗi (1.53—2) giây"
               },
               {
                 "en": "20% more Corrupted Blood infliction Area of Effect per Blood Boil on slain Enemy",
@@ -2016,7 +2016,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "50% more damage with Hits for Shockwaves originating from a Unique enemy",
-                "vi": "50% more Damage với Hits cho Shockwave phát ra từ Unique enemy"
+                "vi": "50% more Damage với Hits cho Shockwave phát ra từ kẻ địch Unique"
               }
             ]
           }
@@ -9078,7 +9078,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "50% more damage with Hits for explosions originating from a Unique enemy",
-                "vi": "50% more Damage với Hits cho Vụ nổ phát ra từ Unique enemy"
+                "vi": "50% more Damage với Hits cho Vụ nổ phát ra từ kẻ địch Unique"
               },
               {
                 "en": "Consumes Freeze on enemies Hit to trigger a secondary explosion at their location Secondary explosions cannot Consume Freeze",
@@ -10538,11 +10538,11 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Consumes Freeze on Non-Unique enemies to deal 250% more Damage",
-                "vi": "Consume Freeze trên Non-Unique enemy để gây 250% more Damage"
+                "vi": "Consume Freeze trên kẻ địch Non-Unique để gây 250% more Damage"
               },
               {
                 "en": "Consumes Freeze on Unique enemies to deal 425% more Damage",
-                "vi": "Consume Freeze trên Unique enemy để gây 425% more Damage"
+                "vi": "Consume Freeze trên kẻ địch Unique để gây 425% more Damage"
               },
               {
                 "en": "Cannot Knock Enemies Back",
@@ -14366,7 +14366,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Manifest a copy of your main hand Melee Martial Weapon as an immortal Companion to fight by your side. In addition to its standard Strikes, the Manifested Weapon gains an additional Attack depending on its weapon type.",
-          "vi": "Manifest một bản sao của của bạn main hand Melee Martial Weapon như một immortal Companion để fight bởi của bạn side. ngoài its standard Strikes, các Manifested Weapon nhận một thêm Attack depending trên its weapon type."
+          "vi": "Manifest một bản sao Melee Martial Weapon tay chính của bạn dưới dạng Companion bất tử chiến đấu cạnh bạn. Ngoài các Strike cơ bản, Manifested Weapon nhận thêm một Attack tùy theo loại weapon."
         },
         "properties": [
           {
@@ -15280,11 +15280,11 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Oasis grants (30—80)% of damage taken Recouped as Life",
-                "vi": "Oasis cấp (30—80)% của Damage taken Recouped như Life"
+                "vi": "Oasis cấp Recoup (30—80)% Damage nhận vào dưới dạng Life"
               },
               {
                 "en": "Oasis grants (20—50)% of damage taken Recouped as Mana",
-                "vi": "Oasis cấp (20—50)% của Damage taken Recouped như Mana"
+                "vi": "Oasis cấp Recoup (20—50)% Damage nhận vào dưới dạng Mana"
               },
               {
                 "en": "Oasis grants 0.5 Flask charges per second",
@@ -17165,7 +17165,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Sacrifice the Corpse of a Rare Monster to grant you its Modifiers for a duration.",
-          "vi": "Sacrifice các Corpse của một Rare Monster để cấp bạn its Modifiers trong một thời lượng."
+          "vi": "Sacrifice Corpse của một Rare Monster để cấp Modifiers của Rare Monster đó cho bạn trong một thời lượng."
         },
         "properties": [
           {
@@ -18417,7 +18417,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Place a Sigil on the ground, providing a powerful Spell Damage Buff to you and Allies while standing in it. The Buff becomes more powerful the more mana you spend while standing in the Sigil.",
-          "vi": "Place một Sigil trên các mặt đất, providing một mạnh Spell Damage Buff để bạn và Allies khi đứng trong it. các Buff becomes nhiều hơn mạnh các nhiều hơn mana bạn spend khi đứng trong các Sigil."
+          "vi": "Đặt một Sigil lên mặt đất, cấp Spell Damage Buff mạnh cho bạn và Allies khi đứng trong vùng Sigil. Buff mạnh hơn theo lượng Mana bạn tiêu khi đứng trong Sigil."
         },
         "properties": [
           {
@@ -18458,7 +18458,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "Gains a Stage when you Spend a total of 50% of your Maximum Mana while in Area",
-            "vi": "Nhận một Stage khi bạn Spend một total của 50% của của bạn Mana tối đa khi trong area"
+            "vi": "Nhận một Stage khi bạn tiêu tổng cộng 50% Mana tối đa trong vùng"
           },
           {
             "en": "Sigil duration is (10—11.9) seconds",
@@ -18498,7 +18498,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Gains a Stage when you Spend a total of 50% of your Maximum Mana while in Area",
-                "vi": "Nhận một Stage khi bạn Spend một total của 50% của của bạn Mana tối đa khi trong area"
+                "vi": "Nhận một Stage khi bạn tiêu tổng cộng 50% Mana tối đa trong vùng"
               },
               {
                 "en": "Sigil duration is (10—11.9) seconds",
@@ -19363,11 +19363,11 @@ window.POE2_SKILL_GEMS = {
         "mods": [
           {
             "en": "Barrier recharges after (6.1—8) seconds",
-            "vi": "Barrier recharges sau (6.1—8) giây"
+            "vi": "Barrier recharge sau (6.1—8) giây"
           },
           {
             "en": "Elemental Damage from Hits is taken from the Barrier before your Life, Mana or Energy Shield Barrier can take Elemental Damage up to 30% of your Armour and Evasion Rating",
-            "vi": "Elemental Damage từ Hits là taken từ các Barrier trước khi của bạn Life, Mana hoặc Energy Shield Barrier Có thể nhận Elemental Damage tối đa 30% của của bạn Armour và Evasion Rating"
+            "vi": "Elemental Damage từ Hits được Barrier nhận trước Life, Mana hoặc Energy Shield của bạn. Barrier có thể nhận Elemental Damage tối đa 30% Armour và Evasion Rating của bạn"
           },
           {
             "en": "Additional Effects From Quality:",
@@ -19375,7 +19375,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "Elemental Damage from Hits is taken from the Barrier before your Life, Mana or Energy Shield Barrier can take Elemental Damage up to (0—5)% of your Armour and Evasion Rating",
-            "vi": "Elemental Damage từ Hits là taken từ các Barrier trước khi của bạn Life, Mana hoặc Energy Shield Barrier Có thể nhận Elemental Damage tối đa (0—5)% của của bạn Armour và Evasion Rating"
+            "vi": "Elemental Damage từ Hits được Barrier nhận trước Life, Mana hoặc Energy Shield của bạn. Barrier có thể nhận Elemental Damage tối đa (0—5)% Armour và Evasion Rating của bạn"
           }
         ],
         "sections": [
@@ -19387,15 +19387,15 @@ window.POE2_SKILL_GEMS = {
             "lines": [
               {
                 "en": "Barrier recharges after (6.1—8) seconds",
-                "vi": "Barrier recharges sau (6.1—8) giây"
+                "vi": "Barrier recharge sau (6.1—8) giây"
               },
               {
                 "en": "Elemental Damage from Hits is taken from the Barrier before your Life, Mana or Energy Shield Barrier can take Elemental Damage up to 30% of your Armour and Evasion Rating",
-                "vi": "Elemental Damage từ Hits là taken từ các Barrier trước khi của bạn Life, Mana hoặc Energy Shield Barrier Có thể nhận Elemental Damage tối đa 30% của của bạn Armour và Evasion Rating"
+                "vi": "Elemental Damage từ Hits được Barrier nhận trước Life, Mana hoặc Energy Shield của bạn. Barrier có thể nhận Elemental Damage tối đa 30% Armour và Evasion Rating của bạn"
               },
               {
                 "en": "Elemental Damage from Hits is taken from the Barrier before your Life, Mana or Energy Shield Barrier can take Elemental Damage up to (0—5)% of your Armour and Evasion Rating",
-                "vi": "Elemental Damage từ Hits là taken từ các Barrier trước khi của bạn Life, Mana hoặc Energy Shield Barrier Có thể nhận Elemental Damage tối đa (0—5)% của của bạn Armour và Evasion Rating"
+                "vi": "Elemental Damage từ Hits được Barrier nhận trước Life, Mana hoặc Energy Shield của bạn. Barrier có thể nhận Elemental Damage tối đa (0—5)% Armour và Evasion Rating của bạn"
               }
             ]
           }
@@ -21648,7 +21648,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Whip up a twister with a flick of your Spear. The twister moves forward erratically, Blinding and repeatedly Hitting enemies within. If a twister touches a Whirlwind from your other skills, it Consumes the Whirlwind to create additional twisters that deal more damage. Passing over Elemental Ground Surfaces or Consuming an elemental Whirlwind will grant twisters extra damage of that element.",
-          "vi": "Whip up một twister với một flick của Spear của bạn. các twister di chuyển ngẫu nhiên về phía trước, Blinding và repeatedly Hitting kẻ địch trong phạm vi. nếu một twister touches một Whirlwind từ của bạn khác skills, it Consume các Whirlwind để tạo thêm twisters đó gây nhiều Damage hơn. Passing over Elemental mặt đất Surfaces hoặc Consume một elemental Whirlwind sẽ cấp twisters thêm Damage của đó element."
+          "vi": "Tạo một twister bằng cú vung Spear của bạn. Twister di chuyển thất thường về phía trước, Blind và liên tục Hit kẻ địch trong phạm vi. Nếu twister chạm Whirlwind từ Skill khác của bạn, twister Consume Whirlwind đó để tạo thêm các twister gây nhiều Damage hơn. Khi đi qua Elemental Ground Surface hoặc Consume Whirlwind elemental, twister nhận thêm Damage thuộc element đó."
         },
         "properties": [
           {
@@ -21857,7 +21857,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Gain Unbound Fury by inflicting Elemental Ailments with Hits on enemies. Once you reach maximum Unbound Fury, consume it to become Unbound for a duration, vastly augmenting your Elemental prowess.",
-          "vi": "Nhận Unbound Fury bởi inflicting Elemental Ailments với Hits trên kẻ địch. một lần bạn reach maximum Unbound Fury, Consume it để become Unbound trong một thời lượng, vastly augmenting của bạn Elemental prowess."
+          "vi": "Nhận Unbound Fury khi gây Elemental Ailment bằng Hit lên kẻ địch. Khi đạt Unbound Fury tối đa, Consume Unbound Fury để trở thành Unbound trong một thời lượng, tăng mạnh sức mạnh Elemental của bạn."
         },
         "properties": [
           {
@@ -22583,7 +22583,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Consume a Corpse to create a volatile core that seeks out enemies and Ignites enemies near it. The core explodes at the end of its duration.",
-          "vi": "Consume một Corpse để Tạo một volatile core đó seeks out kẻ địch và Ignites kẻ địch gần it. các core phát nổ vào các end của its thời lượng."
+          "vi": "Consume một Corpse để tạo volatile core tự tìm kẻ địch và Ignite kẻ địch gần đó. Core phát nổ khi hết thời lượng."
         },
         "properties": [
           {
@@ -23028,7 +23028,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Perform a circular slash that kicks up a Whirlwind around you, Slowing enemies and Blinding them in its area of effect. Leaving the area collapses the storm, dealing damage and causing Knockback.",
-          "vi": "Thực hiện một circular slash đó kicks up một Whirlwind quanh bạn, Slow kẻ địch và Blinding chúng trong its Area of Effect. Leaving các area collapses các storm, gây Damage và khiến Knockback."
+          "vi": "Thực hiện một nhát slash vòng tròn tạo Whirlwind quanh bạn, Slow kẻ địch và Blind chúng trong Area of Effect. Rời khỏi khu vực sẽ làm storm sụp lại, gây Damage và Knockback."
         },
         "properties": [
           {
@@ -23236,7 +23236,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "6% increased Chaos Damage taken",
-            "vi": "6% increased Chaos Damage taken"
+            "vi": "6% increased Chaos Damage nhận vào"
           }
         ],
         "sections": [
@@ -23252,7 +23252,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "6% increased Chaos Damage taken",
-                "vi": "6% increased Chaos Damage taken"
+                "vi": "6% increased Chaos Damage nhận vào"
               }
             ]
           }
@@ -24180,7 +24180,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Fire a Projectile that applies a powerful Chaos damage over time debuff to enemies it hits.",
-          "vi": "Bắn ra một Projectile đó áp dụng một mạnh Chaos Damage theo thời gian Debuff để kẻ địch it hits."
+          "vi": "Bắn một Projectile áp dụng Chaos Damage theo thời gian Debuff mạnh lên kẻ địch bị Projectile đó Hit."
         },
         "properties": [
           {
@@ -26167,7 +26167,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Plant a seed of Fire inside an enemy. Dealing enough damage to the enemy, or killing it outright, causes the seed to explode, dealing damage in an area and leaving behind a Fire Infusion Remnant.",
-          "vi": "Plant một seed của Fire bên trong một kẻ địch. gây enough Damage để các kẻ địch, hoặc killing it outright, khiến các seed để phát nổ, gây Damage trong một vùng và leaving behind một Fire Infusion Remnant."
+          "vi": "Gieo một seed Fire bên trong kẻ địch. Gây đủ Damage lên kẻ địch đó, hoặc giết thẳng mục tiêu, sẽ khiến seed phát nổ, gây Damage trong vùng và để lại Fire Infusion Remnant."
         },
         "properties": [
           {
@@ -26220,7 +26220,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "Explodes after enemy is dealt damage equal to 200% of its Ailment Threshold",
-            "vi": "phát nổ sau kẻ địch là đã gây Damage bằng 200% của its Ailment Threshold"
+            "vi": "Phát nổ sau khi kẻ địch nhận Damage bằng 200% Ailment Threshold của mục tiêu"
           },
           {
             "en": "Additional Effects From Quality:",
@@ -26256,7 +26256,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Explodes after enemy is dealt damage equal to 200% of its Ailment Threshold",
-                "vi": "phát nổ sau kẻ địch là đã gây Damage bằng 200% của its Ailment Threshold"
+                "vi": "Phát nổ sau khi kẻ địch nhận Damage bằng 200% Ailment Threshold của mục tiêu"
               },
               {
                 "en": "Inflicts (0—20)% more Flammability Magnitude",
@@ -26369,7 +26369,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Create an Orb of electricity that fires Chaining Lightning bolts at nearby enemies. The Orb leaves behind a Lightning Infusion Remnant when it expires.",
-          "vi": "Tạo một Orb của electricity đó Bắn Chaining Lightning bolts vào gần đó kẻ địch. các Orb leaves behind một Lightning Infusion Remnant khi it hết hạn."
+          "vi": "Tạo một Orb điện bắn Chaining Lightning bolts vào kẻ địch gần đó. Orb để lại Lightning Infusion Remnant khi hết hạn."
         },
         "properties": [
           {
@@ -26709,7 +26709,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Marked target takes 3% increased damage for each of its enemies within 6 metres of it, up to 45%",
-                "vi": "mục tiêu bị Mark nhận 3% increased Damage cho mỗi của its kẻ địch trong phạm vi 6 mét của it, tối đa 45%"
+                "vi": "Mục tiêu bị Mark nhận 3% increased Damage cho mỗi kẻ địch của mục tiêu trong phạm vi 6 mét, tối đa 45%"
               },
               {
                 "en": "Additional Effects From Quality:",
@@ -26717,7 +26717,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Marked target takes (0—1)% increased damage for each of its enemies within 6 metres of it, up to (0—15)%",
-                "vi": "mục tiêu bị Mark nhận (0—1)% increased Damage cho mỗi của its kẻ địch trong phạm vi 6 mét của it, tối đa (0—15)%"
+                "vi": "Mục tiêu bị Mark nhận (0—1)% increased Damage cho mỗi kẻ địch của mục tiêu trong phạm vi 6 mét, tối đa (0—15)%"
               }
             ]
           },
@@ -27438,7 +27438,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Raise a Totem that Slams the ground around it, repeatedly damaging nearby enemies. Jagged Ground erupts when hit by this Slam, damaging enemies standing on it. The Totem cannot create Jagged Ground. This Skill can be used while Shapeshifted.",
-          "vi": "Dựng một Totem đó Slams các mặt đất xung quanh it, repeatedly gây Damage lên gần đó kẻ địch. Jagged mặt đất erupts khi hit bởi này Slam, gây Damage lên kẻ địch đứng trên it. các Totem Không thể tạo Jagged mặt đất. skill này có thể dùng khi Shapeshifted."
+          "vi": "Dựng một Totem Slam mặt đất xung quanh nó, liên tục gây Damage lên kẻ địch gần đó. Jagged Ground trồi lên khi bị Slam này Hit, gây Damage lên kẻ địch đứng trên đó. Totem không thể tạo Jagged Ground. Skill này có thể dùng khi Shapeshifted."
         },
         "properties": [
           {
@@ -27923,7 +27923,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "50% more damage with Hits for explosions originating from a Unique enemy",
-                "vi": "50% more Damage với Hits cho Vụ nổ phát ra từ Unique enemy"
+                "vi": "50% more Damage với Hits cho Vụ nổ phát ra từ kẻ địch Unique"
               },
               {
                 "en": "Converts 100% of Physical damage to Cold damage",
@@ -29143,7 +29143,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "50% more damage with Hits for Shockwaves originating from a Unique enemy",
-                "vi": "50% more Damage với Hits cho Shockwave phát ra từ Unique enemy"
+                "vi": "50% more Damage với Hits cho Shockwave phát ra từ kẻ địch Unique"
               }
             ]
           }
@@ -29422,11 +29422,11 @@ window.POE2_SKILL_GEMS = {
         "mods": [
           {
             "en": "You have Culling Strike against Rare and Unique enemies that have been in your Presence for a total of at least (31—40) seconds",
-            "vi": "Bạn có Culling Strike lên Rare và Unique enemy đã ở trong Presence của bạn tổng cộng ít nhất (31—40) giây"
+            "vi": "Bạn có Culling Strike lên kẻ địch Rare và Unique đã ở trong Presence của bạn tổng cộng ít nhất (31—40) giây"
           },
           {
             "en": "You deal 1% more Hit damage to Rare and Unique enemies for every 2 seconds they have ever been in your Presence, up to (40—59)%",
-            "vi": "Bạn gây 1% more Hit Damage lên Rare và Unique enemy cho mỗi 2 giây chúng từng ở trong Presence của bạn, tối đa (40—59)%"
+            "vi": "Bạn gây 1% more Hit Damage lên kẻ địch Rare và Unique cho mỗi 2 giây chúng từng ở trong Presence của bạn, tối đa (40—59)%"
           },
           {
             "en": "Additional Effects From Quality:",
@@ -29434,7 +29434,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "You have Culling Strike against Rare and Unique enemies that have been in your Presence for a total of at least (-5—0) seconds",
-            "vi": "Bạn có Culling Strike lên Rare và Unique enemy đã ở trong Presence của bạn tổng cộng ít nhất (-5—0) giây"
+            "vi": "Bạn có Culling Strike lên kẻ địch Rare và Unique đã ở trong Presence của bạn tổng cộng ít nhất (-5—0) giây"
           }
         ],
         "sections": [
@@ -29446,15 +29446,15 @@ window.POE2_SKILL_GEMS = {
             "lines": [
               {
                 "en": "You have Culling Strike against Rare and Unique enemies that have been in your Presence for a total of at least (31—40) seconds",
-                "vi": "Bạn có Culling Strike lên Rare và Unique enemy đã ở trong Presence của bạn tổng cộng ít nhất (31—40) giây"
+                "vi": "Bạn có Culling Strike lên kẻ địch Rare và Unique đã ở trong Presence của bạn tổng cộng ít nhất (31—40) giây"
               },
               {
                 "en": "You deal 1% more Hit damage to Rare and Unique enemies for every 2 seconds they have ever been in your Presence, up to (40—59)%",
-                "vi": "Bạn gây 1% more Hit Damage lên Rare và Unique enemy cho mỗi 2 giây chúng từng ở trong Presence của bạn, tối đa (40—59)%"
+                "vi": "Bạn gây 1% more Hit Damage lên kẻ địch Rare và Unique cho mỗi 2 giây chúng từng ở trong Presence của bạn, tối đa (40—59)%"
               },
               {
                 "en": "You have Culling Strike against Rare and Unique enemies that have been in your Presence for a total of at least (-5—0) seconds",
-                "vi": "Bạn có Culling Strike lên Rare và Unique enemy đã ở trong Presence của bạn tổng cộng ít nhất (-5—0) giây"
+                "vi": "Bạn có Culling Strike lên kẻ địch Rare và Unique đã ở trong Presence của bạn tổng cộng ít nhất (-5—0) giây"
               }
             ]
           }
@@ -29905,7 +29905,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "While active, causes you to periodically gain Ghost Shrouds. If you are Hit while you have a Ghost Shroud, it is immediately consumed to recover Energy Shield based on your Evasion.",
-          "vi": "Khi đang active, khiến bạn theo chu kỳ Nhận Ghost Shrouds. nếu bạn đang Hit khi bạn có một Ghost Shroud, it là immediately đã Consume để recover Energy Shield dựa trên của bạn Evasion."
+          "vi": "Khi active, bạn định kỳ nhận Ghost Shroud. Nếu bị Hit khi đang có Ghost Shroud, Ghost Shroud đó lập tức bị Consume để hồi Energy Shield dựa trên Evasion của bạn."
         },
         "properties": [
           {
@@ -32180,7 +32180,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "While active, Attacking enemies builds Glory. When you have maximum Glory, you can place an inspiring Banner for a duration with an Aura that grants you and nearby Allies Attack damage, Attack speed and Accuracy.",
-          "vi": "Khi đang active, Attacking kẻ địch builds Glory. khi bạn có Glory tối đa, bạn Có thể place một inspiring Banner trong một thời lượng với một Aura đó cấp cho bạn và gần đó Allies Attack Damage, Attack speed và Accuracy."
+          "vi": "Khi đang active, các đòn Attack lên kẻ địch sẽ tích lũy Glory. Khi đạt Glory tối đa, bạn có thể cắm một chiếc cờ Banner truyền cảm hứng trong một thời lượng, tạo Aura cấp Attack Damage, Attack Speed và Accuracy cho bạn cùng Allies lân cận."
         },
         "properties": [
           {
@@ -35486,7 +35486,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Gouge molten rock from the ground and fling it at the target. The Projectile explodes on collision, damaging enemies and scattering shrapnel in a cone behind it.",
-          "vi": "Gouge molten rock từ các mặt đất và fling it vào mục tiêu. các Projectile phát nổ trên collision, gây Damage lên kẻ địch và scattering shrapnel trong một cone behind it."
+          "vi": "Khoét đá nóng chảy từ mặt đất và phóng vào mục tiêu. Projectile phát nổ khi va chạm, gây Damage lên kẻ địch và bắn mảnh văng theo hình nón phía sau."
         },
         "properties": [
           {
@@ -35682,7 +35682,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Skewer a Skeleton on a bone spike to send nearby Minions into a frenzy as long as the spike remains, making their skills faster and harder hitting. The bone spike is itself a Minion. If it dies, the effect ends immediately.",
-          "vi": "Skewer một Skeleton trên một bone spike để send gần đó Minions vào một frenzy miễn là các spike remains, making của chúng skills faster và harder hitting. các bone spike là itself một Minion. nếu it dies, các effect ends immediately."
+          "vi": "Xiên một Skeleton lên gai xương để đưa Minions gần đó vào frenzy miễn là gai còn tồn tại, giúp Skill của chúng nhanh hơn và Hit mạnh hơn. Gai xương cũng là một Minion. Nếu gai chết, hiệu ứng kết thúc ngay."
         },
         "properties": [
           {
@@ -37055,7 +37055,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "50% more damage with Hits for blasts originating from a Unique enemy",
-                "vi": "50% more Damage với Hits cho blast phát ra từ Unique enemy"
+                "vi": "50% more Damage với Hits cho blast phát ra từ kẻ địch Unique"
               },
               {
                 "en": "Additional Effects From Quality:",
@@ -39423,7 +39423,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Slam the ground, sending out a fissure that deals area damage to enemies it passes under and thrusts a spike from the ground when it ends. Warcries performed near the spike will cause it to shatter, damaging surrounding enemies.",
-          "vi": "Nện xuống đất, sending out một khe nứt đó gây area Damage để kẻ địch it passes under và thrusts một spike từ các mặt đất khi it ends. Warcries performed gần các spike sẽ gây it để shatter, gây Damage lên surrounding kẻ địch."
+          "vi": "Nện xuống đất, phóng ra một khe nứt gây area Damage lên kẻ địch nằm trên đường đi và đẩy một spike trồi lên khi kết thúc. Warcry gần spike sẽ khiến spike shatter, gây Damage lên kẻ địch xung quanh."
         },
         "properties": [
           {
@@ -40399,7 +40399,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Fire a noxious arrow at the ground, creating a cloud of flammable poisonous gas at the end of its flight. The cloud will detonate if hit by a Detonator skill or if an Ignited enemy touches it, creating a fiery explosion.",
-          "vi": "Bắn ra một noxious arrow vào các mặt đất, tạo một cloud của flammable poisonous gas ở cuối đường bay. các cloud sẽ detonate nếu hit bởi một Detonator skill hoặc nếu một Ignited kẻ địch touches it, tạo một fiery explosion."
+          "vi": "Bắn một noxious arrow xuống mặt đất, tạo cloud khí độc dễ cháy ở cuối đường bay. Cloud sẽ detonate nếu bị Hit bởi Detonator Skill hoặc nếu kẻ địch Ignited chạm vào, tạo vụ nổ lửa."
         },
         "properties": [
           {
@@ -42977,7 +42977,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Slam the ground, creating a branching Molten Fissure that deals damage as it travels and remains for a duration. Using a different Slam on a Molten Fissure creates a spreading Aftershock.",
-          "vi": "Nện xuống đất, tạo một branching Molten khe nứt đó gây Damage như it travels và remains trong một thời lượng. dùng một different Slam trên một Molten khe nứt tạo một spreading Aftershock."
+          "vi": "Nện xuống đất, tạo một Molten Fissure phân nhánh gây Damage khi lan đi và tồn tại trong một thời lượng. Dùng một Slam khác lên Molten Fissure sẽ tạo Aftershock lan rộng."
         },
         "properties": [
           {
@@ -44774,7 +44774,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "While active, Attacking enemies builds Glory. When you have maximum Glory, you can place an inspiring Banner for a duration with an Aura that grants you and nearby Allies Armour, Evasion and movement speed.",
-          "vi": "Khi đang active, Attacking kẻ địch builds Glory. khi bạn có Glory tối đa, bạn Có thể place một inspiring Banner trong một thời lượng với một Aura đó cấp cho bạn và gần đó Allies Armour, Evasion và tốc độ di chuyển."
+          "vi": "Khi đang active, các đòn Attack lên kẻ địch sẽ tích lũy Glory. Khi đạt Glory tối đa, bạn có thể cắm một chiếc cờ Banner truyền cảm hứng trong một thời lượng, tạo Aura cấp Armour, Evasion và Movement Speed cho bạn cùng Allies lân cận."
         },
         "properties": [
           {
@@ -45103,7 +45103,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "While active, killing a Poisoned enemy spreads its Poison to other nearby enemies, and has a chance to also Hinder them.",
-          "vi": "Khi đang active, killing một Poisoned kẻ địch spreads its Poison để khác gần đó kẻ địch, và có một chance để cũng Hinder chúng."
+          "vi": "Khi active, giết kẻ địch Poisoned sẽ lan Poison của mục tiêu sang kẻ địch gần đó khác, và có chance Hinder chúng."
         },
         "properties": [
           {
@@ -46044,7 +46044,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "Blessing recovers (17—628) Life and removes Curses and Elemental Ailments",
-            "vi": "Blessing recovers (17—628) Life và removes Curses và Elemental Ailments"
+            "vi": "Blessing hồi (17—628) Life và xóa Curses cùng Elemental Ailments"
           },
           {
             "en": "Additional Effects From Quality:",
@@ -46052,7 +46052,7 @@ window.POE2_SKILL_GEMS = {
           },
           {
             "en": "Blessing recovers (0—40) Life and removes Curses and Elemental Ailments",
-            "vi": "Blessing recovers (0—40) Life và removes Curses và Elemental Ailments"
+            "vi": "Blessing hồi (0—40) Life và xóa Curses cùng Elemental Ailments"
           }
         ],
         "sections": [
@@ -46068,11 +46068,11 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "Blessing recovers (17—628) Life and removes Curses and Elemental Ailments",
-                "vi": "Blessing recovers (17—628) Life và removes Curses và Elemental Ailments"
+                "vi": "Blessing hồi (17—628) Life và xóa Curses cùng Elemental Ailments"
               },
               {
                 "en": "Blessing recovers (0—40) Life and removes Curses and Elemental Ailments",
-                "vi": "Blessing recovers (0—40) Life và removes Curses và Elemental Ailments"
+                "vi": "Blessing hồi (0—40) Life và xóa Curses cùng Elemental Ailments"
               }
             ]
           }
@@ -47788,7 +47788,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "This Attack is Triggered by Fortifying Cry and counts as Empowered by it",
-                "vi": "này Attack là Trigger bởi Fortifying Cry và counts như Empowered bởi it"
+                "vi": "Attack này được Trigger bởi Fortifying Cry và được tính là Empowered bởi Fortifying Cry"
               },
               {
                 "en": "Shockwave radius is 2 metres",
@@ -48818,7 +48818,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Build Combo by successfully Striking Enemies with other skills. After reaching maximum Combo, use this skill to Empower your next Quarterstaff Attack, causing it to deal additional Chaos damage. Each kill with the Empowered Attack grants Purple Flames of Chayula for a duration.",
-          "vi": "Build Combo bởi successfully Striking kẻ địch với khác skills. sau đạt maximum Combo, use skill này để Empower của bạn next Quarterstaff Attack, khiến it để gây thêm Chaos Damage. mỗi kill với các Empowered Attack cấp Purple Flames của Chayula trong một thời lượng."
+          "vi": "Build Combo bằng cách Strike kẻ địch thành công với các Skill khác. Sau khi đạt Combo tối đa, dùng Skill này để Empower Quarterstaff Attack tiếp theo của bạn, khiến Attack đó gây thêm Chaos Damage. Mỗi kill bằng Empowered Attack cấp Purple Flames of Chayula trong một thời lượng."
         },
         "properties": [
           {
@@ -51735,7 +51735,7 @@ window.POE2_SKILL_GEMS = {
               },
               {
                 "en": "50% more damage with Hits for pulses originating from a Unique enemy",
-                "vi": "50% more Damage với Hits cho pulse phát ra từ Unique enemy"
+                "vi": "50% more Damage với Hits cho pulse phát ra từ kẻ địch Unique"
               }
             ]
           },
@@ -54369,7 +54369,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Create a storm that sucks in enemies and deals Physical damage over time. A Tornado that overlaps an Elemental Ground Surface absorbs that surface's Debuff, applying it to enemies inside the Tornado and causing the Tornado to deal extra damage of that element.",
-          "vi": "Tạo một storm đó sucks trong kẻ địch và gây Physical Damage theo thời gian. một Tornado đó overlaps một Elemental mặt đất Surface absorbs đó surface's Debuff, applying it để kẻ địch bên trong các Tornado và khiến các Tornado để gây thêm Damage của đó element."
+          "vi": "Tạo một storm hút kẻ địch vào trong và gây Physical Damage theo thời gian. Tornado chồng lên Elemental Ground Surface sẽ hấp thụ Debuff của surface đó, áp dụng Debuff lên kẻ địch bên trong Tornado và khiến Tornado gây thêm Damage thuộc element đó."
         },
         "properties": [
           {
@@ -58017,7 +58017,7 @@ window.POE2_SKILL_GEMS = {
         ],
         "summary": {
           "en": "Activate to summon hard-hitting, Reviving Skeletal Brutes that can Stun Primed enemies and Warcry on Command. This Warcry Intimidates nearby enemies and Consumes Freeze on enemies and allies to deal damage in an Area around them.",
-          "vi": "Activate để summon hard-hitting, Reviving Skeletal Brutes có thể Stun Primed kẻ địch and Warcry on Command. này Warcry Intimidates gần đó kẻ địch và Consume Freeze trên kẻ địch và Allies để gây Damage trong một vùng xung quanh chúng."
+          "vi": "Activate để summon các Reviving Skeletal Brute đánh mạnh, có thể Stun kẻ địch đã Primed và Warcry theo Command. Warcry này Intimidate kẻ địch gần đó, Consume Freeze trên kẻ địch và Allies để gây Damage trong vùng quanh chúng."
         },
         "properties": [
           {
@@ -59581,7 +59581,7 @@ window.POE2_SKILL_GEMS = {
         "mods": [
           {
             "en": "(15—34)% of recovery from your Flasks is also granted to Allies in your Presence",
-            "vi": "(15—34)% của recovery từ Flasks của bạn là cũng granted để Allies trong Presence của bạn"
+            "vi": "(15—34)% recovery từ Flasks của bạn cũng cấp cho Allies trong Presence của bạn"
           },
           {
             "en": "Grants you (0.17—0.23) Flask charges per second",
@@ -59605,7 +59605,7 @@ window.POE2_SKILL_GEMS = {
             "lines": [
               {
                 "en": "(15—34)% of recovery from your Flasks is also granted to Allies in your Presence",
-                "vi": "(15—34)% của recovery từ Flasks của bạn là cũng granted để Allies trong Presence của bạn"
+                "vi": "(15—34)% recovery từ Flasks của bạn cũng cấp cho Allies trong Presence của bạn"
               },
               {
                 "en": "Grants you (0.17—0.23) Flask charges per second",

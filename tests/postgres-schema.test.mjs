@@ -6,14 +6,15 @@ const readText = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf
 const hardcodedRemoteDatabaseUrl = /postgres(?:ql)?:\/\/[^:@\s]+:[^@\s]+@(?!localhost\b|127\.0\.0\.1\b|\[::1\])[^\s"'`]+/i;
 
 test("PostgreSQL migration defines production tables, jsonb payloads, and active indexes", async () => {
-  const [coreMigration, localizationMigration, cleanupMigration, authMigration, relatedItemsMigration] = await Promise.all([
+  const [coreMigration, localizationMigration, cleanupMigration, authMigration, relatedItemsMigration, commentsMigration] = await Promise.all([
     readText("migrations/001_core_schema.sql"),
     readText("migrations/002_content_localization.sql"),
     readText("migrations/003_drop_legacy_localization.sql"),
     readText("migrations/004_auth_leveling_accounts.sql"),
-    readText("migrations/005_currency_related_items.sql")
+    readText("migrations/005_currency_related_items.sql"),
+    readText("migrations/006_translation_comments.sql")
   ]);
-  const migration = `${coreMigration}\n${localizationMigration}\n${cleanupMigration}\n${authMigration}\n${relatedItemsMigration}`;
+  const migration = `${coreMigration}\n${localizationMigration}\n${cleanupMigration}\n${authMigration}\n${relatedItemsMigration}\n${commentsMigration}`;
 
   for (const table of [
     "schema_migrations",
@@ -33,7 +34,8 @@ test("PostgreSQL migration defines production tables, jsonb payloads, and active
     "item_menus",
     "items",
     "item_versions",
-    "item_tooltip_refs"
+    "item_tooltip_refs",
+    "translation_comments"
   ]) {
     assert.match(migration, new RegExp(`create table if not exists ${table}\\b`, "i"), `${table} table exists`);
   }
@@ -50,6 +52,9 @@ test("PostgreSQL migration defines production tables, jsonb payloads, and active
   assert.match(migration, /session_hash/i);
   assert.match(migration, /unique \(provider, provider_user_id\)/i);
   assert.match(migration, /unique \(user_id, name\)/i);
+  assert.match(migration, /user_id text not null references users\(id\) on delete cascade/i);
+  assert.match(migration, /idx_translation_comments_entity_created/i);
+  assert.match(migration, /idx_translation_comments_user_created/i);
   assert.match(migration, /using gin/i);
   assert.doesNotMatch(migration, /autoincrement|last_insert_rowid|integer primary key autoincrement/i);
 });

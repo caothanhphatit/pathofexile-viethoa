@@ -74,3 +74,30 @@ test("skill gem card detail action sits on the label row instead of the card foo
   assert.match(html, /skill-card-label-row[\s\S]*skill-card-detail[\s\S]*<h2/);
   assert.doesNotMatch(html, /<div class="mt-auto pt-5 flex justify-end">\s*<a class="skill-cta/);
 });
+
+test("translation review comments are available on listing cards and detail modals", async () => {
+  const [skillHtml, currencyHtml, dictionaryHtml, skillDetailHtml, currencyDetailHtml] = await Promise.all([
+    readProjectFile("skill_gems.html"),
+    readProjectFile("currency.html"),
+    readProjectFile("dictionary.html"),
+    readProjectFile("skill_gem_detail.html"),
+    readProjectFile("currency_detail.html")
+  ]);
+
+  for (const html of [skillHtml, currencyHtml, dictionaryHtml]) {
+    assert.match(html, /components\/translation-comments\.js/);
+    assert.match(html, /data-comments-slot/);
+    assert.match(html, /data-comment-trigger/);
+    assert.match(html, /Góp ý dịch/);
+  }
+
+  assert.match(skillHtml, /data-comment-entity-type="skill_gem"/);
+  assert.match(currencyHtml, /data-comment-entity-type="currency"/);
+  assert.match(dictionaryHtml, /data-comment-entity-type="dictionary"/);
+
+  for (const html of [skillDetailHtml, currencyDetailHtml]) {
+    assert.match(html, /components\/translation-comments\.js/);
+    assert.match(html, /data-comments-slot/);
+    assert.match(html, /PoeTranslationComments\?\.mount/);
+  }
+});

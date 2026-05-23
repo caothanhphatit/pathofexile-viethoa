@@ -190,6 +190,24 @@ const translatePrefixedStatLine = (line = "") => {
     return `${target}: nhận ${statMatch[1]} Damage dưới dạng Extra ${statMatch[2]} Damage.`;
   }
 
+  statMatch = effect.match(/^Allies in your Presence deal (.+?) increased Damage$/i);
+  if (statMatch) return `${target}: Allies trong Presence của bạn gây ${statMatch[1]} increased Damage.`;
+
+  statMatch = effect.match(/^Aura Skills have (.+?) increased Magnitudes$/i);
+  if (statMatch) return `${target}: Aura Skills có ${statMatch[1]} increased Magnitudes.`;
+
+  statMatch = effect.match(/^Aura Skills have (.+?) Magnitudes$/i);
+  if (statMatch) return `${target}: Aura Skills có ${statMatch[1]} Magnitudes.`;
+
+  statMatch = effect.match(/^Hits against you have (.+?) reduced Critical Damage Bonus$/i);
+  if (statMatch) return `${target}: Hit lên bạn có ${statMatch[1]} reduced Critical Damage Bonus.`;
+
+  statMatch = effect.match(/^Recoup (.+?) (Physical|Fire|Cold|Lightning|Chaos) Damage taken as Life$/i);
+  if (statMatch) return `${target}: Recoup ${statMatch[1]} ${statMatch[2]} Damage nhận vào dưới dạng Life.`;
+
+  statMatch = effect.match(/^Recoup (.+?) Damage taken as Life$/i);
+  if (statMatch) return `${target}: Recoup ${statMatch[1]} Damage nhận vào dưới dạng Life.`;
+
   statMatch = effect.match(/^(.+?) increased Rarity of Items found$/i);
   if (statMatch) return `${target}: tăng ${statMatch[1]} Rarity của item rơi.`;
 
@@ -203,25 +221,16 @@ const translatePrefixedStatLine = (line = "") => {
   if (statMatch) return `${target}: giảm ${statMatch[1]} ${translateStatName(statMatch[2])}.`;
 
   statMatch = effect.match(/^(.+?) of (.+?) Damage taken Recouped as Life$/i);
-  if (statMatch) return `${target}: Recoup ${statMatch[1]} ${statMatch[2]} Damage taken dưới dạng Life.`;
+  if (statMatch) return `${target}: Recoup ${statMatch[1]} ${statMatch[2]} Damage nhận vào dưới dạng Life.`;
 
   statMatch = effect.match(/^(.+?) of Damage taken Recouped as Life$/i);
-  if (statMatch) return `${target}: Recoup ${statMatch[1]} Damage taken dưới dạng Life.`;
+  if (statMatch) return `${target}: Recoup ${statMatch[1]} Damage nhận vào dưới dạng Life.`;
 
   statMatch = effect.match(/^\+(.+?) to (.+)$/i);
   if (statMatch) return `${target}: +${statMatch[1]} ${translateStatName(statMatch[2])}.`;
 
   statMatch = effect.match(/^(.+?) to (.+?) (Physical|Fire|Cold|Lightning|Chaos) Thorns damage$/i);
   if (statMatch) return `${target}: ${statMatch[1]} đến ${statMatch[2]} ${statMatch[3]} Thorns Damage.`;
-
-  statMatch = effect.match(/^Hits against you have (.+?) reduced Critical Damage Bonus$/i);
-  if (statMatch) return `${target}: Hit lên bạn có ${statMatch[1]} reduced Critical Damage Bonus.`;
-
-  statMatch = effect.match(/^Allies in your Presence deal (.+?) increased Damage$/i);
-  if (statMatch) return `${target}: Allies trong Presence của bạn có ${statMatch[1]} increased Damage.`;
-
-  statMatch = effect.match(/^Aura Skills have (.+?) increased Magnitudes$/i);
-  if (statMatch) return `${target}: Aura Skills có ${statMatch[1]} increased Magnitudes.`;
 
   statMatch = effect.match(/^Allocates a random Notable Passive Skill$/i);
   if (statMatch) return `${target}: Allocate một Notable Passive Skill ngẫu nhiên.`;

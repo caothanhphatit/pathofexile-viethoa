@@ -1,5 +1,5 @@
 window.POE2_CURRENCY = {
-  "generated_at": "2026-05-23T11:25:04.346Z",
+  "generated_at": "2026-05-23T18:05:54.689Z",
   "source_url": "https://poe2db.tw/us/Stackable_Currency",
   "latest_run": {
     "id": "13",
@@ -5709,7 +5709,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Sceptre: Allies in your Presence deal (55—64)% increased Damage",
-            "vi": "Sceptre: tăng Allies in your Presence deal (55—64)% Damage."
+            "vi": "Sceptre: Allies trong Presence của bạn gây (55—64)% increased Damage."
           }
         ]
       },
@@ -6241,7 +6241,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Amulet: (19—21)% of Damage taken Recouped as Life",
-            "vi": "Amulet: Recoup (19—21)% Damage taken dưới dạng Life."
+            "vi": "Amulet: Recoup (19—21)% Damage nhận vào dưới dạng Life."
           },
           {
             "en": "Belt: +(254—304) to Stun Threshold",
@@ -7273,7 +7273,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Sceptre: Allies in your Presence deal (75—89)% increased Damage",
-            "vi": "Sceptre: tăng Allies in your Presence deal (75—89)% Damage."
+            "vi": "Sceptre: Allies trong Presence của bạn gây (75—89)% increased Damage."
           }
         ]
       },
@@ -8487,7 +8487,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Sceptre: Allies in your Presence deal (35—44)% increased Damage",
-            "vi": "Sceptre: tăng Allies in your Presence deal (35—44)% Damage."
+            "vi": "Sceptre: Allies trong Presence của bạn gây (35—44)% increased Damage."
           }
         ]
       },
@@ -9701,7 +9701,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Sceptre: Aura Skills have (15—20)% increased Magnitudes",
-            "vi": "Sceptre: tăng Aura Skills have (15—20)% Magnitudes."
+            "vi": "Sceptre: Aura Skills có (15—20)% increased Magnitudes."
           }
         ]
       },
@@ -9955,7 +9955,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Gloves: (26—30)% of Lightning Damage taken Recouped as Life",
-            "vi": "Gloves: Recoup (26—30)% Lightning Damage taken dưới dạng Life."
+            "vi": "Gloves: Recoup (26—30)% Lightning Damage nhận vào dưới dạng Life."
           }
         ]
       },
@@ -10143,7 +10143,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Belt: (26—30)% of Fire Damage taken Recouped as Life",
-            "vi": "Belt: Recoup (26—30)% Fire Damage taken dưới dạng Life."
+            "vi": "Belt: Recoup (26—30)% Fire Damage nhận vào dưới dạng Life."
           }
         ]
       },
@@ -10326,7 +10326,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Body Armour: Hits against you have (40—50)% reduced Critical Damage Bonus",
-            "vi": "Body Armour: giảm Hits against you have (40—50)% Critical Damage Bonus."
+            "vi": "Body Armour: Hit lên bạn có (40—50)% reduced Critical Damage Bonus."
           }
         ]
       },
@@ -10453,7 +10453,7 @@ window.POE2_CURRENCY = {
           },
           {
             "en": "Helmet: (26—30)% of Cold Damage taken Recouped as Life",
-            "vi": "Helmet: Recoup (26—30)% Cold Damage taken dưới dạng Life."
+            "vi": "Helmet: Recoup (26—30)% Cold Damage nhận vào dưới dạng Life."
           }
         ]
       },

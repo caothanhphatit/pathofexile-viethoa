@@ -7,9 +7,6 @@
   <title>Currency - POE2</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
   <script src="components/theme-boot.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
   <link href="dist/app.css" rel="stylesheet">
   <script defer src="app-routes.js"></script>
   <script defer src="components/app-shell.js"></script>
@@ -187,6 +184,8 @@
           <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Liên quan</h3>
           <div class="mt-2 grid gap-2" id="cmodalRelated"></div>
         </div>
+
+        <div class="border-t border-slate-100 pt-4 dark:border-slate-800/40" id="cmodalComments" data-comments-slot></div>
       </div>
 
       <!-- Footer -->
@@ -197,6 +196,7 @@
   </div>
 
   <script src="components/poe-ui-utils.js"></script>
+  <script src="components/translation-comments.js"></script>
   <script src="data/currency-data.js"></script>
   <script>
     const data = window.POE2_CURRENCY || { items: [], categories: [], subtypes: [], families: [] };
@@ -328,6 +328,7 @@
 
     const renderItem = (item) => {
       const description = shortDescription(item);
+      const translatedDescription = i18nText(item.i18n?.description, item.description_en) || description;
       const stack = item.stack_size ? `Stack ${item.stack_size}` : itemCategoryLabel(item);
       return `
         <article class="currency-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -346,7 +347,11 @@
             </div>
           </div>
           <p class="mt-5 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300" title="${escapeHtml(description)}">${escapeHtml(description)}</p>
-          <div class="mt-auto pt-4 flex justify-end">
+          <div class="mt-auto pt-4 flex flex-wrap justify-end gap-2">
+            <button class="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1.5 text-[11px] font-black text-blue-700 transition hover:bg-blue-600 hover:text-white dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white" type="button" data-no-tooltip data-comment-trigger data-comment-entity-type="currency" data-comment-entity-id="${escapeHtml(item.slug)}" data-comment-entity-name="${escapeHtml(item.name)}" data-comment-field-path="description" data-comment-source-text="${escapeHtml(item.description_en || "")}" data-comment-translated-text="${escapeHtml(translatedDescription)}">
+              <span class="material-symbols-rounded text-sm" aria-hidden="true">rate_review</span>
+              Góp ý dịch
+            </button>
             <a class="currency-cta inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="/currency-detail?slug=${encodeURIComponent(item.slug)}">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">article</span>
               Chi tiết
@@ -470,6 +475,7 @@
     const cmodalPropertiesContainer = document.getElementById("cmodalPropertiesContainer");
     const cmodalRelatedContainer = document.getElementById("cmodalRelatedContainer");
     const cmodalRelated = document.getElementById("cmodalRelated");
+    const cmodalComments = document.getElementById("cmodalComments");
     const closeCurrencyModalBtn = document.getElementById("closeCurrencyModalBtn");
     const cmodalActionClose = document.getElementById("cmodalActionClose");
 
@@ -537,7 +543,8 @@
       `;
 
       // Description
-      cmodalDescription.textContent = i18nText(item.i18n?.description, item.description_en) || shortDescription(item);
+      const translatedDescription = i18nText(item.i18n?.description, item.description_en) || shortDescription(item);
+      cmodalDescription.textContent = translatedDescription;
 
       // Properties
       const localizedProps = i18nList(item.i18n?.properties, item.properties || []);
@@ -550,6 +557,15 @@
 
       // Render Related Items
       renderRelatedCurrencyItems(item);
+
+      window.PoeTranslationComments?.mount(cmodalComments, {
+        entityType: "currency",
+        entityId: item.slug,
+        entityName: item.name,
+        fieldPath: "description",
+        sourceText: item.description_en || "",
+        translatedText: translatedDescription
+      });
 
       currencyModal.classList.remove("hidden");
       currencyModal.classList.add("flex");

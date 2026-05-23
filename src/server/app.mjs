@@ -8,6 +8,7 @@ import { adminRoutes } from "./routes/admin.mjs";
 import { authRoutes } from "./routes/auth.mjs";
 import { levelingAccountRoutes } from "./routes/leveling-account.mjs";
 import { publicRoutes } from "./routes/public.mjs";
+import { translationCommentRoutes } from "./routes/translation-comments.mjs";
 import { createAuthService } from "./services/auth-service.mjs";
 import { Poe2LogWatcher } from "./services/poe2-log-watcher.mjs";
 
@@ -62,6 +63,7 @@ export const buildApp = async (options = {}) => {
 
   await app.register(authRoutes);
   await app.register(levelingAccountRoutes);
+  await app.register(translationCommentRoutes);
   await app.register(publicRoutes);
   await app.register(adminRoutes);
 

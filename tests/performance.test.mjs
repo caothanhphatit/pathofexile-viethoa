@@ -32,6 +32,8 @@ test("shared base CSS does not block first paint with remote font imports", asyn
   const css = await readProjectFile("dist/app.css");
 
   assert.doesNotMatch(css, /@import\s+url\(["']?https:\/\/fonts\.googleapis\.com/i);
+  assert.doesNotMatch(css, /https:\/\/fonts\.(googleapis|gstatic)\.com/i);
+  assert.match(css, /assets\/fonts\/material-symbols-rounded\.woff2/);
   assert.match(css, /system-ui/);
 });
 
@@ -61,6 +63,7 @@ test("production pages load compiled Tailwind CSS instead of the browser CDN run
 
     assert.match(html, /<link href="dist\/app\.css" rel="stylesheet">/, `${page} loads compiled app CSS`);
     assert.doesNotMatch(html, /https:\/\/cdn\.tailwindcss\.com/, `${page} does not load Tailwind CDN runtime`);
+    assert.doesNotMatch(html, /https:\/\/fonts\.(googleapis|gstatic)\.com/, `${page} does not block on remote Google Fonts`);
     assert.doesNotMatch(html, /components\/tailwind-config\.js/, `${page} does not load runtime Tailwind config`);
     assert.doesNotMatch(html, /components\/app-base\.css/, `${page} does not load uncompiled base CSS separately`);
   }

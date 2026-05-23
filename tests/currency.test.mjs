@@ -287,6 +287,26 @@ test("translateCurrencyText covers production currency and essence lines without
     [
       "While this item is active in your inventory your next Divine Orb used on a Rare item will Sanctify it",
       "Khi item này đang active trong inventory, Divine Orb tiếp theo của bạn khi dùng lên Rare item sẽ Sanctify item đó."
+    ],
+    [
+      "Sceptre: Allies in your Presence deal (55—64)% increased Damage",
+      "Sceptre: Allies trong Presence của bạn gây (55—64)% increased Damage."
+    ],
+    [
+      "Amulet: Recoup (19—21)% Damage taken as Life",
+      "Amulet: Recoup (19—21)% Damage nhận vào dưới dạng Life."
+    ],
+    [
+      "Amulet: (19—21)% of Damage taken Recouped as Life",
+      "Amulet: Recoup (19—21)% Damage nhận vào dưới dạng Life."
+    ],
+    [
+      "Gloves: (26—30)% of Lightning Damage taken Recouped as Life",
+      "Gloves: Recoup (26—30)% Lightning Damage nhận vào dưới dạng Life."
+    ],
+    [
+      "Body Armour: Hits against you have (40—50)% reduced Critical Damage Bonus",
+      "Body Armour: Hit lên bạn có (40—50)% reduced Critical Damage Bonus."
     ]
   ]);
 

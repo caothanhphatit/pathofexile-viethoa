@@ -180,7 +180,7 @@ test("translateSkillDetailLine translates stat lines while preserving POE terms"
   );
   assert.equal(
     translateSkillDetailLine("Consumes Freeze on Non-Unique enemies to deal 250% more Damage"),
-    "Consume Freeze trên Non-Unique enemy để gây 250% more Damage"
+    "Consume Freeze trên kẻ địch Non-Unique để gây 250% more Damage"
   );
   assert.equal(
     translateSkillDetailLine("Normal and Magic monsters grant 1 Power Charge Rare monsters grant 2 Power Charges Unique monsters grant 3 Power Charges"),
@@ -188,11 +188,11 @@ test("translateSkillDetailLine translates stat lines while preserving POE terms"
   );
   assert.equal(
     translateSkillDetailLine("You have Culling Strike against Rare and Unique enemies that have been in your Presence for a total of at least (31â€”40) seconds"),
-    "Bạn có Culling Strike lên Rare và Unique enemy đã ở trong Presence của bạn tổng cộng ít nhất (31â€”40) giây"
+    "Bạn có Culling Strike lên kẻ địch Rare và Unique đã ở trong Presence của bạn tổng cộng ít nhất (31â€”40) giây"
   );
   assert.equal(
     translateSkillDetailLine("You deal 1% more Hit Damage to Rare and Unique enemies for every 2 seconds they have ever been in your Presence, up to (40â€”59)%"),
-    "Bạn gây 1% more Hit Damage lên Rare và Unique enemy cho mỗi 2 giây chúng từng ở trong Presence của bạn, tối đa (40â€”59)%"
+    "Bạn gây 1% more Hit Damage lên kẻ địch Rare và Unique cho mỗi 2 giây chúng từng ở trong Presence của bạn, tối đa (40â€”59)%"
   );
 });
 
@@ -262,7 +262,7 @@ test("translateSkillDetailLine localizes generated stat glue in detail pages", (
   );
   assert.equal(
     translateSkillDetailLine("50% more Damage with Hits for Shockwaves originating from a Unique enemy"),
-    "50% more Damage với Hits cho Shockwave phát ra từ Unique enemy"
+    "50% more Damage với Hits cho Shockwave phát ra từ kẻ địch Unique"
   );
 });
 
@@ -489,6 +489,90 @@ test("translateSkillText covers mixed-English skill summaries without corrupting
     "Phóng một loạt Projectile tia lửa bay ngẫu nhiên dọc theo mặt đất cho đến khi chúng Hit kẻ địch hoặc hết thời lượng. Nếu có thể, Consume Cold Infusion để bắn ra nhiều tia lửa theo một vòng tròn."
   );
   assert.doesNotMatch(spark, /củmột|đểàn|tối đmột|\bspray of\b|\bProjectiles that travel\b/i);
+});
+
+test("translateSkillText removes leaked English it/its from production summaries", () => {
+  const dirtyPronouns = /\b(it|its|itself)\b/i;
+  const cases = new Map([
+    [
+      "Manifest a copy of your main hand Melee Martial Weapon as an immortal Companion to fight by your side. In addition to its standard Strikes, the Manifested Weapon gains an additional Attack depending on its weapon type.",
+      "Manifest một bản sao Melee Martial Weapon tay chính của bạn dưới dạng Companion bất tử chiến đấu cạnh bạn. Ngoài các Strike cơ bản, Manifested Weapon nhận thêm một Attack tùy theo loại weapon."
+    ],
+    [
+      "Place a Sigil on the ground, providing a powerful Spell Damage Buff to you and Allies while standing in it. The Buff becomes more powerful the more mana you spend while standing in the Sigil.",
+      "Đặt một Sigil lên mặt đất, cấp Spell Damage Buff mạnh cho bạn và Allies khi đứng trong vùng Sigil. Buff mạnh hơn theo lượng Mana bạn tiêu khi đứng trong Sigil."
+    ],
+    [
+      "Whip up a twister with a flick of your Spear. The twister moves forward erratically, Blinding and repeatedly Hitting enemies within. If a twister touches a Whirlwind from your other skills, it Consumes the Whirlwind to create additional twisters that deal more damage. Passing over Elemental Ground Surfaces or Consuming an elemental Whirlwind will grant twisters extra damage of that element.",
+      "Tạo một twister bằng cú vung Spear của bạn. Twister di chuyển thất thường về phía trước, Blind và liên tục Hit kẻ địch trong phạm vi. Nếu twister chạm Whirlwind từ Skill khác của bạn, twister Consume Whirlwind đó để tạo thêm các twister gây nhiều Damage hơn. Khi đi qua Elemental Ground Surface hoặc Consume Whirlwind elemental, twister nhận thêm Damage thuộc element đó."
+    ],
+    [
+      "Create a storm that sucks in enemies and deals Physical damage over time. A Tornado that overlaps an Elemental Ground Surface absorbs that surface's Debuff, applying it to enemies inside the Tornado and causing the Tornado to deal extra damage of that element.",
+      "Tạo một storm hút kẻ địch vào trong và gây Physical Damage theo thời gian. Tornado chồng lên Elemental Ground Surface sẽ hấp thụ Debuff của surface đó, áp dụng Debuff lên kẻ địch bên trong Tornado và khiến Tornado gây thêm Damage thuộc element đó."
+    ],
+    [
+      "Gouge molten rock from the ground and fling it at the target. The Projectile explodes on collision, damaging enemies and scattering shrapnel in a cone behind it.",
+      "Khoét đá nóng chảy từ mặt đất và phóng vào mục tiêu. Projectile phát nổ khi va chạm, gây Damage lên kẻ địch và bắn mảnh văng theo hình nón phía sau."
+    ]
+  ]);
+
+  for (const [source, expected] of cases) {
+    const translated = translateSkillText(source);
+    assert.equal(translated, expected);
+    assert.doesNotMatch(translated, dirtyPronouns, source);
+  }
+});
+
+test("translateSkillDetailLine removes leaked English it/its from production stat lines", () => {
+  const dirtyPronouns = /\b(it|its|itself)\b/i;
+  const cases = new Map([
+    [
+      "Explodes after enemy is dealt damage equal to 200% of its Ailment Threshold",
+      "Phát nổ sau khi kẻ địch nhận Damage bằng 200% Ailment Threshold của mục tiêu"
+    ],
+    [
+      "Marked target takes 3% increased damage for each of its enemies within 6 metres of it, up to 45%",
+      "Mục tiêu bị Mark nhận 3% increased Damage cho mỗi kẻ địch của mục tiêu trong phạm vi 6 mét, tối đa 45%"
+    ],
+    [
+      "This Attack is Triggered by Fortifying Cry and counts as Empowered by it",
+      "Attack này được Trigger bởi Fortifying Cry và được tính là Empowered bởi Fortifying Cry"
+    ]
+  ]);
+
+  for (const [source, expected] of cases) {
+    const translated = translateSkillDetailLine(source);
+    assert.equal(translated, expected);
+    assert.doesNotMatch(translated, dirtyPronouns, source);
+  }
+});
+
+test("translateSkillDetailLine cleans production stat-line English glue", () => {
+  const cases = new Map([
+    [
+      "Gains a Stage when you Spend a total of 50% of your Maximum Mana while in Area",
+      "Nhận một Stage khi bạn tiêu tổng cộng 50% Mana tối đa trong vùng"
+    ],
+    [
+      "Elemental Damage from Hits is taken from the Barrier before your Life, Mana or Energy Shield Barrier can take Elemental Damage up to 30% of your Armour and Evasion Rating",
+      "Elemental Damage từ Hits được Barrier nhận trước Life, Mana hoặc Energy Shield của bạn. Barrier có thể nhận Elemental Damage tối đa 30% Armour và Evasion Rating của bạn"
+    ],
+    [
+      "Oasis grants (30—80)% of damage taken Recouped as Life",
+      "Oasis cấp Recoup (30—80)% Damage nhận vào dưới dạng Life"
+    ],
+    [
+      "(15—34)% of recovery from your Flasks is also granted to Allies in your Presence",
+      "(15—34)% recovery từ Flasks của bạn cũng cấp cho Allies trong Presence của bạn"
+    ]
+  ]);
+
+  const dirtyGlue = /\b(taken|Spend a total|your Maximum|granted to|Damage taken)\b/i;
+  for (const [source, expected] of cases) {
+    const translated = translateSkillDetailLine(source);
+    assert.equal(translated, expected);
+    assert.doesNotMatch(translated, dirtyGlue, source);
+  }
 });
 
 test("parseSkillGemDetailPage extracts summary, requirements, and detail sections", () => {
