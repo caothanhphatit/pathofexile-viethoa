@@ -437,7 +437,7 @@
       return;
     }
     const script = document.createElement("script");
-    script.src = "dictionary-data.js";
+    script.src = "data/dictionary-data.js";
     script.defer = true;
     script.onload = () => {
       startObserver();

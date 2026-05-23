@@ -32,7 +32,7 @@
 - Create `scripts/items/items-lib.mjs`: PoE2DB item menu parser, item page parser, tooltip extraction, and Vietnamese text helpers.
 - Create `scripts/items/runtime.mjs`: runtime functions for fetching PoE2DB, Postgres repositories, crawl orchestration, and exports.
 - Create `scripts/crawl-items.mjs`: CLI crawl entrypoint for `https://poe2db.tw/us/Items`.
-- Create `scripts/export-items.mjs`: export `items-data.js` from PostgreSQL.
+- Create `scripts/export-items.mjs`: export `public/data/items-data.js` from PostgreSQL.
 - Create `tests/postgres-schema.test.mjs`: static schema safety tests for indexes, constraints, and no SQLite syntax.
 - Create `tests/items-crawler.test.mjs`: parser tests for Items menu and Claws-like item pages.
 - Modify `scripts/skill-gems/runtime.mjs`: use PostgreSQL repo instead of SQLite for production scripts.
@@ -160,7 +160,7 @@ ALLOWED_ORIGINS=http://127.0.0.1:4173,http://localhost:4173
   - `exportItems(client)`.
 - [ ] Use atomic `INSERT ... ON CONFLICT` and short transactions.
 - [ ] Store `raw_json` and `tooltip_refs_json`; all localized text lives in `content_strings` and `content_translations`.
-- [ ] Export `items-data.js` as `window.POE2_ITEMS = ...`.
+- [ ] Export `public/data/items-data.js` as `window.POE2_ITEMS = ...`.
 - [ ] Run tests; expected: pass.
 
 ### Task 7: Wire Crawl Items CLI
@@ -185,7 +185,7 @@ ALLOWED_ORIGINS=http://127.0.0.1:4173,http://localhost:4173
 ### Task 9: Dictionary Hover Support For Items UI
 
 - [ ] Export dictionary terms with stable lookup keys.
-- [ ] Add shared frontend helper `components/term-hover.js`.
+- [x] Add shared frontend helpers under `public/components/`.
 - [ ] Add hover spans to item Vietnamese descriptions for dictionary-backed terms.
 - [ ] Keep visible terms in English when the dictionary says the term is preserved.
 - [ ] Verify in browser that item text hover shows Vietnamese meaning.

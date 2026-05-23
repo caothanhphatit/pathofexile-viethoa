@@ -20,7 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const ROOT_DIR = path.resolve(__dirname, "..", "..");
 export const DEFAULT_ITEMS_SOURCE_URL = "https://poe2db.tw/us/Items";
-export const EXPORT_PATH = path.join(ROOT_DIR, "items-data.js");
+export const EXPORT_PATH = path.join(ROOT_DIR, "public/data/items-data.js");
 
 export const parseCliArgs = (argv = process.argv.slice(2)) => new Map(argv.map((arg) => {
   const [key, ...rest] = arg.split("=");

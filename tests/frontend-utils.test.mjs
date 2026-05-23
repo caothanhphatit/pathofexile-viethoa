@@ -9,7 +9,7 @@ const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 
 const loadUtils = () => {
   const sandbox = { window: {} };
-  vm.runInNewContext(readFileSync(join(repoRoot, "components", "poe-ui-utils.js"), "utf8"), sandbox);
+  vm.runInNewContext(readFileSync(join(repoRoot, "public", "components", "poe-ui-utils.js"), "utf8"), sandbox);
   return sandbox.window.PoeUi;
 };
 

@@ -12,6 +12,7 @@ pnpm-debug.log*
 
 /.cache/
 /coverage/
+/data/
 
 /*.png
 /*.pdf

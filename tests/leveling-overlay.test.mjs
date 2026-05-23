@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const levelingHtml = readFileSync(new URL("../leveling.html", import.meta.url), "utf8");
+const levelingHtml = readFileSync(new URL("../public/leveling.html", import.meta.url), "utf8");
 
 test("game overlay renders current quest context", () => {
   assert.match(levelingHtml, /data-overlay-current/);

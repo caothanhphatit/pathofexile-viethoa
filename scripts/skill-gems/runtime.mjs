@@ -16,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const ROOT_DIR = path.resolve(__dirname, "..", "..");
 export const DEFAULT_SOURCE_URL = "https://poe2db.tw/us/Skill_Gems";
-export const EXPORT_PATH = path.join(ROOT_DIR, "skill-gems-data.js");
+export const EXPORT_PATH = path.join(ROOT_DIR, "public/data/skill-gems-data.js");
 
 const nowIso = () => new Date().toISOString();
 const jsonParam = (value) => JSON.stringify(value ?? null);

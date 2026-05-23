@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const levelingHtml = readFileSync(new URL("../leveling.html", import.meta.url), "utf8");
-const levelingV2 = readFileSync(new URL("../components/leveling-v2.js", import.meta.url), "utf8");
+const levelingHtml = readFileSync(new URL("../public/leveling.html", import.meta.url), "utf8");
+const levelingV2 = readFileSync(new URL("../public/components/leveling-v2.js", import.meta.url), "utf8");
 
 test("leveling page exposes Checklist V2 as an isolated tab", () => {
   assert.match(levelingHtml, /data-checklist-tab="classic"/);

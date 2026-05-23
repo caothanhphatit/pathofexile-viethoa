@@ -20,7 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const ROOT_DIR = path.resolve(__dirname, "..", "..");
 export const DEFAULT_SOURCE_URL = DEFAULT_CURRENCY_SOURCE_URL;
-export const EXPORT_PATH = path.join(ROOT_DIR, "currency-data.js");
+export const EXPORT_PATH = path.join(ROOT_DIR, "public/data/currency-data.js");
 
 const CATEGORY_LABELS = {
   StackableCurrencyItem: "Currency",

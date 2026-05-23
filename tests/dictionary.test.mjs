@@ -6,7 +6,7 @@ import vm from "node:vm";
 import { hasDirtyEnglishDescription } from "../scripts/glossary-lib.mjs";
 
 const loadDictionary = async () => {
-  const source = await readFile(new URL("../dictionary-data.js", import.meta.url), "utf8");
+  const source = await readFile(new URL("../public/data/dictionary-data.js", import.meta.url), "utf8");
   const context = { window: {} };
   vm.createContext(context);
   vm.runInContext(source, context);
@@ -14,7 +14,7 @@ const loadDictionary = async () => {
 };
 
 const loadSkillGems = async () => {
-  const source = await readFile(new URL("../skill-gems-data.js", import.meta.url), "utf8");
+  const source = await readFile(new URL("../public/data/skill-gems-data.js", import.meta.url), "utf8");
   const context = { window: {} };
   vm.createContext(context);
   vm.runInContext(source, context);
@@ -90,7 +90,7 @@ test("dictionary exposes every skill gem tag as an English lookup term", async (
 });
 
 test("dictionary page renders compact lookup cards without keep-note panels", async () => {
-  const html = await readFile(new URL("../dictionary.html", import.meta.url), "utf8");
+  const html = await readFile(new URL("../public/dictionary.html", import.meta.url), "utf8");
 
   assert.match(html, /compactMeaning/);
   assert.match(html, /Keyword in-game/);

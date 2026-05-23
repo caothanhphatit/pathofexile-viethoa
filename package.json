@@ -1,8 +1,8 @@
 {
   "name": "poe2",
   "version": "1.0.0",
-  "description": "",
-  "main": "app-routes.js",
+  "description": "Vietnamese POE2 static reference app with PostgreSQL crawl/export tooling.",
+  "main": "public/app-routes.js",
   "scripts": {
     "crawl:currency": "node scripts/crawl-currency.mjs",
     "crawl:dictionary": "node scripts/crawl-dictionary.mjs",
@@ -17,8 +17,9 @@
     "translate:content": "node scripts/retranslate-content.mjs",
     "rebuild:data": "node src/db/migrate.mjs && npm run crawl:all && npm run translate:content && npm run export:all",
     "server": "node src/server/index.mjs",
+    "site": "node scripts/serve-static.mjs public",
     "test": "node --test",
-    "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./dist/app.css --minify",
+    "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./public/dist/app.css --minify",
     "build": "npm run build:css"
   },
   "keywords": [],

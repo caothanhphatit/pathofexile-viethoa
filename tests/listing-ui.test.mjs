@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const readProjectFile = (filename) => readFile(join(repoRoot, filename), "utf8");
+const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
 
 test("currency listing defaults to crafting orbs and hides items without real descriptions", async () => {
   const html = await readProjectFile("currency.html");

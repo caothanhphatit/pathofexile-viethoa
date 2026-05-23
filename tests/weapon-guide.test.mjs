@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const readProjectFile = (filename) => readFile(join(repoRoot, filename), "utf8");
+const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
 
 test("weapon guide exposes a Vietnamese NEWBIE tab with PoE2 weapon basics", async () => {
   const html = await readProjectFile("weapon.html");

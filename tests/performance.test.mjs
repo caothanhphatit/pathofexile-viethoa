@@ -5,14 +5,14 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const readProjectFile = (filename) => readFile(join(repoRoot, filename), "utf8");
+const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
 
 const dataPages = [
-  ["skill_gems.html", "skill-gems-data.js"],
-  ["skill_gem_detail.html", "skill-gems-data.js"],
-  ["currency.html", "currency-data.js"],
-  ["currency_detail.html", "currency-data.js"],
-  ["dictionary.html", "dictionary-data.js"]
+  ["skill_gems.html", "data/skill-gems-data.js"],
+  ["skill_gem_detail.html", "data/skill-gems-data.js"],
+  ["currency.html", "data/currency-data.js"],
+  ["currency_detail.html", "data/currency-data.js"],
+  ["dictionary.html", "data/dictionary-data.js"]
 ];
 
 const shellPages = [
@@ -36,7 +36,7 @@ test("shared base CSS does not block first paint with remote font imports", asyn
 });
 
 test("production pages load compiled Tailwind CSS instead of the browser CDN runtime", async () => {
-  const cssStat = await stat(join(repoRoot, "dist", "app.css"));
+  const cssStat = await stat(join(repoRoot, "public", "dist", "app.css"));
   assert.ok(cssStat.size > 25_000, "compiled Tailwind CSS should contain generated utilities");
   assert.ok(cssStat.size < 650_000, "compiled CSS should stay reasonably small");
 
@@ -62,7 +62,7 @@ test("large data exports are loaded near their runtime instead of blocking the d
 
 test("raw patch-note snapshot does not use the 17MB remote infographic as page LCP", async () => {
   const html = await readProjectFile("src1.html");
-  const imageStat = await stat(join(repoRoot, "assets", "return-of-the-ancients-infographic-lcp.jpg"));
+  const imageStat = await stat(join(repoRoot, "public", "assets", "return-of-the-ancients-infographic-lcp.jpg"));
 
   assert.ok(imageStat.size < 350_000, "local LCP image should stay small");
   assert.doesNotMatch(html, /https:\/\/web\.poecdn\.com\/public\/news\/2026-05-22\/RotAInfographic\.png/);

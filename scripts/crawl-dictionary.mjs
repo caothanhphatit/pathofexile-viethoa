@@ -18,7 +18,7 @@ import { DEFAULT_CURRENCY_SOURCE_URL } from "./currency-lib.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, "..");
-const EXPORT_PATH = path.join(ROOT_DIR, "dictionary-data.js");
+const EXPORT_PATH = path.join(ROOT_DIR, "public/data/dictionary-data.js");
 const SKILL_SOURCE_URL = "https://poe2db.tw/us/Skill_Gems";
 
 const parseCliArgs = (argv = process.argv.slice(2)) => new Map(argv.map((arg) => {

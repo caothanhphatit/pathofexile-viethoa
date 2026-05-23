@@ -15,7 +15,7 @@ const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 
 const loadCurrencyExport = () => {
   const sandbox = { window: {} };
-  vm.runInNewContext(readFileSync(join(repoRoot, "currency-data.js"), "utf8"), sandbox);
+  vm.runInNewContext(readFileSync(join(repoRoot, "public", "data", "currency-data.js"), "utf8"), sandbox);
   return sandbox.window.POE2_CURRENCY;
 };
 

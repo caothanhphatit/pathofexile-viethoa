@@ -2,6 +2,14 @@
 
 Static-first Vietnamese POE2 reference app with PostgreSQL-backed crawl/export tooling.
 
+## Layout
+
+- `public/`: browser-facing static app, compiled CSS, shared UI helpers, images, and generated data exports.
+- `src/`: backend, database, localization, and source CSS.
+- `scripts/`: crawlers, exporters, translation rebuilds, and local static serving.
+- `migrations/`: PostgreSQL schema migrations.
+- `tests/`: Node test suite.
+
 ## What Is Included
 
 - Production static pages for patch notes, dictionary, weapon basics, skill gems, currency, and leveling.
@@ -16,6 +24,7 @@ Static-first Vietnamese POE2 reference app with PostgreSQL-backed crawl/export t
 npm install
 npm run build
 npm test
+npm run site
 ```
 
 For backend and crawler workflows, copy `.env.example` to `.env` and fill local values:
