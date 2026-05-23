@@ -25,11 +25,13 @@ const FAMILY_LABELS = {
   "utility-currency": "Utility Currency",
   essence: "Essence",
   splinter: "Splinter",
-  catalyst: "Catalyst"
+  catalyst: "Catalyst",
+  omen: "Omen"
 };
 
 const FAMILY_ORDER = [
   "crafting-orb",
+  "omen",
   "quality-currency",
   "gem-currency",
   "socket-currency",
@@ -112,7 +114,8 @@ const sourceForHash = (item) => ({
   stack_size: item.stack_size,
   description_en: item.description_en,
   properties: item.properties,
-  mods: item.mods
+  mods: item.mods,
+  related_items: item.related_items || []
 });
 
 const normalizeSource = (item) => {
@@ -516,6 +519,35 @@ const translateLine = (line = "") => {
     [
       /^Grants (.+)$/i,
       ([, value]) => `Cấp ${translateFragment(value)}.`
+    ],
+    [
+      /^While this item is active in your inventory your next (.+?) used on a (.+?) item will (.+)$/i,
+      ([, currency, rarity, effect]) => `Khi item này đang active trong inventory, ${translateTarget(currency)} tiếp theo của bạn khi dùng lên ${translateFragment(`${rarity} item`)} sẽ ${normalizeText(effect).replace(/\bit\b/i, "item đó")}.`
+    ],
+    [
+      /^While this item is active in your inventory your next (.+?) will (.+)$/i,
+      ([, currency, effect]) => {
+        const transCurrency = translateTarget(currency);
+        const rawEffect = normalizeText(effect);
+        let transEffect = rawEffect;
+
+        transEffect = transEffect
+          .replace(/\bremove the lowest level modifiers?\b/i, "xóa modifier có cấp thấp nhất")
+          .replace(/\bremove only prefix modifiers?\b/i, "chỉ xóa prefix modifier")
+          .replace(/\bremove only suffix modifiers?\b/i, "chỉ xóa suffix modifier")
+          .replace(/\breplace all modifiers? on a Waystone with modifiers? that grant Item Rarity\b/i, "thay thế toàn bộ modifier trên Waystone bằng các modifier tăng Item Rarity")
+          .replace(/\breplace all modifiers? on a Waystone with modifiers? that grant Pack Size\b/i, "thay thế toàn bộ modifier trên Waystone bằng các modifier tăng Pack Size")
+          .replace(/\breplace all modifiers? on a Waystone with modifiers? that grant Rare and Magic Monsters\b/i, "thay thế toàn bộ modifier trên Waystone bằng các modifier tăng số lượng Rare và Magic Monster")
+          .replace(/\bonly reroll Implicit modifiers?\b/i, "chỉ reroll Implicit Modifier")
+          .replace(/\bused on a Rare item will Sanctify it\b/i, "Sanctify Rare item được dùng lên")
+          .replace(/\badd two random modifiers?\b/i, "thêm hai modifier ngẫu nhiên")
+          .replace(/\badd only prefix modifiers?\b/i, "chỉ thêm prefix modifier")
+          .replace(/\badd only suffix modifiers?\b/i, "chỉ thêm suffix modifier")
+          .replace(/\badd a modifiers? of the same type as an existing modifiers? on the items?\b/i, "thêm một modifier cùng loại với một modifier sẵn có trên item")
+          .replace(/\bconsume all Catalyst Quality to increase the chance of the corresponding type of modifiers?\b/i, "tiêu thụ toàn bộ Catalyst Quality để tăng cơ hội nhận loại modifier tương ứng");
+
+        return `Khi item này đang active trong inventory, ${transCurrency} tiếp theo của bạn sẽ ${transEffect}.`;
+      }
     ]
   ];
 
@@ -554,13 +586,17 @@ const categoryLabel = ($, pane, categoryId) => {
 };
 
 export const classifyCurrencySubtype = ({ name = "", category = "", description_en: descriptionEn = "" } = {}) => {
+  const itemName = normalizeText(name);
+  const itemNameLower = itemName.toLocaleLowerCase("en-US");
+  if (itemNameLower.startsWith("omen ") || itemNameLower.includes(" omen")) {
+    return { subtype: "omen", subtype_label: FAMILY_LABELS.omen };
+  }
+
   if (category === "Essence") return { subtype: "essence", subtype_label: FAMILY_LABELS.essence };
   if (category === "SplinterItem") return { subtype: "splinter", subtype_label: FAMILY_LABELS.splinter };
   if (category === "CatalystItem") return { subtype: "catalyst", subtype_label: FAMILY_LABELS.catalyst };
 
-  const itemName = normalizeText(name);
   const haystack = `${itemName} ${descriptionEn}`.toLocaleLowerCase("en-US");
-  const itemNameLower = itemName.toLocaleLowerCase("en-US");
 
   if (/\bliquid\b/.test(haystack) || /\bdelirious\b/.test(haystack) || /\bsimulacrum\b/.test(haystack)) {
     return { subtype: "delirium-liquid", subtype_label: FAMILY_LABELS["delirium-liquid"] };
@@ -661,4 +697,137 @@ export const parseCurrencyPage = (html, sourcePageUrl = DEFAULT_CURRENCY_SOURCE_
     (order.get(a.category) ?? 99) - (order.get(b.category) ?? 99) ||
     a.name.localeCompare(b.name)
   );
+};
+
+export const parseCurrencyRelatedItems = (html, sourcePageUrl = DEFAULT_CURRENCY_SOURCE_URL) => {
+  const $ = load(html);
+  const related = [];
+
+  $("#Acronym .d-flex").each((_, el) => {
+    const dFlex = $(el);
+    const anchor = dFlex.find("a").first();
+    const textAnchor = dFlex.find("a").filter((_, a) => $(a).text().trim().length > 0).first();
+    if (!anchor.length) return;
+
+    const href = textAnchor.attr("href") || anchor.attr("href") || "";
+    const slug = slugFromHref(href, sourcePageUrl);
+    if (slug === "Convention_Treasure" || slug.toLowerCase().includes("convention") || slug.toLowerCase().includes("treasure")) {
+      return;
+    }
+    const name = textAnchor.text().trim() || slug.replace(/_/g, " ");
+
+    const img = dFlex.find("img").first();
+    const iconUrl = img.attr("src") || "";
+    const iconAlt = img.attr("alt") || "";
+    const hover = anchor.attr("data-hover") || "";
+
+    const properties = [];
+    const mods = [];
+
+    dFlex.find(".property, .hybridProperty").each((_, p) => {
+      const txt = $(p).text().trim();
+      if (txt) properties.push(txt);
+    });
+
+    dFlex.find(".explicitMod, .implicitMod, .enchantMod, .descrText, .secDescrText, .text-type0").each((_, m) => {
+      const txt = $(m).text().trim();
+      if (txt) mods.push(txt.replace(/\s+/g, " "));
+    });
+
+    const stackSizeText = properties.find((p) => /^Stack Size:/i.test(p));
+    const stackSize = stackSizeText ? stackSizeText.replace(/^Stack Size:\s*/i, "") : "";
+    const descriptionEn = mods[0] || properties.find((line) => !/^Stack Size:/i.test(line)) || "";
+
+    related.push({
+      slug,
+      name,
+      source_url: toAbsoluteUrl(href, sourcePageUrl),
+      icon_url: toAbsoluteUrl(iconUrl, sourcePageUrl),
+      icon_alt: iconAlt,
+      hover_url: toAbsoluteUrl(hover, sourcePageUrl),
+      stack_size: stackSize,
+      description_en: descriptionEn,
+      properties,
+      mods,
+      relation_source: "acronym-item"
+    });
+  });
+
+  return related;
+};
+
+export const buildBidirectionalCurrencyRelations = (currencies) => {
+  const itemMap = new Map();
+
+  // 1. Map all existing items
+  for (const item of currencies) {
+    if (!item.related_items) item.related_items = [];
+    itemMap.set(item.slug, item);
+  }
+
+  // 2. Discover related items that are not in the main list and create them
+  for (const item of currencies) {
+    for (const rel of item.related_items) {
+      if (!itemMap.has(rel.slug)) {
+        const newCurrency = {
+          slug: rel.slug,
+          name: rel.name,
+          source_url: rel.source_url,
+          icon_url: rel.icon_url,
+          icon_alt: rel.icon_alt || "",
+          hover_url: rel.hover_url || "",
+          stack_size: rel.stack_size || "",
+          description_en: rel.description_en || "",
+          properties: rel.properties || [],
+          mods: rel.mods || [],
+          related_items: []
+        };
+        newCurrency.category = item.category || "StackableCurrencyItem";
+        newCurrency.category_label = item.category_label || "Currency";
+
+        // classify the family of the new item
+        const familyInfo = classifyCurrencyFamily(newCurrency);
+        newCurrency.family = familyInfo.family;
+        newCurrency.family_label = familyInfo.family_label;
+        newCurrency.subtype = familyInfo.family;
+        newCurrency.subtype_label = familyInfo.family_label;
+        newCurrency.status = "active";
+        newCurrency.source_hash = hashJson(sourceForHash(newCurrency));
+
+        itemMap.set(rel.slug, newCurrency);
+      }
+    }
+  }
+
+  // 3. Mirror the relationships two-way
+  const allItems = Array.from(itemMap.values());
+  for (const item of allItems) {
+    for (const rel of item.related_items) {
+      const target = itemMap.get(rel.slug);
+      if (target) {
+        if (!target.related_items) target.related_items = [];
+        const alreadyRelated = target.related_items.some((r) => r.slug === item.slug);
+        if (!alreadyRelated) {
+          target.related_items.push({
+            slug: item.slug,
+            name: item.name,
+            source_url: item.source_url,
+            icon_url: item.icon_url,
+            icon_alt: item.icon_alt || "",
+            hover_url: item.hover_url || "",
+            stack_size: item.stack_size || "",
+            description_en: item.description_en || "",
+            properties: item.properties || [],
+            mods: item.mods || [],
+            relation_source: "bidirectional-mirror"
+          });
+        }
+      }
+    }
+  }
+
+  return allItems.map((item) => ({
+    ...item,
+    source_hash: hashJson(sourceForHash(item))
+  }));
 };

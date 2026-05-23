@@ -20,9 +20,28 @@ const contentTypes = {
   ".webp": "image/webp"
 };
 
+const cleanRouteFiles = new Map([
+  ["/", "/index.html"],
+  ["/home", "/index.html"],
+  ["/patchnote", "/patchnote_vn.html"],
+  ["/patch-note", "/patchnote_vn.html"],
+  ["/dictionary", "/dictionary.html"],
+  ["/tu-dien", "/dictionary.html"],
+  ["/weapon", "/weapon.html"],
+  ["/skill-gems", "/skill_gems.html"],
+  ["/skill_gems", "/skill_gems.html"],
+  ["/skill-gem", "/skill_gem_detail.html"],
+  ["/skill_gem_detail", "/skill_gem_detail.html"],
+  ["/currency", "/currency.html"],
+  ["/currency-detail", "/currency_detail.html"],
+  ["/currency_detail", "/currency_detail.html"],
+  ["/leveling", "/leveling.html"]
+]);
+
 const safePath = (urlPath = "/") => {
   const requested = decodeURIComponent(urlPath.split("?")[0] || "/");
-  const filePath = requested === "/" ? "/index.html" : requested;
+  const normalized = requested.replace(/\/+$/, "") || "/";
+  const filePath = cleanRouteFiles.get(normalized) || requested;
   const resolved = path.resolve(rootDir, `.${filePath}`);
   if (!resolved.startsWith(`${rootDir}${path.sep}`) && resolved !== rootDir) return null;
   return resolved;

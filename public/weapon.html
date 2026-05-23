@@ -13,31 +13,175 @@
   <script defer src="app-routes.js"></script>
   <script defer src="components/app-shell.js"></script>
   <style>
-    .guide-card { min-height: 100%; }
+    .guide-card { min-height: 100%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .guide-card:hover { transform: translateY(-2px); }
+
+    .guide-card-martial:hover {
+      border-color: rgba(244, 63, 94, 0.45) !important;
+      box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.15), 0 8px 10px -6px rgba(244, 63, 94, 0.15);
+    }
+    .guide-card-caster:hover {
+      border-color: rgba(59, 130, 246, 0.45) !important;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.15);
+    }
+    .guide-card-loot:hover {
+      border-color: rgba(16, 185, 129, 0.45) !important;
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15), 0 8px 10px -6px rgba(16, 185, 129, 0.15);
+    }
+
+    /* PoE 2 Theme Highlights */
+    .term-attack { color: #f43f5e; font-weight: 850; }
+    .term-spell { color: #3b82f6; font-weight: 850; }
+    .dark .term-attack { color: #fb7185; }
+    .dark .term-spell { color: #60a5fa; }
+
+    /* Rarity Highlights matching PoE in-game colors */
+    .rarity-normal { color: #64748b; font-weight: 800; }
+    .dark .rarity-normal { color: #94a3b8; }
+
+    .rarity-magic { color: #2563eb; font-weight: 850; text-shadow: 0 0 10px rgba(37,99,235,0.1); }
+    .dark .rarity-magic { color: #3b82f6; text-shadow: 0 0 12px rgba(59,130,246,0.25); }
+
+    .rarity-rare { color: #b45309; font-weight: 900; text-shadow: 0 0 10px rgba(180,83,9,0.1); }
+    .dark .rarity-rare { color: #facc15; text-shadow: 0 0 12px rgba(250,204,21,0.3); }
+
+    .rarity-unique { color: #c2410c; font-weight: 900; }
+    .dark .rarity-unique { color: #f97316; text-shadow: 0 0 12px rgba(249,115,22,0.3); }
+
+    /* Stat Highlights */
+    .stat-highlight {
+      color: #15803d;
+      font-weight: 800;
+    }
+    .dark .stat-highlight {
+      color: #4ade80;
+    }
+
+    .stat-important {
+      color: #0f172a;
+      font-weight: 800;
+      background: rgba(15, 23, 42, 0.05);
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      font-size: 0.95em;
+    }
+    .dark .stat-important {
+      color: #f1f5f9;
+      background: rgba(241, 245, 249, 0.06);
+      border: 1px solid rgba(241, 245, 249, 0.1);
+    }
+
+    /* Currency Highlights */
+    .term-currency {
+      color: #b45309;
+      font-weight: 900;
+      background: rgba(180, 83, 9, 0.06);
+      border: 1px solid rgba(180, 83, 9, 0.18);
+      padding: 1px 7px;
+      border-radius: 5px;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      display: inline-block;
+    }
+    .dark .term-currency {
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.22);
+    }
+    .term-currency:hover {
+      transform: translateY(-0.5px);
+      box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.08);
+    }
+
+    /* General Highlights */
     .term { color: #1d4ed8; font-weight: 900; }
     .dark .term { color: #93c5fd; }
+
+    /* Custom inline poe-term styles for flawless dictionary tooltips rendering without flashes */
+    .term-attack .poe-term, .term-attack.poe-term {
+      color: #f43f5e !important;
+      border-color: rgba(244, 63, 94, 0.4) !important;
+    }
+    .dark .term-attack .poe-term, .dark .term-attack.poe-term {
+      color: #fb7185 !important;
+      border-color: rgba(251, 113, 133, 0.4) !important;
+    }
+    .term-spell .poe-term, .term-spell.poe-term {
+      color: #3b82f6 !important;
+      border-color: rgba(59, 130, 246, 0.4) !important;
+    }
+    .dark .term-spell .poe-term, .dark .term-spell.poe-term {
+      color: #60a5fa !important;
+      border-color: rgba(96, 165, 250, 0.4) !important;
+    }
+    .rarity-magic .poe-term, .rarity-magic.poe-term {
+      color: #2563eb !important;
+      border-color: rgba(37,99,235,0.4) !important;
+    }
+    .dark .rarity-magic .poe-term, .dark .rarity-magic.poe-term {
+      color: #3b82f6 !important;
+      border-color: rgba(59,130,246,0.4) !important;
+    }
+    .rarity-rare .poe-term, .rarity-rare.poe-term {
+      color: #b45309 !important;
+      border-color: rgba(180,83,9,0.4) !important;
+    }
+    .dark .rarity-rare .poe-term, .dark .rarity-rare.poe-term {
+      color: #facc15 !important;
+      border-color: rgba(250,204,21,0.4) !important;
+    }
+    .rarity-unique .poe-term, .rarity-unique.poe-term {
+      color: #c2410c !important;
+      border-color: rgba(194,65,12,0.4) !important;
+    }
+    .dark .rarity-unique .poe-term, .dark .rarity-unique.poe-term {
+      color: #f97316 !important;
+      border-color: rgba(249,115,22,0.4) !important;
+    }
+    .stat-important .poe-term, .stat-important.poe-term {
+      color: inherit !important;
+      border-color: currentColor !important;
+      font-weight: 850 !important;
+    }
+    .stat-highlight .poe-term, .stat-highlight.poe-term {
+      color: inherit !important;
+      border-color: currentColor !important;
+      font-weight: 800 !important;
+    }
   </style>
 </head>
 
 <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
   <div id="top"></div>
-  <div data-component="site-header" data-max-width="1200"></div>
+  <div data-component="site-header"></div>
 
-  <main class="mx-auto grid max-w-[1200px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
-    <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900" aria-labelledby="weapon-title">
-      <header class="grid gap-5 border-b border-slate-200 bg-slate-950 px-6 py-7 text-white dark:border-slate-800 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div>
-          <h1 class="text-3xl font-black leading-tight sm:text-4xl" id="weapon-title">Weapon guide cho newbie</h1>
-        </div>
-        <div class="grid gap-2 rounded-lg border border-slate-700 bg-slate-900 p-4">
-          <div class="flex items-center gap-2 text-sm font-black text-slate-100">
-            <span class="material-symbols-rounded text-blue-300" aria-hidden="true">priority_high</span>
-            Luật nhanh
+  <main class="poe-shell-container grid gap-5 py-6">
+    <!-- Premium Header Dashboard Panel -->
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Weapon Guide">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-gold">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">swords</span>
+          </span>
+          <div>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl" id="weapon-title">Hướng dẫn chọn vũ khí</h1>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Cẩm nang chọn vũ khí tối ưu (Weapon Guide) cho newbie</p>
           </div>
-          <p class="text-sm font-semibold leading-6 text-slate-300">Nếu skill là <span class="font-black text-white">Attack</span>, đọc damage trên weapon. Nếu skill là <span class="font-black text-white">Spell</span>, ưu tiên gem level, spell damage, cast speed và bonus đúng element.</p>
         </div>
-      </header>
 
+        <div class="grid gap-2 rounded-xl border border-amber-500/10 bg-amber-500/5 p-4 max-w-md">
+          <div class="flex items-center gap-2 text-xs font-black text-amber-600 dark:text-amber-400">
+            <span class="material-symbols-rounded text-sm" aria-hidden="true">priority_high</span>
+            Ghi nhớ cốt lõi
+          </div>
+          <p class="text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-300">Nếu kỹ năng thuộc nhóm <span class="term-attack">Attack</span>, hãy ưu tiên <span class="stat-important">sát thương (damage)</span> trên vũ khí. Nếu kỹ năng là <span class="term-spell">Spell</span>, hãy ưu tiên <span class="stat-highlight">cấp độ gem</span>, <span class="stat-highlight">tăng sát thương phép (spell damage)</span> và <span class="stat-highlight">tốc độ cast (cast speed)</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" aria-labelledby="weapon-title">
       <div class="border-b border-slate-200 bg-slate-100 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/70">
         <div class="nav-scroll flex gap-2 overflow-x-auto" role="tablist" aria-label="Weapon guide tabs">
           <button class="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-black text-white shadow-md1" id="tab-newbie" type="button" role="tab" aria-selected="true" aria-controls="panel-newbie">
@@ -49,34 +193,34 @@
 
       <section class="grid gap-5 p-5" id="panel-newbie" role="tabpanel" aria-labelledby="tab-newbie">
         <div class="grid gap-4 lg:grid-cols-3">
-          <article class="guide-card rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <article class="guide-card guide-card-martial rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
             <div class="flex items-center gap-2">
               <span class="grid h-9 w-9 place-items-center rounded-lg bg-rose-600 text-white">
                 <span class="material-symbols-rounded text-base" aria-hidden="true">swords</span>
               </span>
               <h2 class="text-lg font-black text-slate-950 dark:text-white">Martial Weapon</h2>
             </div>
-            <p class="mt-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Dùng cho nhiều build Attack: melee, bow, crossbow và các skill ghi rõ dùng weapon. Hãy nhìn <span class="term">base damage</span>, <span class="term">attack speed</span>, <span class="term">critical hit chance</span>, rồi mới nhìn modifier.</p>
+            <p class="mt-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Phù hợp với hầu hết các lối chơi (build) <span class="term-attack">Tấn công (Attack)</span>: cận chiến (melee), cung (bow), nỏ (crossbow) và các kỹ năng có ghi chú sử dụng vũ khí. Hãy ưu tiên các chỉ số cơ bản như <span class="stat-important">sát thương cơ bản (base damage)</span>, <span class="stat-important">tốc độ đánh (attack speed)</span>, <span class="stat-important">tỷ lệ chí mạng (critical hit chance)</span> trước khi xem xét các dòng bổ trợ (modifier).</p>
           </article>
 
-          <article class="guide-card rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <article class="guide-card guide-card-caster rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
             <div class="flex items-center gap-2">
               <span class="grid h-9 w-9 place-items-center rounded-lg bg-blue-600 text-white">
                 <span class="material-symbols-rounded text-base" aria-hidden="true">auto_awesome</span>
               </span>
               <h2 class="text-lg font-black text-slate-950 dark:text-white">Caster Weapon</h2>
             </div>
-            <p class="mt-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Wand, Staff và Sceptre thuộc nhóm Caster Weapon. Wand và Staff thường phục vụ Spell; Sceptre thường đáng chú ý vì Spirit và bonus hỗ trợ. Với Spell, đừng đánh giá món đồ chỉ bằng damage dòng trên cùng.</p>
+            <p class="mt-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Trượng (<span class="term-spell">Wand</span>, <span class="term-spell">Staff</span>) và Chùy Phép (<span class="term-spell">Sceptre</span>) là các dòng vũ khí chuyên dụng cho <span class="term-spell">Caster</span>. Trong đó, Wand và Staff thường bổ trợ cho <span class="term-spell">Spell</span>; Sceptre nổi bật nhờ cung cấp chỉ số <span class="stat-important">Spirit</span> và các dòng hỗ trợ. Đối với Spell, đừng bao giờ đánh giá sức mạnh của vũ khí chỉ qua dòng <span class="stat-important">sát thương cơ bản (base damage)</span> hiển thị ở trên cùng.</p>
           </article>
 
-          <article class="guide-card rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <article class="guide-card guide-card-loot rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
             <div class="flex items-center gap-2">
               <span class="grid h-9 w-9 place-items-center rounded-lg bg-emerald-600 text-white">
                 <span class="material-symbols-rounded text-base" aria-hidden="true">tune</span>
               </span>
-              <h2 class="text-lg font-black text-slate-950 dark:text-white">Ưu tiên khi nhặt weapon</h2>
+              <h2 class="text-lg font-black text-slate-950 dark:text-white">Ưu tiên khi nhặt vũ khí</h2>
             </div>
-            <p class="mt-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Campaign thay weapon khá thường xuyên. Base gần level hiện tại, đúng loại skill đang dùng và có 1-2 affix đúng hướng thường quan trọng hơn một món cũ có nhiều dòng đẹp nhưng damage thấp.</p>
+            <p class="mt-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Trong giai đoạn đi Campaign, bạn sẽ thay đổi vũ khí rất thường xuyên. Một <span class="stat-important">vũ khí nền (base)</span> có cấp độ gần với cấp độ hiện tại, phù hợp với kỹ năng đang dùng và có 1-2 <span class="stat-highlight">dòng affix hữu ích</span> sẽ quan trọng hơn một món đồ cũ có nhiều dòng đẹp nhưng chỉ số sát thương quá thấp.</p>
           </article>
         </div>
 
@@ -85,35 +229,35 @@
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p class="text-xs font-black uppercase tracking-[.14em] text-blue-700 dark:text-blue-300">Đọc item</p>
-                <h2 class="mt-1 text-2xl font-black text-slate-950 dark:text-white">Affix, rarity, item level</h2>
+                <h2 class="mt-1 text-2xl font-black text-slate-950 dark:text-white">Affix, độ hiếm (rarity) và cấp độ vật phẩm (item level)</h2>
               </div>
               <span class="rounded-lg border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-black text-blue-700 dark:border-blue-900/70 dark:bg-blue-950/50 dark:text-blue-300">Alt để xem thêm tooltip</span>
             </div>
             <div class="mt-4 grid gap-3">
               <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
-                <h3 class="font-black text-slate-950 dark:text-white">Rarity nói item có bao nhiêu dòng</h3>
-                <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Normal không có modifier. Magic thường có 1-2 modifier. Rare có 3-6 modifier, tối đa 3 Prefix và 3 Suffix. Unique có bộ modifier riêng theo item.</p>
+                <h3 class="font-black text-slate-950 dark:text-white">Độ hiếm (Rarity) quyết định số lượng dòng thuộc tính</h3>
+                <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Vật phẩm <span class="rarity-normal">thường (Normal)</span> không có modifier. Vật phẩm <span class="rarity-magic">ma thuật (Magic)</span> thường có 1-2 dòng modifier. Vật phẩm <span class="rarity-rare">hiếm (Rare)</span> sở hữu từ 3-6 dòng modifier, với tối đa 3 dòng <span class="stat-important">Tiền tố (Prefix)</span> và 3 dòng <span class="stat-important">Hậu tố (Suffix)</span>. Vật phẩm <span class="rarity-unique">độc bản (Unique)</span> có bộ modifier đặc biệt cố định theo từng item.</p>
               </div>
               <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
-                <h3 class="font-black text-slate-950 dark:text-white">Item level mở pool modifier</h3>
-                <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Item level càng cao thì weapon càng có cơ hội roll modifier cấp cao hơn. Required level chỉ là điều kiện trang bị; item level mới là thứ quyết định nhiều giới hạn craft và affix.</p>
+                <h3 class="font-black text-slate-950 dark:text-white">Cấp vật phẩm (Item level) quyết định các modifier có thể xuất hiện</h3>
+                <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200"><span class="stat-important">Cấp vật phẩm (Item level - ilvl)</span> càng cao thì vũ khí càng có cơ hội xuất hiện (roll) các modifier ở <span class="stat-highlight">cấp độ (tier)</span> mạnh hơn. <span class="stat-important">Cấp yêu cầu (Required level)</span> chỉ là điều kiện để đeo; trong khi cấp vật phẩm mới là thứ quyết định <span class="stat-highlight">giới hạn chế tạo (craft)</span> và các affix có thể đạt được.</p>
               </div>
               <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
-                <h3 class="font-black text-slate-950 dark:text-white">Tier giúp so lực của modifier</h3>
-                <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Khi tooltip hiện tier của modifier, hãy ưu tiên tier cao hơn trên đúng stat build cần. Một dòng đúng build ở tier tốt thường có giá trị hơn nhiều dòng không tương tác với skill chính.</p>
+                <h3 class="font-black text-slate-950 dark:text-white">Cấp bậc (Tier) thể hiện sức mạnh của modifier</h3>
+                <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Khi xem thông tin chi tiết (tooltip), hãy ưu tiên các dòng có <span class="stat-highlight">tier tốt hơn (Tier số càng nhỏ như T1, T2 thì chỉ số càng mạnh)</span> cho đúng chỉ số mà build của bạn cần. Một dòng chuẩn chỉ ở tier cao có giá trị hơn nhiều dòng linh tinh không tương tác với kỹ năng chính.</p>
               </div>
             </div>
           </section>
 
           <aside class="rounded-lg border border-slate-200 bg-slate-950 p-5 text-white shadow-md2 dark:border-slate-800">
             <p class="text-xs font-black uppercase tracking-[.14em] text-amber-300">Checklist nhanh</p>
-            <h2 class="mt-2 text-2xl font-black">Weapon có đáng dùng không?</h2>
+            <h2 class="mt-2 text-2xl font-black">Làm sao để biết vũ khí có đáng dùng hay không?</h2>
             <ol class="mt-4 grid gap-3 text-sm font-semibold leading-6 text-slate-300">
-              <li class="flex gap-3"><span class="font-black text-amber-300">1</span><span>Skill chính có dùng đúng loại weapon này không?</span></li>
-              <li class="flex gap-3"><span class="font-black text-amber-300">2</span><span>Damage hoặc spell stat có tăng rõ khi thay món đang cầm không?</span></li>
-              <li class="flex gap-3"><span class="font-black text-amber-300">3</span><span>Item level và base có gần khu vực đang chơi không?</span></li>
-              <li class="flex gap-3"><span class="font-black text-amber-300">4</span><span>Có affix đúng hướng như added damage, attack speed, +level, spell damage hoặc cast speed không?</span></li>
-              <li class="flex gap-3"><span class="font-black text-amber-300">5</span><span>Có đáng dùng currency thêm quality, augment socket hoặc modifier nữa không?</span></li>
+              <li class="flex gap-3"><span class="font-black text-amber-300">1</span><span>Kỹ năng chính của bạn có yêu cầu hoặc hoạt động tốt nhất với loại vũ khí này không?</span></li>
+              <li class="flex gap-3"><span class="font-black text-amber-300">2</span><span>Lượng <span class="stat-important">sát thương hoặc chỉ số phép thuật</span> có tăng tiến rõ rệt khi bạn thay thế món đang cầm không?</span></li>
+              <li class="flex gap-3"><span class="font-black text-amber-300">3</span><span><span class="stat-important">Cấp vật phẩm (Item level)</span> và <span class="stat-important">vũ khí nền (base)</span> có gần với cấp độ khu vực bạn đang chinh phục không?</span></li>
+              <li class="flex gap-3"><span class="font-black text-amber-300">4</span><span>Vũ khí có các <span class="stat-highlight">dòng affix quan trọng</span> phù hợp với build (như <span class="stat-highlight">sát thương cộng thẳng</span>, <span class="stat-highlight">tốc độ đánh</span>, <span class="stat-highlight">tăng cấp kỹ năng</span>, <span class="stat-highlight">sát thương phép</span> hoặc <span class="stat-highlight">tốc độ cast</span>) không?</span></li>
+              <li class="flex gap-3"><span class="font-black text-amber-300">5</span><span>Món đồ này có đủ tốt để bạn đầu tư thêm <span class="term-currency">tiền tệ (currency)</span> nâng <span class="stat-highlight">chất lượng (quality)</span>, đục thêm <span class="stat-highlight">socket</span> hoặc bổ sung modifier không?</span></li>
             </ol>
           </aside>
         </div>
@@ -121,20 +265,20 @@
         <section class="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
           <div class="flex items-center gap-2">
             <span class="material-symbols-rounded text-emerald-600 dark:text-emerald-300" aria-hidden="true">construction</span>
-            <h2 class="text-2xl font-black text-slate-950 dark:text-white">Craft weapon trong campaign</h2>
+            <h2 class="text-2xl font-black text-slate-950 dark:text-white">Chế tạo (Craft) vũ khí khi đi Campaign</h2>
           </div>
           <div class="mt-4 grid gap-3 lg:grid-cols-3">
             <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
-              <h3 class="text-base font-black text-slate-950 dark:text-white">1. Base trắng tốt</h3>
-              <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Dùng <span class="term">Orb of Transmutation</span> để thành Magic có 1 modifier. Nếu dòng đầu tốt, dùng <span class="term">Orb of Augmentation</span> để thêm dòng thứ hai.</p>
+              <h3 class="text-base font-black text-slate-950 dark:text-white">1. Bắt đầu từ Base trắng tốt</h3>
+              <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Dùng <span class="term-currency">Orb of Transmutation</span> để biến thành đồ <span class="rarity-magic">Magic</span> có sẵn 1 dòng modifier. Nếu dòng đó ngon, dùng thêm <span class="term-currency">Orb of Augmentation</span> để mở dòng thứ hai.</p>
             </article>
             <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
-              <h3 class="text-base font-black text-slate-950 dark:text-white">2. Magic có 2 dòng ngon</h3>
-              <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Dùng <span class="term">Regal Orb</span> để nâng lên Rare và thêm 1 modifier. Nếu Rare vẫn còn chỗ, <span class="term">Exalted Orb</span> có thể thêm modifier mới.</p>
+              <h3 class="text-base font-black text-slate-950 dark:text-white">2. Nâng cấp đồ Magic 2 dòng xịn</h3>
+              <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">Sử dụng <span class="term-currency">Regal Orb</span> để nâng cấp món đồ lên <span class="rarity-rare">Rare</span> và bổ sung thêm 1 dòng modifier. Nếu đồ Rare vẫn còn trống dòng, <span class="term-currency">Exalted Orb</span> sẽ giúp đập thêm modifier mới.</p>
             </article>
             <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
-              <h3 class="text-base font-black text-slate-950 dark:text-white">3. Rare gần tốt</h3>
-              <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200"><span class="term">Chaos Orb</span> xóa một modifier ngẫu nhiên rồi thêm một modifier mới vào Rare item. Chỉ nên liều khi base đủ tốt và món đó thật sự đáng cứu.</p>
+              <h3 class="text-base font-black text-slate-950 dark:text-white">3. Tinh chỉnh đồ Rare chưa hoàn hảo</h3>
+              <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200"><span class="term-currency">Chaos Orb</span> sẽ loại bỏ ngẫu nhiên 1 dòng modifier cũ và thay bằng 1 dòng mới trên đồ <span class="rarity-rare">Rare</span>. Chỉ nên mạo hiểm khi <span class="stat-important">phôi (base)</span> đủ tốt và món đồ đó thực sự đáng để cứu.</p>
             </article>
           </div>
         </section>
@@ -143,26 +287,26 @@
           <article class="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
             <div class="flex items-center gap-2">
               <span class="material-symbols-rounded text-rose-600 dark:text-rose-300" aria-hidden="true">whatshot</span>
-              <h2 class="text-xl font-black text-slate-950 dark:text-white">Attack weapon cần gì?</h2>
+              <h2 class="text-xl font-black text-slate-950 dark:text-white">Vũ khí cho build <span class="term-attack">Attack</span> cần những gì?</h2>
             </div>
             <ul class="mt-4 grid gap-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span>Flat added Physical hoặc Elemental Damage đúng hướng build.</span></li>
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span>% increased Physical Damage nếu weapon có base physical tốt.</span></li>
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span>Attack Speed giúp cảm giác đánh mượt và tăng damage thực tế cho nhiều skill.</span></li>
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span>+Level of all Attack Skills hoặc skill group đúng build có thể rất mạnh.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Sát thương Vật lý hoặc Nguyên tố cộng thẳng (Flat damage)</span> đúng hướng build.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Tăng % sát thương Vật lý (% increased Physical Damage)</span> nếu vũ khí có <span class="stat-important">sát thương vật lý cơ bản (base physical)</span> tốt.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Tốc độ đánh (Attack Speed)</span> giúp trải nghiệm ra chiêu mượt mà và tăng đáng kể lượng <span class="stat-important">sát thương thực tế (DPS)</span> cho nhiều kỹ năng.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-rose-600 dark:text-rose-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Tăng cấp kỹ năng tấn công (+Level of all Attack Skills)</span> hoặc các nhóm kỹ năng tương ứng với build có sức mạnh rất lớn.</span></li>
             </ul>
           </article>
 
           <article class="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
             <div class="flex items-center gap-2">
               <span class="material-symbols-rounded text-blue-600 dark:text-blue-300" aria-hidden="true">auto_fix_high</span>
-              <h2 class="text-xl font-black text-slate-950 dark:text-white">Spell weapon cần gì?</h2>
+              <h2 class="text-xl font-black text-slate-950 dark:text-white">Vũ khí cho build <span class="term-spell">Spell</span> cần những gì?</h2>
             </div>
             <ul class="mt-4 grid gap-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span>+Level of all Spell Skills hoặc +level đúng element/skill group.</span></li>
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span>Spell Damage, Elemental Damage hoặc damage type đúng skill chính.</span></li>
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span>Cast Speed nếu build cần spam spell hoặc cảm giác cast nhanh hơn.</span></li>
-              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span>Mana, Spirit hoặc utility nếu build bị thiếu tài nguyên duy trì.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Tăng cấp kỹ năng phép thuật (+Level of all Spell Skills)</span> hoặc tăng cấp đúng hệ nguyên tố/nhóm kỹ năng đang dùng.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Tăng sát thương phép (Spell Damage)</span>, <span class="stat-highlight">sát thương Nguyên tố (Elemental Damage)</span> hoặc loại sát thương tương ứng với kỹ năng chính.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Tốc độ thi triển (Cast Speed)</span> nếu build cần spam phép liên tục hoặc muốn ra chiêu nhanh hơn.</span></li>
+              <li class="flex gap-2"><span class="material-symbols-rounded mt-0.5 text-base text-blue-600 dark:text-blue-300" aria-hidden="true">chevron_right</span><span><span class="stat-highlight">Mana, Spirit</span> hoặc các dòng <span class="stat-highlight">tiện ích (utility)</span> nếu build của bạn gặp tình trạng thiếu tài nguyên để duy trì.</span></li>
             </ul>
           </article>
         </section>
@@ -170,12 +314,12 @@
         <section class="rounded-lg border border-slate-200 bg-amber-50 p-5 dark:border-amber-900/70 dark:bg-amber-950/20">
           <div class="flex items-center gap-2">
             <span class="material-symbols-rounded text-amber-700 dark:text-amber-300" aria-hidden="true">inventory_2</span>
-            <h2 class="text-xl font-black text-slate-950 dark:text-white">Quality và socket</h2>
+            <h2 class="text-xl font-black text-slate-950 dark:text-white">Chất lượng (Quality) và Socket</h2>
           </div>
           <div class="mt-3 grid gap-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200 lg:grid-cols-3">
-            <p><span class="term">Blacksmith's Whetstone</span> tăng quality cho Martial Weapon. Dùng khi món weapon đủ tốt để cầm thêm vài zone hoặc vào boss quan trọng.</p>
-            <p><span class="term">Arcanist's Etcher</span> tăng quality cho Wand, Staff hoặc Sceptre. Ưu tiên món có stat spell hoặc utility rõ ràng.</p>
-            <p><span class="term">Artificer's Orb</span> thêm Augment Socket vào Martial Weapon, Wand, Staff hoặc Armour. Socket này dùng cho Rune, Soul Core hoặc Augment phù hợp item.</p>
+            <p><span class="term-currency">Blacksmith's Whetstone</span> dùng để tăng <span class="stat-highlight">chất lượng (quality)</span> cho <span class="stat-important">Martial Weapon</span>. Chỉ nên sử dụng khi vũ khí đủ tốt để đồng hành cùng bạn qua thêm vài khu vực (zone) hoặc chuẩn bị đối đầu với boss quan trọng.</p>
+            <p><span class="term-currency">Arcanist's Etcher</span> dùng để tăng <span class="stat-highlight">chất lượng (quality)</span> cho <span class="stat-important">Wand, Staff hoặc Sceptre</span>. Nên ưu tiên cho các món có chỉ số <span class="term-spell">spell</span> hoặc <span class="stat-highlight">tiện ích (utility)</span> thực sự nổi bật.</p>
+            <p><span class="term-currency">Artificer's Orb</span> dùng để khảm thêm <span class="stat-highlight">Augment Socket</span> vào vũ khí hoặc giáp. Socket đặc biệt này dùng để gắn <span class="stat-highlight">Rune, Soul Core hoặc các Augment</span> tương thích với trang bị.</p>
           </div>
         </section>
       </section>

@@ -3,52 +3,52 @@
   const routes = {
     home: {
       title: "Home",
-      href: "index.html",
+      href: "/",
       icon: "home",
       navOrder: 10,
-      aliases: ["", "index", "index.html", "home"]
+      aliases: ["", "index", "home"]
     },
     patchnote: {
       title: "Patch note",
-      href: "patchnote_vn.html",
+      href: "/patchnote",
       icon: "article",
       navOrder: 20,
-      aliases: ["patchnote", "patch-note", "patchnote_vn", "patchnote_vn.html"]
+      aliases: ["patchnote", "patch-note", "patchnote_vn"]
     },
     dictionary: {
       title: "Từ điển",
-      href: "dictionary.html",
+      href: "/dictionary",
       icon: "translate",
       navOrder: 30,
-      aliases: ["dictionary", "dictionary.html", "tu-dien", "glossary", "terms", "analysis", "phan-tich", "phan-tich-patch-note", "analysis.html"]
+      aliases: ["dictionary", "tu-dien", "glossary", "terms", "analysis", "phan-tich", "phan-tich-patch-note"]
     },
     weapon: {
       title: "Weapon",
-      href: "weapon.html",
+      href: "/weapon",
       icon: "swords",
       navOrder: 40,
-      aliases: ["weapon", "weapon.html", "weapons", "weapon-guide", "equipment", "equipment-guide"]
+      aliases: ["weapon", "weapons", "weapon-guide", "equipment", "equipment-guide"]
     },
     skillgems: {
       title: "Skill gems",
-      href: "skill_gems.html",
+      href: "/skill-gems",
       icon: "auto_awesome_motion",
       navOrder: 50,
-      aliases: ["skill-gems", "skill_gems", "skill_gems.html", "skill_gem_detail.html", "skills", "gems"]
+      aliases: ["skill-gems", "skill_gems", "skill-gem", "skill_gem_detail", "skills", "gems"]
     },
     currency: {
       title: "Currency",
-      href: "currency.html",
+      href: "/currency",
       icon: "toll",
       navOrder: 60,
-      aliases: ["currency", "currency.html", "currency_detail.html", "currencies", "currency-system"]
+      aliases: ["currency", "currency-detail", "currency_detail", "currencies", "currency-system"]
     },
     leveling: {
       title: "Leveling",
-      href: `leveling.html?v=${routeVersion}`,
+      href: `/leveling?v=${routeVersion}`,
       icon: "checklist",
       navOrder: 70,
-      aliases: ["leveling", "leveling.html", "leveling_act1.html", "leveling_act2.html", "leveling_act3.html", "leveling_act4.html", "leveling_interlude.html"]
+      aliases: ["leveling", "leveling_act1", "leveling_act2", "leveling_act3", "leveling_act4", "leveling_interlude"]
     }
   };
 
@@ -66,11 +66,11 @@
 
   const cleanSegment = (value = "") => value
     .toLowerCase()
-    .replace(/^\//, "")
-    .replace(/\/$/, "")
-    .replace(/\.html$/, ".html");
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")
+    .replace(/\.html$/, "");
 
-  const relativeUrl = (url) => `${url.pathname.split("/").pop()}${url.search}${url.hash}`;
+  const relativeUrl = (url) => `${url.pathname || "/"}${url.search}${url.hash}`;
 
   const routeByAlias = (alias) => {
     const key = cleanSegment(alias);
@@ -81,7 +81,7 @@
     const params = new URLSearchParams(window.location.search);
     const requested = params.get("route") || params.get("page") || params.get("project");
     if (requested) return routeByAlias(requested) || "home";
-    const file = window.location.pathname.split("/").pop() || "";
+    const file = cleanSegment(window.location.pathname.split("/").pop() || "");
     return routeByAlias(file) || "home";
   };
 
@@ -102,7 +102,42 @@
     const url = new URL(rawHref, window.location.href);
     const routeParam = url.searchParams.get("route") || url.searchParams.get("page") || url.searchParams.get("project");
     if (routeParam) return routeByAlias(routeParam);
-    return routeByAlias(url.pathname.split("/").pop() || "");
+    return routeByAlias(cleanSegment(url.pathname.split("/").pop() || ""));
+  };
+
+  const canonicalInternalHref = (rawHref) => {
+    if (!rawHref || rawHref.startsWith("#") || /^(https?:|mailto:|tel:)/i.test(rawHref)) return rawHref;
+    const url = new URL(rawHref, window.location.href);
+    if (url.origin !== window.location.origin) return rawHref;
+
+    const last = cleanSegment(url.pathname.split("/").pop() || "");
+    if (last === "currency_detail" || last === "currency-detail") {
+      return `/currency-detail${url.search}${url.hash}`;
+    }
+    if (last === "skill_gem_detail" || last === "skill-gem") {
+      return `/skill-gem${url.search}${url.hash}`;
+    }
+
+    const key = routeByAlias(last);
+    if (!key || !routes[key]) return rawHref;
+    const target = new URL(routes[key].href, window.location.origin);
+    if (key === "leveling") {
+      target.searchParams.set("v", routeVersion);
+    }
+    for (const [paramKey, paramValue] of url.searchParams) {
+      if (key === "leveling" && paramKey === "v") continue;
+      target.searchParams.set(paramKey, paramValue);
+    }
+    target.hash = url.hash;
+    return relativeUrl(target);
+  };
+
+  const canonicalizeCurrentUrl = () => {
+    const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    const clean = canonicalInternalHref(current);
+    if (clean && clean !== current) {
+      window.history.replaceState(null, "", clean);
+    }
   };
 
   const syncLinks = () => {
@@ -111,9 +146,7 @@
       const key = link.dataset.route || keyFromHref(link.getAttribute("href"));
       if (!key || !routes[key]) return;
       link.dataset.route = key;
-      if (key === "leveling" && !link.getAttribute("href").includes("act=") && !link.getAttribute("href").includes("task=")) {
-        link.setAttribute("href", to("leveling"));
-      }
+      link.setAttribute("href", canonicalInternalHref(link.getAttribute("href")));
       if (key === active) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
@@ -143,7 +176,7 @@
       if (actAliases[last]) params.act = actAliases[last];
     }
 
-    window.location.replace(`${basePath}${to(target, params)}`);
+    window.location.replace(`${basePath.replace(/\/$/, "")}${to(target, params)}`);
   };
 
   window.PoeRouter = {
@@ -151,9 +184,12 @@
     routes,
     currentRoute,
     to,
+    canonicalInternalHref,
     syncLinks,
     redirectPrettyRoute
   };
+
+  canonicalizeCurrentUrl();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", syncLinks);

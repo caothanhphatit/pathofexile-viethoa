@@ -267,19 +267,30 @@
 <body class="skill-page min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
   <div id="top"></div>
   <a class="skip-link rounded-lg bg-blue-600 px-4 py-2 text-sm font-black text-white shadow-md2" href="#main">Bỏ qua điều hướng</a>
-  <div data-component="site-header" data-max-width="1280"></div>
+  <div data-component="site-header"></div>
 
-  <main class="mx-auto grid max-w-[1280px] gap-6 px-4 py-6 sm:px-6 lg:px-8" id="main">
-    <section class="skill-surface skill-hero overflow-hidden rounded-lg">
-      <div class="px-6 py-7 sm:px-8">
-        <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+  <main class="poe-shell-container grid gap-6 py-6" id="main">
+    <!-- Premium Header Dashboard Panel -->
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Skill gems">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-gold">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">auto_awesome_motion</span>
+          </span>
           <div>
-            <h1 class="text-4xl font-black leading-tight text-slate-950 sm:text-5xl dark:text-white">Skill gems</h1>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Skill gems</h1>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Tra cứu chi tiết chỉ số, thuộc tính và hiệu ứng của các skill gems</p>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"><span class="material-symbols-rounded text-indigo-600 dark:text-indigo-300" aria-hidden="true">auto_awesome_motion</span><span id="gemCount">0 skill gems</span></span>
-            <a class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-bold text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700" href="https://poe2db.tw/us/Skill_Gems" target="_blank" rel="noopener noreferrer"><span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span>Nguồn PoE2DB</a>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 md:justify-end">
+          <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+            <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">auto_awesome_motion</span>
+            <span id="gemCount" class="font-display font-black">0 skill gems</span>
           </div>
+          <a class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700" href="https://poe2db.tw/us/Skill_Gems" target="_blank" rel="noopener noreferrer">
+            <span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span>Nguồn PoE2DB
+          </a>
         </div>
       </div>
     </section>
@@ -477,7 +488,7 @@
                   <span class="skill-pill skill-tier rounded-full px-2 py-1 text-xs font-bold">Tier ${escapeHtml(gem.tier || "-")}</span>
                   <span class="skill-pill rounded-full px-2 py-1 text-xs font-bold">${escapeHtml(colorLabel(gem.color))}</span>
                 </div>
-                <a class="skill-cta skill-card-detail inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="skill_gem_detail.html?slug=${encodeURIComponent(gem.slug)}">
+                <a class="skill-cta skill-card-detail inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="/skill-gem?slug=${encodeURIComponent(gem.slug)}">
                   <span class="material-symbols-rounded text-sm" aria-hidden="true">article</span>
                   Chi ti?t
                 </a>
@@ -551,7 +562,7 @@
       modalTitle.textContent = gem.name;
       modalColorBadge.textContent = colorLabel(gem.color);
       modalTierBadge.textContent = `Tier ${gem.tier || "-"}`;
-      
+
       // Summary Description
       modalSummary.textContent = i18nText(gem.i18n?.summary, gem.summary_en) || "Không có mô tả cho skill gem này.";
 
@@ -617,7 +628,7 @@
       const cta = event.target.closest(".skill-cta");
       if (!cta) return;
       event.preventDefault();
-      
+
       const href = cta.getAttribute("href");
       const urlParams = new URLSearchParams(href.split("?")[1]);
       const slug = urlParams.get("slug");

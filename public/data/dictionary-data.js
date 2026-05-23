@@ -97,7 +97,7 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Ailment",
       "keyword": "ElementalAilments",
       "category": "damage",
-      "meaning": "Ailment là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.",
+      "meaning": "Ailment là trạng thái bất lợi đặt lên mục tiêu, ví dụ Bleeding, Poison, Ignite, Chill, Freeze, Shock hoặc Electrocution tùy nguồn gây hiệu ứng. App giữ nguyên Ailment vì đây là thuật ngữ gốc xuất hiện trực tiếp trong modifier và tooltip.",
       "keep": "Ailment là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.",
       "variants": [
         "Ailments",
@@ -119,7 +119,7 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Ailment Threshold",
       "keyword": "AilmentThreshold",
       "category": "damage",
-      "meaning": "Ailment Threshold là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.",
+      "meaning": "Ailment Threshold là ngưỡng chống Ailment của mục tiêu. Threshold càng cao thì Hit thường cần gây nhiều Damage hoặc buildup hơn để tạo Ailment đủ mạnh, đủ chance hoặc đủ điều kiện kích hoạt.",
       "keep": "Ailment Threshold là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.",
       "variants": [
         "Elemental Ailment Threshold"
@@ -719,7 +719,7 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Burning",
       "keyword": "Burning",
       "category": "combat",
-      "meaning": "Burning là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.",
+      "meaning": "Burning là trạng thái khi kẻ địch đang nhận Fire Damage over Time, thường xuất phát từ Ignite.",
       "keep": "Burning là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.",
       "variants": [
         "Burn"
@@ -1243,7 +1243,7 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Corrupted Items",
       "keyword": "Corrupted",
       "category": "combat",
-      "meaning": "Corrupted Items là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.",
+      "meaning": "Corrupted Items có thuộc tính bị biến đổi khó đoán, thường đến từ Vaal Orb hoặc nguồn Corruption. Hầu hết cách craft/chỉnh sửa item không dùng được trên Corrupted item.",
       "keep": "Corrupted Items là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.",
       "variants": [
         "Corrupted",
@@ -1838,7 +1838,7 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Elemental Ailment Threshold",
       "keyword": "AilmentThreshold",
       "category": "damage",
-      "meaning": "Elemental Ailment Threshold là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.",
+      "meaning": "Elemental Ailment Threshold là ngưỡng chống các Elemental Ailment như Ignite, Chill, Freeze, Shock hoặc Electrocution. Tăng chỉ số này giúp mục tiêu khó bị các Ailment nguyên tố ảnh hưởng mạnh.",
       "keep": "Elemental Ailment Threshold là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.",
       "variants": [],
       "examples": [],
@@ -3195,7 +3195,7 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Lightning Ailment",
       "keyword": "LightningAilment",
       "category": "damage",
-      "meaning": "Lightning Ailment là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.",
+      "meaning": "Lightning Ailment là Ailment thuộc nhóm Lightning, thường liên quan Shock hoặc Electrocution. Shock làm mục tiêu nhận thêm Damage, còn Electrocution có thể ngắt hành động tùy nguồn gây hiệu ứng.",
       "keep": "Lightning Ailment là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.",
       "variants": [
         "Lightning Ailments"
@@ -4825,7 +4825,7 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Slow Resistant",
       "keyword": "MonsterImmuneToSlow1",
       "category": "combat",
-      "meaning": "Slow Resistant là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.",
+      "meaning": "Slow Resistant khiến Monster giảm hiệu lực của các Debuff làm chậm đang áp lên nó.",
       "keep": "Slow Resistant là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.",
       "variants": [],
       "examples": [],

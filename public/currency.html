@@ -60,13 +60,63 @@
       box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.3), 0 12px 34px rgba(217, 119, 6, 0.35);
     }
     .currency-icon img { image-rendering: auto; }
+    #currencyGrid {
+      min-height: min(68vh, 760px);
+      align-content: start;
+      view-transition-name: currency-grid;
+      contain: layout paint;
+      transition: opacity .16s ease, transform .16s ease;
+    }
+    #currencyGrid.is-filtering {
+      opacity: .92;
+      transform: translateY(2px);
+    }
+    ::view-transition-old(currency-grid),
+    ::view-transition-new(currency-grid) {
+      animation-duration: 150ms;
+      animation-timing-function: ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #currencyGrid {
+        transition: none;
+      }
+      ::view-transition-old(currency-grid),
+      ::view-transition-new(currency-grid) {
+        animation-duration: 1ms;
+      }
+    }
   </style>
 </head>
 
 <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
-  <div data-component="site-header" data-max-width="1280" data-subtitle="Currency"></div>
+  <div data-component="site-header" data-subtitle="Currency"></div>
 
-  <main class="mx-auto grid max-w-[1280px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
+  <main class="poe-shell-container grid gap-4 py-5">
+    <!-- Premium Header Dashboard Panel -->
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Currency">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-gold">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">toll</span>
+          </span>
+          <div>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Currency</h1>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Tra cứu chi tiết tác dụng, công thức và liên kết chéo của các loại tiền tệ</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 md:justify-end">
+          <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+            <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">toll</span>
+            <span id="currencyCount" class="font-display font-black">0 tiền tệ</span>
+          </div>
+          <a class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700" href="https://poe2db.tw/us/Stackable_Currency#StackableCurrencyItem" target="_blank" rel="noopener noreferrer">
+            <span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span>Nguồn PoE2DB
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80" aria-label="Bộ lọc currency">
       <div class="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_180px_210px_120px]">
         <label class="flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 transition dark:border-slate-800 dark:bg-slate-900/40">
@@ -125,18 +175,16 @@
           <p class="mt-2 text-sm md:text-base font-semibold leading-relaxed text-slate-800 dark:text-slate-200" id="cmodalDescription"></p>
         </div>
 
-        <!-- Properties & Mods -->
-        <div class="grid gap-4 md:grid-cols-2 border-t border-slate-100 pt-4 dark:border-slate-800/40">
-          <!-- Properties -->
-          <div id="cmodalPropertiesContainer">
-            <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Thông tin thêm</h3>
-            <ul class="mt-2 space-y-1 text-xs font-semibold text-slate-600 dark:text-slate-400" id="cmodalProperties"></ul>
-          </div>
-          <!-- Mods -->
-          <div id="cmodalModsContainer">
-            <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Dòng thuộc tính</h3>
-            <ul class="mt-2 space-y-1 text-xs font-semibold text-slate-600 dark:text-slate-400" id="cmodalMods"></ul>
-          </div>
+        <!-- Properties -->
+        <div class="border-t border-slate-100 pt-4 dark:border-slate-800/40" id="cmodalPropertiesContainer">
+          <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Thông tin thêm</h3>
+          <ul class="mt-2 space-y-1 text-xs font-semibold text-slate-600 dark:text-slate-400" id="cmodalProperties"></ul>
+        </div>
+
+        <!-- Related Items -->
+        <div class="border-t border-slate-100 pt-4 dark:border-slate-800/40 hidden" id="cmodalRelatedContainer">
+          <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Liên quan</h3>
+          <div class="mt-2 grid gap-2" id="cmodalRelated"></div>
         </div>
       </div>
 
@@ -177,12 +225,43 @@
     const allItems = (data.items || []).filter((item) => item.status === "active" && hasCurrencyDescription(item));
 
     const shortDescription = (item) => {
-      const source = firstPresent([
+      let source = firstPresent([
         i18nText(item.i18n?.description, item.description_en),
         item.description_en,
         ...i18nList(item.i18n?.mods, item.mods || []),
         ...(item.mods || [])
       ]);
+      if (!source) {
+        const subtype = String(item.subtype || item.family || "").toLowerCase();
+        const category = String(item.category || "").toLowerCase();
+        const nameLower = String(item.name || "").toLowerCase();
+
+        if (subtype === "expedition-artifact" || category === "expeditionartifact") {
+          if (nameLower.includes("black scythe")) {
+            source = "Vật phẩm Expedition dùng để mặc cả (barter) mua các loại trang bị, tiền tệ với thương nhân Tujen.";
+          } else if (nameLower.includes("order")) {
+            source = "Vật phẩm Expedition dùng để nâng cấp, chế tạo (craft) các loại trang bị với thương nhân Rog.";
+          } else if (nameLower.includes("druidic")) {
+            source = "Vật phẩm Expedition dùng để mua bán ngẫu nhiên (gamble) nhận các loại trang bị với thương nhân Gwennen.";
+          } else if (nameLower.includes("sun")) {
+            source = "Vật phẩm Expedition dùng để giao dịch, đổi các loại Artifact khác với thủ lĩnh Dannig.";
+          } else {
+            source = "Vật phẩm đặc biệt dùng để giao dịch và trao đổi vật phẩm với các thương nhân Expedition.";
+          }
+        } else if (subtype === "shard" || nameLower.endsWith("shard")) {
+          source = "Mảnh tiền tệ, gom đủ stack để tự động chuyển thành tiền tệ hoàn chỉnh.";
+        } else if (subtype === "splinter" || category === "splinteritem" || nameLower.endsWith("splinter")) {
+          source = "Mảnh vỡ dùng để gom đủ stack mở khóa cổng vào boss hoặc bản đồ liên quan.";
+        } else if (subtype === "catalyst" || category === "catalystitem" || nameLower.endsWith("catalyst")) {
+          source = "Dùng để tăng chất lượng (Quality) và các thuộc tính tương ứng trên trang sức.";
+        } else if (subtype === "essence" || category === "essence" || nameLower.includes("essence")) {
+          source = "Dùng để nâng cấp một trang bị thường thành trang bị hiếm với một thuộc tính cố định.";
+        } else if (subtype.includes("delirium") || nameLower.includes("distilled") || nameLower.includes("delirium")) {
+          source = "Dùng để tác động vào bản đồ nhằm tăng độ khó và thêm phần thưởng Delirium tương ứng.";
+        } else {
+          source = "Vật phẩm đặc biệt dùng để mở hoặc tác động lên bản đồ.";
+        }
+      }
       return truncateText(source, { maxLength: 220, minBoundary: 110 });
     };
 
@@ -204,6 +283,7 @@
 
     categoryFilter.innerHTML = `<option value="all">Tất cả nhóm</option>${categories.map((category) => `<option value="${escapeHtml(category.id)}">${escapeHtml(category.label)} (${nf.format(category.count)})</option>`).join("")}`;
     subtypeFilter.innerHTML = `<option value="all">Tất cả subtype</option>${subtypes.map((subtype) => `<option value="${escapeHtml(subtype.id)}">${escapeHtml(subtype.label)} (${nf.format(subtype.count)})</option>`).join("")}`;
+    document.getElementById("currencyCount").textContent = `${nf.format(allItems.length)} tiền tệ`;
     subtypePills.innerHTML = subtypes.map((subtype) => `
       <button class="subtype-pill inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-700 transition hover:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" type="button" data-subtype="${escapeHtml(subtype.id)}">
         <span>${escapeHtml(subtype.label)}</span>
@@ -266,7 +346,7 @@
           </div>
           <p class="mt-5 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300" title="${escapeHtml(description)}">${escapeHtml(description)}</p>
           <div class="mt-auto pt-4 flex justify-end">
-            <a class="currency-cta inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="currency_detail.html?slug=${encodeURIComponent(item.slug)}">
+            <a class="currency-cta inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="/currency-detail?slug=${encodeURIComponent(item.slug)}">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">article</span>
               Chi tiết
             </a>
@@ -295,7 +375,7 @@
       });
     };
 
-    const render = ({ resetLimit = false } = {}) => {
+    const paintCurrencyGrid = ({ resetLimit = false } = {}) => {
       if (resetLimit) visibleLimit = 60;
       const filtered = allItems.filter(itemMatches);
       const visible = filtered.slice(0, visibleLimit);
@@ -311,6 +391,47 @@
       loadMoreItems.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>Tải thêm ${nf.format(Math.min(60, hiddenCount))}`;
       syncPills();
     };
+
+    let renderTransitionToken = 0;
+    const releaseCurrencyGridPaintLock = (token) => {
+      if (token !== renderTransitionToken) return;
+      currencyGrid.classList.remove("is-filtering");
+      currencyGrid.style.minHeight = "";
+    };
+    const lockCurrencyGridPaint = () => {
+      const height = currencyGrid.getBoundingClientRect().height;
+      if (height > 0) currencyGrid.style.minHeight = `${Math.ceil(height)}px`;
+      currencyGrid.classList.add("is-filtering");
+    };
+    const runCurrencyRenderTransition = (options = {}) => {
+      const token = ++renderTransitionToken;
+      const update = () => paintCurrencyGrid(options);
+      const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      if (options.animate === false || reduceMotion) {
+        update();
+        releaseCurrencyGridPaintLock(token);
+        return;
+      }
+
+      lockCurrencyGridPaint();
+      if (!document.startViewTransition) {
+        window.requestAnimationFrame(() => {
+          if (token !== renderTransitionToken) return;
+          update();
+          window.requestAnimationFrame(() => releaseCurrencyGridPaintLock(token));
+        });
+        return;
+      }
+
+      try {
+        const transition = document.startViewTransition(update);
+        transition.finished.finally(() => releaseCurrencyGridPaintLock(token));
+      } catch {
+        update();
+        releaseCurrencyGridPaintLock(token);
+      }
+    };
+    const render = runCurrencyRenderTransition;
 
     [searchInput, categoryFilter, subtypeFilter].forEach((control) => control.addEventListener("input", () => {
       render({ resetLimit: true });
@@ -335,7 +456,7 @@
       render();
     });
 
-    render();
+    render({ animate: false });
 
     // Currency Modal scripting
     const currencyModal = document.getElementById("currencyModal");
@@ -346,10 +467,57 @@
     const cmodalDescription = document.getElementById("cmodalDescription");
     const cmodalProperties = document.getElementById("cmodalProperties");
     const cmodalPropertiesContainer = document.getElementById("cmodalPropertiesContainer");
-    const cmodalMods = document.getElementById("cmodalMods");
-    const cmodalModsContainer = document.getElementById("cmodalModsContainer");
+    const cmodalRelatedContainer = document.getElementById("cmodalRelatedContainer");
+    const cmodalRelated = document.getElementById("cmodalRelated");
     const closeCurrencyModalBtn = document.getElementById("closeCurrencyModalBtn");
     const cmodalActionClose = document.getElementById("cmodalActionClose");
+
+    const renderRelatedCurrencyItems = (item) => {
+      const container = cmodalRelatedContainer;
+      const grid = cmodalRelated;
+      if (!container || !grid) return;
+
+      const related = item.related_items || [];
+      if (related.length === 0) {
+        container.classList.add("hidden");
+        grid.innerHTML = "";
+        return;
+      }
+
+      grid.innerHTML = related.map((rel) => {
+        const target = allItems.find((entry) => entry.slug === rel.slug && entry.status === "active");
+        const isClickable = !!target;
+
+        let name = rel.name;
+        let desc = rel.description_en || "";
+
+        if (target) {
+          name = i18nText(target.i18n?.name, target.name);
+          desc = i18nText(target.i18n?.description, target.description_en) || desc;
+        }
+
+        return `
+          <div class="group relative flex items-start gap-3.5 p-4 rounded-xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-amber-500/30 dark:border-slate-800/50 dark:bg-slate-900/40 dark:hover:bg-slate-900/60 dark:hover:border-amber-500/30 dark:hover:shadow-amber-500/2">
+            <div class="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200/80 bg-slate-950 transition-all duration-300 group-hover:scale-105 group-hover:border-amber-500/40 dark:border-slate-800 dark:bg-slate-950">
+              <img class="absolute inset-0 h-full w-full object-contain p-1 transition-transform duration-300 group-hover:rotate-3" src="${escapeHtml(rel.icon_url)}" alt="${escapeHtml(name)}" width="44" height="44">
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-3">
+                <h4 class="font-display text-sm font-black tracking-tight text-slate-900 transition-colors duration-200 group-hover:text-amber-500 dark:text-slate-100 dark:group-hover:text-amber-400" translate="no">${escapeHtml(name)}</h4>
+                ${isClickable ? `
+                  <button type="button" class="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-600 hover:text-white dark:bg-blue-950/40 dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-200" data-related-slug="${escapeHtml(rel.slug)}">
+                    Chi tiết
+                  </button>
+                ` : ""}
+              </div>
+              <p class="mt-1.5 text-xs font-semibold leading-relaxed text-slate-500 dark:text-slate-300/95 leading-normal">${escapeHtml(desc)}</p>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      container.classList.remove("hidden");
+    };
 
     const openCurrencyModal = (slug) => {
       const item = allItems.find((entry) => entry.slug === slug);
@@ -379,14 +547,8 @@
         cmodalPropertiesContainer.classList.add("hidden");
       }
 
-      // Mods
-      const localizedMods = i18nList(item.i18n?.mods, item.mods || []);
-      if (localizedMods.length > 0) {
-        cmodalMods.innerHTML = localizedMods.map(m => `<li class="flex items-start gap-1.5"><span class="material-symbols-rounded text-sm text-amber-500 shrink-0 mt-0.5">verified</span><span>${escapeHtml(m)}</span></li>`).join("");
-        cmodalModsContainer.classList.remove("hidden");
-      } else {
-        cmodalModsContainer.classList.add("hidden");
-      }
+      // Render Related Items
+      renderRelatedCurrencyItems(item);
 
       currencyModal.classList.remove("hidden");
       currencyModal.classList.add("flex");
@@ -408,14 +570,23 @@
 
     // Grid Delegation click to intercept details button clicks
     currencyGrid.addEventListener("click", (event) => {
-      const cta = event.target.closest("a[href^='currency_detail.html']");
+      const cta = event.target.closest("a[href^='/currency-detail'], a[href^='currency_detail.html']");
       if (!cta) return;
       event.preventDefault();
-      
+
       const href = cta.getAttribute("href");
       const urlParams = new URLSearchParams(href.split("?")[1]);
       const slug = urlParams.get("slug");
       openCurrencyModal(slug);
+    });
+
+    // Related Items Click Delegation inside Modal to transition smoothly without closing/opening
+    cmodalRelated.addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-related-slug]");
+      if (!btn) return;
+      event.preventDefault();
+      const relatedSlug = btn.dataset.relatedSlug;
+      openCurrencyModal(relatedSlug);
     });
 
     closeCurrencyModalBtn.addEventListener("click", closeCurrencyModal);

@@ -11,10 +11,8 @@ import {
   parseLocales,
   upsertContentStrings
 } from "../../src/localization/content-strings.mjs";
-import {
-  parseItemListingPage,
-  parseItemsMenu
-} from "./items-lib.mjs";
+import { parseItemListingPage, parseItemsMenu } from "./items-lib.mjs";
+import { retranslateContent } from "../retranslate-content.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -535,6 +533,7 @@ export const exportItems = async (pool) => {
 };
 
 export const writeItemsExport = async (pool, exportPath = EXPORT_PATH) => {
+  await retranslateContent(pool);
   const data = await exportItems(pool);
   await fs.mkdir(path.dirname(exportPath), { recursive: true });
   await fs.writeFile(exportPath, `window.POE2_ITEMS = ${JSON.stringify(data, null, 2)};\n`, "utf8");

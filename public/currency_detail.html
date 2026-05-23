@@ -19,9 +19,9 @@
 </head>
 
 <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
-  <div data-component="site-header" data-max-width="1280" data-subtitle="Currency"></div>
+  <div data-component="site-header" data-subtitle="Currency"></div>
 
-  <main class="mx-auto grid max-w-[1180px] gap-5 px-4 py-5 sm:px-6 lg:px-8" id="detailRoot"></main>
+  <main class="poe-shell-container grid gap-5 py-5" id="detailRoot"></main>
 
   <script src="components/poe-ui-utils.js"></script>
   <script src="data/currency-data.js"></script>
@@ -45,10 +45,41 @@
 
     const fallbackDescription = (entry) => {
       if (!entry) return "Không có dữ liệu.";
-      if (/Shard$/i.test(entry.name)) return "Mảnh currency, gom đủ stack để tạo currency hoàn chỉnh hoặc dùng trong công thức liên quan.";
-      if (/Artifact$/i.test(entry.name)) return "Artifact dùng trong hệ thống Expedition và giao dịch với NPC tương ứng.";
-      if (entry.category === "SplinterItem") return "Splinter dùng để gom mảnh cho nội dung hoặc boss liên quan.";
-      return "";
+      const subtype = String(entry.subtype || entry.family || "").toLowerCase();
+      const category = String(entry.category || "").toLowerCase();
+      const nameLower = String(entry.name || "").toLowerCase();
+
+      if (subtype === "expedition-artifact" || category === "expeditionartifact") {
+        if (nameLower.includes("black scythe")) {
+          return "Vật phẩm Expedition dùng để mặc cả (barter) mua các loại trang bị, tiền tệ với thương nhân Tujen.";
+        } else if (nameLower.includes("order")) {
+          return "Vật phẩm Expedition dùng để nâng cấp, chế tạo (craft) các loại trang bị với thương nhân Rog.";
+        } else if (nameLower.includes("druidic")) {
+          return "Vật phẩm Expedition dùng để mua bán ngẫu nhiên (gamble) nhận các loại trang bị với thương nhân Gwennen.";
+        } else if (nameLower.includes("sun")) {
+          return "Vật phẩm Expedition dùng để giao dịch, đổi các loại Artifact khác với thủ lĩnh Dannig.";
+        } else {
+          return "Vật phẩm đặc biệt dùng để giao dịch và trao đổi vật phẩm với các thương nhân Expedition.";
+        }
+      }
+
+      if (subtype === "shard" || nameLower.endsWith("shard")) {
+        return "Mảnh tiền tệ, gom đủ stack để tự động chuyển thành tiền tệ hoàn chỉnh.";
+      }
+      if (subtype === "splinter" || category === "splinteritem" || nameLower.endsWith("splinter")) {
+        return "Mảnh vỡ dùng để gom đủ stack mở khóa cổng vào boss hoặc bản đồ liên quan.";
+      }
+      if (subtype === "catalyst" || category === "catalystitem" || nameLower.endsWith("catalyst")) {
+        return "Dùng để tăng chất lượng (Quality) và các thuộc tính tương ứng trên trang sức.";
+      }
+      if (subtype === "essence" || category === "essence" || nameLower.includes("essence")) {
+        return "Dùng để nâng cấp một trang bị thường thành trang bị hiếm với một thuộc tính cố định.";
+      }
+      if (subtype.includes("delirium") || nameLower.includes("distilled") || nameLower.includes("delirium")) {
+        return "Dùng để tác động vào bản đồ nhằm tăng độ khó và thêm phần thưởng Delirium tương ứng.";
+      }
+
+      return "Vật phẩm đặc biệt dùng để mở hoặc tác động lên bản đồ.";
     };
 
     const renderLines = (lines = []) => lines.length
@@ -87,11 +118,57 @@
       `;
     };
 
+    const renderRelatedCurrencyItems = (entry) => {
+      const related = entry.related_items || [];
+      if (related.length === 0) return "";
+
+      const cards = related.map((rel) => {
+        const target = (data.items || []).find((e) => e.slug === rel.slug && e.status === "active");
+        const isClickable = !!target;
+
+        let name = rel.name;
+        let desc = rel.description_en || "";
+
+        if (target) {
+          name = i18nText(target.i18n?.name, target.name);
+          desc = i18nText(target.i18n?.description, target.description_en) || desc;
+        }
+
+        return `
+          <li class="group relative flex items-start gap-3.5 p-4 rounded-xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-amber-500/30 dark:border-slate-800/50 dark:bg-slate-900/40 dark:hover:bg-slate-900/60 dark:hover:border-amber-500/30">
+            <div class="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200/80 bg-slate-950 transition-all duration-300 group-hover:scale-105 group-hover:border-amber-500/40 dark:border-slate-800 dark:bg-slate-950">
+              <img class="absolute inset-0 h-full w-full object-contain p-1 transition-transform duration-300 group-hover:rotate-3" src="${escapeHtml(rel.icon_url)}" alt="${escapeHtml(name)}" width="44" height="44">
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-3">
+                <h4 class="font-display text-sm font-black tracking-tight text-slate-900 transition-colors duration-200 group-hover:text-amber-500 dark:text-slate-100 dark:group-hover:text-amber-400" translate="no">${escapeHtml(name)}</h4>
+                ${isClickable ? `
+                  <a class="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-600 hover:text-white dark:bg-blue-950/40 dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-200" href="/currency-detail?slug=${encodeURIComponent(rel.slug)}">
+                    Chi tiết
+                  </a>
+                ` : ""}
+              </div>
+              <p class="mt-1.5 text-xs font-semibold leading-relaxed text-slate-500 dark:text-slate-300/95 leading-normal">${escapeHtml(desc)}</p>
+            </div>
+          </li>
+        `;
+      }).join("");
+
+      return `
+        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" id="cmodalRelatedContainer">
+          <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+            <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Liên quan</h2>
+          </div>
+          <ul>${cards}</ul>
+        </section>
+      `;
+    };
+
     if (!item) {
       document.title = "Không tìm thấy currency - POE2";
       detailRoot.innerHTML = `
         <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-md1 dark:border-slate-800 dark:bg-slate-900">
-          <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="currency.html"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
+          <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="/currency"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
           <h1 class="mt-4 text-3xl font-black text-slate-950 dark:text-white">Không tìm thấy currency</h1>
           <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Item này không có trong dữ liệu hiện tại.</p>
         </section>
@@ -103,7 +180,7 @@
         <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
           <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">
             <div class="p-5 sm:p-7">
-              <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="currency.html"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
+              <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="/currency"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
               <div class="mt-5 flex items-start gap-4">
                 <div class="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white dark:border-slate-700">
                   <span class="material-symbols-rounded opacity-80" aria-hidden="true">toll</span>
@@ -138,7 +215,10 @@
         </section>
         <div class="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,.8fr)]">
           ${effectBlock(item)}
-          ${sectionBlock("Thông tin", item.properties || [])}
+          <div class="grid gap-5">
+            ${sectionBlock("Thông tin", item.properties || [])}
+            ${renderRelatedCurrencyItems(item)}
+          </div>
         </div>
       `;
     }

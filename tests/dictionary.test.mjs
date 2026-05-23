@@ -70,6 +70,22 @@ test("dictionary keeps curated Vietnamese meanings and item rarity terms", async
   ]);
 });
 
+test("dictionary gives readable gameplay meanings for ailment core terms", async () => {
+  const dictionary = await loadDictionary();
+  const terms = dictionary.terms || [];
+  const byTerm = new Map(terms.map((entry) => [entry.term, entry]));
+
+  for (const term of ["Ailment", "Ailment Threshold", "Elemental Ailment Threshold", "Lightning Ailment"]) {
+    assert.ok(byTerm.has(term), `${term} exists`);
+    assert.doesNotMatch(byTerm.get(term).meaning, /keyword gốc|Keyword in-game/i, `${term} avoids placeholder meaning`);
+  }
+
+  assert.match(byTerm.get("Ailment").meaning, /trạng thái bất lợi|Bleeding|Poison|Ignite|Shock|Freeze/i);
+  assert.match(byTerm.get("Ailment Threshold").meaning, /ngưỡng|khó gây|mạnh yếu/i);
+  assert.match(byTerm.get("Elemental Ailment Threshold").meaning, /Elemental Ailment|Ignite|Shock|Freeze/i);
+  assert.match(byTerm.get("Lightning Ailment").meaning, /Shock|Electrocution|Lightning/i);
+});
+
 test("dictionary exposes every skill gem tag as an English lookup term", async () => {
   const [dictionary, skillGems] = await Promise.all([loadDictionary(), loadSkillGems()]);
   const lookupNames = new Set((dictionary.terms || []).map((entry) => entry.term));
@@ -93,9 +109,13 @@ test("dictionary page renders compact lookup cards without keep-note panels", as
   const html = await readFile(new URL("../public/dictionary.html", import.meta.url), "utf8");
 
   assert.match(html, /compactMeaning/);
-  assert.match(html, /Keyword in-game/);
-  assert.match(html, /Tag skill/);
+  assert.doesNotMatch(html, /Keyword in-game/);
+  assert.doesNotMatch(html, /Tag skill của Skill Gem in-game/);
   assert.match(html, /term-meaning/);
+  assert.match(html, /id="modalOriginal"/);
+  assert.doesNotMatch(html, /Nguyên bản PoE2DB English/);
+  assert.doesNotMatch(html, /Quy chuẩn giữ từ gốc/);
+  assert.doesNotMatch(html, /modalKeep/);
   assert.doesNotMatch(html, /escapeHtml\(term\.keep\)/);
   assert.doesNotMatch(html, />keep</);
   assert.doesNotMatch(html, /variantChips/);

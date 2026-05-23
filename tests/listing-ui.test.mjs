@@ -33,6 +33,36 @@ test("currency active filters and detail actions use the compact blue treatment"
   assert.match(html, /ring-blue-300\/60/);
 });
 
+test("currency subtype switching keeps the grid painted through smooth in-page transitions", async () => {
+  const html = await readProjectFile("currency.html");
+
+  assert.match(html, /const runCurrencyRenderTransition/);
+  assert.match(html, /document\.startViewTransition/);
+  assert.match(html, /currencyGrid\.classList\.add\("is-filtering"\)/);
+  assert.match(html, /view-transition-name:\s*currency-grid/);
+  assert.match(html, /min-height:\s*min\(68vh,\s*760px\)/);
+});
+
+test("currency modal omits duplicated detail modifier lines", async () => {
+  const html = await readProjectFile("currency.html");
+
+  assert.doesNotMatch(html, /Dòng thuộc tính/);
+  assert.doesNotMatch(html, /cmodalMods/);
+  assert.doesNotMatch(html, /localizedMods/);
+});
+
+test("currency modal renders bidirectional related items without leaving the modal", async () => {
+  const html = await readProjectFile("currency.html");
+  const detailHtml = await readProjectFile("currency_detail.html");
+
+  assert.match(html, /cmodalRelatedContainer/);
+  assert.match(html, /renderRelatedCurrencyItems/);
+  assert.match(html, /data-related-slug/);
+  assert.match(html, /openCurrencyModal\(relatedSlug\)/);
+  assert.match(detailHtml, /renderRelatedCurrencyItems/);
+  assert.match(detailHtml, /related_items/);
+});
+
 test("skill gem card detail action sits on the label row instead of the card footer", async () => {
   const html = await readProjectFile("skill_gems.html");
   const detailHtml = await readProjectFile("skill_gem_detail.html");

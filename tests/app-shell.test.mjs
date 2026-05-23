@@ -26,9 +26,22 @@ test("app shell component owns shared header and theme behavior", async () => {
   assert.match(shell, /renderSiteHeader/);
   assert.match(shell, /initTheme/);
   assert.match(shell, /data-component="site-header"/);
+  assert.match(shell, /poe-shell-container/);
   assert.match(shell, /themeToggle/);
   assert.match(shell, /PoeRouter\.routes/);
   assert.match(shell, /poe-theme-change/);
+  assert.doesNotMatch(shell, /dataset\.maxWidth/);
+  assert.doesNotMatch(shell, /style="max-width/);
+});
+
+test("app shell keeps nav link dimensions stable across active tabs", async () => {
+  const shell = await readProjectFile("components/app-shell.js");
+
+  assert.match(shell, /const desktopClass = \(active\) => `poe-nav-link/);
+  assert.match(shell, /const mobileClass = \(active\) => `poe-nav-link poe-nav-link-mobile/);
+  assert.match(shell, /poe-nav-link-active/);
+  assert.match(shell, /poe-nav-link-mobile-active/);
+  assert.match(shell, /poe-nav-icon/);
 });
 
 test("tooltip term clicks open an in-page dictionary popup instead of navigating", async () => {
@@ -43,6 +56,16 @@ test("tooltip term clicks open an in-page dictionary popup instead of navigating
   assert.doesNotMatch(shell, /window\.location\.href\s*=/);
 });
 
+test("tooltip engine excludes filters, headers, and translate-no titles from being wrapped", async () => {
+  const shell = await readProjectFile("components/app-shell.js");
+
+  assert.match(shell, /EXCLUDE_SELECTOR/);
+  assert.match(shell, /translate='no'/);
+  assert.match(shell, /data-no-tooltip/);
+  assert.match(shell, /subtype-pill/);
+  assert.match(shell, /closest\(EXCLUDE_SELECTOR\)/);
+});
+
 test("routes expose reusable nav metadata for the app shell", async () => {
   const routes = await readProjectFile("app-routes.js");
 
@@ -52,14 +75,40 @@ test("routes expose reusable nav metadata for the app shell", async () => {
   }
 });
 
+test("app routes and nav links use clean production URLs without html suffixes", async () => {
+  const [routes, shell, home] = await Promise.all([
+    readProjectFile("app-routes.js"),
+    readProjectFile("components/app-shell.js"),
+    readProjectFile("index.html")
+  ]);
+
+  assert.match(routes, /href:\s*"\/dictionary"/);
+  assert.match(routes, /href:\s*"\/currency"/);
+  assert.match(routes, /canonicalInternalHref/);
+  assert.match(shell, /href:\s*"\/skill-gems"/);
+  assert.match(home, /href="\/skill-gems"/);
+  assert.doesNotMatch(home, /href="(?:index|dictionary|weapon|skill_gems|currency|leveling|patchnote_vn)\.html/);
+});
+
 test("main pages consume the reusable site header instead of copy-pasting it", async () => {
   for (const page of shellPages) {
     const html = await readProjectFile(page);
 
     assert.match(html, /components\/app-shell\.js/, `${page} loads app shell`);
     assert.match(html, /data-component="site-header"/, `${page} declares shell header slot`);
+    assert.doesNotMatch(html, /data-max-width=/, `${page} does not override the shared shell width`);
     assert.doesNotMatch(html, /<header class="sticky top-0 z-40/, `${page} does not inline site header`);
     assert.doesNotMatch(html, /const themeToggle = document\.getElementById\("themeToggle"\)/, `${page} does not inline shared theme toggle`);
+  }
+});
+
+test("main pages share the same outer body width to avoid tab-to-tab layout jumps", async () => {
+  for (const page of shellPages) {
+    const html = await readProjectFile(page);
+    const mainClass = html.match(/<main class="([^"]*)"/)?.[1] || "";
+
+    assert.match(mainClass, /\bpoe-shell-container\b/, `${page} uses the shared page container`);
+    assert.doesNotMatch(html, /max-w-\[(1000|1180|1200|1400)px\]/, `${page} does not use page-specific shell widths`);
   }
 });
 
@@ -75,6 +124,23 @@ test("main pages use shared boot assets instead of inline shared setup", async (
     assert.doesNotMatch(html, /tailwind\.config\s*=/, `${page} does not inline shared Tailwind config`);
     assert.doesNotMatch(html, /localStorage\.getItem\("patchnote-theme"\)/, `${page} does not inline shared theme boot`);
     assert.doesNotMatch(html, /\.nav-scroll\s*{[^}]*scrollbar-width:\s*none/, `${page} does not inline shared nav-scroll styles`);
+  }
+});
+
+test("theme boot paints the document background before app CSS loads", async () => {
+  const boot = await readProjectFile("components/theme-boot.js");
+
+  assert.match(boot, /applyCriticalThemePaint/);
+  assert.match(boot, /backgroundColor/);
+  assert.match(boot, /#060813/);
+  assert.match(boot, /#f8fafc/);
+
+  for (const page of shellPages) {
+    const html = await readProjectFile(page);
+    assert.ok(
+      html.indexOf("components/theme-boot.js") < html.indexOf("dist/app.css"),
+      `${page} loads theme boot before app CSS`
+    );
   }
 });
 

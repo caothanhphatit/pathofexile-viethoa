@@ -44,11 +44,13 @@ const FAMILY_LABELS = {
   "utility-currency": "Utility Currency",
   essence: "Essence",
   splinter: "Splinter",
-  catalyst: "Catalyst"
+  catalyst: "Catalyst",
+  omen: "Omen"
 };
 
 const FAMILY_ORDER = [
   "crafting-orb",
+  "omen",
   "quality-currency",
   "gem-currency",
   "socket-currency",
@@ -139,6 +141,7 @@ const sourceJson = (item) => {
     description_en: item.description_en,
     properties: item.properties || parseMaybeJson(item.properties_json, []),
     mods: item.mods || parseMaybeJson(item.mods_json, []),
+    related_items: item.related_items || parseMaybeJson(item.related_items_json, []),
     source_hash: item.source_hash
   };
 };
@@ -210,6 +213,7 @@ export const upsertCurrenciesPostgres = async (pool, currencies, { sourceUrl = D
         description_en: item.description_en || "",
         properties_json: item.properties || [],
         mods_json: item.mods || [],
+        related_items_json: item.related_items || [],
         source_hash: item.source_hash
       });
     }
@@ -243,10 +247,10 @@ export const upsertCurrenciesPostgres = async (pool, currencies, { sourceUrl = D
         insert into currency_items
           (slug, name, category, category_label, family, family_label, subtype, subtype_label,
            source_url, icon_url, icon_alt, hover_url, stack_size, description_en,
-           properties_json, mods_json, source_hash, status, first_seen_run_id, last_seen_run_id, updated_at)
+           properties_json, mods_json, related_items_json, source_hash, status, first_seen_run_id, last_seen_run_id, updated_at)
         select slug, name, category, category_label, family, family_label, subtype, subtype_label,
           source_url, icon_url, icon_alt, hover_url, stack_size, description_en,
-          properties_json, mods_json, source_hash, 'active', $2, $2, now()
+          properties_json, mods_json, related_items_json, source_hash, 'active', $2, $2, now()
         from jsonb_to_recordset($1::jsonb) as payload(
           slug text,
           name text,
@@ -264,6 +268,7 @@ export const upsertCurrenciesPostgres = async (pool, currencies, { sourceUrl = D
           description_en text,
           properties_json jsonb,
           mods_json jsonb,
+          related_items_json jsonb,
           source_hash text
         )
         on conflict (slug) do update
@@ -282,6 +287,7 @@ export const upsertCurrenciesPostgres = async (pool, currencies, { sourceUrl = D
             description_en = excluded.description_en,
             properties_json = excluded.properties_json,
             mods_json = excluded.mods_json,
+            related_items_json = excluded.related_items_json,
             source_hash = excluded.source_hash,
             status = 'active',
             last_seen_run_id = excluded.last_seen_run_id,
@@ -369,6 +375,7 @@ export const exportCurrenciesPostgres = async (pool) => {
       description_en: row.description_en,
       properties: parseMaybeJson(row.properties_json, []),
       mods,
+      related_items: parseMaybeJson(row.related_items_json, []),
       i18n: {
         name: nameI18n,
         category_label: categoryI18n,

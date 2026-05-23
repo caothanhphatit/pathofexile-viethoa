@@ -34,12 +34,16 @@
     return `${slice.slice(0, boundary > minBoundary ? boundary : maxLength - 3).trim()}...`;
   };
 
-  const hasCurrencyDescription = (item) => Boolean(item && firstPresent([
-    item.description_en,
-    i18nText(item.i18n?.description, ""),
-    ...(item.mods || []),
-    ...i18nList(item.i18n?.mods, [])
-  ]));
+  const hasCurrencyDescription = (item) => {
+    if (!item) return false;
+    if (item.subtype || item.family) return true;
+    return Boolean(firstPresent([
+      item.description_en,
+      i18nText(item.i18n?.description, ""),
+      ...(item.mods || []),
+      ...i18nList(item.i18n?.mods, [])
+    ]));
+  };
 
   const currencySubtype = (item = {}) => item.subtype || item.family || item.category || "";
 

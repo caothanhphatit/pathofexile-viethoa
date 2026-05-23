@@ -889,7 +889,7 @@
     }
 
     if (event.target.closest("#v2GoogleLogin")) {
-      window.location.href = `${apiBase}/api/auth/google/start?returnTo=${encodeURIComponent("/leveling.html")}`;
+      window.location.href = `${apiBase}/api/auth/google/start?returnTo=${encodeURIComponent("/leveling")}`;
       return;
     }
 

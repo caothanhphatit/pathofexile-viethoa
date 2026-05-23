@@ -6,13 +6,14 @@ const readText = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf
 const hardcodedRemoteDatabaseUrl = /postgres(?:ql)?:\/\/[^:@\s]+:[^@\s]+@(?!localhost\b|127\.0\.0\.1\b|\[::1\])[^\s"'`]+/i;
 
 test("PostgreSQL migration defines production tables, jsonb payloads, and active indexes", async () => {
-  const [coreMigration, localizationMigration, cleanupMigration, authMigration] = await Promise.all([
+  const [coreMigration, localizationMigration, cleanupMigration, authMigration, relatedItemsMigration] = await Promise.all([
     readText("migrations/001_core_schema.sql"),
     readText("migrations/002_content_localization.sql"),
     readText("migrations/003_drop_legacy_localization.sql"),
-    readText("migrations/004_auth_leveling_accounts.sql")
+    readText("migrations/004_auth_leveling_accounts.sql"),
+    readText("migrations/005_currency_related_items.sql")
   ]);
-  const migration = `${coreMigration}\n${localizationMigration}\n${cleanupMigration}\n${authMigration}`;
+  const migration = `${coreMigration}\n${localizationMigration}\n${cleanupMigration}\n${authMigration}\n${relatedItemsMigration}`;
 
   for (const table of [
     "schema_migrations",
@@ -42,6 +43,8 @@ test("PostgreSQL migration defines production tables, jsonb payloads, and active
   assert.match(cleanupMigration, /drop column if exists description_vi/i);
   assert.match(cleanupMigration, /drop column if exists translated_json/i);
   assert.match(migration, /\bjsonb\b/i);
+  assert.match(migration, /related_items_json jsonb not null default '\[\]'::jsonb/i);
+  assert.match(migration, /idx_currency_items_related_gin/i);
   assert.match(migration, /where status = 'active'/i);
   assert.match(migration, /provider_user_id/i);
   assert.match(migration, /session_hash/i);

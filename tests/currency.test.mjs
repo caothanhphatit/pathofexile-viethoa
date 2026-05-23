@@ -6,8 +6,10 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 
 import {
+  buildBidirectionalCurrencyRelations,
   classifyCurrencyFamily,
   parseCurrencyPage,
+  parseCurrencyRelatedItems,
   translateCurrencyText
 } from "../scripts/currency-lib.mjs";
 
@@ -80,6 +82,33 @@ const sampleHtml = `
   </div>
 </div>`;
 
+const divineDetailHtml = `
+<div id="Acronym" class="tab-pane fade">
+  <div class="card mb-2">
+    <h5 class="card-header"> Item /3 </h5>
+    <div class="row row-cols-1 row-cols-lg-2 g-2">
+      <div class="col">
+        <div class="d-flex border-top rounded">
+          <div class="flex-shrink-0">
+            <a class="whiteitem Omen" data-hover="?s=Data%5CBaseItemTypes%2FMetadata%2FItems%2FCurrency%2FOmenOnDivineSanctify" href="Omen_of_Sanctification">
+              <img loading="lazy" src="https://cdn.poe2db.tw/image/Art/2DItems/Currency/Omens/OmenOnDivineSanctify.webp" alt="OmenOnDivineSanctify" class="w1" />
+            </a>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <a class="whiteitem Omen" data-hover="?s=Data%5CBaseItemTypes%2FMetadata%2FItems%2FCurrency%2FOmenOnDivineSanctify" href="Omen_of_Sanctification">Omen of Sanctification</a>
+            <div>
+              <div class="property">Stack Size: <span class='colourDefault'>1 / 10</span></div>
+              <div class="separator"></div>
+              <div class="explicitMod">While this item is active in your inventory your next<br />
+Divine Orb used on a <a data-keyword="ItemRarity" href="Item_Rarity">Rare</a> item will <a data-keyword="Sanctified" href="Sanctified_Items">Sanctify</a> it</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
 test("classifyCurrencyFamily splits broad currency into useful families", () => {
   assert.deepEqual(
     classifyCurrencyFamily({ name: "Concentrated Liquid Isolation", category: "StackableCurrencyItem", description_en: "Players in Area are 50% Delirious" }),
@@ -92,6 +121,10 @@ test("classifyCurrencyFamily splits broad currency into useful families", () => 
   assert.deepEqual(
     classifyCurrencyFamily({ name: "Greater Essence of Ruin", category: "Essence", description_en: "" }),
     { family: "essence", family_label: "Essence" }
+  );
+  assert.deepEqual(
+    classifyCurrencyFamily({ name: "Omen of Sanctification", category: "StackableCurrencyItem", description_en: "While this item is active in your inventory your next Divine Orb used on a Rare item will Sanctify it" }),
+    { family: "omen", family_label: "Omen" }
   );
   assert.equal(
     translateCurrencyText("Players in Area are 50% Delirious"),
@@ -130,6 +163,45 @@ test("parseCurrencyPage extracts categories, item records, stack size, and effec
   assert.equal(currencies[2].category_label, "Essence");
   assert.equal(currencies[2].family_label, "Essence");
   assert.equal(currencies[2].subtype_label, "Essence");
+});
+
+test("parseCurrencyRelatedItems extracts Acronym item references from currency detail pages", () => {
+  const related = parseCurrencyRelatedItems(divineDetailHtml, "https://poe2db.tw/us/Divine_Orb");
+
+  assert.deepEqual(related, [{
+    slug: "Omen_of_Sanctification",
+    name: "Omen of Sanctification",
+    source_url: "https://poe2db.tw/us/Omen_of_Sanctification",
+    icon_url: "https://cdn.poe2db.tw/image/Art/2DItems/Currency/Omens/OmenOnDivineSanctify.webp",
+    icon_alt: "OmenOnDivineSanctify",
+    hover_url: "https://poe2db.tw/us/Divine_Orb?s=Data%5CBaseItemTypes%2FMetadata%2FItems%2FCurrency%2FOmenOnDivineSanctify",
+    stack_size: "1 / 10",
+    description_en: "While this item is active in your inventory your next Divine Orb used on a Rare item will Sanctify it",
+    properties: ["Stack Size: 1 / 10"],
+    mods: ["While this item is active in your inventory your next Divine Orb used on a Rare item will Sanctify it"],
+    relation_source: "acronym-item"
+  }]);
+});
+
+test("buildBidirectionalCurrencyRelations mirrors related currency references both ways", () => {
+  const [divine, omen] = buildBidirectionalCurrencyRelations([{
+    slug: "Divine_Orb",
+    name: "Divine Orb",
+    source_url: "https://poe2db.tw/us/Divine_Orb",
+    icon_url: "divine.webp",
+    icon_alt: "Divine",
+    stack_size: "1 / 10",
+    description_en: "Randomises the numeric values of modifiers on an item",
+    properties: ["Stack Size: 1 / 10"],
+    mods: ["Randomises the numeric values of modifiers on an item"],
+    related_items: parseCurrencyRelatedItems(divineDetailHtml, "https://poe2db.tw/us/Divine_Orb")
+  }]).sort((a, b) => a.slug.localeCompare(b.slug));
+
+  assert.equal(divine.slug, "Divine_Orb");
+  assert.equal(omen.slug, "Omen_of_Sanctification");
+  assert.equal(divine.related_items[0].slug, "Omen_of_Sanctification");
+  assert.equal(omen.related_items[0].slug, "Divine_Orb");
+  assert.equal(omen.related_items[0].description_en, "Randomises the numeric values of modifiers on an item");
 });
 
 test("currency data uses subtype consistently for tags and filters", () => {
@@ -207,6 +279,14 @@ test("translateCurrencyText covers production currency and essence lines without
     [
       "Belt: On Corruption, Item gains two Enchantments",
       "Belt: khi Corrupt, item nhận hai Enchantment."
+    ],
+    [
+      "While this item is active in your inventory your next Chaos Orb will remove the lowest level modifier",
+      "Khi item này đang active trong inventory, Chaos Orb tiếp theo của bạn sẽ xóa modifier có cấp thấp nhất."
+    ],
+    [
+      "While this item is active in your inventory your next Divine Orb used on a Rare item will Sanctify it",
+      "Khi item này đang active trong inventory, Divine Orb tiếp theo của bạn khi dùng lên Rare item sẽ Sanctify item đó."
     ]
   ]);
 

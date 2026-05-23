@@ -64,9 +64,9 @@
 
 <body class="dictionary-bg min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
   <a class="skip-link rounded-lg bg-amber-600 px-4 py-2 text-sm font-black text-white shadow-md2" href="#main">Bỏ qua điều hướng</a>
-  <div data-component="site-header" data-max-width="1280"></div>
+  <div data-component="site-header"></div>
 
-  <main class="mx-auto grid max-w-[1280px] gap-6 px-4 py-6 sm:px-6 lg:px-8" id="main">
+  <main class="poe-shell-container grid gap-6 py-6" id="main">
     
     <!-- Premium Header Dashboard Panel -->
     <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Từ điển thuật ngữ">
@@ -141,16 +141,9 @@
           <p class="mt-2 text-sm md:text-base font-semibold leading-relaxed text-slate-800 dark:text-slate-200" id="modalMeaning"></p>
         </div>
 
-        <!-- original English -->
+        <!-- Original quote -->
         <div class="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800/40" id="modalOriginalContainer">
-          <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nguyên bản PoE2DB English</h3>
-          <p class="mt-2 rounded-lg border border-slate-100 bg-slate-50/50 p-3 text-xs font-semibold leading-relaxed text-slate-600 dark:border-slate-800/40 dark:bg-slate-950/40 dark:text-slate-400 italic" id="modalOriginal" translate="no"></p>
-        </div>
-
-        <!-- Keep rationale -->
-        <div class="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800/40" id="modalKeepContainer">
-          <h4 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Quy chuẩn giữ từ gốc</h4>
-          <p class="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed" id="modalKeep"></p>
+          <p class="rounded-lg border border-slate-100 bg-slate-50/50 p-3 text-xs font-semibold leading-relaxed text-slate-600 dark:border-slate-800/40 dark:bg-slate-950/40 dark:text-slate-400 italic" id="modalOriginal" translate="no"></p>
         </div>
 
         <!-- Variants Chips -->
@@ -190,8 +183,6 @@
     const modalMeaning = document.getElementById("modalMeaning");
     const modalOriginal = document.getElementById("modalOriginal");
     const modalOriginalContainer = document.getElementById("modalOriginalContainer");
-    const modalKeep = document.getElementById("modalKeep");
-    const modalKeepContainer = document.getElementById("modalKeepContainer");
     const modalVariants = document.getElementById("modalVariants");
     const modalVariantsContainer = document.getElementById("modalVariantsContainer");
     const closeModalBtn = document.getElementById("closeModalBtn");
@@ -231,12 +222,6 @@
 
     const compactMeaning = (term) => {
       const meaning = String(term.meaning || "").trim();
-      if (/là keyword gốc của PoE2DB|keyword\/tooltip gốc của PoE2DB/i.test(meaning)) {
-        return "Keyword in-game, dùng để tra cứu thuộc tính / tooltips.";
-      }
-      if (/là tag gốc của Skill Gem/i.test(meaning)) {
-        return "Tag skill của Skill Gem in-game, dùng để tra cứu.";
-      }
       return clipText(meaning);
     };
 
@@ -313,14 +298,6 @@
         modalOriginalContainer.classList.remove("hidden");
       } else {
         modalOriginalContainer.classList.add("hidden");
-      }
-
-      // Keep rationale
-      if (termObj.keep) {
-        modalKeep.textContent = termObj.keep;
-        modalKeepContainer.classList.remove("hidden");
-      } else {
-        modalKeepContainer.classList.add("hidden");
       }
 
       // Variants

@@ -45,8 +45,8 @@ export const serializeCookie = (name, value, options = {}) => {
 };
 
 const normalizeReturnTo = (value) => {
-  const text = String(value || "/leveling.html").trim();
-  if (!text.startsWith("/") || text.startsWith("//") || /[\r\n]/.test(text)) return "/leveling.html";
+  const text = String(value || "/leveling").trim();
+  if (!text.startsWith("/") || text.startsWith("//") || /[\r\n]/.test(text)) return "/leveling";
   return text;
 };
 

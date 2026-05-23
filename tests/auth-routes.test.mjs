@@ -60,7 +60,7 @@ test("Google start route reports a clear error when OAuth is not configured", as
   try {
     const response = await app.inject({
       method: "GET",
-      url: "/api/auth/google/start?returnTo=/leveling.html"
+      url: "/api/auth/google/start?returnTo=/leveling"
     });
 
     assert.equal(response.statusCode, 503);

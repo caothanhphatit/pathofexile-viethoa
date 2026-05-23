@@ -2,13 +2,13 @@
   const brandTitle = "POE2 Việt hóa";
   const defaultSubtitle = "0.5.0 · Return of the Ancients";
   const fallbackRoutes = {
-    home: { title: "Home", href: "index.html", icon: "home", navOrder: 10 },
-    patchnote: { title: "Patch note", href: "patchnote_vn.html", icon: "article", navOrder: 20 },
-    dictionary: { title: "Từ điển", href: "dictionary.html", icon: "translate", navOrder: 30 },
-    weapon: { title: "Weapon", href: "weapon.html", icon: "swords", navOrder: 40 },
-    skillgems: { title: "Skill gems", href: "skill_gems.html", icon: "auto_awesome_motion", navOrder: 50 },
-    currency: { title: "Currency", href: "currency.html", icon: "toll", navOrder: 60 },
-    leveling: { title: "Leveling", href: "leveling.html", icon: "checklist", navOrder: 70 }
+    home: { title: "Home", href: "/", icon: "home", navOrder: 10 },
+    patchnote: { title: "Patch note", href: "/patchnote", icon: "article", navOrder: 20 },
+    dictionary: { title: "Từ điển", href: "/dictionary", icon: "translate", navOrder: 30 },
+    weapon: { title: "Weapon", href: "/weapon", icon: "swords", navOrder: 40 },
+    skillgems: { title: "Skill gems", href: "/skill-gems", icon: "auto_awesome_motion", navOrder: 50 },
+    currency: { title: "Currency", href: "/currency", icon: "toll", navOrder: 60 },
+    leveling: { title: "Leveling", href: "/leveling", icon: "checklist", navOrder: 70 }
   };
 
   const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
@@ -22,38 +22,31 @@
   const router = () => window.PoeRouter || {};
   const routes = () => (window.PoeRouter && window.PoeRouter.routes) || fallbackRoutes;
   const activeRoute = () => router().currentRoute?.() || "home";
-  const routeHref = (key) => router().to?.(key) || routes()[key]?.href || fallbackRoutes[key]?.href || "index.html";
+  const routeHref = (key) => router().to?.(key) || routes()[key]?.href || fallbackRoutes[key]?.href || "/";
   const navRoutes = () => Object.entries(routes())
     .filter(([, route]) => Number.isFinite(route.navOrder))
     .sort(([, a], [, b]) => a.navOrder - b.navOrder);
 
-  const desktopClass = (active) => active
-    ? "inline-flex h-9 items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 text-sm font-black text-amber-700 shadow-sm dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30"
-    : "inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white";
-
-  const mobileClass = (active) => active
-    ? "inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-amber-600 px-3 text-sm font-black text-white shadow-sm border border-amber-600"
-    : "inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-slate-100 px-3 text-sm font-bold text-slate-700 dark:bg-slate-900 dark:text-slate-200";
+  const desktopClass = (active) => `poe-nav-link${active ? " poe-nav-link-active" : ""}`;
+  const mobileClass = (active) => `poe-nav-link poe-nav-link-mobile${active ? " poe-nav-link-mobile-active" : ""}`;
 
   const renderNavLink = ([key, route], mode, active) => `
     <a class="${mode === "desktop" ? desktopClass(active) : mobileClass(active)}" href="${escapeHtml(routeHref(key))}" data-route="${escapeHtml(key)}"${active ? " aria-current=\"page\"" : ""}>
-      <span class="material-symbols-rounded text-base" aria-hidden="true">${escapeHtml(route.icon || "circle")}</span>${escapeHtml(route.title)}
+      <span class="material-symbols-rounded poe-nav-icon" aria-hidden="true">${escapeHtml(route.icon || "circle")}</span>${escapeHtml(route.title)}
     </a>
   `;
 
   const renderSiteHeader = (target) => {
     const active = activeRoute();
-    const parsedMaxWidth = Number.parseInt(target.dataset.maxWidth || "1280", 10);
-    const maxWidth = Number.isFinite(parsedMaxWidth) && parsedMaxWidth > 0 ? parsedMaxWidth : 1280;
     const desktopBreakpoint = target.dataset.desktopBreakpoint || "lg";
     const subtitle = target.dataset.subtitle || routes()[active]?.title || defaultSubtitle;
-    const desktopNavClass = `hidden items-center gap-1 rounded-lg border border-slate-200 bg-slate-100/80 p-1 dark:border-slate-800 dark:bg-slate-900 ${desktopBreakpoint}:flex`;
+    const desktopNavClass = `poe-nav-rail ${desktopBreakpoint}:flex`;
     const mobileNavClass = `nav-scroll -mx-1 flex gap-1 overflow-x-auto pb-3 ${desktopBreakpoint}:hidden`;
     const links = navRoutes();
 
     target.outerHTML = `
       <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95" data-component="site-header">
-        <div class="mx-auto px-4 sm:px-6 lg:px-8" style="max-width: ${maxWidth}px">
+        <div class="poe-shell-container">
           <div class="flex h-16 items-center justify-between gap-3">
             <a class="flex min-w-0 items-center gap-3 no-underline" href="${escapeHtml(routeHref("home"))}" data-route="home" aria-label="Về trang chủ">
               <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-950 text-white shadow-md1 dark:bg-white dark:text-slate-950">
@@ -83,7 +76,12 @@
 
   const applyThemeState = (themeToggle, themeIcon) => {
     const isDark = document.documentElement.classList.contains("dark");
-    document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+    if (window.PoeTheme?.applyCriticalThemePaint) {
+      window.PoeTheme.applyCriticalThemePaint(isDark);
+    } else {
+      document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+      document.documentElement.style.backgroundColor = isDark ? "#060813" : "#f8fafc";
+    }
     themeIcon.textContent = isDark ? "light_mode" : "dark_mode";
     themeToggle.setAttribute("aria-label", isDark ? "Đổi giao diện sang sáng" : "Đổi giao diện sang tối");
     window.dispatchEvent(new CustomEvent("poe-theme-change", { detail: { isDark } }));
@@ -136,7 +134,7 @@
     if (poeTermsRegex) return;
     const terms = window.POE2_DICTIONARY_TERMS?.terms || [];
     const patterns = [];
-    
+
     for (const termObj of terms) {
       const mainTerm = termObj.term;
       if (mainTerm) {
@@ -189,13 +187,37 @@
         if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
         const parentEl = node.parentElement;
         if (!parentEl) return NodeFilter.FILTER_REJECT;
-        const parentTagName = parentEl.tagName.toLowerCase();
-        if (["script", "style", "textarea", "select", "option", "input", "button", "a"].includes(parentTagName)) {
+
+        // Comprehensive selector to exclude interactive components, filter controls, navigation items,
+        // and item/skill/currency names/headings where dictionary tooltips should not interfere.
+        const EXCLUDE_SELECTOR = [
+          // Standard interactive tags
+          "a", "button", "select", "option", "input", "textarea", "[role='button']",
+
+          // Header & Title tags
+          "h1", "h2", "h3", "h4", "h5", "h6",
+
+          // Navigation, CTA, and filter/pill buttons and containers
+          ".btn", ".button", ".poe-nav-link", ".poe-nav-rail", ".subtype-pill", ".filter-btn",
+          ".filter-button", ".reset-btn", ".skill-cta", ".currency-cta", ".item-cta", ".cta",
+          ".filter-group", ".filters", ".filter-section", "#resetFilters",
+
+          // Item, Gem, Currency, or Weapon titles/names (lists or detail headers)
+          ".card-title", ".card-header", ".item-name", ".gem-name", ".currency-name", ".weapon-name",
+          ".card-name", ".item-title", ".currency-card-title", ".detail-title", ".modal-title",
+          ".dialog-title", "#modalTitle", "#cmodalTitle", "#poeTermModalTitle",
+
+          // Custom attributes or classes to explicitly disable tooltips
+          "[translate='no']", "[data-no-tooltip]", ".no-tooltip", ".poe-no-tooltip",
+
+          // Tooltip container itself
+          ".poe-term", ".poe-tooltip-box", ".poe-term-modal"
+        ].join(", ");
+
+        if (parentEl.closest(EXCLUDE_SELECTOR)) {
           return NodeFilter.FILTER_REJECT;
         }
-        if (parentEl.classList.contains("poe-term") || parentEl.closest(".poe-term, .poe-tooltip-box, .poe-term-modal")) {
-          return NodeFilter.FILTER_REJECT;
-        }
+
         return NodeFilter.FILTER_ACCEPT;
       }
     });
@@ -214,7 +236,7 @@
     if (!poeTermsRegex) return;
     const text = node.nodeValue;
     poeTermsRegex.lastIndex = 0;
-    
+
     let match;
     let lastIndex = 0;
     const fragment = document.createDocumentFragment();
@@ -224,11 +246,11 @@
       hasMatches = true;
       const matchText = match[0];
       const matchIndex = match.index;
-      
+
       if (matchIndex > lastIndex) {
         fragment.appendChild(document.createTextNode(text.slice(lastIndex, matchIndex)));
       }
-      
+
       const termObj = poeTermsMap.get(matchText.toLowerCase());
       if (termObj) {
         const btn = document.createElement("button");
@@ -240,7 +262,7 @@
       } else {
         fragment.appendChild(document.createTextNode(matchText));
       }
-      
+
       lastIndex = poeTermsRegex.lastIndex;
     }
 
@@ -386,28 +408,28 @@
   const positionTooltip = (target) => {
     const targetRect = target.getBoundingClientRect();
     const tooltipRect = tooltipEl.getBoundingClientRect();
-    
+
     let top = targetRect.top - tooltipRect.height - 8;
     let left = targetRect.left + (targetRect.width - tooltipRect.width) / 2;
-    
+
     if (top < 8) {
       top = targetRect.bottom + 8;
     }
-    
+
     const viewportWidth = window.innerWidth;
     if (left < 8) {
       left = 8;
     } else if (left + tooltipRect.width > viewportWidth - 8) {
       left = viewportWidth - tooltipRect.width - 8;
     }
-    
+
     tooltipEl.style.top = `${top}px`;
     tooltipEl.style.left = `${left}px`;
   };
 
   const startObserver = () => {
     if (observer) return;
-    
+
     applyTooltips(document.body);
 
     observer = new MutationObserver((mutations) => {
@@ -431,7 +453,7 @@
   };
 
   const loadDictionaryAndInitTooltips = () => {
-    if (window.location.pathname.includes("dictionary.html")) return;
+    if (router().currentRoute?.() === "dictionary" || window.location.pathname.includes("dictionary.html")) return;
     if (window.POE2_DICTIONARY_TERMS) {
       startObserver();
       return;
@@ -458,9 +480,9 @@
     if (!termObj) return;
 
     initTooltipElement();
-    
+
     const categoryLabel = getTermCategoryLabel(termObj);
-    
+
     tooltipEl.innerHTML = `
       <div class="flex items-center justify-between gap-2 border-b border-amber-500/15 pb-1 mb-1">
         <span class="font-display font-black text-white text-[12px]" translate="no">${escapeHtml(termObj.term)}</span>
@@ -476,7 +498,7 @@
   document.addEventListener("mouseleave", (e) => {
     const target = e.target.closest?.(".poe-term");
     if (!target) return;
-    
+
     if (tooltipEl) {
       tooltipEl.classList.add("hidden");
     }

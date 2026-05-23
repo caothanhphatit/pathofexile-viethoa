@@ -13,7 +13,7 @@ test("weapon guide exposes a Vietnamese NEWBIE tab with PoE2 weapon basics", asy
   assert.match(html, /role="tablist"/);
   assert.match(html, /id="tab-newbie"/);
   assert.match(html, /\bNEWBIE\b/);
-  assert.match(html, /Ưu tiên khi nhặt weapon/);
+  assert.match(html, /Ưu tiên khi nhặt vũ khí/);
   assert.match(html, /Martial Weapon/);
   assert.match(html, /Caster Weapon/);
   assert.match(html, /Artificer's Orb/);
@@ -34,8 +34,8 @@ test("weapon guide is linked from home and app routes", async () => {
     readProjectFile("app-routes.js")
   ]);
 
-  assert.match(home, /href="weapon\.html"/);
+  assert.match(home, /href="\/weapon"/);
   assert.match(home, />Weapon</);
   assert.match(routes, /weapon:\s*{/);
-  assert.match(routes, /weapon\.html/);
+  assert.match(routes, /href:\s*"\/weapon"/);
 });

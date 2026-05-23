@@ -35,6 +35,22 @@ test("shared base CSS does not block first paint with remote font imports", asyn
   assert.match(css, /system-ui/);
 });
 
+test("shared base CSS reserves the scrollbar gutter to prevent horizontal page jumps", async () => {
+  const css = await readFile(join(repoRoot, "src", "styles", "app.css"), "utf8");
+
+  assert.match(css, /scrollbar-gutter:\s*stable/);
+  assert.match(css, /overflow-y:\s*scroll/);
+  assert.match(css, /\.poe-shell-container/);
+});
+
+test("shared base CSS opts into smooth same-origin page transitions", async () => {
+  const css = await readFile(join(repoRoot, "src", "styles", "app.css"), "utf8");
+
+  assert.match(css, /@view-transition\s*{\s*navigation:\s*auto;/);
+  assert.match(css, /::view-transition-old\(root\)/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+});
+
 test("production pages load compiled Tailwind CSS instead of the browser CDN runtime", async () => {
   const cssStat = await stat(join(repoRoot, "public", "dist", "app.css"));
   assert.ok(cssStat.size > 25_000, "compiled Tailwind CSS should contain generated utilities");

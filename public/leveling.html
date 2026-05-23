@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leveling campaign Việt hóa - POE2</title>
+  <title>Hưỡng dẫn campaign, từ act1-endgame - POE2</title>
   <script src="components/theme-boot.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -719,39 +719,48 @@
 
 <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
   <div id="top"></div>
-  <div data-component="site-header" data-max-width="1200"></div>
+  <div data-component="site-header"></div>
 
-  <main class="mx-auto grid max-w-[1280px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
-    <article class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
-      <header class="border-b border-slate-200 px-6 py-6 dark:border-slate-800">
-        <div class="flex flex-wrap items-start justify-between gap-5">
-          <div class="max-w-3xl">
-            <p class="text-xs font-black uppercase tracking-[.16em] text-amber-700 dark:text-amber-300">Leveling guide</p>
-            <h1 class="mt-3 text-3xl font-black leading-tight text-slate-950 sm:text-4xl dark:text-white">Campaign checklist - Act 1 tới ENGAME</h1>
-          </div>
-          <div class="grid min-w-[220px] grid-cols-2 gap-2 text-center">
-            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/70">
-              <p class="text-2xl font-black text-slate-950 dark:text-white" id="heroTaskCount">0</p>
-              <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Task</p>
-            </div>
-            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/70">
-              <p class="text-2xl font-black text-slate-950 dark:text-white">1-4</p>
-              <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Acts</p>
-            </div>
+  <main class="poe-shell-container grid gap-6 py-6">
+    <!-- Premium Header Dashboard Panel -->
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Leveling campaign">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-gold">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">checklist</span>
+          </span>
+          <div>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Hưỡng dẫn campaign, từ act1-endgame</h1>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Checklist nhiệm vụ, bản đồ và phần thưởng theo từng Zone</p>
           </div>
         </div>
-        <div class="mt-5 flex flex-wrap gap-2">
-          <a class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-black text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700" href="https://domistae.github.io/poe2-leveling/poe2_act1_guide.html#riverbank" target="_blank" rel="noopener noreferrer">
-            <span class="material-symbols-rounded text-base">open_in_new</span>
-            Nguồn Domistae
-          </a>
-          <a class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" href="#route-checklist">
-            <span class="material-symbols-rounded text-base">checklist</span>
-            Bắt đầu checklist
-          </a>
-        </div>
-      </header>
 
+        <div class="flex flex-wrap items-center gap-2 md:justify-end">
+          <div class="grid grid-cols-2 gap-2 text-center text-xs font-bold">
+            <div class="rounded-xl border border-slate-200/50 bg-slate-50/80 px-4 py-2 dark:border-slate-800 dark:bg-slate-900/60">
+              <p class="text-lg font-black text-slate-950 dark:text-white" id="heroTaskCount">0</p>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tasks</p>
+            </div>
+            <div class="rounded-xl border border-slate-200/50 bg-slate-50/80 px-4 py-2 dark:border-slate-800 dark:bg-slate-900/60">
+              <p class="text-lg font-black text-slate-950 dark:text-white">1-4</p>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">Acts</p>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <a class="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700" href="https://domistae.github.io/poe2-leveling/poe2_act1_guide.html#riverbank" target="_blank" rel="noopener noreferrer">
+              <span class="material-symbols-rounded text-sm">open_in_new</span>
+              Nguồn Domistae
+            </a>
+            <a class="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" href="#route-checklist">
+              <span class="material-symbols-rounded text-sm">checklist</span>
+              Checklist
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <section class="p-6" id="route-checklist">
         <div class="mb-5 inline-flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-white p-1 dark:border-slate-700 dark:bg-slate-900" role="tablist" aria-label="Checklist mode">
           <button class="checklist-tab is-active" type="button" role="tab" aria-selected="true" data-checklist-tab="classic">
@@ -1789,7 +1798,7 @@
       if (act && act !== "all") params.set("act", act);
       if (task) params.set("task", task);
       const hash = zone || task ? `#${zone || task}` : "";
-      return `leveling.html?${params.toString()}${hash}`;
+      return `/leveling?${params.toString()}${hash}`;
     };
 
     const setRoute = (route = {}, mode = "replace") => {

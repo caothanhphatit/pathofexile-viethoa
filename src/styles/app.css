@@ -4,6 +4,25 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 160ms;
+  animation-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms;
+  }
 }
 
 html.dark {
@@ -63,6 +82,36 @@ h6,
   display: none;
 }
 
+@layer components {
+  .poe-shell-container {
+    @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8;
+  }
+
+  .poe-nav-rail {
+    @apply hidden items-center gap-1 rounded-lg border border-slate-200 bg-slate-100/80 p-1 dark:border-slate-800 dark:bg-slate-900;
+  }
+
+  .poe-nav-link {
+    @apply inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-transparent px-3 text-sm font-bold leading-none text-slate-700 transition-colors hover:border-slate-300/70 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white;
+  }
+
+  .poe-nav-link-active {
+    @apply border-amber-500/25 bg-amber-500/10 text-amber-700 shadow-sm hover:border-amber-500/25 hover:bg-amber-500/10 hover:text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/10 dark:hover:text-amber-300;
+  }
+
+  .poe-nav-link-mobile {
+    @apply h-10 shrink-0 gap-2 bg-slate-100 dark:bg-slate-900;
+  }
+
+  .poe-nav-link-mobile-active {
+    @apply border-amber-600 bg-amber-600 text-white shadow-sm hover:border-amber-600 hover:bg-amber-600 hover:text-white dark:border-amber-500/35 dark:bg-amber-500/15 dark:text-amber-200 dark:hover:border-amber-500/35 dark:hover:bg-amber-500/15 dark:hover:text-amber-200;
+  }
+
+  .poe-nav-icon {
+    @apply w-5 shrink-0 text-center text-base leading-none;
+  }
+}
+
 .glass-panel {
   border: 1px solid rgba(226, 232, 240, 0.8);
   background: rgba(255, 255, 255, 0.8);
@@ -113,4 +162,243 @@ h6,
 
 .dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* PoE 2 Dotted Terms inside Highlights inheriting parent styling */
+.term-attack .poe-term, .term-attack.poe-term {
+  color: #f43f5e !important;
+  border-color: rgba(244, 63, 94, 0.4) !important;
+}
+.dark .term-attack .poe-term, .dark .term-attack.poe-term {
+  color: #fb7185 !important;
+  border-color: rgba(251, 113, 133, 0.4) !important;
+}
+
+.term-spell .poe-term, .term-spell.poe-term {
+  color: #3b82f6 !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+.dark .term-spell .poe-term, .dark .term-spell.poe-term {
+  color: #60a5fa !important;
+  border-color: rgba(96, 165, 250, 0.4) !important;
+}
+
+.rarity-magic .poe-term, .rarity-magic.poe-term {
+  color: #2563eb !important;
+  border-color: rgba(37,99,235,0.4) !important;
+}
+.dark .rarity-magic .poe-term, .dark .rarity-magic.poe-term {
+  color: #3b82f6 !important;
+  border-color: rgba(59,130,246,0.4) !important;
+}
+
+.rarity-rare .poe-term, .rarity-rare.poe-term {
+  color: #b45309 !important;
+  border-color: rgba(180,83,9,0.4) !important;
+}
+.dark .rarity-rare .poe-term, .dark .rarity-rare.poe-term {
+  color: #facc15 !important;
+  border-color: rgba(250,204,21,0.4) !important;
+}
+
+.rarity-unique .poe-term, .rarity-unique.poe-term {
+  color: #c2410c !important;
+  border-color: rgba(194,65,12,0.4) !important;
+}
+.dark .rarity-unique .poe-term, .dark .rarity-unique.poe-term {
+  color: #f97316 !important;
+  border-color: rgba(249,115,22,0.4) !important;
+}
+
+.stat-important .poe-term, .stat-important.poe-term {
+  color: inherit !important;
+  border-color: currentColor !important;
+  font-weight: 850 !important;
+}
+
+.stat-highlight .poe-term, .stat-highlight.poe-term {
+  color: inherit !important;
+  border-color: currentColor !important;
+  font-weight: 800 !important;
+}
+
+/* Custom Nav Tab Styling with distinct gaming themes */
+
+/* Home - Slate/Blue */
+.poe-nav-link[data-route="home"]:hover {
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  background-color: rgba(148, 163, 184, 0.08) !important;
+  color: #475569 !important;
+}
+.dark .poe-nav-link[data-route="home"]:hover {
+  color: #cbd5e1 !important;
+}
+.poe-nav-link-active[data-route="home"],
+.poe-nav-link-active[data-route="home"]:hover {
+  border-color: rgba(148, 163, 184, 0.4) !important;
+  background-color: rgba(148, 163, 184, 0.12) !important;
+  color: #334155 !important;
+}
+.dark .poe-nav-link-active[data-route="home"],
+.dark .poe-nav-link-active[data-route="home"]:hover {
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  background-color: rgba(148, 163, 184, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+/* Patch Note - Sky Blue */
+.poe-nav-link[data-route="patchnote"]:hover {
+  border-color: rgba(14, 165, 233, 0.3) !important;
+  background-color: rgba(14, 165, 233, 0.08) !important;
+  color: #0284c7 !important;
+}
+.dark .poe-nav-link[data-route="patchnote"]:hover {
+  color: #38bdf8 !important;
+}
+.poe-nav-link-active[data-route="patchnote"],
+.poe-nav-link-active[data-route="patchnote"]:hover {
+  border-color: rgba(14, 165, 233, 0.4) !important;
+  background-color: rgba(14, 165, 233, 0.12) !important;
+  color: #0369a1 !important;
+}
+.dark .poe-nav-link-active[data-route="patchnote"],
+.dark .poe-nav-link-active[data-route="patchnote"]:hover {
+  border-color: rgba(14, 165, 233, 0.3) !important;
+  background-color: rgba(14, 165, 233, 0.1) !important;
+  color: #7dd3fc !important;
+}
+
+/* Dictionary - Amethyst Purple */
+.poe-nav-link[data-route="dictionary"]:hover {
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  background-color: rgba(168, 85, 247, 0.08) !important;
+  color: #9333ea !important;
+}
+.dark .poe-nav-link[data-route="dictionary"]:hover {
+  color: #c084fc !important;
+}
+.poe-nav-link-active[data-route="dictionary"],
+.poe-nav-link-active[data-route="dictionary"]:hover {
+  border-color: rgba(168, 85, 247, 0.4) !important;
+  background-color: rgba(168, 85, 247, 0.12) !important;
+  color: #7e22ce !important;
+}
+.dark .poe-nav-link-active[data-route="dictionary"],
+.dark .poe-nav-link-active[data-route="dictionary"]:hover {
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  background-color: rgba(168, 85, 247, 0.1) !important;
+  color: #d8b4fe !important;
+}
+
+/* Weapon - Ruby Rose */
+.poe-nav-link[data-route="weapon"]:hover {
+  border-color: rgba(244, 63, 94, 0.3) !important;
+  background-color: rgba(244, 63, 94, 0.08) !important;
+  color: #e11d48 !important;
+}
+.dark .poe-nav-link[data-route="weapon"]:hover {
+  color: #fb7185 !important;
+}
+.poe-nav-link-active[data-route="weapon"],
+.poe-nav-link-active[data-route="weapon"]:hover {
+  border-color: rgba(244, 63, 94, 0.4) !important;
+  background-color: rgba(244, 63, 94, 0.12) !important;
+  color: #be123c !important;
+}
+.dark .poe-nav-link-active[data-route="weapon"],
+.dark .poe-nav-link-active[data-route="weapon"]:hover {
+  border-color: rgba(244, 63, 94, 0.3) !important;
+  background-color: rgba(244, 63, 94, 0.1) !important;
+  color: #fda4af !important;
+}
+
+/* Skill Gems - Emerald Green */
+.poe-nav-link[data-route="skillgems"]:hover {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  color: #059669 !important;
+}
+.dark .poe-nav-link[data-route="skillgems"]:hover {
+  color: #34d399 !important;
+}
+.poe-nav-link-active[data-route="skillgems"],
+.poe-nav-link-active[data-route="skillgems"]:hover {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #047857 !important;
+}
+.dark .poe-nav-link-active[data-route="skillgems"],
+.dark .poe-nav-link-active[data-route="skillgems"]:hover {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  background-color: rgba(16, 185, 129, 0.1) !important;
+  color: #6ee7b7 !important;
+}
+
+/* Currency - Amber/Gold */
+.poe-nav-link[data-route="currency"]:hover {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  color: #d97706 !important;
+}
+.dark .poe-nav-link[data-route="currency"]:hover {
+  color: #fbbf24 !important;
+}
+.poe-nav-link-active[data-route="currency"],
+.poe-nav-link-active[data-route="currency"]:hover {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  color: #b45309 !important;
+}
+.dark .poe-nav-link-active[data-route="currency"],
+.dark .poe-nav-link-active[data-route="currency"]:hover {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  color: #fcd34d !important;
+}
+
+/* Leveling - Cobalt Indigo */
+.poe-nav-link[data-route="leveling"]:hover {
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  background-color: rgba(99, 102, 241, 0.08) !important;
+  color: #4f46e5 !important;
+}
+.dark .poe-nav-link[data-route="leveling"]:hover {
+  color: #818cf8 !important;
+}
+.poe-nav-link-active[data-route="leveling"],
+.poe-nav-link-active[data-route="leveling"]:hover {
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  background-color: rgba(99, 102, 241, 0.12) !important;
+  color: #4338ca !important;
+}
+.dark .poe-nav-link-active[data-route="leveling"],
+.dark .poe-nav-link-active[data-route="leveling"]:hover {
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  background-color: rgba(99, 102, 241, 0.1) !important;
+}
+
+/* Prevent Layout Shift for Site Header placeholder on initial page load */
+[data-component="site-header"] {
+  display: block;
+  min-height: 4rem; /* 64px (h-16 desktop) */
+}
+
+@media (max-width: 1023px) {
+  [data-component="site-header"] {
+    min-height: 6.5rem; /* 104px on mobile (64px header + 40px mobile nav rail) */
+  }
+}
+
+/* Prevent layout micro-shifting when dictionary terms are dynamically wrapped into buttons */
+.poe-term {
+  display: inline !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: inherit !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  font-weight: inherit !important;
+  background: transparent !important;
+  border-bottom-width: 1px !important;
+  border-style: dotted !important;
 }

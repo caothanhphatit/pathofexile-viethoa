@@ -42,7 +42,7 @@ export const authRoutes = async (app) => {
 
   app.get("/api/auth/google/callback", async (request, reply) => {
     if (request.query.error) {
-      return reply.redirect(`${app.auth.appUrl}/leveling.html?auth=cancelled`);
+      return reply.redirect(`${app.auth.appUrl}/leveling?auth=cancelled`);
     }
     const code = String(request.query.code || "");
     const state = String(request.query.state || "");
