@@ -312,11 +312,6 @@
             <p class="mt-1 text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400" id="poeTermModalOriginal" translate="no"></p>
           </div>
 
-          <div class="mt-3 hidden text-xs font-bold leading-relaxed text-slate-500 dark:text-slate-400" id="poeTermModalKeepWrap">
-            <span class="text-slate-700 dark:text-slate-200">Quy chuẩn:</span>
-            <span id="poeTermModalKeep"></span>
-          </div>
-
           <div class="mt-3 hidden" id="poeTermModalVariantsWrap">
             <p class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400">Biến thể / ví dụ</p>
             <div class="mt-1.5 flex flex-wrap gap-1.5" id="poeTermModalVariants"></div>
@@ -364,8 +359,6 @@
     const meaning = termModalEl.querySelector("#poeTermModalMeaning");
     const originalWrap = termModalEl.querySelector("#poeTermModalOriginalWrap");
     const original = termModalEl.querySelector("#poeTermModalOriginal");
-    const keepWrap = termModalEl.querySelector("#poeTermModalKeepWrap");
-    const keep = termModalEl.querySelector("#poeTermModalKeep");
     const variantsWrap = termModalEl.querySelector("#poeTermModalVariantsWrap");
     const variants = termModalEl.querySelector("#poeTermModalVariants");
 
@@ -373,7 +366,6 @@
     title.textContent = termObj.term || term;
     meaning.textContent = termObj.meaning || "Chưa có mô tả Việt hóa.";
     setOptionalTextBlock(originalWrap, original, termObj.description_en);
-    setOptionalTextBlock(keepWrap, keep, termObj.keep);
 
     const variantList = [...new Set([
       ...(termObj.variants || []),

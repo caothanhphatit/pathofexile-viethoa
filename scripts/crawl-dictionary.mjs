@@ -99,8 +99,12 @@ const preferGeneratedCategory = (generatedCategory = "", manualCategory = "") =>
   return manualCategory;
 };
 
+const isPlaceholderMeaning = (value = "") => /keyword gốc của PoE2DB|tag gốc của Skill Gem|giữ nguyên tiếng Anh để trùng tooltip/i
+  .test(normalizeGlossaryText(value));
+
 const preferCleanMeaning = (term = "", ...candidates) => {
   for (const candidate of candidates.map(normalizeGlossaryText).filter(Boolean)) {
+    if (isPlaceholderMeaning(candidate)) continue;
     if (!hasDirtyEnglishDescription(candidate)) return candidate;
   }
   return fallbackKeywordMeaning(term);
@@ -140,7 +144,7 @@ const mergeWithExistingTerms = (generatedTerms, existingTerms, skillTagKeys = ne
     .map((term) => ({
       ...term,
       meaning: preferCleanMeaning(term.term, translateKeywordDescription(term.term, term.description_en || ""), term.meaning),
-      keep: term.keep || `${term.term} là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.`,
+      keep: term.keep || `Giữ nguyên "${term.term}" bằng tiếng Anh để khớp tooltip, modifier và UI trong game.`,
       examples: mergeExamples(term.examples || []),
       variants: mergeExamples(term.variants || [])
     }));

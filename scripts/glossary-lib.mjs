@@ -482,15 +482,113 @@ const inferCategory = (term = "", keyword = "") => {
 const uniqueSorted = (values = []) => [...new Set(values.map(normalizeGlossaryText).filter(Boolean))]
   .sort((a, b) => a.localeCompare(b, "en"));
 
+const exactFallbackMeanings = new Map([
+  ["Aftershock", "Aftershock là nhịp sát thương phụ xảy ra sau cú đánh chính, thường gặp ở Slam hoặc kỹ năng tạo chấn động. Nó có thể Hit lần nữa tại vùng tác động nên rất quan trọng với build đánh diện rộng."],
+  ["Aggravate", "Aggravate làm Bleeding trở nên nguy hiểm hơn, thường khiến mục tiêu chịu phần sát thương Bleed như khi đang di chuyển hoặc làm hiệu ứng Bleed mạnh hơn tùy nguồn."],
+  ["Ancestral Boost", "Ancestral Boost là trạng thái cường hóa gắn với nhóm kỹ năng/totem mang tính tổ tiên, giúp đòn đánh hoặc hiệu ứng liên quan mạnh hơn trong một thời gian ngắn."],
+  ["Ancestrally Boosted", "Ancestrally Boosted nghĩa là kỹ năng hoặc đòn đánh đang được Ancestral Boost cường hóa."],
+  ["Barrageable", "Barrageable là nhãn cho kỹ năng có thể bắn theo loạt hoặc tương tác với cơ chế Barrage, thường liên quan Projectile và nhiều phát liên tiếp."],
+  ["Base Skill Attack Time", "Base Skill Attack Time là thời gian tấn công cơ bản của kỹ năng trước khi cộng/trừ Attack Speed. Chỉ số càng thấp thì kỹ năng đánh càng nhanh."],
+  ["Blind", "Blind làm mục tiêu kém chính xác hơn, khiến Attack của chúng dễ hụt hơn. Đây là Debuff phòng thủ rất hữu ích khi đối đầu quái đánh bằng Attack."],
+  ["Blinding", "Blinding là hành động gây Blind lên mục tiêu."],
+  ["Block Chance", "Block Chance là tỉ lệ chặn Hit đi vào. Khi Block thành công, Damage của Hit bị chặn nhưng một số hiệu ứng phụ vẫn có thể xảy ra tùy cơ chế."],
+  ["Break Armour", "Break Armour là hành động làm giảm Armour của mục tiêu. Khi Armour bị phá về 0, mục tiêu thường rơi vào trạng thái Fully Broken và chịu Physical Damage tốt hơn."],
+  ["Chain", "Chain cho Projectile hoặc hiệu ứng bật sang mục tiêu khác sau khi Hit. Số Chain càng cao thì kỹ năng càng dọn nhóm quái tốt hơn."],
+  ["Chaining", "Chaining là cơ chế cho Projectile hoặc hiệu ứng bật nối tiếp sang mục tiêu khác sau khi Hit."],
+  ["Conditional", "Conditional là nhãn cho kỹ năng chỉ phát huy đầy đủ khi thỏa điều kiện cụ thể, ví dụ mục tiêu đang bị Debuff, ở trạng thái đặc biệt hoặc bạn đã chuẩn bị setup trước."],
+  ["Consume", "Consume nghĩa là tiêu thụ một tài nguyên/trạng thái như Charge, Corpse, Infusion hoặc buff để kích hoạt hiệu ứng mạnh hơn."],
+  ["Convert", "Convert là chuyển một phần Damage hoặc tài nguyên từ dạng này sang dạng khác. Sau khi Convert, phần đó thường scaling theo loại mới."],
+  ["Cooldown Recovery Rate", "Cooldown Recovery Rate làm kỹ năng hồi cooldown nhanh hơn. Chỉ số này ảnh hưởng trực tiếp tới nhịp dùng lại skill có cooldown."],
+  ["Corpse", "Corpse là xác quái/người chơi để lại sau khi chết, có thể bị Consume, Detonate hoặc dùng làm điều kiện cho một số kỹ năng."],
+  ["Corrupted Blood", "Corrupted Blood là Debuff cộng dồn gây Physical Damage over Time lên nhân vật. Càng nhiều stack thì mất Life càng nhanh, thường cần Flask hoặc miễn nhiễm Corrupted Blood để xử lý."],
+  ["Cull", "Cull kết liễu mục tiêu ngay khi Life của mục tiêu xuống dưới ngưỡng nhất định, bỏ qua phần máu còn lại."],
+  ["Daze", "Daze làm mục tiêu bị gián đoạn nhịp hành động, thường dùng như một Debuff kiểm soát."],
+  ["Dazed", "Dazed là trạng thái đang bị Daze, khiến hành động hoặc phản ứng của mục tiêu bị suy giảm tùy nguồn gây hiệu ứng."],
+  ["Debuff", "Debuff là hiệu ứng bất lợi đặt lên mục tiêu, ví dụ giảm chỉ số, làm chậm, tăng Damage nhận vào hoặc khóa một phần khả năng hồi phục."],
+  ["Detonate", "Detonate kích nổ đối tượng như Corpse, Grenade, Crystal hoặc hiệu ứng đã đặt sẵn để gây Damage hoặc tạo hiệu ứng vùng."],
+  ["Detonated", "Detonated nghĩa là đối tượng đã bị kích nổ."],
+  ["Detonator", "Detonator là nhãn cho kỹ năng dùng để kích nổ Grenade, Corpse, Crystal hoặc hiệu ứng đã đặt trước."],
+  ["Dual Wielding", "Dual Wielding là đang cầm hai vũ khí một tay. Một số skill, passive hoặc modifier chỉ hoạt động khi bạn Dual Wield."],
+  ["Electrocute", "Electrocute là Ailment Lightning có thể làm mục tiêu bị khóa hành động trong thời gian ngắn sau khi tích đủ buildup."],
+  ["Element", "Element chỉ ba loại nguyên tố chính: Fire, Cold và Lightning."],
+  ["Empower", "Empower cường hóa kỹ năng hoặc hiệu ứng tiếp theo, thường bằng cách tiêu thụ Charge/tài nguyên để tăng Damage hoặc thêm thuộc tính."],
+  ["Energy", "Energy là tài nguyên tích lũy dùng cho một số Meta skill hoặc Trigger, thường được nạp khi điều kiện chiến đấu xảy ra rồi tiêu thụ để kích hoạt skill."],
+  ["Enraged", "Enraged là trạng thái cuồng nộ, thường làm quái hoặc nhân vật tăng Damage/tốc độ nhưng có thể đi kèm rủi ro."],
+  ["Evade", "Evade là né tránh Hit từ Attack. Khi Evade thành công, Hit đó không gây Damage lên bạn."],
+  ["Fork", "Fork làm Projectile tách thành nhiều Projectile mới sau khi Hit mục tiêu, giúp mở rộng vùng clear."],
+  ["Frozen", "Frozen là trạng thái bị đóng băng, khiến mục tiêu không thể hành động cho đến khi hiệu ứng kết thúc hoặc bị phá."],
+  ["Heavy Stun", "Heavy Stun là dạng Stun mạnh, khóa hành động lâu hơn và thường kích hoạt các hiệu ứng cần mục tiêu bị choáng nặng."],
+  ["Hinder", "Hinder là Debuff làm chậm Movement Speed của mục tiêu."],
+  ["Impale", "Impale găm một phần Physical Hit lên mục tiêu; các Hit sau có thể khai thác phần đã găm để gây thêm Damage."],
+  ["Invocation", "Invocation là cơ chế tích trữ hoặc gọi ra kỹ năng/hiệu ứng đã chuẩn bị, thường hoạt động như một dạng meta skill kích hoạt theo điều kiện."],
+  ["Knock Back", "Knock Back đẩy mục tiêu ra xa khỏi nguồn Hit hoặc hiệu ứng."],
+  ["Leech", "Leech hồi Life, Mana hoặc Energy Shield theo một phần Damage bạn gây ra trong thời gian ngắn."],
+  ["Low Life", "Low Life là trạng thái Life thấp dưới ngưỡng nhất định, thường dùng để kích hoạt passive, unique hoặc modifier đặc biệt."],
+  ["Maim", "Maim làm mục tiêu chậm lại và thường liên quan đến Physical Attack."],
+  ["Merging", "Merging là cơ chế hợp nhất nhiều thực thể, stack hoặc hiệu ứng thành một hiệu ứng lớn hơn."],
+  ["Overkill", "Overkill là phần Damage vượt quá lượng Life còn lại khi bạn kết liễu mục tiêu. Một số hiệu ứng dùng lượng Overkill để nổ lan hoặc hồi tài nguyên."],
+  ["Overwhelm", "Overwhelm bỏ qua hoặc xuyên qua một phần phòng thủ của mục tiêu, thường là Physical Damage Reduction hoặc Armour."],
+  ["Payoff", "Payoff là nhãn cho kỹ năng tiêu thụ setup/điều kiện đã chuẩn bị để tạo hiệu ứng mạnh hơn ở nhịp kết thúc."],
+  ["Penetrate", "Penetrate bỏ qua một phần Resistance của mục tiêu khi tính Damage, giúp Hit thuộc loại đó gây sát thương hiệu quả hơn."],
+  ["Pierce", "Pierce cho Projectile xuyên qua mục tiêu sau khi Hit để tiếp tục bay và có thể Hit mục tiêu phía sau."],
+  ["Pin", "Pin giữ mục tiêu tại chỗ hoặc hạn chế di chuyển, thường là hiệu ứng kiểm soát vị trí."],
+  ["Recharge", "Recharge là cơ chế hồi Energy Shield sau một khoảng trễ khi bạn không tiếp tục mất Energy Shield."],
+  ["Return", "Return làm Projectile quay ngược về phía nguồn bắn sau khi đi hết đường hoặc sau một điều kiện nhất định."],
+  ["Revive", "Revive hồi sinh đồng minh, minion hoặc thực thể đã chết tùy cơ chế."],
+  ["Shatter", "Shatter làm mục tiêu bị vỡ khi chết trong trạng thái Frozen hoặc dưới hiệu ứng Cold phù hợp, thường ngăn xác để lại Corpse."],
+  ["Shattered", "Shattered nghĩa là mục tiêu đã bị Shatter."],
+  ["Shapeshift", "Shapeshift là nhãn cho kỹ năng biến đổi hình thái, đổi bộ kỹ năng hoặc trạng thái chiến đấu của nhân vật."],
+  ["Shocked Ground", "Shocked Ground là vùng mặt đất gây Shock hoặc làm mục tiêu đứng trên đó chịu ảnh hưởng Lightning bất lợi."],
+  ["Skill Speed", "Skill Speed ảnh hưởng tốc độ thực hiện kỹ năng, bao gồm các thao tác như Attack, Cast hoặc dùng skill tùy loại."],
+  ["Slam", "Slam là nhóm kỹ năng melee đánh mạnh xuống đất hoặc vùng trước mặt, thường gây Area Damage và có thể tạo Aftershock."],
+  ["Strike", "Strike là nhóm kỹ năng melee đánh trực tiếp mục tiêu gần bạn, thường mạnh ở đánh đơn mục tiêu hoặc đánh theo tầm vũ khí."],
+  ["Travel", "Travel là nhãn cho kỹ năng di chuyển, dùng để lướt, nhảy, lao tới hoặc đổi vị trí trong combat."],
+  ["Unarmed", "Unarmed là trạng thái không dùng vũ khí trong tay chính để tấn công. Một số skill/passive như Hollow Palm cần điều kiện này."],
+  ["Volatility", "Volatility chỉ độ dao động của Damage hoặc hiệu ứng, làm kết quả có biên độ thấp-cao rõ hơn thay vì ổn định."],
+  ["Weapon Set", "Weapon Set là bộ trang bị vũ khí có thể hoán đổi. POE2 cho phép gán skill hoặc passive theo từng Weapon Set, nên một số kỹ năng yêu cầu active ở cả hai Weapon Set để hoạt động đúng."],
+  ["Wither", "Wither là Debuff làm mục tiêu chịu thêm Chaos Damage, thường có thể cộng dồn nhiều stack."],
+  ["Withers", "Withers là hành động gây Wither hoặc các stack Wither đang áp lên mục tiêu."]
+]);
+
+const damageTypeLabel = (value = "") => ({
+  fire: "Fire",
+  cold: "Cold",
+  lightning: "Lightning",
+  chaos: "Chaos",
+  physical: "Physical"
+})[value.toLowerCase()] || value;
+
+const fallbackSkillTagMeaning = (tag = "") => {
+  const clean = normalizeGlossaryText(tag);
+  if (!clean) return "";
+  if (exactFallbackMeanings.has(clean)) return exactFallbackMeanings.get(clean);
+  if (/^(bear|werewolf|wyvern)$/i.test(clean)) {
+    return `${clean} là nhãn cho kỹ năng gắn với hình thái hoặc sinh vật ${clean}, dùng để lọc các kỹ năng tương tác với dạng đó.`;
+  }
+  if (/^(banner|herald|mark|warcry)$/i.test(clean)) {
+    return `${clean} là nhãn cho nhóm skill hỗ trợ hoặc điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.`;
+  }
+  if (/^(grenade|hazard|orb|plant|storm|wind|nova|remnant)$/i.test(clean)) {
+    return `${clean} là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng ${clean}, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.`;
+  }
+  if (/^(command|companion|minion|totem)$/i.test(clean)) {
+    return `${clean} là nhãn cho skill điều khiển hoặc tương tác với đồng minh triệu hồi, companion, minion hay totem.`;
+  }
+  if (/^(conditional|payoff|detonator|barrageable|chaining|merging|shapeshift|travel)$/i.test(clean)) {
+    return `${clean} là nhãn cơ chế mô tả cách skill kích hoạt, nối chuỗi, di chuyển, biến hình hoặc nhận payoff từ điều kiện khác.`;
+  }
+  return `${clean} là nhãn phân loại cho nhóm kỹ năng có cơ chế ${clean}. Nhãn này giúp lọc skill và xác định support/modifier nào có thể tương tác.`;
+};
+
 const skillTagMeaning = (tag = "") =>
-  SKILL_TAG_MEANINGS.get(tag) || `${tag} là tag gốc của Skill Gem, giữ nguyên tiếng Anh để trùng tooltip, filter và tên tag trong game.`;
+  SKILL_TAG_MEANINGS.get(tag) || fallbackSkillTagMeaning(tag);
 
 export const buildSkillTagGlossaryTerms = (tags = []) => uniqueSorted(tags).map((tag) => ({
   term: tag,
   keyword: tag,
   category: inferCategory(tag, tag),
   meaning: skillTagMeaning(tag),
-  keep: `${tag} là tag gốc của Skill Gem, giữ nguyên để đối chiếu tooltip, filter và UI trong game.`,
+  keep: `Giữ nguyên "${tag}" bằng tiếng Anh để khớp tooltip, filter và UI trong game.`,
   variants: [],
   examples: [tag],
   description_en: "",
@@ -501,7 +599,54 @@ export const buildSkillTagGlossaryTerms = (tags = []) => uniqueSorted(tags).map(
 const glossaryTermKey = (term = "") => normalizeGlossaryText(term).toLocaleLowerCase("en-US");
 
 export function fallbackKeywordMeaning(term = "") {
-  return `${term} là keyword gốc của PoE2DB, thường xuất hiện trong tooltip hoặc modifier; app giữ nguyên tên tiếng Anh để đối chiếu đúng thuật ngữ in-game.`;
+  const clean = normalizeGlossaryText(term);
+  const lower = clean.toLowerCase();
+  if (!clean) return "";
+  if (exactFallbackMeanings.has(clean)) return exactFallbackMeanings.get(clean);
+  if (/^(banner|bear|barrageable|chaining|command|companion|conditional|detonator|grenade|hazard|herald|invocation|mark|merging|nova|orb|payoff|plant|remnant|shapeshift|slam|storm|strike|travel|warcry|werewolf|wind|wyvern)$/i.test(clean)) {
+    return fallbackSkillTagMeaning(clean);
+  }
+
+  const resistant = clean.match(/^(Fire|Cold|Lightning|Chaos|Physical) Resistant$/i);
+  if (resistant) {
+    const type = damageTypeLabel(resistant[1]);
+    return `${clean} chỉ mục tiêu có khả năng kháng ${type} cao hơn bình thường, vì vậy ${type} Damage kém hiệu quả hơn khi đánh vào mục tiêu đó.`;
+  }
+
+  const infused = clean.match(/^(Fire|Cold|Lightning|Chaos|Physical)-Infused$/i);
+  if (infused) {
+    const type = damageTypeLabel(infused[1]);
+    return `${clean} là trạng thái được truyền ${type}, thường làm đòn đánh hoặc kỹ năng gây thêm ${type} Damage hoặc nhận hiệu ứng phụ thuộc ${type}.`;
+  }
+
+  if (/aura$/i.test(clean)) {
+    return `${clean} là Aura tác động trong phạm vi quanh nguồn phát, thường buff đồng minh hoặc debuff kẻ địch tùy mô tả modifier.`;
+  }
+  if (/ground|surface/i.test(clean)) {
+    return `${clean} là hiệu ứng mặt đất. Đơn vị đứng trong vùng đó sẽ chịu Damage, Ailment hoặc Debuff tương ứng với loại hiệu ứng.`;
+  }
+  if (/critical|crit/i.test(clean)) {
+    return `${clean} là thuật ngữ liên quan đến Critical Hit, dùng để tính tỉ lệ chí mạng, Damage chí mạng hoặc điều kiện khi Hit chí mạng.`;
+  }
+  if (/armou?r|block|evad|resistance|defence|defense/i.test(clean)) {
+    return `${clean} là thuật ngữ phòng thủ, ảnh hưởng cách nhân vật hoặc monster giảm, chặn, né hoặc chịu Damage.`;
+  }
+  if (/life|mana|energy shield|charge|rage|spirit|reservation/i.test(clean)) {
+    return `${clean} là thuật ngữ tài nguyên/trạng thái, thường dùng làm điều kiện kích hoạt hoặc giới hạn hồi phục, tiêu hao và tích lũy.`;
+  }
+  if (/weapon|mace|spear|quarterstaff|buckler|charm|oil|orb|item|jewel|quiver/i.test(clean)) {
+    return `${clean} là thuật ngữ trang bị hoặc craft, thường dùng để chỉ loại item, nhóm vũ khí hoặc điều kiện áp dụng modifier/currency.`;
+  }
+  if (/skill|attack|spell|cooldown|cast|projectile|chain|fork|pierce|return|nova|slam|strike|warcry|trigger/i.test(clean)) {
+    return `${clean} là thuật ngữ kỹ năng, mô tả cách skill được dùng, hồi lại, bắn ra, lan mục tiêu hoặc tương tác với support/modifier.`;
+  }
+  if (/damage|fire|cold|lightning|chaos|physical|ailment|bleed|poison|ignite|shock|freeze|chill|wither/i.test(clean)) {
+    return `${clean} là thuật ngữ sát thương hoặc Ailment, dùng để xác định loại Damage, trạng thái bất lợi hoặc cách hiệu ứng scaling trên mục tiêu.`;
+  }
+  if (/(ed|ing|ate|ify|stun|daze|maim|hinder|pin|cull|kill|detonate|consume)$/i.test(lower)) {
+    return `${clean} là hành động hoặc trạng thái chiến đấu. Khi xuất hiện trong tooltip, nó thường là điều kiện kích hoạt hoặc hiệu ứng đang áp lên mục tiêu.`;
+  }
+  return `${clean} là thuật ngữ cơ chế trong POE2, dùng để mô tả một hiệu ứng, điều kiện hoặc nhóm tương tác trên skill, item và monster modifier.`;
 }
 
 const mergeTermRecords = (records = []) => {
@@ -563,7 +708,7 @@ export const buildGlossaryTerms = (references = [], hoverByUrl = new Map()) => {
       keyword,
       category: inferCategory(term, keyword),
       meaning,
-      keep: `${term} là keyword/tooltip gốc của PoE2DB, giữ nguyên để đối chiếu modifier và UI trong game.`,
+      keep: `Giữ nguyên "${term}" bằng tiếng Anh để khớp tooltip, modifier và UI trong game.`,
       variants,
       examples: variants.slice(0, 6),
       description_en: hover.description_en || "",

@@ -86,6 +86,19 @@ test("dictionary gives readable gameplay meanings for ailment core terms", async
   assert.match(byTerm.get("Lightning Ailment").meaning, /Shock|Electrocution|Lightning/i);
 });
 
+test("dictionary replaces placeholder glossary copy with gameplay meanings", async () => {
+  const dictionary = await loadDictionary();
+  const terms = dictionary.terms || [];
+  const byTerm = new Map(terms.map((entry) => [entry.term, entry]));
+  const placeholder = /keyword gốc|tag gốc|trùng tooltip|Keyword in-game|Quy chuẩn/i;
+  const bad = terms.filter((entry) => placeholder.test(entry.meaning) || placeholder.test(entry.keep || ""));
+
+  assert.equal(bad.length, 0, bad.map((entry) => entry.term).join(", "));
+  assert.match(byTerm.get("Weapon Set").meaning, /bộ trang bị vũ khí|hoán đổi|active ở cả hai Weapon Set/);
+  assert.match(byTerm.get("Corrupted Blood").meaning, /Debuff cộng dồn|Physical Damage over Time|stack/);
+  assert.match(byTerm.get("Barrageable").meaning, /bắn theo loạt|Barrage|Projectile/);
+});
+
 test("dictionary exposes every skill gem tag as an English lookup term", async () => {
   const [dictionary, skillGems] = await Promise.all([loadDictionary(), loadSkillGems()]);
   const lookupNames = new Set((dictionary.terms || []).map((entry) => entry.term));

@@ -55,6 +55,8 @@ test("tooltip term clicks open an in-page dictionary popup instead of navigating
   assert.match(shell, /aria-modal="true"/);
   assert.doesNotMatch(shell, /dictionary\.html\?q/);
   assert.doesNotMatch(shell, /window\.location\.href\s*=/);
+  assert.doesNotMatch(shell, /Quy chuẩn/);
+  assert.doesNotMatch(shell, /poeTermModalKeep/);
 });
 
 test("tooltip engine excludes filters, headers, and translate-no titles from being wrapped", async () => {
