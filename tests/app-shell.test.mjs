@@ -117,6 +117,7 @@ test("main pages use shared boot assets instead of inline shared setup", async (
   for (const page of shellPages) {
     const html = await readProjectFile(page);
 
+    assert.match(html, /rel="icon" href="\/favicon\.svg" type="image\/svg\+xml" sizes="any"/, `${page} exposes the site favicon`);
     assert.match(html, /components\/theme-boot\.js/, `${page} loads shared theme boot`);
     assert.match(html, /dist\/app\.css/, `${page} loads compiled app styles`);
     assert.doesNotMatch(html, /components\/tailwind-config\.js/, `${page} does not load runtime Tailwind config`);
@@ -126,6 +127,14 @@ test("main pages use shared boot assets instead of inline shared setup", async (
     assert.doesNotMatch(html, /localStorage\.getItem\("patchnote-theme"\)/, `${page} does not inline shared theme boot`);
     assert.doesNotMatch(html, /\.nav-scroll\s*{[^}]*scrollbar-width:\s*none/, `${page} does not inline shared nav-scroll styles`);
   }
+});
+
+test("site favicon is available from the public root for browsers and search crawlers", async () => {
+  const favicon = await readProjectFile("favicon.svg");
+
+  assert.match(favicon, /<svg[^>]*viewBox="0 0 96 96"/);
+  assert.match(favicon, /<path fill="url\(#coin\)"/);
+  assert.match(favicon, /<path fill="url\(#gem\)"/);
 });
 
 test("theme boot paints the document background before app CSS loads", async () => {
