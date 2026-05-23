@@ -110,6 +110,14 @@ h6,
   .poe-nav-icon {
     @apply w-5 shrink-0 text-center text-base leading-none;
   }
+
+  .poe-brand-mark {
+    @apply grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-amber-500/20 bg-slate-950 shadow-md1 dark:border-amber-500/30 dark:bg-slate-950;
+  }
+
+  .poe-brand-logo {
+    @apply h-full w-full object-contain p-0.5;
+  }
 }
 
 .glass-panel {

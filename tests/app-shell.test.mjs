@@ -25,6 +25,7 @@ test("app shell component owns shared header and theme behavior", async () => {
 
   assert.match(shell, /renderSiteHeader/);
   assert.match(shell, /initTheme/);
+  assert.match(shell, /poe2-viet-hoa-logo\.svg/);
   assert.match(shell, /data-component="site-header"/);
   assert.match(shell, /poe-shell-container/);
   assert.match(shell, /themeToggle/);

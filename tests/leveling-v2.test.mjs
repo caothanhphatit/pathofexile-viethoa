@@ -46,6 +46,14 @@ test("Checklist V2 is guest-first instead of blocking behind login", () => {
   assert.doesNotMatch(levelingV2, /root\.innerHTML = renderAuthGate\(\);\s*return;/);
 });
 
+test("Checklist V2 is visually locked while automatic mode is under development", () => {
+  assert.match(levelingHtml, /v2-locked-shell/);
+  assert.match(levelingHtml, /v2-lock-overlay/);
+  assert.match(levelingHtml, /Chế độ tự động checklist đang phát triển/);
+  assert.match(levelingHtml, /material-symbols-rounded" aria-hidden="true">lock/);
+  assert.doesNotMatch(levelingHtml, /Tạm khóa phần auto-follow\/sync/);
+});
+
 test("Checklist V2 maps raw Client.txt zone names on the frontend", () => {
   assert.match(levelingV2, /const buildZoneAliasMap = \(\) =>/);
   assert.match(levelingV2, /const matchZoneName = \(zoneName\) =>/);

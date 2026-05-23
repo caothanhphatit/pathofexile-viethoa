@@ -49,8 +49,8 @@
         <div class="poe-shell-container">
           <div class="flex h-16 items-center justify-between gap-3">
             <a class="flex min-w-0 items-center gap-3 no-underline" href="${escapeHtml(routeHref("home"))}" data-route="home" aria-label="Về trang chủ">
-              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-950 text-white shadow-md1 dark:bg-white dark:text-slate-950">
-                <span class="material-symbols-rounded" aria-hidden="true">auto_stories</span>
+              <span class="poe-brand-mark">
+                <img class="poe-brand-logo" src="assets/poe2-viet-hoa-logo.svg" alt="" width="36" height="36" aria-hidden="true">
               </span>
               <span class="min-w-0">
                 <span class="block truncate text-sm font-black leading-tight text-slate-950 sm:text-base dark:text-white">${escapeHtml(brandTitle)}</span>
