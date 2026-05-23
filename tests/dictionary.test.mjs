@@ -1,0 +1,110 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+import vm from "node:vm";
+
+import { hasDirtyEnglishDescription } from "../scripts/glossary-lib.mjs";
+
+const loadDictionary = async () => {
+  const source = await readFile(new URL("../dictionary-data.js", import.meta.url), "utf8");
+  const context = { window: {} };
+  vm.createContext(context);
+  vm.runInContext(source, context);
+  return context.window.POE2_DICTIONARY_TERMS;
+};
+
+const loadSkillGems = async () => {
+  const source = await readFile(new URL("../skill-gems-data.js", import.meta.url), "utf8");
+  const context = { window: {} };
+  vm.createContext(context);
+  vm.runInContext(source, context);
+  return context.window.POE2_SKILL_GEMS;
+};
+
+test("dictionary data exposes unique preserved POE terms", async () => {
+  const dictionary = await loadDictionary();
+  const terms = dictionary.terms || [];
+  const names = terms.map((entry) => entry.term);
+
+  assert.ok(terms.length >= 40);
+  assert.equal(new Set(names).size, names.length);
+  assert.ok(names.includes("Attack"));
+  assert.ok(names.includes("Distilled Emotion"));
+  assert.ok(names.includes("Notable Passive Skill"));
+});
+
+test("dictionary entries have category, meaning, and keep rationale", async () => {
+  const dictionary = await loadDictionary();
+  const categories = dictionary.categories || {};
+
+  for (const entry of dictionary.terms) {
+    assert.ok(categories[entry.category], `${entry.term} has a known category`);
+    assert.ok(entry.meaning.length > 12, `${entry.term} has meaning text`);
+    assert.ok(entry.keep.length > 12, `${entry.term} explains why it stays untranslated`);
+    assert.ok(Array.isArray(entry.examples), `${entry.term} has examples array`);
+  }
+});
+
+test("dictionary keeps curated Vietnamese meanings and item rarity terms", async () => {
+  const dictionary = await loadDictionary();
+  const terms = dictionary.terms || [];
+  const attack = terms.find((entry) => entry.term === "Attack");
+  const itemRarity = terms.find((entry) => entry.term === "Item Rarity");
+  const precursorTablets = terms.find((entry) => entry.term === "Precursor Tablets");
+  const waystones = terms.find((entry) => entry.term === "Waystones");
+
+  assert.match(attack.meaning, /Attack/);
+  assert.doesNotMatch(attack.meaning, /^Attacks are skills/);
+  assert.match(itemRarity.meaning, /Normal.*Magic.*Rare.*Unique/);
+  assert.equal(precursorTablets.category, "endgame");
+  assert.equal(waystones.category, "endgame");
+  assert.doesNotMatch(precursorTablets.meaning, /can be used|are special/i);
+  assert.doesNotMatch(waystones.meaning, /can be used|travel to Maps/i);
+  assert.deepEqual(Array.from(itemRarity.variants), [
+    "Magic",
+    "Normal",
+    "Rare",
+    "Rarity of Items",
+    "Unique",
+    "Uniques"
+  ]);
+});
+
+test("dictionary exposes every skill gem tag as an English lookup term", async () => {
+  const [dictionary, skillGems] = await Promise.all([loadDictionary(), loadSkillGems()]);
+  const lookupNames = new Set((dictionary.terms || []).map((entry) => entry.term));
+  const skillTags = new Set((skillGems.gems || []).flatMap((gem) => gem.tags || []));
+  const missing = [...skillTags].filter((tag) => !lookupNames.has(tag)).sort((a, b) => a.localeCompare(b, "en"));
+
+  assert.deepEqual(missing, []);
+
+  const persistent = dictionary.terms.find((entry) => entry.term === "Persistent");
+  const staged = dictionary.terms.find((entry) => entry.term === "Staged");
+  const chaos = dictionary.terms.find((entry) => entry.term === "Chaos");
+  const ammunition = dictionary.terms.find((entry) => entry.term === "Ammunition");
+
+  assert.match(persistent.meaning, /bật\/tắt trong Bảng kỹ năng|giữ Spirit/);
+  assert.match(staged.meaning, /stage/i);
+  assert.match(chaos.meaning, /Kháng Chaos|Chaos/);
+  assert.match(ammunition.meaning, /tag cho skill|Crossbow/);
+});
+
+test("dictionary page renders compact lookup cards without keep-note panels", async () => {
+  const html = await readFile(new URL("../dictionary.html", import.meta.url), "utf8");
+
+  assert.match(html, /compactMeaning/);
+  assert.match(html, /Keyword in-game/);
+  assert.match(html, /Tag skill/);
+  assert.match(html, /term-meaning/);
+  assert.doesNotMatch(html, /escapeHtml\(term\.keep\)/);
+  assert.doesNotMatch(html, />keep</);
+  assert.doesNotMatch(html, /variantChips/);
+  assert.doesNotMatch(html, />Tooltip</);
+});
+
+test("dictionary meanings do not expose mixed English/Vietnamese glue text", async () => {
+  const dictionary = await loadDictionary();
+  const dirty = (dictionary.terms || []).filter((entry) => hasDirtyEnglishDescription(entry.meaning));
+
+  assert.equal(dirty.length, 0, dirty.map((entry) => entry.term).join(", "));
+});

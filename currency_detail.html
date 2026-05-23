@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency - POE2</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
+  <link href="dist/app.css" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .stat-line + .stat-line { border-top: 1px solid rgb(226 232 240); }
+    .dark .stat-line + .stat-line { border-top-color: rgb(30 41 59); }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div data-component="site-header" data-max-width="1280" data-subtitle="Currency"></div>
+
+  <main class="mx-auto grid max-w-[1180px] gap-5 px-4 py-5 sm:px-6 lg:px-8" id="detailRoot"></main>
+
+  <script src="components/poe-ui-utils.js"></script>
+  <script src="currency-data.js"></script>
+  <script>
+    const data = window.POE2_CURRENCY || { items: [] };
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug") || "";
+    const rawItem = (data.items || []).find((entry) => entry.slug === slug && entry.status === "active");
+    let item = null;
+    const detailRoot = document.getElementById("detailRoot");
+
+    const {
+      escapeHtml,
+      i18nText,
+      i18nList,
+      hasCurrencyDescription,
+      currencySubtypeLabel,
+      currencyCategoryLabel
+    } = window.PoeUi;
+    item = hasCurrencyDescription(rawItem) ? rawItem : null;
+
+    const fallbackDescription = (entry) => {
+      if (!entry) return "Không có dữ liệu.";
+      if (/Shard$/i.test(entry.name)) return "Mảnh currency, gom đủ stack để tạo currency hoàn chỉnh hoặc dùng trong công thức liên quan.";
+      if (/Artifact$/i.test(entry.name)) return "Artifact dùng trong hệ thống Expedition và giao dịch với NPC tương ứng.";
+      if (entry.category === "SplinterItem") return "Splinter dùng để gom mảnh cho nội dung hoặc boss liên quan.";
+      return "";
+    };
+
+    const renderLines = (lines = []) => lines.length
+      ? lines.map((line) => `<li class="stat-line px-4 py-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">${escapeHtml(line)}</li>`).join("")
+      : `<li class="px-4 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Không có dữ liệu.</li>`;
+
+    const itemSubtypeLabel = currencySubtypeLabel;
+    const itemCategoryLabel = currencyCategoryLabel;
+
+    const sectionBlock = (title, lines) => `
+      <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">${escapeHtml(title)}</h2>
+        </div>
+        <ul>${renderLines(lines)}</ul>
+      </section>
+    `;
+
+    const effectBlock = (entry) => {
+      const mods = entry.mods || [];
+      const modsVi = i18nList(entry.i18n?.mods, mods);
+      const description = i18nText(entry.i18n?.description, entry.description_en || fallbackDescription(entry));
+      const lines = mods.length ? mods.map((line, index) => `
+        <li class="stat-line px-4 py-3">
+          <p class="text-sm font-bold leading-6 text-slate-800 dark:text-slate-100">${escapeHtml(modsVi[index] || description || line)}</p>
+          <p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">${escapeHtml(line)}</p>
+        </li>
+      `).join("") : `<li class="px-4 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">${escapeHtml(fallbackDescription(entry))}</li>`;
+      return `
+        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+            <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Effect</h2>
+          </div>
+          <ul>${lines}</ul>
+        </section>
+      `;
+    };
+
+    if (!item) {
+      document.title = "Không tìm thấy currency - POE2";
+      detailRoot.innerHTML = `
+        <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-md1 dark:border-slate-800 dark:bg-slate-900">
+          <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="currency.html"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
+          <h1 class="mt-4 text-3xl font-black text-slate-950 dark:text-white">Không tìm thấy currency</h1>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Item này không có trong dữ liệu hiện tại.</p>
+        </section>
+      `;
+    } else {
+      document.title = `${item.name} - Currency`;
+      const description = i18nText(item.i18n?.description, item.description_en || fallbackDescription(item));
+      detailRoot.innerHTML = `
+        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
+          <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">
+            <div class="p-5 sm:p-7">
+              <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="currency.html"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
+              <div class="mt-5 flex items-start gap-4">
+                <div class="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white dark:border-slate-700">
+                  <span class="material-symbols-rounded opacity-80" aria-hidden="true">toll</span>
+                  <img class="absolute inset-0 h-full w-full object-contain p-1" src="${escapeHtml(item.icon_url)}" alt="${escapeHtml(item.icon_alt || item.name)}" width="64" height="64" onerror="this.remove()">
+                </div>
+                <div class="min-w-0">
+                  <h1 class="break-words text-4xl font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(item.name)}</h1>
+                  <p class="mt-2 text-sm font-black text-slate-500 dark:text-slate-400">${escapeHtml(itemCategoryLabel(item))} · ${escapeHtml(itemSubtypeLabel(item))}${item.stack_size ? ` · Stack ${escapeHtml(item.stack_size)}` : ""}</p>
+                </div>
+              </div>
+              <p class="mt-6 max-w-4xl text-base font-semibold leading-8 text-slate-700 dark:text-slate-200">${escapeHtml(description)}</p>
+              ${item.description_en ? `<p class="mt-3 max-w-4xl text-sm font-medium leading-7 text-slate-500 dark:text-slate-400">${escapeHtml(item.description_en)}</p>` : ""}
+            </div>
+            <aside class="grid content-start gap-3 border-t border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-950/60 lg:border-l lg:border-t-0">
+              <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                <p class="text-xs font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Nhóm</p>
+                <p class="mt-2 text-lg font-black text-slate-950 dark:text-white">${escapeHtml(itemCategoryLabel(item))}</p>
+              </div>
+              <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                <p class="text-xs font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Subtype</p>
+                <p class="mt-2 text-lg font-black text-slate-950 dark:text-white">${escapeHtml(itemSubtypeLabel(item))}</p>
+              </div>
+              <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                <p class="text-xs font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Stack</p>
+                <p class="mt-2 text-lg font-black text-slate-950 dark:text-white">${escapeHtml(item.stack_size || "-")}</p>
+              </div>
+              <a class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-black text-white transition hover:bg-blue-700" href="${escapeHtml(item.source_url)}" target="_blank" rel="noopener noreferrer">
+                <span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span>PoE2DB
+              </a>
+            </aside>
+          </div>
+        </section>
+        <div class="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,.8fr)]">
+          ${effectBlock(item)}
+          ${sectionBlock("Thông tin", item.properties || [])}
+        </div>
+      `;
+    }
+  </script>
+</body>
+
+</html>

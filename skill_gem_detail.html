@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill gems - POE2</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
+  <link href="dist/app.css" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .stat-line + .stat-line { border-top: 1px solid rgb(226 232 240); }
+    .dark .stat-line + .stat-line { border-top-color: rgb(30 41 59); }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div data-component="site-header" data-max-width="1280" data-subtitle="Skill gems"></div>
+
+  <main class="mx-auto grid max-w-[1180px] gap-5 px-4 py-6 sm:px-6 lg:px-8" id="detailRoot"></main>
+
+  <script src="components/poe-ui-utils.js"></script>
+  <script src="skill-gems-data.js"></script>
+  <script>
+    const data = window.POE2_SKILL_GEMS || { gems: [] };
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug") || "";
+    const gem = (data.gems || []).find((item) => item.slug === slug);
+    const detailRoot = document.getElementById("detailRoot");
+
+    const { escapeHtml, i18nText, i18nList } = window.PoeUi;
+
+    const colorLabel = (color) => ({
+      red: "Strength",
+      green: "Dexterity",
+      blue: "Intelligence",
+      item: "Neutral"
+    }[color] || "Neutral");
+
+    const renderLines = (lines = []) => lines.length
+      ? lines.map((line) => `<li class="stat-line px-4 py-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">${escapeHtml(line)}</li>`).join("")
+      : `<li class="px-4 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Không có dữ liệu.</li>`;
+
+    const sectionBlock = (title, lines) => `
+      <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">${escapeHtml(title)}</h2>
+        </div>
+        <ul>${renderLines(lines)}</ul>
+      </section>
+    `;
+
+    if (!gem) {
+      document.title = "Không tìm thấy skill gem - POE2";
+      detailRoot.innerHTML = `
+        <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-md1 dark:border-slate-800 dark:bg-slate-900">
+          <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="skill_gems.html"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Skill gems</a>
+          <h1 class="mt-4 text-3xl font-black text-slate-950 dark:text-white">Không tìm thấy skill gem</h1>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Không tìm thấy skill này trong dữ liệu hiện tại.</p>
+        </section>
+      `;
+    } else {
+      document.title = `${gem.name} - Skill gems`;
+      const tagsHtml = (gem.tags || []).map((tag) => `
+        <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200" title="${escapeHtml(tag)}">${escapeHtml(tag)}</span>
+      `).join("");
+      const detailSections = (gem.sections || []).map((section, index) => ({
+        title: i18nText(gem.i18n?.sections?.[index]?.title, section.title || "Stats"),
+        lines: i18nList(gem.i18n?.sections?.[index]?.lines, section.lines || [])
+      }));
+      const sectionsHtml = detailSections.map((section) => sectionBlock(section.title, section.lines)).join("");
+
+      detailRoot.innerHTML = `
+        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
+          <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div class="p-6 sm:p-8">
+              <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="skill_gems.html"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Skill gems</a>
+              <div class="mt-5 flex items-start gap-4">
+                <div class="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white dark:border-slate-700">
+                  <span class="material-symbols-rounded opacity-80" aria-hidden="true">bolt</span>
+                  <img class="absolute inset-0 h-full w-full object-cover" src="${escapeHtml(gem.icon_url)}" alt="${escapeHtml(gem.icon_alt || gem.name)}" width="64" height="64" onerror="this.remove()">
+                </div>
+                <div class="min-w-0">
+                  <h1 class="break-words text-4xl font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(gem.name)}</h1>
+                  <p class="mt-2 text-sm font-black text-slate-500 dark:text-slate-400">${escapeHtml(colorLabel(gem.color))} · Tier ${escapeHtml(gem.tier || "-")}</p>
+                </div>
+              </div>
+              <p class="mt-6 max-w-4xl text-base font-semibold leading-8 text-slate-700 dark:text-slate-200">${escapeHtml(i18nText(gem.i18n?.summary, gem.summary_en || "Chưa có mô tả."))}</p>
+              <div class="mt-5 flex flex-wrap gap-2">${tagsHtml}</div>
+            </div>
+            <aside class="grid content-start gap-3 border-t border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-950/60 lg:border-l lg:border-t-0">
+              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                  <p class="text-xs font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Tier</p>
+                  <p class="mt-2 text-2xl font-black text-slate-950 dark:text-white">${escapeHtml(gem.tier || "-")}</p>
+                </div>
+                <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                  <p class="text-xs font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Thuộc tính</p>
+                  <p class="mt-2 text-sm font-black text-slate-950 dark:text-white">${escapeHtml(colorLabel(gem.color))}</p>
+                </div>
+              </div>
+              <a class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-black text-white transition hover:bg-blue-700" href="${escapeHtml(gem.source_url)}" target="_blank" rel="noopener noreferrer">
+                <span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span>Nguồn PoE2DB
+              </a>
+            </aside>
+          </div>
+        </section>
+        <div class="grid gap-5 lg:grid-cols-2">
+          ${sectionBlock("Thông tin chính", i18nList(gem.i18n?.properties, gem.properties || []))}
+          ${sectionBlock("Yêu cầu", i18nList(gem.i18n?.requirements, gem.requirements || []))}
+        </div>
+        ${gem.mods && gem.mods.length ? sectionBlock("Modifiers", i18nList(gem.i18n?.mods, gem.mods || [])) : ""}
+        <div class="grid gap-5 lg:grid-cols-2">${sectionsHtml}</div>
+      `;
+    }
+  </script>
+</body>
+
+</html>

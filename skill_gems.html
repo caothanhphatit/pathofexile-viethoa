@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill gems - POE2</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
+  <link href="dist/app.css" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      z-index: 60;
+      transform: translateY(-5rem);
+      transition: transform .16s ease;
+    }
+    .skip-link:focus-visible { transform: translateY(0); }
+    .skill-page {
+      background:
+        radial-gradient(circle at top left, rgba(79, 107, 255, .10), transparent 34rem),
+        #f6f7fb;
+    }
+    .dark .skill-page {
+      background:
+        radial-gradient(circle at 12% 0%, rgba(79, 107, 255, .14), transparent 28rem),
+        radial-gradient(circle at 92% 18%, rgba(14, 165, 233, .08), transparent 24rem),
+        #070b14;
+    }
+    body.skill-page {
+      background:
+        radial-gradient(circle at top left, rgba(79, 107, 255, .10), transparent 34rem),
+        #f6f7fb !important;
+    }
+    html.dark body.skill-page {
+      background:
+        radial-gradient(circle at 12% 0%, rgba(79, 107, 255, .14), transparent 28rem),
+        radial-gradient(circle at 92% 18%, rgba(14, 165, 233, .08), transparent 24rem),
+        #070b14 !important;
+    }
+    .skill-surface {
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(255, 255, 255, .86);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 16px 44px rgba(15, 23, 42, .08);
+      backdrop-filter: blur(14px);
+    }
+    .dark .skill-surface {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(15, 23, 42, .82);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .03), 0 18px 46px rgba(0, 0, 0, .36);
+    }
+    .skill-hero {
+      background: linear-gradient(135deg, rgba(255, 255, 255, .94), rgba(248, 250, 252, .84));
+    }
+    .dark .skill-hero {
+      background: linear-gradient(135deg, rgba(17, 24, 39, .92), rgba(15, 23, 42, .78));
+    }
+    .skill-hero h1 {
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .skill-hero h1 + p {
+      color: rgba(71, 85, 105, .82);
+      line-height: 1.7;
+    }
+    .dark .skill-hero h1 + p {
+      color: rgba(203, 213, 225, .82);
+    }
+    .skill-input-shell,
+    .skill-select,
+    .skill-ghost {
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(255, 255, 255, .74);
+      backdrop-filter: blur(12px);
+    }
+    .dark .skill-input-shell,
+    .dark .skill-select,
+    .dark .skill-ghost {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(7, 11, 20, .56);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+    }
+    .skill-input-shell:focus-within,
+    .skill-select:focus-visible,
+    .skill-ghost:focus-visible,
+    .skill-cta:focus-visible {
+      outline: 2px solid #d97706;
+      outline-offset: 2px;
+    }
+    main > section:nth-of-type(2) {
+      border-color: rgba(15, 23, 42, .10) !important;
+      background: rgba(255, 255, 255, .82) !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 16px 44px rgba(15, 23, 42, .08) !important;
+      backdrop-filter: blur(14px);
+    }
+    .dark main > section:nth-of-type(2) {
+      border-color: rgba(255, 255, 255, .08) !important;
+      background: rgba(15, 23, 42, .82) !important;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .03), 0 18px 46px rgba(0, 0, 0, .36) !important;
+    }
+    .skill-hero .rounded-full,
+    label:has(#searchInput),
+    #tierFilter,
+    #tagFilter,
+    #resetFilters {
+      border-color: rgba(15, 23, 42, .10) !important;
+      background: rgba(255, 255, 255, .70) !important;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .30);
+    }
+    .dark .skill-hero .rounded-full,
+    .dark label:has(#searchInput),
+    .dark #tierFilter,
+    .dark #tagFilter,
+    .dark #resetFilters {
+      border-color: rgba(255, 255, 255, .08) !important;
+      background: rgba(7, 11, 20, .48) !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+    }
+    #searchInput,
+    #tierFilter,
+    #tagFilter,
+    #resetFilters,
+    #resultMeta {
+      font-weight: 600 !important;
+    }
+    #searchInput::placeholder {
+      color: rgba(100, 116, 139, .74);
+    }
+    .dark #searchInput::placeholder {
+      color: rgba(148, 163, 184, .58);
+    }
+    .gem-card {
+      position: relative;
+      min-height: 238px;
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 18px 40px rgba(15, 23, 42, .10);
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .gem-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      opacity: .84;
+    }
+    .gem-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(217, 119, 6, 0.15);
+      border-color: rgba(217, 119, 6, 0.25);
+    }
+    .dark .gem-card {
+      border-color: rgba(255, 255, 255, .08);
+      background: linear-gradient(180deg, rgba(17, 24, 39, .96), rgba(15, 23, 42, .92));
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .03), 0 8px 30px rgba(0, 0, 0, .35);
+    }
+    .dark .gem-card:hover {
+      border-color: rgba(217, 119, 6, 0.35);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 18px 42px rgba(217, 119, 6, 0.25);
+    }
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(180deg, #000 74%, rgba(0, 0, 0, .58));
+      mask-image: linear-gradient(180deg, #000 74%, rgba(0, 0, 0, .58));
+    }
+    .gem-red::before { background: linear-gradient(90deg, rgba(248, 113, 113, .92), rgba(248, 113, 113, .10)); }
+    .gem-green::before { background: linear-gradient(90deg, rgba(74, 222, 128, .86), rgba(74, 222, 128, .10)); }
+    .gem-blue::before { background: linear-gradient(90deg, rgba(96, 165, 250, .90), rgba(96, 165, 250, .10)); }
+    .gem-item::before { background: linear-gradient(90deg, rgba(148, 163, 184, .82), rgba(148, 163, 184, .10)); }
+    .skill-icon {
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .08), 0 10px 26px rgba(0, 0, 0, .30);
+    }
+    .skill-pill {
+      border: 1px solid rgba(15, 23, 42, .08);
+      background: rgba(241, 245, 249, .86);
+      color: #334155;
+      letter-spacing: 0;
+    }
+    .dark .skill-pill {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .07);
+      color: #dbe4f0;
+    }
+    .skill-tier {
+      background: #0f172a;
+      color: #fff;
+    }
+    .dark .skill-tier {
+      background: rgba(255, 255, 255, .92);
+      color: #070b14;
+    }
+    .skill-desc {
+      color: rgba(51, 65, 85, .84);
+      font-weight: 500;
+      line-height: 1.66;
+    }
+    .dark .skill-desc {
+      color: rgba(203, 213, 225, .84);
+    }
+    p.skill-desc {
+      font-weight: 500 !important;
+      line-height: 1.66 !important;
+    }
+    .skill-tag {
+      border: 1px solid rgba(15, 23, 42, .08);
+      background: rgba(15, 23, 42, .035);
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .dark .skill-tag {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .04);
+      color: #cbd5e1;
+    }
+    .dark .skill-tag-fire { border-color: rgba(248, 113, 113, .20); background: rgba(248, 113, 113, .08); color: #fecaca; }
+    .dark .skill-tag-cold { border-color: rgba(103, 232, 249, .20); background: rgba(103, 232, 249, .08); color: #cffafe; }
+    .dark .skill-tag-lightning { border-color: rgba(167, 139, 250, .22); background: rgba(167, 139, 250, .08); color: #ddd6fe; }
+    .dark .skill-tag-chaos { border-color: rgba(244, 114, 182, .18); background: rgba(244, 114, 182, .07); color: #fbcfe8; }
+    .skill-cta {
+      border: 1px solid rgba(217, 119, 6, 0.28);
+      background: rgba(217, 119, 6, 0.12);
+      color: #d97706;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .20);
+      transition: transform .16s ease, background .16s ease, box-shadow .16s ease, color .16s ease;
+    }
+    .skill-cta:hover {
+      transform: translateY(-1px);
+      background: #d97706;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(217, 119, 6, 0.28);
+    }
+    .dark .skill-cta {
+      color: #f59e0b;
+      background: rgba(217, 119, 6, 0.15);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+    }
+    .dark .skill-cta:hover {
+      color: #fff;
+      background: #d97706;
+      box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.3), 0 12px 34px rgba(217, 119, 6, 0.35);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gem-card,
+      .skill-cta {
+        transition: none;
+      }
+      .gem-card:hover,
+      .skill-cta:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="skill-page min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div id="top"></div>
+  <a class="skip-link rounded-lg bg-blue-600 px-4 py-2 text-sm font-black text-white shadow-md2" href="#main">Bỏ qua điều hướng</a>
+  <div data-component="site-header" data-max-width="1280"></div>
+
+  <main class="mx-auto grid max-w-[1280px] gap-6 px-4 py-6 sm:px-6 lg:px-8" id="main">
+    <section class="skill-surface skill-hero overflow-hidden rounded-lg">
+      <div class="px-6 py-7 sm:px-8">
+        <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h1 class="text-4xl font-black leading-tight text-slate-950 sm:text-5xl dark:text-white">Skill gems</h1>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"><span class="material-symbols-rounded text-indigo-600 dark:text-indigo-300" aria-hidden="true">auto_awesome_motion</span><span id="gemCount">0 skill gems</span></span>
+            <a class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-bold text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700" href="https://poe2db.tw/us/Skill_Gems" target="_blank" rel="noopener noreferrer"><span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span>Nguồn PoE2DB</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-md1 dark:border-slate-800 dark:bg-slate-900" aria-label="Bộ lọc skill gems">
+      <div class="grid gap-3 lg:grid-cols-[minmax(280px,1fr)_160px_180px]">
+        <label class="flex h-12 items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 dark:border-slate-700 dark:bg-slate-800">
+          <span class="material-symbols-rounded text-slate-500" aria-hidden="true">search</span>
+          <input class="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-900 outline-none placeholder:text-slate-500 dark:text-slate-100" id="searchInput" name="q" type="search" placeholder="Tìm tên skill, tag, mô tả…" aria-label="Tìm skill gem" autocomplete="off">
+        </label>
+        <select class="h-12 rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" id="tierFilter" name="tier" aria-label="Lọc theo tier"></select>
+        <select class="h-12 rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" id="tagFilter" name="tag" aria-label="Lọc theo tag"></select>
+      </div>
+      <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <p class="text-sm font-bold text-slate-500 dark:text-slate-400" id="resultMeta">Đang tải dữ liệu.</p>
+        <button class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800" id="resetFilters" type="button">
+          <span class="material-symbols-rounded text-base" aria-hidden="true">restart_alt</span>
+          Xóa bộ lọc
+        </button>
+      </div>
+    </section>
+
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" id="gemGrid" aria-live="polite"></section>
+    <button class="skill-cta mx-auto hidden h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold" id="loadMoreGems" type="button">
+      <span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>
+      Tải thêm
+    </button>
+  </main>
+
+  <!-- Interactive Gem Detail Modal -->
+  <div id="gemModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="glass-panel w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl transition-all scale-95 duration-300 dark:border-slate-800 dark:bg-slate-900" id="modalContent">
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4.5 dark:border-slate-800/60 dark:bg-slate-900/60">
+        <div class="flex items-center gap-3">
+          <div class="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white dark:border-white/10" id="modalIconContainer">
+            <img class="absolute inset-0 h-full w-full object-cover" id="modalIcon" src="" alt="" width="40" height="40">
+          </div>
+          <div>
+            <h2 class="font-display text-xl font-black text-slate-950 dark:text-white" id="modalTitle" translate="no">Skill Gem Detail</h2>
+            <div class="mt-1 flex items-center gap-2">
+              <span class="rounded bg-indigo-50 dark:bg-indigo-950/50 text-[10px] font-black text-indigo-700 dark:text-indigo-300 px-2 py-0.5 uppercase border border-indigo-500/10" id="modalColorBadge">Neutral</span>
+              <span class="rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-700 dark:text-slate-300 px-2 py-0.5 uppercase border border-slate-200/40 dark:border-slate-700/40" id="modalTierBadge">Tier 1</span>
+            </div>
+          </div>
+        </div>
+        <button class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition" id="closeModalBtn" type="button" aria-label="Đóng hộp thoại">
+          <span class="material-symbols-rounded text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="px-6 py-5 max-h-[70vh] overflow-y-auto space-y-5">
+        <!-- Summary -->
+        <div>
+          <h3 class="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">Mô tả kỹ năng</h3>
+          <p class="mt-2 text-sm font-semibold leading-relaxed text-slate-800 dark:text-slate-200" id="modalSummary"></p>
+        </div>
+
+        <!-- Requirements & Properties -->
+        <div class="grid gap-4 md:grid-cols-2 border-t border-slate-100 pt-4 dark:border-slate-800/40">
+          <!-- Requirements -->
+          <div id="modalRequirementsContainer">
+            <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Yêu cầu</h3>
+            <ul class="mt-2 space-y-1 text-xs font-semibold text-slate-600 dark:text-slate-400" id="modalRequirements"></ul>
+          </div>
+          <!-- Properties -->
+          <div id="modalPropertiesContainer">
+            <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Chỉ số thuộc tính</h3>
+            <ul class="mt-2 space-y-1 text-xs font-semibold text-slate-600 dark:text-slate-400" id="modalProperties"></ul>
+          </div>
+        </div>
+
+        <!-- Detail Sections -->
+        <div class="border-t border-slate-100 pt-4 dark:border-slate-800/40" id="modalSectionsContainer">
+          <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hiệu ứng chi tiết</h3>
+          <div class="mt-3 space-y-4" id="modalSections"></div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-slate-100 bg-slate-50/50 px-6 py-3.5 flex justify-end dark:border-slate-800/60 dark:bg-slate-900/60">
+        <button class="rounded-xl bg-slate-900 px-4 py-2 text-xs font-black text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 transition shadow-sm" id="modalActionClose" type="button">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="components/poe-ui-utils.js"></script>
+  <script src="skill-gems-data.js"></script>
+  <script>
+    const data = window.POE2_SKILL_GEMS || { gems: [], latest_run: null };
+    const gems = data.gems || [];
+    const nf = new Intl.NumberFormat("vi-VN");
+    const searchInput = document.getElementById("searchInput");
+    const tierFilter = document.getElementById("tierFilter");
+    const tagFilter = document.getElementById("tagFilter");
+    const resultMeta = document.getElementById("resultMeta");
+    const gemGrid = document.getElementById("gemGrid");
+    const loadMoreGems = document.getElementById("loadMoreGems");
+    const params = new URLSearchParams(window.location.search);
+    let visibleLimit = 60;
+
+    const { escapeHtml, i18nText, i18nList, firstPresent, truncateText } = window.PoeUi;
+
+    const colorLabel = (color) => ({
+      red: "Strength",
+      green: "Dexterity",
+      blue: "Intelligence",
+      item: "Neutral"
+    }[color] || "Neutral");
+
+    document.getElementById("gemCount").textContent = `${nf.format(data.total || gems.length)} skill gems`;
+
+    const tiers = [...new Set(gems.map((gem) => gem.tier).filter(Boolean))].sort((a, b) => a - b);
+    tierFilter.innerHTML = `<option value="all">Tất cả tier</option>${tiers.map((tier) => `<option value="${tier}">Tier ${tier}</option>`).join("")}`;
+
+    const tagLabels = new Map();
+    gems.forEach((gem) => (gem.tags || []).forEach((tag) => {
+      if (!tagLabels.has(tag)) tagLabels.set(tag, tag);
+    }));
+    const tags = [...new Set(gems.flatMap((gem) => gem.tags || []))].sort((a, b) => (tagLabels.get(a) || a).localeCompare(tagLabels.get(b) || b, "vi"));
+    tagFilter.innerHTML = `<option value="all">Tất cả tag</option>${tags.map((tag) => `<option value="${escapeHtml(tag)}">${escapeHtml(tagLabels.get(tag) || tag)}</option>`).join("")}`;
+
+    const setControlValue = (control, value) => {
+      if (value && [...control.options].some((option) => option.value === value)) {
+        control.value = value;
+      }
+    };
+    searchInput.value = params.get("q") || "";
+    setControlValue(tierFilter, params.get("tier"));
+    setControlValue(tagFilter, params.get("tag"));
+
+    const updateUrlState = () => {
+      const nextParams = new URLSearchParams();
+      if (searchInput.value.trim()) nextParams.set("q", searchInput.value.trim());
+      if (tierFilter.value !== "all") nextParams.set("tier", tierFilter.value);
+      if (tagFilter.value !== "all") nextParams.set("tag", tagFilter.value);
+      const query = nextParams.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
+    };
+
+    const shortDescription = (gem) => {
+      const localizedProperties = i18nList(gem.i18n?.properties, gem.properties || []);
+      const localizedMods = i18nList(gem.i18n?.mods, gem.mods || []);
+      const source = firstPresent([
+        i18nText(gem.i18n?.summary, gem.summary_en),
+        gem.summary_en,
+        ...localizedProperties,
+        ...localizedMods
+      ]);
+      const clean = String(source || "Xem chi tiết để đọc mô tả và chỉ số của skill này.").replace(/\s+/g, " ").trim();
+      return truncateText(clean, { maxLength: 240, minBoundary: 120 });
+    };
+
+    const gemMatches = (gem) => {
+      const query = searchInput.value.trim().toLocaleLowerCase("vi");
+      const haystack = [
+        gem.name,
+        gem.slug,
+        gem.summary_en,
+        i18nText(gem.i18n?.summary, ""),
+        ...(gem.tags || []),
+        ...i18nList(gem.i18n?.tags, gem.tags || [])
+      ].join(" ").toLocaleLowerCase("vi");
+      const tierOk = tierFilter.value === "all" || String(gem.tier) === tierFilter.value;
+      const tagOk = tagFilter.value === "all" || (gem.tags || []).includes(tagFilter.value);
+      return (!query || haystack.includes(query)) && tierOk && tagOk;
+    };
+
+    const tagToneClass = (tag) => {
+      const value = String(tag || "").toLowerCase();
+      if (value.includes("fire")) return "skill-tag-fire";
+      if (value.includes("cold")) return "skill-tag-cold";
+      if (value.includes("lightning")) return "skill-tag-lightning";
+      if (value.includes("chaos")) return "skill-tag-chaos";
+      return "";
+    };
+
+    const renderGem = (gem) => {
+      const description = shortDescription(gem);
+      const tagsHtml = (gem.tags || []).slice(0, 7).map((tag) => `
+        <span class="skill-tag ${tagToneClass(tag)} rounded-full px-2 py-1" title="${escapeHtml(tag)}">${escapeHtml(tag)}</span>
+      `).join("");
+
+      return `
+        <article class="gem-card gem-${escapeHtml(gem.color)} flex h-full flex-col overflow-hidden rounded-lg p-5">
+          <div class="flex items-start gap-3">
+            <div class="skill-icon relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white dark:border-white/10">
+              <span class="material-symbols-rounded text-lg opacity-80" aria-hidden="true">bolt</span>
+              <img class="absolute inset-0 h-full w-full object-cover" src="${escapeHtml(gem.icon_url)}" alt="${escapeHtml(gem.icon_alt || gem.name)}" width="48" height="48" loading="lazy" onerror="this.remove()">
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="skill-card-label-row flex flex-wrap items-center justify-between gap-2">
+                <div class="flex min-w-0 flex-wrap items-center gap-2">
+                  <span class="skill-pill skill-tier rounded-full px-2 py-1 text-xs font-bold">Tier ${escapeHtml(gem.tier || "-")}</span>
+                  <span class="skill-pill rounded-full px-2 py-1 text-xs font-bold">${escapeHtml(colorLabel(gem.color))}</span>
+                </div>
+                <a class="skill-cta skill-card-detail inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="skill_gem_detail.html?slug=${encodeURIComponent(gem.slug)}">
+                  <span class="material-symbols-rounded text-sm" aria-hidden="true">article</span>
+                  Chi ti?t
+                </a>
+              </div>
+              <h2 class="mt-3 break-words text-xl font-semibold leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(gem.name)}</h2>
+            </div>
+          </div>
+          <p class="skill-desc mt-5 text-sm" title="${escapeHtml(description)}">${escapeHtml(description)}</p>
+          <div class="mt-5 flex flex-wrap gap-1.5">${tagsHtml}</div>
+        </article>
+      `;
+    };
+
+    const render = ({ resetLimit = false } = {}) => {
+      if (resetLimit) visibleLimit = 60;
+      const filtered = gems.filter(gemMatches);
+      const visible = filtered.slice(0, visibleLimit);
+      gemGrid.innerHTML = visible.map(renderGem).join("") || `
+        <div class="rounded-lg border border-slate-200 bg-white p-6 text-center font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 sm:col-span-2 xl:col-span-3">
+          Không có skill gem nào khớp bộ lọc.
+        </div>
+      `;
+      const hiddenCount = Math.max(filtered.length - visible.length, 0);
+      resultMeta.textContent = `Đang hiển thị ${nf.format(visible.length)} / ${nf.format(filtered.length)} kết quả, trong tổng ${nf.format(gems.length)} skill gem.`;
+      loadMoreGems.classList.toggle("hidden", hiddenCount === 0);
+      loadMoreGems.classList.toggle("inline-flex", hiddenCount > 0);
+      loadMoreGems.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>Tải thêm ${nf.format(Math.min(60, hiddenCount))}`;
+    };
+
+    [searchInput, tierFilter, tagFilter].forEach((control) => control.addEventListener("input", () => {
+      render({ resetLimit: true });
+      updateUrlState();
+    }));
+    document.getElementById("resetFilters").addEventListener("click", () => {
+      searchInput.value = "";
+      tierFilter.value = "all";
+      tagFilter.value = "all";
+      render({ resetLimit: true });
+      updateUrlState();
+    });
+    loadMoreGems.addEventListener("click", () => {
+      visibleLimit += 60;
+      render();
+    });
+
+    render();
+
+    // Modal script definitions
+    const gemModal = document.getElementById("gemModal");
+    const modalContent = document.getElementById("modalContent");
+    const modalIcon = document.getElementById("modalIcon");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalColorBadge = document.getElementById("modalColorBadge");
+    const modalTierBadge = document.getElementById("modalTierBadge");
+    const modalSummary = document.getElementById("modalSummary");
+    const modalRequirements = document.getElementById("modalRequirements");
+    const modalRequirementsContainer = document.getElementById("modalRequirementsContainer");
+    const modalProperties = document.getElementById("modalProperties");
+    const modalPropertiesContainer = document.getElementById("modalPropertiesContainer");
+    const modalSections = document.getElementById("modalSections");
+    const modalSectionsContainer = document.getElementById("modalSectionsContainer");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const modalActionClose = document.getElementById("modalActionClose");
+
+    const openGemModal = (slug) => {
+      const gem = gems.find((g) => g.slug === slug);
+      if (!gem) return;
+
+      modalIcon.src = gem.icon_url;
+      modalIcon.alt = gem.icon_alt || gem.name;
+      modalTitle.textContent = gem.name;
+      modalColorBadge.textContent = colorLabel(gem.color);
+      modalTierBadge.textContent = `Tier ${gem.tier || "-"}`;
+      
+      // Summary Description
+      modalSummary.textContent = i18nText(gem.i18n?.summary, gem.summary_en) || "Không có mô tả cho skill gem này.";
+
+      // Requirements
+      const localizedReqs = i18nList(gem.i18n?.requirements, gem.requirements || []);
+      if (localizedReqs.length > 0) {
+        modalRequirements.innerHTML = localizedReqs.map(r => `<li class="flex items-center gap-1.5"><span class="material-symbols-rounded text-sm text-slate-400">arrow_right</span>${escapeHtml(r)}</li>`).join("");
+        modalRequirementsContainer.classList.remove("hidden");
+      } else {
+        modalRequirementsContainer.classList.add("hidden");
+      }
+
+      // Properties
+      const localizedProps = i18nList(gem.i18n?.properties, gem.properties || []);
+      if (localizedProps.length > 0) {
+        modalProperties.innerHTML = localizedProps.map(p => `<li class="flex items-center gap-1.5"><span class="material-symbols-rounded text-sm text-slate-400">arrow_right</span>${escapeHtml(p)}</li>`).join("");
+        modalPropertiesContainer.classList.remove("hidden");
+      } else {
+        modalPropertiesContainer.classList.add("hidden");
+      }
+
+      // Sections
+      const localizedSections = gem.i18n?.sections || gem.sections || [];
+      if (localizedSections.length > 0) {
+        modalSections.innerHTML = localizedSections.map((sec) => {
+          const title = typeof sec.title === 'string' ? sec.title : (sec.title?.vi || sec.title?.en || "");
+          const lines = sec.lines || [];
+          const localizedLines = lines.map(line => typeof line === 'string' ? line : (line?.vi || line?.en || ""));
+          return `
+            <div class="rounded-xl border border-slate-200/50 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-950/40">
+              <h4 class="font-display font-black text-sm text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800/80 pb-1.5">${escapeHtml(title)}</h4>
+              <ul class="mt-2.5 space-y-1.5 text-xs font-bold leading-relaxed text-slate-600 dark:text-slate-400">
+                ${localizedLines.map(l => `<li class="flex items-start gap-1.5"><span class="material-symbols-rounded text-sm text-amber-500 shrink-0 mt-0.5">verified</span><span>${escapeHtml(l)}</span></li>`).join("")}
+              </ul>
+            </div>
+          `;
+        }).join("");
+        modalSectionsContainer.classList.remove("hidden");
+      } else {
+        modalSectionsContainer.classList.add("hidden");
+      }
+
+      gemModal.classList.remove("hidden");
+      gemModal.classList.add("flex");
+
+      setTimeout(() => {
+        modalContent.classList.remove("scale-95");
+        modalContent.classList.add("scale-100");
+      }, 10);
+    };
+
+    const closeGemModal = () => {
+      modalContent.classList.remove("scale-100");
+      modalContent.classList.add("scale-95");
+      setTimeout(() => {
+        gemModal.classList.add("hidden");
+        gemModal.classList.remove("flex");
+      }, 150);
+    };
+
+    // Grid Delegation click to intercept details button clicks
+    gemGrid.addEventListener("click", (event) => {
+      const cta = event.target.closest(".skill-cta");
+      if (!cta) return;
+      event.preventDefault();
+      
+      const href = cta.getAttribute("href");
+      const urlParams = new URLSearchParams(href.split("?")[1]);
+      const slug = urlParams.get("slug");
+      openGemModal(slug);
+    });
+
+    closeModalBtn.addEventListener("click", closeGemModal);
+    modalActionClose.addEventListener("click", closeGemModal);
+    gemModal.addEventListener("click", (e) => {
+      if (e.target === gemModal) closeGemModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !gemModal.classList.contains("hidden")) {
+        closeGemModal();
+      }
+    });
+
+    // Check query params on load to automatically open detail modal if slug is specified!
+    const querySlug = params.get("slug");
+    if (querySlug) {
+      setTimeout(() => openGemModal(querySlug), 200);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POE2 Việt hóa - Hệ thống Dịch thuật chuyên sâu Path of Exile 2</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
+  <link href="dist/app.css" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .hero-glow {
+      background: radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.12), transparent 60%);
+    }
+    .dark .hero-glow {
+      background: radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.16), transparent 50%);
+    }
+    .sandbox-box {
+      border: 1px solid rgba(217, 119, 6, 0.15);
+      box-shadow: inset 0 0 15px rgba(217, 119, 6, 0.05);
+    }
+    .dark .sandbox-box {
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      background: rgba(11, 15, 25, 0.6);
+      box-shadow: inset 0 0 20px rgba(217, 119, 6, 0.08);
+    }
+    .feature-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div id="top"></div>
+  <div data-component="site-header" data-max-width="1280"></div>
+
+  <!-- Hero Glow Section -->
+  <section class="hero-glow relative overflow-hidden py-12 lg:py-16">
+    <div class="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 text-center">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-amber-600 dark:border-amber-400/30 dark:bg-amber-400/5 dark:text-amber-400">
+        <span class="material-symbols-rounded text-sm animate-pulse">workspace_premium</span> Bản Việt hóa Premium v0.5.0
+      </span>
+      <h1 class="font-display mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl dark:text-white">
+        PATH OF EXILE 2 <br>
+        <span class="bg-gradient-to-r from-amber-500 via-orange-500 to-red-600 bg-clip-text text-transparent">VIỆT HÓA CHUYÊN SÂU</span>
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-base font-semibold leading-relaxed text-slate-600 dark:text-slate-300">
+        Hệ thống tra cứu cơ sở dữ liệu chuyên sâu cho PoE2. Dịch thuật sát nghĩa game thủ Việt, giữ nguyên thuật ngữ kỹ thuật gốc in-game tích hợp công cụ giải nghĩa tooltip tương tác cao cấp.
+      </p>
+    </div>
+  </section>
+
+  <main class="mx-auto max-w-[1280px] px-4 pb-16 sm:px-6 lg:px-8">
+    <!-- Stats Dashboard Section -->
+    <section class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" aria-label="Bảng thống kê">
+      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
+        <span class="block text-2xl font-black text-amber-500 sm:text-3xl">31.468</span>
+        <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Dòng Việt hóa DB</span>
+      </div>
+      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
+        <span class="block text-2xl font-black text-indigo-500 sm:text-3xl">355</span>
+        <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Skill Gems hoàn chỉnh</span>
+      </div>
+      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
+        <span class="block text-2xl font-black text-cyan-500 sm:text-3xl">169</span>
+        <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Currencies Tiền tệ</span>
+      </div>
+      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
+        <span class="block text-2xl font-black text-rose-500 sm:text-3xl">2.864</span>
+        <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Trang bị Items</span>
+      </div>
+      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80 col-span-2 sm:col-span-1">
+        <span class="block text-2xl font-black text-emerald-500 sm:text-3xl">369</span>
+        <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Thuật ngữ Từ điển</span>
+      </div>
+    </section>
+
+    <!-- Core Nav Grid Redesign -->
+    <section class="mt-10" aria-label="Menu chính">
+      <h2 class="font-display text-2xl font-black text-slate-950 dark:text-white flex items-center gap-2">
+        <span class="material-symbols-rounded text-amber-500">dashboard</span> CƠ SỞ DỮ LIỆU DỊCH THUẬT
+      </h2>
+      
+      <div class="mt-5 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Patch Note Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-blue-500 p-6 shadow-sm hover:border-blue-300 hover:shadow-md2 dark:hover:border-blue-700" href="patchnote_vn.html">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid h-12 w-12 place-items-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:scale-105 dark:bg-blue-950/40 dark:text-blue-300">
+                <span class="material-symbols-rounded text-2xl">article</span>
+              </span>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Patch note</h3>
+            </div>
+            <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+              Chi tiết các thay đổi lớn trong phiên bản 0.5.0 Return of the Ancients được biên dịch đầy đủ, chuẩn xác cấu trúc và thông số game.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between text-xs font-black text-blue-600 dark:text-blue-400">
+            <span>XEM CHI TIẾT</span>
+            <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
+          </div>
+        </a>
+
+        <!-- Dictionary Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-emerald-500 p-6 shadow-sm hover:border-emerald-300 hover:shadow-md2 dark:hover:border-emerald-700" href="dictionary.html">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid h-12 w-12 place-items-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:scale-105 dark:bg-emerald-950/40 dark:text-emerald-300">
+                <span class="material-symbols-rounded text-2xl">translate</span>
+              </span>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Từ điển chuyên sâu</h3>
+            </div>
+            <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+              Tra cứu 369 thuật ngữ game cao cấp. Hỗ trợ hiển thị hộp thoại mở rộng chi tiết với từ gốc gốc tiếng Anh, từ đồng nghĩa và lý do Việt hóa.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between text-xs font-black text-emerald-600 dark:text-emerald-400">
+            <span>TRA CỨU NGAY</span>
+            <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
+          </div>
+        </a>
+
+        <!-- Weapon Guide Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-rose-500 p-6 shadow-sm hover:border-rose-300 hover:shadow-md2 dark:hover:border-rose-700" href="weapon.html">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid h-12 w-12 place-items-center rounded-xl bg-rose-50 text-rose-600 transition group-hover:scale-105 dark:bg-rose-950/40 dark:text-rose-300">
+                <span class="material-symbols-rounded text-2xl">swords</span>
+              </span>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Weapon</h3>
+            </div>
+            <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+              Cẩm nang vũ khí PoE2 tối giản cho người mới. Khám phá sự khác biệt cốt lõi giữa nhóm vũ khí Võ thuật (Martial) và Pháp thuật (Caster).
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between text-xs font-black text-rose-600 dark:text-rose-400">
+            <span>ĐỌC CẨM NANG</span>
+            <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
+          </div>
+        </a>
+
+        <!-- Leveling Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-amber-500 p-6 shadow-sm hover:border-amber-300 hover:shadow-md2 dark:hover:border-amber-700" href="leveling.html">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid h-12 w-12 place-items-center rounded-xl bg-amber-50 text-amber-600 transition group-hover:scale-105 dark:bg-amber-950/40 dark:text-amber-300">
+                <span class="material-symbols-rounded text-2xl">checklist</span>
+              </span>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Hỗ trợ Leveling</h3>
+            </div>
+            <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+              Hệ thống hướng dẫn vượt ải chiến dịch Act 1-4 tối ưu tốc độ. Tích hợp lớp phủ bản đồ thu gọn, nhiệm vụ và chú thích chi tiết.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between text-xs font-black text-amber-600 dark:text-amber-400">
+            <span>MỞ LỚP PHỦ</span>
+            <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
+          </div>
+        </a>
+
+        <!-- Skill Gems Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-indigo-500 p-6 shadow-sm hover:border-indigo-300 hover:shadow-md2 dark:hover:border-indigo-700" href="skill_gems.html">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid h-12 w-12 place-items-center rounded-xl bg-indigo-50 text-indigo-600 transition group-hover:scale-105 dark:bg-indigo-950/40 dark:text-indigo-300">
+                <span class="material-symbols-rounded text-2xl">auto_awesome_motion</span>
+              </span>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Skill gems</h3>
+            </div>
+            <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+              Cơ sở dữ liệu 355 viên ngọc kỹ năng hoàn chỉnh. Hỗ trợ tìm kiếm, lọc nhanh theo Tier, và nhãn hệ thuộc tính (Strength/Dexterity/Intelligence).
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between text-xs font-black text-indigo-600 dark:text-indigo-400">
+            <span>TRA GEMS</span>
+            <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
+          </div>
+        </a>
+
+        <!-- Currency Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-cyan-500 p-6 shadow-sm hover:border-cyan-300 hover:shadow-md2 dark:hover:border-cyan-700" href="currency.html">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid h-12 w-12 place-items-center rounded-xl bg-cyan-50 text-cyan-600 transition group-hover:scale-105 dark:bg-cyan-950/40 dark:text-cyan-300">
+                <span class="material-symbols-rounded text-2xl">toll</span>
+              </span>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Stackable Currency</h3>
+            </div>
+            <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+              Tra cứu đầy đủ 169 loại tiền tệ chế tạo và tinh túy. Dịch nghĩa tính năng, tác dụng, phân loại nhóm và hiển thị hình ảnh in-game độ phân giải cao.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between text-xs font-black text-cyan-600 dark:text-cyan-400">
+            <span>TRA TIỀN TỆ</span>
+            <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- PoE Tooltip Live Sandbox -->
+    <section class="mt-12">
+      <div class="glass-panel-gold sandbox-box rounded-2xl p-6 md:p-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-amber-500/20 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <span class="material-symbols-rounded">experiment</span>
+            </span>
+            <div>
+              <h3 class="font-display text-lg font-black text-slate-950 dark:text-white">Tooltip Engine Live Playground</h3>
+              <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Hộp cát thử nghiệm công nghệ hiển thị Tooltip đa tầng</p>
+            </div>
+          </div>
+          <span class="w-fit shrink-0 rounded bg-amber-500/10 text-[10px] font-black text-amber-700 dark:text-amber-400 px-2 py-0.5 uppercase tracking-wider border border-amber-500/20">Tính năng cao cấp</span>
+        </div>
+
+        <p class="mt-5 text-sm font-semibold text-slate-500 dark:text-slate-400">
+          Hãy rê chuột vào bất kỳ từ tiếng Anh in đậm nào ở đoạn văn mô tả game bên dưới để kiểm chứng hệ thống tooltip phân tích tức thời:
+        </p>
+
+        <!-- The actual interactive container -->
+        <div class="mt-4 rounded-xl border border-slate-200 bg-white/70 p-5 leading-relaxed text-slate-800 shadow-sm dark:border-slate-800/40 dark:bg-slate-900/60 dark:text-slate-200">
+          <p class="text-sm md:text-base font-semibold">
+            Bản dịch chất lượng cao giúp giữ nguyên các khái niệm kỹ thuật cốt lõi. Người chơi sẽ thấy kỹ năng niệm phép <span class="font-bold">Spell</span>, kỹ năng tấn công vật lý <span class="font-bold">Attack</span>, cũng như các chỉ số thuộc tính cơ bản <span class="font-bold">Strength</span>, <span class="font-bold">Intelligence</span> và <span class="font-bold">Dexterity</span> vẫn giữ nguyên tiếng Anh. Mọi cơ chế nâng cao liên quan đến điểm tích lũy <span class="font-bold">Charges</span>, chỉ số kháng cự <span class="font-bold">Resistances</span>, hay các kỹ năng tập trung <span class="font-bold">Channelling</span> và độ hiếm vật phẩm <span class="font-bold">Item Rarity</span> đều sẽ hiện bảng giải thích chi tiết ngay khi rê chuột qua!
+          </p>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+          <span class="flex items-center gap-1.5"><span class="material-symbols-rounded text-sm text-emerald-500">check_circle</span> Rê chuột để đọc nhanh</span>
+          <span class="flex items-center gap-1.5"><span class="material-symbols-rounded text-sm text-blue-500">ads_click</span> Click chuột để mở từ điển chi tiết</span>
+          <span class="flex items-center gap-1.5"><span class="material-symbols-rounded text-sm text-amber-500">layers</span> Hỗ trợ xem lồng tooltip đa tầng</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

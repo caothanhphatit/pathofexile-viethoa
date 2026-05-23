@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Từ điển Thuật ngữ Path of Exile 2 - POE2 Việt hóa</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
+  <link href="dist/app.css" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .dictionary-bg {
+      background:
+        radial-gradient(circle at 15% 0%, rgba(217, 119, 6, 0.08), transparent 30rem),
+        radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.05), transparent 25rem);
+    }
+    label:focus-within {
+      box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.6);
+      border-color: rgba(217, 119, 6, 0.8);
+    }
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      z-index: 60;
+      transform: translateY(-5rem);
+      transition: transform .16s ease;
+    }
+    .skip-link:focus-visible { transform: translateY(0); }
+    
+    .term-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .term-card:hover {
+      transform: translateY(-2px);
+    }
+    
+    .term-meaning {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+    
+    .category-pill[aria-pressed="true"] {
+      border-color: #d97706;
+      background: #d97706;
+      color: white;
+      box-shadow: 0 0 10px rgba(217, 119, 6, 0.25);
+    }
+    
+    .dark .category-pill[aria-pressed="true"] {
+      border-color: #f59e0b;
+      background: rgba(217, 119, 6, 0.85);
+      color: white;
+      box-shadow: 0 0 15px rgba(217, 119, 6, 0.35);
+    }
+  </style>
+</head>
+
+<body class="dictionary-bg min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <a class="skip-link rounded-lg bg-amber-600 px-4 py-2 text-sm font-black text-white shadow-md2" href="#main">Bỏ qua điều hướng</a>
+  <div data-component="site-header" data-max-width="1280"></div>
+
+  <main class="mx-auto grid max-w-[1280px] gap-6 px-4 py-6 sm:px-6 lg:px-8" id="main">
+    
+    <!-- Premium Header Dashboard Panel -->
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Từ điển thuật ngữ">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-gold">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">translate</span>
+          </span>
+          <div>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Từ điển thuật ngữ</h1>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Tra cứu định nghĩa nâng cao và so chiếu thuật ngữ PoE2</p>
+          </div>
+        </div>
+        
+        <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+          <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">format_list_bulleted</span>
+          <span id="termCount" class="font-display font-black">0 thuật ngữ</span>
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="mt-6 grid gap-4 md:grid-cols-[1fr_200px_110px]">
+        <label class="flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 transition dark:border-slate-800 dark:bg-slate-900/40">
+          <span class="material-symbols-rounded text-slate-500" aria-hidden="true">search</span>
+          <input class="min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-950 outline-none placeholder:text-slate-500 dark:text-slate-50" id="searchInput" name="q" type="search" placeholder="Tìm kiếm thuật ngữ, định nghĩa, từ đồng nghĩa..." aria-label="Tìm thuật ngữ" autocomplete="off">
+        </label>
+        
+        <select class="h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-black text-slate-700 outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200" id="categoryFilter" name="category" aria-label="Lọc theo nhóm"></select>
+        
+        <button class="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" id="resetFilters" type="button">
+          <span class="material-symbols-rounded text-base" aria-hidden="true">restart_alt</span>
+          Reset
+        </button>
+      </div>
+
+      <!-- Quick Categories Pills -->
+      <div class="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 dark:border-slate-800/40 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-wrap gap-2" id="categoryPills" aria-label="Nhóm thuật ngữ"></div>
+        <p class="text-xs font-bold text-slate-500 dark:text-slate-400" id="resultMeta">0 kết quả</p>
+      </div>
+    </section>
+
+    <!-- Interactive Grid Section -->
+    <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" id="termGrid" aria-live="polite"></section>
+    
+    <p class="hidden rounded-xl border border-slate-200 bg-white p-12 text-center text-sm font-bold text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400" id="emptyState">
+      <span class="material-symbols-rounded block text-4xl text-slate-400 mb-2">find_in_page</span>
+      Không tìm thấy thuật ngữ phù hợp với bộ lọc hiện tại.
+    </p>
+  </main>
+
+  <!-- Interactive Detail Modal Popup -->
+  <div id="termModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="glass-panel w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl transition-all scale-95 duration-300 dark:border-slate-800 dark:bg-slate-900" id="modalContent">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4.5 dark:border-slate-800/60 dark:bg-slate-900/60">
+        <div class="flex items-center gap-2.5">
+          <h2 class="font-display text-xl font-black text-slate-950 dark:text-white" id="modalTitle" translate="no">Detail</h2>
+          <span class="rounded bg-amber-50 dark:bg-amber-950/40 text-[10px] font-black text-amber-700 dark:text-amber-400 px-2 py-0.5 uppercase border border-amber-500/10" id="modalCategory">General</span>
+        </div>
+        <button class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition" id="closeModalBtn" type="button" aria-label="Đóng hộp thoại">
+          <span class="material-symbols-rounded text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-5 max-h-[70vh] overflow-y-auto">
+        <!-- Vietnamese Meaning -->
+        <div>
+          <h3 class="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">Giải nghĩa Việt hóa</h3>
+          <p class="mt-2 text-sm md:text-base font-semibold leading-relaxed text-slate-800 dark:text-slate-200" id="modalMeaning"></p>
+        </div>
+
+        <!-- original English -->
+        <div class="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800/40" id="modalOriginalContainer">
+          <h3 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nguyên bản PoE2DB English</h3>
+          <p class="mt-2 rounded-lg border border-slate-100 bg-slate-50/50 p-3 text-xs font-semibold leading-relaxed text-slate-600 dark:border-slate-800/40 dark:bg-slate-950/40 dark:text-slate-400 italic" id="modalOriginal" translate="no"></p>
+        </div>
+
+        <!-- Keep rationale -->
+        <div class="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800/40" id="modalKeepContainer">
+          <h4 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Quy chuẩn giữ từ gốc</h4>
+          <p class="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed" id="modalKeep"></p>
+        </div>
+
+        <!-- Variants Chips -->
+        <div class="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800/40" id="modalVariantsContainer">
+          <h4 class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Từ đồng nghĩa / Biến thể</h4>
+          <div class="mt-2 flex flex-wrap gap-1.5" id="modalVariants"></div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="border-t border-slate-100 bg-slate-50/50 px-6 py-3.5 flex justify-end dark:border-slate-800/60 dark:bg-slate-900/60">
+        <button class="rounded-xl bg-slate-900 px-4 py-2 text-xs font-black text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 transition shadow-sm" id="modalActionClose" type="button">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="dictionary-data.js"></script>
+  <script>
+    const dictionaryData = window.POE2_DICTIONARY_TERMS || { categories: {}, terms: [] };
+    const categories = dictionaryData.categories || {};
+    const terms = [...(dictionaryData.terms || [])].sort((a, b) => a.term.localeCompare(b.term, "en"));
+    const nf = new Intl.NumberFormat("vi-VN");
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const categoryPills = document.getElementById("categoryPills");
+    const resetFilters = document.getElementById("resetFilters");
+    const termGrid = document.getElementById("termGrid");
+    const emptyState = document.getElementById("emptyState");
+    const resultMeta = document.getElementById("resultMeta");
+    const termCount = document.getElementById("termCount");
+
+    // Modal elements
+    const termModal = document.getElementById("termModal");
+    const modalContent = document.getElementById("modalContent");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalCategory = document.getElementById("modalCategory");
+    const modalMeaning = document.getElementById("modalMeaning");
+    const modalOriginal = document.getElementById("modalOriginal");
+    const modalOriginalContainer = document.getElementById("modalOriginalContainer");
+    const modalKeep = document.getElementById("modalKeep");
+    const modalKeepContainer = document.getElementById("modalKeepContainer");
+    const modalVariants = document.getElementById("modalVariants");
+    const modalVariantsContainer = document.getElementById("modalVariantsContainer");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const modalActionClose = document.getElementById("modalActionClose");
+
+    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#039;"
+    }[char]));
+
+    const normalizeText = (value) => String(value ?? "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    const searchableText = (term) => normalizeText([
+      term.term,
+      categories[term.category],
+      term.meaning,
+      term.keep,
+      term.description_en,
+      ...(term.variants || []),
+      ...(term.examples || [])
+    ].join(" "));
+
+    const categoryEntries = Object.entries(categories)
+      .filter(([key]) => terms.some((term) => term.category === key));
+
+    const clipText = (text, maxLength = 140) => {
+      if (text.length <= maxLength) return text;
+      const clipped = text.slice(0, maxLength).replace(/\s+\S*$/, "").trim();
+      return `${clipped || text.slice(0, maxLength).trim()}...`;
+    };
+
+    const compactMeaning = (term) => {
+      const meaning = String(term.meaning || "").trim();
+      if (/là keyword gốc của PoE2DB|keyword\/tooltip gốc của PoE2DB/i.test(meaning)) {
+        return "Keyword in-game, dùng để tra cứu thuộc tính / tooltips.";
+      }
+      if (/là tag gốc của Skill Gem/i.test(meaning)) {
+        return "Tag skill của Skill Gem in-game, dùng để tra cứu.";
+      }
+      return clipText(meaning);
+    };
+
+    const renderCategoryOptions = () => {
+      categoryFilter.innerHTML = [
+        `<option value="">Tất cả nhóm</option>`,
+        ...categoryEntries.map(([key, label]) => `<option value="${escapeHtml(key)}">${escapeHtml(label)}</option>`)
+      ].join("");
+    };
+
+    const setCategory = (category) => {
+      categoryFilter.value = category || "";
+      renderTerms();
+    };
+
+    const renderCategoryPills = () => {
+      const current = categoryFilter.value;
+      const allActive = current === "";
+      categoryPills.innerHTML = [
+        `<button class="category-pill inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" type="button" data-category="" aria-pressed="${allActive}">Tất cả</button>`,
+        ...categoryEntries.map(([key, label]) => {
+          const count = terms.filter((term) => term.category === key).length;
+          return `<button class="category-pill inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" type="button" data-category="${escapeHtml(key)}" aria-pressed="${current === key}">${escapeHtml(label)} <span class="opacity-60 font-display">${nf.format(count)}</span></button>`;
+        })
+      ].join("");
+    };
+
+    const renderTermCard = (term) => {
+      const meaning = compactMeaning(term);
+      const category = categories[term.category] || term.category;
+
+      return `
+        <article class="term-card flex h-full flex-col rounded-2xl border border-l-4 border-slate-200 border-l-amber-500/80 bg-white p-5 shadow-sm transition hover:border-amber-300/60 hover:shadow-glow dark:border-slate-800 dark:border-l-amber-500/60 dark:bg-slate-900 cursor-pointer" data-term="${escapeHtml(term.term)}">
+          <div class="flex items-start justify-between gap-3">
+            <h2 class="break-words text-lg font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(term.term)}</h2>
+            <span class="shrink-0 rounded-md border border-amber-100 bg-amber-50/50 px-2 py-0.5 text-[10px] font-black text-amber-700 dark:border-amber-950/40 dark:bg-amber-950/40 dark:text-amber-400 uppercase tracking-wider">${escapeHtml(category)}</span>
+          </div>
+          <p class="term-meaning mt-3 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300" title="${escapeHtml(term.meaning)}">${escapeHtml(meaning)}</p>
+          <div class="mt-4 pt-3 border-t border-slate-50 flex justify-end text-[10px] font-black text-slate-400 group-hover:text-amber-500 dark:border-slate-800/40">
+            <span class="flex items-center gap-1">CHI TIẾT <span class="material-symbols-rounded text-sm">open_in_new</span></span>
+          </div>
+        </article>
+      `;
+    };
+
+    const renderTerms = () => {
+      const query = normalizeText(searchInput.value.trim());
+      const category = categoryFilter.value;
+      const filtered = terms.filter((term) => {
+        const matchesCategory = !category || term.category === category;
+        const matchesSearch = !query || searchableText(term).includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      termGrid.innerHTML = filtered.map(renderTermCard).join("");
+      termCount.textContent = `${nf.format(terms.length)} thuật ngữ`;
+      resultMeta.textContent = `${nf.format(filtered.length)} / ${nf.format(terms.length)} kết quả`;
+      emptyState.classList.toggle("hidden", filtered.length > 0);
+      renderCategoryPills();
+    };
+
+    // Modal Control Functions
+    const openModal = (termName) => {
+      const termObj = terms.find((t) => t.term.toLowerCase() === termName.toLowerCase());
+      if (!termObj) return;
+
+      modalTitle.textContent = termObj.term;
+      modalCategory.textContent = categories[termObj.category] || termObj.category || "General";
+      modalMeaning.textContent = termObj.meaning;
+      
+      // Original tooltip text
+      if (termObj.description_en) {
+        modalOriginal.textContent = termObj.description_en;
+        modalOriginalContainer.classList.remove("hidden");
+      } else {
+        modalOriginalContainer.classList.add("hidden");
+      }
+
+      // Keep rationale
+      if (termObj.keep) {
+        modalKeep.textContent = termObj.keep;
+        modalKeepContainer.classList.remove("hidden");
+      } else {
+        modalKeepContainer.classList.add("hidden");
+      }
+
+      // Variants
+      const list = [...new Set([
+        ...(termObj.variants || []),
+        ...(termObj.examples || [])
+      ])].filter((v) => v.toLowerCase() !== termObj.term.toLowerCase());
+
+      if (list.length > 0) {
+        modalVariants.innerHTML = list.map((v) => `
+          <span class="rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-bold text-slate-700 dark:text-slate-300 px-2.5 py-1 border border-slate-200/40 dark:border-slate-700/40">${escapeHtml(v)}</span>
+        `).join("");
+        modalVariantsContainer.classList.remove("hidden");
+      } else {
+        modalVariantsContainer.classList.add("hidden");
+      }
+
+      termModal.classList.remove("hidden");
+      termModal.classList.add("flex");
+      
+      // Animate scaling in
+      setTimeout(() => {
+        modalContent.classList.remove("scale-95");
+        modalContent.classList.add("scale-100");
+      }, 10);
+    };
+
+    const closeModal = () => {
+      modalContent.classList.remove("scale-100");
+      modalContent.classList.add("scale-95");
+      
+      setTimeout(() => {
+        termModal.classList.add("hidden");
+        termModal.classList.remove("flex");
+      }, 150);
+    };
+
+    renderCategoryOptions();
+    
+    // Read search query parameter from URL on load
+    const params = new URLSearchParams(window.location.search);
+    const initialQuery = params.get("q") || params.get("search") || "";
+    if (initialQuery) {
+      searchInput.value = initialQuery;
+      
+      // If query is an exact term match, open modal automatically!
+      const exactMatch = terms.some((t) => t.term.toLowerCase() === initialQuery.toLowerCase());
+      if (exactMatch) {
+        setTimeout(() => openModal(initialQuery), 200);
+      }
+    }
+    
+    renderTerms();
+
+    searchInput.addEventListener("input", renderTerms);
+    categoryFilter.addEventListener("change", renderTerms);
+    categoryPills.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      setCategory(button.dataset.category);
+    });
+    resetFilters.addEventListener("click", () => {
+      searchInput.value = "";
+      setCategory("");
+      searchInput.focus();
+    });
+
+    // Delegate clicks inside termGrid to open modal
+    termGrid.addEventListener("click", (event) => {
+      const card = event.target.closest("[data-term]");
+      if (!card) return;
+      openModal(card.dataset.term);
+    });
+
+    // Close modal triggers
+    closeModalBtn.addEventListener("click", closeModal);
+    modalActionClose.addEventListener("click", closeModal);
+    termModal.addEventListener("click", (e) => {
+      if (e.target === termModal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !termModal.classList.contains("hidden")) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+
+</html>

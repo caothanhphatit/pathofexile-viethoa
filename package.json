@@ -1,0 +1,41 @@
+{
+  "name": "poe2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app-routes.js",
+  "scripts": {
+    "crawl:currency": "node scripts/crawl-currency.mjs",
+    "crawl:dictionary": "node scripts/crawl-dictionary.mjs",
+    "crawl:items": "node scripts/crawl-items.mjs",
+    "crawl:skill-gems": "node scripts/crawl-skill-gems.mjs",
+    "crawl:all": "node scripts/crawl-skill-gems.mjs && node scripts/crawl-currency.mjs && node scripts/crawl-items.mjs",
+    "db:migrate": "node src/db/migrate.mjs",
+    "export:currency": "node scripts/export-currency.mjs",
+    "export:items": "node scripts/export-items.mjs",
+    "export:skill-gems": "node scripts/export-skill-gems.mjs",
+    "export:all": "node scripts/export-skill-gems.mjs && node scripts/export-currency.mjs && node scripts/export-items.mjs",
+    "translate:content": "node scripts/retranslate-content.mjs",
+    "rebuild:data": "node src/db/migrate.mjs && npm run crawl:all && npm run translate:content && npm run export:all",
+    "server": "node src/server/index.mjs",
+    "test": "node --test",
+    "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./dist/app.css --minify",
+    "build": "npm run build:css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@fastify/compress": "^8.3.1",
+    "@fastify/cors": "^11.2.0",
+    "@fastify/helmet": "^13.0.2",
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.8.5",
+    "pg": "^8.21.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

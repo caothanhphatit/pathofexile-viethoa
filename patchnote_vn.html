@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patch Notes 0.5.0 Việt hóa - POE2</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
+  <link href="dist/app.css" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .hidden-by-search { display: none !important; }
+    .term { color: #1d4ed8; font-weight: 700; }
+    .dark .term { color: #93c5fd; }
+    .notice { margin-top: 1rem; border-left: 4px solid #d97706; border-radius: .5rem; background: rgba(245, 158, 11, .12); padding: 1rem; font-weight: 600; color: #1f2937; }
+    .dark .notice { color: #e5e7eb; background: rgba(245, 158, 11, .16); }
+    .change-label {
+      display: inline-flex;
+      align-items: center;
+      margin-right: .5rem;
+      border: 1px solid transparent;
+      border-radius: .375rem;
+      padding: .16rem .42rem;
+      font-size: .68rem;
+      font-weight: 900;
+      line-height: 1;
+      vertical-align: .08rem;
+      white-space: nowrap;
+    }
+    .label-new { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+    .label-buff { border-color: #bbf7d0; background: #f0fdf4; color: #15803d; }
+    .label-nerf { border-color: #fecaca; background: #fef2f2; color: #b91c1c; }
+    .label-rework { border-color: #fde68a; background: #fffbeb; color: #b45309; }
+    .label-fix { border-color: #fed7aa; background: #fff7ed; color: #c2410c; }
+    .dark .label-new { border-color: #1e40af; background: rgba(30,64,175,.22); color: #93c5fd; }
+    .dark .label-buff { border-color: #166534; background: rgba(20,83,45,.24); color: #bbf7d0; }
+    .dark .label-nerf { border-color: #991b1b; background: rgba(127,29,29,.24); color: #fca5a5; }
+    .dark .label-rework { border-color: #92400e; background: rgba(120,53,15,.28); color: #fcd34d; }
+    .dark .label-fix { border-color: #9a3412; background: rgba(124,45,18,.24); color: #fdba74; }
+    .toc-scroll { scrollbar-gutter: stable; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div id="top"></div>
+  <div data-component="site-header" data-max-width="1200"></div>
+
+  <main class="mx-auto grid max-w-[1400px] gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <section class="grid gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]" aria-label="Patch notes đầy đủ">
+      <aside class="grid max-h-[28rem] grid-rows-[auto_minmax(0,1fr)] gap-3 overflow-hidden lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)]" aria-label="Điều hướng patch note">
+        <div class="rounded-lg border border-slate-200 bg-white p-3 shadow-md1 dark:border-slate-800 dark:bg-slate-900">
+          <label class="flex min-h-12 items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 dark:border-slate-700 dark:bg-slate-800">
+            <span class="material-symbols-rounded text-slate-500" aria-hidden="true">search</span>
+            <input class="w-full bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-500 dark:text-slate-100" id="searchInput" type="search" placeholder="Tìm trong patch note" autocomplete="off">
+          </label>
+        </div>
+        <nav class="toc toc-scroll overflow-auto rounded-lg border border-slate-200 bg-white p-3 shadow-md1 dark:border-slate-800 dark:bg-slate-900" aria-label="Điều hướng patch note">
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#therunesofaldurleague">League The Runes of Aldur</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#endgame">Endgame</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#originsofdivinity-theendgameoverhaul">Origins of Divinity</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#mastersoftheatlas">Masters of the Atlas</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#delirium">Delirium</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#breach">Breach</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#ritual">Ritual</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#fateofthevaalmovingtocore">Fate of the Vaal</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#abyss">Abyss</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#expedition">Expedition</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#otherendgamechanges">Thay đổi Endgame khác</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#campaignreplayability">Chơi lại Campaign</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#playerchanges">Thay đổi Player</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#newcontentandfeatures">Nội dung và tính năng mới</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#ascendancychanges">Ascendancy Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#passivetreechanges">Passive Tree Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#skillchanges">Skill Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#supportchanges">Support Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#uniqueitemchanges">Unique Item Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#itemchanges">Item Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#monsterchanges">Monster Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#questchanges">Quest Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#userinterfacechanges">User Interface Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#microtransactionchanges">Microtransaction Changes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#bugfixes">Bug Fixes</a>
+          <a class="toc-link flex min-h-9 items-center rounded-lg px-3 py-2 text-sm font-bold leading-tight text-slate-700 no-underline transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-blue-950/50 dark:hover:text-blue-300" href="#updates">Updates to Patch Notes</a>        </nav>
+      </aside>
+      <div class="grid min-w-0 gap-5" id="patch-content">
+<section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="therunesofaldurleague">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">League mới</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">League The Runes of Aldur</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Bắt đầu lại trong một nền kinh tế mới với league <span class="term">Runes of Aldur</span>.</li>
+              <li>Trong mỗi khu vực của Runes of Aldur League, bạn sẽ tìm thấy một <span class="term">Remnant</span>. Remnant cho phép craft món đồ bạn chọn thông qua các <span class="term">Runic Recipe</span> được khắc vào slot trên Remnant.</li>
+              <li>Tùy theo <span class="term">Runeshape</span> đã dùng, bạn sẽ bước vào encounter với kẻ địch mạnh và cần hạ chúng để nhận item.</li>
+              <li>Mỗi Runeshape thêm vào để craft item sẽ tăng số wave quái, đồng thời thêm các <span class="term">runic modifier</span> mới cho quái ở mỗi wave.</li>
+              <li>Remnant có từ 2 đến 10 slot. Số slot càng cao càng hiếm, nhưng cho phép craft các item hiếm hơn nhiều.</li>
+              <li>Quái vật được Remnant dựng dậy có thể rơi <span class="term">Verisium metal</span>, một loại currency mới.</li>
+              <li>Thêm NPC mới <span class="term">Farrow</span> với 4 quest mới trong campaign, cho phép mở khóa nhiều tính năng crafting mới.</li>
+              <li>Hệ thống crafting mới: <span class="term">Verisium Runeforging</span>.</li>
+              <li data-change-label="new">Sau khi mở khóa Verisium Runeforging ở Act 1, hệ thống này cho phép dùng Verisium để thêm <span class="term">Runic Ward</span> vào armour. Armour dưới level 55 nhận Runic Ward mà không có bất lợi. Armour trên level này sẽ đổi một phần base defence thông thường lấy Runic Ward.</li>
+              <li>Thêm loại defence mới: Runic Ward. Defence này bắt đầu hoạt động khi bạn còn 1 Life, cho phép bạn tiếp tục sống sót trong khi Runic Ward nhận damage. Runic Ward tự hồi độc lập với Life.</li>
+              <li>Thêm 13 item <span class="term">Alloy currency</span> mới, mở khóa qua Remnant encounter sau khi hoàn thành quest của Farrow ở Act 2. Các item này thêm crafted modifier mới vào item bằng cách thay thế một modifier hiện có, tương tự Perfect Essence.</li>
+              <li>Sau khi mở khóa <span class="term">Unique Verisium Runeforging</span> ở Act 3, bạn có thể nâng cấp base type của Unique Weapon và Armour rơi ở level dưới 55. Unique Weapon được nâng cấp sẽ có damage cao hơn, còn Armour được nâng cấp sẽ tăng base defence và có Runic Ward, giúp chúng cạnh tranh tốt hơn ở level cao. Unique Armour trên level 55 vẫn có thể Runeforge để thêm Runic Ward, đổi lại giảm các defence khác tương tự base type.</li>
+              <li data-change-label="new">Unique Verisium Runeforging có thêm thuộc tính khi dùng trên <span class="term">Kalguuran Unique</span>.</li>
+              <li>Thêm 13 <span class="term">Ancient Rune</span> có thể mở khóa để craft từ Remnant encounter sau quest Farrow ở Act 4. Các rune này có bonus mạnh riêng cho từng loại weapon.</li>
+              <li>Thêm 13 <span class="term">Mythical rune</span> đầu game có thể craft từ Remnant encounter, đem lại boost lớn cho character level 15+.</li>
+              <li>Thêm 3 <span class="term">Flux</span> có thể craft từ Remnant để chuyển resistance trên item từ một element sang element khác.</li>
+              <li>Thêm 15 rune <span class="term">Meta crafting</span> có thể craft từ Remnant.</li>
+              <li>Thêm hơn 60 rune có thể tạo bằng cách phá hủy một Unique để tạo rune thừa hưởng một phần thuộc tính của Unique đó.</li>
+              <li>Thêm hơn 15 <span class="term">Runic Ward Rune</span> có thể craft từ Remnant, thêm hoặc chỉnh các thuộc tính liên quan đến Runic Ward.</li>
+              <li>Thêm 21 <span class="term">Kalguuran Skill</span> có thể craft từ Remnant: Animus Exchange, Animus Splinters, Bitter Dead, Conductive Runes, Detonate Living, Eternal March, Explosive Transmutation, Fragments of the Past, Frostflame Nova, Grim Pillars, Hollow Shell, Leylines, Powered by Verisium, Refutation, Remnants of Kalguur, Repulsion, Runic Reprieve, Skyfall, Triskelion Cascade, Verisium Manifestations và Voltaic Barrier.</li>
+              <li>Thêm 8 <span class="term">Kalguuran Support</span> có thể craft từ Remnant: Concussive Runes, Fist of Kalguur, Healing Runes, Kalguuran Conviction, Runeforged Blades, Runic Extraction, Runic Infusion và Scouring Flame.</li>
+              <li><span class="term">Expedition Remnant</span> đã được đổi thành Remnant của The Runes of Aldur league.</li>
+              <li>Endgame Story mới: lên đường cùng Farrow khám phá Ocean, điều tra lăng mộ của các Kalguuran đã ngã xuống và thử thách họ để giành phần thưởng phi thường. Tìm miệng hố của một ngôi sao rơi, một thiên thạch Verisium tinh khiết, nơi bạn hy vọng forge được những vật phẩm cực mạnh nếu đánh bại được thứ đang chờ ở đó.</li>
+              <li>Thêm khu hub <span class="term">The Ruins of Kingsmarch</span> cho The Runes of Aldur ở phía đông nam vị trí bắt đầu trên Atlas.</li>
+              <li>Cơ chế <span class="term">Logbook</span> đã đổi thành cơ chế khám phá Ocean. Dùng logbook giờ sẽ hé lộ một phần đại dương với nhiều đảo để khám phá.</li>
+              <li>Thêm nhiều khu vực underground mới có thể được phát hiện trong expedition.</li>
+              <li>Thêm nhiều đảo mới với <span class="term">Grand Expedition</span>, trước đây gọi là Logbook.</li>
+              <li><span class="term">Medved</span>, <span class="term">Vorana</span> và <span class="term">Uhtred</span> tham gia cùng <span class="term">Olroth</span> thành 4 Faction Leader có thể chiến đấu trên các đảo mới bạn phát hiện trong Ocean.</li>
+              <li>Đánh bại Olroth sẽ cho bạn một key để vào Pinnacle Boss mới của The Runes of Aldur.</li>
+              <li>Runes of Aldur challenge league mới bao gồm bộ challenge đầu tiên trong Path of Exile 2. Hoàn thành 2, 4, 6 và 8 challenge trong Runes of Aldur để nhận các mảnh của <span class="term">Knight of Aldur Armour Set</span>. Các phần thưởng challenge này chỉ có thể nhận trong league này.</li>
+              <li data-change-label="new">Từ challenge đầu tiên trở đi, mỗi challenge hoàn thành sẽ cho bạn các mảnh trang trí <span class="term">Runes of Aldur Totem</span> để trưng trong hideout. Totem Pole sẽ vĩnh viễn thể hiện số challenge Runes of Aldur bạn đã hoàn thành trong league.</li>
+              <li>Tất cả character cũ từ Early Access launch vẫn còn, nhưng được cấp một lần refund Passive Tree miễn phí do các thay đổi. Chúng tôi rất khuyến khích bạn vào league mới để trải nghiệm trọn vẹn các thay đổi của update 0.5.0.</li>
+              <li data-change-label="new">Ở 0.5.0, Runes of Aldur challenge league có các biến thể Standard, Hardcore và Solo Self-Found. Chúng có cùng mechanic và item cốt lõi, và bạn có thể tạo private league dựa trên các league này.</li>
+              <li data-change-label="new">Các biến thể Hardcore của Runes of Aldur được gắn với Standard Runes of Aldur tương ứng. Nghĩa là nếu chết trong Hardcore Runes of Aldur, bạn có thể tiếp tục ở Standard Runes of Aldur League.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="endgame">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Atlas</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Endgame</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Atlas giờ có các điểm quan tâm cố định ở vị trí cụ thể, tạo ra mục tiêu rõ ràng và dễ tìm.</li>
+              <li>Tất cả league mechanic trên Atlas giờ có quest giới thiệu mechanic đó và dẫn bạn qua nhiều giai đoạn cho đến Pinnacle Boss.</li>
+              <li>Tất cả Pinnacle Boss giờ có phiên bản quest có thể truy cập theo hướng xác định, bên cạnh phiên bản non-quest lặp lại được với độ thử thách cao hơn.</li>
+              <li>Thêm 30 Endgame Map Area mới.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="originsofdivinity-theendgameoverhaul">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Endgame overhaul</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Origins of Divinity - Đại tu Endgame</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Endgame Storyline mới: <span class="term">Cataclysm of the Beast</span> đã kích hoạt một giao thức cổ xưa, được thiết kế để truy quét và thanh tẩy corruption nếu nó từng lan rộng đến mức này. Băng qua Atlas để vào Fortress và kích hoạt Gates. Lấy key để tiếp cận các Precursor weapon cổ đại và vô hiệu hóa chúng.</li>
+              <li>Sau khi hoàn thành tower đầu tiên, một <span class="term">Fortress</span> sẽ trồi lên từ mặt đất.</li>
+              <li>Map bên trong Fortress cấp một hoặc nhiều passive point cho <span class="term">Atlas Passive Tree</span>. Cách này thay thế hoàn toàn phương thức nhận Atlas Point trước đây.</li>
+              <li>Atlas Tree đã được mở rộng đáng kể với hơn 300 node. Sau khi hoàn thành toàn bộ map trong Fortress, bạn sẽ có đủ passive point để allocate toàn bộ Atlas Tree.</li>
+              <li>Vì có thể allocate toàn bộ Atlas Tree, không còn cần respecialisation cho nó nữa. Các node nhiều lựa chọn trên tree có thể đổi option bất kỳ lúc nào.</li>
+              <li>Nhiều map trong Fortress có <span class="term">Ancient Modifier</span> thêm hoặc chỉnh nội dung của map. Bất kỳ map nào có modifier thêm secondary content cũng sẽ ngầm thêm luôn content đó vào map.</li>
+              <li>Thêm hơn 40 Ancient Modifier có cơ hội xuất hiện trên bất kỳ map nào ngoài Fortress.</li>
+              <li>Thêm ba <span class="term">Gateway map</span> với hai boss mới, dùng để vào các khu vực khác nhau của Fortress.</li>
+              <li>Thêm các <span class="term">Precursor Tower Map</span> mới bên ngoài Fortress.</li>
+              <li><span class="term">The Burning Monolith</span> cùng <span class="term">Arbiter of Ash</span> đã được chuyển vào Fortress.</li>
+              <li>Phiên bản quest của <span class="term">Crisis fragment</span> được thêm vào hai <span class="term">Enigma chamber</span> bên trong Fortress.</li>
+              <li>Thêm hai <span class="term">Citadel map</span> mới với hai boss mới rơi key cho Pinnacle Boss mới.</li>
+              <li>Thêm Pinnacle Boss <span class="term">Arbiter of Divinity</span>.</li>
+              <li>Map trong Fortress cũng có thể được hoàn thành bằng cách giết Arbiter of Divinity 5 lần, qua đó tự động hoàn thành các phần khác nhau của Fortress để nhận Atlas Tree point.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="mastersoftheatlas">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Progression</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Masters of the Atlas</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Bên cạnh Atlas Tree, hệ thống mới <span class="term">Masters of the Atlas</span> đưa progression kiểu Ascendancy vào Endgame. Player có thể liên kết với các master khác nhau, như <span class="term">Jado of the Order of the Djinn</span> hoặc monster hunter <span class="term">Hilda</span>. Mỗi master cho bonus độc đáo, bất đối xứng và có thể đổi giữa các map tùy ý, tạo ra các bonus định hình build.</li>
+              <li>Mỗi master có 12 node, trong đó có thể chọn 4 node cùng lúc. Bạn có thể đổi lựa chọn bất kỳ lúc nào.</li>
+              <li>Cả ba master có thể được allocate cùng lúc, kèm nút chọn nhanh để đổi giữa từng master trước khi chạy map.</li>
+              <li>Mở khóa mỗi hàng 3 node bằng cách làm mission cho các master.</li>
+              <li>Atlas Master mới: questline <span class="term">Doryani's Science</span> được mở khóa bằng cách dọn một corruption nexus.</li>
+              <li>Atlas Master mới: questline <span class="term">Hilda's Hunting</span> được mở khóa bằng cách ghé <span class="term">Hilda's Campsite</span> hơi lệch về tây nam vị trí bắt đầu trên Atlas.</li>
+              <li>Atlas Master mới: questline <span class="term">Jado's Spycraft</span> được mở khóa bằng cách hoàn thành một anomaly map gần vị trí bắt đầu.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="delirium">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">League mechanic</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Delirium</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Storyline mới: một <span class="term">Trickster God</span> cổ đại đã được giải phóng, gieo rắc điên loạn khắp Wraeclast. Bạn có dám khám phá nguồn gốc của hắn và đối mặt nỗi sợ sâu nhất của mình không? Xem thêm tại <a href="https://pathofexile2.com/ancients#delirium">pathofexile2.com/ancients#delirium</a>.</li>
+              <li>Thêm khu hub <span class="term">The Withered Willow</span> cho Delirium ở phía tây nam vị trí bắt đầu trên Atlas. Các map quanh vị trí này đều chứa Delirium và cho point cho <span class="term">Delirium Atlas Passive Tree</span>.</li>
+              <li>Delirium Atlas Passive Tree đã được làm lại hoàn toàn với nhiều node mới và thay đổi node hiện có.</li>
+              <li>Sau khi phá Delirium mirror, giờ có progress bar hiển thị bạn đã đi sâu bao nhiêu trong fog và còn bao lâu trước khi fog tan. Đầu Delirium bar là vị trí ban đầu tại Delirium mirror, cuối bar là vị trí map boss.</li>
+              <li>Thêm một bộ <span class="term">Delirium Encounter</span> mới hiển thị trên Delirium bar. Khi đạt độ sâu nhất định, các mảnh gương có màu sẽ xuất hiện. Đi vào các mảnh này sẽ phá chúng và kích hoạt encounter mới.</li>
+              <li>Có thể nhìn hướng tới map boss qua hiệu ứng fog. Di chuyển theo hướng của fog sẽ luôn dẫn bạn đến map boss.</li>
+              <li>Map boss trong Delirium sẽ luôn 100% delirious.</li>
+              <li>Bonus damage và Life mà monster nhận từ Delirium đã bị giảm.</li>
+              <li>Thêm 5 Elite Delirium Monster mới.</li>
+              <li>Thêm sub-area mới: <span class="term">Loathsome Mire</span>.</li>
+              <li>Loathsome Mire rơi hai base type Amulet mới, cho hai instilled notable với cái giá là -1 suffix hoặc -1 prefix.</li>
+              <li><span class="term">Liquid Emotion</span> giờ có thể dùng để craft mod bổ sung trên Jewel. Chúng hoạt động tương tự greater essence, mỗi loại có một bộ mod riêng sẽ thay thế ngẫu nhiên một mod hiện có trên item.</li>
+              <li>Hoàn thành Delirium Mirror giờ có cơ hội spawn <span class="term">Grand Mirror</span> trên Atlas ở một map gần đó. Grand Mirror tạo một bản sao map boss trong map bị ảnh hưởng. Giết cả hai map boss sẽ mở khóa Atlas mechanic mới: <span class="term">The Trial of Madness</span>.</li>
+              <li>Sau khi kích hoạt Trial of Madness, fog sẽ lan từ một map bạn chọn trên Atlas, bao gồm một <span class="term">Simulacrum</span> bị khóa. Trong fog, toàn bộ map là Delirious bắt đầu ở 10%. Giết Rare monster và Map boss sẽ tăng Deliriousness của toàn bộ map trong fog. Khi đạt 100%, Simulacrum sẽ mở. Deliriousness có thể tiếp tục tăng đến 200% delirious.</li>
+              <li>Rare và Unique monster trong Delirious map có bộ Delirious modifier mới, cho chúng các khả năng kỳ lạ.</li>
+              <li>Map boss của Delirious Map có thể rơi thêm bộ 3 <span class="term">Potent emotion</span> mới, dùng để craft modifier mạnh lên Jewel không có trong mod pool Jewel thường. Các emotion này cũng có thể dùng để instill 16 Passive Tree Notable mới vốn không xuất hiện trên Passive Tree.</li>
+              <li>Simulacrum đã được cập nhật và giờ là encounter 7 wave.</li>
+              <li>Hoàn thành Simulacrum giờ cho key để đối đầu Delirium Pinnacle Boss mới.</li>
+              <li>Thêm bộ 10 <span class="term">Ancient Emotion</span> mới có thể rơi nếu mở khóa bằng Atlas Tree, dùng để craft <span class="term">Timelost Jewel</span>. Cũng có 3 Ancient Potent emotion dùng để craft modifier mạnh mới trên Timelost Jewel, không có trong mod pool thường.</li>
+              <li>Một số Delirium Unique không phải amulet giờ rơi kèm modifier <span class="term">Raven-Touched</span>, cho phép chúng được instill.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="breach">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">League mechanic</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Breach</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Breach Storyline mới: đi đến <span class="term">Monastery of the Keepers</span>, thánh đường của Keepers of the Flame, và khám phá <span class="term">The Genesis Tree</span>, thứ bị đánh cắp từ kẻ địch và được chính Dreamer trao cho Keepers. Xem thêm tại <a href="https://pathofexile2.com/ancients#breach">pathofexile2.com/ancients#breach</a>.</li>
+              <li>Thêm khu hub mới <span class="term">The Monastery of the Keepers</span> ở phía nam vị trí bắt đầu trên Atlas. Các map quanh vị trí này đều chứa Breach encounter. Hoàn thành các map này cho point cho Breach Atlas Tree.</li>
+              <li>Breach Atlas Passive Tree đã được làm lại hoàn toàn với nhiều node mới và thay đổi node hiện có.</li>
+              <li>Bắt đầu một Breach giờ hiển thị progress bar cho biết còn bao lâu trước khi Breach đóng lại, cũng như việc giết quái đang kéo dài thời gian tồn tại của Breach bao nhiêu.</li>
+              <li>Đạt 100% trên bar này sẽ bắt đầu mechanic mới: <span class="term">Stabilised Breach</span>. Stabilised Breach sẽ spawn thử thách mới ở điểm bắt đầu.</li>
+              <li>Thêm boss mới cho Stabilised Breach: <span class="term">Vruun, Marshal of Xesht</span>.</li>
+              <li>Thêm hệ thống crafting mới: <span class="term">The Genesis Tree</span>.</li>
+              <li>Genesis Tree cho phép tiêu thụ <span class="term">Wombgift</span> và <span class="term">Hiveblood</span> để tạo Ring, Amulet, Belt và Currency.</li>
+              <li>Node trên Genesis Tree có thể được allocate để ảnh hưởng item sẽ được craft.</li>
+              <li>Node mới được mở khóa bằng cách dùng Wombgift.</li>
+              <li>Thêm 6 base type Ring mới chỉ có thể craft từ Genesis Tree.</li>
+              <li>Thêm 4 base type Amulet mới chỉ có thể craft từ Genesis Tree.</li>
+              <li>Thêm 4 base type Belt mới chỉ có thể craft từ Genesis Tree.</li>
+              <li>Thêm một bộ mod Caster và Minion mới có thể craft lên Ring và Belt bằng Genesis Tree.</li>
+              <li>Catalyst không còn rơi từ Monster, giờ chỉ nhận được từ Genesis Tree.</li>
+              <li>Thêm bộ 12 Catalyst mới có thể thêm quality modifier mới cho Jewel.</li>
+              <li>Giết monster trong Breach giờ rơi Hiveblood, Wombgift và Breachstone Splinter.</li>
+              <li>Breachstone Splinter biến thành một Wombgift đặc biệt khi đủ stack. Có thể giao nó tại Genesis Tree để tạo Breachstone.</li>
+              <li><span class="term">Breach Domain</span> mới giờ spawn trên Atlas. Dùng Breachstone sẽ hé lộ các map bên trong domain để bạn vào.</li>
+              <li>Map trong Breach Domain chứa các encounter mới: <span class="term">Breach Hive</span>, <span class="term">Sky Hive</span> và <span class="term">Sky Fortress</span>.</li>
+              <li>Breach Hive có chuỗi wall có thể bị đốt bằng cách đi xuyên qua. Mỗi wall bị phá sẽ tăng số monster trong encounter, encounter bắt đầu ở trung tâm.</li>
+              <li>Sky Hive là khu vực mới nơi các Breachlord dựng fortress mà bạn cần tấn công. Sky Hive có encounter nhiều wave khó, trong đó bạn phải bảo vệ <span class="term">Ailith</span> khi cô đóng domain. Ailith sẽ có một loạt ability có thể kích hoạt trong encounter với nhiều hiệu ứng khác nhau.</li>
+              <li>Fortress là khu vực mới với cặp boss mới <span class="term">Tul</span> và <span class="term">Esh</span>. Đánh bại Tul và Esh sẽ cho key vào Breach Pinnacle Boss hiện có.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="ritual">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">League mechanic</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Ritual</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Storyline mới: <span class="term">Aoife</span> vẫn vất vưởng như một linh hồn bất an, bị ràng buộc với Wildwood và tìm kiếm người có thể đáp lại lời gọi. <span class="term">The King in the Mists</span> đã chiếm lấy thân xác cô, để linh hồn cô trôi dạt, không nơi neo giữ và không thể sang bên kia. Cô tin rằng chỉ khi giành lại thứ đã bị lấy đi, cô mới có thể trở nên trọn vẹn. Xem thêm tại <a href="https://pathofexile2.com/ancients#ritual">pathofexile2.com/ancients#ritual</a>.</li>
+              <li>Thêm khu hub mới <span class="term">Caer Tarth</span> ở phía tây vị trí bắt đầu trên Atlas. Các map quanh vị trí này đều chứa Ritual encounter. Hoàn thành các map này cho point cho Ritual Atlas Tree.</li>
+              <li>Ritual Atlas Passive Tree đã được làm lại hoàn toàn với nhiều node mới và thay đổi node hiện có.</li>
+              <li>Sau khi hoàn thành Ritual Altar encounter trong Map, locust sẽ chỉ đường tới Altar kế tiếp.</li>
+              <li>Tất cả item trong màn hình Endgame Ritual Reward giờ chỉ là Unique hoặc Omen.</li>
+              <li>Tribute không dùng vào reward giờ có thể được hiến tế để nhận <span class="term">Audience with the King</span>.</li>
+              <li>Giết King in the Mists giờ rơi key mới, <span class="term">The Head of the King</span>. Key này có thể dùng ở Caer Tarth để bắt đầu <span class="term">Rite of the Nameless</span>.</li>
+              <li>Rite of the Nameless là Atlas mechanic mới, trong đó bạn chọn chuỗi 5 map để hoàn thành một ritual liên tục. Monster từ mỗi ritual, gồm cả map boss, sẽ tái xuất hiện trong từng map của chuỗi, tạo encounter rất thử thách. Unique boss của từng map chỉ xuất hiện trong ritual cuối của mỗi map.</li>
+              <li>Khi chọn map cho Rite of the Nameless, mỗi map sau map đầu tiên sẽ có extra modifier ảnh hưởng độ khó và reward của ritual trong Rite.</li>
+              <li>Mỗi map trong Rite of the Nameless thưởng một phần key dùng để vào Ritual Pinnacle Boss.</li>
+              <li>Thêm boss mới: <span class="term">The Queen in the Mists</span>, mở sau khi allocate một node cụ thể trên Atlas Tree. Boss này có thể rơi ba Idol corrupted mới.</li>
+              <li><span class="term">Freythorn Ritual</span> giờ bị ngăn không bao giờ hiển thị item deferred, để đảm bảo item không mất nếu quay lại khu vực này bằng character level cao hơn.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="fateofthevaalmovingtocore">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Core game</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Fate of the Vaal vào Core Game</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li><span class="term">Fate of the Vaal</span> đã được thêm vào Core Game. Bạn gặp chuỗi 6 <span class="term">Ancient Beacon</span> đầu tiên ở Act 3, energise chúng để nhận <span class="term">Energised Crystal</span> và mở portal tới Vaal Ruins. Bạn sẽ gặp bộ 6 Ancient Beacon thứ hai trong Interlude.</li>
+              <li>Giờ có Atlas Passive Tree cho league mechanic Fate of the Vaal.</li>
+              <li><span class="term">Atziri's Temple</span> giờ có thể được tìm thấy trên Atlas ở phía đông bắc vị trí bắt đầu, trong thành phố <span class="term">Lira Vaal</span>. Map bên trong Lira Vaal luôn có Energised Crystal và cho point cho Fate of the Vaal Atlas Passive Tree.</li>
+              <li>Cũng có <span class="term">Temple Precursor Tablet</span> mới đảm bảo Vaal Beacon trong map nếu bạn muốn tập trung vào league này.</li>
+              <li>Không còn có thể ngăn một room bị xóa khỏi temple. Room buộc phải bị xóa nhưng có kết nối khác sẽ biến thành Path room đơn giản. Thay đổi này ngăn chiến thuật "snake".</li>
+              <li>Số room trong temple khi bắt đầu đã tăng để giúp tới Atziri nhanh hơn.</li>
+              <li>Room giờ có thể nâng lên Tier 4 sau khi mở khóa khả năng này trên Temple Atlas Tree. Điều này cho phép chuyên sâu hơn vào từng loại room và khuyến khích layout temple thú vị hơn.</li>
+              <li>Reward Room nhận từ console sau khi đánh bại Architect đã được cải thiện đáng kể, có thêm nhiều loại để mở khóa bên cạnh nâng cấp reward của toàn bộ room hiện có.</li>
+              <li>Restricted Room trong Atziri's Temple nếu có thể đi vào sẽ luôn destabilise khi rời Temple.</li>
+              <li>Drop rate của Atziri's Temple Medallion giờ scale theo số path trong Temple, bên cạnh các room khác. Trước đây chỉ scale theo room khác.</li>
+              <li><span class="term">Room-based Medallion</span> không còn dùng được bên trong Temple đang active.</li>
+              <li>Room-based Medallion giờ hiển thị thông tin upgrade khi hover.</li>
+              <li>Medallion giờ xuất thông báo lỗi mô tả rõ khi không thể đặt.</li>
+              <li>Giới hạn mặc định Energised Crystal có thể trữ tăng lên 60, và giới hạn Medallion tăng lên 6. Các Medallion tăng số Energised Crystal hoặc Medallion trữ được không còn cần thiết.</li>
+              <li>Monster level của Temple giờ tính đến level của khu vực nơi lấy crystal dùng để mở Temple.</li>
+              <li><span class="term">Corruption Chamber Temple Bonus</span> đã được cập nhật để thêm Monster Modifiers Chance thay vì Additional Monster Modifiers.</li>
+              <li>Portal tạo trong Temple of Atziri giờ tạo portal tương ứng trong Vaal Ruins gốc để dễ ra vào.</li>
+              <li>Vaal Beacon giờ hiển thị icon mờ trên Minimap khi đã hoàn thành.</li>
+              <li>Giờ có 4 loại Infuser. Vaal Infuser hiện có đổi thành <span class="term">Vaal Armourer's Infuser</span>, dùng lên Armour.</li>
+              <li><span class="term">Vaal Blacksmith's Infuser</span> dùng lên Martial Weapon, còn <span class="term">Vaal Arcanist's Infuser</span> dùng lên Wand, Staff và Sceptre.</li>
+              <li><span class="term">Vaal Catalysing Infuser</span> dùng lên Jewellery.</li>
+              <li>Tất cả Infuser chỉ có thể dùng trên item có Quality từ 20% trở lên.</li>
+              <li>Fate of the Vaal Currency Item giờ có stack size tối đa 5.000 khi trữ trong wildcard slot của Currency Stash Tab.</li>
+              <li>Một số outcome khi dùng <span class="term">Vaal Cultivation Orb</span> lên Unique Item đã được cập nhật:</li>
+              <li><span class="term">Atziri's Rule</span> Unique Staff giờ có thể roll 10-20% increased Life Cost Efficiency, trước đây 20-40%.</li>
+              <li><span class="term">Atziri's Splendour</span> Unique Body Armour giờ có thể roll +66-100 to Maximum Energy Shield, trước đây +100-200.</li>
+              <li><span class="term">The Covenant</span> Unique Body Armour giờ có thể roll 10-25% increased Life Cost Efficiency, trước đây 25-50%.</li>
+              <li><span class="term">Hateforge</span> Unique Gloves giờ có thể roll +16-30 maximum Rage nếu bạn đã dùng Skill Requires Glory trong 20 giây gần đây. Trước đây là +8-12 maximum Rage mỗi Skill Requires Glory đã dùng trong 6 giây gần đây, tối đa 5 lần.</li>
+              <li><span class="term">Rathpith Globe</span> Unique Focus giờ có thể roll 8-15% increased Life Cost Efficiency, trước đây 12-20%.</li>
+              <li><span class="term">Shackles of the Wretched</span> Unique Gloves không còn roll Elemental Ailment ngoài Freeze bạn gây ra bị Reflected to you; thay vào đó có thể roll 10-15% increased Damage per Curse on you.</li>
+              <li><span class="term">The Vertex</span> Unique Helmet không còn roll +2-4 to Level of All Skill Gems; thay vào đó có thể roll +3-5 to Level of All Curse Skill Gems.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="abyss">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">League mechanic</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Abyss</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Giờ có các vết nứt Abyss lớn trên Atlas. Hoàn thành Atlas Abyss sẽ đóng chúng và luôn cho một <span class="term">Abyssal Depths</span> có boss fight.</li>
+              <li>Abyss Atlas Tree đã được làm lại với nhiều node mới và thay đổi các node hiện có.</li>
+              <li><span class="term">Kulemak's Invitation</span> giờ luôn được allocate cho Map owner.</li>
+              <li>Abyss Omen không còn rơi ở khu vực dưới level 65.</li>
+              <li>Modifier ảnh hưởng số chest được tìm thấy giờ áp dụng cho Chest trong Abyss. Chúng cũng áp dụng cho cơ hội tìm Abyssal Depths, nên cơ hội tìm Abyssal Depths không giảm khi khu vực có nhiều chest hơn.</li>
+              <li>Điều chỉnh damage của Abyss Monster modifier <span class="term">Meteoric Demise</span>.</li>
+              <li><span class="term">Lithomantic Rune</span> từ Abyss Monster modifier Lithomantic Runes giờ active sau delay dài hơn.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="expedition">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">League mechanic</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Expedition</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Expedition League đã tạm thời bị tắt ở Standard league do tích hợp với The Runes of Aldur. Nó sẽ được tích hợp lại vào Standard sau khi The Runes of Aldur kết thúc.</li>
+              <li><span class="term">Recombinator</span> đã bị tắt. <span class="term">Omen of Recombination</span> đã bị xóa. Omen of Recombination hiện có sẽ bị xóa khi đăng nhập.</li>
+              <li><span class="term">Forgotten By Time Expedition Precursor Tablet</span> tạm thời không thể rơi.</li>
+              <li>Expedition Explosive giờ đợi nổ cho đến khi phần lớn monster được đào lên bởi Explosive trước đó đã bị giết.</li>
+              <li>Bạn giờ có thể dùng currency trong stash để mua item từ Expedition Vendor.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="otherendgamechanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Atlas</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Thay đổi Endgame khác</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Với việc thêm Endgame storyline mới, Atlas đã được reset. Tablet và Waystone hiện có vẫn tiếp tục hoạt động để bạn có thể tiếp tục progression như bình thường, nhưng để nhận point cho Atlas Tree, bạn cần làm storyline Origins of Divinity.</li>
+              <li>Thêm hỗ trợ tìm kiếm vào Endgame Atlas Map.</li>
+              <li>Giờ có thể zoom out xa hơn một chút trên màn hình Atlas.</li>
+              <li>Mỗi Pinnacle Boss giờ có hai phiên bản: Quest version và Infinite Farm version. Do đó, Primary, Secondary và Tertiary Calamity Fragment không còn nhận được nữa.</li>
+              <li>Tablet cùng loại giờ có thể dùng chung để tăng lượng league content được spawn. Chi tiết khác nhau theo từng loại content. Trong vài trường hợp, thêm nhiều tablet sẽ tăng kích thước một encounter; ở trường hợp khác sẽ tăng số encounter spawn.</li>
+              <li>Mỗi tablet slot trống giờ đóng góp vào lượng league content ngẫu nhiên không đến từ tablet trong khu vực. Nghĩa là nếu tất cả tablet slot đều đầy, bạn chỉ thấy league content từ tablet đang dùng. Mục tiêu của thay đổi này là đảm bảo bạn không cần hoàn thành Atlas Tree cho các league bạn không định chạy.</li>
+              <li>Waystone giờ phải được identify để activate trong Map Device.</li>
+              <li>Giờ có thể dùng Orb of Chance lên Tablet.</li>
+              <li>Một số item và content giờ yêu cầu bạn specialize thông qua Atlas Passive Skill, bao gồm Exceptional Item, Fracturing Orb, Basic và Overseer Precursor Tablet.</li>
+              <li>Tablet không còn dùng được trên map không thể có extra content, như Unique Map.</li>
+              <li>Tablet riêng của league không còn rơi từ khu vực không phải Map, như Simulacrum, Abyssal Depths hoặc Twisted Domain.</li>
+              <li>Giảm một phần base chance để Essence, Azmeri Spirit, Shrine, Strongbox, Summoning Circle và Rogue Exile xuất hiện trong Map do mức tăng lớn hơn nhiều giờ có trên Atlas Tree.</li>
+              <li>Atlas Passive nhắc đến map có Powerful Map Boss giờ hoạt động với Overseer Precursor Tablet và nguồn Powerful Map Boss khác.</li>
+              <li>Điều chỉnh giá trị của general Precursor Tablet Modifier để tương tự bonus cùng loại từ Waystone Modifier. Đồng thời giảm độ biến thiên roll của các Modifier này.</li>
+              <li>Các Modifier sau không còn roll trên Waystone: Baron's, Beastly, Brambled, Doryani's, Enervating, Faridun's, Hallowed, of Nemeses, Perennial's, Rusted và Sacrificial.</li>
+              <li>Việc một Map Modifier là Suffix hay Prefix đã được chỉnh để nhìn chung Prefix là Modifier ảnh hưởng output của monster về phía player, còn Suffix là Modifier ảnh hưởng player hoặc defence của monster.</li>
+              <li>Các Suffix Modifier sau giờ là Prefix: Of Destruction, of Fleeting, of Impact, of Penetration, of Puncturing, of Shattering, of Splitting và of Venom.</li>
+              <li>Các Prefix Modifier sau giờ là Suffix: Buffering, Enduring, Enfeebling, Eroding, Evasive, Flaming, Hexwarded, Shocking, Sleet và Slowing.</li>
+              <li>Waystone Modifier <span class="term">of Overpowering</span> không còn khiến Monster có increased Freeze Buildup, Shock Chance hoặc gây increased Flammability Magnitude. Giờ nó khiến Monster có increased Elemental Ailment Application.</li>
+              <li>Bonus của Waystone Modifier đã được cập nhật. Chúng giờ cho nhiều Monster Effectiveness, Pack Size, Item Rarity, Monster Rarity hoặc Waystone Drop Chance hơn, tùy modifier. Các Modifier này nhân với nguồn khác, như các nguồn trên Atlas Passive Tree.</li>
+              <li>Modifier Pack Size giờ cũng cho cơ hội xuất hiện thêm một Rare Monster trong Rare Monster pack.</li>
+              <li><span class="term">Monster Rarity</span> là stat mới, ảnh hưởng cơ hội xuất hiện magic và rare monster, cũng như cơ hội có thêm modifier trên Rare Monster.</li>
+              <li>Map modifier gồm nguồn tăng số Rare Monster hoặc magic Monster đã được cập nhật để chỉ hiển thị số ở header của map, không hiển thị thêm trong explicit modifier. Đây không phải thay đổi chức năng.</li>
+              <li>Giảm một nửa bonus Quantity of Item Dropped và Experience Gain do increased Monster Effectiveness mang lại, như từ Atziri's Temple.</li>
+              <li>Chức năng của <span class="term">Omen of Chaotic Rarity</span>, <span class="term">Omen of Chaotic Quantity</span> và <span class="term">Omen of Chaotic Monsters</span> đã đảo ngược. Thay vì đảm bảo modifier mới thuộc loại của chúng, giờ chúng ngăn modifier mới thuộc loại đó.</li>
+              <li>Thêm <span class="term">Omen of Chaotic Effectiveness</span>. Khi item này active trong inventory, Chaos Orb tiếp theo của bạn sẽ thay mọi Modifier trên Waystone bằng Modifier không cho Monster Effectiveness.</li>
+              <li>Có thể dùng đồng thời tối đa 3 Omen ở trên.</li>
+              <li>Giảm một nửa buff Damage as Extra từ các shrine sau: Freezing Shrine, Gloom Shrine, Meteoric Shrine và Tempest Shrine.</li>
+              <li>Hoàn thành các vị trí cố định trên Atlas giờ được chia sẻ với party member.</li>
+              <li>Do Atlas Map có thêm content đa dạng, kích thước indicator của content đã tăng 50%.</li>
+              <li>Waystone đã nhận art 2D mới.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="campaignreplayability">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Campaign</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Chơi lại Campaign</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Để rút ngắn thời gian người chơi có kinh nghiệm phải chơi lại game ở mỗi league mới, chúng tôi đã thêm yếu tố vào nhiều Campaign area để chỉ hướng đi nếu bạn biết cần nhìn gì. Có thể xem ví dụ trong video: <a href="https://www.youtube.com/watch?v=miL0Ms-VwGI">youtube.com/watch?v=miL0Ms-VwGI</a>.</li>
+              <li>Một số khu vực trong game đã được rút ngắn.</li>
+              <li>Xóa khu dreadnaught thứ hai, <span class="term">The Dreadnaught Vanguard</span>. Boss Act 2 giờ ở <span class="term">The Dreadnaught</span>.</li>
+              <li>Thứ tự area trong Act 3 đã được sắp xếp lại một phần để progression mượt hơn.</li>
+              <li>Các cần gạt trong Waterways đã đổi thành pressure pad, bạn chỉ cần bước qua; phần cuối level cũng đã được rút nước sẵn.</li>
+              <li>Monster density ở nửa sau campaign đã giảm, đặc biệt trong Interlude, để đi qua các khu vực này nhanh hơn.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="playerchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Balance</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Thay đổi Player</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Bleed damage trên player không còn tăng khi player đang di chuyển. Thay đổi này không ảnh hưởng bleed mà player gây lên monster.</li>
+              <li>Maximum Runic Ward giờ được cộng vào starting Honour khi bắt đầu Trial of the Sekhemas.</li>
+              <li>Keyword <span class="term">Defences</span> không còn được dùng. Các chỗ hiện có dùng từ Defences giờ ghi rõ <span class="term">Armour, Evasion and Energy Shield</span> để rõ rằng các modifier này không áp dụng cho Runic Ward, Resistance, Block hoặc dạng bảo vệ khác. Đây chỉ là thay đổi mô tả.</li>
+              <li>Mỗi resource, gồm Life, Mana hoặc Energy Shield, chỉ có một instance Leech được áp dụng cùng lúc. Khi có nhiều instance Leech active, chỉ instance có recovery rate cao nhất hồi cho bạn cho đến khi hết hạn, sau đó instance có recovery rate cao tiếp theo sẽ áp dụng.</li>
+              <li>Giờ có giới hạn lượng damage tối đa mà một hit được xem là gây ra cho Leech. Hit gây tổng damage dưới 40.000 không bị ảnh hưởng; nếu một hit gây hơn 40.000 tổng damage, nó được tính như chỉ gây 40.000 damage cho mục đích tính Leech. Giá trị từng damage type trong hit được scale đều xuống để đạt giới hạn này. Điều này nghĩa là hit cực lớn sẽ ngừng cải thiện Leech sau một điểm nhất định, nhưng tăng leech percentage vẫn luôn tăng lượng resource nhận được.</li>
+              <li>Công thức chance to Deflect đã được chỉnh để scale tốt hơn khi đầu tư Deflection Rating, với cap 95% chance to Deflect, tương tự chance to Evade cap ở 95%.</li>
+              <li>Chance to Deflect mới = 150*(1 - A/(A + 0.12*D)), trong đó A là attacker accuracy rating và D là defender deflection rating. Công thức này tạo đường tăng tuyến tính, thưởng tốt hơn ở mức đầu tư cao.</li>
+              <li>Parry, Shield Block và Resonating Shield không còn làm chậm decay Heavy Stun buildup lâu hơn dự kiến.</li>
+              <li>Melee Attack giờ chỉ có thể áp dụng Splash Damage một lần cho mỗi damaging area. Một số Attack tạo nhiều damaging area trong khi dùng, ví dụ Whirling Assault tạo nhiều damaging area quanh bạn khi di chuyển.</li>
+              <li>Khi Minion bị xóa do thay đổi resource, như weapon swapping, Minion trẻ hơn hoặc mới hơn giờ được ưu tiên xóa trước Minion cũ hơn để tránh lãng phí cooldown ability của Minion.</li>
+              <li>Minion bị ảnh hưởng bởi Last Gasp Support hoặc Tecrod's Revenge Lineage Support, và Totem bị ảnh hưởng bởi Unnamed Heartwood Oracle Notable Passive Skill, không còn có thể chết trong thời gian hiệu ứng do nhận thêm damage vượt quá Maximum Life.</li>
+              <li>Stat ghi là "when you collect a Remnant" không còn cho bạn lợi ích của các stat này khi Ally chia sẻ hiệu ứng Remnant với bạn.</li>
+              <li>Cập nhật tên buff mà Trinity cấp thành Affinity, vì Resonance là tên của một Keystone passive skill. Đây chỉ là cập nhật mô tả.</li>
+              <li>Archon Buff không còn mặc định bị mất khi bạn attack. Điều này giờ là thuộc tính riêng của Elemental Archon.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="newcontentandfeatures">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Content</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Nội dung và tính năng mới</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Giới thiệu Ascendancy Class mới cho Monk: <span class="term">Martial Artist</span>. Sau nhiều thập kỷ rèn luyện, Martial Artist trở thành bậc thầy ảo ảnh. Được cường hóa bởi các rune gắn vào cơ thể, class này tạo ảo ảnh mạnh, triệu hồi chuông ảo ảnh hỗ trợ và xuất sắc khi dùng tay không làm weapon.</li>
+              <li>Giới thiệu Ascendancy Class mới cho Huntress: <span class="term">Spirit Walker</span>. Gắn bó với hoang dã, class này gọi linh hồn đáp lại ý chí của cô, nhận các ability tương ứng với Stag, Owl hoặc Bear. Nhờ chỉ dẫn của chúng, Spirit Walker có thể khuất phục những beast đáng sợ nhất, ràng buộc chúng trong dạng linh hồn, hoặc gọi một companion spectral chiến đấu bên cạnh.</li>
+              <li>Lineage Support mới: Arbiter's Reach</li>
+              <li>Lineage Support mới: Breachlord's Amalgam</li>
+              <li>Lineage Support mới: Catha's Brilliance</li>
+              <li>Lineage Support mới: Eonyr's Thunder</li>
+              <li>Lineage Support mới: Esh's Prowess</li>
+              <li>Lineage Support mới: Helbrym's Hide</li>
+              <li>Lineage Support mới: Her Declaration</li>
+              <li>Lineage Support mới: Medved's Felling</li>
+              <li>Lineage Support mới: Mórrigan's Insight</li>
+              <li>Lineage Support mới: Prototype Seventeen</li>
+              <li>Lineage Support mới: Seraph's Heart</li>
+              <li>Lineage Support mới: Styrn's Ferocity</li>
+              <li>Lineage Support mới: Styrn's Mountain</li>
+              <li>Lineage Support mới: Tangmazu's Thurible</li>
+              <li>Lineage Support mới: Trickster's Shard</li>
+              <li>Lineage Support mới: Tul's Avalanche</li>
+              <li>Lineage Support mới: Uhtred's Constellation</li>
+              <li>Lineage Support mới: Uhtred's Rite</li>
+              <li>Lineage Support mới: Vorana's Siege</li>
+              <li>Lineage Support mới: Vruun's Inevitability</li>
+              <li>Lineage Support mới: Vruun's Aftermath</li>
+              <li>Unique item mới: Berek's Grip</li>
+              <li>Unique item mới: Berek's Pass</li>
+              <li>Unique item mới: Berek's Respite</li>
+              <li>Unique item mới: Brutus' Lead Sprinkler</li>
+              <li>Unique item mới: Cat O' Nine Tails</li>
+              <li>Unique item mới: Decree of Acuity</li>
+              <li>Unique item mới: Decree of Flight</li>
+              <li>Unique item mới: Decree of Loyalty</li>
+              <li>Unique item mới: Duality</li>
+              <li>Unique item mới: Eventide Petals</li>
+              <li>Unique item mới: Eyes of the Runefather</li>
+              <li>Unique item mới: Facebreaker</li>
+              <li>Unique item mới: Farrow's Gift</li>
+              <li>Unique item mới: Forgotten Warden</li>
+              <li>Unique item mới: Geofri's Sanctuary</li>
+              <li>Unique item mới: Gatecrasher</li>
+              <li>Unique item mới: Horror's Flight</li>
+              <li>Unique item mới: Ironbound</li>
+              <li>Unique item mới: Liminal Coil</li>
+              <li>Unique item mới: Loreweave</li>
+              <li>Unique item mới: Mageblood</li>
+              <li>Unique item mới: Mastered Domain</li>
+              <li>Unique item mới: Nightfall</li>
+              <li>Unique item mới: Opportunity</li>
+              <li>Unique item mới: Redemption</li>
+              <li>Unique item mới: Periphery</li>
+              <li>Unique item mới: Sadist's Mercy</li>
+              <li>Unique item mới: Serle's Grit</li>
+              <li>Unique item mới: Spiteful Floret</li>
+              <li>Unique item mới: Split Personality</li>
+              <li>Unique item mới: Surge of the Tide</li>
+              <li>Unique item mới: Sylvan's Effigy</li>
+              <li>Unique item mới: The Auspex</li>
+              <li>Unique item mới: The Hollow Mask</li>
+              <li>Unique item mới: The Ordained</li>
+              <li>Unique item mới: The Raven's Flock</li>
+              <li>Unique item mới: The Sunken Vessel</li>
+              <li>Unique item mới: The Unleashed</li>
+              <li>Unique item mới: Twisted Empyrean</li>
+              <li>Unique item mới: Vestige of Darkness</li>
+              <li>Unique item mới: Veilpiercer</li>
+              <li>Unique item mới: Voices</li>
+              <li>Thêm 8 Idol mới chỉ rơi từ monster bị Azmerian Spirit possession.</li>
+              <li>Thêm Strength Support Gem mới <span class="term">Minion Splash</span> và <span class="term">Minion Splash II</span>. Các Support Skill này dành cho Skill tạo Minion có Strike, khiến Strike của Minion có Melee Splash.</li>
+              <li><span class="term">Fragment Stash Tab</span> giờ dùng được trong Path of Exile 2. Nó chứa Fragment của bạn, gồm Breach Splinter, Simulacrum, Audience with the King, Inscribed Ultimatum, Barya và Tablet. Nếu đã mua trong Path of Exile, nó tự động có sẵn sau khi patch 0.5.0 được triển khai. Nếu chưa có Fragment Stash Tab, bạn có thể tìm nó trong mục Stash Tabs của cửa hàng microtransaction sau khi 0.5.0 live.</li>
+              <li>Thêm hỗ trợ cho <span class="term">Build Guide</span>. Creator cộng đồng viết build guide giờ có thể tạo file .build để player tải về. Khi chọn trong game client, chúng sẽ hiển thị mọi thứ cần biết cho build đó, gồm Passive Skill cần allocate, Ascendancy Passive Skill cần lấy, Skill Gem cần trang bị, cũng như đề xuất Support Gem.</li>
+              <li>Thêm khả năng tìm nhanh trade market bằng item bạn đang có. Shift-Alt click lên item sẽ điền filter để tìm trên trade market, giúp bạn xem giá hiện tại. Với Rare item, bạn có thể bật tắt từng modifier để dễ xác định mỗi modifier ảnh hưởng giá item thế nào.</li>
+              <li>Trong party-play, bạn giờ có thể nhanh chóng revive party member bị hạ sau khi đánh bại Boss.</li>
+              <li>Giờ có thể bỏ qua đoạn thoại với NPC bằng cách nhấn Escape.</li>
+              <li>Thêm <span class="term">Reforging Bench</span> ở lối vào Trial of the Sekhemas.</li>
+              <li>Tiếp tục cải thiện dần âm thanh, art, hiệu ứng và môi trường.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="ascendancychanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Balance</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Ascendancy Changes</h2>
+            </div>
+          </header>
+          <h3 class="mx-6 mt-6 text-lg font-bold text-blue-700 dark:text-blue-300">Acolyte of Chayula</h3>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Skill <span class="term">Into the Breach</span> được cấp bởi Waking Dream Notable Passive Skill giờ Leech 20% maximum Life cho bạn khi nhặt Red Flame of Chayula, trước đây 15%, và Leech 20% maximum Mana khi nhặt Blue Flame of Chayula, trước đây 15%.</li>
+              <li>Câu chữ của Into the Breach Skill cũng đã được cập nhật để làm rõ hành vi và phạm vi liên quan đến Flames of Chayula.</li>
+              <li>Into the Breach giờ áp dụng modifier pickup range của remnant vào phạm vi mà Flames of Chayula có thể được nhìn thấy. Đây chỉ là thay đổi hình ảnh.</li>
+            </ul>
+          </div>
+          <h3 class="mx-6 mt-6 text-lg font-bold text-blue-700 dark:text-blue-300">Blood Mage</h3>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Vitality Siphon Notable Passive Skill giờ cho 20% of Spell Damage Leeched as Life, trước đây 10%.</li>
+            </ul>
+          </div>
+          <h3 class="mx-6 mt-6 text-lg font-bold text-blue-700 dark:text-blue-300">Chronomancer</h3>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Rapid River Notable Passive Skill đã bị xóa, vị trí của nó được thay bằng Now and Again.</li>
+              <li>Now and Again Notable Passive Skill đã được làm lại: Cascadable Spell có 20% chance to Echo, và Repeatable Spell có 20% chance to Repeat.</li>
+              <li>Unbound Encore Notable Passive Skill đã lấy vị trí cũ của Now and Again.</li>
+              <li>Ultimate Command Notable Passive Skill giờ yêu cầu Unbound Encore.</li>
+              <li>Thêm Notable Passive Skill mới <span class="term">Phased Form</span>, đứng trước Footprints in the Sand. Phased Form cho nhận 30% less Damage, và 4 giây sau khi bị Enemy Hit gây damage, nhận damage bằng 30% damage của Hit đó.</li>
+              <li>Temporal Rift Skill được cấp bởi Footprints in the Sand Notable Passive Skill đã được cập nhật. Cast time giờ là 0.1 giây, trước đây 0.5, và giờ cũng xóa delayed damage từ Phased Form.</li>
+              <li>Inevitable Agony Skill được cấp bởi Inevitability Notable Passive Skill đã được làm lại. Nó không còn là Curse và có Cooldown 2 giây. Debuff giờ là hiệu ứng Life Loss thay vì secondary hit damage, và lượng Debuff giờ hiển thị trên static health bar. Debuff cũng instant Cull kẻ địch khi tổng Life Loss đạt Culling Strike Threshold. Giờ khiến target bị Debuff mất Life bằng 25% Hit Damage gây lên chúng trong khi bị Debuff, trước đây 50%. Enemy Curse Effectiveness không còn áp dụng cho Skill này, nghĩa là Unique Enemy giữ hiệu quả như trước, còn enemy khác có hiệu quả thấp hơn. Debuff duration giờ là 12 giây, trước đây 6-8.6 giây. Quality giờ cho +0-0.5 metre initial cast radius, trước đây Curse zone erupts after 0-10% reduced delay. Skill cũng có visual effect mới.</li>
+              <li>Sands of Time Buff được cấp bởi Quicksand Hourglass Notable Passive Skill giờ cho 1-60% increased Skill Speed, trước đây Cast Speed, và cũng có visual effect mới.</li>
+            </ul>
+          </div>
+          <h3 class="mx-6 mt-6 text-lg font-bold text-blue-700 dark:text-blue-300">Gemling Legionnaire</h3>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Crystalline Potential Notable Passive Skill đã bị xóa.</li>
+              <li>Thêm Notable Passive Skill mới <span class="term">Essence of Virtue</span>. Nó cấp Virtuous Barrier Skill, khi active sẽ conjure một barrier lấp lánh, tích lũy gemstone Mote bảo vệ của từng Attribute type theo thời gian, nhưng mất ngẫu nhiên một Mote khi bạn bị Hit.</li>
+              <li>Advanced Thaumaturgy Notable Passive Skill không còn cấp Thaumaturgical Dynamism Skill. Thay vào đó, nó cho Gem Quality cấp hiệu ứng bổ sung cho Socketed Skill. Tất cả gem trong game giờ có thêm quality stat có thể xem khi giữ Alt trên gem sau khi lấy Notable này.</li>
+            </ul>
+          </div>
+          <h3 class="mx-6 mt-6 text-lg font-bold text-blue-700 dark:text-blue-300">Pathfinder</h3>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Overwhelming Toxicity Notable Passive Skill giờ cho 50% less Poison Duration, trước đây 35%.</li>
+              <li>Running Assault Notable Passive Skill giờ cho 30% less Movement Speed Penalty from using Skills while moving, trước đây 50%.</li>
+            </ul>
+          </div>
+          <h3 class="mx-6 mt-6 text-lg font-bold text-blue-700 dark:text-blue-300">Witchhunter</h3>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Obsessive Rituals giờ cho 50% less Armour and Evasion Rating, trước đây 35% less.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="passivetreechanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Balance</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Passive Tree Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Thêm 19 Passive Skill chủ đề Companion vào Passive Tree.</li>
+              <li>Thêm 9 Passive Skill <span class="term">Life Recoup Speed</span> vào Passive Tree.</li>
+              <li>Thêm cluster <span class="term">Archon of Undeath</span> mới vào khu Witch/Sorceress của Passive Tree.</li>
+              <li>Ancestral Bond Keystone Passive Skill giờ khiến việc đặt totem không tốn cost và không yêu cầu tiêu thụ charge để đặt. Nó vẫn khiến totem reserve 75 Spirit mỗi totem, và giờ nhân đôi totem limit thay vì xóa hoàn toàn limit.</li>
+              <li>Trusted Kinship Keystone Passive Skill giờ cho 30% more Reservation Efficiency of Companion Skills và 20% less Reservation Efficiency of non-Companion Skills. Nó không còn cho You have 30% less Defences hoặc Companions have +1 to each Defence for every 2 of that Defence you have.</li>
+              <li>Vaal Pact Keystone Passive Skill giờ cho 50% more amount of Life Leeched, 67% less Life Leech speed, Cannot Recover Life other than from Leech, và Life Leech effects are not removed when Unreserved Life is Filled. Nó không còn cho Life Leech is Instant hoặc Cannot use Life Flasks.</li>
+              <li>Cluster Reformed Barrier đã bị xóa.</li>
+              <li>Cluster Warding Fetish đã đổi vị trí và không còn nối với Jewel Socket.</li>
+              <li>Cluster Stormcharged và Breaking Point không còn nối với Jewel Socket.</li>
+              <li>Adamant Recovery Notable Passive Skill đã được thay bằng Fortified Aegis, cho 100% increased Armour, Evasion and Energy Shield from Equipped Shield.</li>
+              <li>Arcane Mixtures Notable Passive Skill giờ cho 10% increased Cast Speed nếu bạn đã dùng Mana Flask Recently, thay vì 25% increased Energy Shield Recharge Rate.</li>
+              <li>Bastion of the Forest Notable Passive Skill giờ cho 10% faster start of Energy Shield Recharge, trước đây 15%.</li>
+              <li>Casting Cascade Notable Passive Skill giờ cho 6% increased Cast Speed với mỗi Spell khác nhau bạn đã Cast trong 8 giây gần đây, trước đây 4 giây.</li>
+              <li>Chakra of Breathing Notable Passive Skill giờ cho 20% faster start of Energy Shield Recharge thay vì 1% increased Energy Shield Recharge Rate per 4 Dexterity.</li>
+              <li>Commanding Rage Notable Passive Skill giờ cho 2% increased Minion Attack Speed per 5 Rage, trước đây 1% per Rage.</li>
+              <li>Convalescence Notable Passive Skill giờ cho 20% faster start of Energy Shield Recharge, trước đây 40%, và 10% reduced Energy Shield Recharge Rate, trước đây 15%.</li>
+              <li>Core of the Guardian Notable Passive Skill giờ cho 30% increased Block chance và 20% reduced maximum Energy Shield, trước đây 100% increased Armour, Evasion and Energy Shield from Equipped Shield.</li>
+              <li>Covering Ward Notable Passive Skill giờ cho Gain 25 Energy Shield when you block, trước đây 20, và 12% increased Block Chance. Nó không còn cho 25% increased Energy Shield Recharge Rate.</li>
+              <li>Craving Slaughter Notable Passive Skill giờ cho +15 maximum Rage nếu bạn đã dùng Skill Requires Glory trong 20 giây gần đây, trước đây +8 mỗi Skill Requires Glory đã dùng trong 6 giây gần đây, tối đa 5 lần.</li>
+              <li>Critical Overload Notable Passive Skill giờ cho 15% increased Critical Spell Damage Bonus, trước đây 15% increased Spell Damage if you've dealt a Critical Hit Recently.</li>
+              <li>Cunning Fox Notable Passive Skill đã được thay bằng The Quick Fox, cho 20% increased Deflection Rating while moving. Các small all Attribute Passive trước Notable giờ cho 20% increased Evasion Rating while moving.</li>
+              <li>Deadly Force Notable Passive Skill giờ cho 15% increased Critical Hit Chance, trước đây 10%, và 15% increased Damage nếu bạn đã dealt a Critical Hit trong 8 giây gần đây, trước đây 25%.</li>
+              <li>Dependable Ward Notable Passive Skill giờ cho +8% to Chaos Resistance và 12% faster start of Energy Shield Recharge, trước đây 25%.</li>
+              <li>Devoted Protector Notable Passive Skill giờ cho 10% faster start of Energy Shield Recharge, trước đây 15%.</li>
+              <li>Echoing Pulse Notable Passive Skill giờ cho Echoed Spells have 25% increased Area of Effect. Nó không còn cho Final Repeat of Spells has 30% increased Area of Effect, vốn không hoạt động.</li>
+              <li>Effervescent Notable Passive Skill giờ cho 4% increased Cast Speed với mỗi Spell khác nhau bạn đã Cast trong 8 giây gần đây, trước đây 4 giây.</li>
+              <li>Energising Archon Notable Passive Skill giờ cho 30% increased Archon Duration thay vì 40% increased Energy Shield Recharge Rate while affected by an Archon Buff.</li>
+              <li>Energising Deflection Notable Passive Skill giờ cho 12% faster start of Energy Shield Recharge thay vì 30% increased Energy Shield Recharge Rate.</li>
+              <li>Essence Infusion Notable Passive Skill giờ cho 12% faster start of Energy Shield Recharge và +12 to Intelligence, trước đây +10. Nó không còn cho 40% increased Energy Shield Recharge Rate.</li>
+              <li>Fast Metabolism Notable Passive Skill giờ cho 40% increased Damage while Leeching Life, trước đây Life Leech effects are not removed when Unreserved Life is Filled.</li>
+              <li>Fortifying Blood Notable Passive Skill giờ cho 15% increased amount of Life Leeched, trước đây 20%.</li>
+              <li>Goring Notable Passive Skill không còn cho 40% increased Physical Damage; giờ cho 3% increased Maximum Life và 20% increased amount of Life Leeched, trước đây 3% reduced Maximum Life và 30% increased amount of Life Leeched.</li>
+              <li>Immortal Infamy Notable Passive Skill giờ cho 6% increased Life Recovery Rate thay vì 10% increased Energy Shield Recharge Rate.</li>
+              <li>Lifelong Friend và Nurturing Guardian Notable Passive Skill đã đổi vị trí cho nhau.</li>
+              <li>Mystic Stance Notable Passive Skill giờ cho 12% faster start of Energy Shield Recharge, trước đây 30%.</li>
+              <li>Patient Barrier Notable Passive Skill giờ cho 50% increased Maximum Energy Shield, trước đây 60%.</li>
+              <li>Quick Response Notable Passive Skill giờ cho 10% faster start of Energy Shield Recharge, trước đây 20%, và 20% faster start of Energy Shield Recharge when not on Full Life, trước đây 30%.</li>
+              <li>Rapid Recharge Notable Passive Skill giờ cho 12% faster start of Energy Shield Recharge và 12% increased Energy Shield Recharge Rate, cả hai trước đây 25%.</li>
+              <li>Refocus Notable Passive Skill giờ cho 20% increased Mana Regeneration Rate while stationary thay vì 30% increased Energy Shield Recharge Rate.</li>
+              <li>Shatter Palm Notable Passive Skill giờ cho 20% increased Critical Damage Bonus, trước đây 10% chance to Daze.</li>
+              <li>Shimmering Notable Passive Skill giờ cho 10% faster start of Energy Shield Recharge và 20% increased Evasion if you have been hit recently. Nó không còn cho 20% increased Energy Shield Recovery Rate if you haven't been Hit Recently.</li>
+              <li>Staggering Palm Notable Passive Skill giờ cho 25% increased Physical Damage, trước đây 20%, và giờ cho 10% chance to Daze thay vì 20% increased Critical Damage Bonus.</li>
+              <li>Stormcharged Notable Passive Skill giờ cho Damage Penetrates 8% of Enemy Elemental Resistances và 5% increased Attack and Cast Speed with Elemental Skills. Nó không còn cho 15% increased Critical Hit Chance hoặc 40% increased Elemental Damage if you've dealt a Critical Hit Recently.</li>
+              <li>Tempered Mind Notable Passive Skill giờ cho 15% increased effect of Fully Broken Armour, trước đây 20% increased Critical Damage Bonus.</li>
+              <li>Voracious Notable Passive Skill không còn cho 20% of Life Leech is Instant; giờ cho 15% increased Attack Speed while Leeching.</li>
+              <li>Wide Barrier Notable Passive Skill giờ cho 30% increased Block chance và 20% reduced Armour, trước đây 25% reduced Defences.</li>
+              <li>Wyvern's Breath Notable Passive Skill đã được cập nhật và giờ cho 40% increased Elemental Ailment Application nếu bạn đã Shapeshifted to an Animal form Recently. Điều này giờ cũng áp dụng cho Freeze Buildup, nhưng ngoài ra vẫn giống trước.</li>
+              <li>Hai small Spell Damage Passive Skill đầu ở vùng bắt đầu Passive Tree của Witch và Sorceress giờ cho 10% increased Spell Damage, trước đây 8%.</li>
+              <li>Small Passive Skill cho faster start of Energy Shield Recharge giờ có giá trị 6%, trước đây 15%.</li>
+              <li>Small Passive Skill cho Energy Shield Recharge Rate đã bị xóa khỏi Passive Skill Tree và thay bằng faster start of Energy Shield Recharge ở giá trị thấp hơn.</li>
+              <li>Small Passive Skill cho 10% increased amount of Life Leeched giờ có giá trị 8%.</li>
+              <li>Small Banner Area of Effect Passive Skill giờ cho 12% increased Banner Area of Effect, trước đây 15%.</li>
+              <li>Small Banner Area Tactician Passive Skill giờ cho 16% increased Banner Area of Effect, trước đây 20%.</li>
+              <li>Unsavored Feast Timeless Jewel Notable không còn cho 20% Instant Leech nếu bạn có ít nhất 200 tribute. Giờ cho Leech Life 35% faster nếu bạn có ít nhất 100 Tribute, trước đây 25%.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="skillchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Balance</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Skill Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Skill có số projectile cố định, như Glacial Lance, giờ có thể hưởng lợi từ hiệu ứng khiến projectile count modifier áp dụng lên thứ khác, như Ricochet III Support.</li>
+              <li>Skill có cost 0 Mana giờ hiển thị cost này. Điều này giúp player phân biệt skill như default attack, vốn không có cost và không bị ảnh hưởng bởi modifier +cost, với skill có base cost nhưng base value là 0, vốn bị ảnh hưởng bởi mọi +cost modifier, kể cả khi chúng thêm resource cost khác như thêm Life cost vào skill có base Mana cost 0.</li>
+              <li>Crossbow Ammunition Skill giờ có base cost 0 thay vì bị tắt cost hoàn toàn, nghĩa là hiệu ứng thêm cost bổ sung giờ sẽ áp dụng lên chúng.</li>
+              <li>Ignite gây lên target bởi Oil Ground đã bị ignite không còn có thể compound, và không thể bị compound bởi ignite khác từ cùng một lần dùng skill.</li>
+              <li>Tất cả Command Skill giờ có 50% movement speed penalty trong lúc dùng skill, trước đây 70%.</li>
+              <li>Align Fate, được cấp bởi Oracle's Fateful Vision Notable Passive, giờ có "Modifiers to Cooldown Recovery Rate also apply to visage appearance frequency".</li>
+              <li>Ancestral Warrior Totem: không còn hidden delay 0.6 giây giữa các lần dùng skill. Thay vào đó, delay này giờ bằng 50% attack time của skill và được mô tả trên skill.</li>
+              <li>Bonestorm: không còn tag Sustained.</li>
+              <li>Boneshatter: Quality giờ cho 0-20% increased Attack Speed, trước đây 0-30%.</li>
+              <li>Comet: giờ gây 212 đến 318 Cold Damage ở Gem level 11, trước đây 223 đến 335, scale lên 787 đến 1181 ở Gem level 20, trước đây 829 đến 1243. Fire-Infused Comet giờ gây 212 đến 318 Fire và Cold Damage ở Gem level 11, trước đây 279 đến 418, scale lên 787 đến 1181 Fire và Cold Damage ở Gem level 20, trước đây 1036 đến 1554.</li>
+              <li>Cull the Weak: giờ có Can't be Evaded. Giờ gây 109-281% Attack Damage ở Gem level 3-20, trước đây 60%-156%. Attack speed giờ là 75% base, trước đây 60%, và Mana cost giờ là 8-42 ở Gem level 3-20, trước đây 9-46. Maximum Dash range tăng 15%.</li>
+              <li>Defiance Banner, Dread Banner và War Banner: không còn Movement Speed penalty khi dùng. Banner Aura base radius giờ là 6 metre, trước đây 4.5.</li>
+              <li>Earthquake: Aftershock giờ gây 184-666% Attack Damage ở Gem level 1-20, trước đây 160-580%.</li>
+              <li>Eternal Rage: không còn có thể active trong weapon set cụ thể. Giờ bắt buộc active ở cả hai weapon set và sẽ không active nếu điều này không thể thực hiện.</li>
+              <li>Feral Invocation: không còn bỏ qua cooldown của socketed skill.</li>
+              <li>Flame Breath: giờ có Energy Gain penalty tương tự Incinerate.</li>
+              <li>Fortifying Cry: giờ chỉ tiêu thụ một stack khi bạn kích nổ shield wall để tạo shockwave quanh mỗi shield wall segment. Fortifying Cry Shockwave từ cùng một Shield Wall không thể hit cùng enemy nhiều lần. Shield Wave giờ gây 5 đến 7 Added Physical Damage per 15 Armour on Shield, trước đây 6 đến 8.</li>
+              <li>Fragmentation Rounds: Quality giờ cho +0-2 Fragment per Shot, trước đây 0-20% more Physical Damage.</li>
+              <li>Freezing Salvo: giờ có 34-68% more Magnitude of Chill inflicted và more Freeze Buildup ở Gem level 3-20, trước đây 56-107%.</li>
+              <li>Gathering Storm: giờ khiến Perfectly Timed dash phát nổ mọi Tempest Bell khi hit, tạo shockwave lớn gây 564-869% Attack Damage ở Gem level 13-20. Shocked Ground để lại sau Tempest Shockwave, trước đây trên Perfect Dash, với radius 3.2 metre, biến canh timing chuẩn thành combo dọn diện rộng. Perfect Timing Shockwave giờ chỉ hit enemy một lần mỗi lần dùng skill và không còn tương tác với object tạo bởi skill không phải Tempest Bell. Shockwave limit giờ là 50. Quality giờ cho 0-20% longer Perfect Timing window, trước đây +0-8 Maximum shockwaves per use.</li>
+              <li>Ghost Dance: khoảng thời gian giữa các lần nhận Ghost Shroud không còn là duration. Giờ có "Modifiers to Cooldown Recovery Rate also apply to Ghost Shroud gain frequency". Nó cũng có "When Hit, lose a Ghost Shroud" và "Regenerate Energy Shield equal to 2% of your Evasion Rating per second if you have lost a Ghost Shroud Recently". Giờ nhận một Ghost Shroud mỗi 11.7-10.1 giây ở Gem level 4-20, trước đây 7.6-6.1.</li>
+              <li>Grim Feast: Grim Resurrection giờ có Cooldown 1 giây.</li>
+              <li>Ice Shot: Ice Shard không còn có 25% more Freeze Buildup.</li>
+              <li>Ice Strike: Quality giờ cho 0-20% increased Attack Speed, trước đây 0-10% more Attack Speed.</li>
+              <li>Lightning Arrow: nhiều Lightning Beam không còn có thể chain vào cùng một target.</li>
+              <li>Lunar Blessing: Moonbeam được trigger không còn được xem là melee skill.</li>
+              <li>Magma Barrier: giờ gây 5 đến 7 Added Fire Damage per 15 Armour and Evasion on Shield, trước đây 6 đến 8.</li>
+              <li>Mirage Archer và Mirage Deadeye: giờ dùng được với Channelled Skill, gồm Snipe, Plasma Blast và Detonating Arrow.</li>
+              <li>Mirror of Refraction, được cấp bởi unique staff Atziri's Rule, giờ có "Modifiers to Cooldown Recovery Rate also apply to mirror appearance frequency".</li>
+              <li>Oil Barrage: Mana cost giảm 18%. Empowered Oil Barrage giờ có Mana cost per second tương đương Mana cost ban đầu của Oil Barrage. Oil Barrage giờ gây 10% more damage ở mọi level, còn Empowered Oil Barrage giờ gây 10% less damage ở mọi level. Empowered Oil Barrage giờ tiêu thụ một power charge mỗi 1.5 giây để tiếp tục channel, trước đây mỗi 2 giây.</li>
+              <li>Parry: Area of Effect được chỉnh để khớp animation hơn. Không còn bonus Attack Distance.</li>
+              <li>Poisonburst Arrow: Poison duration giờ là 3 giây ở mọi Gem level, trước đây 3-4.9 giây ở Gem level 1-20. Quality giờ cho 0-10% more Magnitude of Poison inflicted, trước đây 0-20%.</li>
+              <li>Pounce: giờ có Cooldown 6-5.1 giây ở Gem level 3-20, trước đây 4.9-4 giây.</li>
+              <li>Ravenous Swarm: giờ có "Modifiers to Cooldown Recovery Rate also apply to swarm spawning frequency".</li>
+              <li>Rend: sửa bug Lightning-Charged Rend scale hai lần theo level; Base Damage đã tăng để bù. Lightning-Charged Rend giờ gây 130-405% Attack Damage ở level 1-20, trước đây 120-586%.</li>
+              <li>Resonating Shield: giờ gây 5 đến 7 Added Physical Damage per 15 Armour on Shield, trước đây 6 đến 8.</li>
+              <li>Rolling Magma: giờ Chain 3 lần ở Gem level 1, trước đây 2, scale lên Chain 5 lần ở Gem level 20, trước đây 4.</li>
+              <li>Rolling Slam: giờ có +1 giây total Attack time, trước đây +1.5 giây. First Slam giờ gây 75-272% Attack Damage ở Gem level 1-20, trước đây 90-367%, và Second Slam giờ gây 150-543% Attack Damage ở Gem level 1-20, trước đây 180-735%.</li>
+              <li>Shattering Spite, cấp bởi Unique Spear Atziri's Contempt: giờ có 50% Less Magnitude of Damaging Ailments you Inflict. Không còn có Life Leech from Explosions with at least 15 Bloodstone Lances is instant.</li>
+              <li>Shield Wall: giờ gây 5 đến 7 Added Physical Damage per 15 Armour on Shield, trước đây 6 đến 8.</li>
+              <li>Shred: Quality giờ cho 0-20% increased Attack Speed, trước đây 0-10% more Attack Speed.</li>
+              <li>Snipe: giờ gây 121-312% Attack Damage ở Gem level 3-20, trước đây 133-343%, và Explosion giờ gây 484-1449% Attack Damage ở Gem level 3-20, trước đây 454-1358%. Icy Blast giờ gây 764-3067% Attack Damage ở Gem level 3-20, trước đây 913-3062%, và giờ có 33-50% more damage with Hits for explosions originating from a Unique enemy ở Gem level 3-20, trước đây luôn 50%. Icy Blast Explosion radius giờ là 3 metre, trước đây 3.2.</li>
+              <li>Spell Totem: giờ có thể dùng khi đang di chuyển và đã nhận animation cập nhật.</li>
+              <li>Supercharged Slam: giờ ghi rõ hơn rằng nó có fixed attack time không thể bị modify. Đây chỉ là thay đổi mô tả.</li>
+              <li>Tame Beast: Summoned Beast giờ gây 40% more damage ở Gem level 9, scale lên 84% ở Gem level 20. Giờ lập tức summon Beast mới được Tame nếu bạn có đủ Spirit.</li>
+              <li>Tempest Bell: giờ có thể được Ancestrally Boost như Strike skill, và số Bell active tối đa tăng lên 3, trước đây 1, cải thiện mạnh khả năng combo. Shockwave giờ gây 45-119% Attack Damage ở Gem level 3-20, trước đây 60-132%, và có thể trigger mỗi 0.3 giây thay vì 0.25 giây.</li>
+              <li>Toxic Growth: giờ bắn 5 Pustule, trước đây 4, với Limit 5 Pustule, trước đây 12. Quality giờ cho Fires +0-1 Pustule và Limit +0-1 Pustule, trước đây +0-2 và +0-2.</li>
+              <li>Thrashing Vines: cập nhật mô tả để làm rõ tần suất spawn vine. Không phải thay đổi chức năng.</li>
+              <li>Time of Need: khoảng thời gian giữa các Blessing không còn là duration. Giờ có "Modifiers to Cooldown Recovery Rate also apply to blessing frequency", và interval giảm còn 9.3-8.1 giây ở Gem level 8-20, trước đây 11.3-10.1.</li>
+              <li>Volcano: giờ có base Critical Hit Chance 8%, trước đây 5%.</li>
+              <li>Whirling Assault: Quality giờ cho 0-20% increased Attack Speed, trước đây 0-15% more Attack Speed.</li>
+              <li>Wing Blast: Shockwave giờ gây 25% more damage ở mọi level.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="supportchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Balance</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Support Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Unleash, Expand, Salvo và Freezing Salvo Support giờ đều dùng cùng một khái niệm <span class="term">Seal</span> thay vì mỗi loại có phiên bản riêng. Điều này chuẩn hóa rule cho Seal trong mọi trường hợp, dẫn tới vài thay đổi hành vi. Support cấp Seal giờ đồng nhất đều có category Seal.</li>
+              <li>Freezing Salvo và Salvo Support trước đây có restriction bổ sung rằng skill liên quan không thể nhận Seal khi bạn đang thực hiện skill đó. Restriction này không còn, giúp chúng nhất quán với các mechanic Seal khác.</li>
+              <li>Salvo Support trước đây cho một Seal mỗi 2 giây, tối đa 3, và cho 2 projectile mỗi Seal. Giờ nhận một Seal mỗi 1 giây, tối đa 6, mỗi Seal cho một projectile.</li>
+              <li>Advancing Storm: giờ có thể support bất kỳ Storm Skill nào trong mọi điều kiện, thay vì chỉ spell bạn tự dùng.</li>
+              <li>Arjun's Medal: giờ cho 25% chance to load a bolt vào tất cả Crossbow skill khi Supported Skill gây Killing Blow, trước đây 100%.</li>
+              <li>Atziri's Impatience: không còn có thể support Persistent Skill.</li>
+              <li>Bhatair's Vengeance: khi bạn Freeze target bằng Supported Skill, với mỗi 2 Rage bạn có, bạn và Ally trong Presence nhận 1% of Damage as Cold Damage trong 15 giây, trước đây mỗi 1 Rage trong 20 giây.</li>
+              <li>Brink I: giờ có thể Cut dưới dạng Support Gem level 1, trước đây level 2.</li>
+              <li>Culmination II: không còn Combo count loss for Supported Skills occurs 50% slower. Giờ có Supported Skills lose Combo if you generate no Combo for 6 seconds, trước đây 4 giây. Supported Skill giờ có thể Gain tối đa 10 Combo, trước đây 20, và Supported Skill giờ Deal 4% more Damage per Combo, trước đây 2%.</li>
+              <li>Corrupting Cry I, Corrupting Cry II: không còn khiến supported skill inflict Corrupted Blood; thay vào đó trigger một skill inflict Corrupted Blood, scale theo level của gem mà nó được socket vào.</li>
+              <li>Decaying Hex: không còn khiến supported Curse inflict Decay; thay vào đó trigger một skill inflict Decay, scale theo level của gem mà nó được socket vào.</li>
+              <li>Dialla's Desire: giờ cho +5% to Quality of Supported Skills, trước đây +10%.</li>
+              <li>Doedre's Undoing: không còn khiến Cursed Ground do Supported Skill tạo trở thành Hazard. Giờ khiến Cursed Ground do Supported Skill tạo spawn Witchtoad theo interval, chúng tìm enemy và phát nổ gây Chaos damage.</li>
+              <li>Infernal Legion I: giờ cho Minion từ Supported Skill nhận 10% maximum Life as Fire Damage per second, trước đây 20%, và Minion từ Supported Skill Ignite enemy trong radius 1.5 metre như thể gây Base Fire Damage bằng 10% Maximum Life của Minion, trước đây 20%.</li>
+              <li>Infernal Legion II: giờ cho Minion từ Supported Skill nhận 10% maximum Life as Fire Damage per second, trước đây 20%, và Minion từ Supported Skill Ignite enemy trong radius 2 metre như thể gây Base Fire Damage bằng 10% Maximum Life của Minion, trước đây 20%. Giờ thêm Minions from Supported Skills have +20% to Fire Resistance.</li>
+              <li>Infernal Legion III: không còn có thể nhận được.</li>
+              <li>Living Lightning: không còn thay thế minion khi summon minion mới trong lúc đã đạt số minion tối đa.</li>
+              <li>Morgana's Tempest: giờ có thể support bất kỳ Storm Skill nào trong mọi điều kiện, thay vì chỉ spell bạn tự dùng.</li>
+              <li>Overabundance III: giờ mô tả đúng rằng nó không thể support Persistent Skill.</li>
+              <li>Overextend: không còn có thể nhận được; item hiện có không bị ảnh hưởng.</li>
+              <li>Paquate's Pact: không còn khiến supported skill inflict Corrupted Blood; thay vào đó trigger một skill inflict Corrupted Blood, scale theo level của gem mà nó được socket vào. Không còn Lose 2% of maximum Life per Corrupted Blood inflicted by Supported Skills. Thay vào đó, Supported Skills Cost 10% of maximum Life for each time they've been used Recently, tối đa 30%.</li>
+              <li>Rage I, Rage II và Rage III: giờ có thể support Minion Skill.</li>
+              <li>Ratha's Assault: giờ cho Supported Skills Load 4 Bolts When You Dodge, trước đây 5, và Supported Skills Load 3 Additional Bolts, trước đây 4. Giờ cũng cho Supported Skills have 10% Increased Attack Speed, trước đây 20%.</li>
+              <li>Refraction I: giờ thêm việc supported Banner skill cho Ally Deflection Rating bằng 15% Evasion Rating của họ.</li>
+              <li>Refraction II: giờ thêm việc supported Banner skill cho Ally Deflection Rating bằng 20% Evasion Rating của họ.</li>
+              <li>Shock Conduction II: không còn có thể nhận được.</li>
+              <li>Static Shocks: cập nhật mô tả để làm rõ nó Trigger từ Shocking Hit.</li>
+              <li>Uhtred's Augury: giờ cho +2 to level of Supported Skills nếu chính xác hai support khác đang modify chúng, trước đây +3.</li>
+              <li>Uhtred's Omen: giờ cho +2 to level of Supported Skills nếu chính xác một Support khác đang modify chúng, trước đây +3.</li>
+              <li>Volt: giờ cho Supported Skills gain 2 Voltaic Charge per metre travelled, trước đây 3. Supported Skill giờ cũng Gain 1% of Damage as extra Lightning Damage per Voltaic Charge consumed, trước đây 5% mỗi 10 Voltaic Charge.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="uniqueitemchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Items</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Unique Item Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li><span class="term">Ab Aeterno</span> Unique boots không còn cho 10% less Movement and Skill Speed per Dodge Roll in the past 20 seconds, và giờ có 200-250% increased Armour, Evasion and Energy Shield, trước đây 100-150%. Giờ có Your speed is unaffected by Slows while Sprinting, và Gain Overencumbrance for 4 seconds when you Dodge Roll. Bản hiện có có thể cập nhật giá trị Armour, Evasion and Energy Shield mới bằng Divine Orb, nhưng không nhận thay đổi khác.</li>
+              <li><span class="term">Apep's Supremacy</span> Unique Focus không còn có 30-50% faster start of Energy Shield Recharge.</li>
+              <li><span class="term">Aztiri's Acuity</span> Unique Gloves đã được làm lại. Giờ cho 150-200% increased Armour, +100-150 to maximum Life, Leech 10% of Physical Attack Damage as Life, 10% of Physical damage dealt by your Hits causes Blood Loss và Vaal Pact. Cũng cấp Herald of the Royal Queen Skill. Outcome Vaal Cultivation Orb trên Atziri's Acuity cũng đã đổi. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Sierran Inheritance</span> Unique Body Armour giờ cho 15-30% increased Energy Shield Recharge Rate thay vì 30-50% faster start of Energy Shield Recharge.</li>
+              <li><span class="term">Blackflame</span> Unique Ring không còn có Enemies Ignited by you take Chaos Damage instead of Fire Damage from Ignite. Giờ có Withered you inflict also increases Fire Damage taken, Ignite you Inflict deals Chaos Damage instead of Fire damage, và Withered does not expire on enemies Ignited by you. Ngoài ra, giờ có 80-100% increased Ignite Magnitude, trước đây 50%, và 60-75% reduced Ignite Duration on Enemies, trước đây 50%. Modifier Ignite Magnitude và Duration có thể cập nhật bằng Divine Orb; modifier khác giữ nguyên.</li>
+              <li><span class="term">Blistering Bond</span> Unique Ring giờ có Fire Damage also Contributes to Bleeding Magnitude và Bleeding you Inflict deals Fire damage instead of Physical damage, bên cạnh các modifier khác. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">The Brass Dome</span> Unique Body Armour giờ có 500-600% increased Armour, trước đây 700-800%. Item hiện có (legacy/Standard) nếu dùng Divine Orb sẽ reroll theo range mới thấp hơn.</li>
+              <li><span class="term">Carnage Heart</span> Unique Amulet giờ có 25-50% increased Damage while Leeching. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Chober Chaber</span> Unique Mace giờ có +2-3 to Level of All Minion Skills. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Death's Harp</span> Unique Bow không còn có Bow Attacks Fire 3 Additional Arrows; thay vào đó có +250-330% Surpassing Chance to Fire an Additional Arrow.</li>
+              <li><span class="term">Elevore</span> Unique Helmet giờ cho Charms gain 1 Charge per second, trước đây 0.5, và giờ cho +1-2 Charm Slots, trước đây +1. Item hiện có có thể được buff bằng Divine Orb.</li>
+              <li><span class="term">Eshtera's Path</span> Unique Ring không còn có Cold Resistance is unaffected by Area Penalties. Giờ có +5-10% to Fire and Cold Resistance per Equipped Item with a Lightning Resistance Modifier. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Glowswarm</span> Unique Ring giờ có Using a Mana Flask grants Guard equal to 100% of the Flask's Recovery amount for 4 seconds. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">The Hollow Mask</span> Unique Helmet giờ cấp Wildwood's Gifts Skill, nơi Azmerian spirit hướng dẫn bạn thấy Ancient Bloom ở gần. Nó cũng có Remnants you create affect Allies in your Presence as well as you when collected, và 80-100% increased Reservation Efficiency of Remnant Skills.</li>
+              <li><span class="term">Husk of Dreams</span> Unique Body Armour đã đổi tên thành <span class="term">Reverie</span>. Nó không còn có 20-30% increased Flask Charges gained hoặc 50% less Flask Charges used. Giờ cấp Rite of Restoration Skill và có Non-Unique Life Flasks apply their effects constantly. Nó cũng có Cannot use Life Flasks, Recovery from Life Flasks cannot be instant, Recovery from Life Flasks cannot be applied to anything other than you, cùng 40-60% less Life Flask Recovery. Bản hiện có của item này không thể nhận modifier mới.</li>
+              <li><span class="term">Hyrri's Ire</span> Unique Body Armour giờ có 100-150% Increased Evasion Rating, trước đây 200-250%, và Gain 10-20% of Damage as Extra Cold Damage, trước đây 15-25%. Item hiện có (legacy/Standard) nếu dùng Divine Orb sẽ reroll theo range mới thấp hơn.</li>
+              <li><span class="term">Keeper of the Arc</span> Unique Helmet giờ có 240-340% increased Armour and Energy Shield, trước đây 150-250%. Item hiện có có thể cập nhật lên giá trị mới bằng Divine Orb.</li>
+              <li><span class="term">Levinstone</span> Unique Ring không còn có +1 to Level of all Lightning Skills. Giờ có Lightning Skills Chain +1 times.</li>
+              <li><span class="term">Megalomaniac</span> Unique Jewel giờ rơi ở trạng thái identified.</li>
+              <li><span class="term">Plaguefinger</span> Unique Gloves giờ có Cannot inflict Elemental Ailments.</li>
+              <li><span class="term">Prized Pain</span> Unique Ring không còn có Deal your Thorns Damage to Enemies you Stun with Melee Attacks. Giờ có 15-25% chance to deal your Thorns damage to enemies you Hit with Melee Attacks. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Radiant Grief</span> Unique Helmet giờ có Enemies in your Presence are Ignited as though dealt 200 Base Fire Damage, trước đây 100. Item hiện có có thể cập nhật giá trị mới bằng Divine Orb.</li>
+              <li><span class="term">Safrin's Resolve</span> Unique Ring không còn có Lightning Resistance is unaffected by Area Penalties. Giờ có +5-10% to Cold and Lightning Resistance per Equipped Item with a Fire Resistance Modifier. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Seed of Cataclysm</span> Unique Ring không còn có 30-50% increased Critical Spell Damage Bonus. Giờ có 5% reduced Critical Spell Damage Bonus per Critical Hit you've dealt with Spells Recently, và 15-30% chance for Spell Damage with Critical Hits to be Lucky. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Sekhema's Resolve</span> Unique Rings đã đổi tên thành Safrin's Resolve, Zaida's Longevity và Eshtera's Path.</li>
+              <li><span class="term">Sine Aequo</span> Unique Gloves giờ có 150-200% increased Armour, Evasion and Energy Shield, trước đây 100-150%. Nó không còn có Enemies Immobilised by you take 20% more Damage, và thay vào đó có 30-50% increased Damage against Immobilised Enemies.</li>
+              <li><span class="term">Soul Mantle</span> Unique Body Armour không còn có 20-30% reduced Totem Life; thay vào đó có +75 to Spirit. Bản hiện có không bị ảnh hưởng.</li>
+              <li>Cast on Block Skill của <span class="term">Svalinn</span> Unique Shield giờ có Supported Skills Cost nothing. Nó cũng có +50-100 Runic Ward; item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Zaida's Longevity</span> Unique Ring không còn có Lightning Resistance is unaffected by Area Penalties. Giờ có +5-10% to Fire and Lightning Resistance per Equipped Item with a Cold Resistance Modifier. Item hiện có không bị ảnh hưởng.</li>
+              <li><span class="term">Zerphi's Genesis</span> Unique Belt không còn có 10-30% increased Charm Charges used. Giờ có 50% of Charges consumed by used Life Flasks are granted to your Charms, Skills from Corrupted Gems have 15-25% increased Cost Efficiency during any Flask Effect, và 25-50% increased Corrupted Charms Effect Duration, bên cạnh các modifier khác.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="itemchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Items</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Item Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Greater và Perfect currency đã hiếm hơn một chút; Transmutation và Augmentation hiếm hơn đáng kể.</li>
+              <li>Greater Orb of Transmutation và Greater Orb of Augmentation giờ có minimum Modifier Level 44, trước đây 55, giúp dễ tiếp cận hơn. Chúng có thể bắt đầu rơi ở Act 4.</li>
+              <li>Divine Orb giờ phổ biến hơn.</li>
+              <li>Outcome Corruption randomize giá trị số của modifier trên item vượt khỏi range bình thường giờ nhân từng modifier dựa trên giá trị hiện tại, thay vì randomize giá trị.</li>
+              <li>Sanctify một item giờ nhân từng giá trị modifier dựa trên giá trị hiện tại, thay vì randomize giá trị.</li>
+              <li>Omen of Corruption không còn có thể nhận được.</li>
+              <li>Martial Weapon và Flask tìm thấy trong campaign giờ có khả năng cao hơn là base type cao nhất có thể ở level đó.</li>
+              <li>Tổng số Essence tìm thấy trong campaign đã tăng, dù tỷ lệ Essence of the Infinite trong số đó giảm đáng kể. Điều này giúp bạn tìm được nhiều essence hữu dụng hơn trong quá trình chơi.</li>
+              <li>Lượng Armour từ item và modifier đã tăng ở level cao hơn. Ở level 65, bạn sẽ có khoảng 33% Armour nhiều hơn, giảm dần còn 15% ở level 80+.</li>
+              <li>Lượng Evasion từ item và modifier đã tăng ở level cao hơn. Ở level 65, bạn sẽ có khoảng 33% Evasion nhiều hơn, giảm dần còn 15% ở level 80+.</li>
+              <li>Lượng Energy Shield từ item giờ cao hơn khoảng 8% ở level 65 và không đổi ở level 80+.</li>
+              <li>Vile Robe Armour Base Type giờ có 171 Base Energy Shield, trước đây 184.</li>
+              <li>Base Armour của item hiện có sẽ được tự động điều chỉnh, còn Armour Modifier trên item hiện có có thể cập nhật bằng Divine Orb.</li>
+              <li>Tăng base Weapon Range của một số Martial Weapon basetype. One-hand Mace giờ có base Weapon Range 1.3, trước đây 1.1; Two-hand Mace là 1.5, trước đây 1.3; Quarterstaff là 1.4, trước đây 1.3.</li>
+              <li>Basetype Obliterator Bow và Artillery Bow giờ có 1.1 Attacks per second, trước đây 1.15.</li>
+              <li>Implicit modifier của Warden và Guardian Bow giờ cho 25-35% chance to Chain an additional time, trước đây 20-30%. Item hiện có có thể cập nhật bằng Divine Orb.</li>
+              <li>Implicit modifier của Rabid, Fury và Maji Talisman giờ cho +7-10 Maximum Rage, trước đây +8-12. Item hiện có có thể cập nhật bằng Divine Orb.</li>
+              <li>Implicit modifier của Voltfang và Thunder Talisman giờ cho 20-30% increased Magnitude of Shock you inflict, trước đây 15-25%. Item hiện có có thể cập nhật bằng Divine Orb.</li>
+              <li>Alternate Quality item từ Breach Catalyst giờ có thể salvage để nhận lại một phần Catalyst đã dùng.</li>
+              <li>Modifier +Level of all Melee Skills trên Two Handed Attack Weapon giờ có giá trị +5 ở Tier 1, trước đây +7; các tier thấp hơn cũng đã được chỉnh.</li>
+              <li>Modifier +Level of all Projectile Skills trên Two Handed Attack Weapon giờ có giá trị +5 ở Tier 1, trước đây +7; các tier thấp hơn cũng đã được chỉnh.</li>
+              <li>Modifier +Level of all Melee Skills trên One-handed Attack Weapon giờ có giá trị +4 ở Tier 1, trước đây +5; các tier thấp hơn cũng đã được chỉnh.</li>
+              <li>Modifier +Level of all Projectile Skills trên One-handed Attack Weapon giờ có giá trị +4 ở Tier 1, trước đây +5; các tier thấp hơn cũng đã được chỉnh.</li>
+              <li>Modifier +2 to level of Projectile Skills trên Quiver giờ có giá trị +1.</li>
+              <li>Modifier +level all Gems trên Attack Weapon giờ chỉ có thể roll trên level 18.</li>
+              <li>Thêm modifier Surpassing chance to fire an additional Arrow cho Quiver.</li>
+              <li>Perfect Essence of Battle giờ cho +3 to Level of all Attack Skills trên Two Hand Melee Weapon hoặc Crossbow, trước đây +5, và +2 to Level of all Attack Skills trên One Handed Melee Weapon hoặc Bow, trước đây +3.</li>
+              <li>Essence of Hysteria giờ cho 20-23% increased Energy Shield Recharge Rate khi dùng lên Focus, trước đây 41-45%.</li>
+              <li>Body Rune giờ cho +30/45/60 Maximum Life khi socket vào Armour item, trước đây +20/30/40; +30/40/50 Maximum Energy Shield khi socket vào Staff và Wand, trước đây +25/30/35; và Leech 3/4/5% of Physical Damage as Life khi socket vào Martial Weapon, trước đây 2/2.5/3%.</li>
+              <li>Mind Rune giờ cho +20/30/40 Maximum Mana khi socket vào Armour item, trước đây +15/25/35; +45/60/75 Maximum Mana khi socket vào Staff và Wand, trước đây +30/40/50; và Leech 2/3/4% of Physical Damage as Mana, trước đây 1.5/2/2.5%.</li>
+              <li>Rebirth Rune giờ cho Gain 15/25/35 Life per enemy killed khi socket vào Martial Weapon, trước đây 10/20/30, và Regenerate 0.35/0.4/0.45% of Maximum Life per second khi socket vào Armour item, trước đây 0.25/0.3/0.35%.</li>
+              <li>Inspiration Rune giờ cho Gain 10/20/30 Mana per enemy killed khi socket vào Martial Weapon, trước đây 8/16/24, và 20/25/30% increased Mana Regeneration Rate khi socket vào Staff và Wand, trước đây 16/20/24%.</li>
+              <li>Stone Rune giờ Cause 20/30/40% increased Stun Buildup khi socket vào Martial Weapon, trước đây 20/25/30%, và +50/75/100 to Stun Threshold khi socket vào Armour item, trước đây +40/60/80.</li>
+              <li>Vision Rune giờ cho +60/90/120 to Accuracy Rating khi socket vào Martial Weapon, trước đây +50/80/110, và 8/12/16% increased Life and Mana Flask Recovery khi socket vào Armour item, trước đây 8/10/12%.</li>
+              <li>Desert Rune giờ cho +10/14/18% to Fire Resistance khi socket vào Armour item, trước đây +10/12/14%. Bonded modifier trên Martial Weapon, Wand và Staff giờ cho 30% increased Ignite Magnitude, trước đây 25%.</li>
+              <li>Glacial Rune giờ cho +10/14/18% to Cold Resistance khi socket vào Armour item, trước đây +10/12/14%.</li>
+              <li>Storm Rune giờ cho +10/14/18% to Lightning Resistance khi socket vào Armour item, trước đây +10/12/14%.</li>
+              <li>Robust Rune giờ cho +6/9/12 to Strength khi socket vào Equipment, trước đây +6/8/10.</li>
+              <li>Adept Rune giờ cho +6/9/12 to Dexterity khi socket vào Equipment, trước đây +6/8/10.</li>
+              <li>Resolve Rune giờ cho +6/9/12 to Intelligence khi socket vào Equipment, trước đây +6/8/10.</li>
+              <li>Standard Rune Bonded Modifier giờ cho 20 Life và 20 Mana khi socket vào Armour item, trước đây 10 Life và 10 Mana.</li>
+              <li>Lesser Rebirth Rune giờ cho 4% increased Energy Shield Recharge Rate khi socket vào Wand hoặc Staff, trước đây 12%. Thay đổi này áp dụng cho item hiện có.</li>
+              <li>Rebirth Rune giờ cho 6% increased Energy Shield Recharge Rate khi socket vào Wand hoặc Staff, trước đây 15%. Thay đổi này áp dụng cho item hiện có.</li>
+              <li>Greater Rebirth Rune giờ cho 8% increased Energy Shield Recharge Rate khi socket vào Wand hoặc Staff, trước đây 18%. Thay đổi này áp dụng cho item hiện có.</li>
+              <li>Craiceann's Rune of Recovery giờ cho 30% increased Energy Shield Recharge Rate khi socket vào Body Armour, trước đây 50%. Item hiện có bị ảnh hưởng bởi thay đổi này.</li>
+              <li>Lady Hestra's Rune of Winter không còn cho Adds 19 to 28 Cold Damage; thay vào đó cho Adds 19 to 28 Cold Damage against Chilled or Frozen Enemies.</li>
+              <li>Thane Leld's Rune of Spring không còn cho Adds 1 to 60 Lightning Damage; thay vào đó cho Adds 1 to 60 Lightning Damage against Shocked Enemies.</li>
+              <li>Thane Myrk's Rune of Summer không còn cho Adds 23 to 34 Fire Damage; thay vào đó cho Adds 23 to 34 Fire Damage against Ignited Enemies.</li>
+              <li>Tất cả Idol giờ cũng có thể socket vào Sceptre.</li>
+              <li>Idol of Egrin giờ cho 20% increased Curse Duration khi socket vào Sceptre.</li>
+              <li>Idol of Eeshta giờ cho 15% increased Cost Efficiency khi socket vào Helmet, trước đây 12%. Khi socket vào Sceptre, giờ cho 30% increased Mana Recovery Rate while your Companion is in your Presence.</li>
+              <li>Idol of Grold giờ socket vào Boots. Nó giờ cho 50% increased total Power counted by Warcries, trước đây 20%. Khi socket vào Sceptre, giờ cho 15% increased Damage for each different Companion in your Presence. Bonded modifier giờ cho 30% increased glory generation, trước đây 20%.</li>
+              <li>Idol of Maxarius giờ cho 0.2 Flask Charges per second khi socket vào Sceptre.</li>
+              <li>Idol of Ralakesh giờ cho 40% increased Armour, Evasion and Energy Shield while your Companion is in your Presence khi socket vào Sceptre.</li>
+              <li>Idol of Sirrius giờ cho Allies in your Presence have 8% increased Movement Speed khi socket vào Sceptre. Bonded modifier giờ cho 20% reduced slow potency, trước đây 15%.</li>
+              <li>Idol of Thruldana giờ cho Allies in your Presence deal 13 to 27 added Attack Chaos Damage khi socket vào Sceptre.</li>
+              <li>Bear Idol giờ cho 10% increased Area of Effect khi socket vào Helmet, trước đây 8%. Bonded Modifier giờ cho 12% increased Reservation Efficiency of Companion Skills khi socket vào Helmet, trước đây 10%.</li>
+              <li>Boar Idol giờ cho Allies in your Presence Regenerate 0.5% of your Maximum Life per second khi socket vào Sceptre, trước đây Allies in your Presence Regenerate 8 life per second. Bonded Modifier giờ cho 25% increased Warcry Cooldown Recovery Rate khi socket vào Gloves, trước đây 15%.</li>
+              <li>Cat Idol giờ cho 25% increased Accuracy Rating khi socket vào Gloves, trước đây 15%. Bonded Modifier giờ cho 30% increased Charm Charges gained khi socket vào Gloves, trước đây 20%.</li>
+              <li>Fox Idol giờ có limit 1. Nó giờ cho Other Socketed Idols in this item also grant their Bonded Modifiers khi socket vào Body Armour, trước đây +2% to Quality of all Skills. Bonded Modifier giờ cho +5% to Quality of all Skills khi socket vào Body Armour, trước đây +4 to all attributes.</li>
+              <li>Owl Idol giờ cho 12% increased Cooldown Recovery Rate khi socket vào Focus, trước đây 10%, và Allies in your Presence have 10% increased Cast Speed khi socket vào Sceptre, trước đây 8%. Bonded Modifier giờ cho 20% increased effect of Archon Buffs on you khi socket vào Focus, trước đây 15%.</li>
+              <li>Ox Idol giờ cho 15% increased Block chance khi socket vào Shield và Buckler, trước đây 10%, và Allies in your Presence have +12% to all Elemental Resistances khi socket vào Sceptre, trước đây 8%. Bonded Modifier giờ cho 15% chance for Damage of Enemies Hitting you to be unlucky khi socket vào Shield và Buckler, trước đây 10%.</li>
+              <li>Primate Idol giờ cho Minions have 15% increased maximum Life khi socket vào Helmet, trước đây 12%, và Allies in your Presence deal 40% increased Damage khi socket vào Sceptre, trước đây 30%. Bonded modifier giờ cho Remnants can be collected from 15% further away khi socket vào Helmet, trước đây 20%.</li>
+              <li>Rabbit Idol giờ có limit 1. Nó giờ cho 12% increased Rarity of Items found khi socket vào Body Armour, trước đây 5%, và 15% increased Spirit khi socket vào Sceptre, trước đây 10%. Bonded modifier giờ cho 10% increased Quantity of Gold Dropped by Slain Enemies khi socket vào Body Armour, trước đây 5%.</li>
+              <li>Snake Idol giờ cho 8% increased Curse Magnitude khi socket vào Gloves, trước đây 5%, và Allies in your Presence have 10% increased Attack Speed khi socket vào Sceptre, trước đây 8%. Bonded Modifier giờ cho Remnants have 15% increased Effect khi socket vào Gloves, trước đây 10%.</li>
+              <li>Stag Idol giờ có limit 1. Nó giờ cho Projectiles have 15% chance to Fork khi socket vào Helmet, trước đây 50% increased Thorns Critical Hit Chance. Bonded Modifier cho Helmet giờ cho 30% chance for an additional Projectile when Forking, trước đây Thorns Damage has 40% chance to ignore Enemy Armour.</li>
+              <li>Wolf Idol giờ cho 15% increased Magnitude of Bleeding you inflict khi socket vào Gloves, trước đây 10%, và Allies in your Presence have 20% increased Critical Damage Bonus khi socket vào Sceptre, trước đây 14%. Bonded Modifier giờ cho 25% reduced Magnitude of Bleeding on you khi socket vào Gloves, trước đây 15%.</li>
+              <li>Atmohua's Soul Core of Retreat không còn cho 30% faster start of Energy Shield Recharge khi socket vào Body Armour hoặc Focus. Thay vào đó, giờ cho Gain additional Ailment Threshold equal to 15% of maximum Energy Shield và Gain additional Stun Threshold equal to 15% of maximum Energy Shield. Thay đổi này áp dụng cho item hiện có.</li>
+              <li>Maximum Rage trên Ruby Jewel giờ có thể roll +1-2 to Maximum Rage, trước đây +1. Item hiện có có thể cập nhật lên giá trị mới bằng Divine Orb.</li>
+              <li>Increased Chaos Damage trên Sapphire Jewel giờ có thể roll 7-13%, trước đây 6-12%. Item hiện có có thể cập nhật lên giá trị mới bằng Divine Orb.</li>
+              <li>Suffix modifier cấp faster start of Energy Shield Recharge không còn roll trên Focus, Intelligence Body Armour hoặc Jewel.</li>
+              <li>Increased Energy Shield Recharge Rate Suffix modifier giờ có thể roll trên Intelligence Body Armour.</li>
+              <li>Implicit modifier trên Arcane Raiment và Sacramental Robe Body Armour giờ là 15-25% increased Energy Shield Recharge Rate, thay vì 40-50% faster start of Energy Shield Recharge. Thay đổi này không ảnh hưởng item hiện có.</li>
+              <li>Prefix modifier "Fevered" không còn roll trên Time-Lost Sapphire và Sapphire Jewel.</li>
+              <li>Suffix modifier "of Diffusion", "of Dispersal" và "of Enlivening" không còn roll trên Body Armour và Focus.</li>
+              <li>Suffix modifier "of Buffering" giờ cho 12-15% increased Energy Shield Recharge Rate, trước đây 36-40%. Item hiện có (legacy/Standard) nếu dùng Divine Orb sẽ reroll theo range mới thấp hơn.</li>
+              <li>Suffix modifier "of Ardour" giờ cho 16-19% increased Energy Shield Recharge Rate, trước đây 41-45%. Item hiện có (legacy/Standard) nếu dùng Divine Orb sẽ reroll theo range mới thấp hơn.</li>
+              <li>Suffix modifier "of Suffusion" giờ cho 20-23% increased Energy Shield Recharge Rate, trước đây 46-50%. Item hiện có (legacy/Standard) nếu dùng Divine Orb sẽ reroll theo range mới thấp hơn.</li>
+              <li>Cast Speed Modifier trên Ring và Amulet không còn dùng chung với Focus và Wand. Với Ring và Amulet, các Modifier này giờ roll ở level cao hơn một chút. Tier cao nhất của cast speed modifier trên Ring giờ roll ở level 60 và trên Amulet ở level 66. Giá trị tối đa không đổi.</li>
+              <li>Increased Banner Area of Effect Modifier trên Jewel giờ có giá trị 6-16%, trước đây 10-20%. Item hiện có có thể cập nhật bằng Divine Orb.</li>
+              <li>Desecrated Modifier cấp Instant Leech không còn roll; item hiện có không bị ảnh hưởng.</li>
+              <li>Hybrid Physical Damage and Accuracy Modifier "Squire's" trên Weapon giờ có minimum level 8, trước đây 1. Item hiện có sẽ đổi level requirement.</li>
+              <li>Hybrid Physical Damage and Accuracy Modifier "Journeyman's" trên Weapon giờ có minimum level 14, trước đây 11. Item hiện có sẽ đổi level requirement.</li>
+              <li>Accuracy modifier "Precise" trên Weapon giờ có minimum level 8, trước đây 1. Item hiện có sẽ đổi level requirement.</li>
+              <li>Accuracy modifier "Reliable" trên Weapon giờ có minimum level 13, trước đây 11. Item hiện có sẽ đổi level requirement.</li>
+              <li>Basetype Helm "Gladiatoral" đã đổi tên thành <span class="term">Cassis Helm</span>.</li>
+              <li>Oswald không còn ép giá bạn với <span class="term">Priceless Idol</span> tìm thấy ở Act 3, giờ trả 3.000, 4.000 và 6.000 Gold cho mỗi cái, trước đây 500, 1.000 và 1.500.</li>
+              <li>Giá Gold của Weapon trong asynchronous trade đã tăng khoảng 50%.</li>
+              <li>Desecrated Map Modifier "of Union" không còn hoạt động. Đây là legacy modifier chỉ tồn tại trong Early Access league.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="monsterchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Monsters</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Monster Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Culling Strike Threshold cho Normal enemy giờ là 35% Maximum Life, trước đây 30%.</li>
+              <li>Monster Leech resistance giờ bắt đầu ở level muộn hơn và giá trị thấp hơn ở mọi level. Tất cả monster rarity giờ có cùng lượng Leech resistance.</li>
+              <li>Essence Monster Pack giờ bị ảnh hưởng bởi modifier Pack Size.</li>
+              <li>Azmeri Spirit được thả ra từ monster giờ giữ power và empower các spirit khác được thả từ monster đó.</li>
+              <li>Beam từ Priest of the Sun sẽ không còn bỏ qua một số wall.</li>
+              <li>Bạn giờ hồi lại một số Flask charge khi lính của Viper Napuatzi thu nhỏ arena của cô.</li>
+              <li>Burning Dead ở Ogham Village giờ gây một phần damage dưới dạng Fire, trước đây hoàn toàn Physical.</li>
+              <li>Cải thiện hình ảnh và telegraphing của Lightning Doryani's Elite Monster.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="questchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Quest</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Quest Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Bạn không còn có thể vào <span class="term">Plunder's Point</span> cho đến khi đã nộp đủ 4 Map Piece ở Kingsmarch.</li>
+              <li>Bạn giờ nhận Greater Mind Rune trong Halls of the Dead khi tương tác với Navali, trước đây Lesser Mind Rune.</li>
+              <li>Bạn không còn cần ghé Halani Gates để vào Traitor's Passage nếu đã giải cứu Risu.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="userinterfacechanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">UI</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">User Interface Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Thêm accessibility setting để tăng kích thước popup. Có thể tìm trong mục UI của Options panel.</li>
+              <li>Thêm keybind riêng để dodge roll, không khiến player sprint khi giữ nút. Keybind này mặc định chưa gán và cần tự gán trong input options nếu muốn dùng.</li>
+              <li>Thêm option <span class="term">Show Only Available</span> vào danh sách Hideout Decorations khi dùng Mouse and Keyboard.</li>
+              <li>Với player dùng click to move, click để di chuyển trong khi channel skill có thể dùng khi đang di chuyển sẽ không còn ngắt channel. Điều này sẽ cải thiện đáng kể độ dễ dùng của skill như Flame Breath và Incinerate trên click to move.</li>
+              <li>Cải thiện độ rõ hình ảnh, load time và performance trên World Map Act 1-3. Ngoài ra, chúng được chỉnh để phản ánh chính xác hơn hướng layout area trong game.</li>
+              <li>Skill information popout không còn đưa modified stat lên đầu panel. Chúng vẫn được hiển thị màu xanh.</li>
+              <li>Thông báo hiển thị khi item trong Merchant Tab Shop của bạn bán được giờ hiển thị message khác nếu item bán thuộc league khác.</li>
+              <li>Nút reroll trong Ritual UI giờ pulse khi bạn có free reroll.</li>
+              <li>Empowered Minion từ nhiều modifier hoặc nguồn khác giờ cập nhật text "Minion" hiển thị trên monster.</li>
+              <li>Augments Stash Tab đã được cập nhật và giờ có năm section.</li>
+              <li>Mark enemy giờ hiển thị Mark trên life bar của chúng.</li>
+              <li>Maximum rage, rage loss delay và rage loss per second giờ hiển thị trong character panel.</li>
+              <li>Tăng giới hạn ký tự tối đa của search textbox lên 250.</li>
+              <li>Copy text của item giờ luôn copy theo advanced description format.</li>
+              <li>Tìm kiếm bằng text của item giờ match advanced description format.</li>
+              <li>Giờ có thể đặt Favourite trade trên Currency Exchange khi dùng Mouse and Keyboard.</li>
+              <li>Giờ có thể pin tracking scroll lên social profile để hiển thị cho friend, guild và party member.</li>
+              <li>Giờ có thể preview microtransaction weapon skin trong cosmetics shop mà không cần trang bị đúng weapon type.</li>
+              <li>Thêm top-down camera view để edit hideout khi dùng controller.</li>
+              <li>Thêm tính năng đổi nhanh Currency đang áp dụng khi chơi bằng controller.</li>
+              <li>Làm lại Currency Exchange UI khi chơi bằng controller.</li>
+              <li>Cải thiện target selection cho item và object có thể tương tác khi dùng controller.</li>
+              <li>Cập nhật và tái cấu trúc Options menu.</li>
+              <li>Bật tùy chọn in-game clock cho PlayStation và Xbox.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="microtransactionchanges">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Cosmetics</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Microtransaction Changes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Bật các Armour Set microtransaction hiện có sau để dùng trong Path of Exile 2: Arcane, Arctic Crystal, Assassin, Atlantis, Black and White, Chimera, Coliseum, Cursed, Darkprism, Doomguard, Eclipse, Eyrie, Fire, Fire and Ice, Imperial Eagle, Mageguard, Malachai, Miracle, Scavenger, Seeker, Twilight, Void Emperor, Vulcan và Wild.</li>
+              <li>Bật các Back Attachment microtransaction hiện có sau để dùng trong Path of Exile 2: Apollyon Cloak, Apollyon Wings, Arcane Cloak, Assassin Cloak, Azurite Back Attachment, Balefire Back Attachment, Corsair Back Attachment, Corsair Cloak, Crucible Back Attachment, Darkwood Cloak, Dreadspire Cloak, Empyrean Back Attachment, Glimmersprite Wings, Gorgon Back Attachment, Illusionist Back Attachment, Innocence Cloak, Innocence Wings, Lightbringer Cloak, Lightbringer Wings, Midnight Pact Cloak, Midnight Pact Wings, Misery Swords Back Attachment, Misery Wings, Myrmidon Cloak, Necrotic Cloak, Necrotic Wings, Nightfall Cloak, Nightfall Wings, Orion Back Attachment, Overseer Cloak, Overseer Wings, Pitfighter Back Attachment, Rapture Back Attachment, Scavenger Back Attachment, Seraph Banner Back Attachment, Sin Cloak, Sin Wings, Spectre Cloak, Spectre Wings, Spider Back Attachment, Scavenger Tail Attachment, Starfall Cloak, Starfall Wings, Suffering Back Attachment, Suffering Cloak, Sunprism Cloak, Sunprism Wings, Sunrise Cloak, Sunrise Wings, Twilight Cloak, Vaal Orb Cloak, Vampiric Wings, Vanguard Banner Back Attachment và Verdant Cloak.</li>
+              <li>Bật các Helmet microtransaction hiện có sau để dùng trong Path of Exile 2: Assassin Hood, Black and White Hood, Cursed Hat, Eyrie Hood, Mageguard Hood, Scavenger Hood và Wild Cougar Helmet.</li>
+              <li>Bật toàn bộ Portrait Frame microtransaction còn lại để dùng trong Path of Exile 2.</li>
+              <li>Bật Originator's và Awakener's Character Effect microtransaction hiện có để dùng trong Path of Exile 2.</li>
+              <li>Bật Something Fishy, Trapped Wisps và Not the Bees! Chest Extra Effect microtransaction để dùng trong Path of Exile 2.</li>
+              <li>Bật Anchor Drop Rare Finisher Effect microtransaction hiện có để dùng trong Path of Exile 2.</li>
+              <li>Bật Torture Mace microtransaction hiện có để dùng trong Path of Exile 2.</li>
+              <li>Bật Mirage Gauntlet microtransaction hiện có để dùng trong Path of Exile 2.</li>
+              <li>Bật Twilight Helmet Attachment microtransaction hiện có để dùng trong Path of Exile 2.</li>
+              <li>Bật Coliseum Helmet Attachment, Swan Crest Helmet Attachment và Aquila Crest Helmet Attachment microtransaction hiện có để dùng trong Path of Exile 2.</li>
+              <li>Bronze và Silver Marionette Character Skin giờ có tier thứ hai cho phép ẩn base character armour.</li>
+              <li>Exile's Pilfering Ring và Tracking Scroll of Crafting giờ theo dõi thêm Hinekora's Lock và Fracturing Orb, hữu ích cho các outcome crafting giá trị cao.</li>
+              <li>Tracking Scroll of Headhunting đã được cập nhật để theo dõi thêm một số boss mới.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="bugfixes">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <div class="section-kicker text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Fixes</div>
+              <h2 class="mt-1 text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Bug Fixes</h2>
+            </div>
+          </header>
+          <div class="section-body px-6 pb-6 pt-2 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&>p]:my-4 [&_a]:font-semibold [&_a]:text-blue-700 dark:[&_a]:text-blue-300 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:space-y-0 [&_ul]:pl-5">
+            <ul>
+              <li>Sửa bug Life Flask đôi khi không thể dùng khi full Life với Enduring Elixirs Pathfinder Notable Passive Skill, dù skill cho phép hiệu ứng Flask duy trì khi full Life.</li>
+              <li>Sửa bug Ritual Sacrifice skill của Ritualist nhận cooldown riêng ở level 20. Thông tin về việc dùng Ritual Sacrifice lên bản thân giờ được gộp vào mô tả skill thay vì mô tả riêng trên passive As the Whispers Demand. Đây chỉ là thay đổi mô tả.</li>
+              <li>Sửa bug Pounce cung cấp thêm Mark Effect cho Predator's Mark hoặc Mark được socket.</li>
+              <li>Sửa lỗi khiến Mirage Archer và Mirage Deadeye không xoay đúng để theo target khi dùng Rapid Shot và skill tương tự.</li>
+              <li>Sửa lỗi cho phép một số Skill được socket vào Mirage Archer và Mirage Deadeye dù đáng ra phải bị chặn.</li>
+              <li>Sửa bug Devour và Feral Invocation không tương tác đúng.</li>
+              <li>Sửa bug Minion Instability không bypass Last Gasp.</li>
+              <li>Sửa bug Thunderstorm có thể được tạo ngoài bounds.</li>
+              <li>Sửa lỗi Hollow Palm Technique không cung cấp bonus cho phần lớn skill có thể dùng với bất kỳ Martial Weapon nào. Hollow Palm Technique giờ thay thế unarmed base damage của bạn cho attack bị ảnh hưởng, thay vì thêm damage lên trên base unarmed damage.</li>
+              <li>Sửa bug khiến modifier cho unarmed critical hit chance không áp dụng vào displayed critical hit chance trên skill information popout.</li>
+              <li>Sửa nhiều lỗi với mechanic khiến modifier số projectile áp dụng sang giá trị khác.</li>
+              <li>Sửa một số trường hợp stat cho chance bắn thêm projectile không áp dụng cho skill như rain of arrows, vốn dùng số projectile để xác định số lượng vật thể đặt xuống.</li>
+              <li>Sửa một số trường hợp stat cho additional chain không áp dụng cho một số beam skill.</li>
+              <li>Sửa bug Quality của Comet không hoạt động.</li>
+              <li>Sửa bug Devour và Lightning Warp có thể devour hoặc explode một số Corpse không nên bị ảnh hưởng.</li>
+              <li>Sửa bug Poison Spores Support không có vendor price và asynchronous trade price phù hợp.</li>
+              <li>Sửa bug Burning Inscription Support tạo ignited ground quanh monster thay vì ngay trên Runic Inscription.</li>
+              <li>Sửa bug Low Tolerance Passive Skill mô tả sai là increased Effect of Poison thay vì increased Magnitude.</li>
+              <li>Sửa bug Arctic Howl có thể empower bạn ở human form khi dùng Echoing Cry.</li>
+              <li>Sửa một số lỗi khiến ice crystal từ Glacial Bolt có tính damage kỳ lạ trong vài tình huống.</li>
+              <li>Sửa bug Rathpith Globe Unique Focus thiếu unique on-cast effect. Item hiện có sẽ không được sửa bởi thay đổi này, trừ khi bạn dùng Divine Orb lên chúng.</li>
+              <li>Sửa bug Tactician's Cannons, Ready! Notable Passive Skill không khiến totem attack khi player dùng Molten Blast, Rolling Magma, Oil Barrage hoặc Power Charged Falling Thunder.</li>
+              <li>Sửa bug Melting Maelstrom Unique Ultimate Mana Flask không thể hit enemy.</li>
+              <li>Sửa bug attack đánh bằng cả hai weapon cùng lúc khi dual wield có attack time dài hơn dự kiến. Ý định là các skill này dùng attack time trung bình của weapon.</li>
+              <li>Sửa bug Skill tốn phần trăm maximum Energy Shield không thể dùng nếu bạn không có maximum Energy Shield.</li>
+              <li>Sửa bug stat cho chance projectile có thể chain từ terrain không đếm đúng số chain đã dùng, khiến projectile trong vài trường hợp chain mãi từ terrain.</li>
+              <li>Sửa bug Forge Hammer Slam không được tính khi tracking slam cho Titan's Ancestral Empowerment Notable Passive Skill.</li>
+              <li>Sửa bug Heightened Charges Support không áp dụng cho extra flicker per power charge consumed của Flicker Strike.</li>
+              <li>Sửa bug Living Lightning II không scale level từ Gem nó đang Support.</li>
+              <li>Sửa bug Into the Breach không hưởng lợi từ Selfless Remnants Support Gem.</li>
+              <li>Sửa nhiều bug liên quan đến phiên bản player của Azmeri Spirit Possession, tạo bởi Rite of Passage Unique Charm, không dùng skill hoặc hoạt động không đúng. Phiên bản player của modifier Azmeri Spirit Possession giờ gây damage cao hơn rất nhiều và dùng skill thường xuyên hơn. Phiên bản enemy không đổi.</li>
+              <li>Sửa bug Dialla's Desire Lineage Support không cấp quality cho Meta Skill gem và Skill Gem do item cấp.</li>
+              <li>Sửa bug Hayoxi's Fulmination Lineage Support có thể support skill không phải Curse.</li>
+              <li>Sửa bug với Heavy Armour Notable Passive Skill và chỉnh mô tả rõ hơn.</li>
+              <li>Sửa lỗi Shockwave Totem có thể socket vào Ancestral Warrior Totem.</li>
+              <li>Sửa bug Echoing Cry có thể support Ancestral Cry.</li>
+              <li>Sửa bug Melting Maelstrom Unique Ultimate Mana Flask không thể hit enemy.</li>
+              <li>Sửa một số supportability ngoài ý muốn với Mirage Archer và Deadeye cho vài Skill.</li>
+              <li>Sửa bug tính toán Infernal Legion luôn là critical hit nếu nó có bất kỳ lượng critical hit chance nào.</li>
+              <li>Sửa bug một số loại minion hồi sinh, vốn được thiết kế để kế thừa movement speed modifier của player, không làm vậy. Cụ thể: Smith of Kitava's Manifest Weapon, Rhoa Mount khi player đã dismount, và Hyena được summon bởi Hysseg's Claw Unique Talisman.</li>
+              <li>Sửa một số trường hợp hai hiệu ứng Empowering một lần dùng skill không stack như mong đợi.</li>
+              <li>Sửa edge-case interaction giữa reservation của Blood Price Unique Helmet và các reservation khác.</li>
+              <li>Sửa một số trường hợp skill vốn tự trigger không được xem là triggered skill cho các stat khác.</li>
+              <li>Sửa bug Grim Feast đôi khi không revive minion.</li>
+              <li>Sửa bug projectile bỏ qua Ice Crystal tạo bởi Frozen Locus.</li>
+              <li>Sửa bug Ice Nova có visual effect và audio sai khi repeated.</li>
+              <li>Sửa bug skill His Winnowing Flame cấp bởi The Unborn Lich unique staff áp dụng critical weakness on hit, và bug khác khiến explosion trigger từ việc consume Ignite không gây damage.</li>
+              <li>Sửa bug channelled skill không thể bị ngắt bởi một channelled skill khác.</li>
+              <li>Sửa bug Abyss Precursor Tablet thêm 1 Abyss bổ sung mỗi tablet, thay vì chỉ bật Abyss spawning.</li>
+              <li>Sửa bug negative Toughness không áp dụng more damage taken lên target. Giờ Toughness âm sẽ áp dụng lượng More Damage Taken tương ứng. Về cơ bản, mỗi 100% Toughness giảm một nửa damage monster nhận, và mỗi -100% Toughness nhân đôi damage monster nhận.</li>
+              <li>Sửa bug khiến player không thể respawn nếu chết bởi Atziri, the Red Queen hoặc Xipocado, the Royal Architect trong party play.</li>
+              <li>Sửa bug boss đôi khi đẩy player ra khỏi arena.</li>
+              <li>Sửa bug khiến The Iron Count không dùng sword impale skill.</li>
+              <li>Sửa lỗi khiến backhand swing của The Bloated Miller không thể Block, Parry hoặc Evade.</li>
+              <li>Sửa bug khiến một số boss skill không thể target player minion.</li>
+              <li>Sửa lỗi Abyss Pit đôi khi không đóng.</li>
+              <li>Sửa bug increased chance for Maps to contain a Summoning Circle lại đang cung cấp base chance for Maps to contain a Summoning Circle.</li>
+              <li>Sửa bug Rogue Exile có maximum Infusion count cao hơn dự kiến.</li>
+              <li>Sửa lỗi Boss Arena forcefield đôi khi không bị gỡ trong Stronghold Map sau khi đánh bại Boss.</li>
+              <li>Sửa bug experimented monster trong Synthflesh Lab đôi khi bị kẹt.</li>
+              <li>Sửa lỗi Beyond boss nhận damage reduction nhiều hơn dự kiến khi vừa spawn.</li>
+              <li>Sửa bug Arc cung cấp additional chain bất kể Lightning Infusion có được consume hay không.</li>
+              <li>Sửa bug modifier Poison on Critical Hit trên Atsak's Sight Unique Helmet không áp dụng cho critical hit bằng Thorns damage.</li>
+              <li>Sửa bug reload hoặc chuyển ammunition bằng Crossbow bị tính là attacking.</li>
+              <li>Sửa bug nhiều bleed chance modifier không áp dụng cho Thorns damage.</li>
+              <li>Sửa bug một số triggered skill có thể generate energy.</li>
+              <li>Sửa bug Prism of Belief Unique Jewel có thể roll modifier cho Solar Orb.</li>
+              <li>Sửa bug Stoicism Support có thể support skill không phải Attack.</li>
+              <li>Sửa lỗi Volt Support có tag Chaining không đúng.</li>
+              <li>Sửa bug nova của Iron Ward không bị ảnh hưởng đúng bởi Astral Projection Support.</li>
+              <li>Sửa bug Lightning Warp ưu tiên target đã chọn thay vì enemy có thể cull hoặc Ball Lightning projectile.</li>
+              <li>Sửa bug passive cho "Increased Area of Effect of Ancestrally Boosted Attacks" thực ra đang multiplicative.</li>
+              <li>Sửa bug Blink, Parry và Raise Shield không được tính là dùng Skill. Điều này cũng sửa bug dùng Parry hoặc Raise Shield không được tính là Channelling.</li>
+              <li>Sửa bug Surpassing chance to Fire an Additional Arrow có thể khiến Lightning Rod arrow bắn tới vị trí sai.</li>
+              <li>Sửa bug bạn có thể bị đặt ở checkpoint sai khi respawn sau khi chết bởi một số boss.</li>
+              <li>Sửa bug corrupting Essence đôi khi có thể xóa Essence.</li>
+              <li>Sửa bug minion trong Essence Monster pack không được tăng stat do là một phần của Rare pack.</li>
+              <li>Sửa bug Delirium fog vẫn tiếp tục lan về mặt hình ảnh khi game paused.</li>
+              <li>Sửa bug item không có modifier có thể xuất hiện trong Ritual Encounter level thấp.</li>
+              <li>Sửa bug không thể mở portal trong boss arena của Creek Map sau khi giết boss.</li>
+              <li>Sửa lỗi encounter Roving Wisps ở Kriar Village không thể hoàn thành.</li>
+              <li>Sửa lỗi Summoning Circle chặn projectile sau khi boss bị đánh bại và chúng sụp xuống.</li>
+              <li>Sửa lỗi Shrine khó highlight khi bị enemy bao quanh.</li>
+              <li>Sửa lỗi bạn có thể bị desync khi đi gần Tree of Souls sau khi giải cứu Hooded One ở Grelwood.</li>
+              <li>Sửa bug khiến player về mặt hình ảnh di chuyển lệch khỏi tâm màn hình khi bị slow trong Werewolf form.</li>
+              <li>Sửa lỗi các quest sau không hoàn thành nếu bạn rời area trước khi boss kết thúc death animation: Shrike Island, Isle of Kin, Whakapanu Island, Abandoned Prison.</li>
+              <li>Sửa bug Soul Core Ultimatum Encounter có thể hoàn thành bằng một Soul Core duy nhất.</li>
+              <li>Sửa lỗi hiếm khi không có Small Soul Core để dùng ở Stone Altar đầu tiên trong Jiquani's Machinarium.</li>
+              <li>Sửa lỗi icon Abyss world map ở Ngakanu không hoàn thành khi hoàn thành Abyssal Depths tương ứng.</li>
+              <li>Sửa bug icon world map Shoreline Hideout không hoàn thành.</li>
+              <li>Sửa lỗi ground effect có thể hiển thị sai trong Path of Mourning.</li>
+              <li>Sửa lỗi một số nguồn movement của player đôi khi khiến player đi hơi khác hướng dự kiến. Điều này đặc biệt rõ khi dùng controller và với skill có movement tích hợp, như Dodge Roll và phần lớn melee skill.</li>
+              <li>Sửa lỗi mô tả của Parry không nói rằng mọi hit đều có thể parry, mà chỉ nhắc strike và projectile.</li>
+              <li>Sửa lỗi Varashta's Blessing Lineage Support không ghi rằng nó không modify skill của minion. Đây chỉ là thay đổi mô tả.</li>
+              <li>Sửa lỗi Herald of Blood ghi sai rằng damage dựa trên maximum Life; giờ ghi đúng damage dựa trên Blood Loss.</li>
+              <li>Sửa bug nhiều hit sound effect từ party member phát quá to.</li>
+              <li>Sửa bug ngăn audio cue Energy Shield bị cạn phát ra nếu nguyên nhân cạn là damage over time.</li>
+              <li>Sửa bug hover lên Totem trong Skills panel hiển thị sai prompt "Right Click to activate" nếu bạn đã allocate Ancestral Bond Keystone Passive Skill.</li>
+              <li>Sửa bug item không thể dùng Exalted Orb vẫn bị highlight khi bạn chuẩn bị dùng Exalted Orb.</li>
+              <li>Sửa bug double-click portal hoặc area transition có confirmation popup sẽ hiển thị popup đó hai lần.</li>
+              <li>Sửa lỗi Boss health bar hiển thị bên trong màn hình Atlas.</li>
+              <li>Sửa bug friends list đôi khi trống trên PlayStation sau khi gặp instance crash.</li>
+              <li>Sửa bug biến thể nâng cấp của Grip of Kulemak không thể trữ trong Unique Stash Tab.</li>
+              <li>Sửa bug presence radius indicator có thể ngừng hoạt động trong một số tình huống.</li>
+              <li>Sửa bug glyph unsupported character hiển thị ở hàng nghìn với một số locale.</li>
+              <li>Sửa bug khiến Skill cấp bởi Ascendancy Passive Skill bị ẩn khỏi danh sách Skill áp dụng được khi cutting Support Gem.</li>
+              <li>Sửa bug điều hướng text "Word by Word" bằng Ctrl + Left/Right trong text field bị wrap sai về cuối input trong một số tình huống.</li>
+              <li>Sửa bug hoàn thành quest Hostile Takeover trên character khác khiến Act 4 World Map hiển thị trước khi character hiện tại tới Act 4.</li>
+              <li>Sửa bug action "bulk move" không có trong market earnings page khi chơi bằng controller.</li>
+              <li>Sửa bug player được revive khi ở trong object khác không được đưa tới vị trí an toàn.</li>
+              <li>Sửa bug không thể chọn Always Attack Without Moving cho một số Skill.</li>
+              <li>Sửa lỗi tắt crossplay setting khi chơi trên console lại được giữ khi đăng nhập account đó trên PC.</li>
+              <li>Sửa bug player couch co-op cố tham gia public party bị từ chối nếu party chỉ vừa đủ chỗ cho họ.</li>
+              <li>Sửa bug khi chơi couch co-op, player khác có thể bị kick khỏi party nhầm nếu Player 2 tạo và vào Map.</li>
+              <li>Sửa bug không thể tương tác với Xipocado's Console khi chơi couch co-op.</li>
+              <li>Sửa bug ngắt kết nối và kết nối lại controller sẽ tắt haptics.</li>
+              <li>Sửa bug crossplay có thể bị tắt trong khi setting vẫn hiển thị là enabled.</li>
+              <li>Sửa bug có thể cố chọn character ở hai League khác nhau khi chơi couch co-op.</li>
+              <li>Sửa lỗi chọn Solo Self-Found trong filter chọn character làm mờ nút create character.</li>
+              <li>Sửa bug haptic feedback low-health trên controller tiếp tục phát khi game paused.</li>
+              <li>Sửa bug bạn có thể bị kẹt trong scenery khi thoát hideout editing mode bằng controller.</li>
+              <li>Sửa lỗi Enezun's Charge Unique Wand thiếu model 3D.</li>
+              <li>Sửa bug Gem art của Pounce không phản ánh việc nó là Meta Gem.</li>
+              <li>Sửa lỗi Consuming Tentacle Rare Finisher Effect trước đây được ghi là đã bật trong Path of Exile 2 nhưng không thể trang bị.</li>
+              <li>Sửa lỗi Black Hole Rare Finisher Effect trước đây được ghi là đã bật trong Path of Exile 2 nhưng không thể trang bị.</li>
+              <li>Sửa lỗi Dragon Fire Rare Finisher Effect trước đây được ghi là đã bật trong Path of Exile 2 nhưng không thể trang bị.</li>
+              <li>Sửa bug Arachnamagus Portal Effect microtransaction thiếu hiệu ứng.</li>
+            </ul>
+            <p class="notice">Hy vọng bạn sẽ thích Path of Exile 2: Return of the Ancients. <a href="https://pathofexile2.com/purchase">Cảm ơn vì đã ủng hộ</a>!</p>
+          </div>
+        </section>
+
+        <section class="note-section scroll-mt-24 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" id="updates">
+          <header class="section-header flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-transparent px-6 py-5 dark:border-slate-700 dark:from-blue-950/40">
+            <div>
+              <h2 class="text-2xl font-black leading-tight tracking-normal text-slate-950 sm:text-3xl dark:text-white">Updates to Patch Notes</h2>
+            </div>
+          </header>
+          <details class="updates mx-6 mb-6 mt-4 rounded-lg border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800" open>
+            <summary class="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 font-bold text-slate-900 dark:text-slate-100">
+              <span>Updated Patch Notes</span>
+              <span class="material-symbols-rounded" aria-hidden="true">expand_more</span>
+            </summary>
+            <div class="updates-content px-5 pb-5 text-[15px] leading-7 text-slate-700 dark:text-slate-200 [&_li]:border-b [&_li]:border-slate-200/80 [&_li]:py-2.5 dark:[&_li]:border-slate-700/80 [&_ul]:list-disc [&_ul]:pl-5">
+              <ul>
+                <li>Sau khi mở khóa Unique Verisium Runeforging ở Act 3, bạn có thể nâng cấp base type của Unique Weapon và Armour rơi ở level dưới 55. Unique Weapon được nâng cấp sẽ có damage cao hơn, còn Armour được nâng cấp sẽ tăng base defence và có Runic Ward, giúp chúng cạnh tranh tốt hơn ở level cao. Unique Armour trên level 55 vẫn có thể Runeforge để thêm Runic Ward, đổi lại giảm các defence khác tương tự base type.</li>
+                <li>Ghost Dance: khoảng thời gian giữa các lần nhận Ghost Shroud không còn là duration. Giờ có "Modifiers to Cooldown Recovery Rate also apply to Ghost Shroud gain frequency". Nó cũng có "When Hit, lose a Ghost Shroud" và "Regenerate Energy Shield equal to 2% of your Evasion Rating per second if you have lost a Ghost Shroud Recently". Giờ nhận một Ghost Shroud mỗi 11.7-10.1 giây ở Gem level 4-20, trước đây 7.6-6.1.</li>
+              </ul>
+            </div>
+          </details>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <a class="fixed bottom-5 right-5 z-50 grid h-14 w-14 place-items-center rounded-2xl bg-blue-600 text-white shadow-md2 transition hover:bg-blue-700" id="backToTop" href="#top" aria-label="Lên đầu trang">
+    <span class="material-symbols-rounded">keyboard_arrow_up</span>
+  </a>
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const searchMeta = document.getElementById("searchMeta");
+    const backToTop = document.getElementById("backToTop");
+    const toc = document.querySelector(".toc");
+    const sections = Array.from(document.querySelectorAll(".note-section"));
+    const listItems = Array.from(document.querySelectorAll(".note-section li"));
+    const labelMeta = {
+      new: { text: "NEW", className: "label-new", title: "NEW" },
+      buff: { text: "▲", className: "label-buff", title: "BUFF" },
+      nerf: { text: "▼", className: "label-nerf", title: "NERF" },
+      rework: { text: "REWORK", className: "label-rework" },
+      fix: { text: "FIX", className: "label-fix" }
+    };
+
+    const inferLabel = (item) => {
+      if (labelMeta[item.dataset.changeLabel]) return item.dataset.changeLabel;
+      const section = item.closest(".note-section");
+      const sectionId = section?.id || "";
+      const text = item.textContent.trim().toLocaleLowerCase("vi");
+      const isItemSection = sectionId === "uniqueitemchanges" || sectionId === "itemchanges";
+
+      if (sectionId === "bugfixes") return "fix";
+      if (isItemSection) {
+        if (/(^thêm|thêm modifier|nay có|có thêm|giờ có thể roll trên|giờ rơi|giờ cũng có thể socket|có thể bắt đầu rơi|có thể salvage)/.test(text)) return "new";
+        if (/(đã được làm lại|đã đổi tên|đã đổi|đổi tên|thay vào đó|thay vì|không còn.*giờ|không còn.*thay|giờ nhân từng|đổi level requirement|legacy modifier)/.test(text)) return "rework";
+        if (/(hiếm hơn|giảm đáng kể|không còn có thể nhận|không còn roll|không còn hoạt động|bị giảm|bị ảnh hưởng|reroll theo range mới thấp hơn|trước đây 700-800|trước đây 200-250|trước đây 15-25|trước đây 1\.15|trước đây 184|trước đây \+7|trước đây \+5|trước đây \+3|trước đây \+8-12|trước đây 41-45|trước đây 36-40|trước đây 46-50|trước đây 12%|trước đây 15%|trước đây 18%|trước đây 50%|trước đây 10-20%|trước đây 20-30%|trước đây 10-20|trước đây 5%|giờ có giá trị \+1\b|giờ chỉ có thể roll|cannot|không còn có 30-50% faster|không còn ép giá|giá gold.*đã tăng)/.test(text)) return "nerf";
+        if (/(phổ biến hơn|dễ tiếp cận|cao hơn|nhiều hơn|đã tăng|tăng|khả năng cao hơn|hữu dụng hơn|có thể cập nhật lên|có thể được buff|giờ cho|giờ có|giờ cấp|giờ có thể roll|giờ phổ biến|trả 3\.000|base weapon range|không còn.*less|không còn.*reduced|rơi nhiều hơn)/.test(text)) return "buff";
+        return "rework";
+      }
+      if (/^(thêm|bổ sung|nay có|có thêm|mở khóa|mở khoá)|\b(mới|new|newly|introduced)\b/.test(text)) return "new";
+      if (/(không còn bị tăng|bỏ phạt|được tăng|tăng lên|cao hơn|nhiều hơn|mạnh hơn|cải thiện|giảm cost|giảm chi phí|giảm cooldown|giảm hồi chiêu|rơi nhiều hơn|nhanh hơn)/.test(text)) return "buff";
+      if (/(làm lại|đại tu|đã được đổi|đã đổi|đổi thành|thay thế|chuyển vào|chuyển sang|nay dùng|giờ dùng|không còn là duration|thay vì|rework)/.test(text)) return "rework";
+      if (/(bị giảm|giảm sát thương|giảm mạnh|yếu hơn|ít hơn|hiếm hơn|bị hạ|hạ xuống|không còn|không thể|bị giới hạn|tăng cooldown|tăng thời gian hồi|loại bỏ|xóa|xoá|removed|less)/.test(text)) return "nerf";
+      if (sectionId === "newcontentandfeatures") return "new";
+      return null;
+    };
+
+    const decorateLabels = () => {
+      listItems.forEach((item) => {
+        if (item.querySelector(".change-label")) return;
+        const labelKey = inferLabel(item);
+        if (!labelKey) return;
+        const meta = labelMeta[labelKey];
+        const label = document.createElement("span");
+        label.className = `change-label ${meta.className}`;
+        label.textContent = meta.text;
+        if (meta.title) label.setAttribute("title", meta.title);
+        item.prepend(label);
+      });
+    };
+
+    decorateLabels();
+
+    backToTop.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    if (toc) {
+      toc.addEventListener("wheel", (event) => {
+        const atTop = toc.scrollTop <= 0;
+        const atBottom = Math.ceil(toc.scrollTop + toc.clientHeight) >= toc.scrollHeight;
+        const scrollingPastTop = event.deltaY < 0 && atTop;
+        const scrollingPastBottom = event.deltaY > 0 && atBottom;
+
+        if (scrollingPastTop || scrollingPastBottom) {
+          event.preventDefault();
+          window.scrollBy({ top: event.deltaY, behavior: "auto" });
+        }
+      }, { passive: false });
+    }
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim().toLocaleLowerCase("vi");
+      let shownItems = 0;
+
+      listItems.forEach((item) => {
+        const matches = !query || item.textContent.toLocaleLowerCase("vi").includes(query);
+        item.classList.toggle("hidden-by-search", !matches);
+        if (matches) shownItems += 1;
+      });
+
+      sections.forEach((section) => {
+        const hasVisibleItem = Array.from(section.querySelectorAll("li")).some((item) => !item.classList.contains("hidden-by-search"));
+        const titleMatches = section.querySelector("h2").textContent.toLocaleLowerCase("vi").includes(query);
+        section.classList.toggle("hidden-by-search", query && !hasVisibleItem && !titleMatches);
+      });
+
+      if (searchMeta) searchMeta.textContent = query ? `Tìm thấy ${shownItems} dòng phù hợp.` : "";
+    });
+
+    const tocLinks = Array.from(document.querySelectorAll(".toc a"));
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+
+      tocLinks.forEach((link) => {
+        const isActive = link.getAttribute("href") === `#${visible.target.id}`;
+        link.classList.toggle("bg-blue-50", isActive);
+        link.classList.toggle("text-blue-700", isActive);
+        link.classList.toggle("dark:bg-blue-950/50", isActive);
+        link.classList.toggle("dark:text-blue-300", isActive);
+      });
+    }, { rootMargin: "-20% 0px -65% 0px", threshold: [0.05, 0.2, 0.5] });
+
+    sections.forEach((section) => observer.observe(section));
+  </script>
+</body>
+
+</html>

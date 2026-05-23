@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phân tích patch note 0.5.0 - POE2</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet">
+  <link href="dist/app.css" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .hidden-by-search { display: none !important; }
+    .term { color: #1d4ed8; font-weight: 700; }
+    .dark .term { color: #93c5fd; }
+    .notice { margin-top: 1rem; border-left: 4px solid #d97706; border-radius: .5rem; background: rgba(245, 158, 11, .12); padding: 1rem; font-weight: 600; color: #1f2937; }
+    .dark .notice { color: #e5e7eb; background: rgba(245, 158, 11, .16); }
+    .toc-scroll { scrollbar-gutter: stable; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div id="top"></div>
+  <div data-component="site-header" data-max-width="1200"></div>
+
+  <main class="mx-auto grid max-w-[1000px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <article class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
+      <header class="border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-transparent px-6 py-8 dark:border-slate-800 dark:from-emerald-950/40">
+        <p class="text-xs font-black uppercase tracking-[.16em] text-emerald-700 dark:text-emerald-300">Phân tích & đánh giá</p>
+        <h1 class="mt-3 text-4xl font-black leading-tight text-slate-950 sm:text-5xl dark:text-white">Patch note 0.5.0 thay đổi gì đáng chú ý?</h1>
+      </header>
+      <div class="grid gap-5 p-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div class="grid gap-4 md:grid-cols-2">
+          <section class="rounded-lg border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/70"><h2 class="text-lg font-black">Tác động tổng quan</h2><p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">0.5.0 không chỉ thêm content, mà dựng lại loop Endgame. Atlas point, Fortress, Masters of the Atlas và các storyline mới khiến cách mở progression khác hẳn trước.</p></section>
+          <section class="rounded-lg border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/70"><h2 class="text-lg font-black">Economy & crafting</h2><p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">Runic Recipe, Alloy, Rune phá Unique, Genesis Tree, Catalyst mới và Infuser mở nhiều ngách trade. Early league nên chú ý base tốt, Verisium, Runic Ward và item Unique có thể nâng cấp.</p></section>
+          <section class="rounded-lg border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/70"><h2 class="text-lg font-black">Build phòng thủ</h2><p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">Leech bị giới hạn theo hit lớn, nhiều nguồn Energy Shield Recharge bị hạ, trong khi Runic Ward và Deflection mở hướng phòng thủ mới. Build cũ dựa vào one-shot leech hoặc ES recharge cần test lại.</p></section>
+          <section class="rounded-lg border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/70"><h2 class="text-lg font-black">Build tấn công</h2><p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">Tempest Bell, Gathering Storm, Tame Beast, projectile behavior và nhiều Support bị chỉnh. Các build vẫn có đất diễn nhưng nên kiểm lại breakpoint, support setup và tương tác projectile.</p></section>
+        </div>
+        <aside class="rounded-lg border border-slate-200 bg-slate-950 p-5 text-white shadow-md2 dark:border-slate-700">
+          <p class="text-xs font-black uppercase tracking-[.16em] text-blue-300">Ưu tiên đọc trước</p>
+          <ol class="mt-4 space-y-3 text-sm leading-6">
+            <li class="flex gap-3"><span class="font-black text-blue-300">1</span><span>Runes of Aldur để hiểu mechanic league và reward loop.</span></li>
+            <li class="flex gap-3"><span class="font-black text-blue-300">2</span><span>Origins of Divinity + Other Endgame Changes để tránh lạc Atlas.</span></li>
+            <li class="flex gap-3"><span class="font-black text-blue-300">3</span><span>Player, Passive Tree, Skill và Support nếu định dùng build cũ.</span></li>
+            <li class="flex gap-3"><span class="font-black text-blue-300">4</span><span>Item/Unique Changes nếu build phụ thuộc gear cụ thể.</span></li>
+          </ol>
+        </aside>
+      </div>
+      <section class="border-t border-slate-200 p-6 dark:border-slate-800">
+        <h2 class="text-2xl font-black text-slate-950 dark:text-white">Kết luận</h2>
+        <p class="mt-3 text-base leading-7 text-slate-600 dark:text-slate-300">Bản này đáng chơi league mới hơn là tiếp tục character cũ, vì phần lớn unlock, reward và trải nghiệm Endgame được thiết kế quanh progression mới. Nếu dùng build cũ, hãy đọc kỹ Player Changes, Passive Tree Changes, Skill Changes, Support Changes và Unique Item Changes trước khi vào map.</p>
+        <a class="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-black text-white shadow-md1 transition hover:bg-blue-700" href="patchnote_vn.html"><span class="material-symbols-rounded">article</span>Đọc patch note đầy đủ</a>
+      </section>
+    </article>
+  </main>
+</body>
+
+</html>
