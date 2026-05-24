@@ -6,6 +6,8 @@ import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
+const readRepoFile = (filename) => readFile(join(repoRoot, filename), "utf8");
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const shellPages = [
   "index.html",
@@ -181,4 +183,32 @@ test("404 route redirects reuse the shared router table", async () => {
   assert.match(html, /PoeRouter\.redirectPrettyRoute\(\)/);
   assert.doesNotMatch(html, /const routes =/);
   assert.doesNotMatch(html, /const aliases =/);
+});
+
+test("production nginx clean URL config maps app routes to static HTML", async () => {
+  const config = await readRepoFile("deploy/nginx/poeviethoa-clean-routes.conf");
+  const mappings = [
+    ["/", "index.html"],
+    ["/home", "index.html"],
+    ["/patchnote", "patchnote_vn.html"],
+    ["/patch-note", "patchnote_vn.html"],
+    ["/dictionary", "dictionary.html"],
+    ["/tu-dien", "dictionary.html"],
+    ["/weapon", "weapon.html"],
+    ["/skill-gems", "skill_gems.html"],
+    ["/skill_gems", "skill_gems.html"],
+    ["/skill-gem", "skill_gem_detail.html"],
+    ["/skill_gem_detail", "skill_gem_detail.html"],
+    ["/currency", "currency.html"],
+    ["/currency-detail", "currency_detail.html"],
+    ["/currency_detail", "currency_detail.html"],
+    ["/leveling", "leveling.html"]
+  ];
+
+  for (const [route, file] of mappings) {
+    const pattern = new RegExp(`location = ${escapeRegex(route)} \\{[\\s\\S]*?try_files /${escapeRegex(file)} =404;[\\s\\S]*?\\}`);
+    assert.match(config, pattern, `${route} maps to ${file}`);
+  }
+
+  assert.match(config, /location \/ \{[\s\S]*?try_files \$uri \$uri\/ \/404\.html;[\s\S]*?\}/);
 });

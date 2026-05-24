@@ -38,3 +38,8 @@ npm run server
 ```
 
 Do not commit real database URLs, OAuth secrets, admin tokens, or local `.env` files.
+
+## Production Routing
+
+The static pages use clean URLs such as `/dictionary`, `/skill-gems`, `/currency`, and `/leveling`.
+When serving with nginx, include `deploy/nginx/poeviethoa-clean-routes.conf` inside the site server block so those URLs map directly to their matching HTML files instead of falling through to `404.html`.
