@@ -28,9 +28,9 @@ html {
 @font-face {
   font-family: "Material Symbols Rounded";
   font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/assets/fonts/material-symbols-rounded.woff2") format("woff2");
+  font-weight: 100 700;
+  font-display: block;
+  src: url("../assets/fonts/material-symbols-rounded.woff2") format("woff2");
 }
 
 html.dark {
@@ -79,16 +79,20 @@ h6,
 .material-symbols-rounded {
   display: inline-block;
   direction: ltr;
-  font-family: "Material Symbols Rounded";
+  font-family: "Material Symbols Rounded" !important;
   font-size: 22px;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 500;
   font-feature-settings: "liga";
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
   letter-spacing: normal;
   line-height: 1;
+  min-width: 1em;
+  overflow: hidden;
   text-transform: none;
+  text-rendering: optimizeLegibility;
   vertical-align: middle;
   white-space: nowrap;
   word-wrap: normal;
