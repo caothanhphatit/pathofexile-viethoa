@@ -1,5 +1,6 @@
 (() => {
   const DEFAULT_LOCALE = "vi";
+  const PUBLIC_SITE_ORIGIN = "https://poeviethoa.net";
 
   const escapeHtml = (value = "") => String(value ?? "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
@@ -34,6 +35,45 @@
     return `${slice.slice(0, boundary > minBoundary ? boundary : maxLength - 3).trim()}...`;
   };
 
+  const setMetaContent = (selector, value) => {
+    const element = document.querySelector(selector);
+    const clean = String(value || "").trim();
+    if (element && clean) element.setAttribute("content", clean);
+  };
+
+  const setLinkHref = (selector, value) => {
+    const element = document.querySelector(selector);
+    const clean = String(value || "").trim();
+    if (element && clean) element.setAttribute("href", clean);
+  };
+
+  const absoluteUrl = (path = "/") => {
+    try {
+      return new URL(path, PUBLIC_SITE_ORIGIN).href;
+    } catch {
+      return String(path || "");
+    }
+  };
+
+  const updateDocumentSeo = ({ title = "", description = "", canonicalPath = "", image = "" } = {}) => {
+    const cleanTitle = String(title || "").trim();
+    const cleanDescription = truncateText(description, { maxLength: 158, minBoundary: 90 });
+    const canonicalUrl = canonicalPath ? absoluteUrl(canonicalPath) : "";
+    const imageUrl = image ? absoluteUrl(image) : "";
+
+    if (cleanTitle) document.title = cleanTitle;
+    setMetaContent('meta[name="description"]', cleanDescription);
+    setMetaContent('meta[property="og:title"]', cleanTitle);
+    setMetaContent('meta[property="og:description"]', cleanDescription);
+    setMetaContent('meta[name="twitter:title"]', cleanTitle);
+    setMetaContent('meta[name="twitter:description"]', cleanDescription);
+    setMetaContent('meta[property="og:url"]', canonicalUrl);
+    setLinkHref('link[rel="canonical"]', canonicalUrl);
+    setLinkHref('link[rel="alternate"][hreflang="vi"]', canonicalUrl);
+    setMetaContent('meta[property="og:image"]', imageUrl);
+    setMetaContent('meta[name="twitter:image"]', imageUrl);
+  };
+
   const hasCurrencyDescription = (item) => {
     if (!item) return false;
     if (item.subtype || item.family) return true;
@@ -56,11 +96,13 @@
 
   window.PoeUi = {
     DEFAULT_LOCALE,
+    PUBLIC_SITE_ORIGIN,
     escapeHtml,
     i18nText,
     i18nList,
     firstPresent,
     truncateText,
+    updateDocumentSeo,
     hasCurrencyDescription,
     currencySubtype,
     currencySubtypeLabel,

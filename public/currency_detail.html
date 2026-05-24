@@ -5,6 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Currency - POE2</title>
+  <meta name="description" content="Trang chi tiết Currency Path of Exile 2 tiếng Việt, mô tả tác dụng, subtype, stack, effect và item liên quan.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://poeviethoa.net/currency-detail">
+  <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/currency-detail">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Việt hóa">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Currency Path of Exile 2 tiếng Việt">
+  <meta property="og:description" content="Trang chi tiết Currency Path of Exile 2 tiếng Việt, mô tả tác dụng, subtype, stack, effect và item liên quan.">
+  <meta property="og:url" content="https://poeviethoa.net/currency-detail">
+  <meta property="og:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Currency Path of Exile 2 tiếng Việt">
+  <meta name="twitter:description" content="Trang chi tiết Currency POE2 tiếng Việt, gồm tác dụng, subtype, stack, effect và item liên quan.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="theme-color" content="#0f172a">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
   <script src="components/theme-boot.js"></script>
   <link href="dist/app.css" rel="stylesheet">
@@ -38,7 +54,8 @@
       i18nList,
       hasCurrencyDescription,
       currencySubtypeLabel,
-      currencyCategoryLabel
+      currencyCategoryLabel,
+      updateDocumentSeo
     } = window.PoeUi;
     item = hasCurrencyDescription(rawItem) ? rawItem : null;
 
@@ -165,6 +182,7 @@
 
     if (!item) {
       document.title = "Không tìm thấy currency - POE2";
+      document.querySelector('meta[name="robots"]')?.setAttribute("content", "noindex,follow");
       detailRoot.innerHTML = `
         <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-md1 dark:border-slate-800 dark:bg-slate-900">
           <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="/currency"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
@@ -173,8 +191,13 @@
         </section>
       `;
     } else {
-      document.title = `${item.name} - Currency`;
       const description = i18nText(item.i18n?.description, item.description_en || fallbackDescription(item));
+      updateDocumentSeo({
+        title: `${item.name} - Currency POE2 Việt hóa`,
+        description,
+        canonicalPath: `/currency-detail?slug=${encodeURIComponent(item.slug)}`,
+        image: item.icon_url || "/assets/poe2-viet-hoa-logo.svg"
+      });
       detailRoot.innerHTML = `
         <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
           <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">

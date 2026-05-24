@@ -5,6 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skill gems - POE2</title>
+  <meta name="description" content="Trang chi tiết Skill Gem Path of Exile 2 tiếng Việt, mô tả kỹ năng, stat, tag, yêu cầu và nguồn PoE2DB.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://poeviethoa.net/skill-gem">
+  <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/skill-gem">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Việt hóa">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Skill Gem Path of Exile 2 tiếng Việt">
+  <meta property="og:description" content="Trang chi tiết Skill Gem Path of Exile 2 tiếng Việt, mô tả kỹ năng, stat, tag, yêu cầu và nguồn PoE2DB.">
+  <meta property="og:url" content="https://poeviethoa.net/skill-gem">
+  <meta property="og:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Skill Gem Path of Exile 2 tiếng Việt">
+  <meta name="twitter:description" content="Trang chi tiết Skill Gem POE2 tiếng Việt, gồm mô tả kỹ năng, stat, tag và yêu cầu.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="theme-color" content="#0f172a">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
   <script src="components/theme-boot.js"></script>
   <link href="dist/app.css" rel="stylesheet">
@@ -31,7 +47,7 @@
     const gem = (data.gems || []).find((item) => item.slug === slug);
     const detailRoot = document.getElementById("detailRoot");
 
-    const { escapeHtml, i18nText, i18nList } = window.PoeUi;
+    const { escapeHtml, i18nText, i18nList, updateDocumentSeo } = window.PoeUi;
 
     const colorLabel = (color) => ({
       red: "Strength",
@@ -55,6 +71,7 @@
 
     if (!gem) {
       document.title = "Không tìm thấy skill gem - POE2";
+      document.querySelector('meta[name="robots"]')?.setAttribute("content", "noindex,follow");
       detailRoot.innerHTML = `
         <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-md1 dark:border-slate-800 dark:bg-slate-900">
           <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="/skill-gems"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Skill gems</a>
@@ -63,7 +80,6 @@
         </section>
       `;
     } else {
-      document.title = `${gem.name} - Skill gems`;
       const tagsHtml = (gem.tags || []).map((tag) => `
         <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200" title="${escapeHtml(tag)}">${escapeHtml(tag)}</span>
       `).join("");
@@ -72,6 +88,12 @@
         lines: i18nList(gem.i18n?.sections?.[index]?.lines, section.lines || [])
       }));
       const translatedSummary = i18nText(gem.i18n?.summary, gem.summary_en || "Chưa có mô tả.");
+      updateDocumentSeo({
+        title: `${gem.name} - Skill Gem POE2 Việt hóa`,
+        description: translatedSummary,
+        canonicalPath: `/skill-gem?slug=${encodeURIComponent(gem.slug)}`,
+        image: gem.icon_url || "/assets/poe2-viet-hoa-logo.svg"
+      });
       const sectionsHtml = detailSections.map((section) => sectionBlock(section.title, section.lines)).join("");
 
       detailRoot.innerHTML = `
