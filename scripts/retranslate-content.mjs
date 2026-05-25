@@ -9,6 +9,7 @@ import {
   translateSkillDetailLine,
   translateSkillText
 } from "./skill-gems-lib.mjs";
+import { translatePassiveStatLine } from "./passive-tree/passive-tree-lib.mjs";
 
 dotenv.config();
 
@@ -45,6 +46,11 @@ export const translateContentString = (row, locale = DEFAULT_LOCALE) => {
     if (["name", "category_label", "subtype_label"].includes(fieldPath)) return source;
     if (fieldPath === "description" || /^mods\.\d+$/.test(fieldPath)) return translateCurrencyText(source);
     if (/^properties\.\d+$/.test(fieldPath)) return source;
+    return preserveSource(row);
+  }
+
+  if (row.entity_type === "passive_tree_node") {
+    if (/^stats\.\d+$/.test(fieldPath)) return translatePassiveStatLine(source);
     return preserveSource(row);
   }
 

@@ -15,13 +15,14 @@
   <meta property="og:title" content="Từ điển thuật ngữ Path of Exile 2 tiếng Việt">
   <meta property="og:description" content="Giải thích keyword, rarity, modifier và cơ chế Path of Exile 2 bằng tiếng Việt, giữ đúng thuật ngữ in-game cần đối chiếu.">
   <meta property="og:url" content="https://poeviethoa.net/dictionary">
-  <meta property="og:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Từ điển thuật ngữ Path of Exile 2 tiếng Việt">
   <meta name="twitter:description" content="Giải thích keyword, rarity, modifier và cơ chế Path of Exile 2 bằng tiếng Việt.">
-  <meta name="twitter:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="theme-color" content="#0f172a">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link href="dist/app.css?v=20260524-font" rel="stylesheet">
@@ -96,9 +97,14 @@
           </div>
         </div>
         
-        <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
-          <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">format_list_bulleted</span>
-          <span id="termCount" class="font-display font-black">0 thuật ngữ</span>
+        <div class="flex flex-wrap items-center gap-2 md:justify-end">
+          <a class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" href="/tra-cuu" data-lookup-back>
+            <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Tra cứu
+          </a>
+          <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+            <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">format_list_bulleted</span>
+            <span id="termCount" class="font-display font-black">0 thuật ngữ</span>
+          </div>
         </div>
       </div>
 
@@ -177,13 +183,41 @@
     </div>
   </div>
 
+  <script src="components/poe-ui-utils.js"></script>
   <script src="data/dictionary-data.js"></script>
   <script src="components/translation-comments.js"></script>
   <script>
     const dictionaryData = window.POE2_DICTIONARY_TERMS || { categories: {}, terms: [] };
     const categories = dictionaryData.categories || {};
+    const CATEGORY_LABELS_EN = {
+      combat: "Combat",
+      damage: "Damage & ailments",
+      resource: "Resources",
+      defense: "Defense",
+      skill: "Skills & minions",
+      item: "Items & crafting",
+      endgame: "Endgame"
+    };
+    const PAGE_TEXT = {
+      documentTitle: { vi: "Từ điển Thuật ngữ Path of Exile 2 - POE2 Việt hóa", en: "Path of Exile 2 Glossary - POE2 Vietnamese" },
+      skipNavigation: { vi: "Bỏ qua điều hướng", en: "Skip navigation" },
+      heroLabel: { vi: "Từ điển thuật ngữ", en: "Glossary" },
+      heroTitle: { vi: "Từ điển thuật ngữ", en: "Glossary" },
+      heroSubtitle: { vi: "Tra cứu định nghĩa nâng cao và so chiếu thuật ngữ PoE2", en: "Look up advanced definitions and compare POE2 terms" },
+      searchPlaceholder: { vi: "Tìm kiếm thuật ngữ, định nghĩa, từ đồng nghĩa...", en: "Search terms, definitions, synonyms..." },
+      searchLabel: { vi: "Tìm thuật ngữ", en: "Search terms" },
+      categoryLabel: { vi: "Lọc theo nhóm", en: "Filter by category" },
+      categoryPillsLabel: { vi: "Nhóm thuật ngữ", en: "Term categories" },
+      termUnit: { vi: "thuật ngữ", en: "terms" },
+      resultMeta: { vi: "{filtered} / {total} kết quả", en: "{filtered} / {total} results" },
+      empty: { vi: "Không tìm thấy thuật ngữ phù hợp với bộ lọc hiện tại.", en: "No terms match the current filters." },
+      meaningHeading: { vi: "Giải nghĩa Việt hóa", en: "Meaning" },
+      originalHeading: { vi: "Gốc PoE2DB", en: "Vietnamese note" },
+      variantsHeading: { vi: "Từ đồng nghĩa / Biến thể", en: "Synonyms / variants" },
+      feedback: { vi: "Góp ý dịch", en: "Suggest translation" },
+      general: { vi: "General", en: "General" }
+    };
     const terms = [...(dictionaryData.terms || [])].sort((a, b) => a.term.localeCompare(b.term, "en"));
-    const nf = new Intl.NumberFormat("vi-VN");
     const searchInput = document.getElementById("searchInput");
     const categoryFilter = document.getElementById("categoryFilter");
     const categoryPills = document.getElementById("categoryPills");
@@ -207,13 +241,24 @@
     const closeModalBtn = document.getElementById("closeModalBtn");
     const modalActionClose = document.getElementById("modalActionClose");
 
-    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      "\"": "&quot;",
-      "'": "&#039;"
-    }[char]));
+    const {
+      currentLocale,
+      escapeHtml,
+      formatNumber,
+      i18nText,
+      localeText,
+      onLocaleChange
+    } = window.PoeUi;
+    const pageText = (key) => i18nText(PAGE_TEXT[key], key);
+    const categoryLabel = (key) => currentLocale() === "en"
+      ? CATEGORY_LABELS_EN[key] || key || pageText("general")
+      : categories[key] || key || pageText("general");
+    const termMeaning = (term) => currentLocale() === "en"
+      ? (term.description_en || term.meaning || "")
+      : (term.meaning || term.description_en || "");
+    const termOriginal = (term) => currentLocale() === "en"
+      ? (term.description_en ? term.meaning : "")
+      : term.description_en;
 
     const normalizeText = (value) => String(value ?? "")
       .toLowerCase()
@@ -223,6 +268,7 @@
     const searchableText = (term) => normalizeText([
       term.term,
       categories[term.category],
+      CATEGORY_LABELS_EN[term.category],
       term.meaning,
       term.keep,
       term.description_en,
@@ -240,15 +286,19 @@
     };
 
     const compactMeaning = (term) => {
-      const meaning = String(term.meaning || "").trim();
+      const meaning = String(termMeaning(term) || "").trim();
       return clipText(meaning);
     };
 
     const renderCategoryOptions = () => {
+      const previousCategory = categoryFilter.value || "";
       categoryFilter.innerHTML = [
-        `<option value="">Tất cả nhóm</option>`,
-        ...categoryEntries.map(([key, label]) => `<option value="${escapeHtml(key)}">${escapeHtml(label)}</option>`)
+        `<option value="">${escapeHtml(localeText("allGroups"))}</option>`,
+        ...categoryEntries.map(([key]) => `<option value="${escapeHtml(key)}">${escapeHtml(categoryLabel(key))}</option>`)
       ].join("");
+      if ([...categoryFilter.options].some((option) => option.value === previousCategory)) {
+        categoryFilter.value = previousCategory;
+      }
     };
 
     const setCategory = (category) => {
@@ -260,17 +310,17 @@
       const current = categoryFilter.value;
       const allActive = current === "";
       categoryPills.innerHTML = [
-        `<button class="category-pill inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" type="button" data-category="" aria-pressed="${allActive}">Tất cả</button>`,
-        ...categoryEntries.map(([key, label]) => {
+        `<button class="category-pill inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" type="button" data-category="" aria-pressed="${allActive}">${escapeHtml(localeText("all"))}</button>`,
+        ...categoryEntries.map(([key]) => {
           const count = terms.filter((term) => term.category === key).length;
-          return `<button class="category-pill inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" type="button" data-category="${escapeHtml(key)}" aria-pressed="${current === key}">${escapeHtml(label)} <span class="opacity-60 font-display">${nf.format(count)}</span></button>`;
+          return `<button class="category-pill inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" type="button" data-category="${escapeHtml(key)}" aria-pressed="${current === key}">${escapeHtml(categoryLabel(key))} <span class="opacity-60 font-display">${formatNumber(count)}</span></button>`;
         })
       ].join("");
     };
 
     const renderTermCard = (term) => {
       const meaning = compactMeaning(term);
-      const category = categories[term.category] || term.category;
+      const category = categoryLabel(term.category);
 
       return `
         <article class="term-card flex h-full flex-col rounded-2xl border border-l-4 border-slate-200 border-l-amber-500/80 bg-white p-5 shadow-sm transition hover:border-amber-300/60 hover:shadow-glow dark:border-slate-800 dark:border-l-amber-500/60 dark:bg-slate-900 cursor-pointer" data-term="${escapeHtml(term.term)}">
@@ -278,13 +328,13 @@
             <h2 class="break-words text-lg font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(term.term)}</h2>
             <span class="shrink-0 rounded-md border border-amber-100 bg-amber-50/50 px-2 py-0.5 text-[10px] font-black text-amber-700 dark:border-amber-950/40 dark:bg-amber-950/40 dark:text-amber-400 uppercase tracking-wider">${escapeHtml(category)}</span>
           </div>
-          <p class="term-meaning mt-3 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300" title="${escapeHtml(term.meaning)}">${escapeHtml(meaning)}</p>
+          <p class="term-meaning mt-3 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300" title="${escapeHtml(termMeaning(term))}">${escapeHtml(meaning)}</p>
           <div class="mt-4 pt-3 border-t border-slate-50 flex flex-wrap items-center justify-between gap-2 text-[10px] font-black text-slate-400 group-hover:text-amber-500 dark:border-slate-800/40">
             <button class="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1.5 text-[11px] font-black text-blue-700 transition hover:bg-blue-600 hover:text-white dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white" type="button" data-no-tooltip data-comment-trigger data-comment-entity-type="dictionary" data-comment-entity-id="${escapeHtml(term.term)}" data-comment-entity-name="${escapeHtml(term.term)}" data-comment-field-path="meaning" data-comment-source-text="${escapeHtml(term.description_en || "")}" data-comment-translated-text="${escapeHtml(term.meaning || "")}">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">rate_review</span>
-              Góp ý dịch
+              ${escapeHtml(pageText("feedback"))}
             </button>
-            <span class="flex items-center gap-1">CHI TIẾT <span class="material-symbols-rounded text-sm">open_in_new</span></span>
+            <span class="flex items-center gap-1">${escapeHtml(localeText("detail").toLocaleUpperCase(currentLocale() === "en" ? "en" : "vi"))} <span class="material-symbols-rounded text-sm">open_in_new</span></span>
           </div>
         </article>
       `;
@@ -300,24 +350,48 @@
       });
 
       termGrid.innerHTML = filtered.map(renderTermCard).join("");
-      termCount.textContent = `${nf.format(terms.length)} thuật ngữ`;
-      resultMeta.textContent = `${nf.format(filtered.length)} / ${nf.format(terms.length)} kết quả`;
+      termCount.textContent = `${formatNumber(terms.length)} ${pageText("termUnit")}`;
+      resultMeta.textContent = pageText("resultMeta")
+        .replace("{filtered}", formatNumber(filtered.length))
+        .replace("{total}", formatNumber(terms.length));
       emptyState.classList.toggle("hidden", filtered.length > 0);
       renderCategoryPills();
+    };
+
+    const applyPageLocale = () => {
+      document.title = pageText("documentTitle");
+      document.querySelector(".skip-link") && (document.querySelector(".skip-link").textContent = pageText("skipNavigation"));
+      document.querySelector("main > section:first-child")?.setAttribute("aria-label", pageText("heroLabel"));
+      document.querySelector("h1") && (document.querySelector("h1").textContent = pageText("heroTitle"));
+      document.querySelector("main > section:first-child p") && (document.querySelector("main > section:first-child p").textContent = pageText("heroSubtitle"));
+      document.querySelector("[data-lookup-back]")?.lastChild && (document.querySelector("[data-lookup-back]").lastChild.textContent = localeText("backLookup"));
+      searchInput.placeholder = pageText("searchPlaceholder");
+      searchInput.setAttribute("aria-label", pageText("searchLabel"));
+      categoryFilter.setAttribute("aria-label", pageText("categoryLabel"));
+      categoryPills.setAttribute("aria-label", pageText("categoryPillsLabel"));
+      resetFilters.lastChild.textContent = localeText("resetFilters");
+      emptyState.lastChild.textContent = pageText("empty");
+      document.querySelector("#modalMeaning")?.previousElementSibling && (document.querySelector("#modalMeaning").previousElementSibling.textContent = pageText("meaningHeading"));
+      document.querySelector("#modalOriginal")?.previousElementSibling && (document.querySelector("#modalOriginal").previousElementSibling.textContent = pageText("originalHeading"));
+      document.querySelector("#modalVariants")?.previousElementSibling && (document.querySelector("#modalVariants").previousElementSibling.textContent = pageText("variantsHeading"));
+      closeModalBtn.setAttribute("aria-label", localeText("close"));
+      modalActionClose.textContent = localeText("close");
     };
 
     // Modal Control Functions
     const openModal = (termName) => {
       const termObj = terms.find((t) => t.term.toLowerCase() === termName.toLowerCase());
       if (!termObj) return;
+      activeTermName = termName;
 
       modalTitle.textContent = termObj.term;
-      modalCategory.textContent = categories[termObj.category] || termObj.category || "General";
-      modalMeaning.textContent = termObj.meaning;
+      modalCategory.textContent = categoryLabel(termObj.category);
+      modalMeaning.textContent = termMeaning(termObj);
       
       // Original tooltip text
-      if (termObj.description_en) {
-        modalOriginal.textContent = termObj.description_en;
+      const originalText = termOriginal(termObj);
+      if (originalText) {
+        modalOriginal.textContent = originalText;
         modalOriginalContainer.classList.remove("hidden");
       } else {
         modalOriginalContainer.classList.add("hidden");
@@ -358,6 +432,7 @@
     };
 
     const closeModal = () => {
+      activeTermName = null;
       modalContent.classList.remove("scale-100");
       modalContent.classList.add("scale-95");
       
@@ -367,6 +442,8 @@
       }, 150);
     };
 
+    let activeTermName = null;
+    applyPageLocale();
     renderCategoryOptions();
     
     // Read search query parameter from URL on load
@@ -383,6 +460,14 @@
     }
     
     renderTerms();
+    onLocaleChange(() => {
+      applyPageLocale();
+      renderCategoryOptions();
+      renderTerms();
+      if (activeTermName && !termModal.classList.contains("hidden")) {
+        openModal(activeTermName);
+      }
+    });
 
     searchInput.addEventListener("input", renderTerms);
     categoryFilter.addEventListener("change", renderTerms);

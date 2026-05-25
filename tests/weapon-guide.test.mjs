@@ -10,6 +10,8 @@ const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename
 test("weapon guide exposes a Vietnamese NEWBIE tab with PoE2 weapon basics", async () => {
   const html = await readProjectFile("weapon.html");
 
+  assert.match(html, /Hướng dẫn cơ bản vũ khí đầu game/);
+  assert.match(html, /data-subtitle="Newbie"/);
   assert.match(html, /role="tablist"/);
   assert.match(html, /id="tab-newbie"/);
   assert.match(html, /\bNEWBIE\b/);
@@ -29,13 +31,17 @@ test("weapon guide avoids cross-version comparison language", async () => {
 });
 
 test("weapon guide is linked from home and app routes", async () => {
-  const [home, routes] = await Promise.all([
+  const [home, routes, newbie] = await Promise.all([
     readProjectFile("index.html"),
-    readProjectFile("app-routes.js")
+    readProjectFile("app-routes.js"),
+    readProjectFile("newbie.html")
   ]);
 
-  assert.match(home, /href="\/weapon"/);
-  assert.match(home, />Weapon</);
+  assert.match(home, /href="\/newbie"/);
+  assert.match(home, />Newbie</);
+  assert.match(newbie, /href="\/weapon"/);
+  assert.match(newbie, /Hướng dẫn cơ bản vũ khí đầu game/);
   assert.match(routes, /weapon:\s*{/);
   assert.match(routes, /href:\s*"\/weapon"/);
+  assert.match(routes, /navParent:\s*"newbie"/);
 });

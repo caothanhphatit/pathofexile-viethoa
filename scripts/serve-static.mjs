@@ -28,6 +28,11 @@ const cleanRouteFiles = new Map([
   ["/home", "/index.html"],
   ["/patchnote", "/patchnote_vn.html"],
   ["/patch-note", "/patchnote_vn.html"],
+  ["/tra-cuu", "/lookup.html"],
+  ["/lookup", "/lookup.html"],
+  ["/newbie", "/newbie.html"],
+  ["/beginner-guide", "/beginner.html"],
+  ["/items", "/items.html"],
   ["/dictionary", "/dictionary.html"],
   ["/tu-dien", "/dictionary.html"],
   ["/weapon", "/weapon.html"],
@@ -38,6 +43,8 @@ const cleanRouteFiles = new Map([
   ["/currency", "/currency.html"],
   ["/currency-detail", "/currency_detail.html"],
   ["/currency_detail", "/currency_detail.html"],
+  ["/passive-tree", "/passive_tree.html"],
+  ["/passive_tree", "/passive_tree.html"],
   ["/leveling", "/leveling.html"]
 ]);
 

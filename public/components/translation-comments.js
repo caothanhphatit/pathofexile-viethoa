@@ -3,6 +3,25 @@
   const localApiBase = `http://${location.hostname || "127.0.0.1"}:3000`;
   const apiBase = window.POE2_API_BASE || localStorage.getItem(apiBaseKey) || (location.port === "3000" ? "" : localApiBase);
   const entityTypes = new Set(["skill_gem", "currency", "dictionary"]);
+  const TEXT = {
+    noComments: { vi: "Chưa có góp ý nào cho bản dịch này.", en: "No public suggestions for this translation yet." },
+    loginPrompt: { vi: "Đăng nhập Google để bình luận công khai.", en: "Sign in with Google to leave a public comment." },
+    googleLogin: { vi: "Đăng nhập Google", en: "Sign in with Google" },
+    loginUnavailable: { vi: "Login chưa khả dụng", en: "Login unavailable" },
+    logout: { vi: "Đăng xuất", en: "Sign out" },
+    textarea: { vi: "Góp ý phần dịch này...", en: "Suggest an edit for this translation..." },
+    submit: { vi: "Gửi góp ý", en: "Send suggestion" },
+    panelTitle: { vi: "Góp ý bản dịch", en: "Translation suggestions" },
+    commentUnit: { vi: "bình luận", en: "comments" },
+    refresh: { vi: "Tải lại", en: "Refresh" },
+    loading: { vi: "Đang tải bình luận...", en: "Loading comments..." },
+    publicComments: { vi: "Bình luận công khai", en: "Public comments" },
+    feedback: { vi: "Góp ý dịch", en: "Suggest translation" },
+    closeFeedback: { vi: "Đóng góp ý", en: "Close suggestions" },
+    sessionError: { vi: "Không thể tải phiên đăng nhập.", en: "Could not load the login session." },
+    commentError: { vi: "Không thể tải bình luận.", en: "Could not load comments." },
+    submitError: { vi: "Không thể gửi góp ý.", en: "Could not send the suggestion." }
+  };
 
   let authCache = null;
   let authPromise = null;
@@ -18,6 +37,8 @@
   }[char]));
 
   const clamp = (value, max) => String(value || "").trim().slice(0, max);
+  const t = (key) => window.PoeUi?.i18nText?.(TEXT[key], key) || TEXT[key]?.vi || key;
+  const localeCode = () => window.PoeUi?.currentLocale?.() === "en" ? "en-US" : "vi-VN";
 
   const normalizeContext = (context = {}) => ({
     entityType: entityTypes.has(context.entityType) ? context.entityType : "dictionary",
@@ -78,7 +99,7 @@
   const timeLabel = (value) => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return "";
-    return new Intl.DateTimeFormat("vi-VN", {
+    return new Intl.DateTimeFormat(localeCode(), {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -104,7 +125,7 @@
     if (!comments.length) {
       return `
         <div class="rounded-lg border border-dashed border-slate-200 bg-slate-50/70 px-3 py-3 text-xs font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400">
-          Chưa có góp ý nào cho bản dịch này.
+          ${escapeHtml(t("noComments"))}
         </div>
       `;
     }
@@ -130,16 +151,16 @@
       const googleEnabled = Boolean(auth?.config?.googleEnabled);
       return `
         <div class="rounded-lg border border-blue-200 bg-blue-50/80 p-3 dark:border-blue-900/70 dark:bg-blue-950/30">
-          <p class="text-xs font-bold text-blue-900 dark:text-blue-200">Đăng nhập Google để bình luận công khai.</p>
+          <p class="text-xs font-bold text-blue-900 dark:text-blue-200">${escapeHtml(t("loginPrompt"))}</p>
           ${googleEnabled ? `
             <a class="mt-2 inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-black text-white transition hover:bg-blue-700" href="${escapeHtml(loginUrl())}">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">account_circle</span>
-              Đăng nhập Google
+              ${escapeHtml(t("googleLogin"))}
             </a>
           ` : `
             <span class="mt-2 inline-flex h-9 items-center gap-1.5 rounded-lg border border-blue-200 bg-white/70 px-3 text-xs font-black text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-200">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">lock</span>
-              Login chưa khả dụng
+              ${escapeHtml(t("loginUnavailable"))}
             </span>
           `}
         </div>
@@ -151,14 +172,14 @@
       <form class="translation-comment-form rounded-lg border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/40">
         <div class="mb-2 flex items-center justify-between gap-3">
           <span class="text-xs font-black text-slate-700 dark:text-slate-200">${escapeHtml(user.displayName || user.email || "POE2 user")}</span>
-          <button class="text-[11px] font-bold text-slate-400 transition hover:text-slate-700 dark:hover:text-slate-200" type="button" data-comment-logout>Đăng xuất</button>
+          <button class="text-[11px] font-bold text-slate-400 transition hover:text-slate-700 dark:hover:text-slate-200" type="button" data-comment-logout>${escapeHtml(t("logout"))}</button>
         </div>
-        <textarea class="min-h-20 w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold leading-relaxed text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-950" name="body" maxlength="1200" placeholder="Góp ý phần dịch này..." required></textarea>
+        <textarea class="min-h-20 w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold leading-relaxed text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-950" name="body" maxlength="1200" placeholder="${escapeHtml(t("textarea"))}" required></textarea>
         ${error ? `<p class="mt-2 text-xs font-bold text-rose-600 dark:text-rose-300">${escapeHtml(error)}</p>` : ""}
         <div class="mt-2 flex justify-end">
           <button class="inline-flex h-9 items-center gap-1.5 rounded-lg bg-slate-900 px-3 text-xs font-black text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100" type="submit">
             <span class="material-symbols-rounded text-sm" aria-hidden="true">send</span>
-            Gửi góp ý
+            ${escapeHtml(t("submit"))}
           </button>
         </div>
       </form>
@@ -171,16 +192,16 @@
       <section class="translation-comments-panel rounded-xl border border-slate-200 bg-white/80 p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900/70" data-comments-panel data-no-tooltip>
         <div class="mb-3 flex items-center justify-between gap-3">
           <div>
-            <h3 class="text-sm font-black text-slate-950 dark:text-white">Góp ý bản dịch</h3>
-            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">${escapeHtml(instance.context.entityName)}${count ? ` · ${count} bình luận` : ""}</p>
+            <h3 class="text-sm font-black text-slate-950 dark:text-white">${escapeHtml(t("panelTitle"))}</h3>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">${escapeHtml(instance.context.entityName)}${count ? ` · ${count} ${escapeHtml(t("commentUnit"))}` : ""}</p>
           </div>
           <button class="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 px-2 text-[11px] font-black text-slate-600 transition hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800" type="button" data-comment-refresh>
             <span class="material-symbols-rounded text-sm" aria-hidden="true">refresh</span>
-            Tải lại
+            ${escapeHtml(t("refresh"))}
           </button>
         </div>
         ${instance.loading ? `
-          <div class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-xs font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400">Đang tải bình luận...</div>
+          <div class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-xs font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400">${escapeHtml(t("loading"))}</div>
         ` : `
           ${renderComposer(instance.auth, instance.error)}
           <div class="mt-3 grid gap-2" data-comment-list>
@@ -215,14 +236,14 @@
       instance.auth = authResult.value;
     } else {
       instance.auth = authCache || { config: { googleEnabled: false }, session: { authenticated: false, user: null } };
-      instance.error = authResult.reason?.message || "Không thể tải phiên đăng nhập.";
+      instance.error = authResult.reason?.message || t("sessionError");
     }
 
     if (commentsResult.status === "fulfilled") {
       instance.comments = commentsResult.value;
     } else {
       instance.comments = [];
-      instance.error = commentsResult.reason?.message || "Không thể tải bình luận.";
+      instance.error = commentsResult.reason?.message || t("commentError");
     }
 
     instance.loading = false;
@@ -268,10 +289,10 @@
       <section class="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900" role="dialog" aria-modal="true" aria-labelledby="translationCommentsModalTitle" data-no-tooltip>
         <div class="flex items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/70 px-4 py-3 dark:border-slate-800/70 dark:bg-slate-950/30">
           <div class="min-w-0">
-            <p class="text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-300">Bình luận công khai</p>
-            <h2 class="truncate text-base font-black text-slate-950 dark:text-white" id="translationCommentsModalTitle">Góp ý dịch</h2>
+            <p class="text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-300" data-comment-public-label>${escapeHtml(t("publicComments"))}</p>
+            <h2 class="truncate text-base font-black text-slate-950 dark:text-white" id="translationCommentsModalTitle">${escapeHtml(t("feedback"))}</h2>
           </div>
-          <button class="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" type="button" data-comment-modal-close aria-label="Đóng góp ý">
+          <button class="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" type="button" data-comment-modal-close aria-label="${escapeHtml(t("closeFeedback"))}">
             <span class="material-symbols-rounded" aria-hidden="true">close</span>
           </button>
         </div>
@@ -290,7 +311,9 @@
     if (!context.entityId) return;
     const modal = ensureModal();
     lastFocused = trigger;
-    modal.querySelector("#translationCommentsModalTitle").textContent = `Góp ý dịch: ${context.entityName}`;
+    modal.querySelector("[data-comment-public-label]").textContent = t("publicComments");
+    modal.querySelector("[data-comment-modal-close]").setAttribute("aria-label", t("closeFeedback"));
+    modal.querySelector("#translationCommentsModalTitle").textContent = `${t("feedback")}: ${context.entityName}`;
     modal.classList.remove("hidden");
     modal.classList.add("flex");
     mount(modal.querySelector("[data-comment-modal-body]"), context);
@@ -330,7 +353,7 @@
       textarea.value = "";
       await refresh(instance);
     } catch (error) {
-      instance.error = error.message || "Không thể gửi góp ý.";
+      instance.error = error.message || t("submitError");
       renderPanel(instance);
     } finally {
       submit.disabled = false;
@@ -357,6 +380,22 @@
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && modalEl && !modalEl.classList.contains("hidden")) closeModal();
+  });
+  window.addEventListener("poe-locale-change", () => {
+    document.querySelectorAll("[data-comments-slot]").forEach((target) => {
+      const instance = target.__translationCommentsInstance;
+      if (instance) renderPanel(instance);
+    });
+    if (modalEl && !modalEl.classList.contains("hidden")) {
+      modalEl.querySelector("[data-comment-public-label]").textContent = t("publicComments");
+      modalEl.querySelector("[data-comment-modal-close]").setAttribute("aria-label", t("closeFeedback"));
+      const body = modalEl.querySelector("[data-comment-modal-body]");
+      const instance = body?.__translationCommentsInstance;
+      if (instance) {
+        modalEl.querySelector("#translationCommentsModalTitle").textContent = `${t("feedback")}: ${instance.context.entityName}`;
+        renderPanel(instance);
+      }
+    }
   });
 
   window.PoeTranslationComments = {

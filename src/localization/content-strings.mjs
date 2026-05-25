@@ -210,6 +210,21 @@ export const collectCurrencyContentStrings = (item = {}) => dedupeStrings([
   })
 ]);
 
+export const collectPassiveTreeContentStrings = (node = {}) => dedupeStrings([
+  ...lineStrings({
+    entityType: "passive_tree_node",
+    entityId: String(node.id || node.node_id || ""),
+    prefix: "stats",
+    lines: node.stats || [],
+    context: {
+      source_url: node.source_url || "",
+      name: node.name || "",
+      type: node.type || "",
+      ascendancy_name: node.ascendancy_name || ""
+    }
+  })
+]);
+
 export const createTranslationLookup = (rows = []) => {
   const lookup = new Map();
   for (const row of rows) {

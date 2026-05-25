@@ -15,13 +15,14 @@
   <meta property="og:title" content="Currency Path of Exile 2 tiếng Việt">
   <meta property="og:description" content="Tra cứu tác dụng orb, essence, omen, catalyst, splinter và các item liên quan trong Path of Exile 2 bằng tiếng Việt.">
   <meta property="og:url" content="https://poeviethoa.net/currency">
-  <meta property="og:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Currency Path of Exile 2 tiếng Việt">
   <meta name="twitter:description" content="Tra cứu orb, essence, omen, catalyst, splinter và item liên quan trong POE2.">
-  <meta name="twitter:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="theme-color" content="#0f172a">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link href="dist/app.css?v=20260524-font" rel="stylesheet">
@@ -121,6 +122,9 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2 md:justify-end">
+          <a class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" href="/tra-cuu" data-lookup-back>
+            <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Tra cứu
+          </a>
           <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
             <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">toll</span>
             <span id="currencyCount" class="font-display font-black">0 tiền tệ</span>
@@ -218,7 +222,33 @@
   <script>
     const data = window.POE2_CURRENCY || { items: [], categories: [], subtypes: [], families: [] };
     const DEFAULT_SUBTYPE = "crafting-orb";
-    const nf = new Intl.NumberFormat("vi-VN");
+    const PAGE_TEXT = {
+      documentTitle: { vi: "Currency - POE2", en: "Currency - POE2" },
+      heroSubtitle: { vi: "Tra cứu chi tiết tác dụng, công thức và liên kết chéo của các loại tiền tệ", en: "Look up effects, crafting uses, and cross-links for currency items" },
+      filterLabel: { vi: "Bộ lọc currency", en: "Currency filters" },
+      searchPlaceholder: { vi: "Tìm currency, effect, category...", en: "Search currency, effects, categories..." },
+      searchLabel: { vi: "Tìm currency", en: "Search currency" },
+      categoryLabel: { vi: "Lọc theo nhóm", en: "Filter by group" },
+      subtypeLabel: { vi: "Lọc theo subtype", en: "Filter by subtype" },
+      subtypePillsLabel: { vi: "Subtype currency", en: "Currency subtypes" },
+      currencyUnit: { vi: "tiền tệ", en: "currency" },
+      resultMeta: { vi: "{visible} / {filtered} trong {total} currency", en: "{visible} / {filtered} of {total} currency items" },
+      effectHeading: { vi: "Tác dụng & Hiệu quả", en: "Effects & outcome" },
+      extraHeading: { vi: "Thông tin thêm", en: "Extra information" },
+      relatedHeading: { vi: "Liên quan", en: "Related" },
+      feedback: { vi: "Góp ý dịch", en: "Suggest translation" },
+      expeditionBlackScythe: { vi: "Vật phẩm Expedition dùng để mặc cả (barter) mua các loại trang bị, tiền tệ với thương nhân Tujen.", en: "An Expedition artifact used to barter for equipment and currency with Tujen." },
+      expeditionOrder: { vi: "Vật phẩm Expedition dùng để nâng cấp, chế tạo (craft) các loại trang bị với thương nhân Rog.", en: "An Expedition artifact used to upgrade and craft equipment with Rog." },
+      expeditionDruidic: { vi: "Vật phẩm Expedition dùng để mua bán ngẫu nhiên (gamble) nhận các loại trang bị với thương nhân Gwennen.", en: "An Expedition artifact used to gamble for equipment with Gwennen." },
+      expeditionSun: { vi: "Vật phẩm Expedition dùng để giao dịch, đổi các loại Artifact khác với thủ lĩnh Dannig.", en: "An Expedition artifact used to trade and exchange other artifacts with Dannig." },
+      expeditionGeneric: { vi: "Vật phẩm đặc biệt dùng để giao dịch và trao đổi vật phẩm với các thương nhân Expedition.", en: "A special item used to trade with Expedition merchants." },
+      shard: { vi: "Mảnh tiền tệ, gom đủ stack để tự động chuyển thành tiền tệ hoàn chỉnh.", en: "A currency shard. Collect a full stack to automatically form the complete currency item." },
+      splinter: { vi: "Mảnh vỡ dùng để gom đủ stack mở khóa cổng vào boss hoặc bản đồ liên quan.", en: "A splinter used to complete a stack and unlock the related boss encounter or map." },
+      catalyst: { vi: "Dùng để tăng chất lượng (Quality) và các thuộc tính tương ứng trên trang sức.", en: "Improves quality and matching modifiers on jewellery." },
+      essence: { vi: "Dùng để nâng cấp một trang bị thường thành trang bị hiếm với một thuộc tính cố định.", en: "Upgrades a normal item into a rare item with a fixed modifier." },
+      delirium: { vi: "Dùng để tác động vào bản đồ nhằm tăng độ khó và thêm phần thưởng Delirium tương ứng.", en: "Applies Delirium effects to maps, increasing difficulty and adding matching rewards." },
+      mapItem: { vi: "Vật phẩm đặc biệt dùng để mở hoặc tác động lên bản đồ.", en: "A special item used to open or modify a map." }
+    };
     const searchInput = document.getElementById("searchInput");
     const categoryFilter = document.getElementById("categoryFilter");
     const subtypeFilter = document.getElementById("subtypeFilter");
@@ -233,13 +263,18 @@
       escapeHtml,
       i18nText,
       i18nList,
+      currentLocale,
       firstPresent,
+      formatNumber,
       truncateText,
+      localeText,
+      onLocaleChange,
       hasCurrencyDescription,
       currencySubtype,
       currencySubtypeLabel,
       currencyCategoryLabel
     } = window.PoeUi;
+    const pageText = (key) => i18nText(PAGE_TEXT[key], key);
     const allItems = (data.items || []).filter((item) => item.status === "active" && hasCurrencyDescription(item));
 
     const shortDescription = (item) => {
@@ -256,28 +291,28 @@
 
         if (subtype === "expedition-artifact" || category === "expeditionartifact") {
           if (nameLower.includes("black scythe")) {
-            source = "Vật phẩm Expedition dùng để mặc cả (barter) mua các loại trang bị, tiền tệ với thương nhân Tujen.";
+            source = pageText("expeditionBlackScythe");
           } else if (nameLower.includes("order")) {
-            source = "Vật phẩm Expedition dùng để nâng cấp, chế tạo (craft) các loại trang bị với thương nhân Rog.";
+            source = pageText("expeditionOrder");
           } else if (nameLower.includes("druidic")) {
-            source = "Vật phẩm Expedition dùng để mua bán ngẫu nhiên (gamble) nhận các loại trang bị với thương nhân Gwennen.";
+            source = pageText("expeditionDruidic");
           } else if (nameLower.includes("sun")) {
-            source = "Vật phẩm Expedition dùng để giao dịch, đổi các loại Artifact khác với thủ lĩnh Dannig.";
+            source = pageText("expeditionSun");
           } else {
-            source = "Vật phẩm đặc biệt dùng để giao dịch và trao đổi vật phẩm với các thương nhân Expedition.";
+            source = pageText("expeditionGeneric");
           }
         } else if (subtype === "shard" || nameLower.endsWith("shard")) {
-          source = "Mảnh tiền tệ, gom đủ stack để tự động chuyển thành tiền tệ hoàn chỉnh.";
+          source = pageText("shard");
         } else if (subtype === "splinter" || category === "splinteritem" || nameLower.endsWith("splinter")) {
-          source = "Mảnh vỡ dùng để gom đủ stack mở khóa cổng vào boss hoặc bản đồ liên quan.";
+          source = pageText("splinter");
         } else if (subtype === "catalyst" || category === "catalystitem" || nameLower.endsWith("catalyst")) {
-          source = "Dùng để tăng chất lượng (Quality) và các thuộc tính tương ứng trên trang sức.";
+          source = pageText("catalyst");
         } else if (subtype === "essence" || category === "essence" || nameLower.includes("essence")) {
-          source = "Dùng để nâng cấp một trang bị thường thành trang bị hiếm với một thuộc tính cố định.";
+          source = pageText("essence");
         } else if (subtype.includes("delirium") || nameLower.includes("distilled") || nameLower.includes("delirium")) {
-          source = "Dùng để tác động vào bản đồ nhằm tăng độ khó và thêm phần thưởng Delirium tương ứng.";
+          source = pageText("delirium");
         } else {
-          source = "Vật phẩm đặc biệt dùng để mở hoặc tác động lên bản đồ.";
+          source = pageText("mapItem");
         }
       }
       return truncateText(source, { maxLength: 220, minBoundary: 110 });
@@ -299,15 +334,49 @@
           count: allItems.filter((entry) => itemSubtype(entry) === itemSubtype(item)).length
         }])).values()]);
 
-    categoryFilter.innerHTML = `<option value="all">Tất cả nhóm</option>${categories.map((category) => `<option value="${escapeHtml(category.id)}">${escapeHtml(category.label)} (${nf.format(category.count)})</option>`).join("")}`;
-    subtypeFilter.innerHTML = `<option value="all">Tất cả subtype</option>${subtypes.map((subtype) => `<option value="${escapeHtml(subtype.id)}">${escapeHtml(subtype.label)} (${nf.format(subtype.count)})</option>`).join("")}`;
-    document.getElementById("currencyCount").textContent = `${nf.format(allItems.length)} tiền tệ`;
-    subtypePills.innerHTML = subtypes.map((subtype) => `
-      <button class="subtype-pill inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-700 transition hover:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" type="button" data-subtype="${escapeHtml(subtype.id)}">
-        <span>${escapeHtml(subtype.label)}</span>
-        <span class="rounded bg-white px-1.5 py-0.5 text-[11px] text-slate-500 dark:bg-slate-950 dark:text-slate-300">${nf.format(subtype.count)}</span>
-      </button>
-    `).join("");
+    const labelForCategory = (category) => {
+      const item = allItems.find((entry) => entry.category === category.id);
+      return item ? itemCategoryLabel(item) : category.label;
+    };
+    const labelForSubtype = (subtype) => {
+      const item = allItems.find((entry) => itemSubtype(entry) === subtype.id);
+      return item ? itemSubtypeLabel(item) : subtype.label;
+    };
+    const renderFilterOptions = () => {
+      const previousCategory = categoryFilter.value || "all";
+      const previousSubtype = subtypeFilter.value || "all";
+      categoryFilter.innerHTML = `<option value="all">${escapeHtml(localeText("allGroups"))}</option>${categories.map((category) => `<option value="${escapeHtml(category.id)}">${escapeHtml(labelForCategory(category))} (${formatNumber(category.count)})</option>`).join("")}`;
+      subtypeFilter.innerHTML = `<option value="all">${escapeHtml(localeText("allSubtypes"))}</option>${subtypes.map((subtype) => `<option value="${escapeHtml(subtype.id)}">${escapeHtml(labelForSubtype(subtype))} (${formatNumber(subtype.count)})</option>`).join("")}`;
+      if ([...categoryFilter.options].some((option) => option.value === previousCategory)) categoryFilter.value = previousCategory;
+      if ([...subtypeFilter.options].some((option) => option.value === previousSubtype)) subtypeFilter.value = previousSubtype;
+      document.getElementById("currencyCount").textContent = `${formatNumber(allItems.length)} ${pageText("currencyUnit")}`;
+      subtypePills.innerHTML = subtypes.map((subtype) => `
+        <button class="subtype-pill inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-700 transition hover:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" type="button" data-subtype="${escapeHtml(subtype.id)}">
+          <span>${escapeHtml(labelForSubtype(subtype))}</span>
+          <span class="rounded bg-white px-1.5 py-0.5 text-[11px] text-slate-500 dark:bg-slate-950 dark:text-slate-300">${formatNumber(subtype.count)}</span>
+        </button>
+      `).join("");
+    };
+    const applyPageLocale = () => {
+      document.title = pageText("documentTitle");
+      document.querySelector("main > section:first-child p") && (document.querySelector("main > section:first-child p").textContent = pageText("heroSubtitle"));
+      document.querySelector("main > section:nth-child(2)")?.setAttribute("aria-label", pageText("filterLabel"));
+      document.querySelector("[data-lookup-back]")?.lastChild && (document.querySelector("[data-lookup-back]").lastChild.textContent = localeText("backLookup"));
+      searchInput.placeholder = pageText("searchPlaceholder");
+      searchInput.setAttribute("aria-label", pageText("searchLabel"));
+      categoryFilter.setAttribute("aria-label", pageText("categoryLabel"));
+      subtypeFilter.setAttribute("aria-label", pageText("subtypeLabel"));
+      subtypePills.setAttribute("aria-label", pageText("subtypePillsLabel"));
+      document.getElementById("resetFilters").lastChild.textContent = localeText("resetFilters");
+      document.querySelector("#cmodalDescription")?.previousElementSibling && (document.querySelector("#cmodalDescription").previousElementSibling.textContent = pageText("effectHeading"));
+      document.querySelector("#cmodalProperties")?.previousElementSibling && (document.querySelector("#cmodalProperties").previousElementSibling.textContent = pageText("extraHeading"));
+      document.querySelector("#cmodalRelated")?.previousElementSibling && (document.querySelector("#cmodalRelated").previousElementSibling.textContent = pageText("relatedHeading"));
+      document.getElementById("closeCurrencyModalBtn")?.setAttribute("aria-label", localeText("close"));
+      const modalCloseAction = document.getElementById("cmodalActionClose");
+      if (modalCloseAction) modalCloseAction.textContent = localeText("close");
+    };
+    applyPageLocale();
+    renderFilterOptions();
 
     const setControlValue = (control, value) => {
       if (value && [...control.options].some((option) => option.value === value)) control.value = value;
@@ -326,7 +395,7 @@
     };
 
     const itemMatches = (item) => {
-      const query = searchInput.value.trim().toLocaleLowerCase("vi");
+      const query = searchInput.value.trim().toLocaleLowerCase(currentLocale() === "en" ? "en" : "vi");
       const haystack = [
         item.name,
         itemCategoryLabel(item),
@@ -367,11 +436,11 @@
           <div class="mt-auto pt-4 flex flex-wrap justify-end gap-2">
             <button class="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1.5 text-[11px] font-black text-blue-700 transition hover:bg-blue-600 hover:text-white dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white" type="button" data-no-tooltip data-comment-trigger data-comment-entity-type="currency" data-comment-entity-id="${escapeHtml(item.slug)}" data-comment-entity-name="${escapeHtml(item.name)}" data-comment-field-path="description" data-comment-source-text="${escapeHtml(item.description_en || "")}" data-comment-translated-text="${escapeHtml(translatedDescription)}">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">rate_review</span>
-              Góp ý dịch
+              ${escapeHtml(pageText("feedback"))}
             </button>
             <a class="currency-cta inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="/currency-detail?slug=${encodeURIComponent(item.slug)}">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">article</span>
-              Chi tiết
+              ${escapeHtml(localeText("detail"))}
             </a>
           </div>
         </article>
@@ -404,14 +473,17 @@
       const visible = filtered.slice(0, visibleLimit);
       currencyGrid.innerHTML = visible.map(renderItem).join("") || `
         <div class="rounded-lg border border-slate-200 bg-white p-6 text-center font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 sm:col-span-2 xl:col-span-3">
-          Không có currency nào khớp bộ lọc.
+          ${escapeHtml(localeText("emptyCurrency"))}
         </div>
       `;
       const hiddenCount = Math.max(filtered.length - visible.length, 0);
-      resultMeta.textContent = `${nf.format(visible.length)} / ${nf.format(filtered.length)} trong ${nf.format(allItems.length)} currency`;
+      resultMeta.textContent = pageText("resultMeta")
+        .replace("{visible}", formatNumber(visible.length))
+        .replace("{filtered}", formatNumber(filtered.length))
+        .replace("{total}", formatNumber(allItems.length));
       loadMoreItems.classList.toggle("hidden", hiddenCount === 0);
       loadMoreItems.classList.toggle("inline-flex", hiddenCount > 0);
-      loadMoreItems.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>Tải thêm ${nf.format(Math.min(60, hiddenCount))}`;
+      loadMoreItems.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>${escapeHtml(localeText("loadMore"))} ${formatNumber(Math.min(60, hiddenCount))}`;
       syncPills();
     };
 
@@ -530,7 +602,7 @@
                 <h4 class="font-display text-sm font-black tracking-tight text-slate-900 transition-colors duration-200 group-hover:text-amber-500 dark:text-slate-100 dark:group-hover:text-amber-400" translate="no">${escapeHtml(name)}</h4>
                 ${isClickable ? `
                   <button type="button" class="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-600 hover:text-white dark:bg-blue-950/40 dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-200" data-related-slug="${escapeHtml(rel.slug)}">
-                    Chi tiết
+                    ${escapeHtml(localeText("detail"))}
                   </button>
                 ` : ""}
               </div>
@@ -546,6 +618,7 @@
     const openCurrencyModal = (slug) => {
       const item = allItems.find((entry) => entry.slug === slug);
       if (!item) return;
+      activeCurrencySlug = slug;
 
       cmodalIcon.src = item.icon_url;
       cmodalIcon.alt = item.icon_alt || item.name;
@@ -594,6 +667,7 @@
     };
 
     const closeCurrencyModal = () => {
+      activeCurrencySlug = null;
       currencyModalContent.classList.remove("scale-100");
       currencyModalContent.classList.add("scale-95");
       setTimeout(() => {
@@ -631,6 +705,15 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !currencyModal.classList.contains("hidden")) {
         closeCurrencyModal();
+      }
+    });
+    let activeCurrencySlug = null;
+    onLocaleChange(() => {
+      applyPageLocale();
+      renderFilterOptions();
+      render({ animate: false });
+      if (activeCurrencySlug && !currencyModal.classList.contains("hidden")) {
+        openCurrencyModal(activeCurrencySlug);
       }
     });
 

@@ -1,0 +1,2830 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passive tree - POE2</title>
+  <meta name="description" content="Tra cứu Passive Tree Path of Exile 2 bằng tiếng Việt: node, notable, keystone, jewel socket, ascendancy và chỉ số nội tại.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://poeviethoa.net/passive-tree">
+  <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/passive-tree">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Việt hóa">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Passive Tree Path of Exile 2 tiếng Việt">
+  <meta property="og:description" content="Tra cứu node, notable, keystone, jewel socket và ascendancy trong Passive Tree Path of Exile 2 bằng tiếng Việt.">
+  <meta property="og:url" content="https://poeviethoa.net/passive-tree">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Passive Tree Path of Exile 2 tiếng Việt">
+  <meta name="twitter:description" content="Tra cứu Passive Tree POE2 bằng tiếng Việt.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script src="components/theme-boot.js"></script>
+  <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="dist/app.css?v=20260524-font" rel="stylesheet">
+  <style>
+    :root {
+      --passive-header-height: 65px;
+    }
+    .passive-panel {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .dark .passive-panel {
+      background: #020611;
+      color: #e2e8f0;
+    }
+    .passive-pill {
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(241, 245, 249, .86);
+      color: #334155;
+    }
+    .dark .passive-pill {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .06);
+      color: #cbd5e1;
+    }
+    .passive-cta {
+      border: 1px solid rgba(20, 184, 166, .28);
+      background: rgba(20, 184, 166, .12);
+      color: #0f766e;
+      transition: transform .16s ease, background .16s ease, color .16s ease;
+    }
+    .passive-cta:hover {
+      transform: translateY(-1px);
+      background: #0f766e;
+      color: #fff;
+    }
+    .dark .passive-cta {
+      color: #5eead4;
+      background: rgba(20, 184, 166, .14);
+    }
+    .dark .passive-cta:hover {
+      color: #04111d;
+      background: #5eead4;
+    }
+    .passive-tree-page {
+      flex: 1 1 auto;
+      min-height: 0;
+      height: auto;
+      overflow: hidden;
+      background: #eef2f7;
+      color: #0f172a;
+    }
+    .passive-panel {
+      height: 100%;
+      padding: 0;
+    }
+    .dark .passive-tree-page {
+      background: #020611;
+      color: #e2e8f0;
+    }
+    .passive-tree-frame {
+      position: relative;
+      isolation: isolate;
+      height: 100%;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, .18);
+      border-radius: 0;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, .18);
+    }
+    .dark .passive-tree-frame {
+      border-color: rgba(45, 212, 191, .2);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .38);
+    }
+    .passive-tree-body {
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
+    .passive-version-banner {
+      flex: 0 0 auto;
+      border-bottom: 1px solid rgba(15, 23, 42, .12);
+      background: rgba(240, 253, 250, .94);
+      color: #0f766e;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+      backdrop-filter: blur(16px);
+    }
+    .dark .passive-version-banner {
+      border-bottom-color: rgba(45, 212, 191, .18);
+      background: rgba(8, 47, 73, .82);
+      color: #99f6e4;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
+    }
+    .passive-version-banner-inner {
+      display: flex;
+      min-height: 42px;
+      align-items: center;
+      gap: .5rem;
+      font-size: .8125rem;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+    body.passive-map-expanded .passive-version-banner {
+      display: none;
+    }
+    body.passive-map-expanded {
+      overflow: hidden;
+    }
+    body.passive-map-expanded .passive-tree-page,
+    body.passive-map-expanded .passive-panel {
+      min-height: 0;
+      height: 100%;
+      padding: 0;
+    }
+    body.passive-map-expanded .passive-tree-frame {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      width: 100vw;
+      height: 100dvh;
+      min-height: 0;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .passive-map-toolbar {
+      border: 1px solid rgba(15, 23, 42, .14);
+      background: rgba(255, 255, 255, .76);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .12);
+      backdrop-filter: blur(18px);
+    }
+    .dark .passive-map-toolbar {
+      border-color: rgba(148, 163, 184, .18);
+      background: rgba(2, 6, 23, .72);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .22);
+    }
+    .passive-map-filterbar {
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) {
+      .passive-map-filterbar {
+        left: .75rem;
+        top: 3.75rem;
+        width: min(780px, calc(100vw - 26.5rem));
+        grid-template-columns: 132px 176px minmax(210px, 1fr) 40px;
+      }
+    }
+    .passive-map-input,
+    .passive-map-select {
+      border: 1px solid rgba(15, 23, 42, .16);
+      background: rgba(255, 255, 255, .86);
+      color: #0f172a;
+      transition: border-color .14s ease, background .14s ease;
+    }
+    .passive-map-input:focus-within,
+    .passive-map-select:focus {
+      border-color: rgba(13, 148, 136, .52);
+      background: rgba(255, 255, 255, .96);
+    }
+    .dark .passive-map-input,
+    .dark .passive-map-select {
+      border-color: rgba(148, 163, 184, .20);
+      background: rgba(2, 6, 23, .78);
+      color: #e2e8f0;
+    }
+    .dark .passive-map-input:focus-within,
+    .dark .passive-map-select:focus {
+      border-color: rgba(45, 212, 191, .72);
+      background: rgba(2, 6, 23, .92);
+    }
+    .map-expand-control {
+      display: grid;
+    }
+    .map-collapse-control {
+      display: none;
+    }
+    body.passive-map-expanded .map-expand-control {
+      display: none;
+    }
+    body.passive-map-expanded .map-collapse-control {
+      display: grid;
+    }
+    #treeMapViewport {
+      min-height: 0;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      background: #eef2f7;
+    }
+    .dark #treeMapViewport {
+      background: #020611;
+    }
+    #treeMapViewport.is-panning {
+      cursor: grabbing;
+    }
+    #treeMapViewport.is-hovering-node {
+      cursor: pointer;
+    }
+    #treeMapViewport.is-panning.is-hovering-node {
+      cursor: grabbing;
+    }
+    #treeMap {
+      height: 100%;
+      min-height: 0;
+      width: 100%;
+      background: transparent;
+    }
+    body.passive-map-expanded #treeMapViewport,
+    body.passive-map-expanded #treeMap {
+      min-height: 0;
+    }
+    .map-control {
+      border: 1px solid rgba(15, 23, 42, .14);
+      background: rgba(255, 255, 255, .82);
+      color: #0f172a;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .12);
+      backdrop-filter: blur(12px);
+      transition: transform .14s ease, border-color .14s ease, background .14s ease, color .14s ease;
+    }
+    .map-control:hover {
+      transform: translateY(-1px);
+      border-color: rgba(13, 148, 136, .42);
+      background: rgba(204, 251, 241, .82);
+      color: #0f766e;
+    }
+    .dark .map-control {
+      border-color: rgba(148, 163, 184, .24);
+      background: rgba(15, 23, 42, .72);
+      color: #e2e8f0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+    }
+    .dark .map-control:hover {
+      border-color: rgba(45, 212, 191, .55);
+      background: rgba(20, 184, 166, .22);
+      color: #99f6e4;
+    }
+    .map-tooltip {
+      pointer-events: none;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 60;
+      width: min(536px, calc(100vw - 32px));
+      overflow: hidden;
+      border: 1px solid rgba(71, 85, 105, .32);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, .98);
+      color: #0f172a;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, .18);
+      opacity: 0;
+      transform: translate3d(-9999px, -9999px, 0) scale(.98);
+      transition: opacity .1s ease, transform .1s ease;
+    }
+    .dark .map-tooltip {
+      border-color: rgba(91, 116, 137, .72);
+      background: rgba(19, 30, 39, .97);
+      color: #dce5ee;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, .38);
+    }
+    .map-tooltip.is-visible {
+      opacity: 1;
+    }
+    .map-tooltip.is-pinned {
+      pointer-events: auto;
+      z-index: 80;
+    }
+    .passive-tooltip-main {
+      padding: 12px 14px 13px;
+    }
+    .passive-tooltip-title {
+      color: #0f172a;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.15;
+    }
+    .dark .passive-tooltip-title {
+      color: #e5edf5;
+    }
+    .passive-tooltip-stats {
+      margin-top: 6px;
+      display: grid;
+      gap: 2px;
+      color: #4338ca;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+    .dark .passive-tooltip-stats {
+      color: #8d86ff;
+    }
+    .passive-tooltip-footer {
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid rgba(71, 85, 105, .22);
+      padding: 12px 14px;
+      color: #0f172a;
+      font-size: 21px;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .dark .passive-tooltip-footer {
+      border-top-color: rgba(91, 116, 137, .55);
+      color: #e5edf5;
+    }
+    .passive-tooltip-footer strong {
+      color: #047857;
+      font-weight: 600;
+    }
+    .dark .passive-tooltip-footer strong {
+      color: #80f29c;
+    }
+    .passive-tooltip-hint {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .passive-tooltip-hint kbd {
+      border: 1px solid rgba(71, 85, 105, .24);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 2px 5px;
+      background: rgba(248, 250, 252, .78);
+      color: #334155;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .dark .passive-tooltip-hint {
+      color: #94a3b8;
+    }
+    .dark .passive-tooltip-hint kbd {
+      border-color: rgba(148, 163, 184, .24);
+      background: rgba(15, 23, 42, .82);
+      color: #e2e8f0;
+    }
+    .passive-path-status {
+      border: 1px solid rgba(15, 23, 42, .14);
+      background: rgba(255, 255, 255, .84);
+      color: #0f172a;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, .12);
+      backdrop-filter: blur(16px);
+    }
+    .dark .passive-path-status {
+      border-color: rgba(45, 212, 191, .22);
+      background: rgba(2, 6, 23, .76);
+      color: #f8fafc;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .22);
+    }
+    .passive-build-summary {
+      border: 1px solid rgba(15, 23, 42, .12);
+      background: rgba(255, 255, 255, .92);
+      color: #0f172a;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, .14);
+      backdrop-filter: blur(18px);
+    }
+    .dark .passive-build-summary {
+      border-color: rgba(45, 212, 191, .22);
+      background: rgba(2, 6, 23, .84);
+      color: #f8fafc;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, .28);
+    }
+    .passive-search-wrap {
+      position: relative;
+      min-width: 0;
+    }
+    .passive-search-results {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + .5rem);
+      z-index: 45;
+      display: none;
+      width: auto;
+      max-height: min(42dvh, 420px);
+      border: 1px solid rgba(15, 23, 42, .14);
+      background: rgba(255, 255, 255, .92);
+      color: #0f172a;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, .14);
+      backdrop-filter: blur(18px);
+    }
+    .dark .passive-search-results {
+      border-color: rgba(45, 212, 191, .26);
+      background: rgba(7, 15, 22, .88);
+      color: #f8fafc;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, .32);
+    }
+    .passive-search-results.is-visible {
+      display: flex;
+    }
+    .passive-search-node {
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(248, 250, 252, .88);
+      transition: border-color .14s ease, background .14s ease, transform .14s ease;
+    }
+    .passive-search-node:hover {
+      transform: translateY(-1px);
+      border-color: rgba(13, 148, 136, .36);
+      background: rgba(204, 251, 241, .68);
+    }
+    .dark .passive-search-node {
+      border-color: rgba(148, 163, 184, .16);
+      background: rgba(15, 23, 42, .72);
+    }
+    .dark .passive-search-node:hover {
+      border-color: rgba(45, 212, 191, .58);
+      background: rgba(20, 184, 166, .14);
+    }
+    .passive-summary-card {
+      border: 1px solid rgba(15, 23, 42, .12);
+      background: rgba(248, 250, 252, .92);
+      color: #334155;
+    }
+    .passive-summary-node {
+      border: 1px solid rgba(15, 23, 42, .12);
+      background: rgba(248, 250, 252, .92);
+      color: #334155;
+    }
+    .passive-summary-node {
+      transition: border-color .14s ease, background .14s ease;
+    }
+    .passive-summary-node:hover {
+      border-color: rgba(13, 148, 136, .36);
+      background: rgba(204, 251, 241, .62);
+    }
+    .passive-summary-card-title {
+      color: #0f172a;
+    }
+    .passive-summary-node-title {
+      color: #0f172a;
+    }
+    .passive-summary-card-body {
+      color: #475569;
+    }
+    .passive-summary-node-body {
+      color: #475569;
+    }
+    .passive-summary-muted {
+      color: #64748b;
+    }
+    .dark .passive-summary-card {
+      border-color: rgba(148, 163, 184, .18);
+      background: rgba(15, 23, 42, .82);
+      color: #cbd5e1;
+    }
+    .dark .passive-summary-node {
+      border-color: rgba(148, 163, 184, .18);
+      background: rgba(15, 23, 42, .82);
+      color: #cbd5e1;
+    }
+    .dark .passive-summary-node:hover {
+      border-color: rgba(45, 212, 191, .45);
+      background: rgba(20, 184, 166, .13);
+    }
+    .dark .passive-summary-card-title {
+      color: #f8fafc;
+    }
+    .dark .passive-summary-node-title {
+      color: #f8fafc;
+    }
+    .dark .passive-summary-card-body {
+      color: #cbd5e1;
+    }
+    .dark .passive-summary-node-body {
+      color: #cbd5e1;
+    }
+    .dark .passive-summary-muted {
+      color: #94a3b8;
+    }
+    .passive-build-toast {
+      border: 1px solid rgba(15, 23, 42, .14);
+      background: rgba(255, 255, 255, .94);
+      color: #0f172a;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, .16);
+      opacity: 0;
+      transform: translate3d(-50%, 12px, 0);
+      transition: opacity .16s ease, transform .16s ease;
+    }
+    .dark .passive-build-toast {
+      border-color: rgba(45, 212, 191, .28);
+      background: rgba(2, 6, 23, .92);
+      color: #f8fafc;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .24);
+    }
+    .passive-build-toast.is-visible {
+      opacity: 1;
+      transform: translate3d(-50%, 0, 0);
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .passive-cta,
+      .map-control,
+      .map-tooltip,
+      .passive-search-node,
+      .passive-build-toast {
+        transition: none;
+      }
+      .passive-cta:hover {
+        transform: none;
+      }
+      .passive-search-node:hover {
+        transform: none;
+      }
+    }
+    @media (min-width: 768px) {
+      #treeMapViewport,
+      #treeMap {
+        min-height: 0;
+      }
+    }
+    @media (max-width: 900px) {
+      .passive-map-filterbar {
+        left: .75rem;
+        right: .75rem;
+        top: 3.75rem;
+        width: auto;
+      }
+      .passive-search-results {
+        max-height: min(220px, calc(100dvh - 9rem));
+      }
+    }
+  </style>
+</head>
+
+<body class="passive-tree-body min-h-screen overflow-hidden bg-slate-50 font-sans text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div data-component="site-header" data-subtitle="Passive tree"></div>
+  <script src="app-routes.js"></script>
+  <script src="components/app-shell.js?v=20260525-tooltip-pin"></script>
+  <div class="passive-version-banner" role="status">
+    <div class="poe-shell-container passive-version-banner-inner">
+      <span class="material-symbols-rounded text-lg" aria-hidden="true">info</span>
+      <span>Đây là passive tree 0.4. Sẽ cập nhật bản 0.5 khi có thông tin.</span>
+    </div>
+  </div>
+  <main class="passive-tree-page max-w-none p-0">
+    <section class="passive-panel overflow-hidden" aria-label="Bản đồ passive tree">
+      <div class="passive-tree-frame relative overflow-hidden" id="treeMapViewport" tabindex="0" aria-label="Bản đồ passive tree">
+        <div class="passive-map-toolbar absolute left-3 top-3 z-20 flex items-center gap-1 rounded-xl p-1">
+          <button class="map-control grid h-9 w-9 place-items-center rounded-lg" type="button" data-map-zoom="in" aria-label="Phóng to" title="Phóng to">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">add</span>
+          </button>
+          <button class="map-control grid h-9 w-9 place-items-center rounded-lg" type="button" data-map-zoom="out" aria-label="Thu nhỏ" title="Thu nhỏ">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">remove</span>
+          </button>
+          <button class="map-control grid h-9 w-9 place-items-center rounded-lg" type="button" id="fitTreeMap" aria-label="Fit bản đồ" title="Fit bản đồ">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">fit_screen</span>
+          </button>
+          <button class="map-control grid h-9 w-9 place-items-center rounded-lg" type="button" id="resetTreeMap" aria-label="Reset góc nhìn" title="Reset góc nhìn">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">my_location</span>
+          </button>
+          <button class="map-control map-expand-control h-9 w-9 place-items-center rounded-lg" type="button" id="expandTreeMap" aria-label="Mở rộng bản đồ" title="Mở rộng bản đồ" aria-expanded="false">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">open_in_full</span>
+          </button>
+          <button class="map-control map-collapse-control h-9 w-9 place-items-center rounded-lg" type="button" id="collapseTreeMap" aria-label="Đóng full màn hình" title="Đóng full màn hình">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">close_fullscreen</span>
+          </button>
+          <button class="map-control grid h-9 w-9 place-items-center rounded-lg" type="button" id="copyPassiveBuild" aria-label="Copy build link" title="Copy build link">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">ios_share</span>
+          </button>
+          <button class="map-control grid h-9 w-9 place-items-center rounded-lg" type="button" id="importPassiveBuild" aria-label="Nhập build" title="Nhập build">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">file_open</span>
+          </button>
+          <button class="map-control grid h-9 w-9 place-items-center rounded-lg" type="button" id="togglePassiveSummary" aria-label="Node đã chọn" title="Node đã chọn">
+            <span class="material-symbols-rounded text-lg" aria-hidden="true">format_list_bulleted</span>
+          </button>
+        </div>
+
+        <div class="passive-map-toolbar passive-map-filterbar absolute left-3 right-3 top-[3.75rem] z-20 grid gap-1.5 rounded-xl p-1.5 sm:left-auto sm:top-3 sm:w-[min(760px,calc(100vw-8.5rem))] sm:grid-cols-[132px_176px_minmax(210px,1fr)_40px]">
+            <select class="passive-map-select h-9 rounded-lg px-2.5 text-[11px] font-black outline-none" id="classFilter" name="class" aria-label="Chọn class"></select>
+            <select class="passive-map-select h-9 rounded-lg px-2.5 text-[11px] font-black outline-none" id="ascFilter" name="ascendancy" aria-label="Lọc theo ascendancy"></select>
+            <div class="passive-search-wrap">
+              <label class="passive-map-input flex h-9 items-center gap-2 rounded-lg px-3">
+              <span class="material-symbols-rounded text-sm text-slate-400" aria-hidden="true">search</span>
+              <input class="min-w-0 flex-1 bg-transparent text-xs font-bold text-slate-950 outline-none placeholder:text-slate-500 dark:text-white dark:placeholder:text-slate-400" id="searchInput" name="q" type="search" placeholder="Tìm node, stat..." aria-label="Tìm passive node" autocomplete="off">
+              </label>
+              <aside class="passive-search-results min-h-0 flex-col overflow-hidden rounded-xl text-slate-950 dark:text-slate-100" id="passiveSearchResults" aria-live="polite">
+                <div class="flex items-center justify-between gap-2 border-b border-slate-200/80 px-3 py-2 dark:border-slate-700/70">
+                  <div>
+                    <div class="text-[10px] font-black uppercase tracking-wide text-teal-700 dark:text-teal-200">Search</div>
+                    <div class="text-xs font-black text-slate-950 dark:text-slate-100" id="passiveSearchCount">0 match</div>
+                  </div>
+                  <button class="grid h-7 w-7 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-900/10 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white" id="clearPassiveSearch" type="button" aria-label="Xóa search" title="Xóa search">
+                    <span class="material-symbols-rounded text-base" aria-hidden="true">close</span>
+                  </button>
+                </div>
+                <div class="min-h-0 flex-1 overflow-y-auto p-3" id="passiveSearchSections"></div>
+              </aside>
+            </div>
+            <button class="map-control inline-flex h-9 items-center justify-center rounded-lg px-2 text-[11px] font-black" id="resetFilters" type="button" aria-label="Reset bộ lọc" title="Reset bộ lọc">
+              <span class="material-symbols-rounded text-sm" aria-hidden="true">restart_alt</span>
+            </button>
+        </div>
+        <p class="sr-only" id="treeVersion">Đang tải dữ liệu.</p>
+        <p class="sr-only" id="nodeCount">0 node</p>
+        <p class="sr-only" id="resultMeta">Đang tải dữ liệu.</p>
+        <canvas class="block" id="treeMap" role="img" aria-label="Passive tree map"></canvas>
+        <div class="map-tooltip" id="treeMapTooltip" role="tooltip"></div>
+        <div class="passive-path-status absolute bottom-3 left-3 z-20 flex items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-black text-slate-950 dark:text-slate-100">
+          <span><span id="passivePointCount">0</span> Passive</span>
+          <span class="hidden text-teal-700 dark:text-teal-200" id="ascPointStatus"><span id="ascPointCount">0</span> Ascendancy</span>
+        </div>
+        <aside class="passive-build-summary absolute bottom-0 right-0 top-0 z-30 flex w-[min(360px,calc(100vw-1.5rem))] flex-col rounded-none border-l border-slate-200/80 text-slate-950 dark:border-teal-300/20 dark:text-slate-100" id="passiveBuildSummary">
+          <div class="border-b border-slate-200/80 p-3 dark:border-slate-700/70">
+            <div class="flex items-center justify-between gap-2">
+              <div class="text-sm font-black text-slate-950 dark:text-slate-100">Passive</div>
+            <button class="grid h-7 w-7 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-900/10 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white" id="closePassiveSummary" type="button" aria-label="Đóng">
+              <span class="material-symbols-rounded text-base" aria-hidden="true">close</span>
+            </button>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2 text-[11px] font-black" id="passiveSummaryPointTotals">
+              <div class="rounded border border-teal-500/20 bg-teal-500/10 px-2 py-1.5 text-teal-700 dark:border-teal-300/20 dark:bg-teal-400/10 dark:text-teal-100">Passive: <span id="passiveSummaryPassiveCount">0</span></div>
+              <div class="rounded border border-violet-500/20 bg-violet-500/10 px-2 py-1.5 text-violet-700 dark:border-violet-300/20 dark:bg-violet-400/10 dark:text-violet-100">Ascendancy: <span id="passiveSummaryAscCount">0</span></div>
+            </div>
+            <div class="mt-2 flex flex-wrap gap-1.5" id="passiveSummaryStats"></div>
+          </div>
+          <div class="min-h-0 flex-1 overflow-y-auto p-3" id="passiveSummarySections"></div>
+          <div class="border-t border-slate-200/80 p-3 dark:border-slate-700/70">
+            <div class="mb-2 text-[11px] font-black uppercase tracking-wide text-slate-400">Key nodes</div>
+            <div class="grid max-h-52 gap-1.5 overflow-y-auto pr-1" id="passiveSummaryNodes"></div>
+          </div>
+        </aside>
+        <div class="passive-build-toast pointer-events-none fixed bottom-3 left-1/2 z-[70] rounded-xl px-3 py-2 text-[11px] font-black text-slate-950 dark:text-slate-100" id="passiveBuildToast" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="nodeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="nodeModalTitle">
+    <div class="passive-panel w-full max-w-2xl overflow-hidden rounded-2xl shadow-2xl transition duration-150 scale-95" id="nodeModalContent">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-200/70 px-5 py-4 dark:border-slate-800">
+        <div class="min-w-0">
+          <div class="mb-2 flex flex-wrap gap-1.5" id="nodeModalBadges"></div>
+          <h2 class="font-display text-xl font-black leading-tight text-slate-950 dark:text-white" id="nodeModalTitle" translate="no">Passive node</h2>
+        </div>
+        <button class="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" id="closeNodeModalBtn" type="button" aria-label="Đóng">
+          <span class="material-symbols-rounded text-xl" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <div class="max-h-[72vh] overflow-y-auto px-5 py-4">
+        <div id="nodeModalStats" class="grid gap-3"></div>
+        <div class="mt-4 border-t border-slate-200/70 pt-4 dark:border-slate-800" id="nodeModalComments" data-comments-slot></div>
+      </div>
+      <div class="flex justify-end border-t border-slate-200/70 bg-slate-50/70 px-5 py-3 dark:border-slate-800 dark:bg-slate-900/60">
+        <button class="rounded-xl bg-slate-900 px-4 py-2 text-xs font-black text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100" id="nodeModalActionClose" type="button">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="components/poe-ui-utils.js"></script>
+  <script src="components/translation-comments.js"></script>
+  <script src="components/passive-tree-planner.js?v=20260525-class-disc"></script>
+  <script>
+    const initPassiveTree = () => {
+    const data = window.POE2_PASSIVE_TREE || { nodes: [], edges: [], classes: [], types: [] };
+    const nodes = data.nodes || [];
+    const edges = data.edges || [];
+    const pathEdges = data.path_edges || edges;
+    const nf = new Intl.NumberFormat("vi-VN");
+    const params = new URLSearchParams(window.location.search);
+    const { escapeHtml, i18nList } = window.PoeUi;
+    const passiveTreeLightPalette = {
+      background: "#eef2f7",
+      gridStroke: "rgba(15, 23, 42, .18)",
+      gridAlpha: .10,
+      discMiddle: "rgba(226, 232, 240, .72)",
+      discFade: "rgba(226, 232, 240, 0)",
+      edgeShadow: "#d6dee8",
+      edgeCore: "#758398",
+      edgeShadowAlphaMin: .30,
+      edgeShadowAlphaMax: .62,
+      edgeCoreAlphaMin: .46,
+      edgeCoreAlphaMax: .82,
+      smallNodeBackdrop: "rgba(255, 255, 255, .86)",
+      importantNodeBackdrop: "rgba(248, 250, 252, .88)",
+      selectedRing: "#9a6b16",
+      selectedFill: "#7a4d08",
+      emptyText: "#475569"
+    };
+    const passiveTreeDarkPalette = {
+      background: "#020407",
+      gridStroke: "rgba(148, 163, 184, .16)",
+      gridAlpha: .05,
+      discMiddle: "rgba(15, 23, 42, .72)",
+      discFade: "rgba(2, 4, 7, 0)",
+      edgeShadow: "#090d12",
+      edgeCore: "#4c515b",
+      edgeShadowAlphaMin: .20,
+      edgeShadowAlphaMax: .72,
+      edgeCoreAlphaMin: .32,
+      edgeCoreAlphaMax: .88,
+      smallNodeBackdrop: "rgba(3, 6, 10, .86)",
+      importantNodeBackdrop: "rgba(2, 4, 7, .78)",
+      selectedRing: "#f8e7a1",
+      selectedFill: "#fff4bd",
+      emptyText: "#94a3b8"
+    };
+    const isPassiveTreeDarkTheme = () => document.documentElement.classList.contains("dark");
+    const passiveTreeTheme = () => isPassiveTreeDarkTheme() ? passiveTreeDarkPalette : passiveTreeLightPalette;
+    const {
+      allocatedBuildNodeIds,
+      buildPassiveShareUrl,
+      decodePassiveBuildState,
+      encodePassiveBuildState,
+      passiveTreeBackgroundRadius,
+      passiveTreeConnectorGeometry,
+      projectAscendancyBackgroundToClassDisc,
+      projectAscendancyMapPointToClassDisc,
+      projectAscendancyNodesToClassDisc,
+      projectClassStartNodeToClassDisc,
+      projectClassStartNodesToClassDisc,
+      buildPassiveSpatialIndex,
+      buildPassiveRectSpatialIndex,
+      clampPassiveMapView,
+      queryPassiveSpatialIndex,
+      queryPassiveRectSpatialIndex,
+      refundAllocatedNodeIds,
+      shouldDrawTreeConnection,
+      shouldShowPassiveTreeNode,
+      summarizeAllocatedNodes
+    } = window.PoePassiveTreePlanner;
+    const initialBuildState = decodePassiveBuildState(params.get("build"));
+
+    const searchInput = document.getElementById("searchInput");
+    const classFilter = document.getElementById("classFilter");
+    const ascFilter = document.getElementById("ascFilter");
+    const resultMeta = document.getElementById("resultMeta");
+    const treeMapViewport = document.getElementById("treeMapViewport");
+    const treeMap = document.getElementById("treeMap");
+    const treeMapContext = treeMap.getContext("2d", { alpha: true });
+    const treeMapTooltip = document.getElementById("treeMapTooltip");
+    const syncPassiveHeaderHeight = () => {
+      const header = document.querySelector('[data-component="site-header"]');
+      const height = header?.getBoundingClientRect().height || 65;
+      document.documentElement.style.setProperty("--passive-header-height", `${height}px`);
+      return height;
+    };
+    syncPassiveHeaderHeight();
+    window.requestAnimationFrame(syncPassiveHeaderHeight);
+    window.addEventListener("load", syncPassiveHeaderHeight, { once: true });
+    if (document.fonts?.ready) document.fonts.ready.then(syncPassiveHeaderHeight).catch(() => {});
+    const passivePointCount = document.getElementById("passivePointCount");
+    const ascPointStatus = document.getElementById("ascPointStatus");
+    const ascPointCount = document.getElementById("ascPointCount");
+    const fitTreeMap = document.getElementById("fitTreeMap");
+    const resetTreeMap = document.getElementById("resetTreeMap");
+    const expandTreeMap = document.getElementById("expandTreeMap");
+    const collapseTreeMap = document.getElementById("collapseTreeMap");
+    const copyPassiveBuild = document.getElementById("copyPassiveBuild");
+    const importPassiveBuild = document.getElementById("importPassiveBuild");
+    const togglePassiveSummary = document.getElementById("togglePassiveSummary");
+    const passiveBuildSummary = document.getElementById("passiveBuildSummary");
+    const closePassiveSummary = document.getElementById("closePassiveSummary");
+    const passiveSummaryPassiveCount = document.getElementById("passiveSummaryPassiveCount");
+    const passiveSummaryAscCount = document.getElementById("passiveSummaryAscCount");
+    const passiveSummaryStats = document.getElementById("passiveSummaryStats");
+    const passiveSummarySections = document.getElementById("passiveSummarySections");
+    const passiveSummaryNodes = document.getElementById("passiveSummaryNodes");
+    const passiveSearchResults = document.getElementById("passiveSearchResults");
+    const passiveSearchCount = document.getElementById("passiveSearchCount");
+    const passiveSearchSections = document.getElementById("passiveSearchSections");
+    const clearPassiveSearch = document.getElementById("clearPassiveSearch");
+    const passiveBuildToast = document.getElementById("passiveBuildToast");
+    const treeVersion = document.getElementById("treeVersion");
+    const nodeCount = document.getElementById("nodeCount");
+    const nodeModal = document.getElementById("nodeModal");
+    const nodeModalContent = document.getElementById("nodeModalContent");
+    const nodeModalTitle = document.getElementById("nodeModalTitle");
+    const nodeModalBadges = document.getElementById("nodeModalBadges");
+    const nodeModalStats = document.getElementById("nodeModalStats");
+    const nodeModalComments = document.getElementById("nodeModalComments");
+    const closeNodeModalBtn = document.getElementById("closeNodeModalBtn");
+    const nodeModalActionClose = document.getElementById("nodeModalActionClose");
+    const nodesById = new Map(nodes.map((node) => [String(node.id), node]));
+    const groupsById = new Map((data.groups || []).map((group) => [String(group.id), group]));
+    const treeConstants = {
+      orbitAnglesByOrbit: data.constants?.orbitAnglesByOrbit?.length ? data.constants.orbitAnglesByOrbit.map((rows) => rows.map(Number)) : [],
+      orbitRadii: data.constants?.orbitRadii?.length ? data.constants.orbitRadii.map(Number) : [0, 82, 162, 335, 493, 662, 846, 251, 1080, 1322],
+      skillsPerOrbit: data.constants?.skillsPerOrbit?.length ? data.constants.skillsPerOrbit.map(Number) : [1, 12, 24, 24, 72, 72, 72, 24, 72, 144]
+    };
+    const passiveIconCache = new Map();
+    let selectedNodeId = params.get("node") || "";
+    let mapNeedsFit = true;
+    let mapContentNodes = nodes;
+    let mapContentNodesById = nodesById;
+    let mapContentEdges = [];
+    let mapInteractionNodes = nodes;
+    let mapEmptyMessage = "";
+    let mapNodeIndex = new Map();
+    let mapEdgeIndex = new Map();
+    let mapDrawFrame = 0;
+    let hoveredNodeId = "";
+    let mapTooltipHideTimer = 0;
+    let mapTooltipPinned = false;
+    let mapTooltipPointerInside = false;
+    let hoverPathNodeIds = new Set();
+    let hoverPathEdgeKeys = new Set();
+    let hoverPathPointGain = 0;
+    let allocatedNodeIds = new Set();
+    let allocatedEdgeKeys = new Set();
+    let specStartNodeIds = new Set();
+    let currentSearchMatchIds = new Set();
+    let currentSearchTerms = [];
+    let currentVisibleIds = new Set();
+    let mapFramePointCache = new Map();
+    let lastMapViewportSize = { width: 1, height: 1 };
+    const mapView = {
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      home: null
+    };
+    const panState = {
+      active: false,
+      moved: false,
+      lastX: 0,
+      lastY: 0
+    };
+    let suppressNextMapClick = false;
+
+    const edgeKey = (from, to) => {
+      const a = String(from);
+      const b = String(to);
+      return a < b ? `${a}|${b}` : `${b}|${a}`;
+    };
+
+    const graphByNodeId = new Map();
+    const edgeByKey = new Map();
+    for (const edge of pathEdges) {
+      const fromId = String(edge.from);
+      const toId = String(edge.to);
+      if (!graphByNodeId.has(fromId)) graphByNodeId.set(fromId, []);
+      if (!graphByNodeId.has(toId)) graphByNodeId.set(toId, []);
+      graphByNodeId.get(fromId).push(toId);
+      graphByNodeId.get(toId).push(fromId);
+    }
+    for (const edge of edges) {
+      const fromId = String(edge.from);
+      const toId = String(edge.to);
+      const key = edgeKey(fromId, toId);
+      edgeByKey.set(key, { from: fromId, to: toId, orbit: Number(edge.orbit || 0) });
+    }
+
+    const typeLabels = new Map((data.types || []).map((type) => [type.id, type.label]));
+    const typeLabel = (type) => typeLabels.get(type) || ({
+      small: "Small Passive",
+      notable: "Notable",
+      keystone: "Keystone",
+      jewel: "Jewel Socket",
+      mastery: "Mastery",
+      ascendancy: "Ascendancy",
+      ascendancy_notable: "Ascendancy Notable"
+    }[type] || type || "Passive");
+
+    const nodeStatsVi = (node) => i18nList(node.i18n?.stats, node.stats || []);
+    const nodeTypeClass = (type) => ({
+      keystone: "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950/50 dark:text-amber-200 dark:border-amber-700/40",
+      notable: "bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-950/50 dark:text-teal-200 dark:border-teal-700/40",
+      ascendancy_notable: "bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-950/50 dark:text-violet-200 dark:border-violet-700/40",
+      jewel: "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950/50 dark:text-blue-200 dark:border-blue-700/40",
+      mastery: "bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-950/50 dark:text-rose-200 dark:border-rose-700/40"
+    }[type] || "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700");
+
+    const classRows = (data.classes || []).map((row) => ({ id: row.name, label: row.name, ...row }));
+    const classByName = new Map(classRows.map((row) => [row.name, row]));
+    const ascendancyClassNames = new Map();
+    const ascendancyMetaByName = new Map();
+    for (const classRow of classRows) {
+      for (const ascendancy of classRow.ascendancies || []) {
+        ascendancyClassNames.set(ascendancy.name, classRow.name);
+        ascendancyMetaByName.set(ascendancy.name, { classRow, ascendancy });
+      }
+    }
+    const defaultClassValue = () => classRows[0]?.name || "all";
+    const classOptionRows = (rows) => rows.map((row) => `<option value="${escapeHtml(row.name)}">${escapeHtml(row.name)}</option>`).join("") + `<option value="all">Tất cả class</option>`;
+    const ascendancyRows = classRows.flatMap((classRow) => (classRow.ascendancies || []).map((ascendancy) => ({
+      id: ascendancy.name,
+      label: ascendancy.name,
+      class_name: classRow.name,
+      count: nodes.filter((node) => node.ascendancy_name === ascendancy.name).length
+    })));
+    const ascendancyRowsForClass = (className = "") => className
+      ? ascendancyRows.filter((row) => row.class_name === className)
+      : ascendancyRows;
+    const ascendancyOptionRows = (rows, className = "") => `<option value="base">${className ? `Cây chính: ${escapeHtml(className)}` : "Cây chính"}</option>${rows.map((row) => `<option value="${escapeHtml(row.id)}">${escapeHtml(row.label)} (${nf.format(row.count)})</option>`).join("")}`;
+    const firstAscendancyValueForClass = (className = "") => ascendancyRowsForClass(className)[0]?.id || "base";
+    const updateAscendancyOptionsForClass = ({ preserveValue = true } = {}) => {
+      const previous = ascFilter.value;
+      const className = classFilter.value !== "all" ? classFilter.value : "";
+      ascFilter.innerHTML = ascendancyOptionRows(ascendancyRowsForClass(className), className);
+      if (preserveValue && previous !== "base" && [...ascFilter.options].some((option) => option.value === previous)) {
+        ascFilter.value = previous;
+      } else {
+        ascFilter.value = firstAscendancyValueForClass(className);
+      }
+    };
+
+    classFilter.innerHTML = classOptionRows(classRows);
+    classFilter.value = defaultClassValue();
+    updateAscendancyOptionsForClass({ preserveValue: false });
+
+    searchInput.value = params.get("q") || "";
+    const initialClassName = initialBuildState?.className || params.get("class");
+    if ([...classFilter.options].some((option) => option.value === initialClassName)) classFilter.value = initialClassName;
+    updateAscendancyOptionsForClass({ preserveValue: false });
+    const initialAscendancyName = initialBuildState?.ascendancyName || params.get("ascendancy");
+    if (ascendancyMetaByName.has(initialAscendancyName)) {
+      const parentClass = ascendancyClassNames.get(initialAscendancyName);
+      if (parentClass && classFilter.value !== parentClass) {
+        classFilter.value = parentClass;
+        updateAscendancyOptionsForClass({ preserveValue: false });
+      }
+      if ([...ascFilter.options].some((option) => option.value === initialAscendancyName)) ascFilter.value = initialAscendancyName;
+    }
+    if (!params.has("ascendancy") && selectedNodeId) {
+      const selectedInitialNode = nodesById.get(String(selectedNodeId));
+      if (selectedInitialNode?.classes_start?.[0] && [...classFilter.options].some((option) => option.value === selectedInitialNode.classes_start[0])) {
+        classFilter.value = selectedInitialNode.classes_start[0];
+        updateAscendancyOptionsForClass({ preserveValue: false });
+      }
+      if (selectedInitialNode?.ascendancy_name && [...ascFilter.options].some((option) => option.value === selectedInitialNode.ascendancy_name)) {
+        ascFilter.value = selectedInitialNode.ascendancy_name;
+      }
+    }
+
+    nodeCount.textContent = `${nf.format(data.total || nodes.length)} node`;
+    treeVersion.textContent = data.version ? `Version ${data.version} · ${nf.format(data.total || nodes.length)} node` : "Chưa có dữ liệu passive tree.";
+
+    const currentPassiveBuildState = () => ({
+      className: classFilter.value !== "all" ? classFilter.value : "",
+      ascendancyName: ascFilter.value !== "base" ? ascFilter.value : "",
+      nodeIds: allocatedBuildNodeIds(allocatedNodeIds, specStartNodeIds),
+      selectedNodeId,
+      version: data.version || ""
+    });
+
+    const updateUrlState = () => {
+      const next = new URLSearchParams();
+      if (searchInput.value.trim()) next.set("q", searchInput.value.trim());
+      if (classFilter.value !== "all") next.set("class", classFilter.value);
+      if (ascFilter.value !== "base") next.set("ascendancy", ascFilter.value);
+      if (selectedNodeId) next.set("node", selectedNodeId);
+      const buildState = currentPassiveBuildState();
+      const buildCode = buildState.nodeIds.length ? encodePassiveBuildState(buildState) : "";
+      if (buildCode) next.set("build", buildCode);
+      const query = next.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
+    };
+
+    const normalizeSearchText = (value = "") => String(value || "")
+      .toLocaleLowerCase("vi")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const parseSearchTerms = (value = "") => {
+      const source = normalizeSearchText(value);
+      if (!source) return [];
+      const terms = [];
+      const rest = source.replace(/"([^"]+)"/g, (_, phrase) => {
+        const cleanPhrase = normalizeSearchText(phrase);
+        if (cleanPhrase) terms.push(cleanPhrase);
+        return " ";
+      });
+      for (const term of rest.split(" ").map((part) => part.trim()).filter(Boolean)) {
+        terms.push(term);
+      }
+      return [...new Set(terms)];
+    };
+
+    const nodeSearchTextCache = new Map();
+    const nodeSearchText = (node) => {
+      const id = String(node?.id || "");
+      if (id && nodeSearchTextCache.has(id)) return nodeSearchTextCache.get(id);
+      const haystack = [
+        node.id,
+        node.name,
+        node.type,
+        node.ascendancy_name,
+        ...(node.classes_start || []),
+        ...(node.stats || []),
+        ...nodeStatsVi(node)
+      ].join(" ");
+      const normalized = normalizeSearchText(haystack);
+      if (id) nodeSearchTextCache.set(id, normalized);
+      return normalized;
+    };
+
+    const nodeSearchMatches = (node, terms = currentSearchTerms) => {
+      if (!terms.length) return false;
+      const haystack = nodeSearchText(node);
+      return terms.every((term) => haystack.includes(term));
+    };
+
+    const nodeMatches = (node) => {
+      return shouldShowPassiveTreeNode(node, {
+        className: selectedClassName(),
+        ascendancyName: isSpecificAscendancyView() ? ascFilter.value : "",
+        type: "all"
+      });
+    };
+
+    const currentNodes = () => nodes.filter(nodeMatches);
+
+    const colorForType = (type) => ({
+      keystone: "#f59e0b",
+      notable: "#14b8a6",
+      ascendancy_notable: "#8b5cf6",
+      ascendancy: "#a78bfa",
+      jewel: "#60a5fa",
+      mastery: "#fb7185"
+    }[type] || "#94a3b8");
+
+    const nodeTextForTheme = (node) => [
+      node.name,
+      node.type,
+      node.ascendancy_name,
+      ...(node.stats || []),
+      ...nodeStatsVi(node)
+    ].join(" ");
+
+    const nodeAccentCache = new Map();
+    const nodeAccentColor = (node) => {
+      const cacheKey = String(node.id);
+      if (nodeAccentCache.has(cacheKey)) return nodeAccentCache.get(cacheKey);
+      const text = nodeTextForTheme(node);
+      const patterns = [
+        [/life|regenerate|flask/i, "#33d4c5"],
+        [/mana|spirit|energy shield|darkness/i, "#3dd7e9"],
+        [/fire|ignite|burn|rage/i, "#c9914d"],
+        [/cold|chill|freeze/i, "#74b8ff"],
+        [/lightning|shock/i, "#dcc36a"],
+        [/chaos|poison|curse|darkness/i, "#b073d8"],
+        [/armour|block|shield/i, "#8fa0b4"],
+        [/evasion|speed|accuracy|projectile|bow/i, "#33c7bd"],
+        [/minion|totem|companion/i, "#b48b58"]
+      ];
+      for (const [pattern, color] of patterns) {
+        if (pattern.test(text)) {
+          nodeAccentCache.set(cacheKey, color);
+          return color;
+        }
+      }
+      const fallback = colorForType(node.type);
+      nodeAccentCache.set(cacheKey, fallback);
+      return fallback;
+    };
+
+    const iconAssetPathFromRaw = (icon = "") => {
+      const clean = String(icon || "").replace(/\\/g, "/");
+      const match = clean.match(/^Art\/2DArt\/SkillIcons\/passives\/(.+?)\.dds$/i);
+      return match ? `/assets/passive-tree/icons/${match[1]}.webp` : "";
+    };
+
+    const passiveIconUrl = (node) => node.icon_path || iconAssetPathFromRaw(node.icon);
+
+    const passiveIconForNode = (node) => {
+      const url = passiveIconUrl(node);
+      if (!url) return null;
+      const cached = passiveIconCache.get(url);
+      if (cached?.ready) return cached.image;
+      if (cached?.failed) return null;
+      if (cached) return null;
+
+      const record = { image: new Image(), ready: false, failed: false };
+      record.image.decoding = "async";
+      record.image.onload = () => {
+        record.ready = true;
+        requestMapDraw();
+      };
+      record.image.onerror = () => {
+        record.failed = true;
+      };
+      record.image.src = url;
+      passiveIconCache.set(url, record);
+      return null;
+    };
+
+    const buildGroupSummaries = (sourceNodes) => {
+      const grouped = new Map();
+      for (const node of sourceNodes) {
+        const groupId = String(node.group || "");
+        if (!groupId) continue;
+        const rows = grouped.get(groupId) || [];
+        rows.push(node);
+        grouped.set(groupId, rows);
+      }
+
+      const summaries = new Map();
+      for (const [groupId, rows] of grouped.entries()) {
+        const centerRows = rows.filter((node) => Number(node.orbit || 0) === 0);
+        const centerSource = centerRows.length ? centerRows : rows;
+        const xs = centerSource.map((node) => Number(node.x || 0));
+        const ys = centerSource.map((node) => Number(node.y || 0));
+        const center = centerRows.length
+          ? {
+            x: xs.reduce((sum, value) => sum + value, 0) / xs.length,
+            y: ys.reduce((sum, value) => sum + value, 0) / ys.length
+          }
+          : {
+            x: (Math.min(...xs) + Math.max(...xs)) / 2,
+            y: (Math.min(...ys) + Math.max(...ys)) / 2
+          };
+        const orbitRadii = new Map();
+        for (const node of rows) {
+          const orbit = Number(node.orbit || 0);
+          const radius = Math.hypot(Number(node.x || 0) - center.x, Number(node.y || 0) - center.y);
+          orbitRadii.set(orbit, Math.max(orbitRadii.get(orbit) || 0, radius));
+        }
+        const kind = rows.some((node) => node.ascendancy_name) ? "ascendancy" : "normal";
+        summaries.set(groupId, {
+          id: groupId,
+          x: center.x,
+          y: center.y,
+          kind,
+          orbitRadii,
+          maxRadius: Math.max(...orbitRadii.values(), 0),
+          count: rows.length
+        });
+      }
+      return summaries;
+    };
+
+    const allGroupSummaries = buildGroupSummaries(nodes);
+    let mapGroupSummaries = allGroupSummaries;
+
+    const MAX_DRAWABLE_EDGE_LENGTH = 4200;
+    const NODE_INDEX_CELL_SIZE = 720;
+    const EDGE_INDEX_CELL_SIZE = 1440;
+    const VISIBLE_NODE_PADDING_PIXELS = 120;
+    const VISIBLE_EDGE_PADDING_PIXELS = 220;
+    const MAP_VIEW_OVERSCROLL_RATIO = .22;
+    const MAP_VIEW_MAX_ZOOM_OUT = 1.18;
+    const MAP_VIEW_MIN_ZOOM_IN = 18;
+    const CLASS_DISC_RADIUS_SCALE = .91;
+    const ALLOCATED_PATH_COLOR = "#f8d76a";
+    const HOVER_PATH_COLOR = "#22ff8a";
+    const HOVER_PICK_MAX_PIXELS = 52;
+    const CLICK_PICK_MAX_PIXELS = 52;
+    const HIGHLIGHT_ICON_DETAIL_MIN = .12;
+    const IMPORTANT_ICON_DETAIL_MIN = .18;
+    const SMALL_ICON_DETAIL_MIN = .26;
+    const SMALL_ICON_RADIUS_MIN = 1.75;
+    const MIN_PASSIVE_ICON_RADIUS = 1.05;
+
+    let classGateEdges = [];
+    let renderTreeEdges = [];
+    const rebuildRenderTreeEdges = () => {
+      const classBg = selectedClassMeta()?.background || null;
+      classGateEdges = pathEdges.filter((edge) => {
+        const fromNode = nodesById.get(String(edge.from));
+        const toNode = nodesById.get(String(edge.to));
+        
+        const projectNodeIfStart = (node) => {
+          if (!node) return null;
+          if (node.is_class_start) {
+            return projectClassStartNodeToClassDisc({
+              node,
+              classBackground: classBg
+            });
+          }
+          return node;
+        };
+
+        const projectedFrom = projectNodeIfStart(fromNode);
+        const projectedTo = projectNodeIfStart(toNode);
+        return Boolean((fromNode?.is_class_start || toNode?.is_class_start) &&
+          shouldDrawTreeConnection(projectedFrom, projectedTo, { maxDistance: MAX_DRAWABLE_EDGE_LENGTH }));
+      });
+
+      renderTreeEdges = [...edges, ...classGateEdges];
+
+      for (const edge of classGateEdges) {
+        const fromId = String(edge.from);
+        const toId = String(edge.to);
+        const key = edgeKey(fromId, toId);
+        if (!edgeByKey.has(key)) edgeByKey.set(key, { from: fromId, to: toId, orbit: Number(edge.orbit || 0) });
+      }
+    };
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const rebuildMapNodeIndex = (mapNodes) => {
+      mapNodeIndex = buildPassiveSpatialIndex(mapNodes, { cellSize: NODE_INDEX_CELL_SIZE });
+    };
+
+    const nearbyIndexedNodes = (point, radius) => {
+      return queryPassiveSpatialIndex(mapNodeIndex, {
+        x: point.x,
+        y: point.y,
+        width: 0,
+        height: 0,
+        padding: radius
+      });
+    };
+
+    const mapViewportSize = () => {
+      const rect = treeMapViewport.getBoundingClientRect();
+      return {
+        width: Math.max(rect.width || 1, 1),
+        height: Math.max(rect.height || 1, 1)
+      };
+    };
+
+    const isSpecificAscendancyView = () => ascFilter.value && ascFilter.value !== "base";
+
+    const selectedAscendancyStart = () => {
+      if (!isSpecificAscendancyView()) return null;
+      return nodes.find((node) => node.ascendancy_name === ascFilter.value && node.is_ascendancy_start) ||
+        nodes.find((node) => node.ascendancy_name === ascFilter.value);
+    };
+
+    const baseStartNodeIds = nodes
+      .filter((node) => node.is_class_start)
+      .map((node) => String(node.id));
+
+    const selectedClassName = () => {
+      if (classFilter.value !== "all") return classFilter.value;
+      return ascendancyClassNames.get(ascFilter.value) || "";
+    };
+
+    const selectedClassMeta = () => classByName.get(selectedClassName()) || null;
+
+    const selectedClassStart = () => {
+      const classMeta = selectedClassMeta();
+      if (!classMeta?.start_node_id) return null;
+      return nodesById.get(String(classMeta.start_node_id)) || null;
+    };
+
+    const selectedAscendancyMeta = () => isSpecificAscendancyView()
+      ? ascendancyMetaByName.get(ascFilter.value) || null
+      : null;
+
+    const projectMapNodes = (sourceNodes) => projectAscendancyNodesToClassDisc({
+      nodes: projectClassStartNodesToClassDisc({
+        nodes: sourceNodes,
+        classBackground: selectedClassMeta()?.background || null
+      }),
+      ascendancyName: ascFilter.value,
+      ascendancyMeta: selectedAscendancyMeta()
+    });
+
+    const selectedSpecStartNodeIds = () => {
+      const starts = new Set();
+      const classStart = selectedClassStart();
+      if (classStart) starts.add(String(classStart.id));
+      if (!starts.size) for (const nodeId of baseStartNodeIds) starts.add(nodeId);
+      const ascendancyStart = selectedAscendancyStart();
+      if (ascendancyStart) starts.add(String(ascendancyStart.id));
+      return starts;
+    };
+
+    const syncSpecStartNodes = ({ resetAllocated = false } = {}) => {
+      const nextStarts = selectedSpecStartNodeIds();
+      if (resetAllocated) {
+        allocatedNodeIds = new Set(nextStarts);
+        allocatedEdgeKeys = new Set();
+      } else {
+        for (const oldStart of specStartNodeIds) {
+          if (!nextStarts.has(oldStart)) allocatedNodeIds.delete(oldStart);
+        }
+        for (const nodeId of nextStarts) allocatedNodeIds.add(nodeId);
+      }
+      specStartNodeIds = nextStarts;
+    };
+
+    const pathAnchorNodeIds = () => {
+      const anchors = new Set(allocatedNodeIds);
+      for (const nodeId of specStartNodeIds) anchors.add(nodeId);
+      return [...anchors].filter((nodeId) => currentVisibleIds.has(nodeId));
+    };
+
+    const isFreeStartNode = (nodeId) => {
+      return specStartNodeIds.has(String(nodeId));
+    };
+
+    const countAllocatedPoints = () => {
+      let passive = 0;
+      let ascendancy = 0;
+      for (const nodeId of allocatedNodeIds) {
+        if (isFreeStartNode(nodeId)) continue;
+        const node = nodesById.get(String(nodeId));
+        if (!node) continue;
+        if (node.ascendancy_name) ascendancy += 1;
+        else passive += 1;
+      }
+      return { passive, ascendancy };
+    };
+
+    const ascendancyColor = (name) => {
+      const className = ascendancyClassNames.get(name) || "";
+      return ({
+        Ranger: "#57d9bd",
+        Huntress: "#f7b955",
+        Warrior: "#e46b4c",
+        Mercenary: "#8fb1c6",
+        Druid: "#9fc56d",
+        Witch: "#b579ff",
+        Sorceress: "#65c8ff",
+        Monk: "#d9c767"
+      }[className]) || "#8bffc9";
+    };
+
+    const fitBoxWithAspect = ({ x, y, width, height }) => {
+      const viewport = mapViewportSize();
+      const targetAspect = viewport.width / viewport.height;
+      const currentAspect = width / height;
+      if (currentAspect > targetAspect) {
+        const nextHeight = width / targetAspect;
+        y -= (nextHeight - height) / 2;
+        height = nextHeight;
+      } else {
+        const nextWidth = height * targetAspect;
+        x -= (nextWidth - width) / 2;
+        width = nextWidth;
+      }
+      return { x, y, width, height };
+    };
+
+    const fitBoxForRows = (rows) => {
+      if (!rows.length) return { x: -500, y: -500, width: 1000, height: 1000 };
+      const xs = rows.map((node) => Number(node.x || 0));
+      const ys = rows.map((node) => Number(node.y || 0));
+      const minX = Math.min(...xs);
+      const maxX = Math.max(...xs);
+      const minY = Math.min(...ys);
+      const maxY = Math.max(...ys);
+      const rawWidth = Math.max(maxX - minX, 1);
+      const rawHeight = Math.max(maxY - minY, 1);
+      const padding = Math.max(Math.min(rawWidth, rawHeight) * 0.045, 180);
+      return fitBoxWithAspect({
+        x: minX - padding,
+        y: minY - padding,
+        width: rawWidth + padding * 2,
+        height: rawHeight + padding * 2
+      });
+    };
+
+    const fitBoxForSelectedAscendancy = (mapNodes = []) => {
+      if (!isSpecificAscendancyView()) return null;
+      return mapNodes.length ? fitBoxForRows(mapNodes) : null;
+    };
+
+    const fitBoxForNodes = (mapNodes) => {
+      const ascendancyBox = fitBoxForSelectedAscendancy(mapNodes);
+      if (ascendancyBox) return ascendancyBox;
+      const rows = mapNodes.length ? mapNodes : nodes;
+      return fitBoxForRows(rows);
+    };
+
+    const mapViewBoundsOptions = () => ({
+      overscrollRatio: MAP_VIEW_OVERSCROLL_RATIO,
+      minWidth: Math.max((mapView.home?.width || 1) / MAP_VIEW_MIN_ZOOM_IN, 1),
+      maxWidth: Math.max((mapView.home?.width || 1) * MAP_VIEW_MAX_ZOOM_OUT, 1)
+    });
+
+    const clampMapViewToSoftBounds = (box) =>
+      mapView.home ? clampPassiveMapView(box, mapView.home, mapViewBoundsOptions()) : box;
+
+    const applyMapViewport = () => {
+      requestMapDraw();
+    };
+
+    function setMapView(box, { clampToBounds = true } = {}) {
+      Object.assign(mapView, clampToBounds ? clampMapViewToSoftBounds(box) : box);
+      applyMapViewport();
+    }
+
+    const fitMapToNodes = (mapNodes = mapContentNodes) => {
+      const box = fitBoxForNodes(mapNodes);
+      mapView.home = { ...box };
+      setMapView(box);
+      mapNeedsFit = false;
+    };
+
+    const resetMapView = () => {
+      if (!mapView.home) fitMapToNodes(mapContentNodes);
+      else setMapView({ ...mapView.home });
+    };
+
+    const pointInCurrentView = (clientX, clientY) => {
+      const rect = treeMapViewport.getBoundingClientRect();
+      const ratioX = clamp((clientX - rect.left) / Math.max(rect.width, 1), 0, 1);
+      const ratioY = clamp((clientY - rect.top) / Math.max(rect.height, 1), 0, 1);
+      return {
+        ratioX,
+        ratioY,
+        x: mapView.x + mapView.width * ratioX,
+        y: mapView.y + mapView.height * ratioY
+      };
+    };
+
+    const zoomMapAt = (factor, clientX, clientY) => {
+      if (!mapView.home) fitMapToNodes(mapContentNodes);
+      const point = pointInCurrentView(clientX, clientY);
+      const minWidth = mapView.home.width / MAP_VIEW_MIN_ZOOM_IN;
+      const maxWidth = mapView.home.width * MAP_VIEW_MAX_ZOOM_OUT;
+      const nextWidth = clamp(mapView.width / factor, minWidth, maxWidth);
+      const nextHeight = nextWidth * (mapView.height / mapView.width);
+      setMapView({
+        x: point.x - nextWidth * point.ratioX,
+        y: point.y - nextHeight * point.ratioY,
+        width: nextWidth,
+        height: nextHeight
+      });
+    };
+
+    const focusMapNode = (nodeId) => {
+      const node = mapContentNodesById.get(String(nodeId)) || nodesById.get(String(nodeId));
+      if (!node) return;
+      if (!mapView.home) fitMapToNodes(mapContentNodes);
+      selectedNodeId = String(node.id);
+      const width = mapView.width || mapView.home?.width || 1000;
+      const height = mapView.height || mapView.home?.height || width;
+      setMapView({
+        x: Number(node.x || 0) - width / 2,
+        y: Number(node.y || 0) - height / 2,
+        width,
+        height
+      });
+      updateUrlState();
+      hideMapTooltip();
+      requestMapDraw();
+    };
+
+    const panMapBy = (deltaX, deltaY) => {
+      const viewport = mapViewportSize();
+      setMapView({
+        x: mapView.x - (deltaX / viewport.width) * mapView.width,
+        y: mapView.y - (deltaY / viewport.height) * mapView.height,
+        width: mapView.width,
+        height: mapView.height
+      });
+    };
+
+    const mapUnitsPerPixel = () => mapView.width / mapViewportSize().width;
+
+    const mapRadius = (pixels) => Math.max(pixels * mapUnitsPerPixel(), 1);
+
+    const mapBoundsForViewport = (viewport, paddingPixels = 0) => {
+      const padX = (paddingPixels / Math.max(viewport.width, 1)) * mapView.width;
+      const padY = (paddingPixels / Math.max(viewport.height, 1)) * mapView.height;
+      return {
+        x: mapView.x - padX,
+        y: mapView.y - padY,
+        width: mapView.width + padX * 2,
+        height: mapView.height + padY * 2
+      };
+    };
+
+    const visibleMapNodesForViewport = (viewport) =>
+      queryPassiveSpatialIndex(mapNodeIndex, mapBoundsForViewport(viewport, VISIBLE_NODE_PADDING_PIXELS));
+
+    const visibleMapEdgesForViewport = (viewport) =>
+      queryPassiveRectSpatialIndex(mapEdgeIndex, mapBoundsForViewport(viewport, VISIBLE_EDGE_PADDING_PIXELS));
+
+    const lerp = (start, end, amount) => start + (end - start) * amount;
+
+    const viewDetailLevel = () => {
+      const pixelsPerMapUnit = lastMapViewportSize.width / Math.max(mapView.width, 1);
+      const baseDetail = clamp((pixelsPerMapUnit - .045) / .22, 0, 1);
+      const closeDetail = clamp((pixelsPerMapUnit - .26) / .24, 0, .65);
+      return clamp(baseDetail + closeDetail, 0, 1.65);
+    };
+
+    const zoomedRadius = (base, large) => {
+      const detail = viewDetailLevel();
+      const overZoom = Math.max(detail - 1, 0);
+      return lerp(base, large, clamp(detail, 0, 1)) * (1 + overZoom * .28);
+    };
+
+    const nodePixelRadius = (node) => {
+      if (node.is_class_start) return zoomedRadius(2.1, 14.5);
+      if (node.type === "keystone") return zoomedRadius(3.25, 22.5);
+      if (node.type === "ascendancy_notable") return zoomedRadius(3, 20.5);
+      if (node.type === "notable") return zoomedRadius(2.55, 18.5);
+      if (node.type === "jewel") return zoomedRadius(2.45, 17);
+      if (node.type === "mastery") return zoomedRadius(2.1, 15.8);
+      if (node.type === "ascendancy") return zoomedRadius(1.85, 14.2);
+      return zoomedRadius(.9, 10.8);
+    };
+
+    const shouldDrawPassiveIcon = (node) => {
+      const detail = viewDetailLevel();
+      const highlighted = node.id === selectedNodeId || allocatedNodeIds.has(String(node.id)) || hoverPathNodeIds.has(String(node.id)) || currentSearchMatchIds.has(String(node.id));
+      if (highlighted && detail >= HIGHLIGHT_ICON_DETAIL_MIN) return true;
+      if (node.is_class_start) return true;
+      if (node.type === "small" || node.type === "ascendancy") return detail >= SMALL_ICON_DETAIL_MIN;
+      return detail >= IMPORTANT_ICON_DETAIL_MIN;
+    };
+
+    const syncCanvasSize = () => {
+      const rect = treeMapViewport.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(rect.width || 1, 1);
+      const height = Math.max(rect.height || 1, 1);
+      const pixelWidth = Math.round(width * ratio);
+      const pixelHeight = Math.round(height * ratio);
+      if (treeMap.width !== pixelWidth || treeMap.height !== pixelHeight) {
+        treeMap.width = pixelWidth;
+        treeMap.height = pixelHeight;
+      }
+      treeMap.style.width = `${width}px`;
+      treeMap.style.height = `${height}px`;
+      treeMapContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+      lastMapViewportSize = { width, height };
+      return { width, height, ratio };
+    };
+
+    const mapToCanvasPoint = (node, viewport) => {
+      const key = `${node.id}:${node.x}:${node.y}`;
+      const cached = mapFramePointCache.get(key);
+      if (cached) return cached;
+      const point = {
+        x: ((Number(node.x || 0) - mapView.x) / mapView.width) * viewport.width,
+        y: ((Number(node.y || 0) - mapView.y) / mapView.height) * viewport.height
+      };
+      mapFramePointCache.set(key, point);
+      return point;
+    };
+
+    const mapCoordToCanvasPoint = (point, viewport) => ({
+      x: ((Number(point.x || 0) - mapView.x) / mapView.width) * viewport.width,
+      y: ((Number(point.y || 0) - mapView.y) / mapView.height) * viewport.height
+    });
+
+    const mapDistanceToCanvas = (distance, viewport) =>
+      (Number(distance || 0) / Math.max(mapView.width, 1)) * viewport.width;
+
+    const screenPointInDrawBounds = (point, viewport, padding = 80) =>
+      point.x >= -padding &&
+      point.x <= viewport.width + padding &&
+      point.y >= -padding &&
+      point.y <= viewport.height + padding;
+
+    const zoomDepth = () => mapView.home ? mapView.home.width / Math.max(mapView.width, 1) : 1;
+
+    const drawMapBackground = (viewport) => {
+      const palette = passiveTreeTheme();
+      treeMapContext.fillStyle = palette.background;
+      treeMapContext.fillRect(0, 0, viewport.width, viewport.height);
+
+      const gridStep = 128;
+      const offsetX = ((-mapView.x / Math.max(mapView.width, 1)) * viewport.width) % gridStep;
+      const offsetY = ((-mapView.y / Math.max(mapView.height, 1)) * viewport.height) % gridStep;
+      treeMapContext.save();
+      treeMapContext.globalAlpha = palette.gridAlpha;
+      treeMapContext.strokeStyle = palette.gridStroke;
+      treeMapContext.lineWidth = 1;
+      treeMapContext.beginPath();
+      for (let x = offsetX - gridStep; x < viewport.width + gridStep; x += gridStep) {
+        treeMapContext.moveTo(x, 0);
+        treeMapContext.lineTo(x, viewport.height);
+      }
+      for (let y = offsetY - gridStep; y < viewport.height + gridStep; y += gridStep) {
+        treeMapContext.moveTo(0, y);
+        treeMapContext.lineTo(viewport.width, y);
+      }
+      treeMapContext.stroke();
+      treeMapContext.restore();
+    };
+
+    const drawBackgroundDisc = (background, viewport, {
+      color = "#66e2d1",
+      alpha = .16,
+      strokeAlpha = .28,
+      radiusScale = 1
+    } = {}) => {
+      if (!background) return;
+      const center = mapCoordToCanvasPoint({
+        x: Number(background.x || 0),
+        y: Number(background.y || 0)
+      }, viewport);
+      const radius = mapDistanceToCanvas(passiveTreeBackgroundRadius(background) * radiusScale, viewport);
+      if (radius < 8 || !screenPointInDrawBounds(center, viewport, radius + 80)) return;
+
+      treeMapContext.save();
+      treeMapContext.globalAlpha = strokeAlpha;
+      treeMapContext.strokeStyle = color;
+      treeMapContext.lineWidth = clamp(radius * .01, .8, 2.2);
+      treeMapContext.beginPath();
+      treeMapContext.arc(center.x, center.y, radius * .82, 0, Math.PI * 2);
+      treeMapContext.stroke();
+      treeMapContext.restore();
+    };
+
+    const drawTreeArtBackgrounds = (viewport) => {
+      const meta = selectedAscendancyMeta();
+      const baseClass = meta?.classRow || selectedClassMeta() || (data.classes || [])[0] || null;
+      const color = meta ? ascendancyColor(meta.ascendancy.name) : "#4dd0c1";
+      drawBackgroundDisc(baseClass?.background, viewport, {
+        color,
+        alpha: meta ? .16 : .10,
+        strokeAlpha: meta ? .34 : .18,
+        radiusScale: CLASS_DISC_RADIUS_SCALE
+      });
+      if (meta?.ascendancy?.background) {
+        drawBackgroundDisc(projectAscendancyBackgroundToClassDisc({
+          background: meta.ascendancy.background,
+          ascendancyName: meta.ascendancy.name,
+          ascendancyMeta: meta
+        }), viewport, {
+          color,
+          alpha: .08,
+          strokeAlpha: .22,
+          radiusScale: .82
+        });
+      }
+    };
+
+    const groupCenterForNode = (node) => {
+      const sourceGroup = groupsById.get(String(node.group));
+      if (sourceGroup) {
+        return projectAscendancyMapPointToClassDisc({
+          point: sourceGroup,
+          ascendancyName: ascFilter.value,
+          pointAscendancyName: node.ascendancy_name,
+          ascendancyMeta: selectedAscendancyMeta()
+        });
+      }
+      return mapGroupSummaries.get(String(node.group)) ||
+        allGroupSummaries.get(String(node.group));
+    };
+
+    const edgeBoundsForIndex = (edge) => {
+      const from = edge.fromNode || {};
+      const to = edge.toNode || {};
+      let left = Math.min(Number(from.x || 0), Number(to.x || 0));
+      let right = Math.max(Number(from.x || 0), Number(to.x || 0));
+      let top = Math.min(Number(from.y || 0), Number(to.y || 0));
+      let bottom = Math.max(Number(from.y || 0), Number(to.y || 0));
+      const geometry = passiveTreeConnectorGeometry({
+        edge,
+        groupCenter: groupCenterForNode(from),
+        orbitRadii: treeConstants.orbitRadii
+      });
+      if (geometry.kind === "arc") {
+        left = Math.min(left, Number(geometry.center.x || 0) - geometry.radius);
+        right = Math.max(right, Number(geometry.center.x || 0) + geometry.radius);
+        top = Math.min(top, Number(geometry.center.y || 0) - geometry.radius);
+        bottom = Math.max(bottom, Number(geometry.center.y || 0) + geometry.radius);
+      }
+      return {
+        x: left,
+        y: top,
+        width: Math.max(right - left, 1),
+        height: Math.max(bottom - top, 1)
+      };
+    };
+
+    const rebuildMapEdgeIndex = (mapEdges) => {
+      mapEdgeIndex = buildPassiveRectSpatialIndex(mapEdges, {
+        cellSize: EDGE_INDEX_CELL_SIZE,
+        getBounds: edgeBoundsForIndex
+      });
+    };
+
+    const drawLineConnection = (from, to, viewport) => {
+      const start = mapToCanvasPoint(from, viewport);
+      const end = mapToCanvasPoint(to, viewport);
+      if (!screenPointInDrawBounds(start, viewport) && !screenPointInDrawBounds(end, viewport)) return false;
+      treeMapContext.moveTo(start.x, start.y);
+      treeMapContext.lineTo(end.x, end.y);
+      return true;
+    };
+
+    const drawArcConnection = (from, to, centerPoint, radius, viewport) => {
+      const start = mapToCanvasPoint(from, viewport);
+      const end = mapToCanvasPoint(to, viewport);
+      const center = mapCoordToCanvasPoint(centerPoint, viewport);
+      const screenRadius = mapDistanceToCanvas(radius, viewport);
+      if (!screenPointInDrawBounds(start, viewport) && !screenPointInDrawBounds(end, viewport) && !screenPointInDrawBounds(center, viewport, screenRadius + 80)) return false;
+      if (screenRadius < 4) return drawLineConnection(from, to, viewport);
+      const startAngle = Math.atan2(start.y - center.y, start.x - center.x);
+      const endAngle = Math.atan2(end.y - center.y, end.x - center.x);
+      const clockwiseDelta = (endAngle - startAngle + Math.PI * 2) % (Math.PI * 2);
+      treeMapContext.moveTo(start.x, start.y);
+      treeMapContext.arc(center.x, center.y, screenRadius, startAngle, endAngle, clockwiseDelta > Math.PI);
+      return true;
+    };
+
+    const drawConnectionPath = (edge, viewport) => {
+      const from = edge.fromNode;
+      const to = edge.toNode;
+      if (from.is_mastery || to.is_mastery) return false;
+
+      const geometry = passiveTreeConnectorGeometry({
+        edge,
+        groupCenter: groupCenterForNode(from),
+        orbitRadii: treeConstants.orbitRadii
+      });
+      if (geometry.kind === "arc") {
+        return drawArcConnection(from, to, geometry.center, geometry.radius, viewport);
+      }
+      return drawLineConnection(from, to, viewport);
+    };
+
+    const strokeEdges = (viewport, visibleEdges, { color, width, alpha }) => {
+      treeMapContext.save();
+      treeMapContext.lineCap = "round";
+      treeMapContext.lineJoin = "round";
+      treeMapContext.lineWidth = width;
+      treeMapContext.strokeStyle = color;
+      treeMapContext.globalAlpha = alpha;
+      treeMapContext.beginPath();
+      for (const edge of visibleEdges) {
+        drawConnectionPath(edge, viewport);
+      }
+      treeMapContext.stroke();
+      treeMapContext.restore();
+    };
+
+    const drawEdges = (viewport, visibleEdges = visibleMapEdgesForViewport(viewport)) => {
+      const detail = clamp(viewDetailLevel(), 0, 1);
+      const searchFade = currentSearchTerms.length ? .28 : 1;
+      const palette = passiveTreeTheme();
+      strokeEdges(viewport, visibleEdges, {
+        color: palette.edgeShadow,
+        width: lerp(1.4, 14.6, detail),
+        alpha: lerp(palette.edgeShadowAlphaMin, palette.edgeShadowAlphaMax, detail) * searchFade
+      });
+      strokeEdges(viewport, visibleEdges, {
+        color: palette.edgeCore,
+        width: lerp(.72, 8.2, detail),
+        alpha: lerp(palette.edgeCoreAlphaMin, palette.edgeCoreAlphaMax, detail) * searchFade
+      });
+    };
+
+    const strokePathEdges = (viewport, edgeKeys, { color, alpha, widthBoost = 0 }) => {
+      if (!edgeKeys.size) return;
+      const detail = clamp(viewDetailLevel(), 0, 1);
+      treeMapContext.save();
+      treeMapContext.lineCap = "round";
+      treeMapContext.lineJoin = "round";
+      treeMapContext.lineWidth = lerp(2.2, 5.6, detail) + widthBoost;
+      treeMapContext.strokeStyle = color;
+      treeMapContext.globalAlpha = alpha;
+      treeMapContext.shadowColor = color;
+      treeMapContext.shadowBlur = 8;
+      treeMapContext.beginPath();
+      for (const edge of pathObjectsFromKeys(edgeKeys)) {
+        if (!shouldDrawTreeConnection(edge.fromNode, edge.toNode, {
+          maxDistance: MAX_DRAWABLE_EDGE_LENGTH
+        })) continue;
+        drawConnectionPath(edge, viewport);
+      }
+      treeMapContext.stroke();
+      treeMapContext.restore();
+    };
+
+    const drawPathHighlights = (viewport) => {
+      strokePathEdges(viewport, allocatedEdgeKeys, {
+        color: ALLOCATED_PATH_COLOR,
+        alpha: .88,
+        widthBoost: -.25
+      });
+      strokePathEdges(viewport, hoverPathEdgeKeys, {
+        color: HOVER_PATH_COLOR,
+        alpha: .96,
+        widthBoost: .45
+      });
+    };
+
+    const drawSearchHighlights = (viewport, visibleNodes) => {
+      if (!currentSearchMatchIds.size) return;
+      const detail = clamp(viewDetailLevel(), 0, 1);
+      treeMapContext.save();
+      treeMapContext.strokeStyle = "#22f4ff";
+      treeMapContext.fillStyle = "rgba(34, 244, 255, .10)";
+      treeMapContext.globalAlpha = lerp(.74, .98, detail);
+      treeMapContext.lineWidth = lerp(1.6, 3.4, detail);
+      treeMapContext.shadowColor = "#22f4ff";
+      treeMapContext.shadowBlur = 14;
+      for (const node of visibleNodes) {
+        if (!currentSearchMatchIds.has(String(node.id))) continue;
+        const point = mapToCanvasPoint(node, viewport);
+        if (!screenPointInDrawBounds(point, viewport, 36)) continue;
+        const radius = nodePixelRadius(node) + lerp(4.5, 9, detail);
+        treeMapContext.beginPath();
+        treeMapContext.arc(point.x, point.y, radius, 0, Math.PI * 2);
+        treeMapContext.fill();
+        treeMapContext.stroke();
+      }
+      treeMapContext.restore();
+    };
+
+    const drawPassiveIcon = (node, point, radius, alpha = .94) => {
+      if (!shouldDrawPassiveIcon(node)) return false;
+      const image = passiveIconForNode(node);
+      if (!image) return false;
+      const iconRadius = Math.max(radius * .92, lerp(MIN_PASSIVE_ICON_RADIUS, 1.35, clamp(viewDetailLevel(), 0, 1)));
+      treeMapContext.save();
+      treeMapContext.beginPath();
+      treeMapContext.arc(point.x, point.y, iconRadius, 0, Math.PI * 2);
+      treeMapContext.clip();
+      treeMapContext.globalAlpha = alpha;
+      treeMapContext.drawImage(image, point.x - iconRadius, point.y - iconRadius, iconRadius * 2, iconRadius * 2);
+      treeMapContext.restore();
+      return true;
+    };
+
+    const nodePathState = (node) => {
+      const id = String(node.id);
+      if (allocatedNodeIds.has(id)) return "allocated";
+      if (hoverPathNodeIds.has(id)) return "hover";
+      if (node.id === selectedNodeId) return "selected";
+      return "";
+    };
+
+    const searchDimmedNode = (node) => currentSearchTerms.length > 0 &&
+      !currentSearchMatchIds.has(String(node.id)) &&
+      !allocatedNodeIds.has(String(node.id)) &&
+      !hoverPathNodeIds.has(String(node.id)) &&
+      node.id !== selectedNodeId;
+
+    const nodeSearchOpacity = (node) => searchDimmedNode(node) ? .18 : 1;
+
+    const drawPathNodeRing = (point, radius, state) => {
+      if (!state) return;
+      const palette = passiveTreeTheme();
+      const color = state === "hover" ? HOVER_PATH_COLOR : state === "allocated" ? ALLOCATED_PATH_COLOR : palette.selectedRing;
+      treeMapContext.save();
+      treeMapContext.strokeStyle = color;
+      treeMapContext.globalAlpha = state === "hover" ? .98 : .86;
+      treeMapContext.lineWidth = state === "hover" ? 2.7 : 2.2;
+      treeMapContext.beginPath();
+      treeMapContext.arc(point.x, point.y, radius + (state === "hover" ? 4.2 : 3), 0, Math.PI * 2);
+      treeMapContext.stroke();
+      treeMapContext.restore();
+    };
+
+    const drawSmallPassiveNode = (node, point, radius) => {
+      const pathState = nodePathState(node);
+      const active = Boolean(pathState);
+      const accent = active ? "#f7d58d" : nodeAccentColor(node);
+      const opacity = nodeSearchOpacity(node);
+      const palette = passiveTreeTheme();
+      treeMapContext.globalAlpha = opacity;
+      treeMapContext.fillStyle = palette.smallNodeBackdrop;
+      treeMapContext.beginPath();
+      treeMapContext.arc(point.x, point.y, radius + 2.2, 0, Math.PI * 2);
+      treeMapContext.fill();
+      if (radius >= SMALL_ICON_RADIUS_MIN && drawPassiveIcon(node, point, radius, (active ? 1 : .92) * opacity)) {
+        treeMapContext.globalAlpha = (active ? 1 : .58) * opacity;
+        treeMapContext.strokeStyle = pathState === "hover" ? HOVER_PATH_COLOR : pathState === "allocated" ? ALLOCATED_PATH_COLOR : active ? palette.selectedRing : accent;
+        treeMapContext.lineWidth = active ? 2.35 : 1.65;
+        treeMapContext.beginPath();
+        treeMapContext.arc(point.x, point.y, radius + 1.45, 0, Math.PI * 2);
+        treeMapContext.stroke();
+        treeMapContext.globalAlpha = 1;
+        drawPathNodeRing(point, radius, pathState);
+        return;
+      }
+      treeMapContext.globalAlpha = (active ? 1 : (viewDetailLevel() < .35 ? .48 : .68)) * opacity;
+      treeMapContext.fillStyle = pathState === "hover" ? HOVER_PATH_COLOR : pathState === "allocated" ? ALLOCATED_PATH_COLOR : accent;
+      treeMapContext.beginPath();
+      treeMapContext.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      treeMapContext.fill();
+      treeMapContext.globalAlpha = 1;
+      drawPathNodeRing(point, radius, pathState);
+    };
+
+    const drawFlatPassiveNode = (node, point, radius) => {
+      const pathState = nodePathState(node);
+      const selected = Boolean(pathState);
+      const accent = nodeAccentColor(node);
+      const outerRadius = radius + (selected ? 3.4 : 2.25);
+      const opacity = nodeSearchOpacity(node);
+      const palette = passiveTreeTheme();
+
+      treeMapContext.globalAlpha = opacity;
+      treeMapContext.fillStyle = palette.importantNodeBackdrop;
+      treeMapContext.beginPath();
+      treeMapContext.arc(point.x, point.y, outerRadius, 0, Math.PI * 2);
+      treeMapContext.fill();
+
+      treeMapContext.globalAlpha = (selected ? 1 : (viewDetailLevel() < .35 ? .52 : .8)) * opacity;
+      treeMapContext.strokeStyle = pathState === "hover" ? HOVER_PATH_COLOR : pathState === "allocated" ? ALLOCATED_PATH_COLOR : selected ? palette.selectedRing : accent;
+      treeMapContext.lineWidth = selected ? 2.8 : 1.55;
+      treeMapContext.beginPath();
+      treeMapContext.arc(point.x, point.y, outerRadius - .35, 0, Math.PI * 2);
+      treeMapContext.stroke();
+
+      if (!drawPassiveIcon(node, point, radius, (selected ? 1 : .9) * opacity)) {
+        treeMapContext.globalAlpha = opacity;
+        treeMapContext.fillStyle = pathState === "hover" ? HOVER_PATH_COLOR : pathState === "allocated" ? ALLOCATED_PATH_COLOR : selected ? palette.selectedFill : accent;
+        treeMapContext.beginPath();
+        treeMapContext.arc(point.x, point.y, Math.max(radius - 1.2, 1.3), 0, Math.PI * 2);
+        treeMapContext.fill();
+      }
+      treeMapContext.globalAlpha = 1;
+      drawPathNodeRing(point, radius, pathState);
+    };
+
+    const drawNode = (node, viewport) => {
+      const point = mapToCanvasPoint(node, viewport);
+      if (!screenPointInDrawBounds(point, viewport, 28)) return;
+      const selected = node.id === selectedNodeId;
+      const important = node.type !== "small" && node.type !== "ascendancy" || node.is_class_start;
+      const radius = nodePixelRadius(node) * (selected ? 1.22 : 1);
+
+      if (!important && !selected) {
+        drawSmallPassiveNode(node, point, radius);
+        return;
+      }
+      drawFlatPassiveNode(node, point, radius);
+    };
+
+    const drawNodes = (viewport, visibleNodes) => {
+      for (const node of visibleNodes) {
+        if (node.type === "small" || node.type === "ascendancy") drawNode(node, viewport);
+      }
+      for (const node of visibleNodes) {
+        if (node.type !== "small" && node.type !== "ascendancy") drawNode(node, viewport);
+      }
+    };
+
+    const drawMap = () => {
+      if (document.visibilityState === "hidden") return;
+      const viewport = syncCanvasSize();
+      mapFramePointCache = new Map();
+      treeMapContext.clearRect(0, 0, viewport.width, viewport.height);
+      drawMapBackground(viewport);
+      if (mapEmptyMessage) {
+        treeMapContext.fillStyle = passiveTreeTheme().emptyText;
+        treeMapContext.font = "800 16px system-ui, sans-serif";
+        treeMapContext.textAlign = "center";
+        treeMapContext.textBaseline = "middle";
+        treeMapContext.fillText(mapEmptyMessage, viewport.width / 2, viewport.height / 2);
+        return;
+      }
+      const visibleNodes = visibleMapNodesForViewport(viewport);
+      const visibleEdges = visibleMapEdgesForViewport(viewport);
+      drawTreeArtBackgrounds(viewport);
+      drawEdges(viewport, visibleEdges);
+      drawPathHighlights(viewport);
+      drawSearchHighlights(viewport, visibleNodes);
+      drawNodes(viewport, visibleNodes);
+    };
+
+    const requestMapDraw = () => {
+      if (document.visibilityState === "hidden") return;
+      if (mapDrawFrame) return;
+      mapDrawFrame = window.requestAnimationFrame(() => {
+        mapDrawFrame = 0;
+        drawMap();
+      });
+    };
+
+    const drawMapNow = () => {
+      if (mapDrawFrame) {
+        window.cancelAnimationFrame(mapDrawFrame);
+        mapDrawFrame = 0;
+      }
+      drawMap();
+    };
+
+    const pathObjectsFromKeys = (keys) => {
+      const rows = [];
+      for (const key of keys) {
+        const edge = edgeByKey.get(key);
+        if (!edge) continue;
+        const fromNode = mapContentNodesById.get(edge.from) || nodesById.get(edge.from);
+        const toNode = mapContentNodesById.get(edge.to) || nodesById.get(edge.to);
+        if (!fromNode || !toNode) continue;
+        rows.push({ fromNode, toNode, orbit: edge.orbit });
+      }
+      return rows;
+    };
+
+    const pathPointGain = (nodeIds) => {
+      let count = 0;
+      for (const nodeId of nodeIds) {
+        if (allocatedNodeIds.has(String(nodeId)) || isFreeStartNode(nodeId)) continue;
+        count += 1;
+      }
+      return count;
+    };
+
+    const computePathToNode = (targetId) => {
+      const target = String(targetId);
+      if (!currentVisibleIds.has(target)) return { nodeIds: [], edgeKeys: [] };
+      const anchors = pathAnchorNodeIds();
+      if (!anchors.length) return { nodeIds: [target], edgeKeys: [] };
+      if (anchors.includes(target)) return { nodeIds: [target], edgeKeys: [] };
+
+      const queue = [...anchors];
+      const visited = new Set(queue);
+      const previous = new Map();
+      let cursor = 0;
+      while (cursor < queue.length) {
+        const nodeId = queue[cursor];
+        cursor += 1;
+        for (const nextId of graphByNodeId.get(nodeId) || []) {
+          if (!currentVisibleIds.has(nextId) || visited.has(nextId)) continue;
+          visited.add(nextId);
+          previous.set(nextId, nodeId);
+          if (nextId === target) {
+            cursor = queue.length;
+            break;
+          }
+          queue.push(nextId);
+        }
+      }
+
+      if (!visited.has(target)) return { nodeIds: [target], edgeKeys: [] };
+      const nodeIds = [target];
+      const edgeKeys = [];
+      let current = target;
+      while (previous.has(current)) {
+        const from = previous.get(current);
+        edgeKeys.push(edgeKey(from, current));
+        nodeIds.push(from);
+        current = from;
+      }
+      nodeIds.reverse();
+      edgeKeys.reverse();
+      return { nodeIds, edgeKeys };
+    };
+
+    const setHoverPath = (nodeId) => {
+      const path = computePathToNode(nodeId);
+      const pointGain = pathPointGain(path.nodeIds);
+      if (!pointGain && allocatedNodeIds.has(String(nodeId))) {
+        clearHoverPath();
+        return;
+      }
+      hoverPathNodeIds = new Set(path.nodeIds.filter((id) => !allocatedNodeIds.has(String(id))));
+      hoverPathEdgeKeys = new Set(path.edgeKeys.filter((key) => !allocatedEdgeKeys.has(key)));
+      hoverPathPointGain = pointGain;
+      requestMapDraw();
+    };
+
+    const clearHoverPath = () => {
+      if (!hoverPathNodeIds.size && !hoverPathEdgeKeys.size && hoverPathPointGain === 0) return;
+      hoverPathNodeIds = new Set();
+      hoverPathEdgeKeys = new Set();
+      hoverPathPointGain = 0;
+      requestMapDraw();
+    };
+
+    const allocatePathToNode = (nodeId) => {
+      const path = computePathToNode(nodeId);
+      if (!path.nodeIds.length) return false;
+      for (const id of path.nodeIds) allocatedNodeIds.add(String(id));
+      for (const key of path.edgeKeys) allocatedEdgeKeys.add(key);
+      hoverPathNodeIds = new Set();
+      hoverPathEdgeKeys = new Set();
+      hoverPathPointGain = 0;
+      selectedNodeId = String(nodeId);
+      updatePointStatus();
+      requestMapDraw();
+      updateUrlState();
+      return true;
+    };
+
+    const rebuildAllocatedEdges = () => {
+      allocatedEdgeKeys = new Set();
+      for (const edge of renderTreeEdges) {
+        const fromId = String(edge.from);
+        const toId = String(edge.to);
+        if (!currentVisibleIds.has(fromId) || !currentVisibleIds.has(toId)) continue;
+        if (allocatedNodeIds.has(fromId) && allocatedNodeIds.has(toId)) {
+          allocatedEdgeKeys.add(edgeKey(fromId, toId));
+        }
+      }
+    };
+
+    const deallocatePathFromNode = (nodeId) => {
+      const target = String(nodeId);
+      if (isFreeStartNode(target) || !allocatedNodeIds.has(target)) return false;
+      allocatedNodeIds = refundAllocatedNodeIds({
+        targetId: target,
+        allocatedNodeIds,
+        startNodeIds: specStartNodeIds,
+        graphByNodeId,
+        visibleNodeIds: currentVisibleIds
+      });
+      rebuildAllocatedEdges();
+      hoverPathNodeIds = new Set();
+      hoverPathEdgeKeys = new Set();
+      hoverPathPointGain = 0;
+      selectedNodeId = "";
+      updatePointStatus();
+      requestMapDraw();
+      updateUrlState();
+      return true;
+    };
+
+    const togglePathAllocation = (nodeId) => {
+      const id = String(nodeId);
+      return allocatedNodeIds.has(id) && !isFreeStartNode(id)
+        ? deallocatePathFromNode(id)
+        : allocatePathToNode(id);
+    };
+
+    const drawableEdges = (visibleIds, nodeLookup = nodesById) => {
+      const rows = [];
+      const seenKeys = new Set();
+      for (const edge of renderTreeEdges) {
+        const fromId = String(edge.from);
+        const toId = String(edge.to);
+        const key = edgeKey(fromId, toId);
+        if (seenKeys.has(key)) continue;
+        if (!visibleIds.has(fromId) || !visibleIds.has(toId)) continue;
+        const fromNode = nodeLookup.get(fromId);
+        const toNode = nodeLookup.get(toId);
+        if (!shouldDrawTreeConnection(fromNode, toNode, { maxDistance: MAX_DRAWABLE_EDGE_LENGTH })) continue;
+        seenKeys.add(key);
+        rows.push({ fromNode, toNode, orbit: Number(edge.orbit || 0) });
+      }
+      return rows;
+    };
+
+    const nodeAtMapEvent = (event, maxPixels = HOVER_PICK_MAX_PIXELS) => {
+      if (event.target.closest?.(".passive-map-toolbar, .map-control, .map-tooltip, .passive-map-input, .passive-map-select, .passive-path-status, .passive-build-summary, .passive-search-results")) return null;
+      const point = pointInCurrentView(event.clientX, event.clientY);
+      const maxDistance = mapRadius(maxPixels);
+      let bestNode = null;
+      let bestPixelDistance = maxPixels;
+      const unitsPerPixel = mapUnitsPerPixel();
+      const candidates = nearbyIndexedNodes(point, maxDistance);
+      for (const node of candidates) {
+        const distance = Math.hypot(Number(node.x) - point.x, Number(node.y) - point.y);
+        const pixelDistance = distance / Math.max(unitsPerPixel, .0001);
+        const hitRadius = clamp(nodePixelRadius(node) + 14, 16, 42);
+        if (pixelDistance <= hitRadius && pixelDistance <= bestPixelDistance) {
+          bestPixelDistance = pixelDistance;
+          bestNode = node;
+        }
+      }
+      return bestNode;
+    };
+
+    const nearestNodeAtMapEvent = (event, maxPixels = CLICK_PICK_MAX_PIXELS) => nodeAtMapEvent(event, maxPixels);
+
+    const moveMapTooltip = (event) => {
+      const width = treeMapTooltip.offsetWidth || 536;
+      const height = treeMapTooltip.offsetHeight || 132;
+      let left = event.clientX + 18;
+      let top = event.clientY + 18;
+      if (left + width > window.innerWidth - 12) left = event.clientX - width - 18;
+      if (left < 12) left = event.clientX - width / 2;
+      if (top + height > window.innerHeight - 12) top = event.clientY - height - 18;
+      if (top < 12) top = event.clientY + 18;
+      left = clamp(left, 12, Math.max(window.innerWidth - width - 12, 12));
+      top = clamp(top, 12, Math.max(window.innerHeight - height - 12, 12));
+      treeMapTooltip.style.transform = `translate3d(${left}px, ${top}px, 0) scale(1)`;
+    };
+
+    const setMapTooltipPinned = (pinned) => {
+      mapTooltipPinned = Boolean(pinned && treeMapTooltip.classList.contains("is-visible"));
+      treeMapTooltip.classList.toggle("is-pinned", mapTooltipPinned);
+    };
+
+    const showMapTooltip = (nodeOrId, event) => {
+      if (panState.active) return;
+      window.clearTimeout(mapTooltipHideTimer);
+      mapTooltipHideTimer = 0;
+      const node = typeof nodeOrId === "object" ? nodeOrId : nodesById.get(String(nodeOrId));
+      if (!node) return;
+      if (mapTooltipPinned && hoveredNodeId && String(hoveredNodeId) !== String(node.id)) return;
+      const sourceNode = nodesById.get(String(node.id)) || node;
+      if (hoveredNodeId !== node.id) {
+        hoveredNodeId = node.id;
+        setHoverPath(node.id);
+        const stats = nodeStatsVi(sourceNode);
+        treeMapTooltip.innerHTML = `
+          <div class="passive-tooltip-main">
+            <div class="passive-tooltip-title" translate="no">${escapeHtml(sourceNode.name || `Node ${sourceNode.id}`)}</div>
+            <div class="passive-tooltip-stats">
+              ${(stats.length ? stats : ["Node không có mô tả chỉ số."]).map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+            </div>
+          </div>
+          <div class="passive-tooltip-footer">
+            <span>Passive:</span><strong>+${nf.format(hoverPathPointGain)}</strong>
+            <span class="passive-tooltip-hint"><kbd>Alt</kbd> giữ detail</span>
+          </div>
+        `;
+        window.PoeAppShell?.applyTooltips?.(treeMapTooltip);
+      }
+      treeMapTooltip.classList.add("is-visible");
+      if (event.altKey) setMapTooltipPinned(true);
+      if (!mapTooltipPinned) moveMapTooltip(event);
+    };
+
+    const hideMapTooltip = () => {
+      window.clearTimeout(mapTooltipHideTimer);
+      mapTooltipHideTimer = 0;
+      mapTooltipPointerInside = false;
+      setMapTooltipPinned(false);
+      hoveredNodeId = "";
+      clearHoverPath();
+      treeMapTooltip.classList.remove("is-visible");
+      treeMapTooltip.style.transform = "translate3d(-9999px, -9999px, 0) scale(.98)";
+    };
+
+    const setMapExpanded = (expanded) => {
+      document.body.classList.toggle("passive-map-expanded", expanded);
+      syncPassiveHeaderHeight();
+      expandTreeMap.setAttribute("aria-expanded", expanded ? "true" : "false");
+      hideMapTooltip();
+      mapNeedsFit = true;
+      window.requestAnimationFrame(() => {
+        syncPassiveHeaderHeight();
+        renderMap();
+        treeMapViewport.focus({ preventScroll: true });
+      });
+    };
+
+    const scheduleHideMapTooltip = (delay = 110) => {
+      if (mapTooltipPinned || mapTooltipPointerInside) return;
+      if (mapTooltipHideTimer) return;
+      mapTooltipHideTimer = window.setTimeout(hideMapTooltip, delay);
+    };
+
+    let passiveBuildToastTimer = 0;
+    const showPassiveBuildToast = (message) => {
+      passiveBuildToast.textContent = message;
+      passiveBuildToast.classList.add("is-visible");
+      window.clearTimeout(passiveBuildToastTimer);
+      passiveBuildToastTimer = window.setTimeout(() => {
+        passiveBuildToast.classList.remove("is-visible");
+      }, 1600);
+    };
+
+    const passiveStatCategoryOrder = [
+      "Attributes",
+      "Damage",
+      "Defences",
+      "Life",
+      "Mana",
+      "Skill Speed",
+      "Minions",
+      "Totems",
+      "Charges",
+      "Misc"
+    ];
+
+    const passiveStatCategory = (line = "") => {
+      const text = String(line || "").toLocaleLowerCase("en");
+      if (!text) return "Misc";
+      if (/\battribute|strength|dexterity|intelligence|\+\d+(?:\.\d+)?\s+to\b/.test(text)) return "Attributes";
+      if (/damage|attack|spell|critical|projectile|melee|elemental|fire|cold|lightning|chaos|physical|ignite|shock|freeze|poison|bleed/.test(text)) return "Damage";
+      if (/armou?r|evasion|energy shield|block|resistance|defence|stun threshold|suppression/.test(text)) return "Defences";
+      if (/\blife\b|regenerate|recoup|leech/.test(text)) return "Life";
+      if (/\bmana\b|spirit/.test(text)) return "Mana";
+      if (/speed|cooldown|recovery|duration/.test(text)) return "Skill Speed";
+      if (/minion|allies|companion/.test(text)) return "Minions";
+      if (/totem/.test(text)) return "Totems";
+      if (/charge|frenzy|power|endurance/.test(text)) return "Charges";
+      return "Misc";
+    };
+
+    const allocatedPassiveStatGroups = () => {
+      const buckets = new Map();
+      for (const nodeId of allocatedNodeIds) {
+        if (isFreeStartNode(nodeId)) continue;
+        const node = nodesById.get(String(nodeId));
+        if (!node) continue;
+        for (const stat of node.stats || nodeStatsVi(node)) {
+          const line = String(stat || "").trim();
+          if (!line) continue;
+          const label = passiveStatCategory(line);
+          const bucket = buckets.get(label) || new Set();
+          bucket.add(line);
+          buckets.set(label, bucket);
+        }
+      }
+      return passiveStatCategoryOrder
+        .filter((label) => buckets.has(label))
+        .map((label) => ({ label, lines: [...buckets.get(label)] }));
+    };
+
+    const passiveStatGroupHtml = (group) => `
+      <section class="passive-stat-group passive-summary-card rounded p-2">
+        <div class="passive-summary-card-title mb-1.5 text-xs font-black">${escapeHtml(group.label)}</div>
+        <div class="passive-summary-card-body grid gap-1 text-[12px] font-semibold leading-snug">
+          ${group.lines.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+        </div>
+      </section>
+    `;
+
+    const searchTextMatchesTerms = (value, terms = currentSearchTerms) => {
+      if (!terms.length) return false;
+      const text = normalizeSearchText(value);
+      return terms.every((term) => text.includes(term));
+    };
+
+    const searchResultLinesForNode = (node, terms = currentSearchTerms) => {
+      const statLines = [...new Set([...(node.stats || []), ...nodeStatsVi(node)].map((line) => String(line || "").trim()).filter(Boolean))];
+      const matchingStats = statLines.filter((line) => searchTextMatchesTerms(line, terms));
+      if (matchingStats.length) return matchingStats.slice(0, 2).map((line) => ({ label: passiveStatCategory(line), line }));
+      if (searchTextMatchesTerms(node.name, terms)) return [{ label: "Node", line: node.name || `Node ${node.id}` }];
+      return statLines.slice(0, 1).map((line) => ({ label: passiveStatCategory(line), line }));
+    };
+
+    const passiveSearchResultGroups = (matches, terms = currentSearchTerms) => {
+      const buckets = new Map();
+      for (const node of matches) {
+        for (const row of searchResultLinesForNode(node, terms)) {
+          const bucket = buckets.get(row.label) || [];
+          bucket.push({ node, line: row.line });
+          buckets.set(row.label, bucket);
+        }
+      }
+      return ["Node", ...passiveStatCategoryOrder]
+        .filter((label) => buckets.has(label))
+        .map((label) => ({ label, rows: buckets.get(label) }));
+    };
+
+    const passiveSearchNodeHtml = ({ node, line }) => `
+      <button class="passive-search-node w-full rounded-lg p-2 text-left" type="button" data-search-node="${escapeHtml(node.id)}">
+        <div class="flex items-start justify-between gap-2">
+          <span class="min-w-0 text-xs font-black leading-tight text-slate-950 dark:text-slate-100" translate="no">${escapeHtml(node.name || `Node ${node.id}`)}</span>
+          <span class="shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] font-black ${nodeTypeClass(node.type)}">${escapeHtml(typeLabel(node.type))}</span>
+        </div>
+        <div class="mt-1 text-[11px] font-semibold leading-snug text-slate-700 dark:text-slate-300">${escapeHtml(line)}</div>
+      </button>
+    `;
+
+    const renderPassiveSearchResults = (matches, terms = currentSearchTerms) => {
+      const active = terms.length > 0;
+      passiveSearchResults.classList.toggle("is-visible", active);
+      passiveSearchResults.toggleAttribute("hidden", !active);
+      if (!active) {
+        passiveSearchCount.textContent = "0 match";
+        passiveSearchSections.innerHTML = "";
+        return;
+      }
+
+      passiveSearchCount.textContent = `${nf.format(matches.length)} match${matches.length === 1 ? "" : "es"}`;
+      if (!matches.length) {
+        passiveSearchSections.innerHTML = `<div class="rounded-lg border border-slate-200/80 bg-slate-50/90 p-3 text-[12px] font-semibold text-slate-500 dark:border-slate-700/70 dark:bg-slate-900/72 dark:text-slate-400">No matching passive nodes.</div>`;
+        return;
+      }
+
+      passiveSearchSections.innerHTML = passiveSearchResultGroups(matches, terms).map((group) => `
+        <section class="mb-3 last:mb-0">
+          <div class="mb-1.5 text-xs font-black text-slate-950 dark:text-slate-100">${escapeHtml(group.label)}</div>
+          <div class="grid gap-1.5">
+            ${group.rows.slice(0, 10).map(passiveSearchNodeHtml).join("")}
+            ${group.rows.length > 10 ? `<div class="px-1 text-[11px] font-bold text-slate-500">+${nf.format(group.rows.length - 10)} more</div>` : ""}
+          </div>
+        </section>
+      `).join("");
+    };
+
+    const passiveSummaryBadge = (label, value) => `
+      <span class="rounded-full border border-teal-500/20 bg-teal-500/10 px-2 py-1 text-[10px] font-black text-teal-700 dark:border-teal-300/20 dark:bg-teal-400/10 dark:text-teal-100">
+        ${escapeHtml(label)}: ${escapeHtml(value)}
+      </span>
+    `;
+
+    const renderPassiveBuildSummary = () => {
+      const summary = summarizeAllocatedNodes({
+        nodeIds: allocatedNodeIds,
+        nodesById,
+        freeStartNodeIds: specStartNodeIds,
+        maxImportant: 8
+      });
+      passiveSummaryPassiveCount.textContent = nf.format(summary.passivePoints);
+      passiveSummaryAscCount.textContent = nf.format(summary.ascendancyPoints);
+      passiveSummaryStats.innerHTML = [
+        passiveSummaryBadge("Passive", nf.format(summary.passivePoints)),
+        summary.ascendancyPoints ? passiveSummaryBadge("Asc", nf.format(summary.ascendancyPoints)) : "",
+        summary.typeCounts.keystone ? passiveSummaryBadge("Keystone", nf.format(summary.typeCounts.keystone)) : "",
+        summary.typeCounts.notable ? passiveSummaryBadge("Notable", nf.format(summary.typeCounts.notable)) : ""
+      ].filter(Boolean).join("");
+
+      const statGroups = allocatedPassiveStatGroups();
+      passiveSummarySections.innerHTML = statGroups.length
+        ? statGroups.map(passiveStatGroupHtml).join("")
+        : `<div class="passive-summary-card passive-summary-muted rounded p-3 text-[12px] font-semibold">No allocated stats yet.</div>`;
+
+      passiveSummaryNodes.innerHTML = summary.importantNodes.length
+        ? summary.importantNodes.map((node) => {
+          const stats = nodeStatsVi(node).slice(0, 2);
+          return `
+            <button class="passive-summary-node w-full rounded-lg p-2 text-left" type="button" data-summary-node="${escapeHtml(node.id)}">
+              <div class="flex items-start justify-between gap-2">
+                <span class="passive-summary-node-title min-w-0 text-xs font-black leading-tight" translate="no">${escapeHtml(node.name || `Node ${node.id}`)}</span>
+                <span class="shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] font-black ${nodeTypeClass(node.type)}">${escapeHtml(typeLabel(node.type))}</span>
+              </div>
+              ${stats.length ? `<div class="passive-summary-node-body mt-1 grid gap-0.5 text-[11px] font-semibold leading-snug">${stats.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}</div>` : ""}
+            </button>
+          `;
+        }).join("")
+        : `<div class="passive-summary-card passive-summary-muted rounded-lg p-2 text-[11px] font-bold">Chưa chọn notable hoặc keystone.</div>`;
+    };
+
+    const updatePointStatus = () => {
+      const counts = countAllocatedPoints();
+      passivePointCount.textContent = nf.format(counts.passive);
+      ascPointCount.textContent = nf.format(counts.ascendancy);
+      ascPointStatus.classList.toggle("hidden", counts.ascendancy === 0);
+      renderPassiveBuildSummary();
+    };
+
+    const renderMap = () => {
+      rebuildRenderTreeEdges();
+      const filtered = currentNodes();
+      const visibleIds = new Set(filtered.map((node) => node.id));
+      const mapNodes = projectMapNodes(filtered);
+      const mapNodeLookup = new Map(mapNodes.map((node) => [String(node.id), node]));
+      currentSearchTerms = parseSearchTerms(searchInput.value);
+      const searchMatches = currentSearchTerms.length
+        ? filtered.filter((node) => nodeSearchMatches(node, currentSearchTerms))
+        : [];
+      currentSearchMatchIds = new Set(searchMatches.map((node) => String(node.id)));
+      resultMeta.textContent = currentSearchTerms.length
+        ? `${nf.format(searchMatches.length)} khớp / ${nf.format(filtered.length)} node đang hiển thị`
+        : `${nf.format(filtered.length)} / ${nf.format(nodes.length)} passive node`;
+      currentVisibleIds = new Set(visibleIds);
+      renderPassiveSearchResults(searchMatches, currentSearchTerms);
+      syncSpecStartNodes();
+      rebuildAllocatedEdges();
+      mapContentNodes = mapNodes;
+      mapContentNodesById = mapNodeLookup;
+      mapGroupSummaries = buildGroupSummaries(mapNodes);
+      mapContentEdges = drawableEdges(visibleIds, mapNodeLookup);
+      mapInteractionNodes = mapNodes;
+      mapEmptyMessage = mapNodes.length ? "" : "Không có node phù hợp";
+      clearHoverPath();
+      updatePointStatus();
+      rebuildMapNodeIndex(mapInteractionNodes);
+      rebuildMapEdgeIndex(mapContentEdges);
+      if (!mapNodes.length) {
+        drawMapNow();
+        return;
+      }
+
+      if (mapNeedsFit) fitMapToNodes(mapNodes);
+      else applyMapViewport();
+      drawMapNow();
+    };
+
+    const render = ({ resetLimit = false } = {}) => {
+      if (resetLimit) mapNeedsFit = true;
+      renderMap();
+      updateUrlState();
+    };
+
+    const badgeHtml = (label, className = "") => `<span class="rounded-full border px-2 py-1 text-[11px] font-black ${className}">${escapeHtml(label)}</span>`;
+
+    const openNodeModal = (nodeId) => {
+      const node = nodes.find((entry) => entry.id === String(nodeId));
+      if (!node) return;
+      selectedNodeId = node.id;
+      nodeModalTitle.textContent = node.name || `Node ${node.id}`;
+      nodeModalBadges.innerHTML = [
+        badgeHtml(typeLabel(node.type), nodeTypeClass(node.type)),
+        node.ascendancy_name ? badgeHtml(node.ascendancy_name, "passive-pill") : "",
+        badgeHtml(`#${node.id}`, "passive-pill")
+      ].join("");
+
+      const statsVi = nodeStatsVi(node);
+      const statsEn = node.stats || [];
+      nodeModalStats.innerHTML = statsVi.length ? statsVi.map((line, index) => `
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/70">
+          <p class="text-sm font-bold leading-relaxed text-slate-900 dark:text-slate-100">${escapeHtml(line)}</p>
+          ${statsEn[index] ? `<p class="mt-1 text-xs font-semibold leading-relaxed text-slate-500 dark:text-slate-400" translate="no">${escapeHtml(statsEn[index])}</p>` : ""}
+        </div>
+      `).join("") : `
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-400">
+          Node này không có dòng chỉ số.
+        </div>
+      `;
+
+      window.PoeTranslationComments?.mount(nodeModalComments, {
+        entityType: "passive_tree_node",
+        entityId: node.id,
+        entityName: node.name || `Node ${node.id}`,
+        fieldPath: "stats",
+        sourceText: statsEn.join("\n"),
+        translatedText: statsVi.join("\n")
+      });
+
+      nodeModal.classList.remove("hidden");
+      nodeModal.classList.add("flex");
+      window.setTimeout(() => {
+        nodeModalContent.classList.remove("scale-95");
+        nodeModalContent.classList.add("scale-100");
+      }, 10);
+      renderMap();
+      updateUrlState();
+    };
+
+    const closeNodeModal = () => {
+      nodeModalContent.classList.remove("scale-100");
+      nodeModalContent.classList.add("scale-95");
+      window.setTimeout(() => {
+        nodeModal.classList.add("hidden");
+        nodeModal.classList.remove("flex");
+      }, 120);
+    };
+
+    const applyPassiveBuildState = (state) => {
+      if (!state) return false;
+      searchInput.value = "";
+      if (state.className && [...classFilter.options].some((option) => option.value === state.className)) {
+        classFilter.value = state.className;
+        updateAscendancyOptionsForClass({ preserveValue: false });
+      }
+      if (state.ascendancyName && ascendancyMetaByName.has(state.ascendancyName)) {
+        const parentClass = ascendancyClassNames.get(state.ascendancyName);
+        if (parentClass && [...classFilter.options].some((option) => option.value === parentClass)) {
+          classFilter.value = parentClass;
+          updateAscendancyOptionsForClass({ preserveValue: false });
+        }
+        if ([...ascFilter.options].some((option) => option.value === state.ascendancyName)) {
+          ascFilter.value = state.ascendancyName;
+        }
+      }
+      selectedNodeId = nodesById.has(String(state.selectedNodeId)) ? String(state.selectedNodeId) : "";
+      syncSpecStartNodes({ resetAllocated: true });
+      for (const nodeId of state.nodeIds || []) {
+        if (nodesById.has(String(nodeId))) allocatedNodeIds.add(String(nodeId));
+      }
+      mapNeedsFit = true;
+      renderMap();
+      updateUrlState();
+      return true;
+    };
+
+    const parsePassiveBuildInput = (value) => {
+      const raw = String(value || "").trim();
+      if (!raw) return null;
+      const codeMatch = raw.match(/(?:^|[?&])build=([^&]+)/);
+      const candidateCode = codeMatch ? decodeURIComponent(codeMatch[1]) : raw.replace(/^build=/i, "");
+      let state = decodePassiveBuildState(candidateCode);
+      if (state) return state;
+
+      try {
+        const url = new URL(raw, window.location.origin);
+        state = decodePassiveBuildState(url.searchParams.get("build")) || {
+          className: "",
+          ascendancyName: "",
+          nodeIds: [],
+          selectedNodeId: "",
+          version: ""
+        };
+        state.className ||= url.searchParams.get("class") || "";
+        state.ascendancyName ||= url.searchParams.get("ascendancy") || "";
+        state.selectedNodeId ||= url.searchParams.get("node") || "";
+        return state.className || state.ascendancyName || state.nodeIds.length || state.selectedNodeId ? state : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const copyText = async (value) => {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+    };
+
+    searchInput.addEventListener("input", () => render({ resetLimit: false }));
+    clearPassiveSearch.addEventListener("click", () => {
+      searchInput.value = "";
+      render({ resetLimit: false });
+      searchInput.focus({ preventScroll: true });
+    });
+    classFilter.addEventListener("input", () => {
+      updateAscendancyOptionsForClass({ preserveValue: false });
+      selectedNodeId = "";
+      syncSpecStartNodes({ resetAllocated: true });
+      render({ resetLimit: true });
+    });
+    ascFilter.addEventListener("input", () => {
+      const parentClass = ascendancyClassNames.get(ascFilter.value);
+      if (parentClass && classFilter.value === "all") {
+        classFilter.value = parentClass;
+        updateAscendancyOptionsForClass({ preserveValue: true });
+      }
+      selectedNodeId = "";
+      syncSpecStartNodes({ resetAllocated: true });
+      render({ resetLimit: true });
+    });
+    document.getElementById("resetFilters").addEventListener("click", () => {
+      searchInput.value = "";
+      classFilter.value = defaultClassValue();
+      updateAscendancyOptionsForClass({ preserveValue: false });
+      selectedNodeId = "";
+      syncSpecStartNodes({ resetAllocated: true });
+      render({ resetLimit: true });
+    });
+    document.querySelectorAll("[data-map-zoom]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const rect = treeMapViewport.getBoundingClientRect();
+        zoomMapAt(button.dataset.mapZoom === "in" ? 1.28 : 1 / 1.28, rect.left + rect.width / 2, rect.top + rect.height / 2);
+      });
+    });
+    fitTreeMap.addEventListener("click", () => fitMapToNodes(mapContentNodes));
+    resetTreeMap.addEventListener("click", resetMapView);
+    expandTreeMap.addEventListener("click", () => setMapExpanded(true));
+    collapseTreeMap.addEventListener("click", () => setMapExpanded(false));
+    copyPassiveBuild.addEventListener("click", async () => {
+      const url = buildPassiveShareUrl({
+        location: window.location.href,
+        state: currentPassiveBuildState()
+      });
+      try {
+        await copyText(url);
+        showPassiveBuildToast("Đã copy build link");
+      } catch {
+        showPassiveBuildToast("Không copy được");
+      }
+    });
+    importPassiveBuild.addEventListener("click", () => {
+      const value = window.prompt("Dán build link hoặc build code");
+      if (value === null) return;
+      const state = parsePassiveBuildInput(value);
+      if (!state || !applyPassiveBuildState(state)) {
+        showPassiveBuildToast("Build không hợp lệ");
+        return;
+      }
+      showPassiveBuildToast("Đã nhập build");
+    });
+    togglePassiveSummary.addEventListener("click", () => {
+      renderPassiveBuildSummary();
+      passiveBuildSummary.classList.toggle("hidden");
+    });
+    closePassiveSummary.addEventListener("click", () => {
+      passiveBuildSummary.classList.add("hidden");
+    });
+    passiveSummaryNodes.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-summary-node]");
+      if (!button) return;
+      openNodeModal(button.dataset.summaryNode);
+    });
+    passiveSearchSections.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-search-node]");
+      if (!button) return;
+      focusMapNode(button.dataset.searchNode);
+    });
+    treeMapTooltip.addEventListener("mouseenter", () => {
+      mapTooltipPointerInside = true;
+      window.clearTimeout(mapTooltipHideTimer);
+      mapTooltipHideTimer = 0;
+    });
+    treeMapTooltip.addEventListener("mouseleave", () => {
+      mapTooltipPointerInside = false;
+      if (!mapTooltipPinned) scheduleHideMapTooltip(80);
+    });
+    treeMapViewport.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      zoomMapAt(event.deltaY < 0 ? 1.18 : 1 / 1.18, event.clientX, event.clientY);
+    }, { passive: false });
+    treeMapViewport.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || event.target.closest?.(".passive-map-toolbar, .map-tooltip, .passive-build-summary, .passive-search-results, [data-map-zoom], #fitTreeMap, #resetTreeMap")) return;
+      panState.active = true;
+      panState.moved = false;
+      panState.lastX = event.clientX;
+      panState.lastY = event.clientY;
+      hideMapTooltip();
+      treeMapViewport.classList.remove("is-hovering-node");
+      treeMapViewport.classList.add("is-panning");
+      treeMapViewport.setPointerCapture?.(event.pointerId);
+    });
+    treeMapViewport.addEventListener("pointermove", (event) => {
+      if (panState.active) {
+        const deltaX = event.clientX - panState.lastX;
+        const deltaY = event.clientY - panState.lastY;
+        if (Math.abs(deltaX) + Math.abs(deltaY) > 3) panState.moved = true;
+        panMapBy(deltaX, deltaY);
+        panState.lastX = event.clientX;
+        panState.lastY = event.clientY;
+        return;
+      }
+      if (mapTooltipPinned) return;
+      const node = nodeAtMapEvent(event);
+      if (node) {
+        treeMapViewport.classList.add("is-hovering-node");
+        showMapTooltip(node, event);
+      } else {
+        treeMapViewport.classList.remove("is-hovering-node");
+        scheduleHideMapTooltip();
+      }
+    });
+    treeMapViewport.addEventListener("pointerup", (event) => {
+      if (!panState.active) return;
+      suppressNextMapClick = panState.moved;
+      panState.active = false;
+      panState.moved = false;
+      treeMapViewport.classList.remove("is-panning");
+      treeMapViewport.releasePointerCapture?.(event.pointerId);
+      window.setTimeout(() => {
+        suppressNextMapClick = false;
+      }, 0);
+    });
+    treeMapViewport.addEventListener("pointerleave", () => {
+      treeMapViewport.classList.remove("is-hovering-node");
+      if (!panState.active) scheduleHideMapTooltip(80);
+    });
+    treeMapViewport.addEventListener("pointerover", (event) => {
+      const node = nodeAtMapEvent(event);
+      if (node) {
+        treeMapViewport.classList.add("is-hovering-node");
+        showMapTooltip(node, event);
+      }
+    });
+    treeMapViewport.addEventListener("keydown", (event) => {
+      const rect = treeMapViewport.getBoundingClientRect();
+      if (event.key === "+" || event.key === "=") {
+        event.preventDefault();
+        zoomMapAt(1.25, rect.left + rect.width / 2, rect.top + rect.height / 2);
+      } else if (event.key === "-" || event.key === "_") {
+        event.preventDefault();
+        zoomMapAt(1 / 1.25, rect.left + rect.width / 2, rect.top + rect.height / 2);
+      } else if (event.key === "0") {
+        event.preventDefault();
+        resetMapView();
+      }
+    });
+    window.addEventListener("resize", () => {
+      syncPassiveHeaderHeight();
+      mapNeedsFit = true;
+      renderMap();
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState !== "hidden") requestMapDraw();
+    });
+    window.addEventListener("poe-theme-change", () => requestMapDraw());
+    treeMapViewport.addEventListener("click", (event) => {
+      if (suppressNextMapClick) return;
+      const node = nearestNodeAtMapEvent(event);
+      if (node) togglePathAllocation(node.id);
+    });
+    treeMapViewport.addEventListener("dblclick", (event) => {
+      const node = nodeAtMapEvent(event);
+      if (node) openNodeModal(node.id);
+    });
+    closeNodeModalBtn.addEventListener("click", closeNodeModal);
+    nodeModalActionClose.addEventListener("click", closeNodeModal);
+    nodeModal.addEventListener("click", (event) => {
+      if (event.target === nodeModal) closeNodeModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Alt" && treeMapTooltip.classList.contains("is-visible")) {
+        setMapTooltipPinned(true);
+      }
+      if (event.key !== "Escape") return;
+      if (!nodeModal.classList.contains("hidden")) {
+        closeNodeModal();
+        return;
+      }
+      if (document.body.classList.contains("passive-map-expanded")) setMapExpanded(false);
+    });
+    document.addEventListener("keyup", (event) => {
+      if (event.key !== "Alt") return;
+      mapTooltipPointerInside = false;
+      setMapTooltipPinned(false);
+      treeMapViewport.classList.remove("is-hovering-node");
+      scheduleHideMapTooltip(80);
+    });
+
+      if (initialBuildState) applyPassiveBuildState(initialBuildState);
+      else render({ resetLimit: true });
+    };
+
+    const loadPassiveTreeData = () => {
+      const script = document.createElement("script");
+      script.src = "data/passive-tree-data.js?v=20260525-keyword-vi-2";
+      script.onload = initPassiveTree;
+      script.onerror = () => {
+        document.getElementById("resultMeta").textContent = "Không tải được dữ liệu passive tree.";
+        document.getElementById("treeVersion").textContent = "Không tải được dữ liệu passive tree.";
+      };
+      document.body.appendChild(script);
+    };
+
+    window.requestAnimationFrame(() => {
+      window.setTimeout(loadPassiveTreeData, 0);
+    });
+  </script>
+</body>
+
+</html>

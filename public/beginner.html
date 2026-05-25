@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hướng dẫn nhập môn Path of Exile 2 - POE2</title>
+  <meta name="description" content="Bài hướng dẫn hệ thống hóa cho newbie Path of Exile 2: Build guide, chế độ game, mùa giải, Class, Ascendancy, Passive Tree, Dual Specialization, Skill Gem, Flask, trang bị, phòng thủ, sát thương, campaign, Currency và Gold.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://poeviethoa.net/beginner-guide">
+  <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/beginner-guide">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Việt hóa">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Hướng dẫn nhập môn Path of Exile 2">
+  <meta property="og:description" content="Bài hướng dẫn nhập môn POE2 được hệ thống hóa theo từng mảng: build, league, class, passive tree, gem, flask, item, defence, offence, campaign và currency.">
+  <meta property="og:url" content="https://poeviethoa.net/beginner-guide">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hướng dẫn nhập môn Path of Exile 2">
+  <meta name="twitter:description" content="Bản Việt hóa kỹ cho newbie POE2: build, class, passive, gem, flask, item, phòng thủ, sát thương, campaign và currency.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script src="components/theme-boot.js"></script>
+  <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="dist/app.css?v=20260524-font" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .beginner-anchor,
+    .beginner-chip {
+      transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+    }
+
+    .beginner-anchor:hover,
+    .beginner-chip:hover {
+      transform: translateY(-1px);
+    }
+
+    .beginner-prose p {
+      margin-top: .85rem;
+    }
+
+    .beginner-prose strong,
+    .beginner-term {
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .dark .beginner-prose strong,
+    .dark .beginner-term {
+      color: #f8fafc;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div data-component="site-header" data-subtitle="Newbie"></div>
+
+  <main class="poe-shell-container grid gap-5 py-6" id="main">
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Hướng dẫn nhập môn Path of Exile 2">
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div class="min-w-0">
+          <a class="beginner-anchor mb-3 inline-flex w-fit items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-black text-slate-600 no-underline hover:bg-white hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" href="/newbie" data-newbie-back>
+            <span class="material-symbols-rounded text-sm" aria-hidden="true">arrow_back</span>
+            Newbie
+          </a>
+          <div class="flex items-center gap-3">
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md2">
+              <span class="material-symbols-rounded text-2xl" aria-hidden="true">menu_book</span>
+            </span>
+            <div class="min-w-0">
+              <p class="text-xs font-black uppercase tracking-[.14em] text-orange-600 dark:text-orange-300" data-article-i18n="eyebrow">Bài hướng dẫn hệ thống hóa</p>
+              <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl" data-article-i18n="title">Hướng dẫn nhập môn Path of Exile 2</h1>
+              <p class="mt-1 max-w-3xl text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-article-i18n="subtitle">Bản hướng dẫn nhập môn được viết lại gọn, rõ và có hệ thống, giữ thuật ngữ POE quan trọng để người mới vừa đọc hiểu vừa tra cứu được trong game.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <article class="glass-panel beginner-prose rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-rounded text-orange-600 dark:text-orange-300" aria-hidden="true">explore</span>
+          <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="introTitle">Đọc nhanh trước khi vào game</h2>
+        </div>
+        <p class="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="introP1">Path of Exile 2 là Action RPG thiên về loot, build nhân vật và thử nghiệm cơ chế. Người mới dễ bị ngợp không phải vì game bắt hiểu hết ngay, mà vì mỗi lựa chọn nhỏ như Class, Skill Gem, Passive Tree hay item đều có thể kéo nhân vật sang hướng khác.</p>
+        <p class="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="introP2">Cách đọc bài này: giữ các thuật ngữ như Build guide, Class, Ascendancy, Skill Gem, Flask, Modifier bằng tiếng Anh khi đó là từ trong game; phần giải thích đi kèm sẽ nói rõ nó dùng để làm gì và người mới nên quyết định ra sao.</p>
+      </article>
+
+      <aside class="rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white shadow-md2 dark:border-slate-800">
+        <p class="text-xs font-black uppercase tracking-[.14em] text-amber-300" data-article-i18n="tocLabel">Lộ trình đọc</p>
+        <ol class="mt-4 grid gap-2 text-sm font-semibold leading-6 text-slate-300">
+          <li class="flex gap-3"><span class="font-black text-amber-300">1</span><span data-article-i18n="toc1">Chọn có theo Build guide hay tự mò.</span></li>
+          <li class="flex gap-3"><span class="font-black text-amber-300">2</span><span data-article-i18n="toc2">Hiểu chế độ game, mùa giải trước khi tạo nhân vật.</span></li>
+          <li class="flex gap-3"><span class="font-black text-amber-300">3</span><span data-article-i18n="toc3">Chọn Class, Ascendancy và hướng Passive Tree.</span></li>
+          <li class="flex gap-3"><span class="font-black text-amber-300">4</span><span data-article-i18n="toc4">Nắm Skill Gem, Support Gem, Flask và tài nguyên.</span></li>
+          <li class="flex gap-3"><span class="font-black text-amber-300">5</span><span data-article-i18n="toc5">Đọc item, phòng thủ, sát thương, campaign và Gold.</span></li>
+        </ol>
+      </aside>
+    </section>
+
+    <section class="glass-panel beginner-prose rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-orange-600 dark:text-orange-300" aria-hidden="true">route</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="buildTitle">Build guide: nên theo hay tự chơi?</h2>
+      </div>
+      <p class="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="buildP1">POE phức tạp, nhưng không nên để độ phức tạp làm bạn sợ bắt đầu. Nếu muốn trải nghiệm nhẹ đầu hơn, hãy theo một Build guide dạng starter hoặc league start: loại build này thường không cần đồ đắt, không lệ thuộc Unique hiếm và đủ khỏe để đi phần lớn nội dung.</p>
+      <p class="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="buildP2">Theo guide giúp bạn ít phải tự quyết định, lên sức mạnh đều hơn và thấy nhiều nội dung nhanh hơn. Ngược lại, tự mò sẽ vui hơn nếu bạn thích khám phá Passive Tree, skill và item theo cách của mình, chấp nhận nhân vật yếu hơn hoặc chậm hơn người khác.</p>
+      <div class="mt-4 grid gap-3 md:grid-cols-2">
+        <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold leading-6 text-emerald-950 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-100">
+          <p class="text-xs font-black uppercase tracking-[.12em] text-emerald-700 dark:text-emerald-300">Build guide</p>
+          <p class="mt-2" data-article-i18n="buildFollow">Hợp nếu bạn muốn đi campaign mượt, ít đọc wiki, ít tự sửa sai và có một khung rõ ràng về gem, passive, item.</p>
+        </div>
+        <div class="rounded-lg border border-sky-200 bg-sky-50 p-4 text-sm font-semibold leading-6 text-sky-950 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-100">
+          <p class="text-xs font-black uppercase tracking-[.12em] text-sky-700 dark:text-sky-300" data-article-i18n="buildBlindLabel">Tự khám phá</p>
+          <p class="mt-2" data-article-i18n="buildBlind">Hợp nếu bạn thích học cơ chế từ thất bại, không vội endgame và xem quá trình hiểu game là một phần niềm vui.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-cyan-600 dark:text-cyan-300" aria-hidden="true">public</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="modeTitle">Chế độ game, mùa giải</h2>
+      </div>
+      <div class="mt-4 grid gap-3 md:grid-cols-2">
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white" data-article-i18n="leagueStandardTitle">Standard league</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="leagueStandardText">League cố định, giữ nhân vật lâu dài và không reset theo mùa. Hợp nếu bạn muốn chơi tiếp nhân vật cũ hoặc thử build không cần chạy theo mùa mới.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white" data-article-i18n="leagueSeasonTitle">League season</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="leagueSeasonText">Mùa giải mới có nội dung riêng, economy mới và mọi người bắt đầu lại từ đầu. Hết mùa, nhân vật thường được chuyển về Standard league tương ứng.</p>
+        </article>
+      </div>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <article class="rounded-lg border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/55">
+          <h3 class="font-black text-slate-950 dark:text-white" data-article-i18n="modeDefaultTitle">Mặc định</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="modeDefault">Chế độ cơ bản, không luật phụ. Có thể party và trade với người khác.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/55">
+          <h3 class="font-black text-slate-950 dark:text-white" data-article-i18n="modeSsfTitle">SSF</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="modeSsf">Không trade, không party. Mọi item bạn dùng đều do chính bạn tự kiếm.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/55">
+          <h3 class="font-black text-slate-950 dark:text-white" data-article-i18n="modeHardcoreTitle">Hardcore</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="modeHardcore">Chết là nhân vật rời khỏi Hardcore về league thường tương ứng, nên cảm giác gần như chỉ có một mạng.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/55">
+          <h3 class="font-black text-slate-950 dark:text-white" data-article-i18n="modeHcssfTitle">SSF x HC</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="modeHcssf">Vừa không trade/party vừa có luật Hardcore. Chết thì nhân vật rời khỏi Hardcore SSF về SSF tương ứng.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-rose-600 dark:text-rose-300" aria-hidden="true">groups</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="classTitle">Class, Ascendancy và điểm bắt đầu trên Passive Tree</h2>
+      </div>
+      <p class="mt-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="classIntro">POE2 có 12 Class nền, chia theo Strength, Dexterity, Intelligence và các cặp thuộc tính. Passive Tree có 6 điểm bắt đầu chính: hai Class cùng nhóm thuộc tính sẽ khởi đầu gần nhau, ví dụ Marauder và Warrior cùng khu Strength.</p>
+      <div class="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Marauder</span> - Axes / Strength</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Warrior</span> - Maces / Strength</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Ranger</span> - Bows / Dexterity</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Huntress</span> - Spears / Dexterity</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Witch</span> - Minions, Occult Spells / Intelligence</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Sorceress</span> - Elemental Spells / Intelligence</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Duelist</span> - Swords / Strength + Dexterity</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Mercenary</span> - Crossbows / Strength + Dexterity</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Shadow</span> - Daggers, Traps / Intelligence + Dexterity</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Monk</span> - Unarmed, Quarterstaves / Intelligence + Dexterity</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Templar</span> - Flails / Strength + Intelligence</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-800/70"><span class="beginner-term">Druid</span> - Shapeshift Spells / Strength + Intelligence</p>
+      </div>
+      <div class="mt-4 grid gap-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200 md:grid-cols-2">
+        <p class="rounded-lg border border-slate-200 bg-white/60 p-4 dark:border-slate-700 dark:bg-slate-900/55" data-article-i18n="ascendancyText">Ascendancy là chuyên môn hóa của Class. Mỗi Class có 3 Ascendancy, tổng cộng 36 hướng chuyên môn hóa; mỗi hướng có cây điểm nhỏ nhưng bonus rất mạnh, thường đủ để định hình cả build.</p>
+        <p class="rounded-lg border border-slate-200 bg-white/60 p-4 dark:border-slate-700 dark:bg-slate-900/55" data-article-i18n="classAdvice">Class gợi ý vũ khí và phong cách, nhưng không khóa cứng. Bạn vẫn có thể chơi lệch Class, chỉ là sẽ cần hiểu rõ hơn về attribute, item và đường đi trên Passive Tree để scale đúng.</p>
+      </div>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-teal-600 dark:text-teal-300" aria-hidden="true">account_tree</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="passiveTitle">Passive Skill Tree & Dual Specialization</h2>
+      </div>
+      <div class="mt-4 grid gap-3 lg:grid-cols-3">
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Small Passive</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="smallPassiveText">Node nhỏ, thường cho damage, attribute, accuracy, armour hoặc chỉ số cơ bản. Nó là đường đi để tới node mạnh hơn.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Notable</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="notableText">Node lớn hơn trong một cụm, thường là mục tiêu bạn muốn path tới vì nó gom nhiều sức mạnh cùng chủ đề.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Keystone</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="keystoneText">Node cực mạnh có thể đổi hẳn cách build vận hành, nhưng thường đi kèm điều kiện hoặc mặt trái.</p>
+        </article>
+      </div>
+      <p class="mt-4 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="dualSpecText">Dual Specialization là thay đổi lớn của POE2: một phần điểm passive có thể gán khác nhau cho từng bộ vũ khí. Khi Weapon Swap, skill tự dùng bộ vũ khí và nhánh passive phù hợp hơn, ví dụ một bộ lấy Cold Damage còn bộ kia lấy Lightning Damage. Số điểm kiểu này có giới hạn và nhận từ Skill Books trong nhiệm vụ.</p>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-sky-600 dark:text-sky-300" aria-hidden="true">auto_awesome_motion</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="combatTitle">Combat, tài nguyên và hệ gem</h2>
+      </div>
+      <div class="mt-4 grid gap-3 lg:grid-cols-2">
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Dodge Roll</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="dodgeText">Dodge Roll có sẵn cho mọi nhân vật, mặc định dùng Space. Dùng đúng lúc để né projectile, hit lớn và hủy animation khi kẹt tình huống xấu. Roll không né được AoE đã nổ, nên phải lăn ra khỏi vùng nguy hiểm trước khi nó chạm. Lăn không nhanh hơn đi bộ, chịu ảnh hưởng bởi Movement Speed và không hủy giữa chừng.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Life / Mana / Spirit</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="resourceText">Life giữ bạn sống, Mana dùng để cast skill, Spirit dành cho hiệu ứng duy trì như aura, buff vĩnh viễn hoặc minion. Spirit có thể tăng qua boss reward hoặc modifier trên item như Sceptre.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Skill Gem / Uncut Skill Gem</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="skillGemText">Skill Gem là kỹ năng bạn dùng: bắn Fireball, summon skeleton, đánh bằng vũ khí, bật phòng thủ. Skill được chia thành 12 nhóm gợi ý theo Class, nhưng Uncut Skill Gem vẫn cho phép chọn skill đủ cấp độ bất kể bạn đang chơi Class nào.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Support Gem / 6-link</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="supportGemText">Mỗi nhân vật có 9 slot Skill Gem. Mỗi Skill Gem mặc định có tối thiểu 2 socket Support Gem và có thể nâng dần lên tối đa 5 support bằng currency; một skill đủ 5 support thường được gọi là 6-link.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Gem colors & attributes</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="gemColorText">Gem đỏ thường theo Strength, xanh dương theo Intelligence, xanh lá theo Dexterity. Support socket cũng có màu và Support Gem sẽ tăng yêu cầu attribute của skill, nên gắn support bừa có thể khiến bạn thiếu stat để dùng skill.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Meta Gem / Trigger Gem</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="metaGemText">Meta Gem hay Trigger Gem là gem kích hoạt skill khác khi đủ điều kiện, ví dụ gây Shock đủ nhiều rồi tự cast skill được gắn vào. Socket của Meta Gem có thể chứa Skill Gem để trigger hoặc Support Gem để buff, nên cần đọc điều kiện rất kỹ.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-cyan-600 dark:text-cyan-300" aria-hidden="true">local_drink</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="flaskGearTitle">Flask, equipment và cách đọc item</h2>
+      </div>
+      <div class="mt-4 grid gap-3 lg:grid-cols-3">
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200" data-article-i18n="flaskText">Flask là bình dùng trong combat, nhân vật có 5 slot Flask. Life Flask hồi máu, Mana Flask hồi mana, Utility Flask cho buff phòng thủ hoặc tấn công. Flask tiêu charge khi dùng, hồi charge khi giết monster Magic, Rare hoặc Unique, có thể nạp lại ở Well trong town và có thể craft thêm hiệu ứng.</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200" data-article-i18n="equipmentText">Nhân vật có 9 slot gear cơ bản: weapon, helmet, chest, gloves, boots, amulet, hai ring và belt. Weapon thường là nguồn damage chính của Attack, boots hay có Movement Speed, chest thường cho Armour/Evasion/Energy Shield lớn.</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200" data-article-i18n="modifierText">Item Modifiers còn gọi là affixes. Implicit là dòng có sẵn từ base item; Prefix và Suffix là các dòng thêm vào, thường tối đa 3 Prefix và 3 Suffix trên Rare item. Một modifier thường thuộc một phía cố định, không vừa là Prefix vừa là Suffix.</p>
+      </div>
+      <div class="mt-4 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+        <div class="grid grid-cols-[120px_1fr] bg-slate-100 text-sm font-black text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+          <span class="p-3">Rarity</span>
+          <span class="p-3" data-article-i18n="rarityMeaning">Ý nghĩa cho newbie</span>
+        </div>
+        <div class="grid grid-cols-[120px_1fr] border-t border-slate-200 text-sm font-semibold dark:border-slate-700">
+          <span class="p-3 font-black">Normal</span>
+          <span class="p-3 text-slate-700 dark:text-slate-200" data-article-i18n="rarityNormal">Chỉ có base item và Implicit, chưa có Prefix/Suffix.</span>
+        </div>
+        <div class="grid grid-cols-[120px_1fr] border-t border-slate-200 text-sm font-semibold dark:border-slate-700">
+          <span class="p-3 font-black">Magic</span>
+          <span class="p-3 text-slate-700 dark:text-slate-200" data-article-i18n="rarityMagic">Tối đa 1 Prefix và 1 Suffix.</span>
+        </div>
+        <div class="grid grid-cols-[120px_1fr] border-t border-slate-200 text-sm font-semibold dark:border-slate-700">
+          <span class="p-3 font-black">Rare</span>
+          <span class="p-3 text-slate-700 dark:text-slate-200" data-article-i18n="rarityRare">Có thể lên tới 3 Prefix và 3 Suffix, thường là xương sống để lấy Life, Resistance và damage.</span>
+        </div>
+        <div class="grid grid-cols-[120px_1fr] border-t border-slate-200 text-sm font-semibold dark:border-slate-700">
+          <span class="p-3 font-black">Unique</span>
+          <span class="p-3 text-slate-700 dark:text-slate-200" data-article-i18n="rarityUnique">Có hiệu ứng đặc biệt, có thể rất mạnh, nhưng không tự do đổi Prefix/Suffix như Rare item. Nhân vật khỏe thường trộn một vài Unique với Rare item để bù Life, Resistance và damage.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-emerald-600 dark:text-emerald-300" aria-hidden="true">shield</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="defenceTitle">Defences: sống trước rồi mới tính damage</h2>
+      </div>
+      <div class="mt-4 grid gap-3 lg:grid-cols-2">
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200" data-article-i18n="resistanceText">Resistance là lớp phòng thủ quan trọng nhất: Fire, Cold, Lightning và Chaos Resistance. Cap cơ bản thường là 75%. Từ 70% lên 75% nhìn như 5%, nhưng với hit 100 damage thì bạn nhận 30 thay vì 25, tức thiếu 5% res có thể khiến damage lọt qua cao hơn 20%. Chaos Resistance đầu game khó cap hơn, nhưng càng gần boss Chaos hoặc endgame càng phải để ý.</p>
+        <p class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200" data-article-i18n="mitigationText">Physical hit cần lớp giảm khác: Strength thường đi với Life và Armour, Dexterity với Evasion, Intelligence với Energy Shield. Armour giảm physical hit theo lượng damage, Evasion cho cơ hội né hẳn, còn Energy Shield là lớp máu phụ hồi nhanh nếu gần đây không bị đánh. Build phòng thủ tốt có thể trộn nhiều lớp, đổi lại sẽ tốn item/passive đáng lẽ dùng cho damage.</p>
+      </div>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-red-600 dark:text-red-300" aria-hidden="true">swords</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="offenceTitle">Offences: hiểu damage scale từ đâu</h2>
+      </div>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Attack</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="attackText">Scale chủ yếu theo weapon. Local modifier trên vũ khí như increased Physical Damage nâng base damage trước, rồi mới nhân tiếp với bonus từ tree/gear, nên weapon tốt làm Attack mạnh lên rất rõ.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Spell</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="spellText">Base damage nằm trên Skill Gem, nên thường scale mạnh bằng gem level, spell damage, cast speed và modifier đúng element hoặc school. Dòng +level to gems thường rất giá trị cho Spell.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Damage over Time</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="dotText">Thường dựa vào gem và cấp gem, hay gặp ở Ignite, Bleed hoặc Chaos Damage. Đọc kỹ tag để biết dòng nào thật sự tăng damage, vì không phải bonus Attack/Spell nào cũng áp dụng.</p>
+        </article>
+        <article class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+          <h3 class="font-black text-slate-950 dark:text-white">Secondary Damage</h3>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="secondaryText">Không phải Attack hay Spell, nên chỉ ăn các nhóm bonus đúng loại như fire damage hoặc area damage. Dòng increased attack/spell damage nhìn mạnh nhưng có thể không tác dụng.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="grid gap-4 lg:grid-cols-2">
+      <article class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-rounded text-violet-600 dark:text-violet-300" aria-hidden="true">map</span>
+          <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="campaignTitle">Campaign</h2>
+        </div>
+        <div class="mt-4 grid gap-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">
+          <p data-article-i18n="campaignText">Campaign là phần cốt truyện để mở đường tới endgame. POE2 campaign gồm 6 acts. Quest phụ có thể cho thưởng vĩnh viễn như attribute hoặc Spirit, và bạn cần làm lại các thưởng này trên từng character.</p>
+          <p data-article-i18n="campaignBoss">Trong campaign không có phạt XP khi chết, skill dùng Spirit như Aura vẫn giữ trên nhân vật sau khi chết. Boss fight thì phải làm gọn trong một lượt: nếu chết, boss reset; bạn không thể cứ về town nạp Flask rồi quay lại đánh tiếp cùng một lượt.</p>
+        </div>
+      </article>
+
+      <article class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-rounded text-amber-600 dark:text-amber-300" aria-hidden="true">toll</span>
+          <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="currencyTitle">Currency Items, Gold và Trade</h2>
+        </div>
+        <div class="mt-4 grid gap-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">
+          <p data-article-i18n="currencyText">Trong POE, Currency Item không chỉ là tiền, mà còn là vật phẩm craft lên gear. Currency có hiệu ứng craft mạnh hơn thường sẽ có giá trị hơn trong economy.</p>
+          <p data-article-i18n="goldText">POE2 thêm Gold: rơi trong game, tự nhặt trong phạm vi gần, dùng với NPC để mua hoặc gamble item. Gold không trade trực tiếp và không kiếm ngoài việc chơi game; nó có thể đóng vai trò phí để hệ thống Trade tiện hơn, nhất là các trade nhỏ giữa Currency, còn gear vẫn cần marketplace.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="glass-panel beginner-prose rounded-2xl p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-lime-600 dark:text-lime-300" aria-hidden="true">flag</span>
+        <h2 class="text-xl font-black text-slate-950 dark:text-white" data-article-i18n="closingTitle">Chốt cho newbie</h2>
+      </div>
+      <p class="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200" data-article-i18n="closingText">Không cần thuộc hết mọi cơ chế mới được chơi. Hãy chọn mode dễ thở, lấy một build starter nếu muốn chắc tay, đọc đúng tag của skill, giữ Resistance ổn, nâng Flask đều, làm quest phụ có thưởng vĩnh viễn và nhìn Modifier thay vì chỉ nhìn màu item. Càng tạo nhiều nhân vật, bạn càng hiểu vì sao POE hấp dẫn.</p>
+    </section>
+  </main>
+
+  <script src="components/poe-ui-utils.js"></script>
+  <script>
+    const NEWBIE_TEXT = {
+      documentTitle: { vi: "Hướng dẫn nhập môn Path of Exile 2 - POE2", en: "Path of Exile 2 beginner guide - POE2" },
+      eyebrow: { vi: "Bài hướng dẫn hệ thống hóa", en: "Systemized beginner guide" },
+      title: { vi: "Hướng dẫn nhập môn Path of Exile 2", en: "Path of Exile 2 beginner guide" },
+      subtitle: {
+        vi: "Bản hướng dẫn nhập môn được viết lại gọn, rõ và có hệ thống, giữ thuật ngữ POE quan trọng để người mới vừa đọc hiểu vừa tra cứu được trong game.",
+        en: "A concise, structured beginner guide that keeps important POE terms readable for in-game lookup."
+      },
+      introTitle: { vi: "Đọc nhanh trước khi vào game", en: "Quick read before playing" },
+      introP1: {
+        vi: "Path of Exile 2 là Action RPG thiên về loot, build nhân vật và thử nghiệm cơ chế. Người mới dễ bị ngợp không phải vì game bắt hiểu hết ngay, mà vì mỗi lựa chọn nhỏ như Class, Skill Gem, Passive Tree hay item đều có thể kéo nhân vật sang hướng khác.",
+        en: "Path of Exile 2 is an action RPG about loot, character builds, and mechanical experimentation. New players can feel overwhelmed because even small choices such as class, skill gems, passive pathing, and gear can push a character in a different direction."
+      },
+      introP2: {
+        vi: "Cách đọc bài này: giữ các thuật ngữ như Build guide, Class, Ascendancy, Skill Gem, Flask, Modifier bằng tiếng Anh khi đó là từ trong game; phần giải thích đi kèm sẽ nói rõ nó dùng để làm gì và người mới nên quyết định ra sao.",
+        en: "How to read this article: terms such as Build guide, Class, Ascendancy, Skill Gem, Flask, and Modifier stay in English when they are in-game terms; the surrounding explanation tells you what they do and how a beginner should decide."
+      },
+      tocLabel: { vi: "Lộ trình đọc", en: "Reading path" },
+      toc1: { vi: "Chọn có theo Build guide hay tự mò.", en: "Decide whether to follow a build guide or explore blind." },
+      toc2: { vi: "Hiểu chế độ game, mùa giải trước khi tạo nhân vật.", en: "Understand game modes and seasons before creating a character." },
+      toc3: { vi: "Chọn Class, Ascendancy và hướng Passive Tree.", en: "Choose a class, ascendancy, and passive tree direction." },
+      toc4: { vi: "Nắm Skill Gem, Support Gem, Flask và tài nguyên.", en: "Learn skill gems, support gems, flasks, and resources." },
+      toc5: { vi: "Đọc item, phòng thủ, sát thương, campaign và Gold.", en: "Read items, defences, offences, campaign rules, and Gold." },
+      buildTitle: { vi: "Build guide: nên theo hay tự chơi?", en: "Build guides: follow one or go blind?" },
+      buildP1: {
+        vi: "POE phức tạp, nhưng không nên để độ phức tạp làm bạn sợ bắt đầu. Nếu muốn trải nghiệm nhẹ đầu hơn, hãy theo một Build guide dạng starter hoặc league start: loại build này thường không cần đồ đắt, không lệ thuộc Unique hiếm và đủ khỏe để đi phần lớn nội dung.",
+        en: "POE is complex, but that complexity should not stop you from starting. If you want a smoother experience, follow a starter or league start build guide: these builds usually avoid expensive gear, do not rely on rare uniques, and are strong enough for most content."
+      },
+      buildP2: {
+        vi: "Theo guide giúp bạn ít phải tự quyết định, lên sức mạnh đều hơn và thấy nhiều nội dung nhanh hơn. Ngược lại, tự mò sẽ vui hơn nếu bạn thích khám phá Passive Tree, skill và item theo cách của mình, chấp nhận nhân vật yếu hơn hoặc chậm hơn người khác.",
+        en: "Following a guide reduces decisions, gives steadier power, and lets you see more content faster. Going blind is more fun if you enjoy discovering the passive tree, skills, and items yourself while accepting that your character may be weaker or slower."
+      },
+      buildFollow: {
+        vi: "Hợp nếu bạn muốn đi campaign mượt, ít đọc wiki, ít tự sửa sai và có một khung rõ ràng về gem, passive, item.",
+        en: "Best if you want a smooth campaign, less wiki reading, fewer self-made mistakes, and a clear structure for gems, passives, and items."
+      },
+      buildBlindLabel: { vi: "Tự khám phá", en: "Blind exploration" },
+      buildBlind: {
+        vi: "Hợp nếu bạn thích học cơ chế từ thất bại, không vội endgame và xem quá trình hiểu game là một phần niềm vui.",
+        en: "Best if you like learning mechanics through failure, are not rushing endgame, and see the learning process as part of the fun."
+      },
+      modeTitle: { vi: "Chế độ game, mùa giải", en: "Game modes and seasons" },
+      leagueStandardTitle: { vi: "Standard league", en: "Standard league" },
+      leagueStandardText: {
+        vi: "League cố định, giữ nhân vật lâu dài và không reset theo mùa. Hợp nếu bạn muốn chơi tiếp nhân vật cũ hoặc thử build không cần chạy theo mùa mới.",
+        en: "The permanent league where characters stay long-term and do not reset each season. Good when you want to keep playing an old character or test builds outside the seasonal race."
+      },
+      leagueSeasonTitle: { vi: "League season", en: "Seasonal league" },
+      leagueSeasonText: {
+        vi: "Mùa giải mới có nội dung riêng, economy mới và mọi người bắt đầu lại từ đầu. Hết mùa, nhân vật thường được chuyển về Standard league tương ứng.",
+        en: "A new season with its own content, fresh economy, and everyone starting from zero. When it ends, characters usually migrate to the matching Standard league."
+      },
+      modeDefaultTitle: { vi: "Mặc định", en: "Default" },
+      modeDefault: { vi: "Chế độ cơ bản, không luật phụ. Có thể party và trade với người khác.", en: "The basic mode with no extra rules. You can party and trade with other players." },
+      modeSsfTitle: { vi: "SSF", en: "SSF" },
+      modeSsf: { vi: "Không trade, không party. Mọi item bạn dùng đều do chính bạn tự kiếm.", en: "No trading and no partying. Every item you use is found by you." },
+      modeHardcoreTitle: { vi: "Hardcore", en: "Hardcore" },
+      modeHardcore: { vi: "Chết là nhân vật rời khỏi Hardcore về league thường tương ứng, nên cảm giác gần như chỉ có một mạng.", en: "If you die, the character leaves Hardcore for the matching non-Hardcore league, so it effectively feels like one life." },
+      modeHcssfTitle: { vi: "SSF x HC", en: "SSF + HC" },
+      modeHcssf: { vi: "Vừa không trade/party vừa có luật Hardcore. Chết thì nhân vật rời khỏi Hardcore SSF về SSF tương ứng.", en: "Combines SSF and Hardcore: no trade, no party, and Hardcore death rules. On death, the character moves from Hardcore SSF to the matching SSF league." },
+      classTitle: { vi: "Class, Ascendancy và điểm bắt đầu trên Passive Tree", en: "Classes, ascendancies, and passive tree starts" },
+      classIntro: {
+        vi: "POE2 có 12 Class nền, chia theo Strength, Dexterity, Intelligence và các cặp thuộc tính. Passive Tree có 6 điểm bắt đầu chính: hai Class cùng nhóm thuộc tính sẽ khởi đầu gần nhau, ví dụ Marauder và Warrior cùng khu Strength.",
+        en: "POE2 has 12 base classes split by Strength, Dexterity, Intelligence, and hybrid attributes. The Passive Tree has 6 main starting areas: two classes in the same attribute group start near each other, such as Marauder and Warrior in the Strength area."
+      },
+      ascendancyText: {
+        vi: "Ascendancy là chuyên môn hóa của Class. Mỗi Class có 3 Ascendancy, tổng cộng 36 hướng chuyên môn hóa; mỗi hướng có cây điểm nhỏ nhưng bonus rất mạnh, thường đủ để định hình cả build.",
+        en: "An Ascendancy is a class specialization. Each class has 3 Ascendancies, 36 total specializations; each has a small passive tree with very strong bonuses that often define the whole build."
+      },
+      classAdvice: {
+        vi: "Class gợi ý vũ khí và phong cách, nhưng không khóa cứng. Bạn vẫn có thể chơi lệch Class, chỉ là sẽ cần hiểu rõ hơn về attribute, item và đường đi trên Passive Tree để scale đúng.",
+        en: "A class suggests weapons and playstyle, but it does not hard-lock you. Off-class builds are possible, but they require better understanding of attributes, items, and Passive Tree pathing so the scaling still works."
+      },
+      passiveTitle: { vi: "Passive Skill Tree & Dual Specialization", en: "Passive Skill Tree & Dual Specialization" },
+      smallPassiveText: {
+        vi: "Node nhỏ, thường cho damage, attribute, accuracy, armour hoặc chỉ số cơ bản. Nó là đường đi để tới node mạnh hơn.",
+        en: "A small node, usually granting damage, attributes, accuracy, armour, or basic stats. It is also the path toward stronger nodes."
+      },
+      notableText: {
+        vi: "Node lớn hơn trong một cụm, thường là mục tiêu bạn muốn path tới vì nó gom nhiều sức mạnh cùng chủ đề.",
+        en: "A larger node in a cluster, often the goal you path toward because it concentrates power around one theme."
+      },
+      keystoneText: {
+        vi: "Node cực mạnh có thể đổi hẳn cách build vận hành, nhưng thường đi kèm điều kiện hoặc mặt trái.",
+        en: "A powerful node that can change how a build functions, but usually comes with conditions or downsides."
+      },
+      dualSpecText: {
+        vi: "Dual Specialization là thay đổi lớn của POE2: một phần điểm passive có thể gán khác nhau cho từng bộ vũ khí. Khi Weapon Swap, skill tự dùng bộ vũ khí và nhánh passive phù hợp hơn, ví dụ một bộ lấy Cold Damage còn bộ kia lấy Lightning Damage. Số điểm kiểu này có giới hạn và nhận từ Skill Books trong nhiệm vụ.",
+        en: "Dual Specialization is a major POE2 change: some passive points can be allocated differently for each weapon set. When you weapon swap, skills automatically use the more appropriate weapon set and passive branch, such as one setup for Cold Damage and another for Lightning Damage. These points are limited and come from quest Skill Books."
+      },
+      combatTitle: { vi: "Combat, tài nguyên và hệ gem", en: "Combat, resources, and gems" },
+      dodgeText: {
+        vi: "Dodge Roll có sẵn cho mọi nhân vật, mặc định dùng Space. Dùng đúng lúc để né projectile, hit lớn và hủy animation khi kẹt tình huống xấu. Roll không né được AoE đã nổ, nên phải lăn ra khỏi vùng nguy hiểm trước khi nó chạm. Lăn không nhanh hơn đi bộ, chịu ảnh hưởng bởi Movement Speed và không hủy giữa chừng.",
+        en: "Dodge Roll is available to every character, defaulting to Space. Use it to avoid projectiles, big hits, and to cancel skill animations when caught in a bad situation. A roll does not avoid an AoE that has already landed, so move out before it hits. Rolling is not faster than walking, is affected by Movement Speed, and cannot be cancelled midway."
+      },
+      resourceText: {
+        vi: "Life giữ bạn sống, Mana dùng để cast skill, Spirit dành cho hiệu ứng duy trì như aura, buff vĩnh viễn hoặc minion. Spirit có thể tăng qua boss reward hoặc modifier trên item như Sceptre.",
+        en: "Life keeps you alive, Mana casts skills, and Spirit reserves persistent effects such as auras, permanent buffs, or minions. Spirit can increase through boss rewards or item modifiers such as those on sceptres."
+      },
+      skillGemText: {
+        vi: "Skill Gem là kỹ năng bạn dùng: bắn Fireball, summon skeleton, đánh bằng vũ khí, bật phòng thủ. Skill được chia thành 12 nhóm gợi ý theo Class, nhưng Uncut Skill Gem vẫn cho phép chọn skill đủ cấp độ bất kể bạn đang chơi Class nào.",
+        en: "A Skill Gem is the ability you use: casting Fireball, summoning skeletons, attacking with a weapon, or enabling defence. Skills are split into 12 class-suggested groups, but an Uncut Skill Gem can choose any skill you meet the level requirement for, regardless of your class."
+      },
+      supportGemText: {
+        vi: "Mỗi nhân vật có 9 slot Skill Gem. Mỗi Skill Gem mặc định có tối thiểu 2 socket Support Gem và có thể nâng dần lên tối đa 5 support bằng currency; một skill đủ 5 support thường được gọi là 6-link.",
+        en: "Each character has 9 Skill Gem slots. Each Skill Gem starts with at least 2 Support Gem sockets and can be upgraded to a maximum of 5 supports with currency; a skill with all 5 supports is commonly called a 6-link."
+      },
+      gemColorText: {
+        vi: "Gem đỏ thường theo Strength, xanh dương theo Intelligence, xanh lá theo Dexterity. Support socket cũng có màu và Support Gem sẽ tăng yêu cầu attribute của skill, nên gắn support bừa có thể khiến bạn thiếu stat để dùng skill.",
+        en: "Red gems usually align with Strength, blue with Intelligence, and green with Dexterity. Support sockets also have colors, and Support Gems increase a skill's attribute requirements, so careless support choices can leave you short on stats."
+      },
+      metaGemText: {
+        vi: "Meta Gem hay Trigger Gem là gem kích hoạt skill khác khi đủ điều kiện, ví dụ gây Shock đủ nhiều rồi tự cast skill được gắn vào. Socket của Meta Gem có thể chứa Skill Gem để trigger hoặc Support Gem để buff, nên cần đọc điều kiện rất kỹ.",
+        en: "Meta Gems, also called Trigger Gems, activate linked skills when conditions are met, such as shocking enough enemies to automatically cast socketed skills. A Meta Gem socket can hold a Skill Gem to trigger or a Support Gem to buff, so read the condition carefully."
+      },
+      flaskGearTitle: { vi: "Flask, equipment và cách đọc item", en: "Flasks, equipment, and reading items" },
+      flaskText: {
+        vi: "Flask là bình dùng trong combat, nhân vật có 5 slot Flask. Life Flask hồi máu, Mana Flask hồi mana, Utility Flask cho buff phòng thủ hoặc tấn công. Flask tiêu charge khi dùng, hồi charge khi giết monster Magic, Rare hoặc Unique, có thể nạp lại ở Well trong town và có thể craft thêm hiệu ứng.",
+        en: "Flasks are combat potions, and characters have 5 Flask slots. Life Flasks restore life, Mana Flasks restore mana, and Utility Flasks grant defensive or offensive buffs. Flasks spend charges when used, regain charges from Magic, Rare, or Unique monsters, can refill at a town well, and can be crafted for extra effects."
+      },
+      equipmentText: {
+        vi: "Nhân vật có 9 slot gear cơ bản: weapon, helmet, chest, gloves, boots, amulet, hai ring và belt. Weapon thường là nguồn damage chính của Attack, boots hay có Movement Speed, chest thường cho Armour/Evasion/Energy Shield lớn.",
+        en: "Characters have 9 basic gear slots: weapon, helmet, chest, gloves, boots, amulet, two rings, and belt. Weapons are often the main damage source for Attacks, boots often carry Movement Speed, and chest pieces usually provide large Armour, Evasion, or Energy Shield."
+      },
+      modifierText: {
+        vi: "Item Modifiers còn gọi là affixes. Implicit là dòng có sẵn từ base item; Prefix và Suffix là các dòng thêm vào, thường tối đa 3 Prefix và 3 Suffix trên Rare item. Một modifier thường thuộc một phía cố định, không vừa là Prefix vừa là Suffix.",
+        en: "Item Modifiers are also called affixes. An Implicit comes from the base item; Prefixes and Suffixes are added lines, usually up to 3 Prefixes and 3 Suffixes on a Rare item. A modifier usually belongs to one side and is not both a Prefix and a Suffix."
+      },
+      rarityMeaning: { vi: "Ý nghĩa cho newbie", en: "Meaning for beginners" },
+      rarityNormal: { vi: "Chỉ có base item và Implicit, chưa có Prefix/Suffix.", en: "Only the base item and implicit, with no prefixes or suffixes." },
+      rarityMagic: { vi: "Tối đa 1 Prefix và 1 Suffix.", en: "Up to 1 prefix and 1 suffix." },
+      rarityRare: {
+        vi: "Có thể lên tới 3 Prefix và 3 Suffix, thường là xương sống để lấy Life, Resistance và damage.",
+        en: "Can reach up to 3 prefixes and 3 suffixes, often forming the backbone for Life, Resistance, and damage."
+      },
+      rarityUnique: {
+        vi: "Có hiệu ứng đặc biệt, có thể rất mạnh, nhưng không tự do đổi Prefix/Suffix như Rare item. Nhân vật khỏe thường trộn một vài Unique với Rare item để bù Life, Resistance và damage.",
+        en: "Has special effects and can be very strong, but cannot freely change prefixes or suffixes like a Rare item. Strong characters usually mix a few Uniques with Rare items to cover Life, Resistance, and damage."
+      },
+      defenceTitle: { vi: "Defences: sống trước rồi mới tính damage", en: "Defences: survive before chasing damage" },
+      resistanceText: {
+        vi: "Resistance là lớp phòng thủ quan trọng nhất: Fire, Cold, Lightning và Chaos Resistance. Cap cơ bản thường là 75%. Từ 70% lên 75% nhìn như 5%, nhưng với hit 100 damage thì bạn nhận 30 thay vì 25, tức thiếu 5% res có thể khiến damage lọt qua cao hơn 20%. Chaos Resistance đầu game khó cap hơn, nhưng càng gần boss Chaos hoặc endgame càng phải để ý.",
+        en: "Resistance is the most important defensive layer: Fire, Cold, Lightning, and Chaos Resistance. The basic cap is usually 75%. Going from 70% to 75% looks like only 5%, but against a 100 damage hit you take 30 instead of 25, so missing 5% resistance can mean 20% more damage getting through. Chaos Resistance is harder to cap early, but becomes more important near Chaos bosses and endgame."
+      },
+      mitigationText: {
+        vi: "Physical hit cần lớp giảm khác: Strength thường đi với Life và Armour, Dexterity với Evasion, Intelligence với Energy Shield. Armour giảm physical hit theo lượng damage, Evasion cho cơ hội né hẳn, còn Energy Shield là lớp máu phụ hồi nhanh nếu gần đây không bị đánh. Build phòng thủ tốt có thể trộn nhiều lớp, đổi lại sẽ tốn item/passive đáng lẽ dùng cho damage.",
+        en: "Physical hits need other mitigation: Strength often pairs with Life and Armour, Dexterity with Evasion, and Intelligence with Energy Shield. Armour reduces physical hits based on hit size, Evasion gives a chance to avoid hits entirely, and Energy Shield is an extra life pool that recovers quickly after not taking damage. A good defensive build can combine layers, but that costs item or passive budget that could otherwise go into damage."
+      },
+      offenceTitle: { vi: "Offences: hiểu damage scale từ đâu", en: "Offences: know where damage scales from" },
+      attackText: {
+        vi: "Scale chủ yếu theo weapon. Local modifier trên vũ khí như increased Physical Damage nâng base damage trước, rồi mới nhân tiếp với bonus từ tree/gear, nên weapon tốt làm Attack mạnh lên rất rõ.",
+        en: "Scales mainly from the weapon. Local modifiers on the weapon, such as increased Physical Damage, raise the base damage first, then bonuses from tree and gear scale it further, so a good weapon noticeably improves Attacks."
+      },
+      spellText: {
+        vi: "Base damage nằm trên Skill Gem, nên thường scale mạnh bằng gem level, spell damage, cast speed và modifier đúng element hoặc school. Dòng +level to gems thường rất giá trị cho Spell.",
+        en: "Base damage sits on the Skill Gem, so Spells usually scale strongly with gem level, spell damage, cast speed, and modifiers matching the element or school. +level to gems is often very valuable for Spells."
+      },
+      dotText: {
+        vi: "Thường dựa vào gem và cấp gem, hay gặp ở Ignite, Bleed hoặc Chaos Damage. Đọc kỹ tag để biết dòng nào thật sự tăng damage, vì không phải bonus Attack/Spell nào cũng áp dụng.",
+        en: "Usually relies on gems and gem levels, often appearing as Ignite, Bleed, or Chaos Damage. Read tags carefully to know what truly increases damage, because not every Attack or Spell bonus applies."
+      },
+      secondaryText: {
+        vi: "Không phải Attack hay Spell, nên chỉ ăn các nhóm bonus đúng loại như fire damage hoặc area damage. Dòng increased attack/spell damage nhìn mạnh nhưng có thể không tác dụng.",
+        en: "Not an Attack or a Spell, so it only uses matching bonus groups such as fire damage or area damage. Increased attack or spell damage may look strong but can do nothing."
+      },
+      campaignTitle: { vi: "Campaign", en: "Campaign" },
+      campaignText: {
+        vi: "Campaign là phần cốt truyện để mở đường tới endgame. POE2 campaign gồm 6 acts. Quest phụ có thể cho thưởng vĩnh viễn như attribute hoặc Spirit, và bạn cần làm lại các thưởng này trên từng character.",
+        en: "The campaign is the story path toward endgame. POE2's campaign has 6 acts. Optional quests can grant permanent rewards such as attributes or Spirit, and these rewards must be earned again on each character."
+      },
+      campaignBoss: {
+        vi: "Trong campaign không có phạt XP khi chết, skill dùng Spirit như Aura vẫn giữ trên nhân vật sau khi chết. Boss fight thì phải làm gọn trong một lượt: nếu chết, boss reset; bạn không thể cứ về town nạp Flask rồi quay lại đánh tiếp cùng một lượt.",
+        en: "The campaign has no XP death penalty, and Spirit skills such as Auras stay on your character after death. Boss fights still need to be handled in one attempt: if you die, the boss resets, and you cannot keep returning to town to refill flasks and continue the same attempt."
+      },
+      currencyTitle: { vi: "Currency Items, Gold và Trade", en: "Currency Items, Gold, and Trade" },
+      currencyText: {
+        vi: "Trong POE, Currency Item không chỉ là tiền, mà còn là vật phẩm craft lên gear. Currency có hiệu ứng craft mạnh hơn thường sẽ có giá trị hơn trong economy.",
+        en: "In POE, Currency Items are not just money; they are also crafting items for gear. Currency with stronger crafting effects usually becomes more valuable in the economy."
+      },
+      goldText: {
+        vi: "POE2 thêm Gold: rơi trong game, tự nhặt trong phạm vi gần, dùng với NPC để mua hoặc gamble item. Gold không trade trực tiếp và không kiếm ngoài việc chơi game; nó có thể đóng vai trò phí để hệ thống Trade tiện hơn, nhất là các trade nhỏ giữa Currency, còn gear vẫn cần marketplace.",
+        en: "POE2 adds Gold: it drops in game, is auto-looted nearby, and is used with NPCs to buy or gamble items. Gold cannot be traded directly and is earned only by playing; it can act as a fee to make Trade smoother, especially small Currency trades, while gear still uses the marketplace."
+      },
+      closingTitle: { vi: "Chốt cho newbie", en: "Final beginner takeaway" },
+      closingText: {
+        vi: "Không cần thuộc hết mọi cơ chế mới được chơi. Hãy chọn mode dễ thở, lấy một build starter nếu muốn chắc tay, đọc đúng tag của skill, giữ Resistance ổn, nâng Flask đều, làm quest phụ có thưởng vĩnh viễn và nhìn Modifier thay vì chỉ nhìn màu item. Càng tạo nhiều nhân vật, bạn càng hiểu vì sao POE hấp dẫn.",
+        en: "You do not need to memorize every mechanic before playing. Pick an approachable mode, use a starter build if you want structure, read skill tags, keep Resistance healthy, upgrade flasks, do optional quests with permanent rewards, and judge modifiers instead of item color. The more characters you make, the more POE starts to make sense."
+      }
+    };
+
+    const { i18nText, onLocaleChange } = window.PoeUi;
+    const applyArticleLocale = () => {
+      document.title = i18nText(NEWBIE_TEXT.documentTitle, "Path of Exile 2 beginner guide - POE2");
+      document.querySelectorAll("[data-article-i18n]").forEach((element) => {
+        const key = element.dataset.articleI18n;
+        element.textContent = i18nText(NEWBIE_TEXT[key], element.textContent);
+      });
+    };
+    applyArticleLocale();
+    onLocaleChange(applyArticleLocale);
+  </script>
+</body>
+
+</html>

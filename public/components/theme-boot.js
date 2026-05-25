@@ -1,10 +1,12 @@
 (() => {
   const storageKey = "patchnote-theme";
+  const localeStorageKey = "poe-locale";
   const root = document.documentElement;
   const palette = {
     dark: { bg: "#060813", fg: "#f8fafc" },
     light: { bg: "#f8fafc", fg: "#0f172a" }
   };
+  const normalizeLocale = (value = "") => String(value || "").toLowerCase().startsWith("en") ? "en" : "vi";
 
   const applyCriticalThemePaint = (isDark) => {
     const theme = isDark ? palette.dark : palette.light;
@@ -31,8 +33,23 @@
 
   const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches || false;
   const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+  const locale = (() => {
+    try {
+      return normalizeLocale(localStorage.getItem(localeStorageKey) || root.lang || "vi");
+    } catch {
+      return normalizeLocale(root.lang || "vi");
+    }
+  })();
 
+  try {
+    sessionStorage.removeItem("poe-route-transition");
+  } catch {
+    // Stale cosmetic navigation flags should never block first paint.
+  }
+
+  root.lang = locale;
+  root.dataset.locale = locale;
   root.classList.toggle("dark", isDark);
   applyCriticalThemePaint(isDark);
-  window.PoeTheme = { applyCriticalThemePaint, storageKey };
+  window.PoeTheme = { applyCriticalThemePaint, storageKey, localeStorageKey };
 })();

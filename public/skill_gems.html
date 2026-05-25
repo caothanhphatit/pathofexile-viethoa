@@ -15,13 +15,14 @@
   <meta property="og:title" content="Skill Gems Path of Exile 2 tiếng Việt">
   <meta property="og:description" content="Tra cứu mô tả kỹ năng, tier, tag, yêu cầu và detail từng Skill Gem Path of Exile 2 bằng tiếng Việt.">
   <meta property="og:url" content="https://poeviethoa.net/skill-gems">
-  <meta property="og:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Skill Gems Path of Exile 2 tiếng Việt">
   <meta name="twitter:description" content="Tra cứu mô tả kỹ năng, tier, tag, yêu cầu và detail từng Skill Gem POE2.">
-  <meta name="twitter:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="theme-color" content="#0f172a">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link href="dist/app.css?v=20260524-font" rel="stylesheet">
@@ -299,6 +300,9 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2 md:justify-end">
+          <a class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" href="/tra-cuu" data-lookup-back>
+            <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Tra cứu
+          </a>
           <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
             <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">auto_awesome_motion</span>
             <span id="gemCount" class="font-display font-black">0 skill gems</span>
@@ -401,7 +405,23 @@
   <script>
     const data = window.POE2_SKILL_GEMS || { gems: [], latest_run: null };
     const gems = data.gems || [];
-    const nf = new Intl.NumberFormat("vi-VN");
+    const PAGE_TEXT = {
+      documentTitle: { vi: "Skill gems - POE2", en: "Skill gems - POE2" },
+      skipNavigation: { vi: "Bỏ qua điều hướng", en: "Skip navigation" },
+      heroSubtitle: { vi: "Tra cứu chi tiết chỉ số, thuộc tính và hiệu ứng của các skill gems", en: "Look up skill gem stats, properties, and detailed effects" },
+      filterLabel: { vi: "Bộ lọc skill gems", en: "Skill gem filters" },
+      searchPlaceholder: { vi: "Tìm tên skill, tag, mô tả…", en: "Search skill name, tags, description..." },
+      searchLabel: { vi: "Tìm skill gem", en: "Search skill gems" },
+      tierLabel: { vi: "Lọc theo tier", en: "Filter by tier" },
+      tagLabel: { vi: "Lọc theo tag", en: "Filter by tag" },
+      gemUnit: { vi: "skill gems", en: "skill gems" },
+      resultMeta: { vi: "Đang hiển thị {visible} / {filtered} kết quả, trong tổng {total} skill gem.", en: "Showing {visible} / {filtered} results out of {total} skill gems." },
+      feedback: { vi: "Góp ý dịch", en: "Suggest translation" },
+      strength: { vi: "Strength", en: "Strength" },
+      dexterity: { vi: "Dexterity", en: "Dexterity" },
+      intelligence: { vi: "Intelligence", en: "Intelligence" },
+      neutral: { vi: "Neutral", en: "Neutral" }
+    };
     const searchInput = document.getElementById("searchInput");
     const tierFilter = document.getElementById("tierFilter");
     const tagFilter = document.getElementById("tagFilter");
@@ -411,26 +431,68 @@
     const params = new URLSearchParams(window.location.search);
     let visibleLimit = 60;
 
-    const { escapeHtml, i18nText, i18nList, firstPresent, truncateText } = window.PoeUi;
+    const {
+      currentLocale,
+      escapeHtml,
+      formatNumber,
+      i18nText,
+      i18nList,
+      firstPresent,
+      localeText,
+      onLocaleChange,
+      truncateText
+    } = window.PoeUi;
+    const pageText = (key) => i18nText(PAGE_TEXT[key], key);
 
     const colorLabel = (color) => ({
-      red: "Strength",
-      green: "Dexterity",
-      blue: "Intelligence",
-      item: "Neutral"
-    }[color] || "Neutral");
-
-    document.getElementById("gemCount").textContent = `${nf.format(data.total || gems.length)} skill gems`;
+      red: pageText("strength"),
+      green: pageText("dexterity"),
+      blue: pageText("intelligence"),
+      item: pageText("neutral")
+    }[color] || pageText("neutral"));
 
     const tiers = [...new Set(gems.map((gem) => gem.tier).filter(Boolean))].sort((a, b) => a - b);
-    tierFilter.innerHTML = `<option value="all">Tất cả tier</option>${tiers.map((tier) => `<option value="${tier}">Tier ${tier}</option>`).join("")}`;
 
-    const tagLabels = new Map();
-    gems.forEach((gem) => (gem.tags || []).forEach((tag) => {
-      if (!tagLabels.has(tag)) tagLabels.set(tag, tag);
-    }));
-    const tags = [...new Set(gems.flatMap((gem) => gem.tags || []))].sort((a, b) => (tagLabels.get(a) || a).localeCompare(tagLabels.get(b) || b, "vi"));
-    tagFilter.innerHTML = `<option value="all">Tất cả tag</option>${tags.map((tag) => `<option value="${escapeHtml(tag)}">${escapeHtml(tagLabels.get(tag) || tag)}</option>`).join("")}`;
+    const localizedTags = (gem) => i18nList(gem.i18n?.tags, gem.tags || []);
+    const tagLabel = (tag) => {
+      for (const gem of gems) {
+        const index = (gem.tags || []).indexOf(tag);
+        if (index !== -1) return i18nText(gem.i18n?.tags?.[index], tag);
+      }
+      return tag;
+    };
+    const tags = [...new Set(gems.flatMap((gem) => gem.tags || []))]
+      .sort((a, b) => tagLabel(a).localeCompare(tagLabel(b), currentLocale() === "en" ? "en" : "vi"));
+    const renderFilterOptions = () => {
+      const previousTier = tierFilter.value || "all";
+      const previousTag = tagFilter.value || "all";
+      tierFilter.innerHTML = `<option value="all">${escapeHtml(localeText("allTiers"))}</option>${tiers.map((tier) => `<option value="${tier}">Tier ${tier}</option>`).join("")}`;
+      tagFilter.innerHTML = `<option value="all">${escapeHtml(localeText("allTags"))}</option>${tags.map((tag) => `<option value="${escapeHtml(tag)}">${escapeHtml(tagLabel(tag))}</option>`).join("")}`;
+      if ([...tierFilter.options].some((option) => option.value === previousTier)) tierFilter.value = previousTier;
+      if ([...tagFilter.options].some((option) => option.value === previousTag)) tagFilter.value = previousTag;
+      document.getElementById("gemCount").textContent = `${formatNumber(data.total || gems.length)} ${pageText("gemUnit")}`;
+    };
+    const applyPageLocale = () => {
+      document.title = pageText("documentTitle");
+      document.querySelector(".skip-link") && (document.querySelector(".skip-link").textContent = pageText("skipNavigation"));
+      document.querySelector("main > section:first-child p") && (document.querySelector("main > section:first-child p").textContent = pageText("heroSubtitle"));
+      document.querySelector("main > section:nth-child(2)")?.setAttribute("aria-label", pageText("filterLabel"));
+      document.querySelector("[data-lookup-back]")?.lastChild && (document.querySelector("[data-lookup-back]").lastChild.textContent = localeText("backLookup"));
+      searchInput.placeholder = pageText("searchPlaceholder");
+      searchInput.setAttribute("aria-label", pageText("searchLabel"));
+      tierFilter.setAttribute("aria-label", pageText("tierLabel"));
+      tagFilter.setAttribute("aria-label", pageText("tagLabel"));
+      document.getElementById("resetFilters").lastChild.textContent = localeText("resetFilters");
+      document.querySelector("#modalSummary")?.previousElementSibling && (document.querySelector("#modalSummary").previousElementSibling.textContent = localeText("skillDescription"));
+      document.querySelector("#modalRequirements")?.previousElementSibling && (document.querySelector("#modalRequirements").previousElementSibling.textContent = localeText("requirements"));
+      document.querySelector("#modalProperties")?.previousElementSibling && (document.querySelector("#modalProperties").previousElementSibling.textContent = localeText("properties"));
+      document.querySelector("#modalSections")?.previousElementSibling && (document.querySelector("#modalSections").previousElementSibling.textContent = localeText("skillEffects"));
+      document.getElementById("closeModalBtn")?.setAttribute("aria-label", localeText("close"));
+      const modalCloseAction = document.getElementById("modalActionClose");
+      if (modalCloseAction) modalCloseAction.textContent = localeText("close");
+    };
+    applyPageLocale();
+    renderFilterOptions();
 
     const setControlValue = (control, value) => {
       if (value && [...control.options].some((option) => option.value === value)) {
@@ -459,20 +521,22 @@
         ...localizedProperties,
         ...localizedMods
       ]);
-      const clean = String(source || "Xem chi tiết để đọc mô tả và chỉ số của skill này.").replace(/\s+/g, " ").trim();
+      const clean = String(source || localeText("noGemDescription")).replace(/\s+/g, " ").trim();
       return truncateText(clean, { maxLength: 240, minBoundary: 120 });
     };
 
     const gemMatches = (gem) => {
-      const query = searchInput.value.trim().toLocaleLowerCase("vi");
+      const query = searchInput.value.trim().toLocaleLowerCase(currentLocale() === "en" ? "en" : "vi");
       const haystack = [
         gem.name,
         gem.slug,
         gem.summary_en,
         i18nText(gem.i18n?.summary, ""),
         ...(gem.tags || []),
-        ...i18nList(gem.i18n?.tags, gem.tags || [])
-      ].join(" ").toLocaleLowerCase("vi");
+        ...localizedTags(gem),
+        ...Object.values(gem.i18n?.summary || {}).filter(Boolean),
+        ...(gem.i18n?.tags || []).flatMap((entry) => Object.values(entry || {}).filter(Boolean))
+      ].join(" ").toLocaleLowerCase(currentLocale() === "en" ? "en" : "vi");
       const tierOk = tierFilter.value === "all" || String(gem.tier) === tierFilter.value;
       const tagOk = tagFilter.value === "all" || (gem.tags || []).includes(tagFilter.value);
       return (!query || haystack.includes(query)) && tierOk && tagOk;
@@ -490,8 +554,8 @@
     const renderGem = (gem) => {
       const description = shortDescription(gem);
       const translatedSummary = i18nText(gem.i18n?.summary, gem.summary_en) || description;
-      const tagsHtml = (gem.tags || []).slice(0, 7).map((tag) => `
-        <span class="skill-tag ${tagToneClass(tag)} rounded-full px-2 py-1" title="${escapeHtml(tag)}">${escapeHtml(tag)}</span>
+      const tagsHtml = (gem.tags || []).slice(0, 7).map((tag, index) => `
+        <span class="skill-tag ${tagToneClass(tag)} rounded-full px-2 py-1" title="${escapeHtml(tag)}">${escapeHtml(localizedTags(gem)[index] || tag)}</span>
       `).join("");
 
       return `
@@ -509,7 +573,7 @@
                 </div>
                 <a class="skill-cta skill-card-detail inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold" href="/skill-gem?slug=${encodeURIComponent(gem.slug)}">
                   <span class="material-symbols-rounded text-sm" aria-hidden="true">article</span>
-                  Chi tiết
+                  ${escapeHtml(localeText("detail"))}
                 </a>
               </div>
               <h2 class="mt-3 break-words text-xl font-semibold leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(gem.name)}</h2>
@@ -520,7 +584,7 @@
             <div class="flex min-w-0 flex-wrap gap-1.5">${tagsHtml}</div>
             <button class="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 text-[11px] font-black text-blue-700 transition hover:bg-blue-600 hover:text-white dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:bg-blue-500 dark:hover:text-white" type="button" data-no-tooltip data-comment-trigger data-comment-entity-type="skill_gem" data-comment-entity-id="${escapeHtml(gem.slug)}" data-comment-entity-name="${escapeHtml(gem.name)}" data-comment-field-path="summary" data-comment-source-text="${escapeHtml(gem.summary_en || "")}" data-comment-translated-text="${escapeHtml(translatedSummary)}">
               <span class="material-symbols-rounded text-sm" aria-hidden="true">rate_review</span>
-              Góp ý dịch
+              ${escapeHtml(pageText("feedback"))}
             </button>
           </div>
         </article>
@@ -533,14 +597,17 @@
       const visible = filtered.slice(0, visibleLimit);
       gemGrid.innerHTML = visible.map(renderGem).join("") || `
         <div class="rounded-lg border border-slate-200 bg-white p-6 text-center font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 sm:col-span-2 xl:col-span-3">
-          Không có skill gem nào khớp bộ lọc.
+          ${escapeHtml(localeText("emptyGem"))}
         </div>
       `;
       const hiddenCount = Math.max(filtered.length - visible.length, 0);
-      resultMeta.textContent = `Đang hiển thị ${nf.format(visible.length)} / ${nf.format(filtered.length)} kết quả, trong tổng ${nf.format(gems.length)} skill gem.`;
+      resultMeta.textContent = pageText("resultMeta")
+        .replace("{visible}", formatNumber(visible.length))
+        .replace("{filtered}", formatNumber(filtered.length))
+        .replace("{total}", formatNumber(gems.length));
       loadMoreGems.classList.toggle("hidden", hiddenCount === 0);
       loadMoreGems.classList.toggle("inline-flex", hiddenCount > 0);
-      loadMoreGems.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>Tải thêm ${nf.format(Math.min(60, hiddenCount))}`;
+      loadMoreGems.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>${escapeHtml(localeText("loadMore"))} ${formatNumber(Math.min(60, hiddenCount))}`;
     };
 
     [searchInput, tierFilter, tagFilter].forEach((control) => control.addEventListener("input", () => {
@@ -590,7 +657,8 @@
       modalTierBadge.textContent = `Tier ${gem.tier || "-"}`;
 
       // Summary Description
-      const translatedSummary = i18nText(gem.i18n?.summary, gem.summary_en) || "Không có mô tả cho skill gem này.";
+      activeGemSlug = slug;
+      const translatedSummary = i18nText(gem.i18n?.summary, gem.summary_en) || localeText("noGemModalDescription");
       modalSummary.textContent = translatedSummary;
 
       // Requirements
@@ -615,9 +683,9 @@
       const localizedSections = gem.i18n?.sections || gem.sections || [];
       if (localizedSections.length > 0) {
         modalSections.innerHTML = localizedSections.map((sec) => {
-          const title = typeof sec.title === 'string' ? sec.title : (sec.title?.vi || sec.title?.en || "");
+          const title = i18nText(sec.title, "");
           const lines = sec.lines || [];
-          const localizedLines = lines.map(line => typeof line === 'string' ? line : (line?.vi || line?.en || ""));
+          const localizedLines = lines.map(line => i18nText(line, ""));
           return `
             <div class="rounded-xl border border-slate-200/50 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-950/40">
               <h4 class="font-display font-black text-sm text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800/80 pb-1.5">${escapeHtml(title)}</h4>
@@ -651,6 +719,7 @@
     };
 
     const closeGemModal = () => {
+      activeGemSlug = null;
       modalContent.classList.remove("scale-100");
       modalContent.classList.add("scale-95");
       setTimeout(() => {
@@ -679,6 +748,15 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !gemModal.classList.contains("hidden")) {
         closeGemModal();
+      }
+    });
+    let activeGemSlug = null;
+    onLocaleChange(() => {
+      applyPageLocale();
+      renderFilterOptions();
+      render();
+      if (activeGemSlug && !gemModal.classList.contains("hidden")) {
+        openGemModal(activeGemSlug);
       }
     });
 

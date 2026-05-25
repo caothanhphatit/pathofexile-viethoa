@@ -191,4 +191,46 @@ export const publicRoutes = async (app) => {
     `, params);
     return { ok: true, data: rows };
   });
+
+  app.get("/api/passive-tree", async (request) => {
+    const db = requireDb(app);
+    const { limit, offset } = paging(request.query);
+    const q = String(request.query.q || "").trim();
+    const type = String(request.query.type || "").trim();
+    const ascendancy = String(request.query.ascendancy || "").trim();
+    const params = [];
+    const where = ["status = 'active'"];
+    if (type) {
+      params.push(type);
+      where.push(`type = $${params.length}`);
+    }
+    if (ascendancy) {
+      params.push(ascendancy);
+      where.push(`ascendancy_name = $${params.length}`);
+    }
+    if (q) {
+      params.push(`%${q}%`);
+      where.push(`(
+        name ilike $${params.length}
+        or exists (
+          select 1
+          from content_strings cs
+          left join content_translations ct on ct.string_id = cs.id
+          where cs.entity_type = 'passive_tree_node'
+            and cs.entity_id = passive_tree_nodes.node_id
+            and (cs.source_text ilike $${params.length} or ct.translated_text ilike $${params.length})
+        )
+      )`);
+    }
+    params.push(limit, offset);
+    const { rows } = await db.query(`
+      select node_id, tree_version, name, type, group_id, orbit, orbit_index, x, y,
+        icon, ascendancy_name, stats_json, recipe_json, updated_at
+      from passive_tree_nodes
+      where ${where.join(" and ")}
+      order by type, name, node_id
+      limit $${params.length - 1} offset $${params.length}
+    `, params);
+    return { ok: true, data: rows };
+  });
 };

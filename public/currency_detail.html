@@ -15,13 +15,14 @@
   <meta property="og:title" content="Currency Path of Exile 2 tiếng Việt">
   <meta property="og:description" content="Trang chi tiết Currency Path of Exile 2 tiếng Việt, mô tả tác dụng, subtype, stack, effect và item liên quan.">
   <meta property="og:url" content="https://poeviethoa.net/currency-detail">
-  <meta property="og:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Currency Path of Exile 2 tiếng Việt">
   <meta name="twitter:description" content="Trang chi tiết Currency POE2 tiếng Việt, gồm tác dụng, subtype, stack, effect và item liên quan.">
-  <meta name="twitter:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="theme-color" content="#0f172a">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link href="dist/app.css?v=20260524-font" rel="stylesheet">
@@ -48,60 +49,86 @@
     const rawItem = (data.items || []).find((entry) => entry.slug === slug && entry.status === "active");
     let item = null;
     const detailRoot = document.getElementById("detailRoot");
+    const PAGE_TEXT = {
+      notFoundTitle: { vi: "Không tìm thấy currency", en: "Currency not found" },
+      notFoundDescription: { vi: "Item này không có trong dữ liệu hiện tại.", en: "This item is not available in the current data." },
+      notFoundDocumentTitle: { vi: "Không tìm thấy currency - POE2", en: "Currency not found - POE2" },
+      noData: { vi: "Không có dữ liệu.", en: "No data available." },
+      group: { vi: "Nhóm", en: "Group" },
+      info: { vi: "Thông tin", en: "Information" },
+      effect: { vi: "Effect", en: "Effect" },
+      related: { vi: "Liên quan", en: "Related" },
+      detail: { vi: "Chi tiết", en: "Details" },
+      expeditionBlackScythe: { vi: "Vật phẩm Expedition dùng để mặc cả (barter) mua các loại trang bị, tiền tệ với thương nhân Tujen.", en: "An Expedition artifact used to barter for equipment and currency with Tujen." },
+      expeditionOrder: { vi: "Vật phẩm Expedition dùng để nâng cấp, chế tạo (craft) các loại trang bị với thương nhân Rog.", en: "An Expedition artifact used to upgrade and craft equipment with Rog." },
+      expeditionDruidic: { vi: "Vật phẩm Expedition dùng để mua bán ngẫu nhiên (gamble) nhận các loại trang bị với thương nhân Gwennen.", en: "An Expedition artifact used to gamble for equipment with Gwennen." },
+      expeditionSun: { vi: "Vật phẩm Expedition dùng để giao dịch, đổi các loại Artifact khác với thủ lĩnh Dannig.", en: "An Expedition artifact used to trade and exchange other artifacts with Dannig." },
+      expeditionGeneric: { vi: "Vật phẩm đặc biệt dùng để giao dịch và trao đổi vật phẩm với các thương nhân Expedition.", en: "A special item used to trade with Expedition merchants." },
+      shard: { vi: "Mảnh tiền tệ, gom đủ stack để tự động chuyển thành tiền tệ hoàn chỉnh.", en: "A currency shard. Collect a full stack to automatically form the complete currency item." },
+      splinter: { vi: "Mảnh vỡ dùng để gom đủ stack mở khóa cổng vào boss hoặc bản đồ liên quan.", en: "A splinter used to complete a stack and unlock the related boss encounter or map." },
+      catalyst: { vi: "Dùng để tăng chất lượng (Quality) và các thuộc tính tương ứng trên trang sức.", en: "Improves quality and matching modifiers on jewellery." },
+      essence: { vi: "Dùng để nâng cấp một trang bị thường thành trang bị hiếm với một thuộc tính cố định.", en: "Upgrades a normal item into a rare item with a fixed modifier." },
+      delirium: { vi: "Dùng để tác động vào bản đồ nhằm tăng độ khó và thêm phần thưởng Delirium tương ứng.", en: "Applies Delirium effects to maps, increasing difficulty and adding matching rewards." },
+      mapItem: { vi: "Vật phẩm đặc biệt dùng để mở hoặc tác động lên bản đồ.", en: "A special item used to open or modify a map." }
+    };
 
     const {
       escapeHtml,
       i18nText,
       i18nList,
+      currentLocale,
+      localeText,
+      onLocaleChange,
       hasCurrencyDescription,
       currencySubtypeLabel,
       currencyCategoryLabel,
       updateDocumentSeo
     } = window.PoeUi;
+    const pageText = (key) => i18nText(PAGE_TEXT[key], key);
     item = hasCurrencyDescription(rawItem) ? rawItem : null;
 
     const fallbackDescription = (entry) => {
-      if (!entry) return "Không có dữ liệu.";
+      if (!entry) return pageText("noData");
       const subtype = String(entry.subtype || entry.family || "").toLowerCase();
       const category = String(entry.category || "").toLowerCase();
       const nameLower = String(entry.name || "").toLowerCase();
 
       if (subtype === "expedition-artifact" || category === "expeditionartifact") {
         if (nameLower.includes("black scythe")) {
-          return "Vật phẩm Expedition dùng để mặc cả (barter) mua các loại trang bị, tiền tệ với thương nhân Tujen.";
+          return pageText("expeditionBlackScythe");
         } else if (nameLower.includes("order")) {
-          return "Vật phẩm Expedition dùng để nâng cấp, chế tạo (craft) các loại trang bị với thương nhân Rog.";
+          return pageText("expeditionOrder");
         } else if (nameLower.includes("druidic")) {
-          return "Vật phẩm Expedition dùng để mua bán ngẫu nhiên (gamble) nhận các loại trang bị với thương nhân Gwennen.";
+          return pageText("expeditionDruidic");
         } else if (nameLower.includes("sun")) {
-          return "Vật phẩm Expedition dùng để giao dịch, đổi các loại Artifact khác với thủ lĩnh Dannig.";
+          return pageText("expeditionSun");
         } else {
-          return "Vật phẩm đặc biệt dùng để giao dịch và trao đổi vật phẩm với các thương nhân Expedition.";
+          return pageText("expeditionGeneric");
         }
       }
 
       if (subtype === "shard" || nameLower.endsWith("shard")) {
-        return "Mảnh tiền tệ, gom đủ stack để tự động chuyển thành tiền tệ hoàn chỉnh.";
+        return pageText("shard");
       }
       if (subtype === "splinter" || category === "splinteritem" || nameLower.endsWith("splinter")) {
-        return "Mảnh vỡ dùng để gom đủ stack mở khóa cổng vào boss hoặc bản đồ liên quan.";
+        return pageText("splinter");
       }
       if (subtype === "catalyst" || category === "catalystitem" || nameLower.endsWith("catalyst")) {
-        return "Dùng để tăng chất lượng (Quality) và các thuộc tính tương ứng trên trang sức.";
+        return pageText("catalyst");
       }
       if (subtype === "essence" || category === "essence" || nameLower.includes("essence")) {
-        return "Dùng để nâng cấp một trang bị thường thành trang bị hiếm với một thuộc tính cố định.";
+        return pageText("essence");
       }
       if (subtype.includes("delirium") || nameLower.includes("distilled") || nameLower.includes("delirium")) {
-        return "Dùng để tác động vào bản đồ nhằm tăng độ khó và thêm phần thưởng Delirium tương ứng.";
+        return pageText("delirium");
       }
 
-      return "Vật phẩm đặc biệt dùng để mở hoặc tác động lên bản đồ.";
+      return pageText("mapItem");
     };
 
     const renderLines = (lines = []) => lines.length
       ? lines.map((line) => `<li class="stat-line px-4 py-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">${escapeHtml(line)}</li>`).join("")
-      : `<li class="px-4 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Không có dữ liệu.</li>`;
+      : `<li class="px-4 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400">${escapeHtml(pageText("noData"))}</li>`;
 
     const itemSubtypeLabel = currencySubtypeLabel;
     const itemCategoryLabel = currencyCategoryLabel;
@@ -128,7 +155,7 @@
       return `
         <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-            <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Effect</h2>
+            <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">${escapeHtml(pageText("effect"))}</h2>
           </div>
           <ul>${lines}</ul>
         </section>
@@ -161,7 +188,7 @@
                 <h4 class="font-display text-sm font-black tracking-tight text-slate-900 transition-colors duration-200 group-hover:text-amber-500 dark:text-slate-100 dark:group-hover:text-amber-400" translate="no">${escapeHtml(name)}</h4>
                 ${isClickable ? `
                   <a class="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-600 hover:text-white dark:bg-blue-950/40 dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-200" href="/currency-detail?slug=${encodeURIComponent(rel.slug)}">
-                    Chi tiết
+                    ${escapeHtml(pageText("detail"))}
                   </a>
                 ` : ""}
               </div>
@@ -174,30 +201,31 @@
       return `
         <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" id="cmodalRelatedContainer">
           <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-            <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Liên quan</h2>
+            <h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">${escapeHtml(pageText("related"))}</h2>
           </div>
           <ul>${cards}</ul>
         </section>
       `;
     };
 
+    const renderDetail = () => {
     if (!item) {
-      document.title = "Không tìm thấy currency - POE2";
+      document.title = pageText("notFoundDocumentTitle");
       document.querySelector('meta[name="robots"]')?.setAttribute("content", "noindex,follow");
       detailRoot.innerHTML = `
         <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-md1 dark:border-slate-800 dark:bg-slate-900">
           <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="/currency"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Currency</a>
-          <h1 class="mt-4 text-3xl font-black text-slate-950 dark:text-white">Không tìm thấy currency</h1>
-          <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Item này không có trong dữ liệu hiện tại.</p>
+          <h1 class="mt-4 text-3xl font-black text-slate-950 dark:text-white">${escapeHtml(pageText("notFoundTitle"))}</h1>
+          <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">${escapeHtml(pageText("notFoundDescription"))}</p>
         </section>
       `;
     } else {
       const description = i18nText(item.i18n?.description, item.description_en || fallbackDescription(item));
       updateDocumentSeo({
-        title: `${item.name} - Currency POE2 Việt hóa`,
+        title: `${item.name} - Currency POE2`,
         description,
         canonicalPath: `/currency-detail?slug=${encodeURIComponent(item.slug)}`,
-        image: item.icon_url || "/assets/poe2-viet-hoa-logo.svg"
+        image: item.icon_url || "/assets/img/logo.jpg"
       });
       detailRoot.innerHTML = `
         <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
@@ -215,11 +243,11 @@
                 </div>
               </div>
               <p class="mt-6 max-w-4xl text-base font-semibold leading-8 text-slate-700 dark:text-slate-200">${escapeHtml(description)}</p>
-              ${item.description_en ? `<p class="mt-3 max-w-4xl text-sm font-medium leading-7 text-slate-500 dark:text-slate-400">${escapeHtml(item.description_en)}</p>` : ""}
+              ${currentLocale() === "vi" && item.description_en ? `<p class="mt-3 max-w-4xl text-sm font-medium leading-7 text-slate-500 dark:text-slate-400">${escapeHtml(item.description_en)}</p>` : ""}
             </div>
             <aside class="grid content-start gap-3 border-t border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-950/60 lg:border-l lg:border-t-0">
               <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-xs font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">Nhóm</p>
+                <p class="text-xs font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">${escapeHtml(pageText("group"))}</p>
                 <p class="mt-2 text-lg font-black text-slate-950 dark:text-white">${escapeHtml(itemCategoryLabel(item))}</p>
               </div>
               <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
@@ -239,7 +267,7 @@
         <div class="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,.8fr)]">
           ${effectBlock(item)}
           <div class="grid gap-5">
-            ${sectionBlock("Thông tin", item.properties || [])}
+            ${sectionBlock(pageText("info"), i18nList(item.i18n?.properties, item.properties || []))}
             ${renderRelatedCurrencyItems(item)}
           </div>
         </div>
@@ -254,6 +282,9 @@
         translatedText: description
       });
     }
+    };
+    renderDetail();
+    onLocaleChange(renderDetail);
   </script>
 </body>
 

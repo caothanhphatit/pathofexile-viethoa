@@ -8,23 +8,6 @@ html {
   overflow-y: scroll;
 }
 
-@view-transition {
-  navigation: auto;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 160ms;
-  animation-timing-function: ease-out;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 1ms;
-  }
-}
-
 @font-face {
   font-family: "Material Symbols Rounded";
   font-style: normal;
@@ -49,6 +32,17 @@ html:not(.dark) body {
   background: #f8fafc;
   color: #0f172a;
   color-scheme: light;
+}
+
+div[data-component="site-header"] {
+  display: block;
+  min-height: 7.25rem;
+}
+
+@media (min-width: 1024px) {
+  div[data-component="site-header"] {
+    min-height: 4rem;
+  }
 }
 
 [id] {
@@ -136,11 +130,21 @@ h6,
   }
 
   .poe-brand-mark {
-    @apply grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-amber-500/20 bg-slate-950 shadow-md1 dark:border-amber-500/30 dark:bg-slate-950;
+    @apply grid h-11 w-14 shrink-0 place-items-center overflow-hidden rounded-lg border border-amber-500/20 bg-slate-950 shadow-md1 sm:w-16 dark:border-amber-500/30 dark:bg-slate-950;
   }
 
   .poe-brand-logo {
     @apply h-full w-full object-contain p-0.5;
+  }
+
+  .poe-facebook-link {
+    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#1877f2] text-white shadow-sm transition hover:bg-[#166fe5] focus-visible:outline-[#1877f2] dark:bg-[#1877f2] dark:hover:bg-[#2d88ff];
+  }
+
+  .poe-facebook-mark {
+    @apply inline-block select-none text-center font-black leading-none;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    transform: translateY(1px);
   }
 }
 
@@ -298,6 +302,28 @@ h6,
   border-color: rgba(14, 165, 233, 0.3) !important;
   background-color: rgba(14, 165, 233, 0.1) !important;
   color: #7dd3fc !important;
+}
+
+/* Lookup - Cyan */
+.poe-nav-link[data-route="lookup"]:hover {
+  border-color: rgba(6, 182, 212, 0.3) !important;
+  background-color: rgba(6, 182, 212, 0.08) !important;
+  color: #0891b2 !important;
+}
+.dark .poe-nav-link[data-route="lookup"]:hover {
+  color: #67e8f9 !important;
+}
+.poe-nav-link-active[data-route="lookup"],
+.poe-nav-link-active[data-route="lookup"]:hover {
+  border-color: rgba(6, 182, 212, 0.4) !important;
+  background-color: rgba(6, 182, 212, 0.12) !important;
+  color: #0e7490 !important;
+}
+.dark .poe-nav-link-active[data-route="lookup"],
+.dark .poe-nav-link-active[data-route="lookup"]:hover {
+  border-color: rgba(6, 182, 212, 0.35) !important;
+  background-color: rgba(6, 182, 212, 0.1) !important;
+  color: #a5f3fc !important;
 }
 
 /* Dictionary - Amethyst Purple */

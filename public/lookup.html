@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tra cứu POE2 - Item, Currency, Skill gems, Từ điển</title>
+  <meta name="description" content="Trang tra cứu POE2 Việt hóa gom Item, Currency, Skill gems và Từ điển thuật ngữ vào một nơi để mở nhanh dữ liệu cần xem khi chơi Path of Exile 2.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://poeviethoa.net/tra-cuu">
+  <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/tra-cuu">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Việt hóa">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tra cứu POE2 Việt hóa">
+  <meta property="og:description" content="Mở nhanh Item, Currency, Skill gems và Từ điển thuật ngữ POE2 bằng tiếng Việt trong một trang tra cứu gọn.">
+  <meta property="og:url" content="https://poeviethoa.net/tra-cuu">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Tra cứu POE2 Việt hóa">
+  <meta name="twitter:description" content="Mở nhanh Item, Currency, Skill gems và Từ điển thuật ngữ POE2 bằng tiếng Việt.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script src="components/theme-boot.js"></script>
+  <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="dist/app.css?v=20260524-font" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    .lookup-card {
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .lookup-card:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div data-component="site-header" data-subtitle="Tra cứu"></div>
+
+  <main class="poe-shell-container grid gap-5 py-6" id="main">
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Tra cứu POE2">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-sky-500 to-cyan-500 text-white shadow-md2">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">travel_explore</span>
+          </span>
+          <div>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Tra cứu</h1>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400" data-lookup-subtitle>Item, Currency, Skill gems và Từ điển thuật ngữ POE2</p>
+          </div>
+        </div>
+        <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+          <span class="material-symbols-rounded text-sm text-cyan-500" aria-hidden="true">view_list</span>
+          <span data-lookup-count>4 mục</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-3" aria-label="Danh sách tra cứu">
+      <a class="lookup-card glass-panel group flex items-center gap-4 rounded-2xl border-l-4 border-l-rose-500 p-4 no-underline shadow-sm hover:border-rose-300 hover:shadow-md2 dark:hover:border-rose-700" href="/items" data-lookup-card="items">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300">
+          <span class="material-symbols-rounded text-2xl" aria-hidden="true">inventory_2</span>
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Item</span>
+          <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Danh sách trang bị, base item, item đặc biệt và dữ liệu từ POE2DB.</span>
+        </span>
+        <span class="hidden shrink-0 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
+          <span data-open-label>Mở</span>
+          <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
+        </span>
+      </a>
+
+      <a class="lookup-card glass-panel group flex items-center gap-4 rounded-2xl border-l-4 border-l-amber-500 p-4 no-underline shadow-sm hover:border-amber-300 hover:shadow-md2 dark:hover:border-amber-700" href="/currency" data-lookup-card="currency">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-300">
+          <span class="material-symbols-rounded text-2xl" aria-hidden="true">toll</span>
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Currency</span>
+          <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Orb, Essence, Omen, Catalyst, Splinter và các item liên quan.</span>
+        </span>
+        <span class="hidden shrink-0 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
+          <span data-open-label>Mở</span>
+          <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
+        </span>
+      </a>
+
+      <a class="lookup-card glass-panel group flex items-center gap-4 rounded-2xl border-l-4 border-l-sky-500 p-4 no-underline shadow-sm hover:border-sky-300 hover:shadow-md2 dark:hover:border-sky-700" href="/skill-gems" data-lookup-card="skillgems">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-300">
+          <span class="material-symbols-rounded text-2xl" aria-hidden="true">auto_awesome_motion</span>
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Skill gems</span>
+          <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Tra cứu gem kỹ năng, tier, tag, yêu cầu và mô tả hiệu ứng.</span>
+        </span>
+        <span class="hidden shrink-0 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
+          <span data-open-label>Mở</span>
+          <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
+        </span>
+      </a>
+
+      <a class="lookup-card glass-panel group flex items-center gap-4 rounded-2xl border-l-4 border-l-violet-500 p-4 no-underline shadow-sm hover:border-violet-300 hover:shadow-md2 dark:hover:border-violet-700" href="/dictionary" data-lookup-card="dictionary">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-300">
+          <span class="material-symbols-rounded text-2xl" aria-hidden="true">translate</span>
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Từ điển</span>
+          <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Giải thích keyword, rarity, modifier và thuật ngữ POE2 thường gặp.</span>
+        </span>
+        <span class="hidden shrink-0 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
+          <span data-open-label>Mở</span>
+          <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
+        </span>
+      </a>
+    </section>
+  </main>
+  <script src="components/poe-ui-utils.js"></script>
+  <script>
+    const LOOKUP_TEXT = {
+      documentTitle: { vi: "Tra cứu POE2 - Item, Currency, Skill gems, Từ điển", en: "POE2 Lookup - Items, Currency, Skill gems, Dictionary" },
+      title: { vi: "Tra cứu", en: "Lookup" },
+      heroLabel: { vi: "Tra cứu POE2", en: "POE2 lookup" },
+      subtitle: { vi: "Item, Currency, Skill gems và Từ điển thuật ngữ POE2", en: "Items, Currency, Skill gems, and POE2 glossary" },
+      count: { vi: "4 mục", en: "4 entries" },
+      listLabel: { vi: "Danh sách tra cứu", en: "Lookup list" },
+      open: { vi: "Mở", en: "Open" },
+      cards: {
+        items: {
+          title: { vi: "Item", en: "Items" },
+          description: { vi: "Danh sách trang bị, base item, item đặc biệt và dữ liệu từ POE2DB.", en: "Equipment, base items, special items, and POE2DB data." }
+        },
+        currency: {
+          title: { vi: "Currency", en: "Currency" },
+          description: { vi: "Orb, Essence, Omen, Catalyst, Splinter và các item liên quan.", en: "Orbs, Essences, Omens, Catalysts, Splinters, and related items." }
+        },
+        skillgems: {
+          title: { vi: "Skill gems", en: "Skill gems" },
+          description: { vi: "Tra cứu gem kỹ năng, tier, tag, yêu cầu và mô tả hiệu ứng.", en: "Look up skill gems, tiers, tags, requirements, and effect descriptions." }
+        },
+        dictionary: {
+          title: { vi: "Từ điển", en: "Dictionary" },
+          description: { vi: "Giải thích keyword, rarity, modifier và thuật ngữ POE2 thường gặp.", en: "Keyword, rarity, modifier, and common POE2 term explanations." }
+        }
+      }
+    };
+    const { i18nText, onLocaleChange } = window.PoeUi;
+    const lookupText = (key) => i18nText(LOOKUP_TEXT[key], key);
+    const applyLookupLocale = () => {
+      document.title = lookupText("documentTitle");
+      document.querySelector("main > section:first-child")?.setAttribute("aria-label", lookupText("heroLabel"));
+      document.querySelector("h1").textContent = lookupText("title");
+      document.querySelector("[data-lookup-subtitle]").textContent = lookupText("subtitle");
+      document.querySelector("[data-lookup-count]").textContent = lookupText("count");
+      document.querySelector("section[aria-label='Danh sách tra cứu'], section[aria-label='Lookup list']")?.setAttribute("aria-label", lookupText("listLabel"));
+      document.querySelectorAll("[data-open-label]").forEach((element) => {
+        element.textContent = lookupText("open");
+      });
+      Object.entries(LOOKUP_TEXT.cards).forEach(([key, cardText]) => {
+        const card = document.querySelector(`[data-lookup-card="${key}"]`);
+        if (!card) return;
+        card.querySelector("[data-card-title]").textContent = i18nText(cardText.title, key);
+        card.querySelector("[data-card-description]").textContent = i18nText(cardText.description, "");
+      });
+    };
+    applyLookupLocale();
+    onLocaleChange(applyLookupLocale);
+  </script>
+</body>
+
+</html>

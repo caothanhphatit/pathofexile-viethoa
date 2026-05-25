@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item POE2 - POE2 Việt hóa</title>
+  <meta name="description" content="Tra cứu Item Path of Exile 2 tiếng Việt: base item, trang bị, currency item, unique và dữ liệu vật phẩm xuất từ POE2DB cho người chơi Việt.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://poeviethoa.net/items">
+  <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/items">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Việt hóa">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Item Path of Exile 2 tiếng Việt">
+  <meta property="og:description" content="Tra cứu base item, trang bị, currency item, unique và dữ liệu vật phẩm Path of Exile 2 từ POE2DB bằng tiếng Việt.">
+  <meta property="og:url" content="https://poeviethoa.net/items">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Item Path of Exile 2 tiếng Việt">
+  <meta name="twitter:description" content="Tra cứu base item, trang bị, currency item và unique trong POE2.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script src="components/theme-boot.js"></script>
+  <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="dist/app.css?v=20260524-font" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    label:focus-within {
+      box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.45);
+      border-color: rgba(244, 63, 94, 0.75);
+    }
+    .item-row {
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .item-row:hover {
+      transform: translateY(-1px);
+      border-color: rgba(244, 63, 94, 0.28);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    }
+    .dark .item-row:hover {
+      border-color: rgba(244, 63, 94, 0.34);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+    }
+    .item-line-clamp {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div data-component="site-header" data-subtitle="Item"></div>
+
+  <main class="poe-shell-container grid gap-4 py-5">
+    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Item POE2">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-md2">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">inventory_2</span>
+          </span>
+          <div>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Item</h1>
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Tra cứu trang bị, base item và vật phẩm đặc biệt trong POE2</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 md:justify-end">
+          <a class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" href="/tra-cuu" data-lookup-back>
+            <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Tra cứu
+          </a>
+          <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+            <span class="material-symbols-rounded text-sm text-rose-500" aria-hidden="true">inventory_2</span>
+            <span id="itemCount" class="font-display font-black">0 item</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass-panel rounded-2xl p-5 shadow-sm dark:border-slate-800/80" aria-label="Bộ lọc item">
+      <div class="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_230px_120px]">
+        <label class="flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 transition dark:border-slate-800 dark:bg-slate-900/40">
+          <span class="material-symbols-rounded text-slate-500" aria-hidden="true">search</span>
+          <input class="min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-950 outline-none placeholder:text-slate-500 dark:text-slate-100" id="searchInput" name="q" type="search" placeholder="Tìm item, modifier, yêu cầu..." aria-label="Tìm item" autocomplete="off">
+        </label>
+        <select class="h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-black text-slate-700 outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200" id="menuFilter" name="menu" aria-label="Lọc theo nhóm item"></select>
+        <button class="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" id="resetFilters" type="button">
+          <span class="material-symbols-rounded text-base" aria-hidden="true">restart_alt</span>
+          Reset
+        </button>
+      </div>
+      <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <p class="text-xs font-bold text-slate-500 dark:text-slate-400" id="resultMeta">Đang tải dữ liệu.</p>
+        <a class="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-black text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700" href="https://poe2db.tw/us/Items" target="_blank" rel="noopener noreferrer">
+          <span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span>PoE2DB
+        </a>
+      </div>
+    </section>
+
+    <section class="grid gap-3" id="itemList" aria-live="polite"></section>
+    <button class="mx-auto hidden h-11 items-center gap-2 rounded-xl border border-rose-500/28 bg-rose-500/12 px-5 text-xs font-black text-rose-700 shadow-sm transition hover:bg-rose-600 hover:text-white dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300" id="loadMoreItems" type="button">
+      <span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>
+      Tải thêm
+    </button>
+  </main>
+
+  <script src="components/poe-ui-utils.js"></script>
+  <script src="data/items-data.js"></script>
+  <script>
+    const data = window.POE2_ITEMS || { items: [], menus: [] };
+    const PAGE_SIZE = 80;
+    const PAGE_TEXT = {
+      documentTitle: { vi: "Item POE2 - POE2 Việt hóa", en: "POE2 Items - POE2 Vietnamese" },
+      heroLabel: { vi: "Item POE2", en: "POE2 items" },
+      heroSubtitle: { vi: "Tra cứu trang bị, base item và vật phẩm đặc biệt trong POE2", en: "Look up equipment, base items, and special items in POE2" },
+      filterLabel: { vi: "Bộ lọc item", en: "Item filters" },
+      searchPlaceholder: { vi: "Tìm item, modifier, yêu cầu...", en: "Search items, modifiers, requirements..." },
+      searchLabel: { vi: "Tìm item", en: "Search items" },
+      menuLabel: { vi: "Lọc theo nhóm item", en: "Filter by item group" },
+      loading: { vi: "Đang tải dữ liệu.", en: "Loading data." },
+      itemUnit: { vi: "item", en: "items" },
+      resultMeta: { vi: "{visible} / {filtered} trong {total} item", en: "{visible} / {filtered} of {total} items" },
+      unknownItem: { vi: "Unknown item", en: "Unknown item" },
+      itemGroup: { vi: "Item", en: "Item" },
+      general: { vi: "General", en: "General" },
+      other: { vi: "Khác", en: "Other" },
+      poe2db: { vi: "PoE2DB", en: "PoE2DB" }
+    };
+
+    const itemCount = document.getElementById("itemCount");
+    const searchInput = document.getElementById("searchInput");
+    const menuFilter = document.getElementById("menuFilter");
+    const resetFilters = document.getElementById("resetFilters");
+    const resultMeta = document.getElementById("resultMeta");
+    const itemList = document.getElementById("itemList");
+    const loadMoreItems = document.getElementById("loadMoreItems");
+
+    const {
+      currentLocale,
+      escapeHtml,
+      formatNumber,
+      i18nText,
+      i18nList,
+      localeText,
+      onLocaleChange
+    } = window.PoeUi;
+
+    const textOf = (value) => Array.isArray(value) ? value.filter(Boolean).join(" ") : String(value || "");
+    const pageText = (key) => i18nText(PAGE_TEXT[key], key);
+    const localizedName = (item) => i18nText(item.i18n?.name, item.name || pageText("unknownItem"));
+    const localizedLines = (item, field) => i18nList(item.i18n?.[field], item[field] || []).filter(Boolean);
+    const allLocalizedText = (entry) => typeof entry === "string"
+      ? entry
+      : Object.values(entry || {}).filter(Boolean).join(" ");
+    const allLocalizedLines = (entries = []) => (entries || []).map(allLocalizedText).join(" ");
+    const activeItems = (data.items || []).filter((item) => item.status === "active");
+    const menuByKey = new Map((data.menus || []).map((menu) => [menu.key, menu]));
+    let visibleLimit = PAGE_SIZE;
+
+    const itemSearchText = (item) => [
+      localizedName(item),
+      item.name,
+      item.menu_label,
+      item.menu_key,
+      textOf(item.properties),
+      textOf(item.requirements),
+      textOf(item.mods),
+      textOf(localizedLines(item, "mods")),
+      allLocalizedText(item.i18n?.name),
+      allLocalizedLines(item.i18n?.properties),
+      allLocalizedLines(item.i18n?.requirements),
+      allLocalizedLines(item.i18n?.mods)
+    ].join(" ").toLowerCase();
+
+    const renderMenuOptions = () => {
+      const previousValue = menuFilter.value || "all";
+      const groups = new Map();
+      for (const menu of data.menus || []) {
+        if (!menu.count) continue;
+        const group = menu.group_label || pageText("other");
+        if (!groups.has(group)) groups.set(group, []);
+        groups.get(group).push(menu);
+      }
+
+      menuFilter.innerHTML = `<option value="all">${escapeHtml(localeText("allItemGroups"))}</option>${[...groups.entries()].map(([group, menus]) => `
+        <optgroup label="${escapeHtml(group)}">
+          ${menus.map((menu) => `<option value="${escapeHtml(menu.key)}">${escapeHtml(menu.label)} (${formatNumber(menu.count)})</option>`).join("")}
+        </optgroup>
+      `).join("")}`;
+      if ([...menuFilter.options].some((option) => option.value === previousValue)) {
+        menuFilter.value = previousValue;
+      }
+    };
+
+    const itemMatches = (item) => {
+      const query = searchInput.value.trim().toLowerCase();
+      const menu = menuFilter.value;
+      if (menu !== "all" && item.menu_key !== menu) return false;
+      if (!query) return true;
+      return itemSearchText(item).includes(query);
+    };
+
+    const renderItem = (item) => {
+      const menu = menuByKey.get(item.menu_key) || {};
+      const name = localizedName(item);
+      const props = localizedLines(item, "properties").length ? localizedLines(item, "properties") : item.properties || [];
+      const requirements = localizedLines(item, "requirements").length ? localizedLines(item, "requirements") : item.requirements || [];
+      const mods = localizedLines(item, "mods").length ? localizedLines(item, "mods") : item.mods || [];
+      const summary = [...props, ...requirements, ...mods].filter(Boolean).slice(0, 2).join(" · ");
+
+      return `
+        <article class="item-row glass-panel flex gap-3 rounded-2xl p-3 shadow-sm dark:border-slate-800/80">
+          <div class="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-950 dark:border-slate-800">
+            ${item.icon_url ? `<img class="h-full w-full object-contain p-1" src="${escapeHtml(item.icon_url)}" alt="" loading="lazy" width="56" height="56">` : `<span class="material-symbols-rounded text-slate-500" aria-hidden="true">inventory_2</span>`}
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div class="min-w-0">
+                <h2 class="truncate font-display text-base font-black text-slate-950 dark:text-white" translate="no">${escapeHtml(name)}</h2>
+                <p class="mt-1 text-[11px] font-black uppercase tracking-wide text-rose-600 dark:text-rose-300">${escapeHtml(menu.group_label || item.menu_label || pageText("itemGroup"))} · ${escapeHtml(menu.label || item.menu_key || pageText("general"))}</p>
+              </div>
+              <a class="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg border border-slate-200 px-2 text-[11px] font-black text-blue-700 transition hover:bg-blue-50 dark:border-slate-700 dark:text-blue-300 dark:hover:bg-slate-800" href="${escapeHtml(item.source_url || data.source_url || "https://poe2db.tw/us/Items")}" target="_blank" rel="noopener noreferrer">
+                <span class="material-symbols-rounded text-sm" aria-hidden="true">open_in_new</span>
+                ${escapeHtml(localeText("source"))}
+              </a>
+            </div>
+            <p class="item-line-clamp mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">${escapeHtml(summary || localeText("noItemSummary"))}</p>
+          </div>
+        </article>
+      `;
+    };
+
+    const applyPageLocale = () => {
+      document.title = pageText("documentTitle");
+      document.querySelector("section[aria-label]")?.setAttribute("aria-label", pageText("heroLabel"));
+      document.querySelector("main > section:first-child p") && (document.querySelector("main > section:first-child p").textContent = pageText("heroSubtitle"));
+      document.querySelector("main > section:nth-child(2)")?.setAttribute("aria-label", pageText("filterLabel"));
+      document.querySelector("[data-lookup-back]")?.lastChild && (document.querySelector("[data-lookup-back]").lastChild.textContent = localeText("backLookup"));
+      searchInput.placeholder = pageText("searchPlaceholder");
+      searchInput.setAttribute("aria-label", pageText("searchLabel"));
+      menuFilter.setAttribute("aria-label", pageText("menuLabel"));
+      resetFilters.lastChild.textContent = localeText("resetFilters");
+      if (!resultMeta.textContent || resultMeta.textContent === PAGE_TEXT.loading.vi || resultMeta.textContent === PAGE_TEXT.loading.en) {
+        resultMeta.textContent = pageText("loading");
+      }
+    };
+
+    const render = () => {
+      const filtered = activeItems.filter(itemMatches);
+      const visible = filtered.slice(0, visibleLimit);
+      const hiddenCount = Math.max(filtered.length - visible.length, 0);
+
+      itemList.innerHTML = visible.map(renderItem).join("") || `
+        <p class="rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+          ${escapeHtml(localeText("emptyItem"))}
+        </p>
+      `;
+      itemCount.textContent = `${formatNumber(activeItems.length)} ${pageText("itemUnit")}`;
+      resultMeta.textContent = pageText("resultMeta")
+        .replace("{visible}", formatNumber(visible.length))
+        .replace("{filtered}", formatNumber(filtered.length))
+        .replace("{total}", formatNumber(activeItems.length));
+      loadMoreItems.classList.toggle("hidden", hiddenCount === 0);
+      loadMoreItems.classList.toggle("inline-flex", hiddenCount > 0);
+      loadMoreItems.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>${escapeHtml(localeText("loadMore"))} ${formatNumber(Math.min(PAGE_SIZE, hiddenCount))}`;
+    };
+
+    searchInput.addEventListener("input", () => {
+      visibleLimit = PAGE_SIZE;
+      render();
+    });
+    menuFilter.addEventListener("change", () => {
+      visibleLimit = PAGE_SIZE;
+      render();
+    });
+    resetFilters.addEventListener("click", () => {
+      searchInput.value = "";
+      menuFilter.value = "all";
+      visibleLimit = PAGE_SIZE;
+      render();
+      searchInput.focus();
+    });
+    loadMoreItems.addEventListener("click", () => {
+      visibleLimit += PAGE_SIZE;
+      render();
+    });
+    onLocaleChange(() => {
+      applyPageLocale();
+      renderMenuOptions();
+      render();
+    });
+
+    applyPageLocale();
+    renderMenuOptions();
+    render();
+  </script>
+</body>
+
+</html>

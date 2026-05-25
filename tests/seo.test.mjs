@@ -10,6 +10,10 @@ const readPublicFile = (filename) => readFile(join(repoRoot, "public", filename)
 const indexablePages = [
   ["index.html", "https://poeviethoa.net/"],
   ["patchnote_vn.html", "https://poeviethoa.net/patchnote"],
+  ["newbie.html", "https://poeviethoa.net/newbie"],
+  ["beginner.html", "https://poeviethoa.net/beginner-guide"],
+  ["lookup.html", "https://poeviethoa.net/tra-cuu"],
+  ["items.html", "https://poeviethoa.net/items"],
   ["dictionary.html", "https://poeviethoa.net/dictionary"],
   ["weapon.html", "https://poeviethoa.net/weapon"],
   ["skill_gems.html", "https://poeviethoa.net/skill-gems"],

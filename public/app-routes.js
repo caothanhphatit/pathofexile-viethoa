@@ -25,33 +25,68 @@
       navOrder: 20,
       aliases: ["patchnote", "patch-note", "patchnote_vn"]
     },
+    lookup: {
+      title: "Tra cứu",
+      href: "/tra-cuu",
+      icon: "travel_explore",
+      navOrder: 30,
+      aliases: ["tra-cuu", "lookup", "search", "database"]
+    },
+    newbie: {
+      title: "Newbie",
+      href: "/newbie",
+      icon: "school",
+      navOrder: 40,
+      aliases: ["newbie", "beginner", "beginners", "huong-dan-newbie", "nguoi-moi"]
+    },
+    items: {
+      title: "Item",
+      href: "/items",
+      icon: "inventory_2",
+      navParent: "lookup",
+      aliases: ["items", "item", "item-data", "trang-bi", "vat-pham"]
+    },
+    currency: {
+      title: "Currency",
+      href: "/currency",
+      icon: "toll",
+      navParent: "lookup",
+      aliases: ["currency", "currency-detail", "currency_detail", "currencies", "currency-system"]
+    },
     dictionary: {
       title: "Từ điển",
       href: "/dictionary",
       icon: "translate",
-      navOrder: 30,
+      navParent: "lookup",
       aliases: ["dictionary", "tu-dien", "glossary", "terms", "analysis", "phan-tich", "phan-tich-patch-note"]
     },
     weapon: {
       title: "Weapon",
       href: "/weapon",
       icon: "swords",
-      navOrder: 40,
+      navParent: "newbie",
       aliases: ["weapon", "weapons", "weapon-guide", "equipment", "equipment-guide"]
+    },
+    beginner: {
+      title: "Beginner guide",
+      href: "/beginner-guide",
+      icon: "menu_book",
+      navParent: "newbie",
+      aliases: ["beginner-guide", "poe2-beginner-guide", "starter-guide", "huong-dan-nhap-mon", "newbie-guide"]
     },
     skillgems: {
       title: "Skill gems",
       href: "/skill-gems",
       icon: "auto_awesome_motion",
-      navOrder: 50,
+      navParent: "lookup",
       aliases: ["skill-gems", "skill_gems", "skill-gem", "skill_gem_detail", "skills", "gems"]
     },
-    currency: {
-      title: "Currency",
-      href: "/currency",
-      icon: "toll",
-      navOrder: 60,
-      aliases: ["currency", "currency-detail", "currency_detail", "currencies", "currency-system"]
+    passivetree: {
+      title: "Passive tree",
+      href: "/passive-tree",
+      icon: "account_tree",
+      navOrder: 65,
+      aliases: ["passive-tree", "passive_tree", "passives", "tree"]
     },
     leveling: {
       title: "Leveling",
@@ -65,10 +100,15 @@
   const routeFiles = {
     home: "index.html",
     patchnote: "patchnote_vn.html",
+    lookup: "lookup.html",
+    newbie: "newbie.html",
+    items: "items.html",
     dictionary: "dictionary.html",
     weapon: "weapon.html",
+    beginner: "beginner.html",
     skillgems: "skill_gems.html",
     currency: "currency.html",
+    passivetree: "passive_tree.html",
     leveling: "leveling.html"
   };
 
@@ -108,11 +148,23 @@
     return `${basePath}${normalized}` || "/";
   };
   const publicUrl = (url) => `${withBasePath(url.pathname || "/")}${url.search}${url.hash}`;
+  const preserveCurrentSearchParams = (url, {
+    skip = ["route", "page", "project"]
+  } = {}) => {
+    const skipped = new Set(skip);
+    for (const [paramKey, paramValue] of new URLSearchParams(window.location.search)) {
+      if (skipped.has(paramKey)) continue;
+      url.searchParams.set(paramKey, paramValue);
+    }
+    return url;
+  };
 
   const routeByAlias = (alias) => {
     const key = cleanSegment(alias);
     return Object.entries(routes).find(([, route]) => route.aliases.includes(key))?.[0] || null;
   };
+
+  const navActiveRoute = (routeKey = currentRoute()) => routes[routeKey]?.navParent || routeKey;
 
   const currentRoute = () => {
     const params = new URLSearchParams(window.location.search);
@@ -180,12 +232,14 @@
 
   const syncLinks = () => {
     const active = currentRoute();
+    const activeNav = navActiveRoute(active);
     document.querySelectorAll("a[href]").forEach((link) => {
       const key = link.dataset.route || keyFromHref(link.getAttribute("href"));
       if (!key || !routes[key]) return;
       link.dataset.route = key;
       link.setAttribute("href", canonicalInternalHref(link.getAttribute("href")));
-      if (key === active) link.setAttribute("aria-current", "page");
+      const isShellNavLink = link.classList.contains("poe-nav-link");
+      if (key === active || (key === activeNav && isShellNavLink)) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
   };
@@ -208,7 +262,11 @@
       if (actAliases[last]) params.act = actAliases[last];
     }
 
-    return { file: routeFiles[target] || routeFiles.home, targetUrl: to(target, params) };
+    const targetUrl = new URL(to(target, params), window.location.origin);
+    preserveCurrentSearchParams(targetUrl, {
+      skip: target === "leveling" ? ["route", "page", "project", "v"] : ["route", "page", "project"]
+    });
+    return { file: routeFiles[target] || routeFiles.home, targetUrl: publicUrl(targetUrl) };
   };
 
   const redirectPrettyRoute = async () => {
@@ -237,6 +295,7 @@
     routeVersion,
     routes,
     currentRoute,
+    navActiveRoute,
     to,
     canonicalInternalHref,
     syncLinks,

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>POE2 Việt hóa - Hệ thống Dịch thuật chuyên sâu Path of Exile 2</title>
-  <meta name="description" content="Tra cứu Path of Exile 2 bằng tiếng Việt: patch note, từ điển thuật ngữ, Skill Gems, Currency, Weapon và checklist leveling cho người chơi Việt.">
+  <meta name="description" content="Tra cứu Path of Exile 2 bằng tiếng Việt: patch note, từ điển thuật ngữ, Skill Gems, Currency, Passive Tree, Newbie guide và checklist leveling cho người chơi Việt.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://poeviethoa.net/">
   <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/">
@@ -13,14 +13,14 @@
   <meta property="og:site_name" content="POE2 Việt hóa">
   <meta property="og:type" content="website">
   <meta property="og:title" content="POE2 Việt hóa - Path of Exile 2 tiếng Việt">
-  <meta property="og:description" content="Tra cứu Path of Exile 2 bằng tiếng Việt: patch note, từ điển thuật ngữ, Skill Gems, Currency, Weapon và checklist leveling.">
+  <meta property="og:description" content="Tra cứu Path of Exile 2 bằng tiếng Việt: patch note, từ điển thuật ngữ, Skill Gems, Currency, Passive Tree, Newbie guide và checklist leveling.">
   <meta property="og:url" content="https://poeviethoa.net/">
-  <meta property="og:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta property="og:image:alt" content="Logo POE2 Việt hóa">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="POE2 Việt hóa - Path of Exile 2 tiếng Việt">
-  <meta name="twitter:description" content="Patch note, từ điển thuật ngữ, Skill Gems, Currency, Weapon và checklist leveling POE2 bằng tiếng Việt.">
-  <meta name="twitter:image" content="https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg">
+  <meta name="twitter:description" content="Patch note, từ điển thuật ngữ, Skill Gems, Currency, Passive Tree, Newbie guide và checklist leveling POE2 bằng tiếng Việt.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="theme-color" content="#0f172a">
   <script type="application/ld+json">
     {
@@ -29,16 +29,17 @@
       "name": "POE2 Việt hóa",
       "url": "https://poeviethoa.net/",
       "inLanguage": "vi",
-      "description": "Tra cứu Path of Exile 2 bằng tiếng Việt: patch note, từ điển thuật ngữ, Skill Gems, Currency, Weapon và checklist leveling cho người chơi Việt.",
+      "description": "Tra cứu Path of Exile 2 bằng tiếng Việt: patch note, từ điển thuật ngữ, Skill Gems, Currency, Passive Tree, Newbie guide và checklist leveling cho người chơi Việt.",
       "publisher": {
         "@type": "Organization",
         "name": "POE2 Việt hóa",
         "url": "https://poeviethoa.net/",
-        "logo": "https://poeviethoa.net/assets/poe2-viet-hoa-logo.svg"
+        "logo": "https://poeviethoa.net/assets/img/logo.jpg"
       }
     }
   </script>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link href="dist/app.css?v=20260524-font" rel="stylesheet">
@@ -94,7 +95,7 @@
   <!-- Hero Glow Section -->
   <section class="hero-glow relative overflow-hidden py-12 lg:py-16">
     <div class="poe-shell-container text-center">
-      <img class="mx-auto mb-5 h-16 w-16 drop-shadow-[0_14px_28px_rgba(245,158,11,.22)] sm:h-20 sm:w-20" src="assets/poe2-viet-hoa-logo.svg" alt="POE2 Việt hóa" width="80" height="80">
+      <img class="mx-auto mb-5 h-28 w-32 object-contain drop-shadow-[0_14px_28px_rgba(245,158,11,.22)] sm:h-36 sm:w-40" src="/assets/img/logo.jpg" alt="POE2 Việt hóa" width="160" height="142">
       <h1 class="font-display text-4xl font-black tracking-tight text-slate-950 sm:text-6xl dark:text-white">
         PATH OF EXILE 2 <br>
         <span class="bg-gradient-to-r from-amber-500 via-orange-500 to-red-600 bg-clip-text text-transparent">VIỆT HÓA CHUYÊN SÂU</span>
@@ -104,7 +105,7 @@
 
   <main class="poe-shell-container pb-16">
     <!-- Stats Dashboard Section -->
-    <section class="home-stat-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" aria-label="Bảng thống kê">
+    <section class="home-stat-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6" aria-label="Bảng thống kê">
       <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
         <span class="block text-2xl font-black text-amber-500 sm:text-3xl">31.468</span>
         <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Dòng Việt hóa chuẩn</span>
@@ -118,10 +119,14 @@
         <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Currencies Tiền tệ</span>
       </div>
       <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
+        <span class="block text-2xl font-black text-teal-500 sm:text-3xl">4.701</span>
+        <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Passive tree node</span>
+      </div>
+      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
         <span class="block text-2xl font-black text-rose-500 sm:text-3xl">2.864</span>
         <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Trang bị Items</span>
       </div>
-      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80 col-span-2 sm:col-span-1">
+      <div class="glass-panel rounded-xl p-4 text-center shadow-sm dark:border-slate-800/80">
         <span class="block text-2xl font-black text-emerald-500 sm:text-3xl">369</span>
         <span class="mt-1 block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Thuật ngữ Từ điển</span>
       </div>
@@ -168,21 +173,21 @@
           </div>
         </a>
 
-        <!-- Weapon Guide Card -->
-        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-rose-500 p-6 shadow-sm hover:border-rose-300 hover:shadow-md2 dark:hover:border-rose-700" href="/weapon">
+        <!-- Newbie Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-rose-500 p-6 shadow-sm hover:border-rose-300 hover:shadow-md2 dark:hover:border-rose-700" href="/newbie">
           <div>
             <div class="flex items-center gap-3">
               <span class="grid h-12 w-12 place-items-center rounded-xl bg-rose-50 text-rose-600 transition group-hover:scale-105 dark:bg-rose-950/40 dark:text-rose-300">
-                <span class="material-symbols-rounded text-2xl">swords</span>
+                <span class="material-symbols-rounded text-2xl">school</span>
               </span>
-              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Weapon</h3>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Newbie</h3>
             </div>
             <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
-              Cẩm nang vũ khí PoE2 tối giản cho người mới. Khám phá sự khác biệt cốt lõi giữa nhóm vũ khí Võ thuật (Martial) và Pháp thuật (Caster).
+              Góc hướng dẫn nhanh cho người mới chơi POE2. Bắt đầu bằng bài vũ khí đầu game: phân biệt Martial Weapon, Caster Weapon và cách nhặt đồ dễ hiểu.
             </p>
           </div>
           <div class="mt-6 flex items-center justify-between text-xs font-black text-rose-600 dark:text-rose-400">
-            <span>ĐỌC CẨM NANG</span>
+            <span>MỞ HƯỚNG DẪN</span>
             <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
           </div>
         </a>
@@ -240,6 +245,25 @@
           </div>
           <div class="mt-6 flex items-center justify-between text-xs font-black text-cyan-600 dark:text-cyan-400">
             <span>TRA TIỀN TỆ</span>
+            <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
+          </div>
+        </a>
+
+        <!-- Passive Tree Card -->
+        <a class="feature-card glass-panel group flex flex-col justify-between rounded-2xl border-l-4 border-l-teal-500 p-6 shadow-sm hover:border-teal-300 hover:shadow-md2 dark:hover:border-teal-700" href="/passive-tree">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid h-12 w-12 place-items-center rounded-xl bg-teal-50 text-teal-600 transition group-hover:scale-105 dark:bg-teal-950/40 dark:text-teal-300">
+                <span class="material-symbols-rounded text-2xl">account_tree</span>
+              </span>
+              <h3 class="font-display text-xl font-black text-slate-950 dark:text-white">Passive tree</h3>
+            </div>
+            <p class="mt-4 text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+              Tra cứu 4.701 node nội tại, notable, keystone, jewel socket và ascendancy. Hỗ trợ bản đồ thu gọn, lọc nhanh và bản dịch stat tiếng Việt sạch.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between text-xs font-black text-teal-600 dark:text-teal-400">
+            <span>MỞ PASSIVE TREE</span>
             <span class="material-symbols-rounded transition group-hover:translate-x-1">arrow_forward</span>
           </div>
         </a>

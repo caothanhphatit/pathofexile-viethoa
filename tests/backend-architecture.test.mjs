@@ -23,6 +23,7 @@ test("Fastify backend exposes health, public API routes, and token-protected adm
   assert.match(publicRoutes, /\/api\/dictionary/);
   assert.match(publicRoutes, /\/api\/skill-gems/);
   assert.match(publicRoutes, /\/api\/currency/);
+  assert.match(publicRoutes, /\/api\/passive-tree/);
   assert.match(publicRoutes, /\/api\/leveling\/log\/status/);
   assert.match(publicRoutes, /\/api\/leveling\/log\/events/);
   assert.match(app, /translationCommentRoutes/);
@@ -30,6 +31,8 @@ test("Fastify backend exposes health, public API routes, and token-protected adm
   assert.match(adminRoutes, /ADMIN_API_TOKEN/);
   assert.match(adminRoutes, /\/api\/admin\/crawl\/items/);
   assert.match(adminRoutes, /\/api\/admin\/export\/items/);
+  assert.match(adminRoutes, /\/api\/admin\/crawl\/passive-tree/);
+  assert.match(adminRoutes, /\/api\/admin\/export\/passive-tree/);
   assert.match(index, /buildApp/);
   assert.doesNotMatch(`${app}\n${publicRoutes}\n${commentsRoutes}\n${adminRoutes}\n${index}`, hardcodedRemoteDatabaseUrl);
 });

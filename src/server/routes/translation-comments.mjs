@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const entityTypes = ["skill_gem", "currency", "dictionary"];
+const entityTypes = ["skill_gem", "currency", "dictionary", "passive_tree_node"];
 
 const requireDb = (app) => {
   if (!app.db) {

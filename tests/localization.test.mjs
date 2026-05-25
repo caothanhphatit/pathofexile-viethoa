@@ -7,6 +7,7 @@ import {
   buildI18nText,
   collectCurrencyContentStrings,
   collectItemContentStrings,
+  collectPassiveTreeContentStrings,
   collectSkillGemContentStrings,
   contentStringKey,
   createTranslationLookup,
@@ -49,6 +50,12 @@ test("content string collectors extract English source lines by stable field pat
     properties: ["Stack Size: 1 / 20"],
     mods: ["Removes a random modifier"]
   });
+  const passiveStrings = collectPassiveTreeContentStrings({
+    id: "101",
+    name: "Lightning Damage",
+    stats: ["12% increased Lightning Damage"],
+    source_url: "https://raw.githubusercontent.com/example/tree.json"
+  });
 
   assert.deepEqual(itemStrings.map((row) => row.field_path), [
     "name",
@@ -59,7 +66,8 @@ test("content string collectors extract English source lines by stable field pat
   ]);
   assert.ok(skillStrings.some((row) => row.field_path === "detail.sections.0.lines.0"));
   assert.ok(currencyStrings.some((row) => row.field_path === "description"));
-  assert.ok([...itemStrings, ...skillStrings, ...currencyStrings].every((row) =>
+  assert.deepEqual(passiveStrings.map((row) => row.field_path), ["stats.0"]);
+  assert.ok([...itemStrings, ...skillStrings, ...currencyStrings, ...passiveStrings].every((row) =>
     row.source_locale === "en" && /^[a-f0-9]{64}$/.test(row.source_hash)
   ));
 });
@@ -146,16 +154,18 @@ test("Postgres migrations define normalized localization tables", async () => {
 });
 
 test("crawl runtimes write source text to content_strings instead of source-record translations", async () => {
-  const [itemsRuntime, skillRuntime, currencyRuntime, itemsLib] = await Promise.all([
+  const [itemsRuntime, skillRuntime, currencyRuntime, passiveTreeRuntime, itemsLib] = await Promise.all([
     readText("scripts/items/runtime.mjs"),
     readText("scripts/skill-gems/runtime.mjs"),
     readText("scripts/currency/runtime.mjs"),
+    readText("scripts/passive-tree/runtime.mjs"),
     readText("scripts/items/items-lib.mjs")
   ]);
 
   assert.match(itemsRuntime, /upsertContentStrings/);
   assert.match(skillRuntime, /upsertContentStrings/);
   assert.match(currencyRuntime, /upsertContentStrings/);
+  assert.match(passiveTreeRuntime, /upsertContentStrings/);
   assert.doesNotMatch(itemsLib, /translated:\s*\{/);
 });
 
