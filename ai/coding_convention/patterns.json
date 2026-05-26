@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "patterns": [
+    {
+      "name": "adapter-strangler",
+      "intent": "Use PoB Lua as the correctness adapter, then replace modules with Rust only after parity.",
+      "use_when": "Porting Dat64, bases, skills, mods, stat descriptions, or passive tree exporters."
+    },
+    {
+      "name": "raw-snapshot-plus-mapper",
+      "intent": "Save raw rows first, then run independently testable mappers.",
+      "use_when": "Adding any new game table or domain entity."
+    },
+    {
+      "name": "golden-diff",
+      "intent": "Compare Rust output against PoB output for the same patch before enabling Rust as primary.",
+      "use_when": "Replacing Lua extraction or domain transformation logic."
+    },
+    {
+      "name": "append-only-versioning",
+      "intent": "Create a new extract version and diff instead of mutating history.",
+      "use_when": "Running extractor after game patches."
+    },
+    {
+      "name": "manifested-assets",
+      "intent": "Copy referenced assets to local ignored storage and track metadata in DB.",
+      "use_when": "Extracting icons, passive tree backgrounds, stat icons, or UI images."
+    },
+    {
+      "name": "mapper-registry",
+      "intent": "Register domain mappers by table/entity type so mapper failures are isolated.",
+      "use_when": "Normalizing raw DAT rows into item, skill, mod, stat, or passive entities."
+    }
+  ]
+}

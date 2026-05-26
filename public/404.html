@@ -1,28 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex,nofollow">
-  <title>POE2 Viet hoa</title>
-  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <style>
-    html,
-    body {
-      min-height: 100%;
-      margin: 0;
-      background: #f8fafc;
-    }
-    @media (prefers-color-scheme: dark) {
-      html,
-      body {
-        background: #060813;
-      }
-    }
-  </style>
-  <script src="app-routes.js"></script>
-  <script>window.PoeRouter.redirectPrettyRoute();</script>
+  <meta name="robots" content="noindex,follow">
+  <title>POE2 Việt hóa</title>
+  <script src="components/theme-boot.js"></script>
+  <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="dist/app.css?v=20260524-font" rel="stylesheet">
+  <link href="/dist/spa/assets/app.css" rel="stylesheet">
+  <script type="module" src="/dist/spa/assets/app.js"></script>
 </head>
-<body></body>
+<body>
+  <div id="root"></div>
+</body>
 </html>

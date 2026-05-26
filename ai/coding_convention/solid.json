@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "solid_rules": {
+    "single_responsibility": [
+      "A parser reads source data and returns typed rows.",
+      "A mapper transforms rows into domain payloads.",
+      "An importer writes payloads to DB.",
+      "A differ compares two versions.",
+      "An exporter builds app-facing files."
+    ],
+    "open_closed": [
+      "Add support for a new DAT table by registering a mapper, not by editing a monolithic extractor switch.",
+      "Add a new export target by adding an exporter module, not by changing raw import code."
+    ],
+    "liskov_substitution": [
+      "PoB-backed and Rust-native extractors must satisfy the same ExtractorSource contract.",
+      "Fixture sources and real GGPK sources must produce the same normalized shape."
+    ],
+    "interface_segregation": [
+      "A raw row reader should not require asset extraction methods.",
+      "A domain mapper should not require direct filesystem access.",
+      "A frontend exporter should not require local game install access."
+    ],
+    "dependency_inversion": [
+      "High-level import workflows depend on extractor interfaces, not PoB or Rust concrete details.",
+      "Mappers receive table lookup services instead of opening files directly."
+    ]
+  },
+  "file_size_guidance": {
+    "rust_source_soft_limit_lines": 350,
+    "node_source_soft_limit_lines": 300,
+    "json_rule_soft_limit_lines": 250,
+    "action": "Split by responsibility when a file crosses the soft limit during feature work."
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "module": "game-extractor",
+  "principles": [
+    {
+      "id": "separate-from-current-app",
+      "rule": "The extractor must remain a separate module inside the repository.",
+      "rationale": "The current web app should not depend on extractor internals or local game files."
+    },
+    {
+      "id": "raw-before-normalized",
+      "rule": "Persist raw DAT rows before mapping them into domain tables.",
+      "rationale": "Raw snapshots survive game schema changes and make patch diffs debuggable."
+    },
+    {
+      "id": "golden-parity-before-port",
+      "rule": "Do not replace PoB Lua behavior with Rust until golden diff tests pass for the same game patch.",
+      "rationale": "Extractor speed is useless if the data silently diverges from PoB."
+    },
+    {
+      "id": "no-poe2db-sot",
+      "rule": "POE2DB may be used only as an optional comparison reference, never as source of truth.",
+      "rationale": "The project goal is an independent GGPK-backed data source."
+    },
+    {
+      "id": "explicit-patch-version",
+      "rule": "Every extracted row, asset, relation, and generated entity must be tied to an extract version.",
+      "rationale": "Historical compare and rollback require versioned data."
+    },
+    {
+      "id": "local-assets-only",
+      "rule": "Extracted assets are stored under the repo-ignored data directory and referenced by manifest.",
+      "rationale": "Avoid committing large or copyrighted game assets while preserving reproducible local builds."
+    }
+  ],
+  "forbidden": [
+    "Hard-coding the local game install path outside config defaults.",
+    "Making browser/frontend code read Content.ggpk directly.",
+    "Overwriting current POE2DB-derived tables during extractor P0.",
+    "Porting Lua exporters by hand without a golden test fixture.",
+    "Committing raw extracted assets, GGPK chunks, or local snapshots."
+  ]
+}

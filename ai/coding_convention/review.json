@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "review_checklists": {
+    "architecture": [
+      "Does the change keep extractor code separate from current app runtime code?",
+      "Are raw data, normalized data, relationships, and diffs clearly separated?",
+      "Can a mapper fail without losing the raw snapshot?",
+      "Are paths configurable instead of hard-coded?"
+    ],
+    "data_correctness": [
+      "Is each output tied to an extract version and source hash?",
+      "Are row hashes stable across repeated extracts of the same patch?",
+      "Does the mapper record unresolved references instead of dropping them silently?",
+      "Is the PoB upstream output used as a golden comparison where available?"
+    ],
+    "rust": [
+      "Are file and DB operations streamed or batched instead of loading huge data into memory?",
+      "Are errors typed enough to identify source path, table, row, or mapper?",
+      "Do parallel tasks preserve deterministic output ordering where hashes depend on order?"
+    ],
+    "database": [
+      "Are new tables append/version friendly?",
+      "Are JSONB raw payloads preserved before domain mapping?",
+      "Are indexes scoped to actual query patterns?",
+      "Does migration avoid touching existing POE2DB-derived tables unless explicitly planned?"
+    ],
+    "testing": [
+      "Is there a small fixture that runs without local Content.ggpk?",
+      "Is there a golden test against PoB output for changed mappers?",
+      "Does the diff test cover added, removed, and changed rows?",
+      "Are asset manifest hashes verified?"
+    ]
+  },
+  "blocking_findings": [
+    "Loss of raw extracted data.",
+    "Silent mapper failures.",
+    "Frontend dependency on local game files.",
+    "Unversioned normalized entity writes.",
+    "Rust port replacing Lua behavior without parity tests."
+  ]
+}

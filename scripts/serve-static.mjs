@@ -23,29 +23,36 @@ const contentTypes = {
   ".woff2": "font/woff2"
 };
 
+const spaFallbackFile = "/index.html";
+
 const cleanRouteFiles = new Map([
   ["/", "/index.html"],
   ["/home", "/index.html"],
-  ["/patchnote", "/patchnote_vn.html"],
-  ["/patch-note", "/patchnote_vn.html"],
-  ["/tra-cuu", "/lookup.html"],
-  ["/lookup", "/lookup.html"],
-  ["/newbie", "/newbie.html"],
-  ["/beginner-guide", "/beginner.html"],
-  ["/items", "/items.html"],
-  ["/dictionary", "/dictionary.html"],
-  ["/tu-dien", "/dictionary.html"],
-  ["/weapon", "/weapon.html"],
-  ["/skill-gems", "/skill_gems.html"],
-  ["/skill_gems", "/skill_gems.html"],
-  ["/skill-gem", "/skill_gem_detail.html"],
-  ["/skill_gem_detail", "/skill_gem_detail.html"],
-  ["/currency", "/currency.html"],
-  ["/currency-detail", "/currency_detail.html"],
-  ["/currency_detail", "/currency_detail.html"],
-  ["/passive-tree", "/passive_tree.html"],
-  ["/passive_tree", "/passive_tree.html"],
-  ["/leveling", "/leveling.html"]
+  ["/patchnote", "/index.html"],
+  ["/patch-note", "/index.html"],
+  ["/tra-cuu", "/index.html"],
+  ["/lookup", "/index.html"],
+  ["/newbie", "/index.html"],
+  ["/beginner-guide", "/index.html"],
+  ["/items", "/index.html"],
+  ["/dictionary", "/index.html"],
+  ["/tu-dien", "/index.html"],
+  ["/weapon", "/index.html"],
+  ["/skill-gems", "/index.html"],
+  ["/skill_gems", "/index.html"],
+  ["/ggpk-skills", "/index.html"],
+  ["/ggpk_skills", "/index.html"],
+  ["/ggpk-data", "/index.html"],
+  ["/ggpk-lookup", "/index.html"],
+  ["/ggpk_lookup", "/index.html"],
+  ["/skill-gem", "/index.html"],
+  ["/skill_gem_detail", "/index.html"],
+  ["/currency", "/index.html"],
+  ["/currency-detail", "/index.html"],
+  ["/currency_detail", "/index.html"],
+  ["/passive-tree", "/index.html"],
+  ["/passive_tree", "/index.html"],
+  ["/leveling", "/index.html"]
 ]);
 
 const safePath = (urlPath = "/") => {
@@ -75,8 +82,8 @@ const server = http.createServer(async (request, response) => {
     });
     response.end(data);
   } catch {
-    response.writeHead(404, { "content-type": "text/html; charset=utf-8" });
-    response.end(await fs.readFile(path.join(rootDir, "404.html"), "utf8").catch(() => "Not found"));
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" });
+    response.end(await fs.readFile(path.join(rootDir, spaFallbackFile), "utf8").catch(() => "Not found"));
   }
 });
 

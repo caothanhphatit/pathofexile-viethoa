@@ -1,0 +1,14 @@
+[package]
+name = "poe2-game-extractor"
+version = "0.1.0"
+edition = "2021"
+description = "Native Rust DAT64 parser core for the POE2 extractor pipeline."
+publish = false
+
+[lib]
+name = "poe2_game_extractor"
+path = "src/lib.rs"
+
+[[bin]]
+name = "poe2-game-extractor"
+path = "src/main.rs"

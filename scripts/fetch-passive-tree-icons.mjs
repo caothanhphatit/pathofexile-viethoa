@@ -15,7 +15,7 @@ dotenv.config();
 const CDN_IMAGE_BASE = "https://cdn.poe2db.tw/image/";
 const CONCURRENCY = 16;
 
-const iconCdnUrl = (icon = "") => `${CDN_IMAGE_BASE}${String(icon).replace(/\\/g, "/").replace(/\.dds$/i, ".webp")}`;
+const iconCdnUrl = (icon = "") => `${CDN_IMAGE_BASE}${String(icon).replace(/\\/g, "/").replace(/\.(dds|png)$/i, ".webp")}`;
 
 const publicAssetPath = (assetPath = "") =>
   path.join(ROOT_DIR, "public", assetPath.replace(/^\/+/, "").replace(/\//g, path.sep));

@@ -17,13 +17,24 @@
     "export:passive-tree": "node scripts/export-passive-tree.mjs",
     "export:skill-gems": "node scripts/export-skill-gems.mjs",
     "export:all": "node scripts/export-skill-gems.mjs && node scripts/export-currency.mjs && node scripts/export-items.mjs && node scripts/export-passive-tree.mjs",
+    "extract:game": "node scripts/extract-game.mjs",
+    "extract:diff": "node scripts/extract-game-diff.mjs",
+    "extract:native": "node scripts/extract-game-native.mjs",
+    "extract:web": "node scripts/export-game-web.mjs",
+    "export:ggpk-skills": "node scripts/export-ggpk-skills.mjs",
+    "export:ggpk-lookup": "node scripts/export-ggpk-lookup.mjs",
+    "extract:ggpk-sweep": "node scripts/extract-ggpk-sweep.mjs",
+    "extract:ggpk-full": "node scripts/extract-ggpk-full.mjs",
+    "import:ggpk-full": "node scripts/import-ggpk-full.mjs",
     "translate:content": "node scripts/retranslate-content.mjs",
     "rebuild:data": "node src/db/migrate.mjs && npm run crawl:all && npm run translate:content && npm run export:all",
     "server": "node src/server/index.mjs",
     "site": "node scripts/serve-static.mjs public",
     "test": "node --test",
+    "dev:spa": "vite --config vite.spa.config.mjs",
+    "build:spa": "vite build --config vite.spa.config.mjs",
     "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./public/dist/app.css --minify",
-    "build": "npm run build:css"
+    "build": "npm run build:css && npm run build:spa"
   },
   "keywords": [],
   "author": "",
@@ -37,9 +48,16 @@
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "pg": "^8.21.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
   }
 }

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "architecture": {
+    "name": "GGPK-backed POE2 data extractor",
+    "style": "layered pipeline with raw archive, normalized domain, relationship graph, and diff outputs",
+    "layers": [
+      {
+        "name": "upstream_adapter",
+        "responsibility": "Use PoB-PoE2 Lua/exporter code to read GGPK/DAT data and generate reference outputs.",
+        "may_depend_on": ["PathOfBuilding-PoE2", "local_game_install"],
+        "must_not_depend_on": ["current_web_app_ui"]
+      },
+      {
+        "name": "rust_core",
+        "responsibility": "Fingerprint, hash, stream import, copy referenced assets, run diffs, and later parse DAT natively.",
+        "may_depend_on": ["postgres", "filesystem", "pob_reference_outputs"],
+        "must_not_depend_on": ["POE2DB", "browser_runtime"]
+      },
+      {
+        "name": "raw_store",
+        "responsibility": "Store table specs, columns, rows, row hashes, and source metadata exactly enough to compare patches.",
+        "may_depend_on": ["postgres"],
+        "must_not_depend_on": ["domain_mapper_success"]
+      },
+      {
+        "name": "domain_store",
+        "responsibility": "Store app-usable items, skills, mods, stats, passives, and assets as granular versioned tables.",
+        "may_depend_on": ["raw_store", "mapper_registry"],
+        "must_not_depend_on": ["current_poe2db_tables"]
+      },
+      {
+        "name": "relationship_graph",
+        "responsibility": "Store entity-to-entity and entity-to-asset links for search, tooltips, planner data, and future PoB web.",
+        "may_depend_on": ["domain_store"],
+        "must_not_depend_on": ["presentation_html"]
+      },
+      {
+        "name": "export_layer",
+        "responsibility": "Generate compact JSON/JS payloads consumed by the current app or future planner.",
+        "may_depend_on": ["domain_store", "relationship_graph"],
+        "must_not_depend_on": ["local_ggpk"]
+      }
+    ]
+  },
+  "boundary_rules": [
+    "The current app may consume extractor exports, but must not import extractor internals.",
+    "The extractor may share DB connection helpers only if it does not alter existing content tables.",
+    "All local game paths are config inputs, never frontend-visible requirements."
+  ]
+}

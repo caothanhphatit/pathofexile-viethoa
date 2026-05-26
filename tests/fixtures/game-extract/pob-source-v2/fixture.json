@@ -1,0 +1,105 @@
+{
+  "source": {
+    "kind": "fixture",
+    "version": "fixture-0_2",
+    "label": "Fixture Patch 0.2",
+    "pob_commit": "fixture"
+  },
+  "tables": [
+    {
+      "name": "pob_generated_gems",
+      "source_path": "Data/Gems.lua",
+      "columns": ["id", "name", "grantedEffectId", "gemType", "tags"],
+      "rows": [
+        {
+          "id": "Metadata/Items/Gems/SkillGemEmberFusillade",
+          "name": "Ember Fusillade",
+          "baseTypeName": "Ember Fusillade",
+          "gameId": "Metadata/Items/Gems/SkillGemEmberFusillade",
+          "variantId": "EmberFusillade",
+          "grantedEffectId": "EmberFusilladePlayer",
+          "gemType": "Spell",
+          "tagString": "Fire, Projectile, Duration",
+          "tags": ["fire", "projectile", "duration", "spell"],
+          "reqStr": 0,
+          "reqDex": 0,
+          "reqInt": 100,
+          "tier": 4,
+          "naturalMaxLevel": 20
+        },
+        {
+          "id": "Metadata/Items/Gems/SkillGemFrostbolt",
+          "name": "Frostbolt",
+          "baseTypeName": "Frostbolt",
+          "gameId": "Metadata/Items/Gems/SkillGemFrostbolt",
+          "variantId": "Frostbolt",
+          "grantedEffectId": "FrostboltPlayer",
+          "gemType": "Spell",
+          "tagString": "Cold, Projectile",
+          "tags": ["cold", "projectile", "spell"],
+          "reqStr": 0,
+          "reqDex": 0,
+          "reqInt": 100,
+          "tier": 1,
+          "naturalMaxLevel": 20
+        }
+      ]
+    },
+    {
+      "name": "pob_generated_bases",
+      "source_path": "Data/Bases/wand.lua",
+      "columns": ["id", "name", "type", "tags", "req"],
+      "rows": [
+        {
+          "id": "item_base:driftwood_wand",
+          "name": "Driftwood Wand",
+          "baseTypeName": "Driftwood Wand",
+          "type": "Wand",
+          "tags": ["wand", "weapon", "default"],
+          "requirements": { "level": 1, "int": 10 },
+          "properties": { "quality": 20, "socketLimit": 2 },
+          "implicit": "Grants Skill: Spark"
+        }
+      ]
+    },
+    {
+      "name": "pob_generated_mods",
+      "source_path": "Data/ModItem.lua",
+      "columns": ["id", "type", "affix", "level", "group", "modTags"],
+      "rows": []
+    },
+    {
+      "name": "pob_passive_tree",
+      "source_path": "TreeData/fixture/tree.json",
+      "columns": ["id", "name", "stats", "out"],
+      "rows": [
+        {
+          "id": "1001",
+          "name": "Fire Walker",
+          "type": "notable",
+          "stats": ["16% increased Fire Damage"],
+          "out": ["1002"],
+          "icon": "assets/fire-walker.txt"
+        },
+        {
+          "id": "1002",
+          "name": "Small Fire Damage",
+          "type": "small",
+          "stats": ["5% increased Fire Damage"],
+          "out": [],
+          "icon": "assets/fire-walker.txt"
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset:fire-walker",
+      "kind": "passive_tree_icon",
+      "logical_path": "assets/fire-walker.txt",
+      "source_path": "assets/fire-walker.txt",
+      "entity_type": "passive_node",
+      "entity_id": "1001"
+    }
+  ]
+}

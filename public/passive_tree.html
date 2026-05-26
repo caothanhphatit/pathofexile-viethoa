@@ -894,6 +894,15 @@
     }[type] || type || "Passive");
 
     const nodeStatsVi = (node) => i18nList(node.i18n?.stats, node.stats || []);
+    const nodeDetailText = (node) => {
+      const statsVi = nodeStatsVi(node);
+      const statsEn = node.stats || [];
+      return [
+        node.name || `Node ${node.id}`,
+        ...(statsVi.length ? statsVi : ["Node không có mô tả chỉ số."]),
+        ...(statsEn.length ? ["", "Gốc:", ...statsEn] : [])
+      ].join("\n");
+    };
     const nodeTypeClass = (type) => ({
       keystone: "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950/50 dark:text-amber-200 dark:border-amber-700/40",
       notable: "bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-950/50 dark:text-teal-200 dark:border-teal-700/40",
@@ -2216,7 +2225,7 @@
           </div>
           <div class="passive-tooltip-footer">
             <span>Passive:</span><strong>+${nf.format(hoverPathPointGain)}</strong>
-            <span class="passive-tooltip-hint"><kbd>Alt</kbd> giữ detail</span>
+            <span class="passive-tooltip-hint"><kbd>Alt</kbd> copy detail</span>
           </div>
         `;
         window.PoeAppShell?.applyTooltips?.(treeMapTooltip);
@@ -2607,6 +2616,17 @@
       textarea.remove();
     };
 
+    const copyHoveredNodeDetail = async () => {
+      const node = nodesById.get(String(hoveredNodeId));
+      if (!node) return;
+      try {
+        await copyText(nodeDetailText(node));
+        showPassiveBuildToast("Đã copy node detail");
+      } catch {
+        showPassiveBuildToast("Không copy được node detail");
+      }
+    };
+
     searchInput.addEventListener("input", () => render({ resetLimit: false }));
     clearPassiveSearch.addEventListener("click", () => {
       searchInput.value = "";
@@ -2790,7 +2810,9 @@
     });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Alt" && treeMapTooltip.classList.contains("is-visible")) {
+        event.preventDefault();
         setMapTooltipPinned(true);
+        if (!event.repeat) copyHoveredNodeDetail();
       }
       if (event.key !== "Escape") return;
       if (!nodeModal.classList.contains("hidden")) {

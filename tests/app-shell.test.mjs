@@ -8,6 +8,7 @@ const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
 const readProjectBinary = (filename) => readFile(join(repoRoot, "public", filename));
 const readRepoFile = (filename) => readFile(join(repoRoot, filename), "utf8");
+const readSpaFile = (filename) => readFile(join(repoRoot, "src", "spa", filename), "utf8");
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const routeBlock = (routes, key) => routes.match(new RegExp(`${key}:\\s*{[^}]*}`))?.[0] || "";
 
@@ -28,8 +29,9 @@ const shellPages = [
   "passive_tree.html",
   "leveling.html"
 ];
-const sharedHeaderPages = shellPages;
-const sharedWidthPages = shellPages.filter((page) => page !== "passive_tree.html");
+const legacyShellPages = shellPages.filter((page) => page !== "index.html");
+const sharedHeaderPages = legacyShellPages;
+const sharedWidthPages = legacyShellPages.filter((page) => page !== "passive_tree.html");
 
 test("app shell component owns shared header and theme behavior", async () => {
   const shell = await readProjectFile("components/app-shell.js");
@@ -138,10 +140,12 @@ test("routes expose reusable nav metadata for the app shell", async () => {
 });
 
 test("app routes and nav links use clean production URLs without html suffixes", async () => {
-  const [routes, shell, home] = await Promise.all([
+  const [routes, shell, spaRoutes, app, home] = await Promise.all([
     readProjectFile("app-routes.js"),
     readProjectFile("components/app-shell.js"),
-    readProjectFile("index.html")
+    readSpaFile("lib/routes.ts"),
+    readSpaFile("App.tsx"),
+    readSpaFile("pages/HomePage.tsx")
   ]);
 
   assert.match(routes, /href:\s*"\/tra-cuu"/);
@@ -157,8 +161,17 @@ test("app routes and nav links use clean production URLs without html suffixes",
   assert.match(shell, /Tra cứu/);
   assert.match(shell, /href:\s*"\/skill-gems"/);
   assert.match(shell, /Newbie/);
-  assert.match(home, /href="\/newbie"/);
-  assert.match(home, /href="\/skill-gems"/);
+  assert.match(spaRoutes, /path:\s*"\/tra-cuu"/);
+  assert.match(spaRoutes, /path:\s*"\/newbie"/);
+  assert.match(spaRoutes, /path:\s*"\/skill-gems"/);
+  assert.match(spaRoutes, /path:\s*"\/currency"/);
+  assert.match(spaRoutes, /path:\s*"\/passive-tree"/);
+  assert.match(app, /navRoutes\.map/);
+  assert.match(app, /href=\{item\.path\}/);
+  assert.match(app, /activeNavKey/);
+  assert.match(home, /featureKeys[\s\S]*"newbie"/);
+  assert.match(home, /featureKeys[\s\S]*"skillgems"/);
+  assert.match(home, /href=\{route\.path\}/);
   assert.doesNotMatch(home, /href="(?:index|dictionary|weapon|skill_gems|currency|leveling|patchnote_vn)\.html/);
 });
 
@@ -208,6 +221,24 @@ test("main pages consume the reusable site header instead of copy-pasting it", a
     assert.doesNotMatch(html, /<header class="sticky top-0 z-40/, `${page} does not inline site header`);
     assert.doesNotMatch(html, /const themeToggle = document\.getElementById\("themeToggle"\)/, `${page} does not inline shared theme toggle`);
   }
+});
+
+test("SPA shell delegates visible navigation and layout to React", async () => {
+  const html = await readProjectFile("index.html");
+  const [app, home, styles] = await Promise.all([
+    readSpaFile("App.tsx"),
+    readSpaFile("pages/HomePage.tsx"),
+    readSpaFile("styles.css")
+  ]);
+
+  assert.match(html, /<div id="root">/);
+  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js"/);
+  assert.match(html, /href="\/dist\/spa\/assets\/app\.css"/);
+  assert.match(app, /<header className="app-header">/);
+  assert.match(app, /<nav className="nav-rail"/);
+  assert.match(home, /<main className="page-shell home-page">/);
+  assert.match(styles, /\.page-shell/);
+  assert.doesNotMatch(html, /components\/app-shell\.js/);
 });
 
 test("app shell can hydrate an already-parsed header before later page scripts run", async () => {
@@ -348,73 +379,84 @@ test("redirect documents delegate route generation to the shared router", async 
   }
 });
 
-test("404 route redirects reuse the shared router table", async () => {
+test("404 fallback loads the SPA shell and React route table", async () => {
   const html = await readProjectFile("404.html");
-  const routes = await readProjectFile("app-routes.js");
+  const routes = await readSpaFile("lib/routes.ts");
 
-  assert.match(html, /app-routes\.js/);
-  assert.match(html, /PoeRouter\.redirectPrettyRoute\(\)/);
-  assert.match(html, /<body><\/body>/);
+  assert.match(html, /<meta name="robots" content="noindex,follow">/);
+  assert.match(html, /<div id="root"><\/div>/);
+  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js"/);
+  assert.match(html, /href="\/dist\/spa\/assets\/app\.css"/);
+  assert.doesNotMatch(html, /app-routes\.js/);
+  assert.doesNotMatch(html, /PoeRouter\.redirectPrettyRoute\(\)/);
   assert.doesNotMatch(html, /Äang chuyá»ƒn|Đang chuyển|chuyá»ƒn vá»|chuyển về/);
   assert.doesNotMatch(html, /const routes =/);
   assert.doesNotMatch(html, /const aliases =/);
-  assert.match(routes, /preserveCurrentSearchParams/);
-  assert.match(routes, /new URLSearchParams\(window\.location\.search\)/);
+  assert.match(routes, /aliases:\s*\["\/home", "\/index\.html"\]/);
+  assert.match(routes, /routeFromLocation/);
 });
 
-test("production nginx clean URL config maps app routes to static HTML", async () => {
+test("production nginx clean URL config maps app routes to the SPA shell", async () => {
   const config = await readRepoFile("deploy/nginx/poeviethoa-clean-routes.conf");
-  const mappings = [
-    ["/", "index.html"],
-    ["/home", "index.html"],
-    ["/patchnote", "patchnote_vn.html"],
-    ["/patch-note", "patchnote_vn.html"],
-    ["/tra-cuu", "lookup.html"],
-    ["/lookup", "lookup.html"],
-    ["/newbie", "newbie.html"],
-    ["/beginner-guide", "beginner.html"],
-    ["/items", "items.html"],
-    ["/dictionary", "dictionary.html"],
-    ["/tu-dien", "dictionary.html"],
-    ["/weapon", "weapon.html"],
-    ["/skill-gems", "skill_gems.html"],
-    ["/skill_gems", "skill_gems.html"],
-    ["/skill-gem", "skill_gem_detail.html"],
-    ["/skill_gem_detail", "skill_gem_detail.html"],
-    ["/currency", "currency.html"],
-    ["/currency-detail", "currency_detail.html"],
-    ["/currency_detail", "currency_detail.html"],
-    ["/passive-tree", "passive_tree.html"],
-    ["/passive_tree", "passive_tree.html"],
-    ["/leveling", "leveling.html"]
+  const routes = [
+    "/",
+    "/home",
+    "/patchnote",
+    "/patch-note",
+    "/tra-cuu",
+    "/lookup",
+    "/newbie",
+    "/beginner-guide",
+    "/items",
+    "/dictionary",
+    "/tu-dien",
+    "/weapon",
+    "/skill-gems",
+    "/skill_gems",
+    "/skill-gem",
+    "/skill_gem_detail",
+    "/currency",
+    "/currency-detail",
+    "/currency_detail",
+    "/ggpk-skills",
+    "/ggpk_skills",
+    "/ggpk-data",
+    "/ggpk-lookup",
+    "/ggpk_lookup",
+    "/passive-tree",
+    "/passive_tree",
+    "/leveling"
   ];
 
-  for (const [route, file] of mappings) {
-    const pattern = new RegExp(`location = ${escapeRegex(route)} \\{[\\s\\S]*?try_files /${escapeRegex(file)} =404;[\\s\\S]*?\\}`);
-    assert.match(config, pattern, `${route} maps to ${file}`);
+  for (const route of routes) {
+    const pattern = new RegExp(`location = ${escapeRegex(route)} \\{[\\s\\S]*?try_files /index\\.html =404;[\\s\\S]*?\\}`);
+    assert.match(config, pattern, `${route} maps to the SPA shell`);
   }
 
-  assert.match(config, /location \/ \{[\s\S]*?try_files \$uri \$uri\/ \/404\.html;[\s\S]*?\}/);
+  assert.match(config, /location \/ \{[\s\S]*?try_files \$uri \$uri\/ \/index\.html;[\s\S]*?\}/);
 });
 
-test("local static dev server maps clean app routes to static HTML", async () => {
+test("local static dev server maps clean app routes to the SPA shell", async () => {
   const server = await readRepoFile("scripts/serve-static.mjs");
-  const mappings = [
-    ["/patchnote", "/patchnote_vn.html"],
-    ["/tra-cuu", "/lookup.html"],
-    ["/lookup", "/lookup.html"],
-    ["/newbie", "/newbie.html"],
-    ["/beginner-guide", "/beginner.html"],
-    ["/items", "/items.html"],
-    ["/dictionary", "/dictionary.html"],
-    ["/weapon", "/weapon.html"],
-    ["/skill-gems", "/skill_gems.html"],
-    ["/currency", "/currency.html"],
-    ["/passive-tree", "/passive_tree.html"],
-    ["/leveling", "/leveling.html"]
+  const routes = [
+    "/patchnote",
+    "/tra-cuu",
+    "/lookup",
+    "/newbie",
+    "/beginner-guide",
+    "/items",
+    "/dictionary",
+    "/weapon",
+    "/skill-gems",
+    "/currency",
+    "/ggpk-skills",
+    "/ggpk-data",
+    "/passive-tree",
+    "/leveling"
   ];
 
-  for (const [route, file] of mappings) {
-    assert.match(server, new RegExp(`\\["${escapeRegex(route)}", "${escapeRegex(file)}"\\]`), `${route} maps to ${file}`);
+  for (const route of routes) {
+    assert.match(server, new RegExp(`\\["${escapeRegex(route)}", "/index\\.html"\\]`), `${route} maps to the SPA shell`);
   }
+  assert.match(server, /const spaFallbackFile = "\/index\.html"/);
 });

@@ -13,6 +13,7 @@ pnpm-debug.log*
 /.cache/
 /coverage/
 /data/
+/tools/game-extractor-rs/target/
 
 /*.png
 /*.pdf

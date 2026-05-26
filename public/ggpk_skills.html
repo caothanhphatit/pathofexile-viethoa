@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GGPK skills - POE2</title>
+  <meta name="description" content="GGPK active skill data exported from the local Path of Exile 2 game files.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="https://poeviethoa.net/ggpk-skills">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Viet hoa">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="GGPK skills - POE2">
+  <meta property="og:description" content="Active skill data exported from local GGPK normalized tables.">
+  <meta property="og:url" content="https://poeviethoa.net/ggpk-skills">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script src="components/theme-boot.js"></script>
+  <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="dist/app.css?v=20260524-font" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+  <style>
+    body.ggpk-page {
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, .04), transparent 18rem),
+        #f6f7fb !important;
+    }
+    html.dark body.ggpk-page {
+      background:
+        linear-gradient(180deg, rgba(20, 184, 166, .10), transparent 20rem),
+        #080c12 !important;
+    }
+    .ggpk-panel {
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(255, 255, 255, .90);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 14px 34px rgba(15, 23, 42, .08);
+      backdrop-filter: blur(14px);
+    }
+    .dark .ggpk-panel {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(12, 18, 28, .88);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, .34);
+    }
+    .ggpk-card {
+      min-height: 236px;
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(255, 255, 255, .94);
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .ggpk-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(20, 184, 166, .34);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, .12);
+    }
+    .dark .ggpk-card {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(15, 23, 42, .90);
+    }
+    .dark .ggpk-card:hover {
+      border-color: rgba(45, 212, 191, .34);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .34);
+    }
+    .ggpk-chip {
+      border: 1px solid rgba(15, 23, 42, .08);
+      background: rgba(241, 245, 249, .88);
+      color: #334155;
+      letter-spacing: 0;
+    }
+    .dark .ggpk-chip {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .07);
+      color: #dbe4f0;
+    }
+    .ggpk-input {
+      border: 1px solid rgba(15, 23, 42, .10);
+      background: rgba(255, 255, 255, .76);
+    }
+    .dark .ggpk-input {
+      border-color: rgba(255, 255, 255, .08);
+      background: rgba(2, 6, 23, .48);
+    }
+    .ggpk-input:focus-within,
+    .ggpk-select:focus-visible,
+    .ggpk-button:focus-visible {
+      outline: 2px solid #14b8a6;
+      outline-offset: 2px;
+    }
+    .ggpk-path {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .ggpk-desc {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.65;
+    }
+    .ggpk-video-shell {
+      background:
+        linear-gradient(135deg, rgba(20, 184, 166, .12), rgba(15, 23, 42, .04)),
+        rgba(248, 250, 252, .92);
+    }
+    .dark .ggpk-video-shell {
+      background:
+        linear-gradient(135deg, rgba(20, 184, 166, .16), rgba(15, 23, 42, .28)),
+        rgba(2, 6, 23, .58);
+    }
+    .ggpk-video-player {
+      aspect-ratio: 16 / 9;
+      background: #020617;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ggpk-card {
+        transition: none;
+      }
+      .ggpk-card:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="ggpk-page min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div id="top"></div>
+  <a class="fixed left-4 top-4 z-50 -translate-y-20 rounded-lg bg-teal-600 px-4 py-2 text-sm font-black text-white transition focus-visible:translate-y-0" href="#main">Skip navigation</a>
+  <div data-component="site-header"></div>
+
+  <main class="poe-shell-container grid gap-5 py-6" id="main">
+    <section class="ggpk-panel rounded-lg p-5" aria-label="GGPK skills">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-teal-600 text-white shadow-md2">
+            <span class="material-symbols-rounded text-2xl" aria-hidden="true">database</span>
+          </span>
+          <div class="min-w-0">
+            <p class="text-xs font-black uppercase tracking-wide text-teal-700 dark:text-teal-300">GGPK source of truth</p>
+            <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">GGPK Skills</h1>
+            <p class="mt-1 text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400">ActiveSkills.datc64 normalized from local game content.</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 lg:justify-end">
+          <a class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" href="/tra-cuu" data-lookup-back>
+            <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>Lookup
+          </a>
+          <span class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
+            <span class="material-symbols-rounded text-sm text-teal-500" aria-hidden="true">bolt</span>
+            <span id="ggpkSkillCount">0 skills</span>
+          </span>
+          <span class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
+            <span class="material-symbols-rounded text-sm text-amber-500" aria-hidden="true">movie</span>
+            <span id="ggpkVideoCount">0 videos</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="ggpk-panel rounded-lg p-4" aria-label="GGPK skill filters">
+      <div class="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_150px_160px_180px]">
+        <label class="ggpk-input flex h-12 items-center gap-3 rounded-lg px-3">
+          <span class="material-symbols-rounded text-slate-500" aria-hidden="true">search</span>
+          <input class="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-900 outline-none placeholder:text-slate-500 dark:text-slate-100" id="ggpkSkillSearch" name="q" type="search" placeholder="Search name, description, stat..." aria-label="Search GGPK skills" autocomplete="off">
+        </label>
+        <select class="ggpk-select h-12 rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" id="ggpkKindFilter" name="kind" aria-label="Filter by skill kind">
+          <option value="all">All skills</option>
+          <option value="gem">Gem skills</option>
+          <option value="system">System skills</option>
+        </select>
+        <select class="ggpk-select h-12 rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" id="ggpkMediaFilter" name="media" aria-label="Filter by media">
+          <option value="all">All media</option>
+          <option value="icon">Has icon</option>
+          <option value="video">Has video</option>
+          <option value="missing">Missing media</option>
+        </select>
+        <select class="ggpk-select h-12 rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" id="ggpkTagFilter" name="tag" aria-label="Filter by category"></select>
+      </div>
+      <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <p class="text-sm font-bold text-slate-500 dark:text-slate-400" id="ggpkResultMeta">Loading GGPK data.</p>
+        <button class="ggpk-button inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800" id="ggpkResetFilters" type="button">
+          <span class="material-symbols-rounded text-base" aria-hidden="true">restart_alt</span>
+          Reset
+        </button>
+      </div>
+    </section>
+
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" id="ggpkSkillGrid" aria-live="polite"></section>
+    <button class="ggpk-button mx-auto hidden h-11 items-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-4 text-sm font-black text-teal-700 transition hover:bg-teal-600 hover:text-white dark:border-teal-900/70 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-500 dark:hover:text-white" id="ggpkLoadMore" type="button">
+      <span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>
+      Load more
+    </button>
+  </main>
+
+  <div class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm" id="ggpkSkillModal" role="dialog" aria-modal="true" aria-labelledby="ggpkModalTitle">
+    <div class="ggpk-panel w-full max-w-3xl overflow-hidden rounded-lg" id="ggpkModalContent">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-200/70 px-5 py-4 dark:border-slate-800">
+        <div class="min-w-0">
+          <p class="text-xs font-black uppercase tracking-wide text-teal-700 dark:text-teal-300" id="ggpkModalKind">Active skill</p>
+          <h2 class="mt-1 break-words font-display text-xl font-black text-slate-950 dark:text-white" id="ggpkModalTitle" translate="no">Skill</h2>
+        </div>
+        <button class="ggpk-button grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" id="ggpkCloseModal" type="button" aria-label="Close">
+          <span class="material-symbols-rounded text-xl" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <div class="max-h-[72vh] overflow-y-auto px-5 py-4">
+        <p class="text-sm font-semibold leading-7 text-slate-700 dark:text-slate-300" id="ggpkModalDescription"></p>
+        <section class="ggpk-video-shell mt-5 hidden overflow-hidden rounded-lg border border-teal-200/70 dark:border-teal-900/70" id="ggpkModalVideoPanel" aria-label="Skill video">
+          <div class="flex items-center gap-2 border-b border-teal-200/60 px-3 py-2 text-xs font-black uppercase tracking-wide text-teal-700 dark:border-teal-900/60 dark:text-teal-300">
+            <span class="material-symbols-rounded text-base" aria-hidden="true">movie</span>
+            Skill video
+          </div>
+          <video id="ggpkModalVideoPlayer" class="ggpk-video-player hidden w-full" controls preload="metadata"></video>
+          <p class="ggpk-path px-3 py-3 text-xs font-bold text-slate-600 dark:text-slate-300" id="ggpkModalVideoStatus" data-no-tooltip></p>
+        </section>
+        <section class="mt-5">
+          <h3 class="text-xs font-black uppercase tracking-wide text-slate-500">Categories</h3>
+          <div class="mt-2 flex flex-wrap gap-1.5" id="ggpkModalCategories"></div>
+        </section>
+        <div class="mt-5 grid gap-4 lg:grid-cols-2">
+          <section>
+            <h3 class="text-xs font-black uppercase tracking-wide text-slate-500">Stats</h3>
+            <ul class="mt-2 grid gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300" id="ggpkModalStats"></ul>
+          </section>
+          <section>
+            <h3 class="text-xs font-black uppercase tracking-wide text-slate-500">Relations</h3>
+            <ul class="mt-2 grid gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300" id="ggpkModalRelations"></ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="components/poe-ui-utils.js"></script>
+  <script src="data/ggpk-skills-data.js"></script>
+  <script>
+    const ggpkData = window.POE2_GGPK_SKILLS || { skills: [], counts: {}, source: {} };
+    const skills = ggpkData.skills || [];
+    const {
+      escapeHtml,
+      formatNumber,
+      truncateText
+    } = window.PoeUi;
+
+    const searchInput = document.getElementById("ggpkSkillSearch");
+    const kindFilter = document.getElementById("ggpkKindFilter");
+    const mediaFilter = document.getElementById("ggpkMediaFilter");
+    const tagFilter = document.getElementById("ggpkTagFilter");
+    const resultMeta = document.getElementById("ggpkResultMeta");
+    const grid = document.getElementById("ggpkSkillGrid");
+    const loadMore = document.getElementById("ggpkLoadMore");
+    const modal = document.getElementById("ggpkSkillModal");
+    const modalTitle = document.getElementById("ggpkModalTitle");
+    const modalKind = document.getElementById("ggpkModalKind");
+    const modalDescription = document.getElementById("ggpkModalDescription");
+    const modalVideoPanel = document.getElementById("ggpkModalVideoPanel");
+    const modalVideoPlayer = document.getElementById("ggpkModalVideoPlayer");
+    const modalVideoStatus = document.getElementById("ggpkModalVideoStatus");
+    const modalCategories = document.getElementById("ggpkModalCategories");
+    const modalStats = document.getElementById("ggpkModalStats");
+    const modalRelations = document.getElementById("ggpkModalRelations");
+    let visibleLimit = 72;
+
+    const allTags = [...new Set(skills.flatMap((skill) => skill.categories || skill.tags || []))]
+      .sort((a, b) => a.localeCompare(b));
+
+    tagFilter.innerHTML = `<option value="all">All categories</option>${allTags.map((tag) => `<option value="${escapeHtml(tag)}">${escapeHtml(tag)}</option>`).join("")}`;
+    document.getElementById("ggpkSkillCount").textContent = `${formatNumber(ggpkData.total || skills.length)} skills`;
+    document.getElementById("ggpkVideoCount").textContent = `${formatNumber(ggpkData.counts?.with_video || 0)} videos`;
+
+    const skillDescription = (skill) => truncateText(
+      skill.short_description || skill.description || "No description in normalized GGPK row.",
+      { maxLength: 260, minBoundary: 140 }
+    );
+
+    const assetChip = (skill) => {
+      if (skill.video_asset || skill.video_path) return ["movie", "Video"];
+      if (skill.icon_asset || skill.icon_path) return ["image", "Icon"];
+      return ["hide_image", "No media"];
+    };
+
+    const matches = (skill) => {
+      const query = searchInput.value.trim().toLowerCase();
+      const haystack = [
+        skill.name,
+        skill.slug,
+        skill.description,
+        skill.short_description,
+        skill.granted_effect,
+        ...(skill.stats || []),
+        ...(skill.tags || []),
+        ...(skill.categories || [])
+      ].join(" ").toLowerCase();
+      const kindOk = kindFilter.value === "all"
+        || (kindFilter.value === "gem" && skill.is_gem)
+        || (kindFilter.value === "system" && !skill.is_gem);
+      const mediaOk = mediaFilter.value === "all"
+        || (mediaFilter.value === "icon" && (skill.icon_asset || skill.icon_path))
+        || (mediaFilter.value === "video" && (skill.video_asset || skill.video_path))
+        || (mediaFilter.value === "missing" && !skill.icon_asset && !skill.icon_path && !skill.video_asset && !skill.video_path);
+      const tagOk = tagFilter.value === "all" || (skill.categories || skill.tags || []).includes(tagFilter.value);
+      return (!query || haystack.includes(query)) && kindOk && mediaOk && tagOk;
+    };
+
+    const renderSkill = (skill) => {
+      const [assetIcon, assetLabel] = assetChip(skill);
+      const tags = (skill.categories || skill.tags || [])
+        .filter((tag) => tag !== skill.source_category)
+        .slice(0, 5)
+        .map((tag) => `
+        <span class="ggpk-chip rounded-full px-2 py-1 text-[11px] font-black">${escapeHtml(tag)}</span>
+      `).join("");
+      return `
+        <article class="ggpk-card flex h-full flex-col rounded-lg p-4">
+          <div class="flex items-start gap-3">
+            <span class="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white dark:border-white/10">
+              ${skill.icon_url ? `<img class="h-full w-full object-contain p-1" src="${escapeHtml(skill.icon_url)}" alt="" loading="lazy" width="48" height="48" onerror="this.remove()">` : `<span class="material-symbols-rounded text-xl" aria-hidden="true">${skill.is_gem ? "auto_awesome_motion" : "settings"}</span>`}
+            </span>
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap gap-2">
+                <span class="ggpk-chip rounded-full px-2 py-1 text-[11px] font-black">${skill.is_gem ? "Gem" : "System"}</span>
+                <span class="ggpk-chip inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-black">
+                  <span class="material-symbols-rounded text-sm" aria-hidden="true">${assetIcon}</span>${assetLabel}
+                </span>
+              </div>
+              <h2 class="mt-3 break-words text-lg font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(skill.name)}</h2>
+            </div>
+          </div>
+          <p class="ggpk-desc mt-4 text-sm font-semibold text-slate-600 dark:text-slate-300">${escapeHtml(skillDescription(skill))}</p>
+          <div class="mt-4 flex flex-wrap gap-1.5">${tags}</div>
+          <div class="mt-auto flex items-end justify-between gap-3 pt-4">
+            <p class="ggpk-path min-w-0 text-[11px] font-bold text-slate-400" data-no-tooltip>${escapeHtml(skill.slug)}</p>
+            <button class="ggpk-button inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-teal-200 bg-teal-50 px-3 text-xs font-black text-teal-700 transition hover:bg-teal-600 hover:text-white dark:border-teal-900/70 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-500 dark:hover:text-white" type="button" data-skill-slug="${escapeHtml(skill.slug)}">
+              <span class="material-symbols-rounded text-sm" aria-hidden="true">article</span>
+              Detail
+            </button>
+          </div>
+        </article>
+      `;
+    };
+
+    const render = ({ resetLimit = false } = {}) => {
+      if (resetLimit) visibleLimit = 72;
+      const filtered = skills.filter(matches);
+      const visible = filtered.slice(0, visibleLimit);
+      grid.innerHTML = visible.map(renderSkill).join("") || `
+        <div class="ggpk-panel rounded-lg p-6 text-center text-sm font-bold text-slate-500 dark:text-slate-400 sm:col-span-2 xl:col-span-3">
+          No GGPK skills match the filters.
+        </div>
+      `;
+      const hiddenCount = Math.max(filtered.length - visible.length, 0);
+      resultMeta.textContent = `Showing ${formatNumber(visible.length)} / ${formatNumber(filtered.length)} results from extract #${ggpkData.source?.extract_version_id || "-"}.`;
+      loadMore.classList.toggle("hidden", hiddenCount === 0);
+      loadMore.classList.toggle("inline-flex", hiddenCount > 0);
+      loadMore.innerHTML = `<span class="material-symbols-rounded text-base" aria-hidden="true">expand_more</span>Load ${formatNumber(Math.min(72, hiddenCount))} more`;
+    };
+
+    const listHtml = (items, emptyText) => (items || []).length
+      ? items.map((item) => `<li class="ggpk-path rounded-lg bg-slate-100 px-2 py-1 dark:bg-slate-900" data-no-tooltip>${escapeHtml(item)}</li>`).join("")
+      : `<li class="rounded-lg bg-slate-100 px-2 py-1 dark:bg-slate-900">${escapeHtml(emptyText)}</li>`;
+
+    const playableVideoUrl = (skill) => {
+      const candidate = skill.video_asset?.web_path || skill.video_url || "";
+      if (!candidate || !/\.(mp4|webm|ogg)$/i.test(candidate)) return "";
+      if (/^https?:\/\//i.test(candidate)) return candidate;
+      return candidate.startsWith("/") ? candidate : `/${candidate}`;
+    };
+
+    const openModal = (slug) => {
+      const skill = skills.find((entry) => entry.slug === slug);
+      if (!skill) return;
+      const playableVideo = playableVideoUrl(skill);
+
+      modalTitle.textContent = skill.name;
+      modalKind.textContent = skill.is_gem ? "Gem active skill" : "System active skill";
+      modalDescription.textContent = skill.description || skill.short_description || "No normalized description.";
+      modalVideoPanel.classList.toggle("hidden", !playableVideo);
+      modalVideoPlayer.classList.toggle("hidden", !playableVideo);
+      if (playableVideo) {
+        modalVideoPlayer.src = playableVideo;
+        modalVideoStatus.textContent = `Playable video: ${playableVideo}`;
+      } else {
+        modalVideoPlayer.removeAttribute("src");
+        modalVideoPlayer.load();
+        modalVideoStatus.textContent = "";
+      }
+      modalCategories.innerHTML = (skill.categories || []).map((category) => `
+        <span class="ggpk-chip rounded-full px-2 py-1 text-[11px] font-black">${escapeHtml(category)}</span>
+      `).join("");
+      modalStats.innerHTML = listHtml(skill.stats || [], "No stats linked.");
+      modalRelations.innerHTML = listHtml((skill.relations || []).map((relation) => `${relation.type}: ${relation.to_type}/${relation.to}`), "No relations linked.");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    };
+
+    const closeModal = () => {
+      modalVideoPlayer.pause();
+      modalVideoPlayer.removeAttribute("src");
+      modalVideoPlayer.load();
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    };
+
+    [searchInput, kindFilter, mediaFilter, tagFilter].forEach((control) => {
+      control.addEventListener("input", () => render({ resetLimit: true }));
+    });
+    document.getElementById("ggpkResetFilters").addEventListener("click", () => {
+      searchInput.value = "";
+      kindFilter.value = "all";
+      mediaFilter.value = "all";
+      tagFilter.value = "all";
+      render({ resetLimit: true });
+    });
+    loadMore.addEventListener("click", () => {
+      visibleLimit += 72;
+      render();
+    });
+    grid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-skill-slug]");
+      if (button) openModal(button.dataset.skillSlug);
+    });
+    document.getElementById("ggpkCloseModal").addEventListener("click", closeModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+    });
+
+    render();
+  </script>
+</body>
+
+</html>

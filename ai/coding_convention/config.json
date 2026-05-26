@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "paths": {
+    "default_game_path": "C:\\Program Files (x86)\\Grinding Gear Games\\Path of Exile 2",
+    "default_ggpk_file": "Content.ggpk",
+    "pob_upstream_path_env": "POB_REPO_PATH",
+    "game_path_env": "POE2_GAME_PATH",
+    "extract_output_dir": "data/game-extract",
+    "asset_output_dir": "data/game-extract/assets",
+    "snapshot_output_dir": "data/game-extract/snapshots"
+  },
+  "commands": {
+    "phase_1_extract": "npm run extract:game -- --game-path=\"C:\\Program Files (x86)\\Grinding Gear Games\\Path of Exile 2\"",
+    "phase_1_diff": "npm run extract:diff -- --from=<version-a> --to=<version-b>",
+    "phase_1_export": "npm run extract:export"
+  },
+  "runtime_boundaries": {
+    "node": "Orchestrates CLI commands, DB migrations, and app-facing exports.",
+    "rust": "Owns high-volume file processing, hashing, import, diff, and native parser work.",
+    "pob_lua": "Acts as upstream reference and adapter until Rust mappers reach parity.",
+    "postgres": "Stores raw snapshots, normalized entities, relationships, assets, and diffs."
+  },
+  "data_retention": {
+    "keep_raw_rows": true,
+    "keep_normalized_versions": true,
+    "keep_asset_hashes": true,
+    "delete_intermediate_extracted_files_by_default": false
+  }
+}
