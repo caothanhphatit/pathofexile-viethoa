@@ -102,6 +102,14 @@ test("tooltip engine excludes filters, headers, and translate-no titles from bei
   assert.match(shell, /closest\(EXCLUDE_SELECTOR\)/);
 });
 
+test("tooltip engine never wraps executable or raw text containers", async () => {
+  const shell = await readProjectFile("components/app-shell.js");
+
+  for (const tag of ["script", "style", "template", "noscript", "pre", "code"]) {
+    assert.match(shell, new RegExp(`"${tag}"`), `${tag} is excluded from tooltip wrapping`);
+  }
+});
+
 test("routes expose reusable nav metadata for the app shell", async () => {
   const routes = await readProjectFile("app-routes.js");
 

@@ -4,11 +4,16 @@ import test from "node:test";
 
 const passiveTreeHtml = readFileSync(new URL("../public/passive_tree.html", import.meta.url), "utf8");
 
-test("passive tree inline script parses before loading data", () => {
+test("passive tree inline script parses after loading data", () => {
   const inlineScript = passiveTreeHtml.match(/<script>\s*([\s\S]*?)\s*<\/script>\s*<\/body>/)?.[1] || "";
 
   assert.ok(inlineScript);
   assert.doesNotThrow(() => new Function(inlineScript));
+  assert.match(passiveTreeHtml, /<script src="data\/passive-tree-data\.js\?v=20260525-passive-audit-render-fix"><\/script>\s*<script>\s*const initPassiveTree = \(\) =>/);
+  assert.doesNotMatch(passiveTreeHtml, /document\.createElement\("script"\)/);
+  assert.doesNotMatch(passiveTreeHtml, /script\.onload = initPassiveTree/);
+  assert.match(passiveTreeHtml, /showPassiveTreeBootError/);
+  assert.match(passiveTreeHtml, /try \{\s+initPassiveTree\(\);\s+\} catch \(error\) \{/);
 });
 
 test("passive tree map exposes zoom, pan, fit, and hover tooltip interactions", () => {

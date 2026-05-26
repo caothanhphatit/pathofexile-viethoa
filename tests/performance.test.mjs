@@ -99,14 +99,16 @@ test("passive tree boots the shared shell before loading its heavy data export",
   const routesIndex = indexOfPattern(html, /<script src="app-routes\.js(?:\?[^"]*)?"><\/script>/);
   const shellIndex = indexOfPattern(html, /<script src="components\/app-shell\.js(?:\?[^"]*)?"><\/script>/);
   const plannerIndex = indexOfPattern(html, /<script src="components\/passive-tree-planner\.js/);
-  const dataIndex = html.indexOf('script.src = "data/passive-tree-data.js');
+  const dataIndex = indexOfPattern(html, /<script src="data\/passive-tree-data\.js(?:\?[^"]*)?"><\/script>/);
+  const runtimeIndex = html.indexOf("const initPassiveTree = () =>");
 
   assert.ok(headerIndex > -1, "passive tree declares a shared shell header slot");
   assert.ok(routesIndex > headerIndex, "route metadata loads after the header slot exists");
   assert.ok(shellIndex > routesIndex, "app shell loads after route metadata");
   assert.ok(plannerIndex > shellIndex, "passive planner waits until the shared shell can render");
   assert.ok(dataIndex > plannerIndex, "heavy passive data waits until page chrome is stable");
-  assert.match(html, /requestAnimationFrame\(\(\) => \{\s+window\.setTimeout\(loadPassiveTreeData, 0\);/);
+  assert.ok(runtimeIndex > dataIndex, "passive tree runtime initializes only after data script parsing");
+  assert.match(html, /requestAnimationFrame\(\(\) => \{\s+window\.setTimeout\(startPassiveTree, 0\);/);
 });
 
 test("raw patch-note snapshot does not use the 17MB remote infographic as page LCP", async () => {

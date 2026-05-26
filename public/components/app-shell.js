@@ -550,8 +550,9 @@
         // Comprehensive selector to exclude interactive components, filter controls, navigation items,
         // and item/skill/currency names/headings where dictionary tooltips should not interfere.
         const EXCLUDE_SELECTOR = [
-          // Standard interactive tags
+          // Standard interactive and raw/executable tags
           "a", "button", "select", "option", "input", "textarea", "[role='button']",
+          "script", "style", "template", "noscript", "pre", "code",
 
           // Header & Title tags
           "h1", "h2", "h3", "h4", "h5", "h6",

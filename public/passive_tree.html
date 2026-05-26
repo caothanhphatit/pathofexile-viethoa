@@ -689,6 +689,7 @@
   <script src="components/poe-ui-utils.js"></script>
   <script src="components/translation-comments.js"></script>
   <script src="components/passive-tree-planner.js?v=20260525-class-disc"></script>
+  <script src="data/passive-tree-data.js?v=20260525-passive-audit-render-fix"></script>
   <script>
     const initPassiveTree = () => {
     const data = window.POE2_PASSIVE_TREE || { nodes: [], edges: [], classes: [], types: [] };
@@ -2810,19 +2811,27 @@
       else render({ resetLimit: true });
     };
 
-    const loadPassiveTreeData = () => {
-      const script = document.createElement("script");
-      script.src = "data/passive-tree-data.js?v=20260525-keyword-vi-2";
-      script.onload = initPassiveTree;
-      script.onerror = () => {
-        document.getElementById("resultMeta").textContent = "Không tải được dữ liệu passive tree.";
-        document.getElementById("treeVersion").textContent = "Không tải được dữ liệu passive tree.";
-      };
-      document.body.appendChild(script);
+    const showPassiveTreeBootError = (error) => {
+      console.error("Passive tree failed to initialize", error);
+      const message = "Kh\u00f4ng kh\u1edfi t\u1ea1o \u0111\u01b0\u1ee3c passive tree. H\u00e3y t\u1ea3i l\u1ea1i trang.";
+      document.getElementById("resultMeta").textContent = message;
+      document.getElementById("treeVersion").textContent = message;
+    };
+
+    const startPassiveTree = () => {
+      if (!window.POE2_PASSIVE_TREE?.nodes?.length) {
+        showPassiveTreeBootError(new Error("Passive tree data is not available"));
+        return;
+      }
+      try {
+        initPassiveTree();
+      } catch (error) {
+        showPassiveTreeBootError(error);
+      }
     };
 
     window.requestAnimationFrame(() => {
-      window.setTimeout(loadPassiveTreeData, 0);
+      window.setTimeout(startPassiveTree, 0);
     });
   </script>
 </body>
