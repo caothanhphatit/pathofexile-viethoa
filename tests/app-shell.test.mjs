@@ -232,8 +232,8 @@ test("SPA shell delegates visible navigation and layout to React", async () => {
   ]);
 
   assert.match(html, /<div id="root">/);
-  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js"/);
-  assert.match(html, /href="\/dist\/spa\/assets\/app\.css"/);
+  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js(?:\?[^"]*)?"/);
+  assert.match(html, /href="\/dist\/spa\/assets\/app\.css(?:\?[^"]*)?"/);
   assert.match(app, /<header className="app-header">/);
   assert.match(app, /<nav className="nav-rail"/);
   assert.match(home, /<main className="page-shell home-page">/);
@@ -385,8 +385,8 @@ test("404 fallback loads the SPA shell and React route table", async () => {
 
   assert.match(html, /<meta name="robots" content="noindex,follow">/);
   assert.match(html, /<div id="root"><\/div>/);
-  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js"/);
-  assert.match(html, /href="\/dist\/spa\/assets\/app\.css"/);
+  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js(?:\?[^"]*)?"/);
+  assert.match(html, /href="\/dist\/spa\/assets\/app\.css(?:\?[^"]*)?"/);
   assert.doesNotMatch(html, /app-routes\.js/);
   assert.doesNotMatch(html, /PoeRouter\.redirectPrettyRoute\(\)/);
   assert.doesNotMatch(html, /Äang chuyá»ƒn|Đang chuyển|chuyá»ƒn vá»|chuyển về/);
@@ -418,11 +418,6 @@ test("production nginx clean URL config maps app routes to the SPA shell", async
     "/currency",
     "/currency-detail",
     "/currency_detail",
-    "/ggpk-skills",
-    "/ggpk_skills",
-    "/ggpk-data",
-    "/ggpk-lookup",
-    "/ggpk_lookup",
     "/passive-tree",
     "/passive_tree",
     "/leveling"
@@ -449,8 +444,6 @@ test("local static dev server maps clean app routes to the SPA shell", async () 
     "/weapon",
     "/skill-gems",
     "/currency",
-    "/ggpk-skills",
-    "/ggpk-data",
     "/passive-tree",
     "/leveling"
   ];
@@ -459,4 +452,30 @@ test("local static dev server maps clean app routes to the SPA shell", async () 
     assert.match(server, new RegExp(`\\["${escapeRegex(route)}", "/index\\.html"\\]`), `${route} maps to the SPA shell`);
   }
   assert.match(server, /const spaFallbackFile = "\/index\.html"/);
+});
+
+test("legacy GGPK routes are retired with explicit 410 responses", async () => {
+  const [server, config, packageJson] = await Promise.all([
+    readRepoFile("scripts/serve-static.mjs"),
+    readRepoFile("deploy/nginx/poeviethoa-clean-routes.conf"),
+    readRepoFile("package.json")
+  ]);
+  const goneRoutes = [
+    "/data/ggpk-lookup-data.js",
+    "/data/ggpk-skills-data.js",
+    "/ggpk-data",
+    "/ggpk-lookup",
+    "/ggpk_lookup",
+    "/ggpk_lookup.html",
+    "/ggpk-skills",
+    "/ggpk_skills",
+    "/ggpk_skills.html"
+  ];
+
+  for (const route of goneRoutes) {
+    assert.match(server, new RegExp(`"${escapeRegex(route)}"`), `${route} is retired locally`);
+    assert.match(config, new RegExp(`location = ${escapeRegex(route)} \\{[\\s\\S]*?return 410;[\\s\\S]*?\\}`), `${route} returns 410 in production`);
+  }
+
+  assert.doesNotMatch(packageJson, /"[^"]*ggpk[^"]*"\s*:/i);
 });

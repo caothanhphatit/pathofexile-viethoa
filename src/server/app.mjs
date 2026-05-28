@@ -23,11 +23,19 @@ export const buildApp = async (options = {}) => {
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
+  const isLocalDevOrigin = (origin = "") => /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(origin);
+  const allowCorsOrigin = (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (!allowedOrigins.length || allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  };
 
   await app.register(helmet);
   await app.register(cors, {
     credentials: true,
-    origin: allowedOrigins.length ? allowedOrigins : true
+    origin: allowCorsOrigin
   });
   await app.register(compress);
 

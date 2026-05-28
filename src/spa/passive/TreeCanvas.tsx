@@ -22,7 +22,7 @@ interface Props {
   classFilter: string;
   ascendancyFilter: string;
   command: CanvasCommand | null;
-  onHover: (node: PassiveNode | null, x: number, y: number) => void;
+  onHover: (node: PassiveNode | null, x: number, y: number, held: boolean) => void;
   onToggle: (node: PassiveNode) => void;
 }
 
@@ -37,6 +37,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
   const pinchDist = useRef(0);
   const tapInspectId = useRef("");
   const hoverId = useRef("");
+  const heldHover = useRef<{ node: PassiveNode; x: number; y: number } | null>(null);
   const altDown = useRef(false);
   const lastPointer = useRef<{ x: number; y: number } | null>(null);
   const commandNonce = useRef(-1);
@@ -180,28 +181,52 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
     return hitTestNode(rows, p.x, p.y, hitPaddingCss / camera.zoom);
   };
 
-  const inspectAtPointer = (clientX: number, clientY: number) => {
-    const node = pointerNode(clientX, clientY);
+  const showHover = (node: PassiveNode | null, clientX: number, clientY: number, held = false) => {
     const id = node?.id ?? "";
     if (id !== hoverId.current) hoverId.current = id;
-    onHover(node, clientX, clientY);
+    onHover(node, clientX, clientY, held && Boolean(node));
     dirty();
+  };
+
+  const inspectAtPointer = (clientX: number, clientY: number, held = false) => {
+    const node = pointerNode(clientX, clientY);
+    showHover(node, clientX, clientY, held);
     return node;
+  };
+
+  const holdAtPointer = (clientX: number, clientY: number) => {
+    const node = pointerNode(clientX, clientY);
+    heldHover.current = node ? { node, x: clientX, y: clientY } : null;
+    showHover(node, clientX, clientY, Boolean(node));
+    return node;
+  };
+
+  const releaseHeldHover = () => {
+    heldHover.current = null;
+    const pointer = lastPointer.current;
+    if (pointer) {
+      inspectAtPointer(pointer.x, pointer.y);
+    } else {
+      showHover(null, 0, 0);
+    }
   };
 
   useEffect(() => {
     const onAltKey = (event: KeyboardEvent) => {
       if (event.key !== "Alt") return;
-      altDown.current = event.type === "keydown";
-      const pointer = lastPointer.current;
-      if (pointer && event.type === "keydown") {
-        inspectAtPointer(pointer.x, pointer.y);
+      if (event.type === "keydown") {
+        altDown.current = true;
+        const pointer = lastPointer.current;
+        if (pointer && !heldHover.current) holdAtPointer(pointer.x, pointer.y);
+      } else if (event.type === "keyup") {
+        altDown.current = false;
+        releaseHeldHover();
       }
     };
     const onBlur = () => {
       altDown.current = false;
-      onHover(null, 0, 0);
-      dirty();
+      heldHover.current = null;
+      showHover(null, 0, 0);
     };
     window.addEventListener("keydown", onAltKey);
     window.addEventListener("keyup", onAltKey);
@@ -216,6 +241,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
   const onPointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     lastPointer.current = { x: event.clientX, y: event.clientY };
     altDown.current = event.altKey;
+    if (event.altKey && !heldHover.current) holdAtPointer(event.clientX, event.clientY);
     try {
       event.currentTarget.setPointerCapture(event.pointerId);
     } catch {
@@ -261,18 +287,21 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
       if (!moved.current) return;
       panCamera(cameraRef.current, event.clientX - previous.x, event.clientY - previous.y);
       last.current = { x: event.clientX, y: event.clientY };
-      hoverId.current = "";
-      tapInspectId.current = "";
-      onHover(null, 0, 0);
+      if (!heldHover.current) {
+        hoverId.current = "";
+        tapInspectId.current = "";
+        onHover(null, 0, 0, false);
+      }
       dirty();
       return;
     }
     if (event.pointerType !== "mouse") return;
+    if (altDown.current && heldHover.current) return;
     const node = pointerNode(event.clientX, event.clientY, event.pointerType);
     const id = node?.id ?? "";
     if (id !== hoverId.current) {
       hoverId.current = id;
-      onHover(node, event.clientX, event.clientY);
+      onHover(node, event.clientX, event.clientY, false);
       dirty();
     }
   };
@@ -289,17 +318,17 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
       const node = pointerNode(event.clientX, event.clientY, event.pointerType);
       if (event.pointerType === "mouse") {
         if (node && allocationEnabled) onToggle(node);
-      } else if (!node) {
+      } else if (!node && !heldHover.current) {
         tapInspectId.current = "";
         hoverId.current = "";
-        onHover(null, 0, 0);
+        onHover(null, 0, 0, false);
       } else if (tapInspectId.current === node.id && allocationEnabled) {
         onToggle(node);
         tapInspectId.current = "";
       } else {
         tapInspectId.current = node.id;
         hoverId.current = node.id;
-        onHover(node, event.clientX, event.clientY);
+        onHover(node, event.clientX, event.clientY, false);
       }
     }
     if (pointers.current.size === 0) {

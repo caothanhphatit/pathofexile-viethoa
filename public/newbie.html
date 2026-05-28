@@ -25,7 +25,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
-  <link href="dist/app.css?v=20260524-font" rel="stylesheet">
+  <link href="dist/app.css?v=20260529-font-ui" rel="stylesheet">
   <script defer src="app-routes.js"></script>
   <script defer src="components/app-shell.js"></script>
   <style>
@@ -42,18 +42,17 @@
   <div data-component="site-header" data-subtitle="Newbie"></div>
 
   <main class="poe-shell-container grid gap-5 py-6" id="main">
-    <section class="glass-panel rounded-2xl p-6 shadow-sm dark:border-slate-800/80" aria-label="Newbie POE2">
-      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80" aria-label="Newbie POE2">
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div class="flex items-center gap-3">
-          <span class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-md2">
+          <span class="grid h-11 w-11 place-items-center rounded-lg bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-md2">
             <span class="material-symbols-rounded text-2xl" aria-hidden="true">school</span>
           </span>
           <div>
             <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Newbie</h1>
-            <p class="text-xs font-bold text-slate-500 dark:text-slate-400" data-newbie-subtitle>Hướng dẫn nhập môn POE2 ngắn gọn, dễ mở lại khi cần.</p>
           </div>
         </div>
-        <div class="inline-flex h-10 w-fit items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+        <div class="inline-flex h-10 w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
           <span class="material-symbols-rounded text-sm text-rose-500" aria-hidden="true">view_list</span>
           <span data-newbie-count>2 bài</span>
         </div>
@@ -61,29 +60,29 @@
     </section>
 
     <section class="grid gap-3" aria-label="Danh sách bài newbie">
-      <a class="newbie-card glass-panel group flex items-center gap-4 rounded-2xl border-l-4 border-l-orange-500 p-4 no-underline shadow-sm hover:border-orange-300 hover:shadow-md2 dark:hover:border-orange-700" href="/beginner-guide" data-newbie-card="beginner">
-        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-300">
+      <a class="newbie-card glass-panel group flex items-center gap-4 rounded-lg border-l-4 border-l-orange-500 p-4 no-underline shadow-sm hover:border-orange-300 hover:shadow-md2 dark:hover:border-orange-700" href="/beginner-guide" data-newbie-card="beginner">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-300">
           <span class="material-symbols-rounded text-2xl" aria-hidden="true">menu_book</span>
         </span>
         <span class="min-w-0 flex-1">
           <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Hướng dẫn nhập môn Path of Exile 2</span>
           <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Hệ thống hóa các phần nhập môn: Build guide, Chế độ game, mùa giải, Class, Ascendancy, Skill Gem, Dodge Roll, Flask, item và Gold.</span>
         </span>
-        <span class="hidden shrink-0 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
+        <span class="hidden shrink-0 items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
           <span data-open-label>Mở bài</span>
           <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
         </span>
       </a>
 
-      <a class="newbie-card glass-panel group flex items-center gap-4 rounded-2xl border-l-4 border-l-rose-500 p-4 no-underline shadow-sm hover:border-rose-300 hover:shadow-md2 dark:hover:border-rose-700" href="/weapon" data-newbie-card="weapon">
-        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300">
+      <a class="newbie-card glass-panel group flex items-center gap-4 rounded-lg border-l-4 border-l-rose-500 p-4 no-underline shadow-sm hover:border-rose-300 hover:shadow-md2 dark:hover:border-rose-700" href="/weapon" data-newbie-card="weapon">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300">
           <span class="material-symbols-rounded text-2xl" aria-hidden="true">swords</span>
         </span>
         <span class="min-w-0 flex-1">
           <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Hướng dẫn cơ bản vũ khí đầu game</span>
           <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Phân biệt Martial Weapon, Caster Weapon, cách nhìn affix quan trọng và vài currency cơ bản khi đi campaign.</span>
         </span>
-        <span class="hidden shrink-0 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
+        <span class="hidden shrink-0 items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
           <span data-open-label>Mở bài</span>
           <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
         </span>
@@ -97,7 +96,6 @@
       documentTitle: { vi: "Newbie - POE2", en: "Beginner - POE2" },
       title: { vi: "Newbie", en: "Beginner" },
       heroLabel: { vi: "Newbie POE2", en: "POE2 beginner guides" },
-      subtitle: { vi: "Hướng dẫn nhập môn POE2 ngắn gọn, dễ mở lại khi cần.", en: "Short POE2 starter guides you can reopen while playing." },
       count: { vi: "2 bài", en: "2 articles" },
       listLabel: { vi: "Danh sách bài newbie", en: "Beginner article list" },
       open: { vi: "Mở bài", en: "Open" },
@@ -124,7 +122,6 @@
       document.title = newbieText("documentTitle");
       document.querySelector("main > section:first-child")?.setAttribute("aria-label", newbieText("heroLabel"));
       document.querySelector("h1").textContent = newbieText("title");
-      document.querySelector("[data-newbie-subtitle]").textContent = newbieText("subtitle");
       document.querySelector("[data-newbie-count]").textContent = newbieText("count");
       document.querySelector("section[aria-label='Danh sách bài newbie'], section[aria-label='Beginner article list']")?.setAttribute("aria-label", newbieText("listLabel"));
       document.querySelectorAll("[data-open-label]").forEach((element) => {

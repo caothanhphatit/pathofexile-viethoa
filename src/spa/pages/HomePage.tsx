@@ -17,10 +17,6 @@ const heroCopy = {
     vi: "Kho tra cứu POE2 gọn, nhanh, đủ sâu để dùng hằng ngày.",
     en: "A lightweight POE2 reference app built for fast daily lookup."
   },
-  body: {
-    vi: "Một app thống nhất cho patch note, từ điển thuật ngữ, skill gems, currency, item, passive tree và leveling checklist.",
-    en: "One SPA for patch notes, dictionary terms, skill gems, currency, items, the passive tree, and a leveling checklist."
-  },
   statsLabel: { vi: "Thống kê dữ liệu", en: "Data stats" },
   featuresLabel: { vi: "Tính năng chính", en: "Main features" }
 };
@@ -32,7 +28,6 @@ export function HomePage({ locale }: { locale: Locale }) {
         <div>
           <p className="eyebrow">{localizedText(heroCopy.eyebrow, "", locale)}</p>
           <h1>{localizedText(heroCopy.title, "", locale)}</h1>
-          <p className="hero-copy">{localizedText(heroCopy.body, "", locale)}</p>
         </div>
         <img src="/assets/img/logo.jpg" alt={uiText("brand", locale)} width="160" height="142" />
       </section>

@@ -12,7 +12,8 @@ import {
 } from "../../src/localization/content-strings.mjs";
 import {
   normalizePassiveTree,
-  selectLatestPassiveTreePath
+  selectLatestPassiveTreePath,
+  translatePassiveStatLine
 } from "./passive-tree-lib.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -48,6 +49,13 @@ const cleanPassiveClassStarts = (values = []) => (Array.isArray(values) ? values
 const passiveNodeStats = (node = {}) => {
   const stats = Array.isArray(node.stats) ? node.stats : parseMaybeJson(node.stats_json, []);
   return (Array.isArray(stats) ? stats : []).map(normalizeText).filter(Boolean);
+};
+const passiveNodeStatsVi = (node = {}, stats = passiveNodeStats(node)) => {
+  const existingStatsVi = Array.isArray(node.stats_vi) ? node.stats_vi : [];
+  const existingI18n = Array.isArray(node.i18n?.stats) ? node.i18n.stats : [];
+  return stats.map((line, index) =>
+    translatePassiveStatLine(line) || normalizeText(existingStatsVi[index] || existingI18n[index]?.vi || line)
+  );
 };
 const isPassiveMasteryExportNode = (node = {}) =>
   Boolean(node.is_mastery || node.isMastery || String(node.type || "").includes("mastery") || /mastery/i.test(node.name || ""));
@@ -591,6 +599,7 @@ export const passiveTreeExportPayload = (tree, {
     nodes: nodes.map((node) => {
       const classStarts = cleanPassiveClassStarts(node.classes_start || []);
       const stats = passiveNodeStats(node);
+      const statsVi = passiveNodeStatsVi(node, stats);
       return {
         id: node.id,
         tree_version: node.tree_version,
@@ -614,7 +623,7 @@ export const passiveTreeExportPayload = (tree, {
         i18n: {
           stats: stats.map((line, index) => ({
             en: line,
-            vi: node.stats_vi?.[index] || line
+            vi: statsVi[index] || line
           }))
         },
         source_hash: node.source_hash,
@@ -662,7 +671,7 @@ export const compactPassiveTreeBrowserData = (data = {}) => {
     }).filter((edge) => edge.from && edge.to && nodeIds.has(String(edge.from)) && nodeIds.has(String(edge.to))),
     nodes: sourceNodes.map((node) => {
       const stats = passiveNodeStats(node);
-      const statsVi = node.stats_vi || (node.i18n?.stats || []).map((line) => line.vi).filter(Boolean);
+      const statsVi = passiveNodeStatsVi(node, stats);
       const classStarts = cleanPassiveClassStarts(node.classes_start);
       const compact = {
         id: node.id,

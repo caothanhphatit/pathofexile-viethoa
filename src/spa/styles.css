@@ -1,5 +1,54 @@
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/be-vietnam-pro-400.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/assets/fonts/be-vietnam-pro-500.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/assets/fonts/be-vietnam-pro-600.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/assets/fonts/be-vietnam-pro-700.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/assets/fonts/be-vietnam-pro-800.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/assets/fonts/be-vietnam-pro-900.ttf") format("truetype");
+}
+
 :root {
   color-scheme: light;
+  --font-body: "Be Vietnam Pro", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --bg: #f3f4f0;
   --surface: #ffffff;
   --surface-2: #ebe7dc;
@@ -44,7 +93,9 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body);
+  font-optical-sizing: auto;
+  text-rendering: geometricPrecision;
 }
 
 a {
@@ -200,18 +251,20 @@ select {
 
 .home-hero {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: clamp(24px, 5vw, 72px);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(20px, 4vw, 56px);
   align-items: center;
-  min-height: 300px;
+  min-height: clamp(210px, 27vw, 292px);
+  padding: 4px 0 14px;
 }
 
 .home-hero h1,
 .page-title h1 {
   margin: 0;
   max-width: 860px;
-  font-size: clamp(34px, 6vw, 72px);
-  line-height: .96;
+  font-size: clamp(34px, 5.2vw, 68px);
+  font-weight: 760;
+  line-height: 1.04;
   letter-spacing: 0;
 }
 
@@ -242,7 +295,7 @@ select {
 
 .stat-strip {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 10px;
 }
 
@@ -262,7 +315,8 @@ select {
 }
 
 .stat-cell {
-  padding: 14px;
+  min-height: 104px;
+  padding: 16px;
 }
 
 .stat-cell strong {
@@ -277,24 +331,33 @@ select {
   margin-top: 8px;
   color: var(--muted);
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
 }
 
 .route-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
   gap: 14px;
   margin-top: 22px;
 }
 
 .route-grid.compact {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .route-card {
-  min-height: 190px;
-  padding: 18px;
+  display: grid;
+  align-content: start;
+  min-height: 176px;
+  padding: 20px;
+  transition: border-color .16s ease, background .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.route-card:hover {
+  border-color: color-mix(in srgb, var(--teal) 34%, var(--line));
+  background: color-mix(in srgb, var(--surface) 98%, var(--teal) 2%);
+  transform: translateY(-2px);
 }
 
 .route-card .material-symbols-rounded {
@@ -311,6 +374,7 @@ select {
 .guide-step h2 {
   margin: 16px 0 8px;
   font-size: 18px;
+  line-height: 1.22;
 }
 
 .route-card p,
@@ -318,8 +382,18 @@ select {
   margin: 0;
   color: var(--muted);
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.55;
+}
+
+.page-title {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.page-title .eyebrow {
+  margin: 0;
 }
 
 .page-title.tight h1 {
@@ -543,6 +617,7 @@ select {
 .leveling-v1-sidebar,
 .leveling-v1-sidebar .leveling-v1-stats > div,
 .leveling-v1-filter-box,
+.leveling-v1-log,
 .leveling-v1-empty {
   border: 1px solid rgb(226 232 240);
   border-radius: .5rem;
@@ -554,6 +629,7 @@ select {
 .dark .leveling-v1-sidebar,
 .dark .leveling-v1-sidebar .leveling-v1-stats > div,
 .dark .leveling-v1-filter-box,
+.dark .leveling-v1-log,
 .dark .leveling-v1-empty {
   border-color: rgb(51 65 85);
   background: rgb(15 23 42);
@@ -879,6 +955,169 @@ select {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .375rem;
+}
+
+.leveling-v1-log {
+  display: grid;
+  gap: .5rem;
+  padding: .65rem;
+  background: rgb(255 255 255);
+}
+
+.dark .leveling-v1-log {
+  background: rgb(15 23 42);
+}
+
+.leveling-v1-log-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.leveling-v1-log-head p {
+  margin: 0 0 .2rem;
+  color: rgb(29 78 216);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.dark .leveling-v1-log-head p {
+  color: rgb(147 197 253);
+}
+
+.leveling-v1-log-head strong {
+  display: block;
+  color: rgb(15 23 42);
+  font-size: .86rem;
+  line-height: 1.25;
+}
+
+.dark .leveling-v1-log-head strong {
+  color: rgb(248 250 252);
+}
+
+.leveling-v1-log-head label {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  color: rgb(71 85 105);
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.dark .leveling-v1-log-head label {
+  color: rgb(203 213 225);
+}
+
+.leveling-v1-log-path {
+  width: 100%;
+  min-width: 0;
+  height: 2.25rem;
+  border: 1px solid rgb(226 232 240);
+  border-radius: .5rem;
+  background: rgb(248 250 252);
+  color: rgb(51 65 85);
+  font-size: .76rem;
+  font-weight: 700;
+  outline: none;
+  padding: 0 .65rem;
+}
+
+.leveling-v1-log-path:focus {
+  border-color: rgb(37 99 235);
+}
+
+.dark .leveling-v1-log-path {
+  border-color: rgb(51 65 85);
+  background: rgb(2 6 23);
+  color: rgb(226 232 240);
+}
+
+.leveling-v1-log-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .375rem;
+}
+
+.leveling-v1-log-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-width: 0;
+  min-height: 2rem;
+  border: 1px solid rgb(226 232 240);
+  border-radius: .5rem;
+  background: rgb(241 245 249);
+  color: rgb(51 65 85);
+  cursor: pointer;
+  font-size: .74rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.leveling-v1-log-buttons button:last-child {
+  border-color: rgb(37 99 235);
+  background: rgb(37 99 235);
+  color: white;
+}
+
+.dark .leveling-v1-log-buttons button {
+  border-color: rgb(51 65 85);
+  background: rgb(30 41 59);
+  color: rgb(226 232 240);
+}
+
+.dark .leveling-v1-log-buttons button:last-child {
+  border-color: rgb(96 165 250);
+  background: rgb(37 99 235);
+  color: white;
+}
+
+.leveling-v1-log-status {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  border-radius: .5rem;
+  background: rgb(241 245 249);
+  color: rgb(71 85 105);
+  font-size: .74rem;
+  font-weight: 800;
+  line-height: 1.45;
+  margin: 0;
+  padding: .5rem .6rem;
+}
+
+.dark .leveling-v1-log-status {
+  background: rgb(2 6 23);
+  color: rgb(203 213 225);
+}
+
+.leveling-v1-log-status[data-log-zone-status="ok"] {
+  color: rgb(4 120 87);
+}
+
+.dark .leveling-v1-log-status[data-log-zone-status="ok"] {
+  color: rgb(110 231 183);
+}
+
+.leveling-v1-log-status[data-log-zone-status="warn"] {
+  color: rgb(180 83 9);
+}
+
+.dark .leveling-v1-log-status[data-log-zone-status="warn"] {
+  color: rgb(252 211 77);
+}
+
+.leveling-v1-log-status[data-log-zone-status="bad"] {
+  color: rgb(185 28 28);
+}
+
+.dark .leveling-v1-log-status[data-log-zone-status="bad"] {
+  color: rgb(252 165 165);
 }
 
 .leveling-v1-jump {
@@ -2369,6 +2608,10 @@ select {
   width: min(360px, calc(100vw - 24px));
   padding: 12px;
   pointer-events: none;
+}
+
+.passive-tooltip.is-held {
+  pointer-events: auto;
 }
 
 .passive-tooltip strong {

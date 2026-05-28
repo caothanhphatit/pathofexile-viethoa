@@ -652,7 +652,6 @@ export const buildExtractSnapshot = async (sourceInput) => {
     version: sourceInput.source?.version || nowIso(),
     label: sourceInput.source?.label || "",
     game_path: sourceInput.source?.game_path || "",
-    ggpk_path: sourceInput.source?.ggpk_path || "",
     pob_path: sourceInput.source?.pob_path || "",
     pob_commit: sourceInput.source?.pob_commit || ""
   };
@@ -836,32 +835,12 @@ export const preflightGameInstall = async ({
 } = {}) => {
   const resolvedGamePath = path.resolve(gamePath);
   const resolvedPobPath = path.resolve(pobPath);
-  const ggpkPath = path.join(resolvedGamePath, "Content.ggpk");
-  const oodleDir = path.join(resolvedPobPath, "src", "Export", "ggpk");
-  const toolPaths = [
-    path.join(oodleDir, "bun_extract_file.exe"),
-    path.join(oodleDir, "libbun.dll"),
-    path.join(oodleDir, "libooz.dll")
-  ];
-  const tools = await Promise.all(toolPaths.map(async (toolPath) => ({
-    path: toolPath,
-    exists: await pathExists(toolPath)
-  })));
   return {
     game_path: { path: resolvedGamePath, exists: await pathExists(resolvedGamePath) },
-    ggpk: {
-      path: ggpkPath,
-      exists: await pathExists(ggpkPath),
-      byte_size: await pathExists(ggpkPath) ? (await fs.stat(ggpkPath)).size : 0
-    },
     pob_upstream: {
       path: resolvedPobPath,
       exists: await pathExists(resolvedPobPath),
       data_dir_exists: await pathExists(path.join(resolvedPobPath, "src", "Data"))
-    },
-    oodle_tools: {
-      ready: tools.every((tool) => tool.exists),
-      tools
     }
   };
 };
@@ -869,9 +848,9 @@ export const preflightGameInstall = async ({
 export const importSnapshotPostgres = async (pool, snapshot) => withTransaction(pool, async (client) => {
   const version = await client.query(`
     insert into game_extract_versions
-      (version_key, source_kind, source_label, game_path, ggpk_path, pob_path, pob_commit,
+      (version_key, source_kind, source_label, game_path, pob_path, pob_commit,
        source_hash, extract_hash, status, metadata_json, summary_json, finished_at)
-    values ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'completed', $10::jsonb, $11::jsonb, now())
+    values ($1, $2, $3, $4, $5, $6, $7, $8, 'completed', $9::jsonb, $10::jsonb, now())
     on conflict (version_key) do update
     set extract_hash = excluded.extract_hash,
         source_hash = excluded.source_hash,
@@ -884,7 +863,6 @@ export const importSnapshotPostgres = async (pool, snapshot) => withTransaction(
     snapshot.source.kind,
     snapshot.source.label || "",
     snapshot.source.game_path || "",
-    snapshot.source.ggpk_path || "",
     snapshot.source.pob_path || "",
     snapshot.source.pob_commit || "",
     snapshot.source_hash,

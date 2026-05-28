@@ -5,6 +5,10 @@ const normalizeText = (value = "") => String(value)
   .replace(/[ \t\r\n]+/g, " ")
   .trim();
 
+const passiveMarkupLabel = (value = "") => normalizeText(value)
+  .replace(/\[([^\]|]+)\|([^\]]+)\]/g, "$2")
+  .replace(/\[([^\]]+)\]/g, "$1");
+
 const roundCoord = (value) => Number(Number(value || 0).toFixed(4));
 const finiteNumber = (value) => Number.isFinite(Number(value));
 const hiddenPassiveClasses = new Set(["Marauder"]);
@@ -439,29 +443,44 @@ export const normalizePassiveTree = (rawTree = {}, {
 };
 
 const phraseReplacements = [
-  [/\bOne[- ]Handed (?:Melee|Martial) Weapons?\b/gi, "vũ khí cận chiến 1 tay"],
+  [/\bOne[- ]Handed (?:Melee|Martial) Weapons?\b/gi, "vũ khí đánh gần một tay"],
+  [/\bOne[- ]Handed Weapons?\b/gi, "vũ khí một tay"],
   [/\bTwo[- ]Handed Melee Weapons?\b/gi, "vũ khí cận chiến 2 tay"],
+  [/\bOff Hand\b/gi, "tay phụ"],
+  [/\bMain Hand\b/gi, "tay chính"],
   [/\bEquipped (Body Armour|Armour Items|Helmet|Shield|Focus|Boots|Gloves)\b/gi, "$1 đang trang bị"],
+  [/\bCooldown Recovery Rate\b/gi, "tốc độ hồi Cooldown"],
+  [/\bLife Recovery Rate\b/gi, "tốc độ hồi máu"],
+  [/\bLife Recovery rate\b/gi, "tốc độ hồi máu"],
+  [/\bMana Recovery Rate\b/gi, "tốc độ hồi Mana"],
+  [/\bMana Recovery rate\b/gi, "tốc độ hồi Mana"],
+  [/\bLife and Mana Regeneration Rate\b/gi, "hồi máu và hồi Mana"],
+  [/\bLife Regeneration Rate\b/gi, "hồi máu"],
+  [/\bMana Regeneration Rate\b/gi, "hồi Mana"],
+  [/\bRage Regeneration Rate\b/gi, "hồi Rage"],
   [/\bAttack Area Damage\b/gi, "Damage đánh lan"],
   [/\bSpell Area Damage\b/gi, "Damage phép lan"],
   [/\bArea Damage\b/gi, "Damage lan"],
-  [/\bMelee Damage\b/gi, "sát thương đánh gần"],
+  [/\bMelee Damage\b/gi, "Sát thương đánh gần"],
   [/\bArea of Effect\b/gi, "khu vực đánh lan"],
   [/\bCritical Hit Chance\b/gi, "cơ hội Critical Hit"],
   [/\bBase Chance to Block\b/gi, "Base cơ hội Block"],
   [/\bChance to Block\b/gi, "cơ hội Block"],
+  [/\bBase Block Chance\b/gi, "Base cơ hội Block"],
+  [/\bBlock Chance\b/gi, "cơ hội Block"],
   [/\bChance to Hit\b/gi, "cơ hội Hit"],
+  [/\bGlory generation\b/gi, "lượng Glory tạo ra"],
   [/\bHazard Damage\b/gi, "Damage của Hazard"],
-  [/\bHazard Durations?\b/gi, "thời lượng Hazard"],
+  [/\bHazard Durations?\b/gi, "thời gian Hazard"],
   [/\bIgnite Magnitude\b/gi, "Magnitude của bỏng"],
-  [/\bIgnite Durations?\b/gi, "thời lượng bỏng"],
+  [/\bIgnite Durations?\b/gi, "thời gian bỏng"],
   [/\bMagnitude of Ignite\b/gi, "Magnitude của bỏng"],
-  [/\bDuration of Ignite\b/gi, "thời lượng bỏng"],
-  [/\bBleeding Durations?\b/gi, "thời lượng Bleeding (chảy máu)"],
+  [/\bDuration of Ignite\b/gi, "thời gian bỏng"],
+  [/\bBleeding Durations?\b/gi, "thời gian Bleeding (chảy máu)"],
   [/\bMagnitude of Bleeding\b/gi, "Magnitude của Bleeding (chảy máu)"],
-  [/\bDuration of Bleeding\b/gi, "thời lượng Bleeding (chảy máu)"],
-  [/\bItem Evasion Rating\b/gi, "chỉ số né tránh từ Item"],
-  [/\bEvasion Rating\b/gi, "chỉ số né tránh"],
+  [/\bDuration of Bleeding\b/gi, "thời gian Bleeding (chảy máu)"],
+  [/\bItem Evasion Rating\b/gi, "tỉ lệ né tránh từ Item"],
+  [/\bEvasion Rating\b/gi, "tỉ lệ né tránh"],
   [/\bDamage reduction\b/gi, "Damage Reduction"],
   [/\bMagnitudes\b/gi, "Magnitude"],
   [/\bDeflected Hits?\b/gi, "Hit bị Deflect"],
@@ -471,7 +490,7 @@ const phraseReplacements = [
   [/\bPierce Enemies\b/gi, "xuyên kẻ địch"],
   [/\bPierce enemies\b/gi, "xuyên kẻ địch"],
   [/\bPierce\b/gi, "xuyên"],
-  [/\b(Skill|Flask|Charm) Effect Durations?\b/gi, "thời lượng hiệu ứng $1"],
+  [/\b(Skill|Flask|Charm) Effect Durations?\b/gi, "thời gian hiệu ứng $1"],
   [/\bduring any (Life |Mana )?Flask Effect\b/gi, "trong thời gian hiệu ứng $1Flask bất kỳ"],
   [/\bduring (Life |Mana )?Flask Effect\b/gi, "trong thời gian hiệu ứng $1Flask"],
   [/\b(Skill|Flask|Charm|Exposure|Blind|Wither|Aura|Curse|Presence|Buff|Debuff|Poison|Ignite|Shock|Chill|Freeze|Ailment|Elemental Ailment) Effects?\b/gi, "hiệu ứng $1"],
@@ -512,10 +531,10 @@ const phraseReplacements = [
   [/\bEffect of\b/gi, "hiệu ứng của"],
   [/\bEffect\b/gi, "hiệu ứng"],
   [/\beffect\b/gi, "hiệu ứng"],
-  [/\bDuration of\b/gi, "thời lượng của"],
-  [/\bduration of\b/gi, "thời lượng của"],
-  [/\bDuration\b/gi, "thời lượng"],
-  [/\bduration\b/gi, "thời lượng"],
+  [/\bDuration of\b/gi, "thời gian của"],
+  [/\bduration of\b/gi, "thời gian của"],
+  [/\bDuration\b/gi, "thời gian"],
+  [/\bduration\b/gi, "thời gian"],
   [/\bmaximum Life\b/gi, "Life tối đa"],
   [/\bmaximum Mana\b/gi, "Mana tối đa"],
   [/\bmaximum Energy Shield\b/gi, "Energy Shield tối đa"],
@@ -570,7 +589,15 @@ const phraseReplacements = [
   [/\bper 100 maximum Mana\b/gi, "mỗi 100 Mana tối đa"],
   [/\bper 1% Chaos Resistance\b/gi, "mỗi 1% Chaos Resistance"],
   [/\bper\b/gi, "mỗi"],
-  [/\bDuration of Ignite, Shock and Chill on kẻ địch\b/gi, "thời lượng Ignite, Shock và Chill lên kẻ địch"],
+  [/\bDuration of Ignite, Shock and Chill on kẻ địch\b/gi, "thời gian Ignite, Shock và Chill lên kẻ địch"],
+  [/\bSeal gain frequency\b/gi, "tần suất nhận Phong ấn"],
+  [/\bSeals?\b/gi, "Phong ấn"],
+  [/\bConsuming Corpses?\b/gi, "tiêu thụ xác"],
+  [/\bConsume Corpses?\b/gi, "tiêu thụ xác"],
+  [/\bConsumed Corpses?\b/gi, "xác đã tiêu thụ"],
+  [/\bCorpses?\b/gi, "xác"],
+  [/\bSurrounded\b/gi, "bị bao vây"],
+  [/\bDebilitate\b/gi, "suy yếu"],
   [/\bchance to inflict Bleeding on Hit\b/gi, "chance gây Bleeding khi Hit"],
   [/\bchance to Shock\b/gi, "chance gây Shock"],
   [/\bchance to Avoid\b/gi, "chance Avoid"],
@@ -623,6 +650,88 @@ const phraseReplacements = [
 ];
 
 const cleanPassiveTranslation = (value = "") => normalizeText(value)
+  .replace(/\[One-Handed\]\s+\[[^\]|]+\|Weapons?\]/gi, "vũ khí một tay")
+  .replace(/\bOne[- ]Handed (?:Melee|Martial) Weapons?\b/gi, "vũ khí đánh gần một tay")
+  .replace(/\bOne[- ]Handed Weapons?\b/gi, "vũ khí một tay")
+  .replace(/\bOff Hand\b/gi, "tay phụ")
+  .replace(/\bMain Hand\b/gi, "tay chính")
+  .replace(/\bBlock cơ hội\b/gi, "cơ hội Block")
+  .replace(/\bBase Block cơ hội\b/gi, "Base cơ hội Block")
+  .replace(/\bLife and Mana Regeneration Rate\b/gi, "hồi máu và hồi Mana")
+  .replace(/\bLife Regeneration Rate\b/gi, "hồi máu")
+  .replace(/\bMana Regeneration Rate\b/gi, "hồi Mana")
+  .replace(/\[Rage\]\s+Regeneration Rate\b/gi, "hồi Rage")
+  .replace(/\bRage Regeneration Rate\b/gi, "hồi Rage")
+  .replace(/\bLife Recovery Rate\b/gi, "tốc độ hồi máu")
+  .replace(/\bLife Recovery rate\b/gi, "tốc độ hồi máu")
+  .replace(/\bMana Recovery Rate\b/gi, "tốc độ hồi Mana")
+  .replace(/\bMana Recovery rate\b/gi, "tốc độ hồi Mana")
+  .replace(/\bhồi máu Rate\b/gi, "tốc độ hồi máu")
+  .replace(/\bhồi máu rate\b/gi, "tốc độ hồi máu")
+  .replace(/trong thời gian Effect của bất kỳ/gi, "trong thời gian hiệu ứng của bất kỳ")
+  .replace(/Mana \[Flask\]/gi, "bình Mana")
+  .replace(/bất kỳ Mana Flask nào/gi, "bất kỳ bình Mana nào")
+  .replace(/\bItem Evasion Rating\b/gi, "tỉ lệ né tránh từ Item")
+  .replace(/\bEvasion Rating\b/gi, "tỉ lệ né tránh")
+  .replace(/\bchỉ số né tránh\b/gi, "tỉ lệ né tránh")
+  .replace(/\bMelee Damage\b/gi, "Sát thương đánh gần")
+  .replace(/\bsát thương đánh gần\b/gi, "Sát thương đánh gần")
+  .replace(/\bSkill Effect Duration\b/gi, "thời gian hiệu ứng Skill")
+  .replace(/\bFlask Effect Duration\b/gi, "thời gian hiệu ứng Flask")
+  .replace(/\bCharm Effect Duration\b/gi, "thời gian hiệu ứng Charm")
+  .replace(/\[CooldownRecovery\|Cooldown Recovery Rate\]/gi, "tốc độ hồi Cooldown")
+  .replace(/\bCooldown Recovery Rate\b/gi, "tốc độ hồi Cooldown")
+  .replace(/\bDuration of\b/gi, "thời gian của")
+  .replace(/\bDuration\b/gi, "thời gian")
+  .replace(/\bthời lượng\b/gi, "thời gian")
+  .replace(/\bSeal gain frequency\b/gi, "tần suất nhận Phong ấn")
+  .replace(/\bSeals?\b/gi, "Phong ấn")
+  .replace(/\bCorpse Explode\b/gi, "xác phát nổ")
+  .replace(/\blàm xác Explode\b/gi, "làm xác phát nổ")
+  .replace(/\bxác Explode\b/gi, "xác phát nổ")
+  .replace(/\bConsuming Corpses?\b/gi, "tiêu thụ xác")
+  .replace(/\bConsume Corpses?\b/gi, "tiêu thụ xác")
+  .replace(/\bConsumed Corpses?\b/gi, "xác đã tiêu thụ")
+  .replace(/\bConsume xác\b/gi, "tiêu thụ xác")
+  .replace(/\bConsuming xác\b/gi, "tiêu thụ xác")
+  .replace(/\bCorpses?\b/gi, "xác")
+  .replace(/khi của bạn \[Companion\] is in của bạn \[Presence\]/gi, "khi Companion của bạn ở trong Presence của bạn")
+  .replace(/your \[Companion\] is in your \[Presence\]/gi, "Companion của bạn ở trong Presence của bạn")
+  .replace(/\bkhi bị bao quanh\b/gi, "khi bị bao vây")
+  .replace(/\bSurrounded\b/gi, "bị bao vây")
+  .replace(/\bDebilitate\b/gi, "suy yếu")
+  .replace(/\bto suy yếu\b/gi, "gây suy yếu")
+  .replace(/^Áp dụng suy yếu\b/gi, "Gây suy yếu")
+  .replace(/\bÁp dụng suy yếu\b/gi, "gây suy yếu")
+  .replace(/^Apply suy yếu\b/gi, "Gây suy yếu")
+  .replace(/\bApply suy yếu\b/gi, "gây suy yếu")
+  .replace(/\bmore amount of (máu|mana|máu và mana) hút được\b/gi, "more lượng $1 hút được")
+  .replace(/\bamount of (máu|mana|máu và mana) hút được\b/gi, "lượng $1 hút được")
+  .replace(/\bLow Life\b/gi, "ít máu")
+  .replace(/\bLow máu\b/gi, "ít máu")
+  .replace(/\bLow Mana\b/gi, "ít Mana")
+  .replace(/\bto be Lucky\b/gi, "được Lucky")
+  .replace(/\bis Lucky\b/gi, "được Lucky")
+  .replace(/\blà Lucky\b/gi, "được Lucky")
+  .replace(/\bRecoup Effects?\b/gi, "hiệu ứng hồi lại")
+  .replace(/\bspeed of hiệu ứng hồi lại\b/gi, "tốc độ hiệu ứng hồi lại")
+  .replace(/^Recoup\b/g, "Hồi lại")
+  .replace(/\bRecoup\b/g, "hồi lại")
+  .replace(/\bis applied to\b/gi, "được áp dụng cho")
+  .replace(/\bare applied to\b/gi, "được áp dụng cho")
+  .replace(/\bapplied to bạn\b/gi, "áp dụng lên bạn")
+  .replace(/(\[[^\]|]+\|(?:Magnitude|Effect)\])\s+of\b/gi, "$1 của")
+  .replace(/\b(Magnitude|Effect)\s+of\b/gi, "$1 của")
+  .replace(/\byou inflict\b/gi, "bạn gây")
+  .replace(/\bbạn inflict\b/gi, "bạn gây")
+  .replace(/\binflict\b/gi, "gây")
+  .replace(/\bto Shock\b/gi, "gây Shock")
+  .replace(/\bto Chill\b/gi, "gây Chill")
+  .replace(/\bto Ignite\b/gi, "gây Ignite")
+  .replace(/\bto Poison\b/gi, "gây Poison")
+  .replace(/\bto Daze\b/gi, "gây Daze")
+  .replace(/\bto Maim\b/gi, "gây Maim")
+  .replace(/\bto Blind\b/gi, "gây Blind")
   .replace(/\bLife Flasks? Charges?\b/gi, "Charge bình máu")
   .replace(/\bLife Flasks? Effects?\b/gi, "hiệu ứng bình máu")
   .replace(/\bLife Flasks?\b/gi, "bình máu")
@@ -632,7 +741,7 @@ const cleanPassiveTranslation = (value = "") => normalizeText(value)
   .replace(/\bLife Costs?\b/gi, "Cost máu")
   .replace(/\bUnreserved Life\b/gi, "máu chưa reserve")
   .replace(/\bFull Life\b/gi, "đầy máu")
-  .replace(/\bLow Life\b/gi, "Low máu")
+  .replace(/\bLow Life\b/gi, "ít máu")
   .replace(/\bMaximum Life\b/gi, "máu tối đa")
   .replace(/\bmaximum Life\b/gi, "máu tối đa")
   .replace(/\bLife\b/gi, "máu")
@@ -684,6 +793,7 @@ const cleanPassiveTranslation = (value = "") => normalizeText(value)
   .replace(/kẻ địch Hit bạn/g, "kẻ địch đánh trúng bạn")
   .replace(/\bchance to inflict\b/gi, "cơ hội gây")
   .replace(/\bchance\b/gi, "cơ hội")
+  .replace(/\bcơ hội to gây\b/gi, "cơ hội gây")
   .replace(/\bto Pierce an Enemy\b/gi, "xuyên kẻ địch")
   .replace(/\bto Pierce kẻ địch\b/gi, "xuyên kẻ địch")
   .replace(/\bPierce an Enemy\b/gi, "xuyên kẻ địch")
@@ -700,6 +810,9 @@ const cleanPassiveTranslation = (value = "") => normalizeText(value)
   .replace(/\s+([,.;:])/g, "$1")
   .replace(/\s+/g, " ")
   .trim();
+
+const hasPassiveTranslationGlue = (value = "") =>
+  /bạn(?:'ve| have| haven't)|\[gần đây(?:\|gần đây)?\]|\[[^\]]+\]\s+cơ hội|\b(?:any|each|used by|amount of|that are|do not|does not|cannot|is applied to|applied to|is at|spent|seconds|generation|One[- ]Handed|Corpse|Corpses|Consume Corpse|Seal|Seals|Off Hand|Main Hand|Surrounded|Debilitate|Duration|with)\b|\bin \[[^\]]+\]/i.test(value);
 
 const translatePassivePhrase = (value = "") => {
   let text = normalizeText(value);
@@ -726,23 +839,30 @@ const translatePassivePhrase = (value = "") => {
 
 const translateRecentAction = (value = "") => {
   const clean = normalizeText(value).replace(/^an?\s+/i, "");
+  const cleanLabel = passiveMarkupLabel(clean).replace(/^an?\s+/i, "");
   const actionPatterns = [
     [/^successfully Parried$/i, () => "Parry thành công"],
     [/^Killed$/i, () => "giết kẻ địch"],
     [/^killed$/i, () => "giết kẻ địch"],
     [/^Attacked$/i, () => "tấn công"],
-    [/^been Hit$/i, () => "bị Hit"],
+    [/^been Hit$/i, () => "bị đánh trúng"],
     [/^been Stunned$/i, () => "bị Stunned"],
     [/^been Heavy Stunned$/i, () => "bị Heavy Stunned"],
+    [/^Stunned an Enemy with an? (.+)$/i, ([, source]) => `Stun kẻ địch bằng ${translatePassivePhrase(source)}`],
+    [/^Stunned an Enemy$/i, () => "Stun kẻ địch"],
+    [/^Hit an Enemy with an? (.+)$/i, ([, source]) => `Hit kẻ địch bằng ${translatePassivePhrase(source)}`],
     [/^Hit an Enemy$/i, () => "Hit kẻ địch"],
     [/^Hit$/i, () => "Hit"],
     [/^dealt (?:a )?Critical Hit$/i, () => "gây Critical Hit"],
     [/^dealt (?:a )?Non-Critical Hit$/i, () => "gây Non-Critical Hit"],
     [/^dealt (?:a )?Projectile Attack Hit$/i, () => "gây Projectile Attack Hit"],
     [/^dealt (?:a )?Melee Hit$/i, () => "gây Melee Hit"],
+    [/^dealt (?:a )?(.+)$/i, ([, source]) => `gây ${translatePassivePhrase(source)}`],
     [/^Triggered a Skill$/i, () => "Trigger Skill"],
     [/^summoned a Totem$/i, () => "triệu hồi Totem"],
+    [/^summoned a (.+)$/i, ([, source]) => `triệu hồi ${translatePassivePhrase(source)}`],
     [/^gained a (Power|Frenzy|Endurance) Charge$/i, ([, charge]) => `nhận ${charge} Charge`],
+    [/^consumed an? (.+)$/i, ([, source]) => `Consume ${translatePassivePhrase(source)}`],
     [/^Chilled an Enemy$/i, () => "Chill kẻ địch"],
     [/^Shocked an Enemy$/i, () => "Shock kẻ địch"],
     [/^Ignited an Enemy$/i, () => "Ignite kẻ địch"],
@@ -755,10 +875,10 @@ const translateRecentAction = (value = "") => {
   ];
 
   for (const [pattern, render] of actionPatterns) {
-    const match = clean.match(pattern);
+    const match = cleanLabel.match(pattern);
     if (match) return render(match);
   }
-  return translatePassivePhrase(clean);
+  return translatePassivePhrase(cleanLabel);
 };
 
 const translateScale = (scale = "", amount = "") => {
@@ -875,6 +995,10 @@ const translateGrantClause = (subject = "", value = "", { also = false } = {}) =
 };
 
 const passiveStatPatterns = [
+  [/^You can wield Two-Handed Axes, Maces and Swords in one hand Triple Attribute requirements of Martial Weapons Inherent Life granted by Strength is halved$/i, () => "Bạn có thể cầm Two-Handed Axe, Mace và Sword bằng một tay. Yêu cầu Attribute của Martial Weapon tăng gấp ba. Máu nhận từ Strength bị giảm một nửa"],
+  [/^Can Attack as though using a Quarterstaff while both of your hand slots are empty Unarmed Attacks that would use an Equipped Quarterstaff's damage have: • Base Unarmed Physical damage replaced with damage based on their Skill Level • 1% more Attack Speed per 75 Item Evasion on Equipped Armour Items • \+0\.1% to Critical Hit Chance per 10 Item Energy Shield on Equipped Armour Items$/i, () => "Có thể Attack như đang dùng Quarterstaff khi cả hai ô tay của bạn đang trống. Unarmed Attack vốn dùng Damage của Quarterstaff đang trang bị có: • Base Physical Damage Unarmed được thay bằng Damage dựa trên Skill Level • 1% more Attack Speed mỗi 75 Item Evasion trên Armour Item đang trang bị • +0.1% cơ hội Critical Hit mỗi 10 Item Energy Shield trên Armour Item đang trang bị"],
+  [/^All \[DamageTypes\|Damage\] is taken from Mana before Life (.+?) less Mana Recovery Rate$/i, ([, amount]) => `Toàn bộ Damage được trừ từ Mana trước máu. ${amount} less tốc độ hồi Mana`],
+  [/^All Damage is taken from Mana before Life (.+?) less Mana Recovery Rate$/i, ([, amount]) => `Toàn bộ Damage được trừ từ Mana trước máu. ${amount} less tốc độ hồi Mana`],
   [/^Buffs on you expire (.+?) slower$/i, ([, amount]) => `Các Buff trên bạn hết hạn chậm hơn ${amount}`],
   [/^Debuffs on you expire (.+?) (faster|slower)$/i, ([, amount, speed]) => `Các Debuff trên bạn hết hạn ${speed === "faster" ? "nhanh hơn" : "chậm hơn"} ${amount}`],
   [/^(.+?) increased (.+?) while you have no (.+?) uses left$/i, ([, amount, stat, flask]) => `Tăng ${amount} ${translatePassivePhrase(stat)} khi bạn không còn lượt dùng ${translatePassivePhrase(flask)}`],
@@ -885,6 +1009,29 @@ const passiveStatPatterns = [
   [/^(Red|Green|Blue): (.+)$/i, ([, prefix, rest]) => `${prefix}: ${translatePassiveStatLine(rest)}`],
   [/^All Flames of Chayula that you manifest are (.+)$/i, ([, color]) => `Toàn bộ Flame of Chayula bạn tạo ra là màu ${translatePassiveColor(color)}`],
   [/^Walk the Paths Not Taken$/i, () => "Bước trên những con đường chưa chọn"],
+  [/^For each colour of Socketed Support Gem that is most numerous, gain: •Red: Hits against you have no Critical Damage Bonus •Blue: Skills have (.+?) less cost •Green: (.+?) less Movement Speed Penalty from using Skills while Moving$/i, ([, cost, penalty]) => `Với mỗi màu Support Gem đã Socket có số lượng nhiều nhất, nhận: •Red: Đòn đánh vào bạn không có Critical Damage Bonus •Blue: Skill có ${cost} less Cost •Green: ${penalty} less Movement Speed Penalty khi dùng Skill trong lúc di chuyển`],
+  [/^Your Totem Limit is doubled No Charge requirement for placing Totems Totems reserve (.+?) Spirit each$/i, ([, spirit]) => `Totem Limit của bạn được nhân đôi. Không yêu cầu Charge khi đặt Totem. Mỗi Totem Reserve ${spirit} Spirit`],
+  [/^50% more amount of Life Leeched Leech Life 67% less quickly Cannot Recover Life other than from Leech Life Leech effects are not removed when Unreserved Life is Filled$/i, () => "50% more lượng máu hút được. Hút máu chậm hơn 67%. Không thể hồi máu ngoài Leech. Hiệu ứng hút máu không bị xóa khi máu chưa reserve được lấp đầy"],
+  [/^100% more Maximum Rage Regenerate 1 Rage per second per 4 Rage spent Recently No Rage effect$/i, () => "100% more Rage tối đa. Hồi 1 Rage mỗi giây mỗi 4 Rage đã tiêu gần đây. Không có Rage Effect"],
+  [/^The next Attack you use within (.+?) after Heavy Stunning a Rare or Unique Enemy is Ancestrally Boosted$/i, ([, window]) => `Attack tiếp theo bạn dùng trong ${translatePastWindow(window)} sau khi Heavy Stun kẻ địch Rare hoặc Unique được Ancestrally Boosted`],
+  [/^Invocation Skills instead Trigger Spells every (.+?) Invocation Skills cannot gain Energy while Triggering Spells Invoked Spells consume (.+?) less Energy$/i, ([, window, amount]) => `Invocation Skill Trigger Spell mỗi ${translatePastWindow(window)} thay thế. Invocation Skill không thể nhận Energy khi đang Trigger Spell. Invoked Spell Consume ít hơn ${amount} Energy`],
+  [/^(.+?) after being Damaged by an Enemy Hit, take Damage equal to (.+?) of that Hit's Damage$/i, ([, window, amount]) => `${translatePastWindow(window)} sau khi bị đòn đánh của kẻ địch gây Damage, nhận Damage bằng ${amount} Damage của đòn đánh đó`],
+  [/^Gain Arcane Surge when you Shapeshift to Human form after being Shapeshifted for at least (.+?)$/i, ([, window]) => `Nhận Arcane Surge khi bạn biến hình về Human form sau khi đã biến hình ít nhất ${translatePastWindow(window)}`],
+  [/^Gain (.+?) of Damage as Extra (Fire|Cold|Lightning|Chaos|Physical) Damage for every different (.+?) fired in the past (.+?)$/i, ([, amount, type, subject, window]) => `Nhận ${amount} Damage dưới dạng Extra ${type} Damage cho mỗi ${translatePassivePhrase(subject)} khác nhau đã bắn trong ${translatePastWindow(window)} trước`],
+  [/^Unique Tamed Beasts are Possessed by random Azmeri Spirits, changing every (.+?)$/i, ([, window]) => `Unique Tamed Beast bị Possessed bởi Azmeri Spirit ngẫu nhiên, đổi mỗi ${translatePastWindow(window)}`],
+  [/^Darkness Reservation lasts for (.+?)$/i, ([, window]) => `Darkness Reservation kéo dài ${translatePastWindow(window)}`],
+  [/^-(.+?) to current Energy Shield Recharge delay per Combo expended when using Skills$/i, ([, window]) => `Giảm ${translatePastWindow(window)} delay Energy Shield Recharge hiện tại mỗi Combo đã tiêu khi dùng Skill`],
+  [/^Gain a Primal Owl Feather every (.+?), up to a maximum of (.+?) Expend an Owl Feather when you Dodge to trigger Primal Bounty$/i, ([, window, cap]) => `Nhận 1 Primal Owl Feather mỗi ${translatePastWindow(window)}, tối đa ${cap}. Tiêu hao Owl Feather khi bạn Dodge để Trigger Primal Bounty`],
+  [/^Gain a Vivid Wisp for every (.+?) metres you move, up to a maximum of (.+?) Expend all Vivid Wisps to trigger Vivid Stampede when you Attack$/i, ([, distance, cap]) => `Nhận 1 Vivid Wisp mỗi ${distance} mét bạn di chuyển, tối đa ${cap}. Tiêu hao toàn bộ Vivid Wisp để Trigger Vivid Stampede khi bạn Attack`],
+  [/^On Hitting an Enemy while a Life Flask is at full Charges, (.+?) of its Charges are consumed Gain (.+?) of damage as (Fire|Cold|Lightning|Chaos|Physical) damage for (.+?) per Charge consumed this way$/i, ([, consumed, amount, type, window]) => `Khi đánh trúng kẻ địch trong lúc bình máu đầy Charge, ${consumed} Charge của nó bị Consume. Nhận ${amount} Damage dưới dạng ${type} Damage trong ${translatePastWindow(window)} mỗi Charge đã Consume theo cách này`],
+  [/^Gain 1 Life Flask Charge per (.+?) Life spent$/i, ([, amount]) => `Nhận 1 Charge bình máu mỗi ${amount} máu đã tiêu`],
+  [/^(.+?) increased Critical Hit Chance against Enemies that are affected by no Elemental Ailments$/i, ([, amount]) => `Tăng ${amount} cơ hội Critical Hit lên kẻ địch không chịu Elemental Ailment nào`],
+  [/^Excess Life Recovery from Regeneration is applied to Energy Shield Energy Shield does not Recharge$/i, () => "Hồi máu dư từ Regeneration được áp dụng cho Energy Shield. Energy Shield không Recharge"],
+  [/^Elemental Archon does not expire while on High Infernal Flame$/i, () => "Elemental Archon không hết hạn khi đang ở High Infernal Flame"],
+  [/^Cannot be Light Stunned Cannot Dodge Roll or Sprint$/i, () => "Không thể bị Light Stunned. Không thể Dodge Roll hoặc Sprint"],
+  [/^(.+?) of Physical Damage prevented Recouped as Energy Shield per enemy Power Energy Shield does not Recharge You cannot Recover Energy Shield from Regeneration You cannot Recover Energy Shield to above Armour$/i, ([, amount]) => `Hồi lại ${amount} Physical Damage đã ngăn dưới dạng Energy Shield mỗi enemy Power. Energy Shield không Recharge. Bạn không thể hồi Energy Shield từ Regeneration. Bạn không thể hồi Energy Shield vượt quá Armour`],
+  [/^Dodge Roll cannot Avoid Damage Take (.+?) less Damage from Hits while Dodge Rolling$/i, ([, amount]) => `Dodge Roll không thể Avoid Damage. Nhận ít hơn ${amount} Damage từ đòn đánh khi Dodge Rolling`],
+  [/^You cannot be (.+)$/i, ([, effect]) => `Bạn không thể bị ${translatePassivePhrase(effect)}`],
   [/^Damage Penetrates ([+-]?\d+(?:\.\d+)?%) ((?:Fire|Cold|Lightning|Chaos|Physical|Elemental) Resistances?)(?: if on (.+))?$/i, ([, amount, stat, condition]) => `Damage xuyên ${amount} ${translatePassivePhrase(stat)}${condition ? ` nếu đang ${translatePassivePhrase(condition)}` : ""}`],
   [/^Gain (.+?) Rage on (Melee(?: Axe)? Hit)$/i, ([, amount, hit]) => `Nhận ${amount} Rage khi ${translatePassivePhrase(hit)}`],
   [/^Gain (.+?) Volatility on inflicting an? (.+)$/i, ([, amount, ailment]) => `Nhận ${amount} Volatility khi gây ${translatePassivePhrase(ailment)}`],
@@ -1064,6 +1211,7 @@ const passiveStatPatterns = [
   [/^Life Leeched from Empowered Attacks is Instant$/i, () => "Máu hút từ Empowered Attack là tức thời"],
   [/^Life Leech is Instant$/i, () => "Hút máu là tức thời"],
   [/^(.+?) increased amount of (Life and Mana|Life|Mana) Leeched(?: while (.+))?$/i, ([, amount, resource, condition]) => `Tăng ${amount} lượng ${translateLeechResource(resource)} hút được${condition ? ` ${translateLeechCondition(condition)}` : ""}`],
+  [/^(.+?) more amount of (Life and Mana|Life|Mana) Leeched$/i, ([, amount, resource]) => `${amount} more lượng ${translateLeechResource(resource)} hút được`],
   [/^(.+?) of (.+?) Damage Leeched as (Life|Mana)$/i, ([, amount, source, resource]) => `${amount} ${translatePassivePhrase(`${source} Damage`)} được hút thành ${translateLeechResource(resource)}`],
   [/^Life Leech recovers based on your Elemental damage as well as Physical damage$/i, () => "Hút máu hồi phục dựa trên Elemental Damage của bạn cũng như Physical Damage"],
   [/^Leech recovers based on (.+?) as well as (.+?)$/i, ([, first, second]) => `Leech hồi phục dựa trên ${translatePassivePhrase(first)} cũng như ${translatePassivePhrase(second)}`],
@@ -1120,6 +1268,7 @@ const passiveStatPatterns = [
   [/^(.+?) chance for Enemies you Kill to Explode, dealing (.+)$/i, ([, chance, amount]) => `${chance} chance khiến kẻ địch bạn hạ Explode, gây ${amount}`],
   [/^of their maximum Life as (.+?)$/i, ([, damageType]) => `Life tối đa của chúng dưới dạng ${translatePassivePhrase(damageType)}`],
   [/^Enemies affected by your (.+?) Recently have (.+?) reduced (.+)$/i, ([, source, amount, stat]) => `Kẻ địch bị ${translatePassivePhrase(source)} của bạn ảnh hưởng gần đây bị giảm ${amount} ${translatePassivePhrase(stat)}`],
+  [/^Enemies in (.+?) you create take (.+?) increased Damage$/i, ([, ground, amount]) => `Kẻ địch trong ${translatePassivePhrase(ground)} bạn tạo chịu thêm ${amount} Damage`],
   [/^(.+?) increased Damage with Hits against Enemies affected by (.+)$/i, ([, amount, effect]) => `Tăng ${amount} Damage bằng Hit lên kẻ địch đang chịu ${translatePassivePhrase(effect)}`],
   [/^(.+?) increased (.+?) with Hits against Enemies affected by (.+)$/i, ([, amount, stat, effect]) => `Tăng ${amount} ${translatePassivePhrase(stat)} bằng Hit lên kẻ địch đang chịu ${translatePassivePhrase(effect)}`],
   [/^Projectiles deal (.+?) increased Damage with Hits against Enemies within (.+)$/i, ([, amount, distance]) => `Projectile gây Damage bằng Hit tăng ${amount} lên kẻ địch trong phạm vi ${distance}`],
@@ -1133,6 +1282,9 @@ const passiveStatPatterns = [
   [/^Immune to (.+?) if Equipped (.+?) has higher (.+?) than (.+)$/i, ([, immune, slot, high, low]) => `Miễn nhiễm ${translatePassivePhrase(immune)} nếu ${translatePassivePhrase(slot)} đang trang bị có ${translatePassivePhrase(high)} cao hơn ${translatePassivePhrase(low)}`],
   [/^Immune to Bleeding if Equipped Helmet has higher Armour than Evasion Rating$/i, () => `Miễn nhiễm ${translatePassivePhrase("Bleeding")} nếu Helmet đang trang bị có Armour cao hơn ${translatePassivePhrase("Evasion Rating")}`],
   [/^Immune to Chaos Damage and Bleeding$/i, () => `Miễn nhiễm Chaos Damage và ${translatePassivePhrase("Bleeding")}`],
+  [/^Your (.+?) do not affect (.+)$/i, ([, subject, target]) => `${translatePassivePhrase(subject)} của bạn không ảnh hưởng tới ${translatePassivePhrase(target)}`],
+  [/^(.+?) do not recover Life$/i, ([, subject]) => `${translatePassivePhrase(subject)} không hồi máu`],
+  [/^Life Flask Effects are not removed when Unreserved Life is Filled Life Flask Effects do not Queue$/i, () => "Hiệu ứng bình máu không bị xóa khi máu chưa reserve được lấp đầy; hiệu ứng bình máu không xếp hàng"],
   [/^Unarmed Attacks that would use your Quarterstaff's damage gain:$/i, () => "Unarmed Attack lẽ ra dùng Damage từ Quarterstaff của bạn sẽ nhận:"],
   [/^Physical damage based on their Skill Level$/i, () => "Physical Damage dựa trên Skill Level của chúng"],
   [/^(.+?) more Attack Speed per (.+?) Item Evasion Rating on Equipped Armour Items$/i, ([, amount, rating]) => `${amount} more Attack Speed mỗi ${rating} chỉ số né tránh từ Item trên Armour Item đang trang bị`],
@@ -1273,6 +1425,7 @@ const passiveStatPatterns = [
   [/^(.+?) increased Duration of Ailments on Beasts$/i, ([, amount]) => `Tăng ${amount} Duration của Ailment lên Beast`],
   [/^(.+?) reduced Duration of Ailments on You$/i, ([, amount]) => `Giảm ${amount} Duration của Ailment lên bạn`],
   [/^(.+?) increased (Life and Mana Regeneration Rate|Attack Damage) for each Minion in your Presence, up to a maximum of (.+)$/i, ([, amount, stat, cap]) => `Tăng ${amount} ${translatePassivePhrase(stat)} cho mỗi Minion trong Presence của bạn, tối đa ${cap}`],
+  [/^(.+?) increased Duration of each (.+?) stack$/i, ([, amount, stack]) => `Tăng ${amount} thời lượng mỗi stack ${translatePassivePhrase(stack)}`],
   [/^(.+?) reduced Magnitude of (.+?) you inflict$/i, ([, amount, ailment]) => `Giảm ${amount} Magnitude của ${translatePassivePhrase(ailment)} bạn gây`],
   [/^Consuming Glory grants you (.+?) increased Attack damage per Glory consumed for (.+?) seconds, up to (.+)$/i, ([, amount, seconds, cap]) => `Consume Glory cấp cho bạn tăng ${amount} Attack Damage mỗi Glory đã Consume trong ${seconds} giây, tối đa ${cap}`],
   [/^(.+?) increased Stun Threshold for each time you've been Hit by an Enemy Recently, up to (.+)$/i, ([, amount, cap]) => `Tăng ${amount} Stun Threshold cho mỗi lần bạn bị kẻ địch đánh trúng gần đây, tối đa ${cap}`],
@@ -1286,6 +1439,7 @@ const passiveStatPatterns = [
     return `Tăng ${amount} chance gây Ailment${source ? ` bằng ${translatePassivePhrase(source)}` : ""}${target ? ` lên ${targetVi}` : ""}`;
   }],
   [/^(.+?) increased Effect of Poison you inflict on targets that are not Poisoned$/i, ([, amount]) => `Tăng ${amount} Effect của Poison bạn gây lên mục tiêu chưa bị Poisoned`],
+  [/^(.+?) increased Magnitude of Poison you inflict on targets that are not Poisoned$/i, ([, amount]) => `Tăng ${amount} Magnitude của Poison bạn gây lên mục tiêu chưa bị Poisoned`],
   [/^(.+?) increased effect of (?!.* on you per ten percent missing Mana$)(.+)$/i, ([, amount, source]) => `Tăng ${amount} Effect của ${translatePassivePhrase(source)}`],
   [/^Recharge Rate at (.+?) of their value$/i, ([, amount]) => `Recharge Rate bằng ${amount} giá trị của chúng`],
   [/^Blind Enemies when they Stun you$/i, () => "Blind kẻ địch khi chúng Stun bạn"],
@@ -1418,12 +1572,17 @@ const passiveStatPatterns = [
     const action = ailment === "Frozen" ? "Freeze" : "gây bỏng";
     return `Kẻ địch bị bạn ${action} chịu thêm ${amount} ${translatePassivePhrase(stat)}`;
   }],
-  [/^Enemies (Frozen|Ignited) by you have (.+?) to (.+?) Resistance$/i, ([, ailment, amount, type]) => `Kẻ địch bị bạn ${ailment} có ${amount} ${type} Resistance`],
+  [/^Enemies (Frozen|Ignited) by you have (.+?) to (.+?) Resistance$/i, ([, ailment, amount, type]) => `Kẻ địch bị bạn ${ailment === "Frozen" ? "Freeze" : "gây bỏng"} có ${amount} ${type} Resistance`],
+  [/^\+(.+?) to all Maximum Elemental Resistances if you have at least (.+?) Support Gems Socketed$/i, ([, amount, count]) => `+${amount} toàn bộ Maximum Elemental Resistance nếu bạn có ít nhất ${count.replace(/\band\b/i, "và")} Support Gem đã Socket`],
   [/^(.+?) chance for Projectiles to Pierce Enemies within (.+?) distance of you$/i, ([, chance, distance]) => `${chance} chance để Projectile Pierce kẻ địch trong khoảng cách ${distance} từ bạn`],
   [/^(.+?) chance for Damage with Hits to be Lucky$/i, ([, chance]) => `${chance} chance để Damage bằng Hit là Lucky`],
   [/^Critical Hits with Daggers have a (.+?) chance to Poison the Enemy$/i, ([, chance]) => `Critical Hit với Dagger có ${chance} chance Poison kẻ địch`],
   [/^(.+?) increased (Maximum Life|Maximum Mana|Movement Speed) if you have at least (.+?) (Red|Blue|Green) Support Gems Socketed$/i, ([, amount, stat, count, color]) => `Tăng ${amount} ${translatePassivePhrase(stat)} nếu bạn có ít nhất ${count} ${color} Support Gem đã Socket`],
   [/^least (.+?) (.+?) Support Gems Socketed$/i, ([, count, colors]) => `ít nhất ${count} ${colors.replace(/\band\b/i, "và")} Support Gem đã Socket`],
+  [/^Bolts fired by Crossbow Attacks have (.+?) chance to not expend Ammunition if you've Reloaded Recently$/i, ([, chance]) => `Bolt bắn từ Crossbow Attack có ${chance} cơ hội không tiêu hao Ammunition nếu gần đây bạn đã Reload`],
+  [/^\+(.+?) maximum Rage if you've used a Skill that Requires Glory in the past (.+?)$/i, ([, amount, window]) => `+${amount} Rage tối đa nếu bạn đã dùng Skill yêu cầu Glory trong ${translatePastWindow(window)} trước`],
+  [/^(.+?) more Skill Speed while Off Hand is empty and you have a One-Handed Martial Weapon equipped in your Main Hand$/i, ([, amount]) => `${amount} more Skill Speed khi Off Hand trống và bạn có vũ khí đánh gần một tay đang trang bị ở Main Hand`],
+  [/^(.+?) increased Cast Speed for each different Spell you've Cast in the last (.+?)$/i, ([, amount, window]) => `Tăng ${amount} Cast Speed cho mỗi Spell khác nhau bạn đã Cast trong ${translatePastWindow(window)} trước`],
   [/^Damaging Ailments Cannot Be inflicted on you while you already have one$/i, () => "Damaging Ailment không thể bị gây lên bạn khi bạn đã có một Damaging Ailment"],
   [/^Hazards have (.+?) chance to rearm after they are triggered$/i, ([, chance]) => `Hazard có ${chance} chance tự rearm sau khi được trigger`],
   [/^Damaging Ailments deal damage (.+?) faster$/i, ([, amount]) => `Damaging Ailment gây Damage nhanh hơn ${amount}`],
@@ -1456,7 +1615,7 @@ const passiveStatPatterns = [
   [/^Plants have a (.+?) chance to immediately Overgrow$/i, ([, chance]) => `Plant có ${chance} chance Overgrow ngay lập tức`],
   [/^On Heavy Stunning a Rare or Unique Enemy, your next Attack within (.+?) seconds will be Ancestrally Boosted$/i, ([, seconds]) => `Khi Heavy Stun kẻ địch Rare hoặc Unique, Attack tiếp theo của bạn trong ${seconds} giây sẽ được Ancestrally Boosted`],
   [/^Gain a stack of Jade every second$/i, () => "Nhận 1 stack Jade mỗi giây"],
-  [/^a One-Handed Martial Weapon equipped in your Main Hand$/i, () => "vũ khí cận chiến 1 tay đang trang bị ở Main Hand của bạn"],
+  [/^a One-Handed Martial Weapon equipped in your Main Hand$/i, () => "vũ khí đánh gần một tay đang trang bị ở Main Hand của bạn"],
   [/^(.+?) chance for (.+?) Damage with Hits to be Lucky$/i, ([, chance, damageType]) => `${chance} chance để ${translatePassivePhrase(`${damageType} Damage`)} bằng Hit là Lucky`],
   [/^Double (.+?) of (.+)$/i, ([, stat, subject]) => `Nhân đôi ${translatePassivePhrase(stat)} của ${translatePassivePhrase(subject)}`],
   [/^Skills gain 1 Glory every 2 seconds for each Rare or Unique monster in your Presence$/i, () => "Skill nhận 1 Glory mỗi 2 giây cho mỗi monster Rare hoặc Unique trong Presence của bạn"],
@@ -1524,7 +1683,7 @@ const passiveStatPatterns = [
   [/^You have (.+)$/i, ([, value]) => `Bạn có ${translatePassivePhrase(value)}`],
   [/^Your (.+?) are (.+)$/i, ([, subject, value]) => `${translatePassivePhrase(subject)} của bạn là ${translatePassivePhrase(value)}`],
   [/^Your (.+?) cannot change while you have (.+)$/i, ([, subject, condition]) => `${translatePassivePhrase(subject)} của bạn không thể thay đổi khi bạn có ${translatePassivePhrase(condition)}`],
-  [/^(.+?) have a duration of (.+)$/i, ([, subject, duration]) => `${translatePassivePhrase(subject)} có thời lượng ${duration}`],
+  [/^(.+?) have a duration of (.+)$/i, ([, subject, duration]) => `${translatePassivePhrase(subject)} có thời lượng ${translatePastWindow(duration)}`],
   [/^(.+?) have \+(.+?) to (.+)$/i, ([, subject, amount, stat]) => `${translatePassivePhrase(subject)} có +${amount} ${translatePassivePhrase(stat)}`],
   [/^(.+?) have \+(.+?) (.+)$/i, ([, subject, amount, stat]) => `${translatePassivePhrase(subject)} có +${amount} ${translatePassivePhrase(stat)}`],
   [/^(.+?) have (.+?) chance to not consume a Cooldown when used$/i, ([, subject, chance]) => `${translatePassivePhrase(subject)} có ${chance} chance không Consume Cooldown khi dùng`],
@@ -1560,6 +1719,10 @@ const passiveStatPatterns = [
   [/^(.+?) (increased|reduced) (.+?) if you have not Attacked Recently$/i, ([, amount, scale, stat]) => `${translateScale(scale, amount)} ${translatePassivePhrase(stat)} nếu gần đây bạn chưa tấn công`],
   [/^(.+?) (increased|reduced) (.+?) if you haven't Attacked Recently$/i, ([, amount, scale, stat]) => `${translateScale(scale, amount)} ${translatePassivePhrase(stat)} nếu gần đây bạn chưa tấn công`],
   [/^(.+?) (increased|reduced) (.+?) if (?:you've|you have) killed Recently$/i, ([, amount, scale, stat]) => `${translateScale(scale, amount)} ${translatePassivePhrase(stat)} nếu gần đây bạn đã giết kẻ địch`],
+  [/^(.+?) (increased|reduced) (.+?) if (?:you've|you have) successfully \[Parry\|Parried\] \[Recently(?:\|Recently)?\]$/i, ([, amount, scale, stat]) => `${translateScale(scale, amount)} ${translatePassivePhrase(stat)} nếu gần đây bạn Parry thành công`],
+  [/^(.+?) (increased|reduced) (.+?) if you haven't been (.+?) \[Recently(?:\|Recently)?\]$/i, ([, amount, scale, stat, condition]) => `${translateScale(scale, amount)} ${translatePassivePhrase(stat)} nếu gần đây bạn chưa ${translateRecentAction(`been ${condition}`)}`],
+  [/^(.+?) (increased|reduced) (.+?) if you haven't dealt (.+?) \[Recently(?:\|Recently)?\]$/i, ([, amount, scale, stat, condition]) => `${translateScale(scale, amount)} ${translatePassivePhrase(stat)} nếu gần đây bạn chưa ${translateRecentAction(`dealt ${condition}`)}`],
+  [/^(.+?) (increased|reduced) (.+?) if (?:you've|you have) (.+?) \[Recently(?:\|Recently)?\]$/i, ([, amount, scale, stat, condition]) => `${translateScale(scale, amount)} ${translatePassivePhrase(stat)} nếu gần đây bạn đã ${translateRecentAction(condition)}`],
   [/^(.+?) increased Armour while Bleeding$/i, ([, amount]) => `Tăng ${amount} Armour khi đang bị ${translatePassivePhrase("Bleeding")}`],
   [/^(.+?) chance to Knock Back Bleeding Enemies with Hits$/i, ([, chance]) => `${chance} cơ hội Knock Back kẻ địch đang bị ${translatePassivePhrase("Bleeding")} bằng Hit`],
   [/^(.+?) increased (.+?) if you've (.+?) Recently$/i, ([, amount, stat, condition]) => `Tăng ${amount} ${translatePassivePhrase(stat)} nếu gần đây bạn đã ${translateRecentAction(condition)}`],
@@ -1607,11 +1770,23 @@ const passiveStatPatterns = [
 export const translatePassiveStatLine = (line = "") => {
   const clean = normalizeText(line);
   if (!clean) return "";
-  for (const [pattern, render] of passiveStatPatterns) {
-    const match = clean.match(pattern);
-    if (match) return cleanPassiveTranslation(render(match));
+  const candidates = [clean];
+  const labelClean = passiveMarkupLabel(clean);
+  if (labelClean && labelClean !== clean) candidates.push(labelClean);
+  let fallback = "";
+
+  for (const candidate of candidates) {
+    for (const [pattern, render] of passiveStatPatterns) {
+      const match = candidate.match(pattern);
+      if (!match) continue;
+      const translated = cleanPassiveTranslation(render(match));
+      if (!hasPassiveTranslationGlue(translated)) return translated;
+      fallback ||= translated;
+      break;
+    }
   }
-  return translatePassivePhrase(clean);
+
+  return fallback || translatePassivePhrase(clean);
 };
 
 function translateGrantedValue(value = "") {

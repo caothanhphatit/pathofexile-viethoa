@@ -26,7 +26,7 @@ test("SPA shell mounts React bundle without legacy app shell scripts", async () 
 
   assert.match(html, /<div id="root">/);
   assert.match(html, /dist\/spa\/assets\/app\.css/);
-  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js"/);
+  assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js(?:\?[^"]*)?"/);
   assert.match(html, /components\/theme-boot\.js/);
   assert.doesNotMatch(html, /app-routes\.js/);
   assert.doesNotMatch(html, /components\/app-shell\.js/);

@@ -211,14 +211,12 @@ test("CLI fixture mode prints a compact JSON summary", async () => {
   }
 });
 
-test("preflight reports game install, GGPK, PoB upstream, and missing Oodle tools separately", async () => {
+test("preflight reports game install and PoB upstream separately", async () => {
   const result = await preflightGameInstall({
     gamePath: "Z:/definitely/not/a/poe2/install",
     pobPath: "Z:/definitely/not/a/pob/install"
   });
 
   assert.equal(result.game_path.exists, false);
-  assert.equal(result.ggpk.exists, false);
   assert.equal(result.pob_upstream.exists, false);
-  assert.equal(result.oodle_tools.ready, false);
 });

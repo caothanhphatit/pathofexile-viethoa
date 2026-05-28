@@ -75,7 +75,7 @@ test("production pages load compiled Tailwind CSS instead of the browser CDN run
     const html = await readProjectFile(page);
 
     assert.match(html, /<link rel="preload" href="\/assets\/fonts\/material-symbols-rounded\.woff2" as="font" type="font\/woff2" crossorigin>/, `${page} preloads local icon font`);
-    assert.match(html, /<link href="dist\/app\.css\?v=20260524-font" rel="stylesheet">/, `${page} loads versioned compiled app CSS`);
+    assert.match(html, /<link href="dist\/app\.css\?v=20260529-font-ui" rel="stylesheet">/, `${page} loads versioned compiled app CSS`);
     assert.doesNotMatch(html, /https:\/\/cdn\.tailwindcss\.com/, `${page} does not load Tailwind CDN runtime`);
     assert.doesNotMatch(html, /https:\/\/fonts\.(googleapis|gstatic)\.com/, `${page} does not block on remote Google Fonts`);
     assert.doesNotMatch(html, /components\/tailwind-config\.js/, `${page} does not load runtime Tailwind config`);

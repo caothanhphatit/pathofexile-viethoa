@@ -48,7 +48,6 @@ const EXCLUDE_SELECTOR = [
   ".nav-rail",
   ".app-actions",
   ".passive-toolbar",
-  ".passive-tooltip",
   ".poe-term",
   ".poe-tooltip-box",
   ".poe-term-modal",

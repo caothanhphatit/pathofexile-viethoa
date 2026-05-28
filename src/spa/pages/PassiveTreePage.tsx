@@ -145,7 +145,7 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
   const [changeFilter, setChangeFilter] = useState<ChangeFilter>("all");
   const [allocatedIds, setAllocatedIds] = useState<Set<string>>(() => new Set());
   const [buildLimitWarning, setBuildLimitWarning] = useState("");
-  const [hover, setHover] = useState<{ node: PassiveNode | null; x: number; y: number }>({ node: null, x: 0, y: 0 });
+  const [hover, setHover] = useState<{ node: PassiveNode | null; x: number; y: number; held: boolean }>({ node: null, x: 0, y: 0, held: false });
   const [command, setCommand] = useState<CanvasCommand | null>(null);
 
   useEffect(() => {
@@ -367,7 +367,7 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
           classFilter={classFilter}
           ascendancyFilter={ascendancyFilter}
           command={command}
-          onHover={(node, x, y) => setHover({ node, x, y })}
+          onHover={(node, x, y, held) => setHover({ node, x, y, held })}
           onToggle={toggleAllocated}
         />
         {showChangesPanel ? (
@@ -470,7 +470,7 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
           </aside>
         ) : null}
         {hover.node ? (
-          <div className="passive-tooltip" style={{ left: Math.min(hover.x + 18, window.innerWidth - 380), top: Math.min(hover.y + 18, window.innerHeight - 220) }}>
+          <div className={`passive-tooltip ${hover.held ? "is-held" : ""}`} style={{ left: Math.min(hover.x + 18, window.innerWidth - 380), top: Math.min(hover.y + 18, window.innerHeight - 220) }}>
             <strong translate="no">{hover.node.name || `Node ${hover.node.id}`}</strong>
             <span>{hover.node.type}</span>
             {hover.node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}

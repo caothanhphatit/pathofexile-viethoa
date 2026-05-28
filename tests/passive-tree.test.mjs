@@ -7,7 +7,7 @@ import {
   selectLatestPassiveTreePath,
   translatePassiveStatLine
 } from "../scripts/passive-tree/passive-tree-lib.mjs";
-import { passiveTreeExportPayload } from "../scripts/passive-tree/runtime.mjs";
+import { compactPassiveTreeBrowserData, passiveTreeExportPayload } from "../scripts/passive-tree/runtime.mjs";
 
 const sampleTree = {
   tree: "Default",
@@ -383,6 +383,21 @@ test("exports normalized passive tree render metadata without postgres", () => {
   });
 });
 
+test("compacts passive tree browser data with current translation rules", () => {
+  const compact = compactPassiveTreeBrowserData({
+    version: "0_4",
+    nodes: [{
+      id: "surrounded",
+      name: "Focused Thrust",
+      type: "notable",
+      stats: ["75% increased Melee Damage with Spears while Surrounded"],
+      stats_vi: ["Tăng 75% Melee Damage với Spears khi Surrounded"]
+    }]
+  });
+
+  assert.deepEqual(compact.nodes[0].stats_vi, ["Tăng 75% Sát thương đánh gần với Spear khi bị bao vây"]);
+});
+
 test("translates common passive stat lines into clean Vietnamese", () => {
   assert.equal(translatePassiveStatLine("+10 to Dexterity"), "+10 Dexterity");
   assert.equal(translatePassiveStatLine("Grants Skill: Acidic Concoction"), "Cấp Skill: Acidic Concoction");
@@ -393,7 +408,7 @@ test("translates common passive stat lines into clean Vietnamese", () => {
   assert.equal(translatePassiveStatLine("6% increased Movement Speed if you've successfully Parried Recently"), "Tăng 6% Movement Speed nếu gần đây bạn Parry thành công");
   assert.equal(translatePassiveStatLine("Damage Penetrates 6% of Enemy Elemental Resistances while Shapeshifted"), "Damage xuyên 6% Elemental Resistance của kẻ địch khi đang biến hình");
   assert.equal(translatePassiveStatLine("Body Armour grants Hits against you have 100% reduced Critical Damage Bonus"), "Body Armour cấp đòn đánh vào bạn có giảm 100% Critical Damage Bonus");
-  assert.equal(translatePassiveStatLine("While you are not on Low Mana, you and Allies in your Presence have Unholy Might"), "Khi bạn không ở Low Mana, bạn và Allies trong Presence của bạn có Unholy Might");
+  assert.equal(translatePassiveStatLine("While you are not on Low Mana, you and Allies in your Presence have Unholy Might"), "Khi bạn không ở ít Mana, bạn và Allies trong Presence của bạn có Unholy Might");
   assert.equal(translatePassiveStatLine("50% more Mana Cost of Skills if you have no Energy Shield"), "50% more Mana Cost của Skill nếu bạn không có Energy Shield");
   assert.equal(translatePassiveStatLine("Cannot be Heavy Stunned while Sprinting"), "Không thể bị Heavy Stunned khi Sprinting");
   assert.equal(translatePassiveStatLine("Skills have a 15% chance to not consume Glory"), "Skill có 15% cơ hội không Consume Glory");
@@ -405,8 +420,28 @@ test("translates common passive stat lines into clean Vietnamese", () => {
 test("translates standalone Hit wording without flattening mechanic compounds", () => {
   const cases = [
     ["25% increased Armour if you've Hit an Enemy with a Melee Attack Recently", "Tăng 25% Armour nếu gần đây bạn đã đánh trúng kẻ địch bằng Melee Attack"],
-    ["60% increased Evasion Rating if you have Hit an Enemy Recently", "Tăng 60% chỉ số né tránh nếu gần đây bạn đã đánh trúng kẻ địch"],
+    ["25% increased Area of Effect if you've [Stun|Stunned] an Enemy with a Two Handed [Melee] Weapon [Recently|Recently]", "Tăng 25% khu vực đánh lan nếu gần đây bạn đã Stun kẻ địch bằng vũ khí cận chiến 2 tay"],
+    ["12% increased [Attack] Speed if you've successfully [Parry|Parried] [Recently|Recently]", "Tăng 12% [Attack] Speed nếu gần đây bạn Parry thành công"],
+    ["10% increased Damage if you've dealt a [Critical|Critical Hit] [Recently]", "Tăng 10% Damage nếu gần đây bạn đã gây Critical Hit"],
+    ["60% increased Evasion Rating if you have Hit an Enemy Recently", "Tăng 60% tỉ lệ né tránh nếu gần đây bạn đã đánh trúng kẻ địch"],
+    ["60% increased [Evasion|Evasion Rating] if you have Hit an Enemy [Recently]", "Tăng 60% [Evasion|tỉ lệ né tránh] nếu gần đây bạn đã đánh trúng kẻ địch"],
     ["Minions deal 30% increased Damage if you've Hit Recently", "Minion được tăng 30% Damage nếu gần đây bạn đã đánh trúng"],
+    ["Minions deal 30% increased Damage if you've [HitDamage|Hit] [Recently]", "Minion được tăng 30% Damage nếu gần đây bạn đã đánh trúng"],
+    ["+2% to [MaximumResistances|Maximum Fire Resistance] if you have at least 5 Red [SupportGem|Support Gems] Socketed", "+2% Maximum Fire Resistance nếu bạn có ít nhất 5 Red Support Gem đã Socket"],
+    ["+1% to all [MaximumResistances|Maximum Elemental Resistances] if you have at least 5 Red, Green and Blue [SupportGem|Support Gems] Socketed", "+1% toàn bộ Maximum Elemental Resistance nếu bạn có ít nhất 5 Red, Green và Blue Support Gem đã Socket"],
+    ["Bolts fired by [Crossbow|Crossbow] [Attack|Attacks] have 30% chance to not expend [Ammunition] if you've Reloaded [Recently]", "Bolt bắn từ Crossbow Attack có 30% cơ hội không tiêu hao Ammunition nếu gần đây bạn đã Reload"],
+    ["+15 maximum [Rage] if you've used a Skill that Requires [Glory] in the past 20 seconds", "+15 Rage tối đa nếu bạn đã dùng Skill yêu cầu Glory trong 20 giây trước"],
+    ["25% more Skill Speed while Off Hand is empty and you have a [One-Handed] [MartialWeapon|Martial Weapon] equipped in your Main Hand", "25% more Skill Speed khi tay phụ trống và bạn có vũ khí đánh gần một tay đang trang bị ở tay chính"],
+    ["4% increased Cast Speed for each different [Spell] you've Cast in the last eight seconds", "Tăng 4% Cast Speed cho mỗi Spell khác nhau bạn đã Cast trong 8 giây trước"],
+    ["Enemies [Freeze|Frozen] by you have -8% to Cold Resistance", "Kẻ địch bị bạn Freeze có -8% Cold Resistance"],
+    ["Regenerate 1% of maximum Life per Second if you've used a Life [Flask] in the past 10 seconds", "Hồi 1% máu tối đa mỗi giây nếu bạn đã dùng bình máu trong 10 giây trước"],
+    ["5% increased [Block] chance", "Tăng 5% cơ hội Block"],
+    ["+1% to maximum [Block] chance", "+1% cơ hội Block tối đa"],
+    ["+5 to any [Attributes|Attribute]", "+5 bất kỳ Attribute nào"],
+    ["10% increased amount of Mana [ManaLeech|Leeched]", "Tăng 10% lượng mana hút được"],
+    ["[Attack|Attacks] used by [Totem|Totems] have 4% increased [Attack] Speed", "Attack do Totem dùng được tăng 4% Attack Speed"],
+    ["15% increased [Glory] generation", "Tăng 15% lượng Glory tạo ra"],
+    ["30% increased Damage with [HitDamage|Hits] against Enemies that are on [LowLife|Low Life]", "Tăng 30% Damage bằng đòn đánh lên kẻ địch đang ít máu"],
     ["5% chance to Blind Enemies on Hit", "5% cơ hội Blind kẻ địch khi đánh trúng"],
     ["8% chance to Blind Enemies on Hit with Attacks", "8% cơ hội Blind kẻ địch khi đánh trúng bằng Attack"],
     ["On Hitting an Enemy while a Life Flask is at full Charges, 40% of its Charges are consumed", "Khi đánh trúng kẻ địch trong lúc bình máu đầy Charge, 40% Charge của nó bị Consume"],
@@ -451,12 +486,12 @@ test("removes leftover English a/an articles from passive translations", () => {
 test("translates passive tree combat context without half-English fragments", () => {
   const cases = [
     ["Enemies affected by your Hazards Recently have 25% reduced Armour", "Kẻ địch bị Hazard của bạn ảnh hưởng gần đây bị giảm 25% Armour"],
-    ["Enemies affected by your Hazards Recently have 25% reduced Evasion Rating", "Kẻ địch bị Hazard của bạn ảnh hưởng gần đây bị giảm 25% chỉ số né tránh"],
+    ["Enemies affected by your Hazards Recently have 25% reduced Evasion Rating", "Kẻ địch bị Hazard của bạn ảnh hưởng gần đây bị giảm 25% tỉ lệ né tránh"],
     ["Gain 20 Life per enemy killed", "Hồi 20 máu khi giết kẻ địch"],
     ["8% increased Attack Speed if you've killed Recently", "Tăng 8% Attack Speed nếu gần đây bạn đã giết kẻ địch"],
     ["16% increased Attack Speed if you haven't Attacked Recently", "Tăng 16% Attack Speed nếu gần đây bạn chưa tấn công"],
-    ["100% increased Evasion Rating if you have been Hit Recently", "Tăng 100% chỉ số né tránh nếu bạn bị đánh trúng gần đây"],
-    ["30% reduced Evasion Rating if you haven't been Hit Recently", "Giảm 30% chỉ số né tránh nếu bạn chưa bị đánh trúng gần đây"],
+    ["100% increased Evasion Rating if you have been Hit Recently", "Tăng 100% tỉ lệ né tránh nếu bạn bị đánh trúng gần đây"],
+    ["30% reduced Evasion Rating if you haven't been Hit Recently", "Giảm 30% tỉ lệ né tránh nếu bạn chưa bị đánh trúng gần đây"],
     ["Gain 2 Rage when Hit by an Enemy", "Nhận 2 Rage khi bị kẻ địch đánh trúng"],
     ["15% increased Freeze Buildup", "Tăng 15% Freeze Buildup (đóng băng)"]
   ];
@@ -474,7 +509,7 @@ test("translates scanned passive tree leftovers from recent-action and affected-
     ["20% increased Damage for each different Warcry you've used Recently", "Tăng 20% Damage cho mỗi Warcry khác nhau bạn đã dùng gần đây"],
     ["12% increased Attack Damage for each different Non-Instant Spell you've used in the past 8 seconds", "Tăng 12% Attack Damage cho mỗi Spell không tức thời khác nhau bạn đã dùng trong 8 giây trước"],
     ["4% increased Cast Speed for each different Non-Instant Spell you've Cast Recently", "Tăng 4% Cast Speed cho mỗi Spell không tức thời khác nhau bạn đã Cast gần đây"],
-    ["15% increased Melee Damage if you've dealt a Projectile Attack Hit in the past eight seconds", "Tăng 15% sát thương đánh gần nếu bạn đã gây đòn đánh từ Projectile Attack trong 8 giây trước"],
+    ["15% increased Melee Damage if you've dealt a Projectile Attack Hit in the past eight seconds", "Tăng 15% Sát thương đánh gần nếu bạn đã gây đòn đánh từ Projectile Attack trong 8 giây trước"],
     ["+4 to Melee Strike Range if you've dealt a Projectile Attack Hit in the past eight seconds", "+4 Melee Strike Range nếu bạn đã gây đòn đánh từ Projectile Attack trong 8 giây trước"],
     ["60% faster start of Energy Shield Recharge if you've been Stunned Recently", "Energy Shield Recharge bắt đầu nhanh hơn 60% nếu gần đây bạn đã bị Stunned"],
     ["Regenerate 1% of maximum Life per Second if you've used a Life Flask in the past 10 seconds", "Hồi 1% máu tối đa mỗi giây nếu bạn đã dùng bình máu trong 10 giây trước"],
@@ -499,20 +534,20 @@ test("translates remaining scanned passive tree fragments into readable Vietname
   const cases = [
     ["Minions deal 30% increased Damage if you've Hit Recently", "Minion được tăng 30% Damage nếu gần đây bạn đã đánh trúng"],
     ["25% of Infernal Flame lost per second if none was gained in the past 2 seconds", "Mất 25% Infernal Flame mỗi giây nếu trong 2 giây trước không nhận thêm Infernal Flame"],
-    ["50% increased Evasion Rating if Energy Shield Recharge has started in the past 2 seconds", "Tăng 50% chỉ số né tránh nếu Energy Shield Recharge đã bắt đầu trong 2 giây trước"],
+    ["50% increased Evasion Rating if Energy Shield Recharge has started in the past 2 seconds", "Tăng 50% tỉ lệ né tránh nếu Energy Shield Recharge đã bắt đầu trong 2 giây trước"],
     ["25% increased Damage with Crossbows for each type of Ammunition fired in the past 10 seconds", "Tăng 25% Damage với Crossbow cho mỗi loại Ammunition đã bắn trong 10 giây trước"],
     ["every different Grenade fired in the past 8 seconds", "mỗi Grenade khác nhau đã bắn trong 8 giây trước"],
     ["Minions deal 10% increased Damage with Command Skills for each different type of Persistent Minion in your Presence", "Minion được tăng 10% Damage bằng Command Skill cho mỗi loại Persistent Minion khác nhau trong Presence của bạn"],
     ["Spells Gain 5% of Damage as extra Chaos Damage", "Spell nhận 5% Damage dưới dạng Extra Chaos Damage"],
     ["Empowered Attacks Gain 15% of Physical Damage as Extra Fire damage", "Empowered Attack nhận 15% Physical Damage dưới dạng Extra Fire Damage"],
-    ["Gain 8% of Evasion Rating as extra Armour", "Nhận thêm Armour bằng 8% chỉ số né tránh"],
-    ["Gain 100% of Evasion Rating as extra Ailment Threshold", "Nhận thêm Ailment Threshold bằng 100% chỉ số né tránh"],
+    ["Gain 8% of Evasion Rating as extra Armour", "Nhận thêm Armour bằng 8% tỉ lệ né tránh"],
+    ["Gain 100% of Evasion Rating as extra Ailment Threshold", "Nhận thêm Ailment Threshold bằng 100% tỉ lệ né tránh"],
     ["Gain 10% of Damage as Extra Damage of a random Element", "Nhận 10% Damage dưới dạng Extra Damage thuộc một Element ngẫu nhiên"],
     ["Regenerate 1% of maximum Life per second while stationary", "Hồi 1% máu tối đa mỗi giây khi đứng yên"],
-    ["Regenerate 2.5% of maximum Life per second while Surrounded", "Hồi 2.5% máu tối đa mỗi giây khi bị bao quanh"],
+    ["Regenerate 2.5% of maximum Life per second while Surrounded", "Hồi 2.5% máu tối đa mỗi giây khi bị bao vây"],
     ["Regenerate 1 Rage per second per 4 Rage spent Recently", "Hồi 1 Rage mỗi giây mỗi 4 Rage đã tiêu gần đây"],
     ["Regenerate 3% of maximum Life over 1 second when Stunned", "Hồi 3% máu tối đa trong 1 giây khi bị Stunned"],
-    ["Regenerate 1.5% of maximum Life per second while on Low Life", "Hồi 1.5% máu tối đa mỗi giây khi đang Low máu"]
+    ["Regenerate 1.5% of maximum Life per second while on Low Life", "Hồi 1.5% máu tối đa mỗi giây khi đang ít máu"]
   ];
 
   for (const [source, expected] of cases) {
@@ -530,7 +565,7 @@ test("translates scanned passive tree structural lines without raw English gramm
     ["6% reduced Charm Charges used", "Giảm 6% Charm Charge tiêu hao"],
     ["Immune to Chill if a majority of your Socketed Support Gems are Blue", "Miễn nhiễm Chill nếu phần lớn Support Gem đã Socket của bạn là màu Blue"],
     ["Enemies you Heavy Stun while Shapeshifted are Intimidated for 6 seconds", "Kẻ địch bạn Heavy Stun khi đang biến hình bị Intimidated trong 6 giây"],
-    ["Base Bleeding Duration is 1 second", "Base thời lượng Bleeding (chảy máu) là 1 giây"],
+    ["Base Bleeding Duration is 1 second", "Base thời gian Bleeding (chảy máu) là 1 giây"],
     ["Minions Revive 15% faster if all your Minions are Companions", "Minion Revive nhanh hơn 15% nếu toàn bộ Minion của bạn là Companion"],
     ["10% chance when a Charm is used to use another Charm without consuming Charges", "10% cơ hội khi Charm được dùng để dùng thêm một Charm khác mà không Consume Charge"],
     ["10% increased Defences while your Companion is in your Presence", "Tăng 10% Defences khi Companion của bạn ở trong Presence của bạn"],
@@ -542,7 +577,7 @@ test("translates scanned passive tree structural lines without raw English gramm
     ["Accuracy Rating is Doubled", "Accuracy Rating được nhân đôi"],
     ["20% chance that when Volatility on you explodes, you regain an equivalent amount of Volatility", "20% cơ hội khi Volatility trên bạn phát nổ, bạn nhận lại lượng Volatility tương đương"],
     ["4% increased Movement Speed if you've used a Mark Recently", "Tăng 4% Movement Speed nếu gần đây bạn đã dùng Mark"],
-    ["Apply Debilitate to Enemies 3 Metres in front of you while your Shield is raised", "Áp dụng Debilitate lên kẻ địch trong 3 mét trước mặt bạn khi Shield của bạn đang giơ lên"],
+    ["Apply Debilitate to Enemies 3 Metres in front of you while your Shield is raised", "Gây suy yếu lên kẻ địch trong 3 mét trước mặt bạn khi Shield của bạn đang giơ lên"],
     ["Enemies near Enemies you Mark are Blinded", "Kẻ địch gần kẻ địch bạn Mark bị Blinded"],
     ["Carry a Chest which adds 20 Inventory Slots", "Mang theo Chest thêm 20 ô Inventory"],
     ["Demonflame has no maximum", "Demonflame không có giới hạn tối đa"]
@@ -563,7 +598,7 @@ test("translates repeated passive tree grammar patterns from the full scan", () 
     ["4% increased Attack Speed while a Rare or Unique Enemy is in your Presence", "Tăng 4% Attack Speed khi kẻ địch Rare hoặc Unique ở trong Presence của bạn"],
     ["Life Leech effects are not removed when Unreserved Life is Filled", "Hiệu ứng hút máu không bị xóa khi máu chưa reserve đầy"],
     ["40% increased Projectile Damage with Spears while there are no Enemies within 3m", "Tăng 40% Projectile Damage với Spear khi không có kẻ địch trong phạm vi 3m"],
-    ["25% increased Life Recovery from Flasks used when on Low Life", "Tăng 25% hồi máu từ Flask dùng khi đang Low máu"],
+    ["25% increased Life Recovery from Flasks used when on Low Life", "Tăng 25% hồi máu từ Flask dùng khi đang ít máu"],
     ["Quarterstaff Skills that consume Power Charges count as consuming an additional Power Charge", "Quarterstaff Skill Consume Power Charge được tính như Consume thêm một Power Charge"],
     ["Life Leeched from Empowered Attacks is Instant", "Máu hút từ Empowered Attack là tức thời"],
     ["Attacks used by Totems have 4% increased Attack Speed", "Attack do Totem dùng được tăng 4% Attack Speed"],
@@ -592,9 +627,9 @@ test("translates final passive tree scan leftovers", () => {
   const cases = [
     ["60% of your current Energy Shield is added to your Armour for", "Thêm 60% Energy Shield hiện tại của bạn vào Armour của bạn trong"],
     ["Hits that Heavy Stun Enemies have Culling Strike", "Đòn đánh gây Heavy Stun lên kẻ địch có Culling Strike"],
-    ["Damage with Hits is Lucky against Heavy Stunned Enemies", "Damage bằng đòn đánh là Lucky lên kẻ địch bị Heavy Stunned"],
-    ["Evasion Rating from Equipped Helmet, Gloves and Boots is doubled", "Chỉ số né tránh từ Helmet, Gloves và Boots đang trang bị được nhân đôi"],
-    ["Evasion Rating from Equipped Body Armour is halved", "Chỉ số né tránh từ Body Armour đang trang bị bị giảm một nửa"]
+    ["Damage with Hits is Lucky against Heavy Stunned Enemies", "Damage bằng đòn đánh được Lucky lên kẻ địch bị Heavy Stunned"],
+    ["Evasion Rating from Equipped Helmet, Gloves and Boots is doubled", "tỉ lệ né tránh từ Helmet, Gloves và Boots đang trang bị được nhân đôi"],
+    ["Evasion Rating from Equipped Body Armour is halved", "tỉ lệ né tránh từ Body Armour đang trang bị bị giảm một nửa"]
   ];
 
   for (const [source, expected] of cases) {
@@ -606,11 +641,11 @@ test("translates final passive tree scan leftovers", () => {
 
 test("translates melee damage and leech terms naturally", () => {
   const cases = [
-    ["20% increased Melee Damage", "Tăng 20% sát thương đánh gần"],
-    ["75% increased Melee Damage with Spears while Surrounded", "Tăng 75% sát thương đánh gần với Spear khi bị bao quanh"],
-    ["40% increased Melee Damage with Hits at Close Range", "Tăng 40% sát thương đánh gần với đòn đánh ở Close Range"],
-    ["20% increased Melee Damage against Heavy Stunned enemies", "Tăng 20% sát thương đánh gần lên kẻ địch bị Heavy Stunned"],
-    ["15% increased Stun Buildup with Melee Damage", "Tăng 15% Stun Buildup với sát thương đánh gần"],
+    ["20% increased Melee Damage", "Tăng 20% Sát thương đánh gần"],
+    ["75% increased Melee Damage with Spears while Surrounded", "Tăng 75% Sát thương đánh gần với Spear khi bị bao vây"],
+    ["40% increased Melee Damage with Hits at Close Range", "Tăng 40% Sát thương đánh gần với đòn đánh ở Close Range"],
+    ["20% increased Melee Damage against Heavy Stunned enemies", "Tăng 20% Sát thương đánh gần lên kẻ địch bị Heavy Stunned"],
+    ["15% increased Stun Buildup with Melee Damage", "Tăng 15% Stun Buildup với Sát thương đánh gần"],
     ["11% increased amount of Life Leeched", "Tăng 11% lượng máu hút được"],
     ["11% increased amount of Mana Leeched", "Tăng 11% lượng mana hút được"],
     ["11% increased amount of Life and Mana Leeched", "Tăng 11% lượng máu và mana hút được"],
@@ -622,7 +657,7 @@ test("translates melee damage and leech terms naturally", () => {
     ["Life Leech is Instant", "Hút máu là tức thời"],
     ["Leech Life 25% faster", "Hút máu nhanh hơn 25%"],
     ["Leech Life 5% slower", "Hút máu chậm hơn 5%"],
-    ["40% increased Armour and Evasion Rating while Leeching", "Tăng 40% Armour và chỉ số né tránh khi đang hút"],
+    ["40% increased Armour and Evasion Rating while Leeching", "Tăng 40% Armour và tỉ lệ né tránh khi đang hút"],
     ["Unaffected by Chill while Leeching Mana", "Không bị Chill ảnh hưởng khi đang hút mana"],
     ["20% of Leech is Instant", "20% lượng hút là tức thời"]
   ];
@@ -636,10 +671,10 @@ test("translates melee damage and leech terms naturally", () => {
 
 test("translates defensive rating and hazard noun phrases in Vietnamese order", () => {
   const cases = [
-    ["20% increased Evasion Rating", "Tăng 20% chỉ số né tránh"],
+    ["20% increased Evasion Rating", "Tăng 20% tỉ lệ né tránh"],
     ["Prevent +3% of Damage from Deflected Hits", "Ngăn +3% Damage từ đòn đánh bị Deflect"],
     ["Prevent +3% of Damage from Deflected Hit", "Ngăn +3% Damage từ đòn đánh bị Deflect"],
-    ["30% increased Hazard Duration", "Tăng 30% thời lượng Hazard"],
+    ["30% increased Hazard Duration", "Tăng 30% thời gian Hazard"],
     ["40% increased Hazard Damage", "Tăng 40% Damage của Hazard"]
   ];
 
@@ -654,7 +689,7 @@ test("translates minion reduced stats and command skill damage naturally", () =>
   const cases = [
     ["Minions have 15% reduced Attack Speed", "Minion bị giảm 15% Attack Speed"],
     ["Minions have 15% reduced Cast Speed", "Minion bị giảm 15% Cast Speed"],
-    ["Minions have 10% reduced Life Recovery rate", "Minion bị giảm 10% hồi máu rate"],
+    ["Minions have 10% reduced Life Recovery rate", "Minion bị giảm 10% tốc độ hồi máu"],
     ["Minions deal 100% increased Damage with Command Skills", "Minion được tăng 100% Damage bằng Command Skill"],
     ["Minions deal 10% increased Damage with Command Skills for each different type of Persistent Minion in your Presence", "Minion được tăng 10% Damage bằng Command Skill cho mỗi loại Persistent Minion khác nhau trong Presence của bạn"]
   ];
@@ -675,7 +710,7 @@ test("translates chance, pierce, bleed, and ignite terms consistently", () => {
     ["20% chance for Bleeding to be Aggravated when Inflicted against Enemies on Jagged Ground", "20% cơ hội để Bleeding (chảy máu) được Aggravated khi gây lên kẻ địch trên Jagged Ground"],
     ["50% chance to Knock Back Bleeding Enemies with Hits", "50% cơ hội Knock Back kẻ địch đang bị Bleeding (chảy máu) bằng đòn đánh"],
     ["30% increased Armour while Bleeding", "Tăng 30% Armour khi đang bị Bleeding (chảy máu)"],
-    ["Immune to Bleeding if Equipped Helmet has higher Armour than Evasion Rating", "Miễn nhiễm Bleeding (chảy máu) nếu Helmet đang trang bị có Armour cao hơn chỉ số né tránh"],
+    ["Immune to Bleeding if Equipped Helmet has higher Armour than Evasion Rating", "Miễn nhiễm Bleeding (chảy máu) nếu Helmet đang trang bị có Armour cao hơn tỉ lệ né tránh"],
     ["Immune to Chaos Damage and Bleeding", "Miễn nhiễm Chaos Damage và Bleeding (chảy máu)"],
     ["Elemental Damage also Contributes to Bleeding Magnitude", "Elemental Damage cũng góp vào Magnitude của Bleeding (chảy máu)"],
     ["Bleeding you inflict is Aggravated", "Bleeding (chảy máu) bạn gây được Aggravated"],
@@ -701,16 +736,16 @@ test("translates passive tree node stat ownership without reversed Vietnamese wo
     ["Projectiles deal 25% increased Damage with Hits against Enemies within 2m", "Projectile gây Damage bằng đòn đánh tăng 25% lên kẻ địch trong phạm vi 2m"],
     ["25% increased Damage with Hits against Rare and Unique Enemies", "Tăng 25% Damage bằng đòn đánh lên kẻ địch Rare và Unique"],
     ["Projectiles deal 75% increased Damage against Heavy Stunned Enemies", "Projectile được tăng 75% Damage lên kẻ địch bị Heavy Stunned"],
-    ["Immune to Poison if Equipped Helmet has higher Evasion Rating than Armour", "Miễn nhiễm Poison nếu Helmet đang trang bị có chỉ số né tránh cao hơn Armour"],
-    ["+1 to Spirit for every 20 Evasion Rating on Equipped Body Armour", "+1 Spirit mỗi 20 chỉ số né tránh trên Body Armour đang trang bị"],
+    ["Immune to Poison if Equipped Helmet has higher Evasion Rating than Armour", "Miễn nhiễm Poison nếu Helmet đang trang bị có tỉ lệ né tránh cao hơn Armour"],
+    ["+1 to Spirit for every 20 Evasion Rating on Equipped Body Armour", "+1 Spirit mỗi 20 tỉ lệ né tránh trên Body Armour đang trang bị"],
     ["Every 10 Rage also grants 12% increased Physical Damage", "Mỗi 10 Rage cũng tăng 12% Physical Damage"],
-    ["Body Armour grants 60% increased Glory generation", "Body Armour tăng 60% Glory generation"],
-    ["Your Curses have 20% increased Magnitudes if 50% of Curse Duration expired", "Curse của bạn được tăng 20% Magnitude nếu 50% thời lượng Curse đã hết"],
-    ["20% chance for Damage with Hits to be Lucky", "20% cơ hội để Damage bằng đòn đánh là Lucky"],
-    ["Skills Supported by Unleash have 10% increased Seal gain frequency", "Skill được Support bởi Unleash được tăng 10% tần suất nhận Seal"],
+    ["Body Armour grants 60% increased Glory generation", "Body Armour tăng 60% lượng Glory tạo ra"],
+    ["Your Curses have 20% increased Magnitudes if 50% of Curse Duration expired", "Curse của bạn được tăng 20% Magnitude nếu 50% thời gian Curse đã hết"],
+    ["20% chance for Damage with Hits to be Lucky", "20% cơ hội để Damage bằng đòn đánh được Lucky"],
+    ["Skills Supported by Unleash have 10% increased Seal gain frequency", "Skill được Support bởi Unleash được tăng 10% tần suất nhận Phong ấn"],
     ["Attack Skills deal 10% increased Damage while holding a Shield", "Attack Skill được tăng 10% Damage khi đang cầm Shield"],
-    ["40% increased Evasion Rating while moving", "Tăng 40% chỉ số né tránh khi di chuyển"],
-    ["50% of Evasion Rating also grants Elemental Damage reduction", "50% chỉ số né tránh cũng cấp Elemental Damage Reduction"],
+    ["40% increased Evasion Rating while moving", "Tăng 40% tỉ lệ né tránh khi di chuyển"],
+    ["50% of Evasion Rating also grants Elemental Damage reduction", "50% tỉ lệ né tránh cũng cấp Elemental Damage Reduction"],
     ["Remnants have 50% increased effect", "Remnant được tăng 50% Effect"],
     ["Charms applied to you have 10% increased Effect", "Charm áp dụng lên bạn được tăng 10% Effect"],
     ["Debuffs you inflict have 4% increased Slow Magnitude", "Debuff bạn gây được tăng 4% Slow Magnitude"]
@@ -732,18 +767,18 @@ test("translates passive tree equipment and enemy-target leftovers naturally", (
     ["Gain a stack of Jade every second", "Nhận 1 stack Jade mỗi giây"],
     ["3% increased Attack Speed while holding a Shield", "Tăng 3% Attack Speed khi đang cầm Shield"],
     ["40% increased Stun Buildup against enemies within 2 metres", "Tăng 40% Stun Buildup lên kẻ địch trong phạm vi 2 mét"],
-    ["a One-Handed Martial Weapon equipped in your Main Hand", "vũ khí cận chiến 1 tay đang trang bị ở Main Hand của bạn"],
-    ["6% increased Attack Speed with One Handed Melee Weapons", "Tăng 6% Attack Speed với vũ khí cận chiến 1 tay"],
+    ["a One-Handed Martial Weapon equipped in your Main Hand", "vũ khí đánh gần một tay đang trang bị ở tay chính của bạn"],
+    ["6% increased Attack Speed with One Handed Melee Weapons", "Tăng 6% Attack Speed với vũ khí đánh gần một tay"],
     ["+1 to Maximum Energy Shield per 8 Item Armour on Equipped Helmet", "+1 Energy Shield tối đa mỗi 8 Item Armour trên Helmet đang trang bị"],
-    ["4% increased Attack Damage per 75 Item Armour and Evasion Rating on Equipped Shield", "Tăng 4% Attack Damage mỗi 75 Item Armour và chỉ số né tránh trên Shield đang trang bị"],
+    ["4% increased Attack Damage per 75 Item Armour and Evasion Rating on Equipped Shield", "Tăng 4% Attack Damage mỗi 75 Item Armour và tỉ lệ né tránh trên Shield đang trang bị"],
     ["Gain additional Stun Threshold equal to 30% of Item Armour on Equipped Armour Items", "Nhận thêm Stun Threshold bằng 30% Item Armour trên Armour Item đang trang bị"],
     ["Gain additional maximum Life equal to 100% of the Item Energy Shield on Equipped Body Armour", "Nhận thêm máu tối đa bằng 100% Item Energy Shield trên Body Armour đang trang bị"],
     ["+3 to Armour per 1 Item Energy Shield on Equipped Boots", "+3 Armour mỗi 1 Item Energy Shield trên Boots đang trang bị"],
     ["Enemies Frozen by you take 20% increased Cold Damage", "Kẻ địch bị bạn Freeze chịu thêm 20% Cold Damage"],
     ["Enemies you apply Incision to take 2% increased Physical Damage per Incision", "Kẻ địch bị bạn áp Incision chịu thêm 2% Physical Damage mỗi Incision"],
-    ["30% chance for Lightning Damage with Hits to be Lucky", "30% cơ hội để Lightning Damage bằng đòn đánh là Lucky"],
+    ["30% chance for Lightning Damage with Hits to be Lucky", "30% cơ hội để Lightning Damage bằng đòn đánh được Lucky"],
     ["Double Activation Delay of Curses", "Nhân đôi Activation Delay của Curse"],
-    ["+1 to Evasion Rating per 1 Item Armour on Equipped Gloves", "+1 chỉ số né tránh mỗi 1 Item Armour trên Gloves đang trang bị"],
+    ["+1 to Evasion Rating per 1 Item Armour on Equipped Gloves", "+1 tỉ lệ né tránh mỗi 1 Item Armour trên Gloves đang trang bị"],
     ["Skills gain 1 Glory every 2 seconds for each Rare or Unique monster in your Presence", "Skill nhận 1 Glory mỗi 2 giây cho mỗi monster Rare hoặc Unique trong Presence của bạn"],
     ["Your Hits cannot be Evaded by Heavy Stunned Enemies", "Đòn đánh của bạn không thể bị Evade bởi kẻ địch bị Heavy Stunned"],
     ["Enemies in Jagged Ground you create take 10% increased Damage", "Kẻ địch trong Jagged Ground bạn tạo chịu thêm 10% Damage"],
@@ -774,8 +809,8 @@ test("translates passive tree generic fallback stat grammar", () => {
     ["+20 to Armour", "+20 Armour"],
     ["+30 to Accuracy Rating", "+30 Accuracy Rating"],
     ["+1% to Maximum Cold Resistance", "+1% Maximum Cold Resistance"],
-    ["3% of Damage taken Recouped as Life", "Recoup 3% Damage nhận vào dưới dạng máu"],
-    ["15% of Elemental Damage taken Recouped as Energy Shield", "Recoup 15% Elemental Damage nhận vào dưới dạng Energy Shield"],
+    ["3% of Damage taken Recouped as Life", "Hồi lại 3% Damage nhận vào dưới dạng máu"],
+    ["15% of Elemental Damage taken Recouped as Energy Shield", "Hồi lại 15% Elemental Damage nhận vào dưới dạng Energy Shield"],
     ["Gain additional Stun Threshold equal to 12% of maximum Energy Shield", "Nhận thêm Stun Threshold bằng 12% Energy Shield tối đa"],
     ["Gain 50% of maximum Energy Shield as additional Freeze Threshold", "Nhận thêm Freeze Threshold bằng 50% Energy Shield tối đa"],
     ["Parry has 25% increased Stun Buildup", "Parry được tăng 25% Stun Buildup"],
@@ -798,7 +833,7 @@ test("translates passive tree full-scan fallback grammar families", () => {
   const cases = [
     ["Damage Penetrates 15% Cold Resistance", "Damage xuyên 15% Cold Resistance"],
     ["Damage Penetrates 12% Elemental Resistances", "Damage xuyên 12% Elemental Resistance"],
-    ["Damage Penetrates 10% Lightning Resistance if on Low Mana", "Damage xuyên 10% Lightning Resistance nếu đang Low Mana"],
+    ["Damage Penetrates 10% Lightning Resistance if on Low Mana", "Damage xuyên 10% Lightning Resistance nếu đang ít Mana"],
     ["All Flames of Chayula that you manifest are Purple", "Toàn bộ Flame of Chayula bạn tạo ra là màu tím"],
     ["Walk the Paths Not Taken", "Bước trên những con đường chưa chọn"],
     ["Gain 1 Rage on Melee Hit", "Nhận 1 Rage khi đòn đánh cận chiến"],
@@ -810,7 +845,7 @@ test("translates passive tree full-scan fallback grammar families", () => {
     ["Hits Break 50% increased Armour on targets with Ailments", "Đòn đánh Break Armour nhiều hơn 50% lên mục tiêu có Ailment"],
     ["25% chance on Shocking Enemies to created Shocked Ground", "25% cơ hội tạo Shocked Ground khi Shock kẻ địch"],
     ["Gain additional Critical Hit Chance equal to 25% of excess chance to Hit with Attacks", "Nhận thêm cơ hội Critical Hit bằng 25% cơ hội Hit dư bằng Attack"],
-    ["15% of Damage taken from Deflected Hits Recouped as Life", "Recoup 15% Damage nhận từ đòn đánh bị Deflect dưới dạng máu"],
+    ["15% of Damage taken from Deflected Hits Recouped as Life", "Hồi lại 15% Damage nhận từ đòn đánh bị Deflect dưới dạng máu"],
     ["Body Armour grants 25% of Physical Damage from Hits taken as Fire Damage", "Body Armour cấp 25% Physical Damage từ đòn đánh nhận vào dưới dạng Fire Damage"],
     ["10% chance for Flasks you use to not consume Charges", "10% cơ hội Flask bạn dùng không Consume Charge"],
     ["Lose Elemental Archon on reaching maximum Infernal Flame", "Mất Elemental Archon khi Infernal Flame đạt tối đa"],
@@ -823,11 +858,11 @@ test("translates passive tree full-scan fallback grammar families", () => {
     ["Trigger Elemental Storm on Critical Hit with Spells", "Trigger Elemental Storm khi Critical Hit bằng Spell"],
     ["Maximum Mana is replaced by twice as much Maximum Infernal Flame", "Mana tối đa được thay bằng gấp đôi Infernal Flame tối đa"],
     ["Take maximum Life and Energy Shield as Fire Damage when Infernal Flame reaches maximum", "Nhận máu tối đa và Energy Shield dưới dạng Fire Damage khi Infernal Flame đạt tối đa"],
-    ["16% increased Mana Regeneration Rate while not on Low Mana", "Tăng 16% Mana Regeneration Rate khi không ở Low Mana"],
+    ["16% increased Mana Regeneration Rate while not on Low Mana", "Tăng 16% hồi Mana khi không ở ít Mana"],
     ["12% increased Spell Damage if you have Shapeshifted to Human form Recently", "Tăng 12% Spell Damage nếu gần đây bạn đã biến hình sang Human form"],
     ["20% increased Stun buildup if you have Shapeshifted to an Animal form Recently", "Tăng 20% Stun buildup nếu gần đây bạn đã biến hình sang Animal form"],
     ["+40 to Spirit for each of your empty Charm slots", "+40 Spirit cho mỗi ô Charm trống của bạn"],
-    ["to 25% of your main hand Weapon's Damage", "bằng 25% Damage của Weapon ở Main Hand của bạn"],
+    ["to 25% of your main hand Weapon's Damage", "bằng 25% Damage của Weapon ở tay chính của bạn"],
     ["2% increased Damage per 5 of your lowest Attribute", "Tăng 2% Damage mỗi 5 Attribute thấp nhất của bạn"],
     ["-20% to all Elemental Resistances", "-20% toàn bộ Elemental Resistance"],
     ["10% chance to gain Volatility on Kill", "10% cơ hội nhận Volatility khi Kill"],
@@ -839,8 +874,8 @@ test("translates passive tree full-scan fallback grammar families", () => {
     ["All Damage from Hits Contributes to Chill Magnitude", "Toàn bộ Damage từ đòn đánh góp vào Chill Magnitude"],
     ["Defend with 120% of Armour against Projectile Attacks", "Defend bằng 120% Armour trước Projectile Attack"],
     ["+1 to Level of all Cold Skills", "+1 Level của toàn bộ Cold Skill"],
-    ["Minions Recoup 15% of Damage taken as Life", "Minion Recoup 15% Damage nhận vào dưới dạng máu"],
-    ["15% chance to not destroy Corpses when Consuming Corpses", "15% cơ hội không phá hủy Corpse khi Consume Corpse"],
+    ["Minions Recoup 15% of Damage taken as Life", "Minion hồi lại 15% Damage nhận vào dưới dạng máu"],
+    ["15% chance to not destroy Corpses when Consuming Corpses", "15% cơ hội không phá hủy xác khi tiêu thụ xác"],
     ["Lose 5% of maximum Mana per Second", "Mất 5% Mana tối đa mỗi giây"],
     ["Cannot be Blinded while on Full Life", "Không thể bị Blinded khi đang đầy máu"],
     ["Minions gain 10% of Physical Damage as Chaos Damage", "Minion nhận 10% Physical Damage dưới dạng Chaos Damage"],
@@ -853,7 +888,7 @@ test("translates passive tree full-scan fallback grammar families", () => {
     ["25% reduced Reservation Efficiency of Minion Skills", "Giảm 25% Reservation Efficiency của Minion Skill"],
     ["200% faster start of inherent Rage loss", "Rage bắt đầu mất tự nhiên nhanh hơn 200%"],
     ["-5% to amount of Damage Prevented by Deflection", "-5% lượng Damage được ngăn bởi Deflection"],
-    ["5% increased Damage taken while on Low Life", "Chịu thêm 5% Damage khi đang Low máu"],
+    ["5% increased Damage taken while on Low Life", "Chịu thêm 5% Damage khi đang ít máu"],
     ["Lose 3% of maximum Life and Energy Shield when you use a Chaos Skill", "Mất 3% máu tối đa và Energy Shield khi bạn dùng Chaos Skill"],
     ["50% of Skill Mana costs Converted to Life Costs during any Life Flask Effect", "Chuyển 50% Mana Cost của Skill thành Cost máu trong thời gian hiệu ứng bình máu bất kỳ"],
     ["Thorns Damage has 25% chance to ignore Enemy Armour", "Thorns Damage có 25% cơ hội bỏ qua Armour của kẻ địch"],
@@ -862,14 +897,14 @@ test("translates passive tree full-scan fallback grammar families", () => {
     ["15% faster start of Energy Shield Recharge while Shapeshifted", "Energy Shield Recharge bắt đầu nhanh hơn 15% khi đang biến hình"],
     ["5% of Damage taken bypasses Energy Shield", "5% Damage nhận vào bỏ qua Energy Shield"],
     ["Successfully Parrying a Melee Hit grants 40% increased Damage to your next Ranged Attack", "Parry thành công đòn đánh cận chiến cấp 40% Damage tăng thêm cho Ranged Attack tiếp theo của bạn"],
-    ["Converts all Evasion Rating to Armour", "Chuyển toàn bộ chỉ số né tránh thành Armour"],
+    ["Converts all Evasion Rating to Armour", "Chuyển toàn bộ tỉ lệ né tránh thành Armour"],
     ["Triple Attribute requirements of Martial Weapons", "Gấp ba Attribute Requirement của Martial Weapon"],
     ["20% increased Magnitude of Impales inflicted with Spells", "Tăng 20% Magnitude của Impale gây bằng Spell"],
     ["Maximum Chance to Evade is 50%", "cơ hội Evade tối đa là 50%"],
     ["No Inherent loss of Rage", "Không mất Rage tự nhiên"],
     ["Enemies you Electrocute have 20% increased Damage taken", "Kẻ địch bạn Electrocute chịu thêm 20% Damage Taken"],
     ["60% chance for Lightning Skills to Chain an additional time", "60% cơ hội để Lightning Skill Chain thêm một lần"],
-    ["25% increased speed of Recoup Effects", "Tăng 25% tốc độ Recoup Effect"],
+    ["25% increased speed of Recoup Effects", "Tăng 25% tốc độ hiệu ứng hồi lại"],
     ["+8% to Critical Hit Chance of Herald Skills", "+8% cơ hội Critical Hit của Herald Skill"],
     ["25% chance for Trigger skills to refund half of Energy Spent", "25% cơ hội để Trigger Skill hoàn lại một nửa Energy đã tiêu"],
     ["You can have two Companions of different types", "Bạn có thể có 2 Companion khác loại"],
@@ -956,7 +991,7 @@ test("translates passive tree audited leftover grammar naturally", () => {
     ["Totems reserve 75 Spirit each", "Mỗi Totem Reserve 75 Spirit"],
     ["least 5 Red, Green and Blue Support Gems Socketed", "ít nhất 5 Red, Green và Blue Support Gem đã Socket"],
     ["Gain a Power Charge when you consume an Elemental Infusion", "Nhận Power Charge khi bạn Consume Elemental Infusion"],
-    ["20% increased Armour Break Duration", "Tăng 20% Duration của Armour Break"],
+    ["20% increased Armour Break Duration", "Tăng 20% thời gian của Armour Break"],
     ["+1 to maximum Fire Infusions", "+1 Fire Infusion tối đa"],
     ["+1 to maximum Cold Infusions", "+1 Cold Infusion tối đa"],
     ["+1 to maximum Lightning Infusions", "+1 Lightning Infusion tối đa"],
@@ -983,7 +1018,7 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["Modifiers to Fire Resistance also grant Cold and Lightning Resistance at 50% of their value", "Modifier lên Fire Resistance cũng cấp Cold và Lightning Resistance bằng 50% giá trị đó"],
     ["+1 to maximum number of Summoned Totems", "+1 số lượng Summoned Totem tối đa"],
     ["Totems die 6 seconds after their Life is reduced to 0", "Totem chết sau 6 giây kể từ khi máu của chúng giảm về 0"],
-    ["Warcries Explode Corpses dealing 25% of their Life as Physical Damage", "Warcry làm Corpse Explode, gây Physical Damage bằng 25% máu của chúng"],
+    ["Warcries Explode Corpses dealing 25% of their Life as Physical Damage", "Warcry làm xác phát nổ, gây Physical Damage bằng 25% máu của chúng"],
     ["Ignore Warcry Cooldowns", "Bỏ qua Warcry Cooldown"],
     ["Break enemy Concentration on Hit equal to 100% of Damage Dealt", "Break Concentration của kẻ địch khi đánh trúng bằng 100% Damage đã gây"],
     ["Enemies regain 10% of Concentration every second if they haven't lost Concentration in the past 5 seconds", "Kẻ địch hồi 10% Concentration mỗi giây nếu chúng chưa mất Concentration trong 5 giây trước"],
@@ -991,7 +1026,7 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["of their maximum Life as Physical Damage", "máu tối đa của chúng dưới dạng Physical Damage"],
     ["Unarmed Attacks that would use your Quarterstaff's damage gain:", "Unarmed Attack lẽ ra dùng Damage từ Quarterstaff của bạn sẽ nhận:"],
     ["Physical damage based on their Skill Level", "Physical Damage dựa trên Skill Level của chúng"],
-    ["1% more Attack Speed per 75 Item Evasion Rating on Equipped Armour Items", "1% more Attack Speed mỗi 75 chỉ số né tránh từ Item trên Armour Item đang trang bị"],
+    ["1% more Attack Speed per 75 Item Evasion Rating on Equipped Armour Items", "1% more Attack Speed mỗi 75 tỉ lệ né tránh từ Item trên Armour Item đang trang bị"],
     ["+0.1% to Critical Hit Chance per 10 Item Energy Shield on Equipped Armour Items", "+0.1% cơ hội Critical Hit mỗi 10 Item Energy Shield trên Armour Item đang trang bị"],
     ["Increases and Reductions to Armour also apply to Energy Shield", "Tăng và giảm Armour cũng áp dụng cho Energy Shield"],
     ["Recharge Rate at 40% of their value", "Recharge Rate bằng 40% giá trị của chúng"],
@@ -1006,7 +1041,7 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["Attacks gain increased Accuracy Rating equal to their Critical Hit Chance", "Attack được tăng Accuracy Rating bằng cơ hội Critical Hit của chúng"],
     ["Arrows gain Critical Hit Chance as they travel farther, up to", "Arrow nhận cơ hội Critical Hit khi bay xa hơn, tối đa"],
     ["40% increased Critical Hit Chance after 7 metres", "Tăng 40% cơ hội Critical Hit sau 7 mét"],
-    ["Recoup 5% of damage taken by your Totems as Life", "Recoup 5% Damage Totem của bạn nhận dưới dạng máu"],
+    ["Recoup 5% of damage taken by your Totems as Life", "Hồi lại 5% Damage Totem của bạn nhận dưới dạng máu"],
     ["Each Totem applies 2% increased Damage taken to Enemies in their Presence", "Mỗi Totem khiến kẻ địch trong Presence của nó chịu thêm 2% Damage Taken"],
     ["Unwithered enemies are Withered for 8 seconds when they enter your Presence", "Kẻ địch chưa bị Withered sẽ bị Withered trong 8 giây khi chúng vào Presence của bạn"],
     ["Curse zones erupt after 10% reduced delay", "Curse zone phun trào với delay giảm 10%"],
@@ -1052,9 +1087,9 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["Gain Power Charges instead of Frenzy Charges", "Nhận Power Charge thay vì Frenzy Charge"],
     ["Stun Threshold is based on 30% of your Energy Shield instead of Life", "Stun Threshold dựa trên 30% Energy Shield của bạn thay vì máu"],
     ["5% of Damage from Hits is taken from your Damageable Companion's Life before you", "5% Damage từ đòn đánh được trừ từ máu của Damageable Companion của bạn trước khi trừ vào bạn"],
-    ["Arcane Surge grants more Life Regeneration Rate instead of Mana Regeneration Rate", "Arcane Surge cấp more hồi máu Rate thay vì Mana Regeneration Rate"],
+    ["Arcane Surge grants more Life Regeneration Rate instead of Mana Regeneration Rate", "Arcane Surge cấp more hồi máu thay vì hồi Mana"],
     ["Leeching Life from your Hits causes your Companion to also Leech the same amount of Life", "Hút máu từ đòn đánh của bạn khiến Companion của bạn cũng hút cùng lượng máu đó"],
-    ["Increases and Reductions to Mana Regeneration Rate also apply to Rage Regeneration Rate", "Tăng và giảm Mana Regeneration Rate cũng áp dụng cho Rage Regeneration Rate"],
+    ["Increases and Reductions to Mana Regeneration Rate also apply to Rage Regeneration Rate", "Tăng và giảm hồi Mana cũng áp dụng cho hồi Rage"],
     ["Increases and Reductions to Projectile Speed also apply to Damage with Bows", "Tăng và giảm Projectile Speed cũng áp dụng cho Damage với Bow"],
     ["Increases and Reductions to Companion Damage also apply to you", "Tăng và giảm Companion Damage cũng áp dụng cho bạn"],
     ["Fully Broken Armour you inflict increases all Damage Taken from Hits instead", "Fully Broken Armour bạn gây sẽ làm tăng toàn bộ Damage nhận từ đòn đánh thay thế"],
@@ -1080,7 +1115,7 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["Can instead consume 25% of maximum Mana to trigger Charms with insufficient charges", "Có thể Consume 25% Mana tối đa để Trigger Charm khi không đủ Charge thay thế"],
     ["Double the number of your Poisons that targets can be affected by at the same time", "Nhân đôi số Poison của bạn có thể ảnh hưởng lên mục tiêu cùng lúc"],
     ["Can only use a Normal Body Armour", "Chỉ có thể dùng Body Armour Normal"],
-    ["Recoup Effects instead occur over 4 seconds", "Recoup Effect diễn ra trong 4 giây thay thế"],
+    ["Recoup Effects instead occur over 4 seconds", "hiệu ứng hồi lại diễn ra trong 4 giây thay thế"],
     ["Attribute Passive Skills can instead grant 5% increased Damage", "Attribute Passive Skill có thể thay vào đó cấp 5% Damage tăng thêm"],
     ["There is no Limit on the number of Banners you can place", "Không giới hạn số lượng Banner bạn có thể đặt"],
     ["Can Socket a non-Unique Basic Jewel into the Phylactery", "Có thể Socket một Basic Jewel không Unique vào Phylactery"],
@@ -1091,21 +1126,21 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["No Rage effect", "Không có Rage Effect"],
     ["Invocation Skills instead Trigger Spells every 2 seconds", "Invocation Skill Trigger Spell mỗi 2 giây thay thế"],
     ["Slam Skills you use yourself have 30% increased Aftershock Area of Effect", "Slam Skill bạn tự dùng được tăng 30% Aftershock khu vực đánh lan"],
-    ["10% increased Mana Recovery Rate during Effect of any Mana Flask", "Tăng 10% Mana Recovery Rate trong thời gian Effect của bất kỳ Mana Flask nào"],
-    ["8% increased Skill Effect Duration per Enemy you've Frozen in the last 8 seconds, up to 40%", "Tăng 8% Skill Effect Duration cho mỗi kẻ địch bạn đã Freeze trong 8 giây gần nhất, tối đa 40%"],
+    ["10% increased Mana Recovery Rate during Effect of any Mana Flask", "Tăng 10% tốc độ hồi Mana trong thời gian hiệu ứng của bất kỳ bình Mana nào"],
+    ["8% increased Skill Effect Duration per Enemy you've Frozen in the last 8 seconds, up to 40%", "Tăng 8% thời gian hiệu ứng Skill cho mỗi kẻ địch bạn đã Freeze trong 8 giây gần nhất, tối đa 40%"],
     ["12% increased Area of Effect if you have Stunned an Enemy Recently", "Tăng 12% khu vực đánh lan nếu gần đây bạn đã Stun một kẻ địch"],
     ["Final Repeat of Spells has 30% increased Area of Effect", "Final Repeat của Spell được tăng 30% khu vực đánh lan"],
     ["30% increased chance to inflict Ailments against Rare or Unique Enemies", "Tăng 30% cơ hội gây Ailment lên kẻ địch Rare hoặc Unique"],
     ["80% increased Effect of Poison you inflict on targets that are not Poisoned", "Tăng 80% Effect của Poison bạn gây lên mục tiêu chưa bị Poisoned"],
     ["Debuffs you inflict have 6% increased Slow Magnitude", "Debuff bạn gây được tăng 6% Slow Magnitude"],
     ["30% reduced Effect of Chill on you", "Giảm 30% Effect của Chill lên bạn"],
-    ["Attacks with One-Handed Weapons have 20% increased Chance to inflict Ailments", "Attack với One-Handed Weapon được tăng 20% cơ hội gây Ailment"],
-    ["20% increased duration of Ailments you inflict against Cursed Enemies", "Tăng 20% Duration của Ailment bạn gây lên kẻ địch bị Cursed"],
+    ["Attacks with One-Handed Weapons have 20% increased Chance to inflict Ailments", "Attack với vũ khí một tay được tăng 20% cơ hội gây Ailment"],
+    ["20% increased duration of Ailments you inflict against Cursed Enemies", "Tăng 20% thời gian của Ailment bạn gây lên kẻ địch bị Cursed"],
     ["35% increased Critical Hit Chance against Enemies that are affected", "Tăng 35% cơ hội Critical Hit lên kẻ địch đang"],
     ["by no Elemental Ailments", "không chịu Elemental Ailment nào"],
-    ["30% increased Stun Buildup against Enemies that are on Low Life", "Tăng 30% Stun Buildup lên kẻ địch đang Low máu"],
+    ["30% increased Stun Buildup against Enemies that are on Low Life", "Tăng 30% Stun Buildup lên kẻ địch đang ít máu"],
     ["40% increased Critical Hit Chance against Enemies that are on Full Life", "Tăng 40% cơ hội Critical Hit lên kẻ địch đang đầy máu"],
-    ["50% increased Evasion Rating when on Full Life", "Tăng 50% chỉ số né tránh khi đang đầy máu"],
+    ["50% increased Evasion Rating when on Full Life", "Tăng 50% tỉ lệ né tránh khi đang đầy máu"],
     ["25% increased Stun Threshold while on Full Life", "Tăng 25% Stun Threshold khi đang đầy máu"],
     ["30% chance to Poison on Hit against Enemies that are not Poisoned", "30% cơ hội Poison khi đánh trúng lên kẻ địch chưa bị Poisoned"],
     ["2% chance that if you would gain Power Charges, you instead gain up to", "2% cơ hội: nếu bạn sắp nhận Power Charge, thay vào đó nhận tối đa"],
@@ -1116,7 +1151,7 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["Warcries inflict 3 Critical Weakness on Enemies", "Warcry gây 3 Critical Weakness lên kẻ địch"],
     ["Defend with 150% of Armour against Hits from Enemies that are further than 6m away", "Defend bằng 150% Armour trước đòn đánh từ kẻ địch cách xa hơn 6m"],
     ["Bleeding you inflict on Pinned Enemies is Aggravated", "Bleeding (chảy máu) bạn gây lên kẻ địch bị Pinned được Aggravated"],
-    ["Damage with Hits is Lucky against Enemies that are on Low Life", "Damage bằng đòn đánh là Lucky lên kẻ địch đang Low máu"],
+    ["Damage with Hits is Lucky against Enemies that are on Low Life", "Damage bằng đòn đánh được Lucky lên kẻ địch đang ít máu"],
     ["Deflected Hits cannot inflict Maim on you", "đòn đánh bị Deflect không thể gây Maim lên bạn"],
     ["Exposure you inflict lowers Resistances by an additional 5%", "Exposure bạn gây giảm thêm 5% Resistance"],
     ["40% increased chance to inflict Elemental Ailments if you have Shapeshifted to an Animal form Recently", "Tăng 40% cơ hội gây Elemental Ailment nếu gần đây bạn đã biến hình sang Animal form"],
@@ -1134,13 +1169,13 @@ test("translates passive tree split-line edge cases without English leftovers", 
     ["Projectiles deal 25% increased Damage with Hits against Enemies further than 6m", "Projectile gây Damage bằng đòn đánh tăng 25% lên kẻ địch cách xa hơn 6m"],
     ["4% increased Area of Effect for Attacks per Enemy you've Ignited in the last 8 seconds, up to 40%", "Tăng 4% khu vực đánh lan cho Attack mỗi kẻ địch bạn đã gây bỏng trong 8 giây gần nhất, tối đa 40%"],
     ["10% increased Damage for each Hazard triggered Recently, up to 50%", "Tăng 10% Damage cho mỗi Hazard đã Trigger gần đây, tối đa 50%"],
-    ["15% increased Duration of Ailments against Enemies with Exposure", "Tăng 15% Duration của Ailment lên kẻ địch có Exposure"],
+    ["15% increased Duration of Ailments against Enemies with Exposure", "Tăng 15% thời gian của Ailment lên kẻ địch có Exposure"],
     ["1% increased Attack Speed per 400 Accuracy Rating, up to 20%", "Tăng 1% Attack Speed mỗi 400 Accuracy Rating, tối đa 20%"],
     ["Enemies you Curse cannot Recharge Energy Shield", "Kẻ địch bạn Curse không thể Recharge Energy Shield"],
-    ["50% increased Duration of Ailments on Beasts", "Tăng 50% Duration của Ailment lên Beast"],
-    ["5% increased Life and Mana Regeneration Rate for each Minion in your Presence, up to a maximum of 40%", "Tăng 5% máu và Mana Regeneration Rate cho mỗi Minion trong Presence của bạn, tối đa 40%"],
+    ["50% increased Duration of Ailments on Beasts", "Tăng 50% thời gian của Ailment lên Beast"],
+    ["5% increased Life and Mana Regeneration Rate for each Minion in your Presence, up to a maximum of 40%", "Tăng 5% hồi máu và hồi Mana cho mỗi Minion trong Presence của bạn, tối đa 40%"],
     ["Enemies you Fully Armour Break cannot Regenerate Life", "Kẻ địch bị bạn Fully Armour Break không thể Regenerate máu"],
-    ["10% reduced Duration of Ailments on You", "Giảm 10% Duration của Ailment lên bạn"],
+    ["10% reduced Duration of Ailments on You", "Giảm 10% thời gian của Ailment lên bạn"],
     ["20% reduced Magnitude of Poison you inflict", "Giảm 20% Magnitude của Poison bạn gây"],
     ["Consuming Glory grants you 3% increased Attack damage per Glory consumed for 6 seconds, up to 60%", "Consume Glory cấp cho bạn tăng 3% Attack Damage mỗi Glory đã Consume trong 6 giây, tối đa 60%"],
     ["10% increased Stun Threshold for each time you've been Hit by an Enemy Recently, up to 100%", "Tăng 10% Stun Threshold cho mỗi lần bạn bị kẻ địch đánh trúng gần đây, tối đa 100%"],
@@ -1176,6 +1211,70 @@ test("translates passive tree split-line edge cases without English leftovers", 
 
   for (const [source, expected] of cases) {
     assert.equal(translatePassiveStatLine(source), expected);
+  }
+});
+
+test("translates scanned passive tree merged markup lines without English glue", () => {
+  const cases = [
+    ["For each colour of Socketed Support Gem that is most numerous, gain: •Red: [HitDamage|Hits] against you have no [CriticalDamageBonus|Critical Damage Bonus] •Blue: Skills have 30% less cost •Green: 40% less Movement Speed Penalty from using Skills while Moving", "Với mỗi màu Support Gem đã Socket có số lượng nhiều nhất, nhận: •Red: Đòn đánh vào bạn không có Critical Damage Bonus •Blue: Skill có 30% less Cost •Green: 40% less Movement Speed Penalty khi dùng Skill trong lúc di chuyển"],
+    ["Your [Totem] [Limit] is doubled No [Charges|Charge] requirement for placing [Totem|Totems] [Totem|Totems] reserve 75 [Spirit] each", "Totem Limit của bạn được nhân đôi. Không yêu cầu Charge khi đặt Totem. Mỗi Totem Reserve 75 Spirit"],
+    ["50% more amount of [LifeLeech|Life Leeched] [LifeLeech|Leech Life] 67% less quickly Cannot Recover Life other than from [LifeLeech|Leech] [LifeLeech|Life Leech] effects are not removed when [Reservation|Unreserved] Life is Filled", "50% more lượng máu hút được. Hút máu chậm hơn 67%. Không thể hồi máu ngoài Leech. Hiệu ứng hút máu không bị xóa khi máu chưa reserve được lấp đầy"],
+    ["The next [Attack] you use within 4 seconds after [HeavyStun|Heavy Stunning] a [Rarity|Rare or Unique] Enemy is [AncestralBoostSpell|Ancestrally Boosted]", "Attack tiếp theo bạn dùng trong 4 giây sau khi Heavy Stun kẻ địch Rare hoặc Unique được Ancestrally Boosted"],
+    ["[Invoke|Invocation] Skills instead [Trigger] [Spell|Spells] every 2 seconds [Invoke|Invocation] Skills cannot gain [Energy] while [Trigger|Triggering] [Spell|Spells] [Invoke|Invoked] Spells consume 50% less [Energy]", "Invocation Skill Trigger Spell mỗi 2 giây thay thế. Invocation Skill không thể nhận Energy khi đang Trigger Spell. Invoked Spell Consume ít hơn 50% Energy"],
+    ["On [HitDamage|Hitting] an Enemy while a Life [Flask] is at full Charges, 40% of its Charges are consumed [Gain] 1% of damage as [Physical] damage for 5 seconds per Charge consumed this way", "Khi đánh trúng kẻ địch trong lúc bình máu đầy Charge, 40% Charge của nó bị Consume. Nhận 1% Damage dưới dạng Physical Damage trong 5 giây mỗi Charge đã Consume theo cách này"],
+    ["35% increased [Critical|Critical Hit Chance] against Enemies that are affected by no Elemental [Ailments]", "Tăng 35% cơ hội Critical Hit lên kẻ địch không chịu Elemental Ailment nào"]
+  ];
+
+  for (const [source, expected] of cases) {
+    const translated = translatePassiveStatLine(source);
+    assert.equal(translated, expected, source);
+    assert.doesNotMatch(translated, /\b(?:each|that are|amount of|seconds|do not|used by|is at|spent)\b/i, source);
+  }
+});
+
+test("translates requested passive terminology with consistent Vietnamese wording", () => {
+  const cases = [
+    ["20% increased Melee Damage", "Tăng 20% Sát thương đánh gần"],
+    ["6% increased Attack Speed with One Handed Melee Weapons", "Tăng 6% Attack Speed với vũ khí đánh gần một tay"],
+    ["Attacks with One-Handed Weapons have 20% increased Chance to inflict Ailments", "Attack với vũ khí một tay được tăng 20% cơ hội gây Ailment"],
+    ["10% increased [BuffMagnitude|Magnitude] of [Poison] you inflict", "Tăng 10% [BuffMagnitude|Magnitude] của [Poison] bạn gây"],
+    ["3% of Damage taken Recouped as Life", "Hồi lại 3% Damage nhận vào dưới dạng máu"],
+    ["25% increased speed of Recoup Effects", "Tăng 25% tốc độ hiệu ứng hồi lại"],
+    ["The next Attack you use within 4 seconds after Heavy Stunning a Rare or Unique Enemy is Ancestrally Boosted", "Attack tiếp theo bạn dùng trong 4 giây sau khi Heavy Stun kẻ địch Rare hoặc Unique được Ancestrally Boosted"],
+    ["20% increased Evasion Rating", "Tăng 20% tỉ lệ né tránh"],
+    ["15% increased Mana Regeneration Rate", "Tăng 15% hồi Mana"],
+    ["15% increased Life Regeneration Rate while on Low Life", "Tăng 15% hồi máu khi đang ít máu"],
+    ["Damage with Hits is Lucky against Enemies that are on Low Life", "Damage bằng đòn đánh được Lucky lên kẻ địch đang ít máu"],
+    ["20% chance for Damage with Hits to be Lucky", "20% cơ hội để Damage bằng đòn đánh được Lucky"],
+    ["Allies in your Presence gain added Attack Damage equal", "Allies trong Presence của bạn nhận Added Attack Damage bằng"],
+    ["All Damage from Hits Contributes to Shock Chance", "Toàn bộ Damage từ đòn đánh góp vào cơ hội Shock"],
+    ["Excess Life Recovery from Regeneration is applied to Energy Shield", "hồi máu dư từ Regeneration được áp dụng cho Energy Shield"],
+    ["Energy Shield does not Recharge", "Energy Shield không Recharge"],
+    ["You cannot be Electrocuted", "Bạn không thể bị Electrocuted"],
+    ["Damage Penetrates 10% Lightning Resistance if on Low Mana", "Damage xuyên 10% Lightning Resistance nếu đang ít Mana"],
+    ["15% chance to not destroy Corpses when Consuming Corpses", "15% cơ hội không phá hủy xác khi tiêu thụ xác"],
+    ["Warcries Explode Corpses dealing 25% of their Life as Physical Damage", "Warcry làm xác phát nổ, gây Physical Damage bằng 25% máu của chúng"],
+    ["Skills Supported by Unleash have 10% increased Seal gain frequency", "Skill được Support bởi Unleash được tăng 10% tần suất nhận Phong ấn"],
+    ["25% more Skill Speed while Off Hand is empty and you have a One-Handed Martial Weapon equipped in your Main Hand", "25% more Skill Speed khi tay phụ trống và bạn có vũ khí đánh gần một tay đang trang bị ở tay chính"],
+    ["75% increased Melee Damage with Spears while Surrounded", "Tăng 75% Sát thương đánh gần với Spear khi bị bao vây"],
+    ["Apply Debilitate to Enemies 3 Metres in front of you while your Shield is raised", "Gây suy yếu lên kẻ địch trong 3 mét trước mặt bạn khi Shield của bạn đang giơ lên"],
+    ["20% increased Skill Effect Duration", "Tăng 20% thời gian hiệu ứng Skill"],
+    ["50% more amount of Life Leeched", "50% more lượng máu hút được"],
+    ["15% increased Life Recovery rate", "Tăng 15% tốc độ hồi máu"],
+    ["15% increased Mana Recovery rate", "Tăng 15% tốc độ hồi Mana"],
+    ["All [DamageTypes|Damage] is taken from Mana before Life 50% less Mana Recovery Rate", "Toàn bộ Damage được trừ từ Mana trước máu. 50% less tốc độ hồi Mana"],
+    ["10% increased Mana Recovery Rate during Effect of any Mana [Flask]", "Tăng 10% tốc độ hồi Mana trong thời gian hiệu ứng của bất kỳ bình Mana nào"],
+    ["15% increased Cooldown Recovery Rate for [Grenade] Skills", "Tăng 15% tốc độ hồi Cooldown cho [Grenade] Skill"],
+    ["Increases and Reductions to Mana Regeneration Rate also apply to [Rage] Regeneration Rate", "Tăng và giảm hồi Mana cũng áp dụng cho hồi Rage"],
+    ["20% increased Life Recovery Rate while your [Companion] is in your [Presence]", "Tăng 20% tốc độ hồi máu khi Companion của bạn ở trong Presence của bạn"],
+    ["You can wield [Two-Handed] [Axe|Axes], [Mace|Maces] and [Sword|Swords] in one hand Triple [Attributes|Attribute] requirements of [MartialWeapon|Martial Weapons] Inherent Life granted by [Strength] is halved", "Bạn có thể cầm Two-Handed Axe, Mace và Sword bằng một tay. Yêu cầu Attribute của Martial Weapon tăng gấp ba. Máu nhận từ Strength bị giảm một nửa"],
+    ["Can [Attack] as though using a [Quarterstaff] while both of your hand slots are empty [UnarmedAttack|Unarmed Attacks] that would use an [Equipped] [Quarterstaff]'s damage have: • Base [UnarmedDamage|Unarmed] [Physical] damage replaced with damage based on their Skill Level • 1% more [Attack] Speed per 75 [ItemEvasion|Item Evasion] on [EquipArmour|Equipped Armour Items] • +0.1% to [Critical|Critical Hit Chance] per 10 [ItemEnergyShield|Item Energy Shield] on [EquipArmour|Equipped Armour Items]", "Có thể Attack như đang dùng Quarterstaff khi cả hai ô tay của bạn đang trống. Unarmed Attack vốn dùng Damage của Quarterstaff đang trang bị có: • Base Physical Damage Unarmed được thay bằng Damage dựa trên Skill Level • 1% more Attack Speed mỗi 75 Item Evasion trên Armour Item đang trang bị • +0.1% cơ hội Critical Hit mỗi 10 Item Energy Shield trên Armour Item đang trang bị"]
+  ];
+
+  for (const [source, expected] of cases) {
+    const translated = translatePassiveStatLine(source);
+    assert.equal(translated, expected, source);
+    assert.doesNotMatch(translated, /Melee Damage|One[- ]Handed|Recoup|Evasion Rating|Regeneration Rate|Recovery rate|hồi máu rate|Low máu|Low Mana|to be Lucky|is applied to|does not|cannot|Corpse|Consume Corpse|Seal|Off Hand|Main Hand|Surrounded|Debilitate|Duration|amount of|inflict|\bin one hand\b|\bwith\b/i, source);
   }
 });
 

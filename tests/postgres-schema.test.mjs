@@ -82,3 +82,30 @@ test("database runtime uses env config and migrations without hardcoded secrets"
   assert.match(migrate, /migrations/);
   assert.doesNotMatch(`${pool}\n${migrate}\n${envExample}`, hardcodedRemoteDatabaseUrl);
 });
+
+test("game data schema supports current mods, craft targets, and item snapshots", async () => {
+  const migration = await readText("migrations/012_game_data_current_schema.sql");
+
+  for (const table of [
+    "game_data_runs",
+    "game_data_sources",
+    "game_current_entities",
+    "game_stats",
+    "game_mods",
+    "game_mod_stats",
+    "game_mod_spawn_rules",
+    "item_bases",
+    "craft_item_snapshots",
+    "craft_item_snapshot_mods"
+  ]) {
+    assert.match(migration, new RegExp(`create table if not exists ${table}\\b`, "i"), `${table} table exists`);
+  }
+
+  assert.match(migration, /raw_json jsonb not null default '\{\}'::jsonb/i);
+  assert.match(migration, /normalized_json jsonb not null default '\{\}'::jsonb/i);
+  assert.match(migration, /tags_json jsonb not null default '\[\]'::jsonb/i);
+  assert.match(migration, /where status = 'active'/i);
+  assert.match(migration, /idx_game_mod_spawn_rules_target/i);
+  assert.match(migration, /idx_craft_item_snapshots_weapon/i);
+  assert.match(migration, /using gin/i);
+});

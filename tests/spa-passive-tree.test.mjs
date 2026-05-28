@@ -43,6 +43,48 @@ test("passive tree page exposes expected product controls", async () => {
   assert.match(page, /Reset/);
 });
 
+test("React passive tree stat tooltips are eligible for dictionary term wrapping", async () => {
+  const [page, terms] = await Promise.all([
+    readRepoFile("src/spa/pages/PassiveTreePage.tsx"),
+    readRepoFile("src/spa/lib/poeTerms.ts")
+  ]);
+  const selectorStart = terms.indexOf("const EXCLUDE_SELECTOR = [");
+  const selectorEnd = terms.indexOf("].join", selectorStart);
+  const excludeSelectorBlock = selectorStart >= 0 && selectorEnd > selectorStart
+    ? terms.slice(selectorStart, selectorEnd)
+    : "";
+
+  assert.match(page, /formatPassiveStatText/);
+  assert.match(page, /className=\{`passive-tooltip/);
+  assert.match(terms, /MutationObserver/);
+  assert.match(terms, /applyTooltips\(node, index\)/);
+  assert.notEqual(excludeSelectorBlock, "");
+  assert.doesNotMatch(excludeSelectorBlock, /"\.passive-tooltip"/);
+});
+
+test("React passive tree can hold the hovered node detail while Alt is pressed", async () => {
+  const canvas = await readRepoFile("src/spa/passive/TreeCanvas.tsx");
+
+  assert.match(canvas, /heldHover/);
+  assert.match(canvas, /event\.key !== "Alt"/);
+  assert.match(canvas, /event\.type === "keydown"/);
+  assert.match(canvas, /event\.type === "keyup"/);
+  assert.match(canvas, /heldHover\.current/);
+  assert.match(canvas, /releaseHeldHover/);
+});
+
+test("React passive tree lets held node details receive term hover events", async () => {
+  const [page, canvas, styles] = await Promise.all([
+    readRepoFile("src/spa/pages/PassiveTreePage.tsx"),
+    readRepoFile("src/spa/passive/TreeCanvas.tsx"),
+    readRepoFile("src/spa/styles.css")
+  ]);
+
+  assert.match(canvas, /held:\s*boolean/);
+  assert.match(page, /hover\.held\s*\?\s*"is-held"/);
+  assert.match(styles, /\.passive-tooltip\.is-held\s*{[^}]*pointer-events:\s*auto/s);
+});
+
 test("React passive tree keeps selected ascendancy projected into the class disc", async () => {
   const [page, canvas, draw, tree, styles] = await Promise.all([
     readRepoFile("src/spa/pages/PassiveTreePage.tsx"),
@@ -57,7 +99,7 @@ test("React passive tree keeps selected ascendancy projected into the class disc
   assert.match(tree, /classDiscStrokeRadius/);
   assert.match(tree, /projectAscendancyNode/);
   assert.match(tree, /node\.ascendancyName !== ascendancyFilter/);
-  assert.match(tree, /else if \(node\.ascendancyName\)/);
+  assert.match(tree, /isAscendancyNode \|\| node\.ascendancyName/);
   assert.match(canvas, /fitCurrentView/);
   assert.match(canvas, /filteredTreeNodes\(tree, opts\.classFilter, opts\.ascendancyFilter\)/);
   assert.match(draw, /from\.ascendancyName !== to\.ascendancyName/);
@@ -83,7 +125,8 @@ test("React passive tree exposes the official 0.4 to 0.5 changes overlay", async
   assert.match(page, /changesOn/);
   assert.match(page, /runCommand\("focus"/);
   assert.match(draw, /changeById/);
-  assert.match(draw, /drawChangeGhost/);
+  assert.match(draw, /drawRemovedGhosts/);
+  assert.match(draw, /pushRing\(CHANGE_COLORS\[change\.status\]/);
   assert.match(styles, /\.passive-changes-panel/);
   assert.match(script, /buildPassiveTreeChanges/);
   assert.match(dataFile, /POE2_PASSIVE_TREE_CHANGES/);
@@ -106,7 +149,7 @@ test("React passive tree renders newly added change nodes as real nodes", async 
   assert.match(script, /iconPath:\s*passiveIconAssetPath/);
   assert.match(dataFile, /"status":"added"/);
   assert.match(dataFile, /"iconPath":"\/assets\/passive-tree\/icons\//);
-  assert.match(draw, /drawAddedChangeNode/);
-  assert.match(draw, /passiveIconForChange/);
+  assert.match(draw, /passiveIconForNode/);
+  assert.match(draw, /change\.status === "added"/);
   assert.match(draw, /change\.status === "added"/);
 });
