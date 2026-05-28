@@ -1,5 +1,4 @@
 import type { Camera } from "./camera";
-import { worldToScreen } from "./camera";
 import { CHANGE_COLORS, type PassiveTreeChangeMarker } from "./changes";
 import type { PassiveNode, PassiveTreeModel } from "./tree";
 import { filteredTreeNodes, nodeRadius } from "./tree";
@@ -45,12 +44,7 @@ function passiveIconForNode(node: PassiveNode): HTMLImageElement | null {
   return passiveIconForPath(node.iconPath);
 }
 
-function passiveIconForChange(change: PassiveTreeChangeMarker): HTMLImageElement | null {
-  return passiveIconForPath(change.iconPath);
-}
-
-function drawNodeIcon(ctx: CanvasRenderingContext2D, node: PassiveNode, x: number, y: number, radius: number, alpha: number): boolean {
-  const image = passiveIconForNode(node);
+function drawClippedIcon(ctx: CanvasRenderingContext2D, image: HTMLImageElement | null, x: number, y: number, radius: number, alpha: number): boolean {
   if (!image || radius < 3.5) return false;
 
   const iconRadius = Math.max(radius * 0.92, 4);
@@ -62,6 +56,10 @@ function drawNodeIcon(ctx: CanvasRenderingContext2D, node: PassiveNode, x: numbe
   ctx.drawImage(image, x - iconRadius, y - iconRadius, iconRadius * 2, iconRadius * 2);
   ctx.restore();
   return true;
+}
+
+function drawNodeIcon(ctx: CanvasRenderingContext2D, node: PassiveNode, x: number, y: number, radius: number, alpha: number): boolean {
+  return drawClippedIcon(ctx, passiveIconForNode(node), x, y, radius, alpha);
 }
 
 function colorWithAlpha(hex: string, alpha: number): string {
@@ -80,174 +78,243 @@ function changeRadius(change: PassiveTreeChangeMarker): number {
   return 38;
 }
 
-function drawChangeGhost(ctx: CanvasRenderingContext2D, camera: Camera, change: PassiveTreeChangeMarker): void {
-  const p = worldToScreen(camera, change.x, change.y);
-  if (p.x < -120 || p.x > camera.width + 120 || p.y < -120 || p.y > camera.height + 120) return;
+const MIN_MINOR_DOT_CSS_PX = 0.3;
+const DOT_LOD_ZOOM = 0.1;
+const NORMAL_FRAME_PAD = 4;
+const IMPORTANT_FRAME_PAD = 7;
+const NORMAL_FRAME_LINE = 3.5;
+const IMPORTANT_FRAME_LINE = 5;
+const CHANGE_RING_GAP = 14;
+const DASH_WORLD = [18, 13];
 
-  const color = CHANGE_COLORS[change.status];
-  const r = Math.max(changeRadius(change) * camera.zoom, change.type.includes("small") ? 3 : 7);
-  ctx.save();
-  ctx.globalAlpha = change.status === "removed" ? 0.52 : 0.62;
-  ctx.fillStyle = colorWithAlpha(color, 0.1);
-  ctx.strokeStyle = colorWithAlpha(color, 0.88);
-  ctx.lineWidth = change.status === "removed" ? 1.4 : 2;
-  if (change.status === "removed") ctx.setLineDash([4, 4]);
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, r + 6, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.restore();
+interface NodeVisual {
+  important: boolean;
+  fullRadius: number;
+  dotRadius: number;
+  dotColor: string;
+  minor: boolean;
 }
 
-function drawAddedChangeNode(ctx: CanvasRenderingContext2D, camera: Camera, change: PassiveTreeChangeMarker): void {
-  const p = worldToScreen(camera, change.x, change.y);
-  if (p.x < -120 || p.x > camera.width + 120 || p.y < -120 || p.y > camera.height + 120) return;
-
-  const important = change.type.includes("notable") || change.type.includes("keystone") || change.type.includes("jewel");
-  const r = Math.max(changeRadius(change) * camera.zoom * (important ? 1.12 : 1), change.type.includes("small") ? 3.2 : 7);
-  const color = CHANGE_COLORS.added;
-
-  ctx.save();
-  ctx.globalAlpha = 0.96;
-  ctx.fillStyle = "rgba(3, 18, 20, .96)";
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, r + (important ? 4 : 2.5), 0, Math.PI * 2);
-  ctx.fill();
-
-  const image = passiveIconForChange(change);
-  if (image && r >= 4) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, r * 0.92, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.drawImage(image, p.x - r, p.y - r, r * 2, r * 2);
-    ctx.restore();
-  } else {
-    const gradient = ctx.createRadialGradient(p.x - r * 0.28, p.y - r * 0.28, 0, p.x, p.y, r);
-    gradient.addColorStop(0, "rgba(110, 231, 183, .96)");
-    gradient.addColorStop(1, "rgba(21, 94, 71, .88)");
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-    ctx.fill();
-    if (r >= 9) {
-      ctx.strokeStyle = "rgba(2, 8, 14, .72)";
-      ctx.lineWidth = Math.max(1, r * 0.15);
-      ctx.beginPath();
-      ctx.moveTo(p.x - r * 0.38, p.y);
-      ctx.lineTo(p.x + r * 0.38, p.y);
-      ctx.moveTo(p.x, p.y - r * 0.38);
-      ctx.lineTo(p.x, p.y + r * 0.38);
-      ctx.stroke();
-    }
-  }
-
-  ctx.strokeStyle = colorWithAlpha(color, 0.95);
-  ctx.lineWidth = important ? 2.4 : 1.8;
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, r + 5, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.strokeStyle = colorWithAlpha(color, 0.35);
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, r + 11, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.restore();
+function nodeVisual(node: PassiveNode): NodeVisual {
+  const type = node.type.toLowerCase();
+  const baseRadius = nodeRadius(node);
+  if (type.includes("keystone")) return { important: true, fullRadius: baseRadius, dotRadius: 60, dotColor: "#e0913f", minor: false };
+  if (type.includes("notable")) return { important: true, fullRadius: baseRadius, dotRadius: 44, dotColor: "#d9c184", minor: false };
+  if (type.includes("jewel")) return { important: true, fullRadius: baseRadius, dotRadius: 38, dotColor: "#5fd6cd", minor: false };
+  if (type.includes("ascend")) return { important: false, fullRadius: baseRadius, dotRadius: 26, dotColor: "#8b86a8", minor: true };
+  return { important: false, fullRadius: baseRadius, dotRadius: 24, dotColor: "#8f8a76", minor: true };
 }
 
-export function visibleNodes(tree: PassiveTreeModel, camera: Camera, opts: RenderOptions): PassiveNode[] {
-  const pad = 160 / camera.zoom;
+function shouldUseDotLod(zoom: number): boolean {
+  return zoom <= DOT_LOD_ZOOM;
+}
+
+function frameLineWidth(worldPx: number, cssPx: (px: number) => number, minCssPx = 0.7): number {
+  return Math.max(worldPx, cssPx(minCssPx));
+}
+
+function isInsideCamera(camera: Camera, x: number, y: number, pad: number): boolean {
   const left = camera.x - camera.width / 2 / camera.zoom - pad;
   const right = camera.x + camera.width / 2 / camera.zoom + pad;
   const top = camera.y - camera.height / 2 / camera.zoom - pad;
   const bottom = camera.y + camera.height / 2 / camera.zoom + pad;
+  return x >= left && x <= right && y >= top && y <= bottom;
+}
+
+export function visibleNodes(tree: PassiveTreeModel, camera: Camera, opts: RenderOptions): PassiveNode[] {
+  const pad = 220 / camera.zoom;
 
   return filteredTreeNodes(tree, opts.classFilter, opts.ascendancyFilter).filter((node) => {
-    return node.x >= left && node.x <= right && node.y >= top && node.y <= bottom;
+    return isInsideCamera(camera, node.x, node.y, pad);
   });
 }
 
+function drawRemovedGhosts(ctx: CanvasRenderingContext2D, camera: Camera, changes: PassiveTreeChangeMarker[], cssPx: (px: number) => number): void {
+  const fillPath = new Path2D();
+  const strokePath = new Path2D();
+  let hasRows = false;
+  const pad = 260 / camera.zoom;
+  for (const change of changes) {
+    if (change.status !== "removed") continue;
+    if (!isInsideCamera(camera, change.x, change.y, pad)) continue;
+    const r = changeRadius(change);
+    fillPath.moveTo(change.x + r, change.y);
+    fillPath.arc(change.x, change.y, r, 0, Math.PI * 2);
+    strokePath.moveTo(change.x + r, change.y);
+    strokePath.arc(change.x, change.y, r, 0, Math.PI * 2);
+    strokePath.moveTo(change.x - r * 0.56, change.y - r * 0.56);
+    strokePath.lineTo(change.x + r * 0.56, change.y + r * 0.56);
+    hasRows = true;
+  }
+  if (!hasRows) return;
+  ctx.save();
+  ctx.fillStyle = colorWithAlpha(CHANGE_COLORS.removed, 0.1);
+  ctx.fill(fillPath);
+  ctx.strokeStyle = colorWithAlpha(CHANGE_COLORS.removed, 0.9);
+  ctx.lineWidth = frameLineWidth(4.2, cssPx, 0.8);
+  ctx.setLineDash(DASH_WORLD);
+  ctx.stroke(strokePath);
+  ctx.restore();
+}
+
 export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera, tree: PassiveTreeModel, opts: RenderOptions): void {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = camera.dpr || 1;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, camera.width, camera.height);
   ctx.fillStyle = document.documentElement.classList.contains("dark") ? "#020611" : "#eef2f7";
   ctx.fillRect(0, 0, camera.width, camera.height);
+  const z = camera.zoom;
+  const cssPx = (px: number) => px / z;
+  ctx.setTransform(dpr * z, 0, 0, dpr * z, dpr * (camera.width / 2 - camera.x * z), dpr * (camera.height / 2 - camera.y * z));
 
   const nodes = visibleNodes(tree, camera, opts);
-  const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const visible = new Set(nodeById.keys());
+  const targetNodes = nodes;
+  const targetNodeById = new Map(targetNodes.map((node) => [node.id, node]));
+  const visible = new Set(targetNodeById.keys());
   const changeById = opts.changesOn ? new Map(opts.changeEntries.map((entry) => [entry.id, entry])) : new Map<string, PassiveTreeChangeMarker>();
+  const addEdgeSegment = (path: Path2D, edge: (typeof tree.edges)[number], from: PassiveNode, to: PassiveNode) => {
+    if (edge.arc) {
+      const projection = from.viewProjection;
+      const sourceFrom = tree.nodeById.get(edge.from);
+      const dx = sourceFrom ? from.x - sourceFrom.x : 0;
+      const dy = sourceFrom ? from.y - sourceFrom.y : 0;
+      const cx = projection ? projection.targetX + (edge.arc.cx - projection.sourceX) * projection.scale : edge.arc.cx + dx;
+      const cy = projection ? projection.targetY + (edge.arc.cy - projection.sourceY) * projection.scale : edge.arc.cy + dy;
+      const r = projection ? edge.arc.r * projection.scale : edge.arc.r;
+      path.moveTo(cx + r * Math.cos(edge.arc.a0), cy + r * Math.sin(edge.arc.a0));
+      path.arc(cx, cy, r, edge.arc.a0, edge.arc.a1, edge.arc.ccw);
+      return;
+    }
+    path.moveTo(from.x, from.y);
+    path.lineTo(to.x, to.y);
+  };
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
+  const inactiveEdges = new Path2D();
+  const activeEdges = new Path2D();
   for (const edge of tree.edges) {
     if (!visible.has(edge.from) || !visible.has(edge.to)) continue;
-    const from = nodeById.get(edge.from);
-    const to = nodeById.get(edge.to);
+    const from = targetNodeById.get(edge.from);
+    const to = targetNodeById.get(edge.to);
     if (!from || !to) continue;
     if (from.ascendancyName !== to.ascendancyName) continue;
-    const a = worldToScreen(camera, from.x, from.y);
-    const b = worldToScreen(camera, to.x, to.y);
-    if (Math.hypot(a.x - b.x, a.y - b.y) > Math.max(camera.width, camera.height) * 0.7) continue;
     const active = opts.allocatedIds.has(from.id) && opts.allocatedIds.has(to.id);
-    ctx.strokeStyle = active ? "#f1d6a0" : "rgba(148, 122, 76, .42)";
-    ctx.lineWidth = active ? 2.5 : 1;
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.lineTo(b.x, b.y);
-    ctx.stroke();
+    const path = active ? activeEdges : inactiveEdges;
+    addEdgeSegment(path, edge, from, to);
   }
+  ctx.strokeStyle = "rgba(148, 122, 76, .42)";
+  ctx.lineWidth = cssPx(1.15);
+  ctx.stroke(inactiveEdges);
+  ctx.strokeStyle = "#f1d6a0";
+  ctx.lineWidth = cssPx(2.5);
+  ctx.stroke(activeEdges);
 
   if (opts.changesOn) {
-    for (const change of opts.changeEntries) {
-      if (nodeById.has(change.id)) continue;
-      if (change.status === "added") drawAddedChangeNode(ctx, camera, change);
-      else drawChangeGhost(ctx, camera, change);
-    }
+    drawRemovedGhosts(ctx, camera, opts.changeEntries, cssPx);
   }
 
-  for (const node of nodes) {
-    const p = worldToScreen(camera, node.x, node.y);
-    const baseRadius = Math.max(nodeRadius(node) * camera.zoom, node.type.includes("small") ? 2.2 : 4);
+  const dotBuckets = new Map<string, { color: string; alpha: number; path: Path2D }>();
+  const ringBuckets = new Map<string, { color: string; path: Path2D; dashed: boolean }>();
+  let hoverRing: { x: number; y: number; r: number } | null = null;
+  const pushRing = (color: string, x: number, y: number, r: number, dashed = false) => {
+    const key = `${color}:${dashed ? "dash" : "solid"}`;
+    let bucket = ringBuckets.get(key);
+    if (!bucket) {
+      bucket = { color, dashed, path: new Path2D() };
+      ringBuckets.set(key, bucket);
+    }
+    bucket.path.moveTo(x + r, y);
+    bucket.path.arc(x, y, r, 0, Math.PI * 2);
+  };
+  const flushDots = () => {
+    for (const bucket of dotBuckets.values()) {
+      ctx.globalAlpha = bucket.alpha;
+      ctx.fillStyle = bucket.color;
+      ctx.fill(bucket.path);
+    }
+    ctx.globalAlpha = 1;
+    dotBuckets.clear();
+  };
+
+  for (const node of targetNodes) {
     const isAllocated = opts.allocatedIds.has(node.id);
     const isSearch = opts.searchIds.has(node.id);
     const isHover = opts.hoverId === node.id;
     const change = opts.changesOn ? changeById.get(node.id) : undefined;
-    const important = node.type.includes("notable") || node.type.includes("keystone") || node.type.includes("jewel");
-    const r = important ? baseRadius * 1.18 : baseRadius;
+    const visual = nodeVisual(node);
+    const r = visual.fullRadius;
+    const framePad = visual.important ? IMPORTANT_FRAME_PAD : NORMAL_FRAME_PAD;
+    const alpha = node.ascendancyName && opts.ascendancyFilter && node.ascendancyName !== opts.ascendancyFilter ? 0.18 : 1;
+    const canUseDot = shouldUseDotLod(z) && !isAllocated && !isSearch && !isHover && !change;
 
-    ctx.fillStyle = isAllocated ? "#f1d6a0" : important ? "#c8a35a" : "#687284";
-    ctx.globalAlpha = node.ascendancyName && opts.ascendancyFilter && node.ascendancyName !== opts.ascendancyFilter ? 0.18 : 1;
+    if (canUseDot) {
+      const dotRadius = visual.dotRadius;
+      if (visual.minor && dotRadius * z * 2 < MIN_MINOR_DOT_CSS_PX) continue;
+      const color = visual.dotColor;
+      const key = `${color}:${alpha}`;
+      let bucket = dotBuckets.get(key);
+      if (!bucket) {
+        bucket = { color, alpha, path: new Path2D() };
+        dotBuckets.set(key, bucket);
+      }
+      bucket.path.moveTo(node.x + dotRadius, node.y);
+      bucket.path.arc(node.x, node.y, dotRadius, 0, Math.PI * 2);
+      continue;
+    }
 
-    ctx.fillStyle = important ? "rgba(4, 8, 18, .92)" : "rgba(15, 23, 42, .84)";
+    flushDots();
+
+    ctx.fillStyle = isAllocated ? "#f1d6a0" : visual.important ? "#c8a35a" : "#687284";
+    ctx.globalAlpha = alpha;
+
+    ctx.fillStyle = visual.important ? "rgba(4, 8, 18, .92)" : "rgba(15, 23, 42, .84)";
     ctx.beginPath();
-    ctx.arc(p.x, p.y, r + (important ? 2 : 1.4), 0, Math.PI * 2);
+    ctx.arc(node.x, node.y, r + framePad, 0, Math.PI * 2);
     ctx.fill();
 
-    const iconDrawn = drawNodeIcon(ctx, node, p.x, p.y, r, isAllocated || important ? 1 : 0.76);
+    const iconDrawn = drawNodeIcon(ctx, node, node.x, node.y, r, isAllocated || visual.important ? 1 : 0.76);
     if (!iconDrawn) {
-      ctx.fillStyle = isAllocated ? "#f1d6a0" : important ? "#c8a35a" : "#687284";
+      ctx.fillStyle = isAllocated ? "#f1d6a0" : visual.important ? "#c8a35a" : "#687284";
       ctx.beginPath();
-      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    ctx.strokeStyle = isHover ? "#ffffff" : isSearch ? "#5eead4" : isAllocated ? "#f8d76a" : important ? "rgba(241, 214, 160, .62)" : "rgba(148, 163, 184, .38)";
-    ctx.lineWidth = isHover ? 2.6 : isSearch || isAllocated ? 2 : 1;
+    ctx.strokeStyle = visual.important ? "rgba(241, 214, 160, .62)" : "rgba(148, 163, 184, .38)";
+    ctx.lineWidth = frameLineWidth(visual.important ? IMPORTANT_FRAME_LINE : NORMAL_FRAME_LINE, cssPx, 0.65);
     ctx.beginPath();
-    ctx.arc(p.x, p.y, r + (isSearch || isHover || isAllocated ? 5 : 1.5), 0, Math.PI * 2);
+    ctx.arc(node.x, node.y, r + framePad, 0, Math.PI * 2);
     ctx.stroke();
 
-    if (change) {
-      ctx.strokeStyle = CHANGE_COLORS[change.status];
-      ctx.lineWidth = isHover ? 3 : 2.2;
-      if (change.status === "removed") ctx.setLineDash([5, 4]);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, r + 8, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.setLineDash([]);
+    if (isSearch) pushRing("#5eead4", node.x, node.y, r + CHANGE_RING_GAP);
+    if (isAllocated) pushRing("#f8d76a", node.x, node.y, r + CHANGE_RING_GAP);
+    if (isHover) hoverRing = { x: node.x, y: node.y, r: r + CHANGE_RING_GAP };
+
+    if (change && change.status !== "removed") {
+      pushRing(CHANGE_COLORS[change.status], node.x, node.y, r + CHANGE_RING_GAP * (change.status === "moved" ? 1.25 : 1), change.status === "added");
     }
     ctx.globalAlpha = 1;
+  }
+  flushDots();
+
+  for (const bucket of ringBuckets.values()) {
+    ctx.save();
+    ctx.strokeStyle = bucket.color;
+    if (bucket.dashed) ctx.setLineDash(DASH_WORLD);
+    ctx.lineWidth = frameLineWidth(12, cssPx, 1);
+    ctx.globalAlpha = 0.16;
+    ctx.stroke(bucket.path);
+    ctx.lineWidth = frameLineWidth(4.6, cssPx, 0.8);
+    ctx.globalAlpha = 0.95;
+    ctx.stroke(bucket.path);
+    ctx.restore();
+  }
+  if (hoverRing) {
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = frameLineWidth(6.5, cssPx, 1.1);
+    ctx.beginPath();
+    ctx.arc(hoverRing.x, hoverRing.y, hoverRing.r, 0, Math.PI * 2);
+    ctx.stroke();
   }
 }

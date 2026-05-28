@@ -20,7 +20,6 @@
     weapon: { vi: "Weapon", en: "Weapons" },
     beginner: { vi: "Beginner guide", en: "Beginner guide" },
     skillgems: { vi: "Skill gems", en: "Skill gems" },
-    ggpkskills: { vi: "GGPK skills", en: "GGPK skills" },
     passivetree: { vi: "Passive tree", en: "Passive tree" },
     leveling: { vi: "Leveling", en: "Leveling" }
   };
@@ -64,7 +63,6 @@
     weapon: { title: "Weapon", href: "/weapon", icon: "swords", navParent: "newbie" },
     beginner: { title: "Beginner guide", href: "/beginner-guide", icon: "menu_book", navParent: "newbie" },
     skillgems: { title: "Skill gems", href: "/skill-gems", icon: "auto_awesome_motion", navParent: "lookup" },
-    ggpkskills: { title: "GGPK skills", href: "/ggpk-skills", icon: "database", navParent: "lookup" },
     passivetree: { title: "Passive tree", href: "/passive-tree", icon: "account_tree", navOrder: 65 },
     leveling: { title: "Leveling", href: "/leveling", icon: "checklist", navOrder: 70 }
   };

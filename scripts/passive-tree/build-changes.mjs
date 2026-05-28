@@ -11,6 +11,7 @@ const DEFAULT_OUT = resolve(repoRoot, "public/data/passive-tree-changes.js");
 
 const STATUS_ORDER = { added: 0, stats: 1, renamed: 2, removed: 3 };
 const KIND_ORDER = { keystone: 0, notable: 1, ascendancy_notable: 2, ascendancy: 3, jewel: 4, mastery: 5, small: 6 };
+const HIDDEN_PASSIVE_CLASSES = new Set(["Marauder"]);
 
 export function buildPassiveTreeChanges(prevRaw, nextRaw, options = {}) {
   const prevNodes = new Map(Object.entries(prevRaw?.nodes ?? {}).map(([key, node]) => [String(key), node]));
@@ -66,7 +67,7 @@ export function buildPassiveTreeChanges(prevRaw, nextRaw, options = {}) {
 
 function addEntry(status, id, prev, next, raw, ascLookup, byId, counts) {
   const source = next ?? prev;
-  if (!source || byId.has(id)) return;
+  if (!source || byId.has(id) || !isMeaningful(source)) return;
   const asc = ascLookup.get(String(source.ascendancyId ?? "")) ?? null;
   byId.set(id, {
     id,
@@ -99,6 +100,7 @@ function overrideDiffs(prevRaw, nextRaw, prevAsc, nextAsc, byId) {
       if (byId.has(id)) continue;
       const prev = prevMap.get(id);
       const next = nextMap.get(id);
+      if (!isMeaningful(prev) && !isMeaningful(next)) continue;
       const statsChanged = !sameStats(rawStats(prev), rawStats(next));
       const nameChanged = nodeName(prev) !== nodeName(next) && isReal(nodeName(prev)) && isReal(nodeName(next));
       if (!statsChanged && !nameChanged) continue;
@@ -159,7 +161,10 @@ function ascendancyLookup(raw) {
 
 function classNameForStart(raw, node) {
   const indexes = Array.isArray(node?.classStartIndex) ? node.classStartIndex : [];
-  const first = indexes.find((value) => Number.isInteger(Number(value)));
+  const first = indexes.find((value) => {
+    if (!Number.isInteger(Number(value))) return false;
+    return !HIDDEN_PASSIVE_CLASSES.has(String(raw?.classes?.[Number(value)]?.name ?? ""));
+  });
   return first == null ? "" : String(raw?.classes?.[Number(first)]?.name ?? "");
 }
 
@@ -207,7 +212,10 @@ function isReal(name) {
 }
 
 function isMeaningful(node) {
-  return isReal(nodeName(node)) || rawStats(node).length > 0;
+  if (!node) return false;
+  const stats = rawStats(node);
+  if (node?.isMastery && !stats.length) return false;
+  return isReal(nodeName(node)) || stats.length > 0 || Boolean(String(node?.icon ?? "").trim());
 }
 
 function finite(value) {

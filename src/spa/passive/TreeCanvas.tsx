@@ -18,6 +18,7 @@ interface Props {
   allocatedIds: Set<string>;
   changeEntries: PassiveTreeChangeMarker[];
   changesOn: boolean;
+  allocationEnabled: boolean;
   classFilter: string;
   ascendancyFilter: string;
   command: CanvasCommand | null;
@@ -25,13 +26,19 @@ interface Props {
   onToggle: (node: PassiveNode) => void;
 }
 
-function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesOn, classFilter, ascendancyFilter, command, onHover, onToggle }: Props) {
+function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesOn, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraRef = useRef<Camera>(createCamera());
   const dragging = useRef(false);
   const moved = useRef(false);
   const last = useRef({ x: 0, y: 0 });
+  const down = useRef({ x: 0, y: 0 });
+  const pointers = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchDist = useRef(0);
+  const tapInspectId = useRef("");
   const hoverId = useRef("");
+  const altDown = useRef(false);
+  const lastPointer = useRef<{ x: number; y: number } | null>(null);
   const commandNonce = useRef(-1);
   const commandRef = useRef<CanvasCommand | null>(command);
 
@@ -55,8 +62,17 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
     if (!ctx) return;
     const camera = cameraRef.current;
     let raf = 0;
-    let dirty = true;
     let viewKey = "";
+    const fullDpr = () => Math.min(window.devicePixelRatio || 1, 2);
+    const targetDpr = () => camera.zoom < 0.095 ? Math.min(fullDpr(), 1) : fullDpr();
+
+    const applyCanvasSize = () => {
+      const dpr = camera.dpr || 1;
+      canvas.width = Math.floor(camera.width * dpr);
+      canvas.height = Math.floor(camera.height * dpr);
+      canvas.style.width = `${camera.width}px`;
+      canvas.style.height = `${camera.height}px`;
+    };
 
     const fitCurrentView = (padding = 72) => {
       const opts = renderOptsRef.current;
@@ -64,26 +80,13 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
       fitCameraToBounds(camera, boundsForNodes(rows, tree.bounds), padding);
     };
 
-    const resize = () => {
-      const rect = canvas.parentElement?.getBoundingClientRect();
-      camera.width = Math.max(Math.floor(rect?.width ?? window.innerWidth), 1);
-      camera.height = Math.max(Math.floor(rect?.height ?? window.innerHeight), 1);
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(camera.width * dpr);
-      canvas.height = Math.floor(camera.height * dpr);
-      canvas.style.width = `${camera.width}px`;
-      canvas.style.height = `${camera.height}px`;
-      fitCurrentView();
-      dirty = true;
-    };
-
-    const draw = () => {
+    const renderFrame = () => {
+      raf = 0;
       const opts = renderOptsRef.current;
-      const nextViewKey = `${opts.classFilter}|${opts.ascendancyFilter}`;
+      const nextViewKey = `${opts.classFilter}|${opts.ascendancyFilter}|${opts.changesOn ? "base" : "target"}`;
       if (nextViewKey !== viewKey) {
         viewKey = nextViewKey;
         fitCurrentView(88);
-        dirty = true;
       }
       const nextCommand = commandRef.current;
       if (nextCommand && nextCommand.nonce !== commandNonce.current) {
@@ -95,61 +98,177 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
         } else {
           fitCurrentView(nextCommand.type === "reset" ? 96 : 64);
         }
-        dirty = true;
       }
-      if (dirty) {
-        dirty = false;
-        renderPassiveTree(ctx, camera, tree, { ...opts, hoverId: hoverId.current });
+      const nextDpr = targetDpr();
+      if (Math.abs(nextDpr - camera.dpr) > 0.01) {
+        camera.dpr = nextDpr;
+        applyCanvasSize();
       }
-      raf = requestAnimationFrame(draw);
+      renderPassiveTree(ctx, camera, tree, { ...opts, hoverId: hoverId.current });
+    };
+
+    const scheduleDraw = () => {
+      if (!raf) raf = requestAnimationFrame(renderFrame);
+    };
+
+    const resize = () => {
+      const rect = canvas.parentElement?.getBoundingClientRect();
+      camera.width = Math.max(Math.floor(rect?.width ?? window.innerWidth), 1);
+      camera.height = Math.max(Math.floor(rect?.height ?? window.innerHeight), 1);
+      camera.dpr = targetDpr();
+      applyCanvasSize();
+      fitCurrentView();
+      scheduleDraw();
     };
 
     resize();
     window.addEventListener("resize", resize);
-    raf = requestAnimationFrame(draw);
+    scheduleDraw();
 
     const markDirty = () => {
-      dirty = true;
+      scheduleDraw();
+    };
+    const onWheelNative = (event: WheelEvent) => {
+      event.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const factor = Math.pow(1.0015, -event.deltaY * (event.ctrlKey ? 2.2 : 1));
+      zoomCameraAt(camera, factor, event.clientX - rect.left, event.clientY - rect.top);
+      scheduleDraw();
+    };
+    const onKeyZoom = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey)) return;
+      const cx = camera.width / 2;
+      const cy = camera.height / 2;
+      if (event.key === "+" || event.key === "=") {
+        event.preventDefault();
+        zoomCameraAt(camera, 1.3, cx, cy);
+        scheduleDraw();
+      } else if (event.key === "-" || event.key === "_") {
+        event.preventDefault();
+        zoomCameraAt(camera, 1 / 1.3, cx, cy);
+        scheduleDraw();
+      } else if (event.key === "0") {
+        event.preventDefault();
+        fitCurrentView(88);
+        scheduleDraw();
+      }
     };
     canvas.addEventListener("poe-passive-dirty", markDirty);
+    canvas.addEventListener("wheel", onWheelNative, { passive: false });
     window.addEventListener("poe-passive-icons-loaded", markDirty);
+    window.addEventListener("keydown", onKeyZoom, { passive: false });
 
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
       canvas.removeEventListener("poe-passive-dirty", markDirty);
+      canvas.removeEventListener("wheel", onWheelNative);
       window.removeEventListener("poe-passive-icons-loaded", markDirty);
+      window.removeEventListener("keydown", onKeyZoom);
     };
   }, [tree]);
 
   const dirty = () => canvasRef.current?.dispatchEvent(new Event("poe-passive-dirty"));
 
-  const pointerNode = (clientX: number, clientY: number) => {
+  const pointerNode = (clientX: number, clientY: number, pointerType = "mouse") => {
     const rect = canvasRef.current?.getBoundingClientRect();
     const camera = cameraRef.current;
     const p = screenToWorld(camera, clientX - (rect?.left ?? 0), clientY - (rect?.top ?? 0));
     const opts = renderOptsRef.current;
-    return hitTestNode(filteredTreeNodes(tree, opts.classFilter, opts.ascendancyFilter), p.x, p.y, 85 / camera.zoom);
+    const rows = filteredTreeNodes(tree, opts.classFilter, opts.ascendancyFilter);
+    const hitPaddingCss = pointerType === "touch" ? 14 : 5;
+    return hitTestNode(rows, p.x, p.y, hitPaddingCss / camera.zoom);
   };
 
+  const inspectAtPointer = (clientX: number, clientY: number) => {
+    const node = pointerNode(clientX, clientY);
+    const id = node?.id ?? "";
+    if (id !== hoverId.current) hoverId.current = id;
+    onHover(node, clientX, clientY);
+    dirty();
+    return node;
+  };
+
+  useEffect(() => {
+    const onAltKey = (event: KeyboardEvent) => {
+      if (event.key !== "Alt") return;
+      altDown.current = event.type === "keydown";
+      const pointer = lastPointer.current;
+      if (pointer && event.type === "keydown") {
+        inspectAtPointer(pointer.x, pointer.y);
+      }
+    };
+    const onBlur = () => {
+      altDown.current = false;
+      onHover(null, 0, 0);
+      dirty();
+    };
+    window.addEventListener("keydown", onAltKey);
+    window.addEventListener("keyup", onAltKey);
+    window.addEventListener("blur", onBlur);
+    return () => {
+      window.removeEventListener("keydown", onAltKey);
+      window.removeEventListener("keyup", onAltKey);
+      window.removeEventListener("blur", onBlur);
+    };
+  }, []);
+
   const onPointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
-    dragging.current = true;
-    moved.current = false;
-    last.current = { x: event.clientX, y: event.clientY };
-    event.currentTarget.setPointerCapture(event.pointerId);
+    lastPointer.current = { x: event.clientX, y: event.clientY };
+    altDown.current = event.altKey;
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Pointer capture can fail if the browser already cancelled the pointer.
+    }
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.current.size === 1) {
+      dragging.current = true;
+      moved.current = false;
+      last.current = { x: event.clientX, y: event.clientY };
+      down.current = { x: event.clientX, y: event.clientY };
+    } else if (pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      pinchDist.current = Math.hypot(a.x - b.x, a.y - b.y);
+    }
   };
 
   const onPointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
-    if (dragging.current) {
-      const dx = event.clientX - last.current.x;
-      const dy = event.clientY - last.current.y;
-      if (Math.abs(dx) + Math.abs(dy) > 3) moved.current = true;
-      panCamera(cameraRef.current, dx, dy);
-      last.current = { x: event.clientX, y: event.clientY };
+    lastPointer.current = { x: event.clientX, y: event.clientY };
+    altDown.current = event.altKey;
+    const previous = pointers.current.get(event.pointerId);
+    if (previous) pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      const distance = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinchDist.current > 0) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        zoomCameraAt(cameraRef.current, distance / pinchDist.current, (a.x + b.x) / 2 - rect.left, (a.y + b.y) / 2 - rect.top);
+      }
+      pinchDist.current = distance;
+      moved.current = true;
       dirty();
       return;
     }
-    const node = pointerNode(event.clientX, event.clientY);
+
+    if (dragging.current) {
+      if (!previous) return;
+      if (!moved.current) {
+        const distance = Math.hypot(event.clientX - down.current.x, event.clientY - down.current.y);
+        if (distance > (event.pointerType === "touch" ? 10 : 3)) moved.current = true;
+      }
+      if (!moved.current) return;
+      panCamera(cameraRef.current, event.clientX - previous.x, event.clientY - previous.y);
+      last.current = { x: event.clientX, y: event.clientY };
+      hoverId.current = "";
+      tapInspectId.current = "";
+      onHover(null, 0, 0);
+      dirty();
+      return;
+    }
+    if (event.pointerType !== "mouse") return;
+    const node = pointerNode(event.clientX, event.clientY, event.pointerType);
     const id = node?.id ?? "";
     if (id !== hoverId.current) {
       hoverId.current = id;
@@ -159,20 +278,34 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
   };
 
   const onPointerUp = (event: React.PointerEvent<HTMLCanvasElement>) => {
-    dragging.current = false;
-    event.currentTarget.releasePointerCapture(event.pointerId);
-    if (!moved.current) {
-      const node = pointerNode(event.clientX, event.clientY);
-      if (node) onToggle(node);
+    pointers.current.delete(event.pointerId);
+    if (pointers.current.size < 2) pinchDist.current = 0;
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // Already released or cancelled.
     }
-    moved.current = false;
-    dirty();
-  };
-
-  const onWheel = (event: React.WheelEvent<HTMLCanvasElement>) => {
-    event.preventDefault();
-    const rect = event.currentTarget.getBoundingClientRect();
-    zoomCameraAt(cameraRef.current, Math.pow(1.0015, -event.deltaY), event.clientX - rect.left, event.clientY - rect.top);
+    if (pointers.current.size === 0 && dragging.current && !moved.current) {
+      const node = pointerNode(event.clientX, event.clientY, event.pointerType);
+      if (event.pointerType === "mouse") {
+        if (node && allocationEnabled) onToggle(node);
+      } else if (!node) {
+        tapInspectId.current = "";
+        hoverId.current = "";
+        onHover(null, 0, 0);
+      } else if (tapInspectId.current === node.id && allocationEnabled) {
+        onToggle(node);
+        tapInspectId.current = "";
+      } else {
+        tapInspectId.current = node.id;
+        hoverId.current = node.id;
+        onHover(node, event.clientX, event.clientY);
+      }
+    }
+    if (pointers.current.size === 0) {
+      dragging.current = false;
+      moved.current = false;
+    }
     dirty();
   };
 
@@ -184,7 +317,6 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
-      onWheel={onWheel}
       role="img"
       aria-label="Passive tree canvas"
     />

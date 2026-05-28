@@ -13,8 +13,6 @@ export type RouteKey =
   | "skillgemDetail"
   | "currency"
   | "currencyDetail"
-  | "ggpkSkills"
-  | "ggpkData"
   | "passiveTree"
   | "leveling";
 
@@ -152,26 +150,6 @@ export const routes: AppRoute[] = [
     aliases: ["/currency_detail", "/currency_detail.html"]
   },
   {
-    key: "ggpkSkills",
-    path: "/ggpk-skills",
-    title: "GGPK skills",
-    shortTitle: "GGPK skills",
-    description: "Tra cứu kỹ năng trích xuất từ dữ liệu GGPK Path of Exile 2.",
-    icon: "database",
-    navParent: "lookup",
-    aliases: ["/ggpk_skills", "/ggpk_skills.html"]
-  },
-  {
-    key: "ggpkData",
-    path: "/ggpk-data",
-    title: "GGPK data",
-    shortTitle: "GGPK data",
-    description: "Tra cứu entity, asset và quan hệ dữ liệu game từ GGPK.",
-    icon: "dataset",
-    navParent: "lookup",
-    aliases: ["/ggpk-lookup", "/ggpk_lookup", "/ggpk_lookup.html"]
-  },
-  {
     key: "passiveTree",
     path: "/passive-tree",
     title: "Passive Tree POE2 tiếng Việt",
@@ -278,20 +256,6 @@ const routeCopy: Partial<Record<RouteKey, Partial<Record<Locale, Partial<RouteTe
       title: "Currency Details",
       shortTitle: "Currency detail",
       description: "Details for a Path of Exile 2 currency item."
-    }
-  },
-  ggpkSkills: {
-    en: {
-      title: "GGPK Skills",
-      shortTitle: "GGPK skills",
-      description: "Search extracted Path of Exile 2 skills from GGPK data."
-    }
-  },
-  ggpkData: {
-    en: {
-      title: "GGPK Data",
-      shortTitle: "GGPK data",
-      description: "Search extracted Path of Exile 2 entities, assets, and data relationships."
     }
   },
   passiveTree: {

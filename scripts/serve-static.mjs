@@ -40,11 +40,6 @@ const cleanRouteFiles = new Map([
   ["/weapon", "/index.html"],
   ["/skill-gems", "/index.html"],
   ["/skill_gems", "/index.html"],
-  ["/ggpk-skills", "/index.html"],
-  ["/ggpk_skills", "/index.html"],
-  ["/ggpk-data", "/index.html"],
-  ["/ggpk-lookup", "/index.html"],
-  ["/ggpk_lookup", "/index.html"],
   ["/skill-gem", "/index.html"],
   ["/skill_gem_detail", "/index.html"],
   ["/currency", "/index.html"],
@@ -54,6 +49,20 @@ const cleanRouteFiles = new Map([
   ["/passive_tree", "/index.html"],
   ["/leveling", "/index.html"]
 ]);
+
+const goneRoutes = new Set([
+  "/data/ggpk-lookup-data.js",
+  "/data/ggpk-skills-data.js",
+  "/ggpk-data",
+  "/ggpk-lookup",
+  "/ggpk_lookup",
+  "/ggpk_lookup.html",
+  "/ggpk-skills",
+  "/ggpk_skills",
+  "/ggpk_skills.html"
+]);
+
+const normalizedRequestPath = (urlPath = "/") => decodeURIComponent(urlPath.split("?")[0] || "/").replace(/\/+$/, "") || "/";
 
 const safePath = (urlPath = "/") => {
   const requested = decodeURIComponent(urlPath.split("?")[0] || "/");
@@ -65,6 +74,15 @@ const safePath = (urlPath = "/") => {
 };
 
 const server = http.createServer(async (request, response) => {
+  if (goneRoutes.has(normalizedRequestPath(request.url))) {
+    response.writeHead(410, {
+      "cache-control": "no-cache, no-store, must-revalidate",
+      "content-type": "text/plain; charset=utf-8"
+    });
+    response.end("Gone");
+    return;
+  }
+
   const resolved = safePath(request.url);
   if (!resolved) {
     response.writeHead(400, { "content-type": "text/plain; charset=utf-8" });

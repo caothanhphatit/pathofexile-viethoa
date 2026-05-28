@@ -9,6 +9,7 @@ import {
   type AppRoute
 } from "./lib/routes";
 import { normalizeLocale, type Locale, uiText } from "./lib/locale";
+import { usePoeTermTooltips } from "./lib/poeTerms";
 import { updateSeo } from "./lib/seo";
 import { HomePage } from "./pages/HomePage";
 import { LookupPage } from "./pages/LookupPage";
@@ -17,8 +18,6 @@ import {
   CurrencyDetailPage,
   CurrencyPage,
   DictionaryPage,
-  GgpkDataPage,
-  GgpkSkillsPage,
   ItemsPage,
   SkillGemDetailPage,
   SkillGemsPage
@@ -43,6 +42,8 @@ export function App() {
   const activeNav = activeNavKey(route);
   const isPassive = route.key === "passiveTree";
   const currentRouteText = routeText(route, locale);
+
+  usePoeTermTooltips(locale, route.key);
 
   useEffect(() => {
     updateSeo(route, locale);
@@ -139,10 +140,6 @@ function renderRoute(route: AppRoute, locale: Locale) {
       return <CurrencyPage locale={locale} />;
     case "currencyDetail":
       return <CurrencyDetailPage locale={locale} />;
-    case "ggpkSkills":
-      return <GgpkSkillsPage locale={locale} />;
-    case "ggpkData":
-      return <GgpkDataPage locale={locale} />;
     case "passiveTree":
       return <PassiveTreePage locale={locale} />;
     case "leveling":

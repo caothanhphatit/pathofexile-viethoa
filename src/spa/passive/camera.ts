@@ -4,6 +4,7 @@ export interface Camera {
   zoom: number;
   width: number;
   height: number;
+  dpr: number;
 }
 
 export interface Bounds {
@@ -13,7 +14,7 @@ export interface Bounds {
   maxY: number;
 }
 
-export const createCamera = (): Camera => ({ x: 0, y: 0, zoom: 0.035, width: 1, height: 1 });
+export const createCamera = (): Camera => ({ x: 0, y: 0, zoom: 0.035, width: 1, height: 1, dpr: 1 });
 
 export function screenToWorld(camera: Camera, sx: number, sy: number) {
   return {

@@ -6,6 +6,17 @@ const normalizeText = (value = "") => String(value)
   .trim();
 
 const roundCoord = (value) => Number(Number(value || 0).toFixed(4));
+const finiteNumber = (value) => Number.isFinite(Number(value));
+const hiddenPassiveClasses = new Set(["Marauder"]);
+const isVisiblePassiveClass = (name = "") => !hiddenPassiveClasses.has(normalizeText(name));
+const passiveRawStats = (node = {}) => (node.stats || []).map(normalizeText).filter(Boolean);
+const isPassiveMasteryNode = (node = {}) => Boolean(node.isMastery || /mastery/i.test(node.name || ""));
+
+const shouldDropPassiveTreeNode = (node = {}) => {
+  const stats = passiveRawStats(node);
+  if (isPassiveMasteryNode(node) && !stats.length) return true;
+  return !normalizeText(node.name) && !stats.length && !normalizeText(node.icon);
+};
 
 export const passiveSourceHash = (value) =>
   crypto.createHash("sha256").update(typeof value === "string" ? value : JSON.stringify(value)).digest("hex");
@@ -77,21 +88,48 @@ const passiveType = (node = {}, jewelSlots = new Set()) => {
   if (node.isJewelSocket || jewelSlots.has(id)) return "jewel";
   if (node.isOnlyImage) return "only_image";
   if (node.isMastery || /mastery/i.test(node.name || "")) return "mastery";
-  if (node.ascendancyName) return node.isNotable ? "ascendancy_notable" : "ascendancy";
+  if (node.ascendancyName || node.ascendancyId) return node.isAscendancyStart ? "ascendancy_start" : node.isNotable ? "ascendancy_notable" : "ascendancy";
   if (node.isNotable) return "notable";
   return "small";
 };
 
-const buildStartNodeLookups = (nodes = {}) => {
+const buildAscendancyLookup = (classes = []) => {
+  const byId = new Map();
+  const byName = new Map();
+  for (const row of classes || []) {
+    for (const ascendancy of row.ascendancies || []) {
+      const meta = {
+        className: normalizeText(row.name),
+        ascendancyName: normalizeText(ascendancy.name || ascendancy.id || ""),
+        ascendancyId: normalizeId(ascendancy.id || ascendancy.internalId || ascendancy.name)
+      };
+      if (meta.ascendancyId) byId.set(meta.ascendancyId, meta);
+      if (meta.ascendancyName) byName.set(meta.ascendancyName, meta);
+    }
+  }
+  return { byId, byName };
+};
+
+const buildStartNodeLookups = (classes = [], nodes = {}) => {
   const classStarts = new Map();
   const ascendancyStarts = new Map();
+  const { byId: ascendancyById } = buildAscendancyLookup(classes);
   for (const rawNode of Object.values(nodes || {})) {
     const id = normalizeId(rawNode.skill ?? rawNode.id);
     for (const className of rawNode.classesStart || []) {
-      classStarts.set(normalizeText(className), id);
+      const normalized = normalizeText(className);
+      if (isVisiblePassiveClass(normalized)) classStarts.set(normalized, id);
+    }
+    for (const classIndex of rawNode.classStartIndex || []) {
+      const className = normalizeText(classes?.[Number(classIndex)]?.name);
+      if (className && isVisiblePassiveClass(className)) classStarts.set(className, id);
     }
     if (rawNode.isAscendancyStart && rawNode.ascendancyName) {
       ascendancyStarts.set(normalizeText(rawNode.ascendancyName), id);
+    }
+    if (rawNode.isAscendancyStart && rawNode.ascendancyId) {
+      const asc = ascendancyById.get(normalizeId(rawNode.ascendancyId));
+      if (asc?.ascendancyName) ascendancyStarts.set(asc.ascendancyName, id);
     }
     if (rawNode.isSwitchable && rawNode.options && typeof rawNode.options === "object") {
       for (const ascendancyName of Object.keys(rawNode.options)) {
@@ -103,25 +141,25 @@ const buildStartNodeLookups = (nodes = {}) => {
 };
 
 const buildClassRows = (classes = [], nodes = {}) => {
-  const { classStarts, ascendancyStarts } = buildStartNodeLookups(nodes);
-  return classes.map((row) => ({
-  id: String(row.integerId ?? row.name),
-  name: row.name || "",
-  base_str: Number(row.base_str || 0),
-  base_dex: Number(row.base_dex || 0),
-  base_int: Number(row.base_int || 0),
-  start_node_id: classStarts.get(normalizeText(row.name)) || "",
-  ...(row.background ? { background: normalizeRenderMetadata(row.background) } : {}),
-  ascendancies: (row.ascendancies || []).map((asc) => ({
-    id: asc.id || asc.internalId || asc.name,
-    internal_id: asc.internalId || "",
-    name: asc.name || asc.id || "",
-    start_node_id: ascendancyStarts.get(normalizeText(asc.name || asc.id || "")) || "",
-    ...(asc.background ? { background: normalizeRenderMetadata(asc.background) } : {}),
-    ...(asc.replace ? { replace: normalizeRenderMetadata(asc.replace) } : {}),
-    ...(asc.replaceBy ? { replace_by: normalizeRenderMetadata(asc.replaceBy) } : {})
-  }))
-}));
+  const { classStarts, ascendancyStarts } = buildStartNodeLookups(classes, nodes);
+  return classes.filter((row) => isVisiblePassiveClass(row.name)).map((row) => ({
+    id: String(row.integerId ?? row.name),
+    name: row.name || "",
+    base_str: Number(row.base_str || 0),
+    base_dex: Number(row.base_dex || 0),
+    base_int: Number(row.base_int || 0),
+    start_node_id: classStarts.get(normalizeText(row.name)) || "",
+    ...(row.background ? { background: normalizeRenderMetadata(row.background) } : {}),
+    ascendancies: (row.ascendancies || []).map((asc) => ({
+      id: asc.id || asc.internalId || asc.name,
+      internal_id: asc.internalId || "",
+      name: asc.name || asc.id || "",
+      start_node_id: ascendancyStarts.get(normalizeText(asc.name || asc.id || "")) || "",
+      ...(asc.background ? { background: normalizeRenderMetadata(asc.background) } : {}),
+      ...(asc.replace ? { replace: normalizeRenderMetadata(asc.replace) } : {}),
+      ...(asc.replaceBy ? { replace_by: normalizeRenderMetadata(asc.replaceBy) } : {})
+    }))
+  }));
 };
 
 const buildGroupRows = (groups = {}, nodeIds = null) => Object.entries(groups)
@@ -159,6 +197,7 @@ const shouldExportPassiveTreeNode = (rawNode = {}, rawTree = {}, nodeGroupLookup
   if (rawNode.isProxy || group.isProxy) return false;
   if (rawNode.expansionJewel?.parent) return false;
   if (rawNode.isOnlyImage) return false;
+  if (shouldDropPassiveTreeNode(rawNode)) return false;
   return true;
 };
 
@@ -190,6 +229,7 @@ const passiveTreeSize = (rawTree = {}, scaleImage = passiveTreeScaleImage(rawTre
 };
 
 const nodeCoordinates = (node, group, constants = {}, scaleImage = 1) => {
+  const hasExplicitCoords = finiteNumber(node.x) && finiteNumber(node.y);
   const orbit = Number(node.orbit || 0);
   const orbitIndex = Number(node.orbitIndex || 0);
   const radius = Number(constants.orbitRadii?.[orbit] || 0) * scaleImage;
@@ -200,6 +240,13 @@ const nodeCoordinates = (node, group, constants = {}, scaleImage = 1) => {
     : skillsPerOrbit > 0
       ? (Math.PI * 2 * orbitIndex) / skillsPerOrbit
       : 0;
+  if (hasExplicitCoords) {
+    return {
+      x: roundCoord(node.x),
+      y: roundCoord(node.y),
+      arc: roundCoord(Number(node.arc ?? angle))
+    };
+  }
   return {
     x: roundCoord((Number(group?.x || 0) * scaleImage) + Math.sin(angle) * radius),
     y: roundCoord((Number(group?.y || 0) * scaleImage) - Math.cos(angle) * radius),
@@ -207,19 +254,29 @@ const nodeCoordinates = (node, group, constants = {}, scaleImage = 1) => {
   };
 };
 
-const normalizeNode = (rawNode, rawTree, treeVersion, nodeGroupLookup = new Map()) => {
+const normalizeNode = (rawNode, rawTree, treeVersion, nodeGroupLookup = new Map(), ascendancyById = new Map()) => {
   const id = normalizeId(rawNode.skill ?? rawNode.id);
   const groupId = nodeGroupLookup.get(id) || normalizeId(rawNode.group);
   const group = rawTree.groups?.[groupId] || rawTree.groups?.[rawNode.group] || {};
   const coords = nodeCoordinates(rawNode, group, rawTree.constants || {}, passiveTreeScaleImage(rawTree));
   const jewelSlots = new Set((rawTree.jewelSlots || []).map(normalizeId));
-  const stats = (rawNode.stats || []).map(normalizeText).filter(Boolean);
+  const stats = passiveRawStats(rawNode);
   const statsVi = stats.map(translatePassiveStatLine);
-  const classesStart = (rawNode.classesStart || []).map(normalizeText).filter(Boolean);
-  const connections = (rawNode.connections || []).map((conn) => ({
-    id: normalizeId(conn.id),
-    orbit: Number(conn.orbit || 0)
-  })).filter((conn) => conn.id);
+  const classesStart = [
+    ...(rawNode.classesStart || []).map(normalizeText),
+    ...(rawNode.classStartIndex || []).map((classIndex) => normalizeText(rawTree.classes?.[Number(classIndex)]?.name))
+  ].filter((name) => name && isVisiblePassiveClass(name));
+  const asc = ascendancyById.get(normalizeId(rawNode.ascendancyId)) || null;
+  const connections = [
+    ...(rawNode.connections || []).map((conn) => ({
+      id: normalizeId(conn.id),
+      orbit: Number(conn.orbit || 0)
+    })),
+    ...(rawNode.out || []).map((targetId) => ({
+      id: normalizeId(targetId),
+      orbit: 0
+    }))
+  ].filter((conn) => conn.id);
   const node = {
     id,
     tree_version: treeVersion,
@@ -235,7 +292,7 @@ const normalizeNode = (rawNode, rawTree, treeVersion, nodeGroupLookup = new Map(
     icon_path: passiveIconAssetPath(rawNode.icon),
     classes_start: classesStart,
     is_class_start: classesStart.length > 0,
-    ascendancy_name: rawNode.ascendancyName || "",
+    ascendancy_name: rawNode.ascendancyName || asc?.ascendancyName || "",
     is_ascendancy_start: Boolean(rawNode.isAscendancyStart),
     is_mastery: Boolean(rawNode.isMastery),
     stats,
@@ -288,6 +345,39 @@ const buildEdgeRows = (nodes = [], { renderOnly = false } = {}) => {
   return [...edges.values()].sort((a, b) => Number(a.from) - Number(b.from) || Number(a.to) - Number(b.to));
 };
 
+const normalizeEdgeRow = (edge = {}, nodesById = new Map()) => {
+  const from = normalizeId(edge.from ?? edge.fromKey);
+  const to = normalizeId(edge.to ?? edge.toKey);
+  if (!from || !to || from === to || !nodesById.has(from) || !nodesById.has(to)) return null;
+  const row = {
+    from,
+    to,
+    orbit: Number(edge.orbit || 0)
+  };
+  if (finiteNumber(edge.orbitX)) row.orbit_x = roundCoord(edge.orbitX);
+  if (finiteNumber(edge.orbitY)) row.orbit_y = roundCoord(edge.orbitY);
+  return row;
+};
+
+const edgeKey = (edge) => {
+  const [from, to] = [edge.from, edge.to].sort((a, b) => Number(a) - Number(b));
+  return `${from}:${to}`;
+};
+
+const buildRawEdgeRows = (rawTree = {}, nodes = [], { renderOnly = false } = {}) => {
+  if (!Array.isArray(rawTree.edges) || !rawTree.edges.length) return null;
+  const nodesById = new Map(nodes.map((node) => [node.id, node]));
+  const edges = new Map();
+  for (const rawEdge of rawTree.edges) {
+    const edge = normalizeEdgeRow(rawEdge, nodesById);
+    if (!edge) continue;
+    if (renderOnly && !shouldRenderPassiveTreeEdge(nodesById.get(edge.from), nodesById.get(edge.to))) continue;
+    const key = edgeKey(edge);
+    if (!edges.has(key)) edges.set(key, edge);
+  }
+  return [...edges.values()].sort((a, b) => Number(a.from) - Number(b.from) || Number(a.to) - Number(b.to));
+};
+
 export const normalizePassiveTree = (rawTree = {}, {
   treeVersion = rawTree.version || rawTree.tree || "unknown",
   sourceUrl = "",
@@ -301,11 +391,12 @@ export const normalizePassiveTree = (rawTree = {}, {
   const classes = buildClassRows(rawTree.classes || [], rawTree.nodes || {});
   const groups = buildGroupRows(rawTree.groups || {}, sourceNodeIds);
   const constants = buildTreeConstants(rawTree.constants || {});
+  const { byId: ascendancyById } = buildAscendancyLookup(rawTree.classes || []);
   const nodes = sourceNodes
-    .map((node) => normalizeNode(node, rawTree, treeVersion, nodeGroupLookup))
+    .map((node) => normalizeNode(node, rawTree, treeVersion, nodeGroupLookup, ascendancyById))
     .sort((a, b) => Number(a.id) - Number(b.id));
-  const pathEdges = buildEdgeRows(nodes);
-  const edges = buildEdgeRows(nodes, { renderOnly: true });
+  const pathEdges = buildRawEdgeRows(rawTree, nodes) || buildEdgeRows(nodes);
+  const edges = buildRawEdgeRows(rawTree, nodes, { renderOnly: true }) || buildEdgeRows(nodes, { renderOnly: true });
   return {
     version: treeVersion,
     tree: rawTree.tree || "Default",

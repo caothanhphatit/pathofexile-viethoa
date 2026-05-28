@@ -81,20 +81,6 @@
       navParent: "lookup",
       aliases: ["skill-gems", "skill_gems", "skill-gem", "skill_gem_detail", "skills", "gems"]
     },
-    ggpkskills: {
-      title: "GGPK skills",
-      href: "/ggpk-skills",
-      icon: "database",
-      navParent: "lookup",
-      aliases: ["ggpk-skills", "ggpk_skills", "game-skills", "game-data-skills"]
-    },
-    ggpklookup: {
-      title: "GGPK data",
-      href: "/ggpk-data",
-      icon: "dataset",
-      navParent: "lookup",
-      aliases: ["ggpk-data", "ggpk_lookup", "ggpk-lookup", "game-data", "game-entities"]
-    },
     passivetree: {
       title: "Passive tree",
       href: "/passive-tree",
@@ -121,8 +107,6 @@
     weapon: "weapon.html",
     beginner: "beginner.html",
     skillgems: "skill_gems.html",
-    ggpkskills: "ggpk_skills.html",
-    ggpklookup: "ggpk_lookup.html",
     currency: "currency.html",
     passivetree: "passive_tree.html",
     leveling: "leveling.html"

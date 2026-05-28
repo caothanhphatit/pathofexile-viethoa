@@ -25,6 +25,10 @@ export const DEFAULT_SOURCE_URL = `https://github.com/${DEFAULT_REPO}/tree/${DEF
 
 const nowIso = () => new Date().toISOString();
 const jsonParam = (value) => JSON.stringify(value ?? null);
+const normalizeText = (value = "") => String(value)
+  .replace(/\u00a0/g, " ")
+  .replace(/[ \t\r\n]+/g, " ")
+  .trim();
 const parseMaybeJson = (value, fallback) => {
   if (value == null || value === "") return fallback;
   if (typeof value === "string") {
@@ -36,6 +40,32 @@ const parseMaybeJson = (value, fallback) => {
   }
   return value;
 };
+const hiddenPassiveClasses = new Set(["Marauder"]);
+const isVisiblePassiveClass = (name = "") => !hiddenPassiveClasses.has(normalizeText(name));
+const cleanPassiveClassStarts = (values = []) => (Array.isArray(values) ? values : [])
+  .map(normalizeText)
+  .filter((name) => name && isVisiblePassiveClass(name));
+const passiveNodeStats = (node = {}) => {
+  const stats = Array.isArray(node.stats) ? node.stats : parseMaybeJson(node.stats_json, []);
+  return (Array.isArray(stats) ? stats : []).map(normalizeText).filter(Boolean);
+};
+const isPassiveMasteryExportNode = (node = {}) =>
+  Boolean(node.is_mastery || node.isMastery || String(node.type || "").includes("mastery") || /mastery/i.test(node.name || ""));
+const shouldKeepPassiveExportNode = (node = {}) => {
+  const stats = passiveNodeStats(node);
+  if (isPassiveMasteryExportNode(node) && !stats.length) return false;
+  return Boolean(normalizeText(node.name) || stats.length || normalizeText(node.icon || node.icon_path));
+};
+const passiveExportNodeName = (node = {}, classStarts = cleanPassiveClassStarts(node.classes_start)) => {
+  const name = String(node.name ?? "");
+  return name.trim().toLowerCase() === "marauder" && classStarts.length === 1 ? classStarts[0].toUpperCase() : name;
+};
+const cleanPassiveClasses = (classes = []) => (Array.isArray(classes) ? classes : [])
+  .filter((row) => isVisiblePassiveClass(row?.name))
+  .map((row) => ({
+    ...row,
+    name: row.name || ""
+  }));
 
 const rawUrlForPath = ({ repo = DEFAULT_REPO, ref = DEFAULT_REF, treePath }) =>
   `https://raw.githubusercontent.com/${repo}/${ref}/${treePath}`;
@@ -130,7 +160,7 @@ export const readPassiveTreeSource = async ({
     ? {
       repo,
       ref,
-      version: treePath.match(/TreeData\/([^/]+)\//)?.[1] || "unknown",
+      version: treePath.match(/TreeData\/([^/]+)\//)?.[1]?.replace(/_/g, ".") || String(ref || "").replace(/^v/i, "") || "unknown",
       path: treePath,
       source_url: rawUrlForPath({ repo, ref, treePath }),
       commit_sha: ""
@@ -528,7 +558,11 @@ export const passiveTreeExportPayload = (tree, {
   sourcePath = "",
   updatedAt = generatedAt
 } = {}) => {
-  const activeTypes = [...new Set((tree.nodes || []).map((node) => node.type))].sort();
+  const nodes = (tree.nodes || []).filter(shouldKeepPassiveExportNode);
+  const nodeIds = new Set(nodes.map((node) => String(node.id)));
+  const edges = (tree.edges || []).filter((edge) => nodeIds.has(String(edge.from)) && nodeIds.has(String(edge.to)));
+  const pathEdges = (tree.path_edges || tree.edges || []).filter((edge) => nodeIds.has(String(edge.from)) && nodeIds.has(String(edge.to)));
+  const activeTypes = [...new Set(nodes.map((node) => node.type))].sort();
   return {
     generated_at: generatedAt,
     source_url: tree.source_url || DEFAULT_SOURCE_URL,
@@ -544,50 +578,122 @@ export const passiveTreeExportPayload = (tree, {
       scaleImage: Number(tree.scale_image || 1),
       treeSize: Number(tree.tree_size || 0)
     },
-    classes: tree.classes || [],
+    classes: cleanPassiveClasses(tree.classes || []),
     groups: tree.groups || [],
     types: activeTypes.map((type) => ({
       id: type,
       label: typeLabel(type),
-      count: (tree.nodes || []).filter((node) => node.type === type).length
+      count: nodes.filter((node) => node.type === type).length
     })),
-    total: (tree.nodes || []).length,
-    edges: tree.edges || [],
-    path_edges: tree.path_edges || tree.edges || [],
-    nodes: (tree.nodes || []).map((node) => ({
-      id: node.id,
-      tree_version: node.tree_version,
-      name: node.name,
-      type: node.type,
-      group: node.group,
-      orbit: node.orbit,
-      orbit_index: node.orbit_index,
-      arc: Number(node.arc || 0),
-      x: Number(node.x || 0),
-      y: Number(node.y || 0),
-      icon: node.icon,
-      icon_path: node.icon_path || "",
-      classes_start: node.classes_start || [],
-      is_class_start: Boolean(node.is_class_start),
-      ascendancy_name: node.ascendancy_name,
-      is_ascendancy_start: Boolean(node.is_ascendancy_start),
-      is_mastery: Boolean(node.is_mastery),
-      stats: node.stats || [],
-      recipe: node.recipe || [],
-      i18n: {
-        stats: (node.stats || []).map((line, index) => ({
-          en: line,
-          vi: node.stats_vi?.[index] || line
-        }))
-      },
-      source_hash: node.source_hash,
-      updated_at: updatedAt
-    }))
+    total: nodes.length,
+    edges,
+    path_edges: pathEdges,
+    nodes: nodes.map((node) => {
+      const classStarts = cleanPassiveClassStarts(node.classes_start || []);
+      const stats = passiveNodeStats(node);
+      return {
+        id: node.id,
+        tree_version: node.tree_version,
+        name: passiveExportNodeName(node, classStarts),
+        type: node.type,
+        group: node.group,
+        orbit: node.orbit,
+        orbit_index: node.orbit_index,
+        arc: Number(node.arc || 0),
+        x: Number(node.x || 0),
+        y: Number(node.y || 0),
+        icon: node.icon,
+        icon_path: node.icon_path || "",
+        classes_start: classStarts,
+        is_class_start: Boolean(classStarts.length),
+        ascendancy_name: node.ascendancy_name,
+        is_ascendancy_start: Boolean(node.is_ascendancy_start),
+        is_mastery: Boolean(node.is_mastery),
+        stats,
+        recipe: node.recipe || [],
+        i18n: {
+          stats: stats.map((line, index) => ({
+            en: line,
+            vi: node.stats_vi?.[index] || line
+          }))
+        },
+        source_hash: node.source_hash,
+        updated_at: updatedAt
+      };
+    })
+  };
+};
+
+export const compactPassiveTreeBrowserData = (data = {}) => {
+  const sourceNodes = (data.nodes || []).filter(shouldKeepPassiveExportNode);
+  const nodeIds = new Set(sourceNodes.map((node) => String(node.id)));
+  return {
+    version: data.version || "",
+    scale_image: Number(data.scale_image || data.constants?.scaleImage || 1),
+    bounds: data.bounds || {},
+    constants: {
+      orbitRadii: data.constants?.orbitRadii || []
+    },
+    classes: cleanPassiveClasses(data.classes || []).map((row) => ({
+      name: row.name || "",
+      background: row.background || null,
+      ascendancies: (row.ascendancies || []).map((ascendancy) => ({
+        name: ascendancy.name || ascendancy.id || "",
+        background: ascendancy.background || null
+      })).filter((ascendancy) => ascendancy.name)
+    })).filter((row) => row.name),
+    groups: (data.groups || []).map((group) => ({
+      id: group.id,
+      x: group.x,
+      y: group.y
+    })).filter((group) => group.id),
+    path_edges: (data.path_edges || data.edges || []).map((edge) => {
+      const compact = {
+        from: edge.from,
+        to: edge.to,
+        orbit: edge.orbit,
+        orbit_x: Number.isFinite(Number(edge.orbit_x ?? edge.orbitX)) ? Number(edge.orbit_x ?? edge.orbitX) : undefined,
+        orbit_y: Number.isFinite(Number(edge.orbit_y ?? edge.orbitY)) ? Number(edge.orbit_y ?? edge.orbitY) : undefined
+      };
+      for (const key of Object.keys(compact)) {
+        if (compact[key] === undefined || compact[key] === "") delete compact[key];
+      }
+      return compact;
+    }).filter((edge) => edge.from && edge.to && nodeIds.has(String(edge.from)) && nodeIds.has(String(edge.to))),
+    nodes: sourceNodes.map((node) => {
+      const stats = passiveNodeStats(node);
+      const statsVi = node.stats_vi || (node.i18n?.stats || []).map((line) => line.vi).filter(Boolean);
+      const classStarts = cleanPassiveClassStarts(node.classes_start);
+      const compact = {
+        id: node.id,
+        name: passiveExportNodeName(node, classStarts),
+        type: node.type,
+        group: node.group,
+        orbit: node.orbit,
+        orbit_index: node.orbit_index,
+        arc: node.arc,
+        x: node.x,
+        y: node.y,
+        stats,
+        stats_vi: statsVi,
+        classes_start: classStarts,
+        ascendancy_name: node.ascendancy_name,
+        icon_path: node.icon_path,
+        is_class_start: classStarts.length ? true : undefined,
+        is_ascendancy_start: node.is_ascendancy_start || undefined
+      };
+      for (const key of Object.keys(compact)) {
+        if (compact[key] === undefined || compact[key] === "" || (Array.isArray(compact[key]) && compact[key].length === 0)) {
+          delete compact[key];
+        }
+      }
+      return compact;
+    }).filter((node) => node.id)
   };
 };
 
 export const writePassiveTreeExportData = (data) => {
-  fs.writeFileSync(EXPORT_PATH, `window.POE2_PASSIVE_TREE = ${JSON.stringify(data, null, 2)};\n`, "utf8");
+  fs.writeFileSync(EXPORT_PATH, `window.POE2_PASSIVE_TREE=${JSON.stringify(compactPassiveTreeBrowserData(data))};\n`, "utf8");
   return data;
 };
 

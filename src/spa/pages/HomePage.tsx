@@ -1,15 +1,14 @@
 import { type Locale, localizedText, uiText } from "../lib/locale";
 import { routeForKey, routeText, type RouteKey } from "../lib/routes";
 
-const featureKeys: RouteKey[] = ["patchnote", "lookup", "newbie", "skillgems", "currency", "passiveTree", "leveling", "ggpkData"];
+const featureKeys: RouteKey[] = ["patchnote", "lookup", "newbie", "skillgems", "currency", "passiveTree", "leveling"];
 
 const stats: [string, string | { vi: string; en: string }][] = [
   ["31.468", { vi: "Dòng Việt hóa", en: "Localized lines" }],
   ["355", "Skill gems"],
   ["182", "Currency"],
   ["4.701", "Passive nodes"],
-  ["2.864", "Items"],
-  ["81k+", "GGPK entities"]
+  ["2.864", "Items"]
 ];
 
 const heroCopy = {

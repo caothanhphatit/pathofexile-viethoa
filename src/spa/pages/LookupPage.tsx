@@ -1,7 +1,7 @@
 import { type Locale, localizedText } from "../lib/locale";
 import { routeForKey, routeText, type RouteKey } from "../lib/routes";
 
-const lookupKeys: RouteKey[] = ["items", "currency", "dictionary", "skillgems", "ggpkSkills", "ggpkData"];
+const lookupKeys: RouteKey[] = ["items", "currency", "dictionary", "skillgems"];
 
 const copy = {
   eyebrow: { vi: "Lookup hub", en: "Lookup hub" },

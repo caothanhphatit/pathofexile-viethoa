@@ -4,8 +4,6 @@ import { FilterBar } from "../components/FilterBar";
 import {
   loadCurrencyData,
   loadDictionaryData,
-  loadGgpkLookupData,
-  loadGgpkSkillsData,
   loadItemsData,
   loadSkillGemsData
 } from "../lib/data";
@@ -18,7 +16,7 @@ import {
   type Locale,
   uiText
 } from "../lib/locale";
-import { asArray, cleanText, matchesQuery } from "../lib/text";
+import { asArray, matchesQuery } from "../lib/text";
 
 type LoadState<T> = { data: T | null; error: string; loading: boolean };
 type LocaleProps = { locale: Locale };
@@ -39,10 +37,6 @@ const pageCopy = {
   dictionary: {
     title: { vi: "Từ điển thuật ngữ", en: "Terminology dictionary" },
     placeholder: { vi: "Tìm thuật ngữ, nghĩa, ví dụ...", en: "Search terms, meanings, examples..." }
-  },
-  ggpk: {
-    loading: { vi: "Đang tải GGPK data lớn...", en: "Loading large GGPK data..." },
-    placeholder: { vi: "Tìm entity, table, stat, asset...", en: "Search entities, tables, stats, assets..." }
   }
 };
 
@@ -320,43 +314,6 @@ export function DictionaryPage({ locale }: LocaleProps) {
             <p>{dictionaryMeaning(term, locale)}</p>
             <span>{dictionaryCategoryLabel(term.category, locale, data?.categories?.[term.category])}</span>
           </article>
-        ))}
-      </section>
-    </main>
-  );
-}
-
-export function GgpkSkillsPage({ locale }: LocaleProps) {
-  const { data, loading, error } = useData(loadGgpkSkillsData);
-  return <GgpkRecordsPage title="GGPK skills" data={data} loading={loading} error={error} locale={locale} />;
-}
-
-export function GgpkDataPage({ locale }: LocaleProps) {
-  const { data, loading, error } = useData(loadGgpkLookupData);
-  return <GgpkRecordsPage title="GGPK data" data={data} loading={loading} error={error} locale={locale} />;
-}
-
-function GgpkRecordsPage({ title, data, loading, error, locale }: { title: string; data: any; loading: boolean; error: string; locale: Locale }) {
-  const [query, setQuery] = useState("");
-  const rows = asArray<any>(data?.records ?? data?.skills);
-  const filtered = useMemo(() => rows.filter((row) => matchesQuery(row, query, ["title", "name", "summary", "description", "short_description", "type_label", "facets", "categories", "key"])), [rows, query]);
-
-  if (loading) return <LoadingPanel label={localizedText(pageCopy.ggpk.loading, "", locale)} />;
-  if (error) return <ErrorPanel message={error} locale={locale} />;
-
-  return (
-    <main className="page-shell">
-      <PageHeader eyebrow="Extracted game data" title={title} count={rows.length} locale={locale} />
-      <FilterBar query={query} onQueryChange={setQuery} placeholder={localizedText(pageCopy.ggpk.placeholder, "", locale)} />
-      <section className="data-grid">
-        {filtered.slice(0, 120).map((record) => (
-          <DataCard
-            key={record.id ?? record.slug ?? record.key}
-            title={record.title || record.name || record.key}
-            subtitle={cleanText(record.summary || record.description || record.short_description) || record.type_label || record.source_category}
-            image={record.icon_url}
-            badges={[record.type_label || record.source_category, ...asArray<string>(record.facets ?? record.categories).slice(0, 3)].filter(Boolean)}
-          />
         ))}
       </section>
     </main>
