@@ -178,21 +178,42 @@ export const parsePobBuild = async (input: string): Promise<PobBuild> => {
     if (!usedIds.has(item.id)) items.push(item);
   }
 
-  // Skill gem groups of the active skill set.
+  // Turn an internal id ("RighteousDescentPlayer", "Metadata/.../WildProtector")
+  // into a readable name when a gem has no nameSpec (granted / companion skills).
+  const prettifyId = (id: string): string => id
+    .replace(/^.*[/.]/, "")                       // drop Metadata/.../ path
+    .replace(/(Player|Support|Skill|Active)$/i, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")       // camelCase -> spaced
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .trim();
+  const gemName = (g: Element): string => {
+    const spec = (g.getAttribute("nameSpec") || "").trim();
+    if (spec) return spec;
+    const id = g.getAttribute("skillId") || g.getAttribute("gemId") || g.getAttribute("variantId")
+      || g.getAttribute("skillMinionSkill") || g.getAttribute("skillMinion") || "";
+    return prettifyId(id);
+  };
+  const groupsFrom = (root: Element | null): PobSkillGroup[] => {
+    const out: PobSkillGroup[] = [];
+    for (const skill of [...(root?.querySelectorAll("Skill") || [])]) {
+      const gems: PobGem[] = [...skill.querySelectorAll("Gem")].map((g) => ({
+        name: gemName(g),
+        level: attrNum(g, "level"),
+        quality: attrNum(g, "quality"),
+        enabled: g.getAttribute("enabled") !== "false"
+      })).filter((g) => g.name);
+      if (gems.length) out.push({ slot: skill.getAttribute("slot") || skill.getAttribute("label") || "", gems });
+    }
+    return out;
+  };
   const skillsRoot = doc.querySelector("Skills");
   const skillSets = [...doc.querySelectorAll("Skills > SkillSet")];
   const activeSkillSetId = skillsRoot?.getAttribute("activeSkillSet");
-  const activeSkillSet = skillSets.find((s) => s.getAttribute("id") === activeSkillSetId) || skillSets[0] || skillsRoot;
-  const skills: PobSkillGroup[] = [];
-  for (const skill of [...(activeSkillSet?.querySelectorAll("Skill") || [])]) {
-    const gems: PobGem[] = [...skill.querySelectorAll("Gem")].map((g) => ({
-      name: g.getAttribute("nameSpec") || g.getAttribute("skillId") || "",
-      level: attrNum(g, "level"),
-      quality: attrNum(g, "quality"),
-      enabled: g.getAttribute("enabled") !== "false"
-    })).filter((g) => g.name);
-    if (gems.length) skills.push({ slot: skill.getAttribute("slot") || skill.getAttribute("label") || "", gems });
-  }
+  const activeSkillSet = skillSets.find((s) => s.getAttribute("id") === activeSkillSetId) || skillSets[0] || null;
+  // Active set first; if it yields nothing, fall back to scanning everything so no gem is lost.
+  let skills = groupsFrom(activeSkillSet || skillsRoot);
+  if (!skills.length && skillsRoot) skills = groupsFrom(skillsRoot);
 
   return { className, ascendClassName, level, treeVersion, nodeIds, items, skills };
 };
