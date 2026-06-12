@@ -194,26 +194,36 @@ export const parsePobBuild = async (input: string): Promise<PobBuild> => {
       || g.getAttribute("skillMinionSkill") || g.getAttribute("skillMinion") || "";
     return prettifyId(id);
   };
-  const groupsFrom = (root: Element | null): PobSkillGroup[] => {
-    const out: PobSkillGroup[] = [];
-    for (const skill of [...(root?.querySelectorAll("Skill") || [])]) {
-      const gems: PobGem[] = [...skill.querySelectorAll("Gem")].map((g) => ({
-        name: gemName(g),
-        level: attrNum(g, "level"),
-        quality: attrNum(g, "quality"),
-        enabled: g.getAttribute("enabled") !== "false"
-      })).filter((g) => g.name);
-      if (gems.length) out.push({ slot: skill.getAttribute("slot") || skill.getAttribute("label") || "", gems });
+  const groupFrom = (skill: Element): PobSkillGroup | null => {
+    const gems: PobGem[] = [...skill.querySelectorAll("Gem")].map((g) => ({
+      name: gemName(g),
+      level: attrNum(g, "level"),
+      quality: attrNum(g, "quality"),
+      enabled: g.getAttribute("enabled") !== "false"
+    })).filter((g) => g.name);
+    const label = skill.getAttribute("label") || "";
+    const source = skill.getAttribute("source") || "";
+    // Granted-from-tree/item groups (source set) often have no real gem — surface
+    // the group label itself so the skill still shows up.
+    if (!gems.length && (label || source)) {
+      const granted = prettifyId(label || source);
+      if (granted) gems.push({ name: granted, level: 0, quality: 0, enabled: skill.getAttribute("enabled") !== "false" });
     }
-    return out;
+    if (!gems.length) return null;
+    return { slot: skill.getAttribute("slot") || label || (source ? "Granted" : ""), gems };
   };
+  // Scan every skill set (not just the active one) so granted/extra skills are not missed.
   const skillsRoot = doc.querySelector("Skills");
-  const skillSets = [...doc.querySelectorAll("Skills > SkillSet")];
-  const activeSkillSetId = skillsRoot?.getAttribute("activeSkillSet");
-  const activeSkillSet = skillSets.find((s) => s.getAttribute("id") === activeSkillSetId) || skillSets[0] || null;
-  // Active set first; if it yields nothing, fall back to scanning everything so no gem is lost.
-  let skills = groupsFrom(activeSkillSet || skillsRoot);
-  if (!skills.length && skillsRoot) skills = groupsFrom(skillsRoot);
+  const seenGroup = new Set<string>();
+  const skills: PobSkillGroup[] = [];
+  for (const skill of [...doc.querySelectorAll("Skills Skill")]) {
+    const group = groupFrom(skill);
+    if (!group) continue;
+    const sig = `${group.slot}|${group.gems.map((x) => x.name).join(",")}`;
+    if (seenGroup.has(sig)) continue;
+    seenGroup.add(sig);
+    skills.push(group);
+  }
 
   return { className, ascendClassName, level, treeVersion, nodeIds, items, skills };
 };
