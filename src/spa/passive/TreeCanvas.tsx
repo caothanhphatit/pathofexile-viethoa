@@ -157,6 +157,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
     canvas.addEventListener("poe-passive-dirty", markDirty);
     canvas.addEventListener("wheel", onWheelNative, { passive: false });
     window.addEventListener("poe-passive-icons-loaded", markDirty);
+    window.addEventListener("poe-theme-change", markDirty);
     window.addEventListener("keydown", onKeyZoom, { passive: false });
 
     return () => {
@@ -165,6 +166,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
       canvas.removeEventListener("poe-passive-dirty", markDirty);
       canvas.removeEventListener("wheel", onWheelNative);
       window.removeEventListener("poe-passive-icons-loaded", markDirty);
+      window.removeEventListener("poe-theme-change", markDirty);
       window.removeEventListener("keydown", onKeyZoom);
     };
   }, [tree]);
@@ -322,10 +324,10 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
         tapInspectId.current = "";
         hoverId.current = "";
         onHover(null, 0, 0, false);
-      } else if (tapInspectId.current === node.id && allocationEnabled) {
+      } else if (node && tapInspectId.current === node.id && allocationEnabled) {
         onToggle(node);
         tapInspectId.current = "";
-      } else {
+      } else if (node) {
         tapInspectId.current = node.id;
         hoverId.current = node.id;
         onHover(node, event.clientX, event.clientY, false);

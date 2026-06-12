@@ -305,6 +305,7 @@ export function LevelingPage({ locale }: { locale: Locale }) {
   const [pipRoot, setPipRoot] = useState<HTMLElement | null>(null);
   const [completed, setCompleted] = useState<Set<string>>(() => readProgress());
   const [focusedZoneId, setFocusedZoneId] = useState("");
+  const [overlayManualTaskId, setOverlayManualTaskId] = useState("");
   const [logAutoFollow, setLogAutoFollow] = useState(() => readStoredFlag(LOG_FOLLOW_KEY));
   const [logPath, setLogPath] = useState(() => readStoredText(LOG_PATH_KEY));
   const [logStatus, setLogStatus] = useState<LogStatus | null>(null);
@@ -400,8 +401,12 @@ export function LevelingPage({ locale }: { locale: Locale }) {
   const focusedZoneRows = focusedZoneId ? rows.filter((row) => row.zone.id === focusedZoneId && !row.task.tip) : [];
   const hasFocusedZoneRows = focusedZoneRows.length > 0;
   const overlayBaseRows = focusedZoneRows.length ? focusedZoneRows : scopedRows.filter((row) => !row.task.tip);
+  const overlayManualIndex = overlayManualTaskId ? overlayBaseRows.findIndex((row) => row.id === overlayManualTaskId) : -1;
   const nextOpenIndex = overlayBaseRows.findIndex((row) => !completed.has(row.id));
-  const overlayCurrentIndex = nextOpenIndex >= 0 ? nextOpenIndex : (hasFocusedZoneRows ? 0 : overlayBaseRows.length);
+  const overlayCurrentIndex = overlayManualIndex >= 0
+    ? overlayManualIndex
+    : (nextOpenIndex >= 0 ? nextOpenIndex : (hasFocusedZoneRows ? 0 : overlayBaseRows.length));
+  const overlayCurrentRow = overlayBaseRows[overlayCurrentIndex] || null;
   const overlayRows = [-1, 0, 1, 2, 3].map((offset) => overlayBaseRows[overlayCurrentIndex + offset] || null);
   const matchedLogZone = logStatus?.zoneName ? matchClassicLogZone(logStatus.zoneName, zones, zoneAliasMap) : null;
   const logStatusView = classicLogStatusMessage(logStatus, matchedLogZone);
@@ -428,6 +433,7 @@ export function LevelingPage({ locale }: { locale: Locale }) {
     const zoneId = cleanText(zone.id);
     if (!zoneId || zoneId === lastLogZoneRef.current) return;
     lastLogZoneRef.current = zoneId;
+    setOverlayManualTaskId("");
     setFocusedZoneId(zoneId);
     setActiveAct(normalizeAct(zone));
     requestAnimationFrame(() => {
@@ -653,6 +659,15 @@ export function LevelingPage({ locale }: { locale: Locale }) {
     });
   };
 
+  const setTaskCompleted = (id: string, checked: boolean) => {
+    setCompleted((current) => {
+      const next = new Set(current);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
   const toggleRequiredInZone = (zone: LevelingZone, checked: boolean) => {
     setCompleted((current) => {
       const next = new Set(current);
@@ -670,6 +685,7 @@ export function LevelingPage({ locale }: { locale: Locale }) {
     if (!nextRow) return;
     if (activeAct === "all") setActiveAct(nextRow.act);
     setFocusedZoneId(cleanText(nextRow.zone.id));
+    setOverlayManualTaskId(nextRow.id);
     requestAnimationFrame(() => {
       document.getElementById(nextRow.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
@@ -679,9 +695,30 @@ export function LevelingPage({ locale }: { locale: Locale }) {
     if (activeAct === "all") setActiveAct(act);
     const row = rows.find((entry) => entry.id === id);
     if (row) setFocusedZoneId(cleanText(row.zone.id));
+    setOverlayManualTaskId(id);
     requestAnimationFrame(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
+  };
+
+  const moveOverlayManual = (step: number) => {
+    if (!overlayBaseRows.length) return;
+    const baseIndex = overlayCurrentIndex >= 0 ? overlayCurrentIndex : 0;
+    const nextIndex = Math.min(Math.max(0, baseIndex + step), overlayBaseRows.length - 1);
+    const row = overlayBaseRows[nextIndex];
+    if (!row) return;
+    setOverlayManualTaskId(row.id);
+    setFocusedZoneId(cleanText(row.zone.id));
+  };
+
+  const toggleOverlayCurrent = () => {
+    if (!overlayCurrentRow) return;
+    const done = completed.has(overlayCurrentRow.id);
+    setTaskCompleted(overlayCurrentRow.id, !done);
+    if (!done) {
+      const next = overlayBaseRows[overlayCurrentIndex + 1];
+      if (next) setOverlayManualTaskId(next.id);
+    }
   };
 
   const startOverlayDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -764,6 +801,18 @@ export function LevelingPage({ locale }: { locale: Locale }) {
           <span className="material-symbols-rounded" aria-hidden="true">close</span>
         </button>
       ) : null}
+      <div className="game-overlay-manual" aria-label="Manual tracker">
+        <button type="button" onClick={() => moveOverlayManual(-1)} disabled={!overlayBaseRows.length || overlayCurrentIndex <= 0} title="Task trước">
+          <span className="material-symbols-rounded" aria-hidden="true">chevron_left</span>
+        </button>
+        <button type="button" onClick={toggleOverlayCurrent} disabled={!overlayCurrentRow} title="Tick task hiện tại">
+          <span className="material-symbols-rounded" aria-hidden="true">{overlayCurrentRow && completed.has(overlayCurrentRow.id) ? "undo" : "check"}</span>
+          <span>{overlayCurrentRow && completed.has(overlayCurrentRow.id) ? "Bỏ tick" : "Tick"}</span>
+        </button>
+        <button type="button" onClick={() => moveOverlayManual(1)} disabled={!overlayBaseRows.length || overlayCurrentIndex >= overlayBaseRows.length - 1} title="Task sau">
+          <span className="material-symbols-rounded" aria-hidden="true">chevron_right</span>
+        </button>
+      </div>
       <div className="game-overlay-list">
         {overlayRows.map((row, slotIndex) => {
           const isCurrent = slotIndex === 1;

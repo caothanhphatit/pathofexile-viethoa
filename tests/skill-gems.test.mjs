@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
+import vm from "node:vm";
 
+import { parseSupportGemsPage } from "../scripts/merge-support-gems-data.mjs";
 import {
   parseSkillGemDetailPage,
   parseSkillGemsPage,
@@ -29,6 +32,23 @@ const sampleHtml = `
   </table>
 </div>`;
 
+const sampleSupportHtml = `
+<html>
+  <body>
+    <table>
+      <tbody>
+        <tr>
+          <td><a class="KeywordPopups">Attack</a>, <a class="KeywordPopups">AoE</a></td>
+          <td>
+            <a class="gem_red" data-hover="/cache/Aftershock_I" href="/us/Aftershock_I"><img src="/image/Aftershock.webp" alt="Aftershock I"></a>
+            <a class="gem_red" data-hover="/cache/Aftershock_I" href="/us/Aftershock_I">Aftershock I</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>`;
+
 const sampleDetailHtml = `
 <html>
   <head>
@@ -51,6 +71,12 @@ const sampleDetailHtml = `
     </div>
   </body>
 </html>`;
+
+const loadSkillGemSot = () => {
+  const sandbox = { window: {} };
+  vm.runInNewContext(readFileSync(new URL("../public/data/skill-gems-data.js", import.meta.url), "utf8"), sandbox);
+  return sandbox.window.POE2_SKILL_GEMS;
+};
 
 test("parseSkillGemsPage extracts stable source records", () => {
   const gems = parseSkillGemsPage(sampleHtml, "https://poe2db.tw/us/Skill_Gems");
@@ -85,6 +111,44 @@ test("parseSkillGemsPage keeps duplicate source rows as separate variants", () =
   assert.equal(gems.length, 3);
   assert.equal(gems.filter((gem) => gem.name === "Herald of Ash").length, 2);
   assert.ok(gems.some((gem) => gem.slug === "Herald_of_Ash__2"));
+});
+
+test("parseSupportGemsPage extracts support gem rows for the shared SOT", () => {
+  const gems = parseSupportGemsPage(sampleSupportHtml, "https://poe2db.tw/us/Support_Gems");
+
+  assert.equal(gems.length, 1);
+  assert.deepEqual(gems[0], {
+    slug: "Aftershock_I",
+    name: "Aftershock I",
+    gem_type: "support",
+    tier: null,
+    color: "red",
+    source_url: "https://poe2db.tw/us/Aftershock_I",
+    icon_url: "https://poe2db.tw/image/Aftershock.webp",
+    icon_alt: "Aftershock I",
+    hover_url: "https://poe2db.tw/cache/Aftershock_I",
+    tags: ["Attack", "AoE"],
+    source_hash: gems[0].source_hash
+  });
+  assert.match(gems[0].source_hash, /^[a-f0-9]{64}$/);
+});
+
+test("exported skill gem SOT includes active and support gems", () => {
+  const data = loadSkillGemSot();
+  const gems = data.gems || [];
+  const active = gems.filter((gem) => gem.gem_type === "skill");
+  const support = gems.filter((gem) => gem.gem_type === "support");
+
+  assert.equal(data.total, gems.length);
+  assert.equal(data.active_total, active.length);
+  assert.equal(data.support_total, support.length);
+  assert.ok(active.length >= 300, "expected active skill gems in skill-gems-data.js");
+  assert.ok(support.length >= 500, "expected support gems in skill-gems-data.js");
+  assert.ok(active.some((gem) => gem.name === "Boneshatter" && gem.gem_type === "skill"));
+  assert.ok(support.some((gem) => gem.name === "Aftershock I" && gem.official_id === "Metadata/Items/Gems/SupportGemAftershock"));
+  assert.ok(support.some((gem) => gem.name === "Adhesive Grenades II" && gem.official_id === "Metadata/Items/Gems/SupportGemAdhesiveGrenadesTwo"));
+  assert.ok(support.every((gem) => gem.official_id?.startsWith("Metadata/Items/Gems/SupportGem")), "support gems should export official build planner ids");
+  assert.ok(support.every((gem) => gem.i18n?.name?.vi && Array.isArray(gem.i18n?.tags)));
 });
 
 test("translation helpers cover detail text and tags while preserving technical terms", () => {

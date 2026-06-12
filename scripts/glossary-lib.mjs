@@ -292,8 +292,10 @@ for (const [term, meaning] of [
 const SKILL_TAG_MEANINGS = new Map([
   ["Chaos", exactDescriptions.get("Chaos")],
   ["Channelling", exactDescriptions.get("Channelling")],
+  ["Lineage", "Lineage là tag cho các support gem đặc biệt gắn với một dòng sức mạnh hoặc nhân vật lịch sử, thường có hiệu ứng mạnh và điều kiện hỗ trợ riêng."],
   ["Persistent", exactDescriptions.get("Persistent")],
   ["Staged", exactDescriptions.get("Staged")],
+  ["Support", "Support là tag cho support gem dùng để bổ trợ skill active, thêm hiệu ứng, đổi hành vi hoặc thay đổi điều kiện dùng skill."],
   ["Sustained", exactDescriptions.get("Sustained")],
   ["AoE", "AoE là tag cho skill có Area of Effect, tức tác động trong một vùng thay vì chỉ một mục tiêu."],
   ["Ammunition", "Ammunition là tag cho skill đạn của Crossbow hoặc cơ chế nạp/đổi loại đạn."],

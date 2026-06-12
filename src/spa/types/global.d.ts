@@ -6,6 +6,7 @@ declare global {
     POE2_CURRENCY?: any;
     POE2_ITEMS?: any;
     POE2_DICTIONARY_TERMS?: any;
+    POE2_BUILD_PLANNER_DATA?: any;
     POE2_PASSIVE_TREE?: any;
     levelingRouteZones?: any[];
   }

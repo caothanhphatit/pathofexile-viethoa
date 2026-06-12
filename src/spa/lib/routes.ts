@@ -16,6 +16,7 @@ export type RouteKey =
   | "currency"
   | "currencyDetail"
   | "passiveTree"
+  | "buildPlanner"
   | "leveling";
 
 export interface AppRoute {
@@ -182,6 +183,16 @@ export const routes: AppRoute[] = [
     aliases: ["/passive_tree", "/passive_tree.html"]
   },
   {
+    key: "buildPlanner",
+    path: "/build",
+    title: "Build POE2",
+    shortTitle: "Build",
+    description: "Tạo và xuất file .build cho Path of Exile 2 từ passive tree và item hint đã chọn.",
+    icon: "download_for_offline",
+    navOrder: 67,
+    aliases: ["/build-planner", "/builds"]
+  },
+  {
     key: "leveling",
     path: "/leveling",
     title: "Leveling POE2",
@@ -301,6 +312,13 @@ const routeCopy: Partial<Record<RouteKey, Partial<Record<Locale, Partial<RouteTe
       description: "A canvas-based Path of Exile 2 passive tree with search, class filters, change highlights, and build planning."
     }
   },
+  buildPlanner: {
+    en: {
+      title: "POE2 Build",
+      shortTitle: "Build",
+      description: "Create and export a Path of Exile 2 .build file from saved passive trees and item hints."
+    }
+  },
   leveling: {
     en: {
       title: "POE2 Leveling",
@@ -325,6 +343,10 @@ export function normalizePath(pathname = "/"): string {
 
 export function routeFromLocation(locationLike: Pick<Location, "pathname"> = window.location): AppRoute {
   const path = normalizePath(locationLike.pathname);
+  if (path.startsWith("/build/")) {
+    const buildRoute = routeForKey("buildPlanner");
+    return { ...buildRoute, path };
+  }
   return routeByPath.get(path) ?? routes[0];
 }
 

@@ -25,6 +25,9 @@ import {
 import { LevelingPage } from "./pages/LevelingPage";
 import { PassiveTreePage } from "./pages/PassiveTreePage";
 import { CraftSimPage } from "./pages/CraftSimPage";
+import { BuildPlannerPage } from "./pages/BuildPlannerPage";
+
+const facebookUrl = "https://www.facebook.com/poeviethoa";
 
 function useRoute() {
   const [route, setRoute] = useState<AppRoute>(() => routeFromLocation());
@@ -56,7 +59,7 @@ export function App() {
       const anchor = (event.target as Element | null)?.closest?.("a[href]");
       if (!anchor) return;
       const href = anchor.getAttribute("href") || "";
-      if (!href || href.startsWith("#") || /^(https?:|mailto:|tel:)/i.test(href)) return;
+      if (!href || anchor.hasAttribute("download") || href.startsWith("#") || /^(https?:|mailto:|tel:|blob:|data:)/i.test(href)) return;
       const url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin) return;
       event.preventDefault();
@@ -104,6 +107,9 @@ export function App() {
           })}
         </nav>
         <div className="app-actions">
+          <a className="facebook-button" href={facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook POE Việt hóa" title="Facebook POE Việt hóa">
+            <span aria-hidden="true">f</span>
+          </a>
           <div className="segmented" role="group" aria-label={uiText("language", locale)}>
             <button className={locale === "vi" ? "is-active" : ""} type="button" onClick={() => setLocale("vi")}>VI</button>
             <button className={locale === "en" ? "is-active" : ""} type="button" onClick={() => setLocale("en")}>EN</button>
@@ -144,6 +150,8 @@ function renderRoute(route: AppRoute, locale: Locale) {
       return <CurrencyDetailPage locale={locale} />;
     case "passiveTree":
       return <PassiveTreePage locale={locale} />;
+    case "buildPlanner":
+      return <BuildPlannerPage locale={locale} />;
     case "leveling":
       return <LevelingPage locale={locale} />;
     case "craftSim":

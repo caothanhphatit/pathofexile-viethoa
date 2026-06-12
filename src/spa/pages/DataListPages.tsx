@@ -16,6 +16,7 @@ import {
   type Locale,
   uiText
 } from "../lib/locale";
+import { displayImageUrl } from "../lib/image";
 import { asArray, matchesQuery } from "../lib/text";
 
 type LoadState<T> = { data: T | null; error: string; loading: boolean };
@@ -23,8 +24,8 @@ type LocaleProps = { locale: Locale };
 
 const pageCopy = {
   skillGems: {
-    title: { vi: "Skill gems", en: "Skill gems" },
-    placeholder: { vi: "Tìm gem, tag, mô tả...", en: "Search gems, tags, descriptions..." }
+    title: { vi: "Skill & support gems", en: "Skill & support gems" },
+    placeholder: { vi: "Tìm skill, support, tag, mô tả...", en: "Search skills, supports, tags, descriptions..." }
   },
   currency: {
     title: { vi: "Currency có thể stack", en: "Stackable currency" },
@@ -94,13 +95,17 @@ function localizedSections(row: any, locale: Locale): string[] {
   });
 }
 
+function rawName(row: any, fallback = "Unnamed item"): string {
+  return String(row?.name ?? row?.title ?? row?.base_type ?? fallback);
+}
+
 export function SkillGemsPage({ locale }: LocaleProps) {
   const { data, loading, error } = useData(loadSkillGemsData);
   const [query, setQuery] = useState("");
   const rows = asArray<any>(data?.gems);
   const filtered = useMemo(() => rows.filter((gem) => matchesLocalizedQuery(
     query,
-    localizedText(gem.i18n?.name, gem.name, locale),
+    rawName(gem, "Unnamed gem"),
     localizedText(gem.i18n?.summary, gem.summary_en, locale),
     localizedList(gem.i18n?.tags, gem.tags, locale),
     localizedList(gem.i18n?.properties, gem.properties, locale)
@@ -115,16 +120,16 @@ export function SkillGemsPage({ locale }: LocaleProps) {
       <FilterBar query={query} onQueryChange={setQuery} placeholder={localizedText(pageCopy.skillGems.placeholder, "", locale)} />
       <section className="data-grid">
         {filtered.slice(0, 96).map((gem) => {
-          const title = localizedText(gem.i18n?.name, gem.name, locale);
+          const title = rawName(gem, "Unnamed gem");
           const summary = localizedText(gem.i18n?.summary, gem.summary_en, locale);
           const tags = localizedList(gem.i18n?.tags, gem.tags, locale);
           return (
             <DataCard
               key={gem.slug}
               title={title}
-              subtitle={summary}
+              subtitle={summary || tags.join(", ")}
               image={gem.icon_url}
-              badges={[`Tier ${gem.tier ?? "?"}`, ...tags]}
+              badges={[gem.gem_type === "support" ? "Support" : "Skill", gem.tier ? `Tier ${gem.tier}` : "", ...tags].filter(Boolean)}
               href={`/skill-gem?slug=${encodeURIComponent(gem.slug)}`}
             />
           );
@@ -143,16 +148,17 @@ export function SkillGemDetailPage({ locale }: LocaleProps) {
   if (error) return <ErrorPanel message={error} locale={locale} />;
   if (!gem) return <ErrorPanel message={uiText("notFoundGem", locale)} locale={locale} />;
 
-  const title = localizedText(gem.i18n?.name, gem.name, locale);
+  const title = rawName(gem, "Unnamed gem");
   const summary = localizedText(gem.i18n?.summary, gem.summary_en, locale);
+  const iconUrl = displayImageUrl(gem.icon_url);
 
   return (
     <main className="page-shell detail-page">
       <a className="back-link" href="/skill-gems">← Skill gems</a>
       <article className="detail-panel">
-        <img src={gem.icon_url} alt="" />
+        {iconUrl ? <img src={iconUrl} alt="" /> : null}
         <div>
-          <p className="eyebrow">Tier {gem.tier ?? "?"}</p>
+          <p className="eyebrow">{gem.gem_type === "support" ? "Support" : `Tier ${gem.tier ?? "?"}`}</p>
           <h1 translate="no">{title}</h1>
           <p>{summary}</p>
           <div className="badges">{localizedList(gem.i18n?.tags, gem.tags, locale).map((tag) => <span key={tag}>{tag}</span>)}</div>
@@ -174,7 +180,7 @@ export function CurrencyPage({ locale }: LocaleProps) {
   const rows = asArray<any>(data?.items ?? data?.currency ?? data?.records);
   const filtered = useMemo(() => rows.filter((item) => matchesLocalizedQuery(
     query,
-    localizedText(item.i18n?.name, item.name ?? item.title, locale),
+    rawName(item),
     localizedText(item.i18n?.description, item.description_en || item.description || item.effect, locale),
     localizedText(item.i18n?.category_label, item.category_label, locale),
     localizedText(item.i18n?.subtype_label, item.subtype_label, locale),
@@ -191,7 +197,7 @@ export function CurrencyPage({ locale }: LocaleProps) {
       <FilterBar query={query} onQueryChange={setQuery} placeholder={localizedText(pageCopy.currency.placeholder, "", locale)} />
       <section className="data-grid">
         {filtered.slice(0, 120).map((item) => {
-          const title = localizedText(item.i18n?.name, item.name ?? item.title, locale);
+          const title = rawName(item);
           const description = localizedText(item.i18n?.description, item.description_en || item.description || item.effect, locale);
           const category = localizedText(item.i18n?.category_label, item.category_label, locale);
           const subtype = localizedText(item.i18n?.subtype_label, item.subtype_label, locale);
@@ -221,17 +227,18 @@ export function CurrencyDetailPage({ locale }: LocaleProps) {
   if (error) return <ErrorPanel message={error} locale={locale} />;
   if (!item) return <ErrorPanel message={uiText("notFoundCurrency", locale)} locale={locale} />;
 
-  const title = localizedText(item.i18n?.name, item.name ?? item.title, locale);
+  const title = rawName(item);
   const description = localizedText(item.i18n?.description, item.description_en || item.description || item.effect || item.flavour_text, locale);
   const category = localizedText(item.i18n?.category_label, item.category_label, locale);
   const subtype = localizedText(item.i18n?.subtype_label, item.subtype_label, locale);
   const mods = localizedList(item.i18n?.mods, item.mods, locale);
+  const iconUrl = displayImageUrl(item.icon_url);
 
   return (
     <main className="page-shell detail-page">
       <a className="back-link" href="/currency">← Currency</a>
       <article className="detail-panel">
-        {item.icon_url ? <img src={item.icon_url} alt="" /> : null}
+        {iconUrl ? <img src={iconUrl} alt="" /> : null}
         <div>
           <p className="eyebrow">{category || "Currency"}</p>
           <h1 translate="no">{title}</h1>
@@ -253,7 +260,7 @@ export function ItemsPage({ locale }: LocaleProps) {
   const rows = asArray<any>(data?.items ?? data?.records);
   const filtered = useMemo(() => rows.filter((item) => matchesLocalizedQuery(
     query,
-    localizedText(item.i18n?.name, item.name ?? item.base_type, locale),
+    rawName(item),
     item.base_type,
     item.menu_label,
     item.group_label,
@@ -271,7 +278,7 @@ export function ItemsPage({ locale }: LocaleProps) {
       <FilterBar query={query} onQueryChange={setQuery} placeholder={localizedText(pageCopy.items.placeholder, "", locale)} />
       <section className="data-grid">
         {filtered.slice(0, 120).map((item, index) => {
-          const title = localizedText(item.i18n?.name, item.name ?? item.base_type ?? "Unnamed item", locale);
+          const title = rawName(item);
           return (
             <DataCard
               key={`${item.slug ?? item.name}-${index}`}

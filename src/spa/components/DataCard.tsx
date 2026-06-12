@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { displayImageUrl } from "../lib/image";
 
 interface Props {
   title: string;
@@ -12,11 +13,12 @@ interface Props {
 
 export function DataCard({ title, subtitle, image, badges = [], body, href, onOpen }: Props) {
   const [imageFailed, setImageFailed] = useState(false);
-  const showImage = Boolean(image && !imageFailed);
+  const imageUrl = displayImageUrl(image);
+  const showImage = Boolean(imageUrl && !imageFailed);
   const content = (
     <>
       {showImage ? (
-        <img className="data-card__image" src={image} alt="" loading="lazy" onError={() => setImageFailed(true)} />
+        <img className="data-card__image" src={imageUrl} alt="" loading="lazy" onError={() => setImageFailed(true)} />
       ) : (
         <div className="data-card__sigil" aria-hidden="true">{title.slice(0, 1)}</div>
       )}

@@ -152,7 +152,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Ammunition",
       "category": "combat",
       "meaning": "Ammunition là tag cho skill đạn của Crossbow hoặc cơ chế nạp/đổi loại đạn.",
-      "keep": "Gi? nguy?n \"Ammunition\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Ammunition\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Load",
         "Load your Crossbow"
@@ -213,7 +213,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "AoE",
       "category": "skill",
       "meaning": "AoE là tag cho skill có Area of Effect, tức tác động trong một vùng thay vì chỉ một mục tiêu.",
-      "keep": "Gi? nguy?n \"AoE\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"AoE\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "AoE",
@@ -318,7 +318,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Attack",
       "category": "skill",
       "meaning": "Tấn công (Attack) là các kỹ năng sử dụng trực tiếp vũ khí đang trang bị để gây sát thương. Spell không được tính là Attack. Sát thương cơ bản, tốc độ tấn công (Attack Speed) và tỉ lệ chí mạng (Critical Hit Chance) của Attack thường lấy từ chỉ số vũ khí, trừ khi kỹ năng ghi khác.",
-      "keep": "Gi? nguy?n \"Attack\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Attack\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Attacking",
         "Attacks"
@@ -369,7 +369,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Aura",
       "category": "skill",
       "meaning": "Aura là tag cho skill tạo hiệu ứng quanh nhân vật hoặc đồng minh trong phạm vi.",
-      "keep": "Gi? nguy?n \"Aura\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Aura\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Aura"
@@ -410,8 +410,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Banner",
       "keyword": "Banner",
       "category": "combat",
-      "meaning": "Banner là tag cho nhóm skill hỗ trợ/điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
-      "keep": "Gi? nguy?n \"Banner\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Banner là nhãn cho nhóm skill hỗ trợ hoặc điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
+      "keep": "Giữ nguyên \"Banner\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Banner"
@@ -425,7 +425,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Barrageable",
       "category": "combat",
       "meaning": "Barrageable là nhãn cho kỹ năng có thể bắn theo loạt hoặc tương tác với cơ chế Barrage, thường liên quan Projectile và nhiều phát liên tiếp.",
-      "keep": "Gi? nguy?n \"Barrageable\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Barrageable\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Repeat",
         "Repeatable"
@@ -455,8 +455,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Bear",
       "keyword": "Bear",
       "category": "combat",
-      "meaning": "Bear là tag cho skill gắn với hình thái hoặc sinh vật Bear, dùng để lọc các kỹ năng tương tác với dạng đó.",
-      "keep": "Gi? nguy?n \"Bear\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Bear là nhãn cho kỹ năng gắn với hình thái hoặc sinh vật Bear, dùng để lọc các kỹ năng tương tác với dạng đó.",
+      "keep": "Giữ nguyên \"Bear\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Bear"
@@ -683,7 +683,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Buff",
       "category": "skill",
       "meaning": "Buff là tag cho skill tạo hiệu ứng có lợi hoặc trạng thái hỗ trợ.",
-      "keep": "Gi? nguy?n \"Buff\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Buff\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Buffs"
       ],
@@ -778,7 +778,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Chaining",
       "category": "combat",
       "meaning": "Chaining là cơ chế cho Projectile hoặc hiệu ứng bật nối tiếp sang mục tiêu khác sau khi Hit.",
-      "keep": "Gi? nguy?n \"Chaining\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Chaining\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Chaining"
@@ -812,7 +812,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Channelling",
       "category": "combat",
       "meaning": "Tập trung (Channelling) là nhãn cho kỹ năng cần nhấn giữ nút hoặc duy trì thao tác liên tục trong một khoảng thời gian.",
-      "keep": "Gi? nguy?n \"Channelling\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Channelling\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Channelling"
@@ -826,7 +826,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Chaos",
       "category": "damage",
       "meaning": "Chaos (Hỗn mang) là loại sát thương bị giảm trừ bởi Kháng Chaos. Trong giao diện và nhãn kỹ năng, giữ nguyên thuật ngữ Chaos để đồng bộ với phiên bản gốc.",
-      "keep": "Gi? nguy?n \"Chaos\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Chaos\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Chaos"
@@ -953,7 +953,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Cold",
       "category": "damage",
       "meaning": "Cold là tag cho skill liên quan Cold damage, Chill hoặc Freeze.",
-      "keep": "Gi? nguy?n \"Cold\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Cold\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Cold"
@@ -1037,8 +1037,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Command",
       "keyword": "Command",
       "category": "combat",
-      "meaning": "Command là tag cho skill điều khiển hoặc tương tác với đồng minh triệu hồi, companion, minion hay totem.",
-      "keep": "Gi? nguy?n \"Command\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Command là nhãn cho skill điều khiển hoặc tương tác với đồng minh triệu hồi, companion, minion hay totem.",
+      "keep": "Giữ nguyên \"Command\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Commandable Minions",
         "Commanded"
@@ -1056,8 +1056,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Companion",
       "keyword": "Companion",
       "category": "skill",
-      "meaning": "Companion là tag cho skill điều khiển hoặc tương tác với đồng minh triệu hồi, companion, minion hay totem.",
-      "keep": "Gi? nguy?n \"Companion\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Companion là nhãn cho skill điều khiển hoặc tương tác với đồng minh triệu hồi, companion, minion hay totem.",
+      "keep": "Giữ nguyên \"Companion\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Companions"
       ],
@@ -1103,7 +1103,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Conditional",
       "category": "combat",
       "meaning": "Conditional là nhãn cho kỹ năng chỉ phát huy đầy đủ khi thỏa điều kiện cụ thể, ví dụ mục tiêu đang bị Debuff, ở trạng thái đặc biệt hoặc bạn đã chuẩn bị setup trước.",
-      "keep": "Gi? nguy?n \"Conditional\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Conditional\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Conditional"
@@ -1410,7 +1410,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Curse",
       "category": "skill",
       "meaning": "Curse là tag cho skill nguyền rủa, đặt Debuff mạnh lên enemy.",
-      "keep": "Gi? nguy?n \"Curse\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Curse\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Curses"
       ],
@@ -1662,7 +1662,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Detonator",
       "category": "combat",
       "meaning": "Detonator là nhãn cho kỹ năng dùng để kích nổ Grenade, Corpse, Crystal hoặc hiệu ứng đã đặt trước.",
-      "keep": "Gi? nguy?n \"Detonator\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Detonator\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Detonator"
@@ -1723,7 +1723,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Duration",
       "category": "combat",
       "meaning": "Duration là tag cho skill có thời lượng tồn tại hoặc hiệu ứng kéo dài.",
-      "keep": "Gi? nguy?n \"Duration\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Duration\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Duration"
@@ -2311,7 +2311,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Fire",
       "category": "damage",
       "meaning": "Fire là tag cho skill liên quan Fire damage hoặc Fire effect.",
-      "keep": "Gi? nguy?n \"Fire\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Fire\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Fire"
@@ -2510,8 +2510,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Grenade",
       "keyword": "Grenade",
       "category": "combat",
-      "meaning": "Grenade là tag cho skill tạo thực thể hoặc vùng hiệu ứng Grenade, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Grenade\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Grenade là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Grenade, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Grenade\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Grenades"
       ],
@@ -2563,8 +2563,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Hazard",
       "keyword": "Hazard",
       "category": "combat",
-      "meaning": "Hazard là tag cho skill tạo thực thể hoặc vùng hiệu ứng Hazard, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Hazard\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Hazard là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Hazard, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Hazard\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Hazardous",
         "Hazards"
@@ -2668,8 +2668,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Herald",
       "keyword": "Herald",
       "category": "combat",
-      "meaning": "Herald là tag cho nhóm skill hỗ trợ/điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
-      "keep": "Gi? nguy?n \"Herald\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Herald là nhãn cho nhóm skill hỗ trợ hoặc điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
+      "keep": "Giữ nguyên \"Herald\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Herald"
@@ -2946,7 +2946,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Invocation",
       "category": "combat",
       "meaning": "Invocation là cơ chế tích trữ hoặc gọi ra kỹ năng/hiệu ứng đã chuẩn bị, thường hoạt động như một dạng meta skill kích hoạt theo điều kiện.",
-      "keep": "Gi? nguy?n \"Invocation\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Invocation\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Invocation"
@@ -3182,7 +3182,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Lightning",
       "category": "damage",
       "meaning": "Lightning là tag cho skill liên quan Lightning damage hoặc Shock.",
-      "keep": "Gi? nguy?n \"Lightning\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Lightning\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Lightning"
@@ -3259,6 +3259,20 @@ window.POE2_DICTIONARY_TERMS = {
       "description_en": "",
       "source_url": "https://poe2db.tw/us/Lightning_Resistant",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_KeywordPopups_hover/f2967e105d45151e149663c6b78215ea3a6527dad26d252cd9bd3bde9359a105"
+    },
+    {
+      "term": "Lineage",
+      "keyword": "Lineage",
+      "category": "combat",
+      "meaning": "Lineage là tag cho các support gem đặc biệt gắn với một dòng sức mạnh hoặc nhân vật lịch sử, thường có hiệu ứng mạnh và điều kiện hỗ trợ riêng.",
+      "keep": "Giữ nguyên \"Lineage\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
+      "variants": [],
+      "examples": [
+        "Lineage"
+      ],
+      "description_en": "",
+      "source_url": "https://poe2db.tw/us/Skill_Gems",
+      "hover_url": ""
     },
     {
       "term": "Liquid Emotion",
@@ -3377,8 +3391,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Mark",
       "keyword": "Mark",
       "category": "skill",
-      "meaning": "Mark là tag cho nhóm skill hỗ trợ/điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
-      "keep": "Gi? nguy?n \"Mark\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Mark là nhãn cho nhóm skill hỗ trợ hoặc điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
+      "keep": "Giữ nguyên \"Mark\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Marked",
         "Marking",
@@ -3479,7 +3493,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Melee",
       "category": "skill",
       "meaning": "Melee là tag cho skill cận chiến, thường dùng weapon range và vị trí đứng gần mục tiêu.",
-      "keep": "Gi? nguy?n \"Melee\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Melee\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Melee",
@@ -3510,7 +3524,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Merging",
       "category": "combat",
       "meaning": "Merging là cơ chế hợp nhất nhiều thực thể, stack hoặc hiệu ứng thành một hiệu ứng lớn hơn.",
-      "keep": "Gi? nguy?n \"Merging\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Merging\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Merging"
@@ -3524,7 +3538,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Meta",
       "category": "combat",
       "meaning": "Meta là tag cho skill dùng để chứa, trigger hoặc điều phối skill khác.",
-      "keep": "Gi? nguy?n \"Meta\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Meta\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Meta"
@@ -3550,7 +3564,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Minion",
       "category": "skill",
       "meaning": "Minion là tag cho skill tạo hoặc tương tác với đồng minh được triệu hồi.",
-      "keep": "Gi? nguy?n \"Minion\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Minion\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Minion"
@@ -3657,8 +3671,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Nova",
       "keyword": "Nova",
       "category": "combat",
-      "meaning": "Nova là tag cho skill tạo thực thể hoặc vùng hiệu ứng Nova, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Nova\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Nova là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Nova, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Nova\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Nova"
@@ -3725,8 +3739,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Orb",
       "keyword": "Orb",
       "category": "item",
-      "meaning": "Orb là tag cho skill tạo thực thể hoặc vùng hiệu ứng Orb, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Orb\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Orb là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Orb, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Orb\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Chaos Orb",
@@ -3846,7 +3860,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Payoff",
       "category": "combat",
       "meaning": "Payoff là nhãn cho kỹ năng tiêu thụ setup/điều kiện đã chuẩn bị để tạo hiệu ứng mạnh hơn ở nhịp kết thúc.",
-      "keep": "Gi? nguy?n \"Payoff\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Payoff\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Payoff"
@@ -3928,7 +3942,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Persistent",
       "category": "combat",
       "meaning": "Duy trì (Persistent) là nhãn cho các kỹ năng được bật/tắt trong Bảng kỹ năng thay vì dùng như kỹ năng bấm thường; nhiều kỹ năng duy trì cần giữ Spirit để hoạt động.",
-      "keep": "Gi? nguy?n \"Persistent\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Persistent\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Persistent"
@@ -3958,7 +3972,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Physical",
       "category": "damage",
       "meaning": "Physical là tag cho skill liên quan Physical damage.",
-      "keep": "Gi? nguy?n \"Physical\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Physical\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Physical"
@@ -4026,8 +4040,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Plant",
       "keyword": "Plant",
       "category": "combat",
-      "meaning": "Plant là tag cho skill tạo thực thể hoặc vùng hiệu ứng Plant, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Plant\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Plant là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Plant, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Plant\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Plant"
@@ -4168,7 +4182,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Projectile",
       "category": "skill",
       "meaning": "Projectile là tag cho skill bắn hoặc phóng vật thể bay.",
-      "keep": "Gi? nguy?n \"Projectile\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Projectile\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Projectiles"
       ],
@@ -4388,8 +4402,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Remnant",
       "keyword": "Remnant",
       "category": "combat",
-      "meaning": "Remnant là tag cho skill tạo thực thể hoặc vùng hiệu ứng Remnant, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Remnant\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Remnant là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Remnant, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Remnant\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Remnants"
       ],
@@ -4615,7 +4629,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Shapeshift",
       "category": "combat",
       "meaning": "Shapeshift là nhãn cho kỹ năng biến đổi hình thái, đổi bộ kỹ năng hoặc trạng thái chiến đấu của nhân vật.",
-      "keep": "Gi? nguy?n \"Shapeshift\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Shapeshift\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Shapeshifted",
         "Shapeshifting"
@@ -4782,7 +4796,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Slam",
       "category": "skill",
       "meaning": "Slam là nhóm kỹ năng melee đánh mạnh xuống đất hoặc vùng trước mặt, thường gây Area Damage và có thể tạo Aftershock.",
-      "keep": "Gi? nguy?n \"Slam\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Slam\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Slammed",
         "Slamming",
@@ -4912,7 +4926,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Spell",
       "category": "skill",
       "meaning": "Spell là tag cho skill dùng spell stat riêng, không lấy base damage từ weapon trừ khi skill ghi rõ.",
-      "keep": "Gi? nguy?n \"Spell\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Spell\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Spell"
@@ -4971,7 +4985,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Staged",
       "category": "combat",
       "meaning": "Cấp độ (Staged) là nhãn cho các kỹ năng có cơ chế tích lũy, giữ hoặc tiêu thụ nhiều tầng (stage) để gia tăng hiệu ứng.",
-      "keep": "Gi? nguy?n \"Staged\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Staged\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Staged"
@@ -5016,8 +5030,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Storm",
       "keyword": "Storm",
       "category": "combat",
-      "meaning": "Storm là tag cho skill tạo thực thể hoặc vùng hiệu ứng Storm, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Storm\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Storm là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Storm, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Storm\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Storms"
       ],
@@ -5050,7 +5064,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Strike",
       "category": "skill",
       "meaning": "Strike là nhóm kỹ năng melee đánh trực tiếp mục tiêu gần bạn, thường mạnh ở đánh đơn mục tiêu hoặc đánh theo tầm vũ khí.",
-      "keep": "Gi? nguy?n \"Strike\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Strike\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Strikes",
         "Striking",
@@ -5123,6 +5137,20 @@ window.POE2_DICTIONARY_TERMS = {
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_KeywordPopups_hover/83ade57025ab8270a0023a5d2f4a2a121182964a65761a6aa05509fa80d7d513"
     },
     {
+      "term": "Support",
+      "keyword": "Support",
+      "category": "combat",
+      "meaning": "Support là tag cho support gem dùng để bổ trợ skill active, thêm hiệu ứng, đổi hành vi hoặc thay đổi điều kiện dùng skill.",
+      "keep": "Giữ nguyên \"Support\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
+      "variants": [],
+      "examples": [
+        "Support"
+      ],
+      "description_en": "",
+      "source_url": "https://poe2db.tw/us/Skill_Gems",
+      "hover_url": ""
+    },
+    {
       "term": "Surges",
       "keyword": "Surge",
       "category": "combat",
@@ -5163,7 +5191,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Sustained",
       "category": "combat",
       "meaning": "Kéo dài (Sustained) là nhãn cho kỹ năng có trạng thái duy trì liên tục trong khi sử dụng, thường yêu cầu sự tập trung hoặc đáp ứng các điều kiện cụ thể.",
-      "keep": "Gi? nguy?n \"Sustained\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Sustained\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Sustained"
@@ -5213,7 +5241,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Totem",
       "category": "skill",
       "meaning": "Totem là tag cho skill dựng Totem để cast hoặc attack thay nhân vật.",
-      "keep": "Gi? nguy?n \"Totem\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Totem\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Totems"
       ],
@@ -5243,7 +5271,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Travel",
       "category": "combat",
       "meaning": "Travel là nhãn cho kỹ năng di chuyển, dùng để lướt, nhảy, lao tới hoặc đổi vị trí trong combat.",
-      "keep": "Gi? nguy?n \"Travel\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Travel\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Travel"
@@ -5257,7 +5285,7 @@ window.POE2_DICTIONARY_TERMS = {
       "keyword": "Trigger",
       "category": "combat",
       "meaning": "Trigger là tag cho skill hoặc effect tự kích hoạt khi đạt điều kiện.",
-      "keep": "Gi? nguy?n \"Trigger\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "keep": "Giữ nguyên \"Trigger\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [
         "Triggered",
         "Triggering",
@@ -5453,8 +5481,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Warcry",
       "keyword": "Warcry",
       "category": "combat",
-      "meaning": "Warcry là tag cho nhóm skill hỗ trợ/điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
-      "keep": "Gi? nguy?n \"Warcry\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Warcry là nhãn cho nhóm skill hỗ trợ hoặc điều kiện chiến đấu cùng tên, giúp nhận diện support gem và modifier tương thích.",
+      "keep": "Giữ nguyên \"Warcry\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Warcry"
@@ -5499,8 +5527,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Werewolf",
       "keyword": "Werewolf",
       "category": "combat",
-      "meaning": "Werewolf là tag cho skill gắn với hình thái hoặc sinh vật Werewolf, dùng để lọc các kỹ năng tương tác với dạng đó.",
-      "keep": "Gi? nguy?n \"Werewolf\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Werewolf là nhãn cho kỹ năng gắn với hình thái hoặc sinh vật Werewolf, dùng để lọc các kỹ năng tương tác với dạng đó.",
+      "keep": "Giữ nguyên \"Werewolf\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Werewolf"
@@ -5529,8 +5557,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Wind",
       "keyword": "Wind",
       "category": "combat",
-      "meaning": "Wind là tag cho skill tạo thực thể hoặc vùng hiệu ứng Wind, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
-      "keep": "Gi? nguy?n \"Wind\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Wind là nhãn cho skill tạo thực thể hoặc vùng hiệu ứng Wind, thường dùng để lọc kỹ năng đặt bẫy, phóng vật thể hoặc gây Damage theo vùng.",
+      "keep": "Giữ nguyên \"Wind\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Wind"
@@ -5573,8 +5601,8 @@ window.POE2_DICTIONARY_TERMS = {
       "term": "Wyvern",
       "keyword": "Wyvern",
       "category": "combat",
-      "meaning": "Wyvern là tag cho skill gắn với hình thái hoặc sinh vật Wyvern, dùng để lọc các kỹ năng tương tác với dạng đó.",
-      "keep": "Gi? nguy?n \"Wyvern\" b?ng ti?ng Anh ?? kh?p tooltip, modifier v? UI trong game.",
+      "meaning": "Wyvern là nhãn cho kỹ năng gắn với hình thái hoặc sinh vật Wyvern, dùng để lọc các kỹ năng tương tác với dạng đó.",
+      "keep": "Giữ nguyên \"Wyvern\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
       "variants": [],
       "examples": [
         "Wyvern"
@@ -5584,7 +5612,7 @@ window.POE2_DICTIONARY_TERMS = {
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_KeywordPopups_hover/6f13b5c164bb30ee852b503f07279dfd87162f0b84e07fbb8361a0bf3b51ffa8"
     }
   ],
-  "updated_at": "2026-05-23",
+  "updated_at": "2026-05-29",
   "sources": {
     "currency": "https://poe2db.tw/us/Stackable_Currency",
     "skill_gems": "https://poe2db.tw/us/Skill_Gems",

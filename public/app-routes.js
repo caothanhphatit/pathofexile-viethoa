@@ -88,6 +88,13 @@
       navOrder: 65,
       aliases: ["passive-tree", "passive_tree", "passives", "tree"]
     },
+    build: {
+      title: "Build",
+      href: "/build",
+      icon: "download_for_offline",
+      navOrder: 67,
+      aliases: ["build", "build-planner", "builds", "build-guide"]
+    },
     leveling: {
       title: "Leveling",
       href: `/leveling?v=${routeVersion}`,
@@ -109,6 +116,7 @@
     skillgems: "skill_gems.html",
     currency: "currency.html",
     passivetree: "passive_tree.html",
+    build: "index.html",
     leveling: "leveling.html"
   };
 

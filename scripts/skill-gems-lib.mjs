@@ -1602,6 +1602,23 @@ const normalizeProtectedSkillTerms = (value = "") => normalizeText(value)
   .replace(/\bonly một lần\b/gi, "chỉ một lần")
   .replace(/\bwith its first Hit\b/gi, "với Hit đầu tiên của nó")
   .replace(/\bits first Hit\b/gi, "Hit đầu tiên của nó")
+  .replace(/\bmaking it\b/gi, "làm Skill đó")
+  .replace(/\bgiving it\b/gi, "cho Skill đó")
+  .replace(/\bcausing it to\b/gi, "khiến Skill đó")
+  .replace(/\bcauses it to\b/gi, "khiến Skill đó")
+  .replace(/\bturning (?:a|một) (.+?) of its\b/gi, "chuyển một $1 của Skill đó")
+  .replace(/\bboosting its\b/gi, "tăng")
+  .replace(/\bit inflicts\b/gi, "Skill đó gây ra")
+  .replace(/\bit applies\b/gi, "Skill đó áp dụng")
+  .replace(/\bit kills\b/gi, "Skill đó hạ")
+  .replace(/\bit Critically Hits\b/gi, "Skill đó Critically Hit")
+  .replace(/\bit was\b/gi, "nó là")
+  .replace(/\bon it\b/gi, "trên nó")
+  .replace(/\bin it\b/gi, "trong nó")
+  .replace(/\bwithin it\b/gi, "trong phạm vi đó")
+  .replace(/\bits\b/gi, "của nó")
+  .replace(/\bitself\b/gi, "chính nó")
+  .replace(/\bit\b/gi, "nó")
   .replace(/\bany type\b/gi, "bất kỳ type nào")
   .replace(/\bto không destroy\b/gi, "để không phá hủy")
   .replace(/\bdestroy\b/gi, "phá hủy")
@@ -2153,6 +2170,8 @@ export const translateSkillDetailLine = (line = "") => {
   const propertyPatterns = [
     [/^Requires:\s*(.+)$/i, ([, value]) => `Yêu cầu: ${formatSkillStatValue(value)}`],
     [/^Tier:\s*(.+)$/i, ([, value]) => `Tier: ${value}`],
+    [/^Category:\s*(.*)$/i, ([, value]) => value ? `Category: ${formatSkillStatValue(value)}` : "Category:"],
+    [/^Support Requirements:\s*(.+)$/i, ([, value]) => `Yêu cầu Support: ${formatSkillStatValue(value)}`],
     [/^Level:\s*(.+)$/i, ([, value]) => `Cấp: ${formatSkillStatValue(value)}`],
     [/^Cost:\s*(.+)$/i, ([, value]) => `Chi phí: ${formatSkillStatValue(value)}`],
     [/^Reservation:\s*(.+)$/i, ([, value]) => `Reservation: ${formatSkillStatValue(value)}`],
@@ -2247,6 +2266,9 @@ export const translateSkillDetailLine = (line = "") => {
     [/^Marked enemy becomes (.+?) when Hit while Primed for (.+)$/i, ([, state, prime]) => `Kẻ địch bị Mark trở thành ${state} khi bị Hit trong lúc Primed for ${prime}`],
     [/^Pierces the first (.+?) targets Hit$/i, ([, count]) => `Pierce ${count} mục tiêu đầu tiên bị Hit`],
     [/^Projectiles from Supported Skills are fired in random directions$/i, () => "Projectiles từ Supported Skills được bắn theo hướng ngẫu nhiên"],
+    [/^Supported skills have (.+?) chance to cause an additional Aftershock$/i, ([, amount]) => `Supported Skills có ${amount} chance gây thêm một Aftershock`],
+    [/^Supported Skills deal (.+?) more (.+?) Damage$/i, ([, amount, type]) => `Supported Skills gây ${amount} more ${type} Damage`],
+    [/^Supported Skills have (.+?) increased Area of Effect$/i, ([, amount]) => `Supported Skills có ${amount} increased Area of Effect`],
     [/^Triggers Navira's Calming when Commanded to use a Skill, granting nearby Allies (.+?) increased Mana Regeneration for (.+?) seconds$/i, ([, amount, seconds]) => `Trigger Navira's Calming khi được Command dùng Skill, cấp cho Allies gần đó ${amount} increased Mana Regeneration trong ${seconds} giây`],
     [/^Projectile Chains (.+?) additional times on first hitting a Shocked or Electrocuted enemy, releasing a Shockwave on each Hit$/i, ([, count]) => `Projectile Chain thêm ${count} lần khi Hit đầu tiên vào kẻ địch Shocked hoặc Electrocuted, release Shockwave trên mỗi Hit`],
     [/^Absorbs first Hit dealing over (.+?) of Minion's maximum life$/i, ([, amount]) => `Absorb Hit đầu tiên gây hơn ${amount} Maximum Life của Minion`],
@@ -2398,6 +2420,34 @@ const translateSkillSentence = (sentence = "") => {
   if (EXACT_SKILL_TEXT_TRANSLATIONS.has(clean)) return normalizeProtectedSkillTerms(EXACT_SKILL_TEXT_TRANSLATIONS.get(clean));
 
   const sentencePatterns = [
+    [
+      /^Supports Slams you use yourself, giving them a chance to create an Aftershock\.$/i,
+      () => "Hỗ trợ Slam bạn tự dùng, cho chúng cơ hội tạo Aftershock."
+    ],
+    [
+      /^Supports any skill that deals damage, boosting its Physical damage at the expense of all other Damage Types\.$/i,
+      () => "Hỗ trợ bất kỳ Skill gây Damage nào, tăng Physical Damage nhưng mất các Damage Type khác."
+    ],
+    [
+      /^Supports any skill with an area of effect, making it larger\.$/i,
+      () => "Hỗ trợ bất kỳ Skill nào có Area of Effect, làm vùng hiệu ứng lớn hơn."
+    ],
+    [
+      /^Supports any skill that (.+?), (.+)\.$/i,
+      ([, condition, effect]) => `Hỗ trợ bất kỳ Skill nào ${naturalSkillFallback(condition).replace(/\.$/, "")}, ${naturalSkillFallback(effect).replace(/\.$/, "")}.`
+    ],
+    [
+      /^Supports any skill with (.+?), (.+)\.$/i,
+      ([, condition, effect]) => `Hỗ trợ bất kỳ Skill nào có ${naturalSkillFallback(condition).replace(/\.$/, "")}, ${naturalSkillFallback(effect).replace(/\.$/, "")}.`
+    ],
+    [
+      /^Supports (.+?), (.+)\.$/i,
+      ([, target, effect]) => `Hỗ trợ ${naturalSkillFallback(target).replace(/\.$/, "")}, ${naturalSkillFallback(effect).replace(/\.$/, "")}.`
+    ],
+    [
+      /^Supports (.+?)\.$/i,
+      ([, target]) => `Hỗ trợ ${naturalSkillFallback(target).replace(/\.$/, "")}.`
+    ],
     [
       /^Conjures a rootbound fissure that crawls forward, damaging enemies in its path\.$/i,
       () => "Tạo một khe nứt bám rễ bò về phía trước, gây damage lên kẻ địch trên đường đi."

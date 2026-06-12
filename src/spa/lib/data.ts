@@ -3,6 +3,7 @@ type GlobalName =
   | "POE2_CURRENCY"
   | "POE2_ITEMS"
   | "POE2_DICTIONARY_TERMS"
+  | "POE2_BUILD_PLANNER_DATA"
   | "POE2_PASSIVE_TREE"
   | "POE2_PASSIVE_TREE_CHANGES"
   | "POE2_CRAFT"
@@ -11,6 +12,9 @@ type GlobalName =
 
 const pendingScripts = new Map<string, Promise<unknown>>();
 const passiveTreeDataVersion = "20260528-pruned-nodes";
+const itemsDataVersion = "20260529-item-categories";
+const skillGemsDataVersion = "20260529-gem-sot-official";
+const dictionaryDataVersion = "20260529-gem-sot";
 
 export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promise<T> {
   const current = window[globalName as keyof Window] as T | undefined;
@@ -45,10 +49,11 @@ export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promis
   return promise;
 }
 
-export const loadSkillGemsData = () => loadScriptGlobal<any>("/data/skill-gems-data.js", "POE2_SKILL_GEMS");
+export const loadSkillGemsData = () => loadScriptGlobal<any>(`/data/skill-gems-data.js?v=${skillGemsDataVersion}`, "POE2_SKILL_GEMS");
 export const loadCurrencyData = () => loadScriptGlobal<any>("/data/currency-data.js", "POE2_CURRENCY");
-export const loadItemsData = () => loadScriptGlobal<any>("/data/items-data.js", "POE2_ITEMS");
-export const loadDictionaryData = () => loadScriptGlobal<any>("/data/dictionary-data.js", "POE2_DICTIONARY_TERMS");
+export const loadItemsData = () => loadScriptGlobal<any>(`/data/items-data.js?v=${itemsDataVersion}`, "POE2_ITEMS");
+export const loadDictionaryData = () => loadScriptGlobal<any>(`/data/dictionary-data.js?v=${dictionaryDataVersion}`, "POE2_DICTIONARY_TERMS");
+export const loadBuildPlannerData = () => loadScriptGlobal<any>("/data/build-planner-data.js", "POE2_BUILD_PLANNER_DATA");
 export const loadPassiveTreeData = () => loadScriptGlobal<any>(`/data/passive-tree-data.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE");
 export const loadPassiveTreeChanges = () => loadScriptGlobal<any>(`/data/passive-tree-changes.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE_CHANGES");
 export const loadLevelingData = () => loadScriptGlobal<any[]>("/data/leveling-data.js", "levelingRouteZones");
