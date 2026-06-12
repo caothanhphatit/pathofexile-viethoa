@@ -6,6 +6,8 @@ export type RouteKey =
   | "lookup"
   | "newbie"
   | "beginner"
+  | "craft"
+  | "craftSim"
   | "items"
   | "dictionary"
   | "weapon"
@@ -78,6 +80,26 @@ export const routes: AppRoute[] = [
     icon: "menu_book",
     navParent: "newbie",
     aliases: ["/beginner", "/beginner.html"]
+  },
+  {
+    key: "craft",
+    path: "/craft",
+    title: "Hướng dẫn Craft cơ bản POE2",
+    shortTitle: "Craft",
+    description: "Nền tảng craft Path of Exile 2: 6 modifier, item level, currency, essence, omen, quality, rune và thứ tự craft an toàn.",
+    icon: "handyman",
+    navParent: "newbie",
+    aliases: ["/craft.html", "/crafting"]
+  },
+  {
+    key: "craftSim",
+    path: "/craft-sim",
+    title: "Bàn Craft POE2",
+    shortTitle: "Craft",
+    description: "Trình mô phỏng craft Path of Exile 2 kiểu stash: chọn base, right-click currency để craft, xem mod/tier/weight.",
+    icon: "handyman",
+    navOrder: 75,
+    aliases: ["/craft-sim.html", "/craft-simulator"]
   },
   {
     key: "items",
@@ -207,6 +229,20 @@ const routeCopy: Partial<Record<RouteKey, Partial<Record<Locale, Partial<RouteTe
       title: "POE2 Beginner Guide",
       shortTitle: "Beginner guide",
       description: "A beginner guide covering game flow, loot, builds, and core Path of Exile 2 systems."
+    }
+  },
+  craft: {
+    en: {
+      title: "POE2 Crafting Basics",
+      shortTitle: "Crafting",
+      description: "Crafting fundamentals: the 6-modifier rule, item level, currency, essences, omens, quality, runes, and a safe crafting order."
+    }
+  },
+  craftSim: {
+    en: {
+      title: "POE2 Craft Simulator",
+      shortTitle: "Craft sim",
+      description: "A stash-style Path of Exile 2 crafting simulator: pick a base, right-click currency to craft, and inspect mods, tiers, and weights."
     }
   },
   items: {

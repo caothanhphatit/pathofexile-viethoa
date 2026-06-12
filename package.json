@@ -29,7 +29,10 @@
     "dev:spa": "vite --config vite.spa.config.mjs",
     "build:spa": "vite build --config vite.spa.config.mjs",
     "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./public/dist/app.css --minify",
-    "build": "npm run build:css && npm run build:spa"
+    "build": "npm run build:css && npm run build:spa",
+    "crawl:item-mods": "node scripts/crawl-item-mods.mjs",
+    "build:craft-index": "node scripts/build-craft-index.mjs",
+    "crawl:craft": "node scripts/crawl-item-mods.mjs && node scripts/build-craft-index.mjs"
   },
   "keywords": [],
   "author": "",

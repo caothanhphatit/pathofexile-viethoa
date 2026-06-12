@@ -17,7 +17,8 @@ window.levelingRouteZones = [
     meta: "Town",
     tasks: [
       { id: "town-talk-renly", required: true, text: "Nói chuyện với <strong>Renly</strong>", badges: [{ text: "Skill Gem Lv1", tone: "blue" }] },
-      { id: "town-accept-quest", required: true, text: "Nhận quest, vào <strong>Clearfell</strong>" }
+      { id: "town-accept-quest", required: true, text: "Nhận quest, vào <strong>Clearfell</strong>" },
+      { id: "town-farrow-note", tip: true, text: "<em>0.5 — NPC mới Farrow:</em> mỗi Act (1–4) có 1 quest của Farrow mở dần <strong>Verisium Runeforging, Runic Alloys, Unique Verisium Runeforging, Ancient Runes</strong>. Nhớ nhận ở từng act (chi tiết trong Crafting Codex).", badges: [{ text: "0.5 mới", tone: "violet" }] }
     ]
   },
   {
@@ -482,16 +483,8 @@ window.levelingRouteZones = [
     level: "Lvl 28-29",
     tasks: [
       { id: "a2-dreadnought-travel", required: true, text: "Đi tới <strong>The Dreadnought</strong>" },
-      { id: "a2-dreadnought-enter-vanguard", required: true, text: "Vào <strong>Dreadnought Vanguard</strong>" }
-    ]
-  },
-  {
-    id: "act2-dreadnought-vanguard",
-    act: "act2",
-    title: "Dreadnought Vanguard",
-    level: "Lvl 29",
-    tasks: [
-      { id: "a2-dreadnought-jamanra", required: true, text: "Giết <strong>Jamanra, the Risen King</strong>", badges: [{ text: "Act boss", tone: "red" }] },
+      { id: "a2-dreadnought-vanguard-removed", tip: true, text: "<em>0.5:</em> khu <strong>Dreadnought Vanguard</strong> đã bị gỡ — Jamanra giờ đánh thẳng trong The Dreadnought.", badges: [{ text: "0.5 mới", tone: "violet" }] },
+      { id: "a2-dreadnought-jamanra", required: true, text: "Giết <strong>Jamanra, the Risen King</strong> ngay trong The Dreadnought", badges: [{ text: "Act boss", tone: "red" }] },
       { id: "a2-dreadnought-jamanra-tip", tip: true, text: "Boss bắt đầu ở trạng thái armor-broken; khoảng 55k phys damage có thể stun trước phase lightning fence.", badges: [{ text: "tip", tone: "amber" }] },
       { id: "a2-dreadnought-tp-caravan", required: true, text: "TP back về town" }
     ]
@@ -652,9 +645,8 @@ window.levelingRouteZones = [
     level: "Lvl 35",
     tasks: [
       { id: "a3-matlan-hut", text: "<em>(Opt)</em> Hut -> giết rare", badges: [{ text: "Random loot", tone: "blue" }] },
-      { id: "a3-matlan-levers", required: true, text: "Kéo các levers trong zone (6-8 tùy layout)" },
-      { id: "a3-matlan-big-canal-lever", required: true, text: "Kéo <strong>Big Canal Lever</strong> ở cuối zone" },
-      { id: "a3-matlan-portal-skip", tip: true, text: "Portal-skip: mở portal trước khi bấm lever cuối, spam-click để khỏi mở map và thoát nhanh hơn.", badges: [{ text: "tip", tone: "amber" }] },
+      { id: "a3-matlan-levers", required: true, text: "<em>0.5:</em> các lever giờ là <strong>pressure pad đi-qua</strong> — chỉ cần đi qua, không cần kéo", badges: [{ text: "0.5 mới", tone: "violet" }] },
+      { id: "a3-matlan-big-canal", required: true, text: "<em>0.5:</em> đoạn kênh cuối đã <strong>tháo sẵn nước (pre-drained)</strong> — không còn cần portal-skip", badges: [{ text: "0.5 mới", tone: "violet" }] },
       { id: "a3-matlan-tp-town", required: true, text: "TP back về town" }
     ]
   },
@@ -1076,8 +1068,11 @@ window.levelingRouteZones = [
       { id: "interlude-53-howling-caves", required: true, text: "Đi tới <strong>Glacial Tarn</strong> -> vào <strong>Howling Caves</strong>" },
       { id: "interlude-53-yeti", required: true, text: "Giết <strong>The Abominable Yeti</strong>, nhặt <strong>Icy Tusks</strong>", badges: [{ text: "+2 Skill Points", tone: "green" }, { text: "boss", tone: "red" }] },
       { id: "interlude-53-peaks", required: true, text: "Đi tới <strong>Kriar Peaks</strong>" },
-      { id: "interlude-53-madox", required: true, text: "Tìm <strong>Elder Madox</strong> ở hướng 10-11 giờ", badges: [{ text: "Free Unique Item", tone: "green" }] },
-      { id: "interlude-53-doriani", text: "<em>(Opt)</em> Đi thật xa về bên phải tới <strong>Doriani's Contingency</strong>", badges: [{ text: "Titan Rock Catafract", tone: "blue" }] }
+      { id: "interlude-53-madox", required: true, text: "Tìm <strong>Elder Maddox</strong> ở hướng 10-11 giờ", badges: [{ text: "Free Unique Item", tone: "green" }] },
+      { id: "interlude-53-doriani", text: "<em>(Opt)</em> Đi thật xa về bên phải tới <strong>Doryani's Contingency</strong>", badges: [{ text: "Titan Rock Catafract (rương unique)", tone: "blue" }] },
+      { id: "interlude-53-beacons", required: true, text: "Tìm & kích hoạt <strong>bộ 6 Ancient Beacons thứ hai</strong> (rải khắp các Interlude) -> loot <strong>Energised Crystals</strong>", badges: [{ text: "0.5 mới", tone: "violet" }, { text: "Energised Crystals", tone: "blue" }] },
+      { id: "interlude-53-vaal-portal", required: true, text: "Mở <strong>portal</strong> để tiếp tục cốt truyện <strong>Fate of the Vaal</strong> (nối tiếp chuỗi Act 3)", badges: [{ text: "0.5 mới", tone: "violet" }] },
+      { id: "interlude-53-vaal-note", tip: true, text: "<em>0.5 New Core:</em> đây là bộ beacon thứ 2, nối tiếp chuỗi Act 3. Tên khu chính xác chưa có trong patch note (có thể liên quan tới Doryani's Contingency ở trên) — coi như chưa xác nhận, xem endgame guide để rõ." }
     ]
   },
   {
@@ -1085,7 +1080,11 @@ window.levelingRouteZones = [
     act: "interlude",
     title: "Completion +2 SP Final",
     tasks: [
-      { id: "interlude-complete-hooded-one", required: true, text: "Sau khi xong cả 3 Interludes, nói <strong>The Hooded One</strong>", badges: [{ text: "+2 Skill Points", tone: "green" }] }
+      { id: "interlude-complete-hooded-one", required: true, text: "Sau khi xong cả 3 Interludes, nói <strong>The Hooded One</strong>", badges: [{ text: "+2 Skill Points", tone: "green" }] },
+      { id: "interlude-rewards-summary", tip: true, text: "<strong>Tổng phần thưởng Interlude:</strong> +8 Skill Points (cộng dồn), +5% Max Life, +40 Spirit, 1 Free Unique, chọn 1/7 Boon (Orbala). Tất cả đều <strong>missable</strong> — làm đủ cả 3 trước khi vào Maps." },
+      { id: "interlude-tip-craft", tip: true, text: "<em>Đừng over-craft ở Interlude.</em> Nấc gear tiếp theo là Map Tier 1 — để dành Exalt cho endgame. 0.5 đã giảm density ở Interlude để clear nhanh hơn, cứ push." },
+      { id: "interlude-tip-ascendancy", tip: true, text: "Chốt <strong>Ascendancy</strong> trước khi nhận +2 SP completion. Ascendancy leveling (Smith of Kitava, Demon Form, Sorcery Ward) có thể re-spec sang Ascendancy endgame chuyên sâu sau." },
+      { id: "interlude-tip-arbiter", tip: true, text: "<em>0.5:</em> Arbiter of Ash không còn là đỉnh — apex mới là <strong>Arbiter of Divinity</strong> (xem endgame guide cho 5 storyline mới)." }
     ]
   },
   {

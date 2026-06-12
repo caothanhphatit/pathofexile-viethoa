@@ -24,9 +24,10 @@ import {
   syncSelectedStartNodeIds
 } from "../passive/planner";
 import { filteredTreeNodes, parsePassiveTree, projectNodeForView, type PassiveNode, type PassiveTreeModel } from "../passive/tree";
+import { parsePobBuild, type PobBuild } from "../passive/pob";
 
 type ChangeFilter = PassiveChangeStatus | "all";
-type PassivePanelMode = "build" | "changes";
+type PassivePanelMode = "build" | "changes" | "items";
 
 const BUILD_PASSIVE_LIMIT = 124;
 const BUILD_ASCENDANCY_LIMIT = 8;
@@ -147,6 +148,11 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
   const [buildLimitWarning, setBuildLimitWarning] = useState("");
   const [hover, setHover] = useState<{ node: PassiveNode | null; x: number; y: number; held: boolean }>({ node: null, x: 0, y: 0, held: false });
   const [command, setCommand] = useState<CanvasCommand | null>(null);
+  const [pob, setPob] = useState<PobBuild | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importText, setImportText] = useState("");
+  const [importErr, setImportErr] = useState("");
+  const [importing, setImporting] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -294,6 +300,40 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
     });
   };
 
+  const applyPob = (build: PobBuild) => {
+    if (!tree) return;
+    const className = tree.classByName.has(build.className) ? build.className : "";
+    const ascendancy = className && tree.classByName.get(className)?.ascendancies.some((a) => a.name === build.ascendClassName)
+      ? build.ascendClassName : "";
+    setClassFilter(className);
+    setAscendancyFilter(ascendancy);
+    const starts = selectedStartNodeIds(tree, className, ascendancy);
+    const ids = new Set<string>(build.nodeIds.filter((id) => tree.nodeById.has(id)));
+    setAllocatedIds(syncSelectedStartNodeIds(ids, starts, allStartNodeIds(tree)));
+    setBuildLimitWarning("");
+    setPob(build);
+  };
+
+  const doImport = async () => {
+    if (!importText.trim() || importing) return;
+    setImporting(true);
+    setImportErr("");
+    try {
+      const build = await parsePobBuild(importText);
+      if (!build.nodeIds.length && !build.items.length && !build.skills.length) {
+        throw new Error("Build rỗng — không có cây/item/gem nào");
+      }
+      applyPob(build);
+      setImportOpen(false);
+      setImportText("");
+      setActiveMode(build.items.length || build.skills.length ? "items" : "build");
+    } catch (err) {
+      setImportErr(err instanceof Error ? err.message : "Không đọc được build");
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const runCommand = (type: CanvasCommand["type"], target?: Pick<CanvasCommand, "x" | "y" | "zoom">) => setCommand({ type, nonce: Date.now(), ...target });
 
   const focusChange = (change: PassiveTreeChangeMarker) => {
@@ -328,6 +368,11 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
             <span className="material-symbols-rounded" aria-hidden="true">change_circle</span>
             <span>Change 0.4</span>
           </button>
+          <button className={activeMode === "items" ? "is-active" : ""} type="button" onClick={() => setActiveMode("items")} aria-pressed={activeMode === "items"} disabled={!pob}>
+            <span className="material-symbols-rounded" aria-hidden="true">backpack</span>
+            <span>Items</span>
+            {pob ? <strong>{formatNumber(pob.items.length, locale)}</strong> : null}
+          </button>
         </div>
         <label>
           <span>{localizedText(passiveCopy.class, "", locale)}</span>
@@ -347,6 +392,10 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
           <span className="material-symbols-rounded" aria-hidden="true">search</span>
           <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={localizedText(passiveCopy.search, "", locale)} aria-label="search" />
         </label>
+        <button className="passive-action passive-action--accent" type="button" onClick={() => { setImportErr(""); setImportOpen(true); }} title="Nhập build từ Path of Building" aria-label="Import POB">
+          <span className="material-symbols-rounded" aria-hidden="true">content_paste</span>
+          <span>Nhập POB</span>
+        </button>
         <button className="passive-action" type="button" onClick={() => runCommand("fit")} title="Fit map" aria-label="Fit map">
           <span className="material-symbols-rounded" aria-hidden="true">fit_screen</span>
           <span>Fit</span>
@@ -469,6 +518,52 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
             )}
           </aside>
         ) : null}
+        {activeMode === "items" && pob ? (
+          <aside className="passive-build-panel passive-pob-panel passive-side-panel">
+            <div className="passive-panel-title">
+              <span className="material-symbols-rounded" aria-hidden="true">backpack</span>
+              <div>
+                <h2 translate="no">{pob.className || "Build"}{pob.ascendClassName ? ` · ${pob.ascendClassName}` : ""}</h2>
+                <p>Lv {formatNumber(pob.level, locale)} · {formatNumber(pob.nodeIds.length, locale)} node · {formatNumber(pob.items.length, locale)} item</p>
+              </div>
+            </div>
+            {pob.skills.length ? (
+              <div className="passive-build-section">
+                <h3>Skill gems</h3>
+                <div className="passive-pob-skills" translate="no">
+                  {pob.skills.map((group, gi) => (
+                    <div className="passive-pob-skill" key={`${group.slot}-${gi}`}>
+                      {group.slot ? <span className="passive-pob-slot">{group.slot}</span> : null}
+                      {group.gems.map((gem, idx) => (
+                        <div className={`passive-pob-gem ${gem.enabled ? "" : "is-off"}`} key={`${gem.name}-${idx}`}>
+                          <span>{gem.name}</span>
+                          <small>L{gem.level}{gem.quality ? ` · Q${gem.quality}` : ""}</small>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {pob.items.length ? (
+              <div className="passive-build-section">
+                <h3>Items</h3>
+                <div className="passive-pob-items" translate="no">
+                  {pob.items.map((item) => (
+                    <details className={`passive-pob-item rarity-${item.rarity.toLowerCase() || "normal"}`} key={item.id}>
+                      <summary>
+                        {item.slot ? <span className="passive-pob-slot">{item.slot}</span> : null}
+                        <strong>{item.name || item.baseType || "Item"}</strong>
+                        {item.baseType && item.baseType !== item.name ? <small>{item.baseType}</small> : null}
+                      </summary>
+                      <pre>{item.text}</pre>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </aside>
+        ) : null}
         {hover.node ? (
           <div className={`passive-tooltip ${hover.held ? "is-held" : ""}`} style={{ left: Math.min(hover.x + 18, window.innerWidth - 380), top: Math.min(hover.y + 18, window.innerHeight - 220) }}>
             <strong translate="no">{hover.node.name || `Node ${hover.node.id}`}</strong>
@@ -484,6 +579,32 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
           </div>
         ) : null}
       </div>
+      {importOpen ? (
+        <div className="passive-import-overlay" onClick={() => !importing && setImportOpen(false)}>
+          <div className="passive-import-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="passive-import-head">
+              <h2>Nhập build từ Path of Building</h2>
+              <button type="button" onClick={() => setImportOpen(false)} aria-label="Đóng" disabled={importing}>✕</button>
+            </div>
+            <p>Dán <strong>build code</strong> (Path of Building → Import/Export → Generate) hoặc link <strong>pobb.in</strong> / <strong>pastebin</strong>.</p>
+            <textarea
+              value={importText}
+              onChange={(event) => setImportText(event.target.value)}
+              placeholder="eNrtv… hoặc https://pobb.in/xxxxxxxx"
+              rows={6}
+              spellCheck={false}
+              autoFocus
+            />
+            {importErr ? <p className="passive-import-error">{importErr}</p> : null}
+            <div className="passive-import-actions">
+              <button type="button" className="passive-action" onClick={() => setImportOpen(false)} disabled={importing}>Hủy</button>
+              <button type="button" className="passive-action passive-action--accent" onClick={doImport} disabled={importing || !importText.trim()}>
+                {importing ? "Đang đọc…" : "Load build"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

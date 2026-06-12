@@ -6,6 +6,7 @@ const legacyFiles: Partial<Record<RouteKey, string>> = {
   patchnote: "/patchnote_vn.html",
   newbie: "/newbie.html",
   beginner: "/beginner.html",
+  craft: "/craft.html",
   weapon: "/weapon.html"
 };
 
@@ -23,6 +24,11 @@ const fallbackCopy: Record<string, { eyebrow: string; title: string; body: strin
   beginner: {
     eyebrow: "Beginner guide",
     title: "Beginner guide POE2",
+    body: "Khong tai duoc noi dung legacy."
+  },
+  craft: {
+    eyebrow: "Crafting",
+    title: "Huong dan Craft co ban",
     body: "Khong tai duoc noi dung legacy."
   },
   weapon: {
@@ -87,6 +93,7 @@ function extractLegacyMain(html: string, locale: Locale): string {
       "/lookup.html": "/tra-cuu",
       "/newbie.html": "/newbie",
       "/beginner.html": "/beginner-guide",
+      "/craft.html": "/craft",
       "/weapon.html": "/weapon",
       "/skill_gems.html": "/skill-gems",
       "/currency.html": "/currency",

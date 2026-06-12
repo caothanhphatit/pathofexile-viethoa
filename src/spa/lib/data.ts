@@ -5,6 +5,8 @@ type GlobalName =
   | "POE2_DICTIONARY_TERMS"
   | "POE2_PASSIVE_TREE"
   | "POE2_PASSIVE_TREE_CHANGES"
+  | "POE2_CRAFT"
+  | "POE2_CRAFT_INDEX"
   | "levelingRouteZones";
 
 const pendingScripts = new Map<string, Promise<unknown>>();
@@ -50,6 +52,8 @@ export const loadDictionaryData = () => loadScriptGlobal<any>("/data/dictionary-
 export const loadPassiveTreeData = () => loadScriptGlobal<any>(`/data/passive-tree-data.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE");
 export const loadPassiveTreeChanges = () => loadScriptGlobal<any>(`/data/passive-tree-changes.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE_CHANGES");
 export const loadLevelingData = () => loadScriptGlobal<any[]>("/data/leveling-data.js", "levelingRouteZones");
+export const loadCraftData = () => loadScriptGlobal<any>("/data/craft-data.js?v=20260610", "POE2_CRAFT");
+export const loadCraftIndex = () => loadScriptGlobal<any>("/data/craft-index.js?v=20260610", "POE2_CRAFT_INDEX");
 
 export function useAsyncData<T>(loader: () => Promise<T>, onData: (value: T) => void, onError: (error: Error) => void): () => void {
   let cancelled = false;

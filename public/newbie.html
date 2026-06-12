@@ -25,7 +25,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
-  <link href="dist/app.css?v=20260529-font-ui" rel="stylesheet">
+  <link href="dist/app.css?v=20260610-craftsim3" rel="stylesheet">
   <script defer src="app-routes.js"></script>
   <script defer src="components/app-shell.js"></script>
   <style>
@@ -54,7 +54,7 @@
         </div>
         <div class="inline-flex h-10 w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
           <span class="material-symbols-rounded text-sm text-rose-500" aria-hidden="true">view_list</span>
-          <span data-newbie-count>2 bài</span>
+          <span data-newbie-count>3 bài</span>
         </div>
       </div>
     </section>
@@ -67,6 +67,20 @@
         <span class="min-w-0 flex-1">
           <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Hướng dẫn nhập môn Path of Exile 2</span>
           <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Hệ thống hóa các phần nhập môn: Build guide, Chế độ game, mùa giải, Class, Ascendancy, Skill Gem, Dodge Roll, Flask, item và Gold.</span>
+        </span>
+        <span class="hidden shrink-0 items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
+          <span data-open-label>Mở bài</span>
+          <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
+        </span>
+      </a>
+
+      <a class="newbie-card glass-panel group flex items-center gap-4 rounded-lg border-l-4 border-l-amber-500 p-4 no-underline shadow-sm hover:border-amber-300 hover:shadow-md2 dark:hover:border-amber-700" href="/craft" data-newbie-card="craft">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-300">
+          <span class="material-symbols-rounded text-2xl" aria-hidden="true">handyman</span>
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block font-display text-lg font-black leading-tight text-slate-950 dark:text-white" data-card-title>Hướng dẫn Craft cơ bản</span>
+          <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400" data-card-description>Nền tảng chế đồ: quy tắc 6 modifier, item level, currency, essence, omen, quality, rune và thứ tự craft an toàn.</span>
         </span>
         <span class="hidden shrink-0 items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-black text-slate-600 transition group-hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-900 sm:inline-flex">
           <span data-open-label>Mở bài</span>
@@ -96,7 +110,7 @@
       documentTitle: { vi: "Newbie - POE2", en: "Beginner - POE2" },
       title: { vi: "Newbie", en: "Beginner" },
       heroLabel: { vi: "Newbie POE2", en: "POE2 beginner guides" },
-      count: { vi: "2 bài", en: "2 articles" },
+      count: { vi: "3 bài", en: "3 articles" },
       listLabel: { vi: "Danh sách bài newbie", en: "Beginner article list" },
       open: { vi: "Mở bài", en: "Open" },
       cards: {
@@ -105,6 +119,13 @@
           description: {
             vi: "Hệ thống hóa các phần nhập môn: Build guide, Chế độ game, mùa giải, Class, Ascendancy, Skill Gem, Dodge Roll, Flask, item và Gold.",
             en: "A structured beginner guide covering build guides, game modes, classes, ascendancies, skill gems, dodge roll, flasks, items, and Gold."
+          }
+        },
+        craft: {
+          title: { vi: "Hướng dẫn Craft cơ bản", en: "Crafting basics" },
+          description: {
+            vi: "Nền tảng chế đồ: quy tắc 6 modifier, item level, currency, essence, omen, quality, rune và thứ tự craft an toàn.",
+            en: "Crafting fundamentals: the 6-modifier rule, item level, currency, essences, omens, quality, runes, and a safe crafting order."
           }
         },
         weapon: {

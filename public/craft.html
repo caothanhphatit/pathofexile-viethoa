@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hướng dẫn Craft cơ bản - POE2</title>
+  <meta name="description" content="Hướng dẫn craft Path of Exile 2 cơ bản bằng tiếng Việt: quy tắc 6 modifier, item level, currency tiers, currency index, essence, omen, quality, rune và thứ tự craft an toàn.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://poeviethoa.net/craft">
+  <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/craft">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="POE2 Việt hóa">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Hướng dẫn Craft cơ bản POE2 (Việt hóa)">
+  <meta property="og:description" content="Nền tảng craft Path of Exile 2 cho người mới: 6 modifier, item level, currency, essence, omen, quality, rune và thứ tự craft an toàn.">
+  <meta property="og:url" content="https://poeviethoa.net/craft">
+  <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hướng dẫn Craft cơ bản POE2 (Việt hóa)">
+  <meta name="twitter:description" content="Nền tảng craft Path of Exile 2 cho người mới chơi.">
+  <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script src="components/theme-boot.js"></script>
+  <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="dist/app.css?v=20260610-craftsim3" rel="stylesheet">
+  <script defer src="app-routes.js"></script>
+  <script defer src="components/app-shell.js"></script>
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+  <div data-component="site-header" data-subtitle="Craft cơ bản"></div>
+
+  <main class="poe-shell-container grid gap-5 py-6" id="main">
+
+    <!-- Hero -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <div class="flex items-center gap-3">
+        <span class="grid h-11 w-11 place-items-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md2">
+          <span class="material-symbols-rounded text-2xl" aria-hidden="true">handyman</span>
+        </span>
+        <div>
+          <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Hướng dẫn Craft cơ bản</h1>
+          <p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">Nền tảng chế đồ trong Path of Exile 2 cho người mới.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cảnh báo 0.5 -->
+    <section class="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm leading-6 dark:border-amber-700/60 dark:bg-amber-950/30">
+      <p class="font-black text-amber-800 dark:text-amber-300"><span class="material-symbols-rounded align-middle text-base">warning</span> Lưu ý patch 0.5 — giới hạn craft</p>
+      <p class="mt-1 text-amber-900/90 dark:text-amber-100/90">Trong 0.5, <strong>Essence, Perfect Essence và imbued alloys dùng chung một "ô crafted"</strong> trên item — nên <strong>không còn chồng nhiều craft xác định lên một món</strong> như trước. Gear đầu mùa sẽ yếu hơn rõ rệt (Martial weapon ảnh hưởng nặng nhất, build spell ít nhất). Nhiều combo essence dây chuyền cũ có thể không còn dùng được.</p>
+    </section>
+
+    <!-- PoE2DB note -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-lg font-black text-slate-950 dark:text-white">Trước khi craft: mở sẵn PoE2DB</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300"><a class="font-bold text-amber-700 underline dark:text-amber-400" href="https://poe2db.tw" target="_blank" rel="noopener">poe2db.tw</a> là nguồn tra cứu mọi base, mọi modifier, mọi tier, tag, ngưỡng ilvl và weight. Mở trang <em>Item Modifiers per Base Type</em> của món bạn định craft — mỗi mod ghi dạng <code class="rounded bg-slate-100 px-1 dark:bg-slate-800">#% increased Maximum Life · life · defence · T1 · ilvl 81 · weight 600</code>. Trong game: bật <strong>Advanced Mod Descriptions</strong> trong UI Settings, giữ <strong>Alt</strong> rê chuột lên item để xem tier (T1, T2…) và khoảng roll.</p>
+    </section>
+
+    <!-- 1. Quy tắc 6 mod -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">1. Quy tắc 6 modifier</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Đây là điều quan trọng nhất phải nhớ khi craft trong PoE2: một item <span class="font-black text-amber-700 dark:text-amber-400">Rare chỉ chứa tối đa 6 modifier</span>, chia đều <strong>3 prefix + 3 suffix</strong>. Nói cho cùng, mọi kỹ thuật trong bài này đều chỉ nhằm một việc — lấp đầy 6 ô đó bằng những mod bạn muốn.</p>
+      <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <li>Mỗi <strong>nhóm mod (group)</strong> chỉ giữ được <strong>một</strong> mod. Nếu nhóm đó đã có sẵn mod, currency kiểu "thêm mod đảm bảo" sẽ <strong>báo fail chứ không tạo thêm mod thứ hai</strong> cùng nhóm.</li>
+        <li>Item <strong>Magic</strong> chỉ tối đa 2 mod (1 prefix + 1 suffix); item <strong>Normal</strong> (đồ trắng) không có mod nào.</li>
+      </ul>
+    </section>
+
+    <!-- 2. Item level & breakpoint -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">2. Item Level (ilvl) &amp; Breakpoint</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Mỗi item có <strong>Item Level (ilvl)</strong> cố định lúc rớt (bằng level khu vực). Mỗi tier của mỗi mod cũng có một <strong>Mod Level</strong> riêng. Quy tắc gói gọn trong một dòng:</p>
+      <p class="mt-2 rounded-md bg-slate-100 p-3 text-center font-black text-slate-800 dark:bg-slate-800 dark:text-slate-100">mod_level ≤ item_level</p>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Mod T1 yêu cầu mod level 82 <strong>không thể</strong> xuất hiện trên item ilvl 75 — không essence, không omen, không may mắn nào cứu được. Tier cao đơn giản là <em>không có</em> trong pool của item đó.</p>
+      <div class="mt-3 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-left dark:border-slate-700">
+              <th class="py-2 pr-3 font-black">Mod thường nhắm</th>
+              <th class="py-2 pr-3 font-black">Slot</th>
+              <th class="py-2 font-black">ilvl top-tier</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-600 dark:text-slate-300">
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3">% increased Movement Speed</td><td class="py-2 pr-3">Boots</td><td class="py-2">T1 ≥ 82 · T2 ≥ 70</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3">Elemental Resistance (Fire/Cold/Lightning)</td><td class="py-2 pr-3">Mọi slot roll được</td><td class="py-2">T1 ≥ 82 (+41–45%)</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3">Chaos Resistance</td><td class="py-2 pr-3">Body Armour</td><td class="py-2">T1 ≥ 81</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3">+# to Maximum Life</td><td class="py-2 pr-3">Body/Belt/Jewellery</td><td class="py-2">tùy base (tra PoE2DB)</td></tr>
+            <tr><td class="py-2 pr-3">Bow fires +# additional Arrows</td><td class="py-2 pr-3">Bow</td><td class="py-2">≥ 82</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300"><strong>Mẹo chọn base:</strong> ilvl cao mở trần tier cao nhưng cũng mở rộng pool (nhiều mod rác cạnh tranh hơn). Base <strong>ilvl 75–80</strong> thường là "expected value" tốt hơn cho craft tầm trung vì pool gọn hơn. Chỉ chọn ilvl 81–82 khi thật sự cần T1.</p>
+    </section>
+
+    <!-- 3. Currency Tiers -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">3. Currency Tiers — Lesser · Greater · Perfect</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">5 currency cơ bản (<strong>Transmutation, Augmentation, Regal, Chaos, Exalted</strong>) tồn tại ở <strong>3 tier</strong>. Tier cao làm cùng một việc nhưng áp <strong>sàn mod level tối thiểu</strong>, cắt bớt kết quả tier thấp khỏi pool ngẫu nhiên — đây là cách "ăn chắc" lớn nhất cho người mới.</p>
+      <div class="mt-3 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-left dark:border-slate-700">
+              <th class="py-2 pr-3 font-black">Tier</th>
+              <th class="py-2 pr-3 font-black">Sàn mod level</th>
+              <th class="py-2 font-black">Tác dụng</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-600 dark:text-slate-300">
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Lesser / Normal</td><td class="py-2 pr-3">Không sàn</td><td class="py-2">Roll mọi tier. Rẻ. Dùng thoải mái trên base ilvl thấp.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Greater</td><td class="py-2 pr-3">ilvl ≥ 35</td><td class="py-2">Cắt bỏ khoảng 1/3 tier thấp nhất. Loại dùng nhiều nhất khi không nhất thiết cần T1.</td></tr>
+            <tr><td class="py-2 pr-3 font-bold">Perfect</td><td class="py-2 pr-3">≥ 50 hoặc ≥ 70 *</td><td class="py-2">Cắt 2/3 tier dưới. Dùng cho cú slam cuối cần T1/T2.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">* Sàn Perfect khác nhau: <strong>Perfect Transmutation/Augmentation = 70</strong> (đứng đầu chuỗi, lọc pool mạnh); <strong>Perfect Exalted/Regal/Chaos = 50</strong> (đứng cuối, cần pool rộng hơn). Perfect Exalt đầu mùa giá vài Divine mỗi viên.</p>
+    </section>
+
+    <!-- 4. Currency Index -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">4. Currency Index — các orb chính</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Bộ orb craft theo thứ tự bạn thường gặp:</p>
+      <div class="mt-3 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-left dark:border-slate-700">
+              <th class="py-2 pr-3 font-black">Orb</th>
+              <th class="py-2 pr-3 font-black">Tác động lên</th>
+              <th class="py-2 font-black">Hiệu ứng &amp; ghi chú</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-600 dark:text-slate-300 align-top">
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Orb of Transmutation</td><td class="py-2 pr-3">Normal</td><td class="py-2">Nâng lên Magic + 1 mod. Luôn là bước 1. Perfect Transmute rẻ, nên dùng mặc định để có sàn mod level 70.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Orb of Augmentation</td><td class="py-2 pr-3">Magic (1 mod)</td><td class="py-2">Thêm mod thứ 2 (bên còn trống). Rẻ. Greater Aug là chuẩn để lấp đầy magic trước khi Regal.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Regal Orb</td><td class="py-2 pr-3">Magic</td><td class="py-2">Nâng lên Rare + 1 mod ngẫu nhiên. Đánh bạc thuần trừ khi ghép với essence trong chuỗi alt-regal.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Orb of Alchemy</td><td class="py-2 pr-3">Normal</td><td class="py-2">Nâng thẳng lên Rare (thường 4 mod). Chủ yếu dùng cho Waystone, không phải gear.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Orb of Chance</td><td class="py-2 pr-3">Normal</td><td class="py-2">Đổi thành Unique ngẫu nhiên cùng base; fail thì <strong class="text-rose-600 dark:text-rose-400">phá hủy item</strong>. Hầu như không dùng trên gear.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Chaos Orb</td><td class="py-2 pr-3">Rare</td><td class="py-2">Xóa 1 mod ngẫu nhiên + thêm 1 mod mới. Ghép Omen of Whittling để nhắm mod ilvl thấp nhất.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Exalted Orb</td><td class="py-2 pr-3">Rare còn ô trống</td><td class="py-2">Thêm 1 mod mới vào ô trống. Orb "kết thúc". Greater để thường, Perfect khi cú slam quan trọng. Hầu hết craft endgame ghép với omen.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Orb of Annulment</td><td class="py-2 pr-3">Rare</td><td class="py-2">Xóa 1 mod ngẫu nhiên. Ghép omen Sinistral/Dextral để nhắm một bên. Tích trữ — càng về cuối mùa càng đắt.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Divine Orb</td><td class="py-2 pr-3">Magic/Rare</td><td class="py-2">Roll lại <strong>giá trị số</strong> của các mod hiện có (không đổi loại mod). Đánh bóng cuối. Đừng divine cho tới khi chắc chắn đây là item cuối.</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Fracturing Orb</td><td class="py-2 pr-3">Rare ≥ 4 mod</td><td class="py-2">Khóa vĩnh viễn 1 mod ngẫu nhiên (không xóa/đổi được). Nền tảng craft cao cấp (cô lập mod tốt trước khi craft tiếp).</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Vaal Orb</td><td class="py-2 pr-3">Mọi rarity</td><td class="py-2">Corrupt item — kết quả ngẫu nhiên (đổi implicit/socket/mod, thành Rare, hoặc "không gì"). Sau đó <strong>khóa, không craft tiếp được</strong>. Luôn là bước <strong>cuối cùng</strong>.</td></tr>
+            <tr><td class="py-2 pr-3 font-bold">Mirror of Kalandra</td><td class="py-2 pr-3">Item chưa corrupt</td><td class="py-2">Tạo bản sao y hệt (bản sao không craft được). Currency giao dịch — đồ mirror-tier bán qua orb này.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">Đa số orb có <strong>shard</strong> (Transmutation Shard, Regal Shard, Chaos Shard…) gộp X-thành-1 tự động qua Currency Exchange.</p>
+    </section>
+
+    <!-- 5. Essences -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">5. Essences</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Essence <strong>đảm bảo một modifier cụ thể</strong> khi dùng. Có 4 tier: <strong>Lesser, Greater, Grand (Normal), Perfect</strong>. Lưu ý: tier của mod được đảm bảo vẫn bị giới hạn bởi ilvl của base.</p>
+      <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <li><strong>Nguồn:</strong> quái "imprisoned essence" (monolith pha lê) — click monolith 3 lần để thả quái rồi giết. Cũng mua được ở <strong>Currency Exchange</strong>. Farm tốt: unique map <strong>Silent Cave</strong>.</li>
+        <li><strong>Lesser</strong> → Magic thành Rare + 1 mod tier thấp (giai đoạn campaign). <strong>Greater</strong> → tier cao hơn (chuẩn endgame). <strong>Perfect</strong> → <em>xóa 1 mod ngẫu nhiên</em> + thêm 1 mod mạnh cụ thể (dùng với omen Crystallisation để kiểm soát bên bị xóa).</li>
+        <li><strong>Remnant of Corruption</strong> (gắn lên monolith trước khi thả quái): nâng mọi essence 1 tier, đổi loại, hoặc cho essence corrupted (Hysteria/Delirium/Insanity/Horror). <em>Essence of Horror</em> là currency duy nhất dùng được trên item đã đủ 6 mod.</li>
+      </ul>
+      <div class="mt-3 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-left dark:border-slate-700">
+              <th class="py-2 pr-3 font-black">Essence</th>
+              <th class="py-2 pr-3 font-black">Đảm bảo (kiểu mod)</th>
+              <th class="py-2 font-black">Dùng tốt trên</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-600 dark:text-slate-300">
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of the Body</td><td class="py-2 pr-3">Maximum Life</td><td class="py-2">Body armour, belt, jewellery</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of the Mind</td><td class="py-2 pr-3">Maximum Mana</td><td class="py-2">Caster gear, focus</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Enhancement</td><td class="py-2 pr-3">Armour / Evasion / ES %</td><td class="py-2">Armour — essence phòng thủ chung</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Abrasion</td><td class="py-2 pr-3">Flat physical damage (attack)</td><td class="py-2">Martial weapon — craft phys chuẩn</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Flames / Ice / Electricity</td><td class="py-2 pr-3">Fire / Cold / Lightning damage</td><td class="py-2">Martial weapon</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Sorcery</td><td class="py-2 pr-3">% spell damage / +spell levels</td><td class="py-2">Wand, staff</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Battle</td><td class="py-2 pr-3">+# to all attack skill gems</td><td class="py-2">Vũ khí 2 tay — craft cao cấp</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Haste / Alacrity</td><td class="py-2 pr-3">Attack speed / Cast speed</td><td class="py-2">Martial / caster weapon</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Seeking</td><td class="py-2 pr-3">Critical hit chance</td><td class="py-2">Build crit, mọi vũ khí</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">of Command</td><td class="py-2 pr-3">Minion damage / minion mods</td><td class="py-2">Sceptre, minion gear</td></tr>
+            <tr><td class="py-2 pr-3 font-bold">of Ruin / Insulation / Thawing / Grounding</td><td class="py-2 pr-3">Chaos / Cold / Fire / Lightning res</td><td class="py-2">Đồ phòng thủ, belt, jewellery</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300"><strong>Chuỗi alt-regal với essence (tầm trung sạch nhất):</strong> Transmute → Augment cho tới khi có prefix/suffix muốn trên base magic, rồi dùng <strong>Greater Essence</strong> nhắm bên còn thiếu. Kết quả: Rare với 1 mod essence đảm bảo + 1 mod từ augment + 1 mod mới — 2/3 item đã xác định trước khi tốn Exalt.</p>
+      <p class="mt-2 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs leading-5 text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/20 dark:text-amber-300"><strong>0.5:</strong> drop essence campaign tăng chung nhưng tỉ lệ Essence of the Infinite giảm mạnh. Perfect Essence of Battle nay +3 (was +5) trên vũ khí 2 tay/Crossbow, +2 (was +3) trên 1 tay/Bow.</p>
+    </section>
+
+    <!-- 6. Omens -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">6. Omens</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Omen là <strong>meta-modifier</strong>: right-click kích hoạt, lần dùng currency tương ứng kế tiếp sẽ bị omen thay đổi hành vi. Một loại omen chỉ áp 1 lần/craft, nhưng <strong>chồng khác loại được</strong> (vd Greater Exaltation + Dextral Exaltation trên cùng 1 Exalt). Dùng xong là <strong>mất</strong>.</p>
+      <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <li><strong>Nguồn:</strong> thưởng chính của <strong>Ritual</strong>. Patch 0.5: mọi phần thưởng trong cửa sổ Ritual đều là Unique hoặc Omen. Cũng mua được qua Currency Exchange.</li>
+        <li><strong>Side-targeting (quan trọng nhất, dùng gần như mọi craft endgame):</strong>
+          <ul class="mt-1 list-[circle] space-y-1 pl-5">
+            <li><strong>Omen of Sinistral Exaltation</strong> + Exalt → chỉ thêm <strong>prefix</strong>.</li>
+            <li><strong>Omen of Dextral Exaltation</strong> + Exalt → chỉ thêm <strong>suffix</strong>.</li>
+            <li>Tương tự có biến thể Annulment (Sinistral/Dextral) để xóa nhắm theo bên.</li>
+          </ul>
+        </li>
+        <li><strong>Omen of Whittling</strong> + Chaos → nhắm mod có <strong>yêu cầu ilvl thấp nhất</strong> (lưu ý: <em>không</em> nhất thiết là tier thấp nhất — luôn hover kiểm tra trước khi bấm).</li>
+        <li><strong>Omen of Crystallisation</strong> (Sinistral/Dextral) + Perfect Essence → kiểm soát <strong>bên</strong> bị xóa.</li>
+      </ul>
+    </section>
+
+    <!-- 7. Quality & Catalysts -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">7. Quality &amp; Catalysts</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Quality là <strong>bonus nhân</strong> lên các mod sẵn có (không thêm mod). Cap 20% (trừ ngoại lệ bên dưới).</p>
+      <div class="mt-3 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-left dark:border-slate-700">
+              <th class="py-2 pr-3 font-black">Currency</th>
+              <th class="py-2 pr-3 font-black">Dùng cho</th>
+              <th class="py-2 font-black">Tác dụng</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-600 dark:text-slate-300">
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Blacksmith's Whetstone</td><td class="py-2 pr-3">Martial weapon, quiver</td><td class="py-2">+5% quality (Greater +10%) — tăng phys damage &amp; accuracy</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Armourer's Scrap</td><td class="py-2 pr-3">Armour</td><td class="py-2">+5% — tăng armour/evasion/ES base</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Arcanist's Etcher</td><td class="py-2 pr-3">Caster weapon</td><td class="py-2">+5% — tăng spell damage</td></tr>
+            <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-2 pr-3 font-bold">Glassblower's Bauble</td><td class="py-2 pr-3">Flask</td><td class="py-2">+5% — tăng charge/effect</td></tr>
+            <tr><td class="py-2 pr-3 font-bold">Artificer's Orb</td><td class="py-2 pr-3">Mọi equipment</td><td class="py-2">Thêm 1 socket Rune/Soul Core</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300"><strong>Catalysts</strong> = quality cho jewellery. Mỗi loại chỉ tăng mod <strong>mang tag tương ứng</strong> (Flesh→life, Xoph's→fire, Tul's→cold, Esh's→lightning, Chayula's→chaos, Skittering→speed, Sibilant→caster…). Catalyst mới <strong>thay thế</strong> catalyst cũ (không cộng dồn).</p>
+      <ul class="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <li><strong>0.5:</strong> catalyst <strong>không còn drop từ quái</strong> — chỉ lấy từ <strong>Genesis Tree</strong> (hệ thống craft Breach). Thêm 12 catalyst mới áp quality cho <strong>Jewel</strong>.</li>
+        <li><strong>Breach Ring</strong> cap <strong>50%</strong> catalyst (thường chỉ 20%) → base jewellery mạnh nhất game khi catalyse đúng. Để dành catalyst hiếm cho Breach Ring.</li>
+        <li><strong>Combo:</strong> catalyst trước, rồi Exalt dưới <strong>Omen of Catalysing Exaltation</strong> → cú slam bị lệch về tag của catalyst.</li>
+      </ul>
+    </section>
+
+    <!-- 8. Sockets, Runes & Soul Cores -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">8. Sockets · Runes · Soul Cores</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Socket trong PoE2 chứa <strong>Rune, Soul Core hoặc Talisman</strong> (khác với gem socket của skill/support). Thêm socket bằng <strong>Artificer's Orb</strong> (10 Artificer's Shard = 1 Orb).</p>
+      <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <li><strong class="text-rose-600 dark:text-rose-400">Đã gắn là vĩnh viễn</strong> — không lấy ra được, chỉ ghi đè (phá cái cũ). Luôn craft xong affix rồi mới gắn socket.</li>
+        <li><strong>Runes</strong>: 3 tier (Lesser → Normal → Greater), gộp 3-thành-1 ở vendor. Ví dụ: Iron Rune (+phys/armour), Body Rune (+life), Storm/Glacial/Inferno Rune (+flat ele dmg trên weapon / +res trên armour), Vision (accuracy), Mind (mana).</li>
+        <li><strong>0.5:</strong> giá trị đa số rune được tinh chỉnh lại (vd Body Rune nay +30/45/60 Max Life trên armour). <strong>Tooltip in-game là chuẩn</strong> — kiểm tra trước khi build quanh 1 con số rune.</li>
+        <li><strong>Soul Cores</strong>: chỉ từ <strong>Trial of Chaos</strong> (round 4/7/10 đảm bảo 1 cái). Hiệu ứng độc nhất, ví dụ Soul Core of Azcapa (penetrate 15% Ele Res trên weapon).</li>
+        <li><strong>Talismans</strong> (từ league Druid 0.4): mỗi cái chỉ cho stat 1 slot cụ thể.</li>
+      </ul>
+    </section>
+
+    <!-- 9. Thứ tự craft -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-xl font-black text-slate-950 dark:text-white">9. Thứ tự craft khuyến nghị (Master Workflow)</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Nguyên tắc vàng: <strong>thao tác rẻ &amp; đảo được trước, thao tác đắt &amp; không đảo được sau</strong>. Bỏ bước hoặc làm sai thứ tự = nguy cơ brick item không cứu được.</p>
+      <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <li><strong>Base</strong> — mua/tìm base ilvl 81–82 đúng class, check implicit + mod khả dụng trên PoE2DB.</li>
+        <li><strong>Essence → Rare</strong> — dùng Greater Essence nhắm mod build cần, ưu tiên essence có <strong>tag khớp</strong> phần còn lại (nhất là jewellery).</li>
+        <li><strong>Tag-anchor</strong> (jewellery) — đảm bảo item có ít nhất 1 mod thuộc tag muốn trước bước catalyst.</li>
+        <li><strong>Exalt slams</strong> — lấp ô trống bằng Greater/Perfect Exalt, dùng Sinistral/Dextral để nhắm bên. Jewellery: catalyst trước rồi slam dưới Omen of Catalysing Exaltation.</li>
+        <li><strong>Desecrate</strong> (nếu cần Lich mod như chaos res/penetration/spirit) — dùng bone + omen Necromancy.</li>
+        <li><strong>Annul / dọn</strong> — xóa mod yếu bằng Annul/Erasure nhắm bên (hoặc Whittling nếu mod yếu là ilvl thấp nhất).</li>
+        <li><strong>Fracture</strong> (tùy chọn, chỉ đồ cao cấp) — khóa mod giá trị để craft tiếp an toàn.</li>
+        <li><strong>Final slams</strong> — lấp ô cuối bằng Perfect Exalt / Perfect Essence dưới omen phù hợp.</li>
+        <li><strong>Quality / Catalyst</strong>.</li>
+        <li><strong>Divine</strong> — roll lại giá trị số khi đã chốt đây là item cuối.</li>
+        <li><strong>Sockets + Runes/Soul Cores</strong>.</li>
+        <li><strong class="text-rose-600 dark:text-rose-400">Corrupt (Vaal)</strong> — bước cuối cùng, sau đó không sửa được nữa.</li>
+      </ol>
+    </section>
+
+    <!-- 10. Mẹo kỷ luật -->
+    <section class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80">
+      <h2 class="font-display text-lg font-black text-slate-950 dark:text-white">Mẹo: mô phỏng trước khi tiêu currency</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Trước cú craft đắt, vào <a class="font-bold text-amber-700 underline dark:text-amber-400" href="https://craftofexile.com" target="_blank" rel="noopener">craftofexile.com</a> (chuyển sang PoE2), dùng <strong>emulator</strong> kéo đúng combo omen/currency định dùng để chạy thử + xem pool/weight/tag. Currency thật rất đắt, sandbox thì miễn phí — hai lần thử trong sandbox tiết kiệm nhiều Divine hơn bất kỳ thói quen nào khác.</p>
+      <p class="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">Luôn đối chiếu PoE2DB và tooltip in-game trước khi thực hiện craft tốn kém.</p>
+    </section>
+
+  </main>
+
+  <script src="components/poe-ui-utils.js"></script>
+</body>
+
+</html>

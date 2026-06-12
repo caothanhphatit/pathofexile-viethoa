@@ -24,6 +24,7 @@ import {
 } from "./pages/DataListPages";
 import { LevelingPage } from "./pages/LevelingPage";
 import { PassiveTreePage } from "./pages/PassiveTreePage";
+import { CraftSimPage } from "./pages/CraftSimPage";
 
 function useRoute() {
   const [route, setRoute] = useState<AppRoute>(() => routeFromLocation());
@@ -126,6 +127,7 @@ function renderRoute(route: AppRoute, locale: Locale) {
     case "patchnote":
     case "newbie":
     case "beginner":
+    case "craft":
     case "weapon":
       return <StaticGuidePage routeKey={route.key} locale={locale} />;
     case "items":
@@ -144,6 +146,8 @@ function renderRoute(route: AppRoute, locale: Locale) {
       return <PassiveTreePage locale={locale} />;
     case "leveling":
       return <LevelingPage locale={locale} />;
+    case "craftSim":
+      return <CraftSimPage locale={locale} />;
     default:
       return <HomePage locale={locale} />;
   }

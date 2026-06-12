@@ -2879,3 +2879,121 @@ select {
     overflow: auto;
   }
 }
+
+/* ============ Craft Simulator ============ */
+.craft-sim { max-width: min(1240px, calc(100vw - 32px)); }
+.craft-sim__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.craft-sim__head h1 { margin: 0; font-size: clamp(26px, 4vw, 40px); font-weight: 800; }
+.craft-sim__controls { display: flex; align-items: center; gap: 10px; }
+.craft-ilvl { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: var(--muted); }
+.craft-ilvl input { width: 60px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 800; }
+.craft-btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 14px; font-weight: 800; cursor: pointer; }
+.craft-btn:hover { border-color: var(--gold); }
+.craft-btn--ghost { margin-top: 10px; font-size: 12px; padding: 6px 12px; }
+.craft-error { color: var(--red); font-weight: 700; }
+
+.craft-layout { display: grid; grid-template-columns: minmax(320px, 1fr) minmax(360px, 1.1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .craft-layout { grid-template-columns: 1fr; } }
+
+/* item panel — PoE tooltip vibe */
+.craft-item { border: 1px solid var(--line); border-radius: 14px; background:
+  radial-gradient(120% 100% at 50% 0, color-mix(in srgb, var(--gold) 8%, transparent), transparent 60%), var(--surface);
+  box-shadow: var(--shadow); overflow: hidden; cursor: pointer; min-height: 220px; }
+.craft-item.is-target { outline: 2px dashed var(--gold); outline-offset: 2px; }
+.craft-item__title { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent); }
+.craft-item__title img { width: 44px; height: 44px; object-fit: contain; }
+.craft-item__title strong { display: block; font-size: 18px; font-weight: 900; }
+.rarity-normal .craft-item__title strong { color: #b7c0cc; }
+.rarity-magic .craft-item__title strong { color: #6aa7ff; }
+.rarity-rare .craft-item__title strong { color: #e6c44d; }
+.craft-item__title small { color: var(--muted); font-weight: 700; text-transform: capitalize; }
+.craft-item__body { padding: 12px 16px 16px; }
+.craft-item__meta { font-size: 12px; color: var(--muted); font-weight: 800; margin-bottom: 8px; }
+.craft-item__group-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); font-weight: 900; margin: 10px 0 4px; }
+.craft-mod { display: flex; align-items: baseline; gap: 8px; padding: 3px 0; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.craft-mod .mod-value, .craft-mod a { color: var(--cyan); font-weight: 800; text-decoration: none; }
+.craft-mod__tier { flex: none; font-size: 10px; font-weight: 900; background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--gold); border-radius: 5px; padding: 1px 5px; }
+.craft-mod__frac { font-size: 10px; color: var(--red); font-weight: 800; }
+.craft-item__empty { color: var(--muted); font-size: 13px; font-style: italic; padding: 8px 0; }
+.craft-item__choose { width: 100%; min-height: 220px; display: grid; place-content: center; gap: 6px; border: 0; background: transparent; cursor: pointer; color: var(--muted); }
+.craft-item__choose .material-symbols-rounded { font-size: 40px; color: var(--gold); }
+.craft-item__choose span:nth-child(2) { font-size: 16px; font-weight: 900; color: var(--ink); }
+.craft-log { list-style: none; margin: 12px 0 0; padding: 10px 12px; background: var(--surface-2); border-radius: 10px; font-size: 12px; color: var(--muted); display: grid; gap: 3px; }
+
+/* stash */
+.craft-stash { border: 1px solid var(--line); border-radius: 14px; background: #0c0e15; overflow: hidden; }
+.dark .craft-stash, :root:not(.dark) .craft-stash { background: linear-gradient(180deg, #11141d, #0b0d13); }
+.craft-stash__tabs { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.craft-stash__tabs button { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.03); color: #c7cedb; border-radius: 8px 8px 0 0; padding: 7px 14px; font-weight: 800; font-size: 13px; cursor: pointer; }
+.craft-stash__tabs button.is-active { background: color-mix(in srgb, var(--gold) 22%, transparent); color: #f1d6a0; border-color: var(--gold); }
+.craft-stash__grid { padding: 12px; max-height: 70vh; overflow: auto; }
+.craft-fam__label { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #8b94a6; font-weight: 900; margin: 10px 0 6px; border-bottom: 1px solid rgba(255,255,255,.06); padding-bottom: 3px; }
+.craft-fam__cells { display: grid; grid-template-columns: repeat(auto-fill, 48px); gap: 6px; }
+.craft-cell { position: relative; width: 48px; height: 48px; border-radius: 8px; border: 1px solid rgba(255,255,255,.08);
+  background: radial-gradient(120% 120% at 50% 0, rgba(255,255,255,.05), rgba(0,0,0,.3)); cursor: pointer; padding: 4px; transition: transform .1s, box-shadow .1s, border-color .1s; }
+.craft-cell img { width: 100%; height: 100%; object-fit: contain; image-rendering: auto; }
+.craft-cell__abbr { display: grid; place-content: center; height: 100%; font-weight: 900; color: #aeb6c4; }
+.craft-cell__stack { position: absolute; right: 3px; bottom: 1px; font-size: 9px; font-family: ui-monospace, monospace; color: #d7c79a; text-shadow: 0 1px 2px #000; }
+.craft-cell:hover { transform: translateY(-1px); border-color: var(--gold); box-shadow: 0 0 12px rgba(217,170,77,.35); z-index: 2; }
+.craft-cell.is-supported { border-color: rgba(217,170,77,.4); }
+.craft-cell:not(.is-supported) { opacity: .5; }
+.craft-cell.is-held { outline: 2px solid var(--gold); }
+
+/* held banner + flash */
+.craft-held { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 80; display: flex; align-items: center; gap: 10px;
+  background: #11141d; border: 1px solid var(--gold); border-radius: 12px; padding: 8px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); color: #f1d6a0; font-weight: 700; font-size: 13px; }
+.craft-held img { width: 28px; height: 28px; object-fit: contain; }
+.craft-held button { border: 0; background: transparent; color: #9aa8b7; cursor: pointer; font-size: 14px; }
+.craft-flash { position: fixed; left: 50%; top: 80px; transform: translateX(-50%); z-index: 90; background: var(--red); color: #fff; padding: 8px 16px; border-radius: 10px; font-weight: 800; font-size: 13px; box-shadow: var(--shadow); }
+
+/* picker modal */
+.craft-picker { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.55); display: grid; place-items: center; padding: 20px; }
+.craft-picker__panel { width: min(720px, 100%); max-height: 85vh; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.craft-picker__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--line); font-size: 16px; }
+.craft-picker__head button { border: 0; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; }
+.craft-picker__body { overflow: auto; padding: 8px 14px 16px; }
+.craft-picker__group > summary { font-size: 14px; font-weight: 900; padding: 8px 0; cursor: pointer; color: var(--gold); }
+.craft-picker__class { margin: 2px 0 2px 10px; }
+.craft-picker__class > summary { font-size: 13px; font-weight: 800; padding: 5px 0; cursor: pointer; }
+.craft-picker__class > summary span { color: var(--muted); font-weight: 700; }
+.craft-picker__bases { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; padding: 6px 0 6px 12px; }
+.craft-picker__base { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); padding: 6px 8px; cursor: pointer; text-align: left; }
+.craft-picker__base:hover { border-color: var(--gold); }
+.craft-picker__base img { width: 28px; height: 28px; object-fit: contain; flex: none; }
+.craft-picker__base span { font-size: 12px; font-weight: 800; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.craft-picker__base small { color: var(--muted); font-size: 10px; font-weight: 700; }
+
+/* POB import — button, items/gems panel, modal */
+.passive-action--accent { border-color: var(--gold); color: var(--gold); }
+.passive-action--accent:hover { background: color-mix(in srgb, var(--gold) 16%, transparent); }
+
+.passive-pob-panel .passive-pob-slot { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.passive-pob-skills { display: flex; flex-direction: column; gap: 8px; }
+.passive-pob-skill { border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); padding: 6px 8px; }
+.passive-pob-gem { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 2px 0; }
+.passive-pob-gem span { font-size: 12px; font-weight: 700; }
+.passive-pob-gem small { color: var(--muted); font-size: 10px; font-weight: 700; flex: none; }
+.passive-pob-gem.is-off { opacity: .45; }
+
+.passive-pob-items { display: flex; flex-direction: column; gap: 6px; }
+.passive-pob-item { border: 1px solid var(--line); border-left-width: 3px; border-radius: 8px; background: var(--surface-2); overflow: hidden; }
+.passive-pob-item > summary { list-style: none; cursor: pointer; padding: 6px 8px; display: flex; flex-direction: column; gap: 1px; }
+.passive-pob-item > summary::-webkit-details-marker { display: none; }
+.passive-pob-item > summary strong { font-size: 12px; font-weight: 800; }
+.passive-pob-item > summary small { color: var(--muted); font-size: 10px; font-weight: 700; }
+.passive-pob-item pre { margin: 0; padding: 6px 8px; border-top: 1px solid var(--line); font-size: 11px; line-height: 1.45; white-space: pre-wrap; word-break: break-word; color: var(--muted); background: rgba(0,0,0,.12); }
+.passive-pob-item.rarity-unique { border-left-color: #af6025; }
+.passive-pob-item.rarity-rare { border-left-color: #d9d951; }
+.passive-pob-item.rarity-magic { border-left-color: #6a6aff; }
+.passive-pob-item.rarity-normal { border-left-color: var(--line); }
+
+.passive-import-overlay { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.6); display: grid; place-items: center; padding: 16px; }
+.passive-import-modal { width: min(560px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; box-shadow: 0 18px 60px rgba(0,0,0,.5); }
+.passive-import-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.passive-import-head h2 { font-size: 15px; font-weight: 800; }
+.passive-import-head button { border: none; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; }
+.passive-import-modal p { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.passive-import-modal textarea { width: 100%; resize: vertical; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--ink); padding: 8px 10px; font-family: ui-monospace, monospace; font-size: 12px; }
+.passive-import-error { color: #ff6b6b !important; font-weight: 700; margin-top: 8px; }
+.passive-import-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
