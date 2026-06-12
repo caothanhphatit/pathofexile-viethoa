@@ -47,6 +47,9 @@ const cleanRouteFiles = new Map([
   ["/currency_detail", "/index.html"],
   ["/passive-tree", "/index.html"],
   ["/passive_tree", "/index.html"],
+  ["/build", "/index.html"],
+  ["/build-planner", "/index.html"],
+  ["/builds", "/index.html"],
   ["/leveling", "/index.html"]
 ]);
 

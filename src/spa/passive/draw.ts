@@ -95,14 +95,63 @@ interface NodeVisual {
   minor: boolean;
 }
 
-function nodeVisual(node: PassiveNode): NodeVisual {
+interface PassiveCanvasPalette {
+  background: string;
+  inactiveEdge: string;
+  activeEdge: string;
+  importantFrame: string;
+  normalFrame: string;
+  importantFill: string;
+  normalFill: string;
+  importantStroke: string;
+  normalStroke: string;
+  searchRing: string;
+  allocatedRing: string;
+  hoverRing: string;
+}
+
+function passiveCanvasPalette(isDark: boolean): PassiveCanvasPalette {
+  if (isDark) {
+    return {
+      background: "#020611",
+      inactiveEdge: "rgba(148, 122, 76, .42)",
+      activeEdge: "#f1d6a0",
+      importantFrame: "rgba(4, 8, 18, .92)",
+      normalFrame: "rgba(15, 23, 42, .84)",
+      importantFill: "#c8a35a",
+      normalFill: "#687284",
+      importantStroke: "rgba(241, 214, 160, .62)",
+      normalStroke: "rgba(148, 163, 184, .38)",
+      searchRing: "#5eead4",
+      allocatedRing: "#f8d76a",
+      hoverRing: "#ffffff"
+    };
+  }
+
+  return {
+    background: "#eef2f7",
+    inactiveEdge: "rgba(101, 82, 45, .34)",
+    activeEdge: "#b9822b",
+    importantFrame: "rgba(255, 255, 255, .94)",
+    normalFrame: "rgba(248, 250, 252, .9)",
+    importantFill: "#b9822b",
+    normalFill: "#64748b",
+    importantStroke: "rgba(124, 79, 20, .52)",
+    normalStroke: "rgba(71, 85, 105, .36)",
+    searchRing: "#0f766e",
+    allocatedRing: "#b9822b",
+    hoverRing: "#0f172a"
+  };
+}
+
+function nodeVisual(node: PassiveNode, isDark: boolean): NodeVisual {
   const type = node.type.toLowerCase();
   const baseRadius = nodeRadius(node);
-  if (type.includes("keystone")) return { important: true, fullRadius: baseRadius, dotRadius: 60, dotColor: "#e0913f", minor: false };
-  if (type.includes("notable")) return { important: true, fullRadius: baseRadius, dotRadius: 44, dotColor: "#d9c184", minor: false };
-  if (type.includes("jewel")) return { important: true, fullRadius: baseRadius, dotRadius: 38, dotColor: "#5fd6cd", minor: false };
-  if (type.includes("ascend")) return { important: false, fullRadius: baseRadius, dotRadius: 26, dotColor: "#8b86a8", minor: true };
-  return { important: false, fullRadius: baseRadius, dotRadius: 24, dotColor: "#8f8a76", minor: true };
+  if (type.includes("keystone")) return { important: true, fullRadius: baseRadius, dotRadius: 60, dotColor: isDark ? "#e0913f" : "#a9541b", minor: false };
+  if (type.includes("notable")) return { important: true, fullRadius: baseRadius, dotRadius: 44, dotColor: isDark ? "#d9c184" : "#94691e", minor: false };
+  if (type.includes("jewel")) return { important: true, fullRadius: baseRadius, dotRadius: 38, dotColor: isDark ? "#5fd6cd" : "#0f766e", minor: false };
+  if (type.includes("ascend")) return { important: false, fullRadius: baseRadius, dotRadius: 26, dotColor: isDark ? "#8b86a8" : "#64748b", minor: true };
+  return { important: false, fullRadius: baseRadius, dotRadius: 24, dotColor: isDark ? "#8f8a76" : "#716b5a", minor: true };
 }
 
 function shouldUseDotLod(zoom: number): boolean {
@@ -159,9 +208,11 @@ function drawRemovedGhosts(ctx: CanvasRenderingContext2D, camera: Camera, change
 
 export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera, tree: PassiveTreeModel, opts: RenderOptions): void {
   const dpr = camera.dpr || 1;
+  const isDark = document.documentElement.classList.contains("dark");
+  const palette = passiveCanvasPalette(isDark);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, camera.width, camera.height);
-  ctx.fillStyle = document.documentElement.classList.contains("dark") ? "#020611" : "#eef2f7";
+  ctx.fillStyle = palette.background;
   ctx.fillRect(0, 0, camera.width, camera.height);
   const z = camera.zoom;
   const cssPx = (px: number) => px / z;
@@ -203,10 +254,10 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     const path = active ? activeEdges : inactiveEdges;
     addEdgeSegment(path, edge, from, to);
   }
-  ctx.strokeStyle = "rgba(148, 122, 76, .42)";
+  ctx.strokeStyle = palette.inactiveEdge;
   ctx.lineWidth = cssPx(1.15);
   ctx.stroke(inactiveEdges);
-  ctx.strokeStyle = "#f1d6a0";
+  ctx.strokeStyle = palette.activeEdge;
   ctx.lineWidth = cssPx(2.5);
   ctx.stroke(activeEdges);
 
@@ -242,7 +293,7 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     const isSearch = opts.searchIds.has(node.id);
     const isHover = opts.hoverId === node.id;
     const change = opts.changesOn ? changeById.get(node.id) : undefined;
-    const visual = nodeVisual(node);
+    const visual = nodeVisual(node, isDark);
     const r = visual.fullRadius;
     const framePad = visual.important ? IMPORTANT_FRAME_PAD : NORMAL_FRAME_PAD;
     const alpha = node.ascendancyName && opts.ascendancyFilter && node.ascendancyName !== opts.ascendancyFilter ? 0.18 : 1;
@@ -265,30 +316,30 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
 
     flushDots();
 
-    ctx.fillStyle = isAllocated ? "#f1d6a0" : visual.important ? "#c8a35a" : "#687284";
+    ctx.fillStyle = isAllocated ? palette.activeEdge : visual.important ? palette.importantFill : palette.normalFill;
     ctx.globalAlpha = alpha;
 
-    ctx.fillStyle = visual.important ? "rgba(4, 8, 18, .92)" : "rgba(15, 23, 42, .84)";
+    ctx.fillStyle = visual.important ? palette.importantFrame : palette.normalFrame;
     ctx.beginPath();
     ctx.arc(node.x, node.y, r + framePad, 0, Math.PI * 2);
     ctx.fill();
 
     const iconDrawn = drawNodeIcon(ctx, node, node.x, node.y, r, isAllocated || visual.important ? 1 : 0.76);
     if (!iconDrawn) {
-      ctx.fillStyle = isAllocated ? "#f1d6a0" : visual.important ? "#c8a35a" : "#687284";
+      ctx.fillStyle = isAllocated ? palette.activeEdge : visual.important ? palette.importantFill : palette.normalFill;
       ctx.beginPath();
       ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    ctx.strokeStyle = visual.important ? "rgba(241, 214, 160, .62)" : "rgba(148, 163, 184, .38)";
+    ctx.strokeStyle = visual.important ? palette.importantStroke : palette.normalStroke;
     ctx.lineWidth = frameLineWidth(visual.important ? IMPORTANT_FRAME_LINE : NORMAL_FRAME_LINE, cssPx, 0.65);
     ctx.beginPath();
     ctx.arc(node.x, node.y, r + framePad, 0, Math.PI * 2);
     ctx.stroke();
 
-    if (isSearch) pushRing("#5eead4", node.x, node.y, r + CHANGE_RING_GAP);
-    if (isAllocated) pushRing("#f8d76a", node.x, node.y, r + CHANGE_RING_GAP);
+    if (isSearch) pushRing(palette.searchRing, node.x, node.y, r + CHANGE_RING_GAP);
+    if (isAllocated) pushRing(palette.allocatedRing, node.x, node.y, r + CHANGE_RING_GAP);
     if (isHover) hoverRing = { x: node.x, y: node.y, r: r + CHANGE_RING_GAP };
 
     if (change && change.status !== "removed") {
@@ -311,7 +362,7 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     ctx.restore();
   }
   if (hoverRing) {
-    ctx.strokeStyle = "#ffffff";
+    ctx.strokeStyle = palette.hoverRing;
     ctx.lineWidth = frameLineWidth(6.5, cssPx, 1.1);
     ctx.beginPath();
     ctx.arc(hoverRing.x, hoverRing.y, hoverRing.r, 0, Math.PI * 2);

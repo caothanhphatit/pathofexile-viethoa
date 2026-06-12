@@ -5,6 +5,7 @@ import {
   DEFAULT_ITEMS_SOURCE_URL,
   buildItemsExportPayload,
   exportItems,
+  inferItemRarity,
   upsertItems
 } from "../scripts/items/runtime.mjs";
 
@@ -57,12 +58,75 @@ test("items runtime exports a stable frontend payload from Postgres rows", async
   assert.equal(payload.total, 1);
   assert.equal(payload.active_total, 1);
   assert.equal(payload.menus[0].count, 1);
+  assert.equal(payload.items[0].rarity, "");
   assert.deepEqual(payload.items[0].i18n.mods[0], {
     en: "Attack Skills gain 3 Life per Enemy Hit",
     vi: "Attack Skills gain 3 Life per Enemy Hit"
   });
   assert.equal("translated" in payload.items[0], false);
   assert.match(queries.map((query) => query.sql).join("\n"), /status = 'active'/i);
+});
+
+test("item export marks uniques even when Poe2DB icon paths omit the Uniques folder", () => {
+  const payload = buildItemsExportPayload({
+    menus: [{ key: "rings", label: "Rings", group_label: "Jewellery" }],
+    items: [
+      {
+        slug: "Amethyst_Ring",
+        menu_key: "rings",
+        menu_label: "Rings",
+        group_label: "Jewellery",
+        name: "Amethyst Ring",
+        source_url: "https://poe2db.tw/us/Amethyst_Ring",
+        icon_url: "https://cdn.poe2db.tw/image/Art/2DItems/Rings/Basetypes/AmethystRing.webp",
+        icon_alt: "AmethystRing",
+        properties_json: [],
+        requirements_json: ["Requires: Level 20"],
+        mods_json: ["+(7-13)% to Chaos Resistance"],
+        tooltip_refs_json: [],
+        source_hash: "a".repeat(64),
+        status: "active"
+      },
+      {
+        slug: "Blackflame",
+        menu_key: "rings",
+        menu_label: "Rings",
+        group_label: "Jewellery",
+        name: "Blackflame",
+        source_url: "https://poe2db.tw/us/Blackflame",
+        icon_url: "https://cdn.poe2db.tw/image/Art/2DItems/Rings/BlackFlameChaos.webp",
+        icon_alt: "BlackFlameChaos",
+        properties_json: ["Amethyst Ring"],
+        requirements_json: ["Requires: Level 20"],
+        mods_json: ["use unique blackflame ignite effect [1]"],
+        tooltip_refs_json: [],
+        source_hash: "b".repeat(64),
+        status: "active"
+      },
+      {
+        slug: "Kalandras_Touch",
+        menu_key: "rings",
+        menu_label: "Rings",
+        group_label: "Jewellery",
+        name: "Kalandra's Touch",
+        source_url: "https://poe2db.tw/us/Kalandras_Touch",
+        icon_url: "https://cdn.poe2db.tw/image/Art/2DItems/Rings/MirrorRing.webp",
+        icon_alt: "MirrorRing",
+        properties_json: ["Amethyst Ring"],
+        requirements_json: [],
+        mods_json: ["Reflects opposite Ring"],
+        tooltip_refs_json: [],
+        source_hash: "c".repeat(64),
+        status: "active"
+      }
+    ]
+  });
+
+  const byName = Object.fromEntries(payload.items.map((item) => [item.name, item]));
+  assert.equal(byName["Amethyst Ring"].rarity, "");
+  assert.equal(byName.Blackflame.rarity, "unique");
+  assert.equal(byName["Kalandra's Touch"].rarity, "unique");
+  assert.equal(inferItemRarity(byName.Blackflame, new Set(["Amethyst Ring"])), "unique");
 });
 
 test("buildItemsExportPayload counts active items per menu", () => {

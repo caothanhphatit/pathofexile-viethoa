@@ -43,6 +43,44 @@ test("passive tree page exposes expected product controls", async () => {
   assert.match(page, /Reset/);
 });
 
+test("passive tree toolbar exposes saved tree dropdown and dirty save state", async () => {
+  const [page, planner, styles] = await Promise.all([
+    readRepoFile("src/spa/pages/PassiveTreePage.tsx"),
+    readRepoFile("src/spa/lib/buildPlanner.ts"),
+    readRepoFile("src/spa/styles.css")
+  ]);
+
+  assert.match(planner, /export function deleteTreeSnapshot/);
+  assert.match(page, /readSavedTreeSnapshots/);
+  assert.match(page, /deleteTreeSnapshot/);
+  assert.match(page, /treeLibraryOpen/);
+  assert.match(page, /loadSavedTreeSnapshot/);
+  assert.match(page, /removeSavedTreeSnapshot/);
+  assert.match(page, /passive-tree-library-toggle/);
+  assert.match(page, /passive-tree-menu-delete/);
+  assert.match(page, /hasUnsavedTreeChanges/);
+  assert.match(page, /passive-build-save \$\{hasUnsavedTreeChanges \? "has-changes"/);
+  assert.match(styles, /\.passive-toolbar\s*\{[\s\S]*grid-template-columns:\s*minmax\(220px,\s*284px\)\s+minmax\(190px,\s*248px\)\s+minmax\(124px,\s*156px\)\s+minmax\(164px,\s*216px\)\s+minmax\(140px,\s*\.55fr\)/);
+  assert.match(styles, /\.passive-tree-menu\s*\{/);
+  assert.match(styles, /\.passive-tree-menu-delete\s*\{/);
+  assert.match(styles, /\.passive-build-save\.has-changes\s*\{/);
+});
+
+test("passive tree workspace can be embedded inside build detail", async () => {
+  const [page, styles] = await Promise.all([
+    readRepoFile("src/spa/pages/PassiveTreePage.tsx"),
+    readRepoFile("src/spa/styles.css")
+  ]);
+
+  assert.match(page, /export interface PassiveTreeWorkspaceProps/);
+  assert.match(page, /initialSnapshot \?\? readCurrentTreeSnapshot/);
+  assert.match(page, /onSnapshotChange\?\.\(currentBuildSnapshot\)/);
+  assert.match(page, /onSaveSnapshot\) onSaveSnapshot\(saved\)/);
+  assert.match(page, /passive-route--embedded/);
+  assert.match(page, /return <PassiveTreeWorkspace locale=\{locale\} \/>/);
+  assert.match(styles, /\.passive-route--embedded\s*\{[\s\S]*height:\s*100%/);
+});
+
 test("React passive tree stat tooltips are eligible for dictionary term wrapping", async () => {
   const [page, terms] = await Promise.all([
     readRepoFile("src/spa/pages/PassiveTreePage.tsx"),
@@ -83,6 +121,24 @@ test("React passive tree lets held node details receive term hover events", asyn
   assert.match(canvas, /held:\s*boolean/);
   assert.match(page, /hover\.held\s*\?\s*"is-held"/);
   assert.match(styles, /\.passive-tooltip\.is-held\s*{[^}]*pointer-events:\s*auto/s);
+});
+
+test("React passive tree has explicit light and dark theme surfaces", async () => {
+  const [styles, draw, canvas] = await Promise.all([
+    readRepoFile("src/spa/styles.css"),
+    readRepoFile("src/spa/passive/draw.ts"),
+    readRepoFile("src/spa/passive/TreeCanvas.tsx")
+  ]);
+
+  assert.match(styles, /\.passive-route\s*{[^}]*--passive-bg:\s*#eef2f7;[^}]*--passive-toolbar-bg:\s*rgba\(255, 255, 255, \.94\);[^}]*--passive-panel-bg:/s);
+  assert.match(styles, /\.dark \.passive-route\s*{[^}]*--passive-bg:\s*#020611;[^}]*--passive-toolbar-bg:\s*rgba\(6, 12, 25, \.94\);[^}]*--passive-panel-bg:/s);
+  assert.match(styles, /\.passive-toolbar\s*{[^}]*background:\s*var\(--passive-toolbar-bg\);/s);
+  assert.match(styles, /\.passive-build-panel\s*{[^}]*background:\s*var\(--passive-panel-bg\);/s);
+  assert.match(styles, /\.passive-tooltip\s*{[^}]*background:\s*var\(--passive-tooltip-bg\);/s);
+  assert.match(draw, /function passiveCanvasPalette\(isDark: boolean\)/);
+  assert.match(draw, /background:\s*"#eef2f7"/);
+  assert.match(draw, /hoverRing:\s*"#0f172a"/);
+  assert.match(canvas, /window\.addEventListener\("poe-theme-change", markDirty\)/);
 });
 
 test("React passive tree keeps selected ascendancy projected into the class disc", async () => {

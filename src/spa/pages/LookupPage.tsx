@@ -4,7 +4,6 @@ import { routeForKey, routeText, type RouteKey } from "../lib/routes";
 const lookupKeys: RouteKey[] = ["items", "currency", "dictionary", "skillgems"];
 
 const copy = {
-  eyebrow: { vi: "Lookup hub", en: "Lookup hub" },
   title: { vi: "Tra cứu dữ liệu POE2", en: "POE2 data lookup" }
 };
 
@@ -12,7 +11,6 @@ export function LookupPage({ locale }: { locale: Locale }) {
   return (
     <main className="page-shell lookup-page">
       <header className="page-title tight lookup-title">
-        <p className="eyebrow">{localizedText(copy.eyebrow, "", locale)}</p>
         <h1>{localizedText(copy.title, "", locale)}</h1>
       </header>
       <section className="route-grid compact">

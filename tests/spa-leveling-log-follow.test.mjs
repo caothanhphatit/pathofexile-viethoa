@@ -25,3 +25,16 @@ test("React leveling v1 maps log zones to route zones without auto-completing ta
   assert.match(spaStyles, /\.leveling-v1-log/);
   assert.match(spaStyles, /\.leveling-v1-log-status\[data-log-zone-status="ok"\]/);
 });
+
+test("React game overlay keeps manual tracking controls outside auto log permission", () => {
+  assert.match(levelingPage, /overlayManualTaskId/);
+  assert.match(levelingPage, /moveOverlayManual/);
+  assert.match(levelingPage, /toggleOverlayCurrent/);
+  assert.match(levelingPage, /className="game-overlay-manual"/);
+  assert.match(levelingPage, /aria-label="Manual tracker"/);
+  assert.match(levelingPage, /onClick=\{\(\) => moveOverlayManual\(-1\)\}/);
+  assert.match(levelingPage, /onClick=\{toggleOverlayCurrent\}/);
+  assert.doesNotMatch(levelingPage, /toggleOverlayCurrent[\s\S]{0,400}logAutoFollow/);
+  assert.match(spaStyles, /\.game-overlay-manual/);
+  assert.match(spaStyles, /\.game-overlay-inner\s*\{[\s\S]*grid-template-rows:\s*auto minmax\(0,\s*1fr\)/);
+});

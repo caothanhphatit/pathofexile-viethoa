@@ -12,7 +12,65 @@ const paging = (query) => ({
   offset: Math.max(Number(query.offset || 0), 0)
 });
 
+const parsePoe2dbImageUrl = (value = "") => {
+  const raw = String(value || "").trim();
+  let url;
+  try {
+    url = new URL(raw);
+  } catch {
+    const error = new Error("Invalid image URL");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (url.protocol !== "https:" || url.hostname !== "cdn.poe2db.tw" || !url.pathname.startsWith("/image/")) {
+    const error = new Error("Image URL is not allowed");
+    error.statusCode = 400;
+    throw error;
+  }
+  return url;
+};
+
+const imageContentTypeFromPath = (pathname = "") => {
+  if (/\.webp$/i.test(pathname)) return "image/webp";
+  if (/\.png$/i.test(pathname)) return "image/png";
+  if (/\.jpe?g$/i.test(pathname)) return "image/jpeg";
+  if (/\.gif$/i.test(pathname)) return "image/gif";
+  if (/\.svg$/i.test(pathname)) return "image/svg+xml";
+  return "";
+};
+
 export const publicRoutes = async (app) => {
+  app.get("/api/poe2db-image", async (request, reply) => {
+    const target = parsePoe2dbImageUrl(request.query?.url);
+    const upstreamFetch = app.poe2dbImageFetch || globalThis.fetch;
+    if (typeof upstreamFetch !== "function") {
+      const error = new Error("Image proxy fetch is not available");
+      error.statusCode = 503;
+      throw error;
+    }
+
+    const upstream = await upstreamFetch(target.href, {
+      headers: {
+        accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+        referer: "https://poe2db.tw/us/Items",
+        "user-agent": "Mozilla/5.0 POE2 Viet Hoa image proxy"
+      }
+    });
+    if (!upstream.ok) {
+      return reply.status(upstream.status === 404 ? 404 : 502).send({ ok: false, error: "Image fetch failed" });
+    }
+
+    const contentType = upstream.headers?.get?.("content-type") || imageContentTypeFromPath(target.pathname);
+    if (!/^image\//i.test(contentType)) {
+      return reply.status(502).send({ ok: false, error: "Upstream did not return an image" });
+    }
+
+    const body = Buffer.from(await upstream.arrayBuffer());
+    reply.header("cache-control", "public, max-age=604800, immutable");
+    reply.header("x-content-type-options", "nosniff");
+    return reply.type(contentType).send(body);
+  });
+
   app.get("/api/leveling/log/status", async () => ({
     ok: true,
     data: app.levelingLogWatcher.status()

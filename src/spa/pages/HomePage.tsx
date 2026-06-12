@@ -1,7 +1,7 @@
 import { type Locale, localizedText, uiText } from "../lib/locale";
 import { routeForKey, routeText, type RouteKey } from "../lib/routes";
 
-const featureKeys: RouteKey[] = ["patchnote", "lookup", "newbie", "skillgems", "currency", "passiveTree", "leveling"];
+const featureKeys: RouteKey[] = ["patchnote", "lookup", "newbie", "skillgems", "currency", "passiveTree", "buildPlanner", "leveling"];
 
 const stats: [string, string | { vi: string; en: string }][] = [
   ["31.468", { vi: "Dòng Việt hóa", en: "Localized lines" }],
@@ -14,7 +14,7 @@ const stats: [string, string | { vi: string; en: string }][] = [
 const heroCopy = {
   eyebrow: { vi: "Path of Exile 2 tiếng Việt", en: "Path of Exile 2 reference" },
   title: {
-    vi: "Kho tra cứu POE2 gọn, nhanh, đủ sâu để dùng hằng ngày.",
+    vi: "Chào mừng đến với bách khoa toàn thư POE2",
     en: "A lightweight POE2 reference app built for fast daily lookup."
   },
   statsLabel: { vi: "Thống kê dữ liệu", en: "Data stats" },

@@ -22,6 +22,7 @@ const appRoutes = [
   "/currency",
   "/currency-detail",
   "/passive-tree",
+  "/build",
   "/leveling"
 ];
 

@@ -53,6 +53,7 @@ export const buildApp = async (options = {}) => {
   app.decorate("db", db);
   app.decorate("auth", auth);
   app.decorate("levelingLogWatcher", levelingLogWatcher);
+  app.decorate("poe2dbImageFetch", options.poe2dbImageFetch || globalThis.fetch);
 
   app.get("/health", async () => ({
     ok: true,

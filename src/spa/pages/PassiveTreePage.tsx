@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { loadPassiveTreeChanges, loadPassiveTreeData } from "../lib/data";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
 import { matchesQuery } from "../lib/text";
+import { createTreeSnapshot, deleteTreeSnapshot, passiveCount, readCurrentTreeSnapshot, readSavedTreeSnapshots, saveTreeSnapshot, writeCurrentTreeSnapshot, type BuildTreeSnapshot } from "../lib/buildPlanner";
 import { TreeCanvas, type CanvasCommand } from "../passive/TreeCanvas";
 import {
   CHANGE_COLORS,
@@ -44,6 +45,15 @@ interface AggregatedStat {
   key: string;
   text: string;
   count: number;
+}
+
+export interface PassiveTreeWorkspaceProps {
+  locale: Locale;
+  embedded?: boolean;
+  readOnly?: boolean;
+  initialSnapshot?: BuildTreeSnapshot | null;
+  onSnapshotChange?: (snapshot: BuildTreeSnapshot) => void;
+  onSaveSnapshot?: (snapshot: BuildTreeSnapshot) => void;
 }
 
 function formatPassiveStatText(value: string): string {
@@ -129,10 +139,30 @@ const passiveCopy = {
   selectedPassives: { vi: "selected passives", en: "selected passives" },
   allClasses: { vi: "All classes", en: "All classes" },
   noAscendancy: { vi: "No ascendancy filter", en: "No ascendancy filter" },
-  clearBuild: { vi: "Clear build", en: "Clear build" }
+  clearBuild: { vi: "Clear build", en: "Clear build" },
+  saveTree: { vi: "Save tree", en: "Save tree" },
+  savedTrees: { vi: "Tree đã lưu", en: "Saved trees" },
+  noSavedTrees: { vi: "Chưa có tree đã lưu.", en: "No saved trees yet." },
+  openSavedTree: { vi: "Mở để sửa/xem", en: "Open to edit/view" },
+  deleteTree: { vi: "Xóa tree", en: "Delete tree" },
+  treeName: { vi: "Tên tree", en: "Tree name" },
+  treeSaved: { vi: "Đã lưu tree cho tab Build", en: "Tree saved for the Build tab" },
+  treeDeleted: { vi: "Đã xóa tree.", en: "Deleted tree." }
 };
 
-export function PassiveTreePage({ locale }: { locale: Locale }) {
+function treeSnapshotSignature(snapshot: BuildTreeSnapshot | null | undefined): string {
+  if (!snapshot) return "";
+  return JSON.stringify({
+    name: snapshot.name || "",
+    className: snapshot.className || "",
+    ascendancyName: snapshot.ascendancyName || "",
+    allocatedIds: [...new Set(snapshot.allocatedIds)].sort(),
+    startIds: [...new Set(snapshot.startIds)].sort(),
+    treeVersion: snapshot.treeVersion || ""
+  });
+}
+
+export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, initialSnapshot = null, onSnapshotChange, onSaveSnapshot }: PassiveTreeWorkspaceProps) {
   const [tree, setTree] = useState<PassiveTreeModel | null>(null);
   const [changes, setChanges] = useState<PassiveTreeChanges | null>(null);
   const [error, setError] = useState("");
@@ -147,24 +177,43 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
   const [buildLimitWarning, setBuildLimitWarning] = useState("");
   const [hover, setHover] = useState<{ node: PassiveNode | null; x: number; y: number; held: boolean }>({ node: null, x: 0, y: 0, held: false });
   const [command, setCommand] = useState<CanvasCommand | null>(null);
+  const [treeBuildName, setTreeBuildName] = useState("");
+  const [saveMessage, setSaveMessage] = useState("");
+  const [savedTrees, setSavedTrees] = useState<BuildTreeSnapshot[]>(() => readSavedTreeSnapshots());
+  const [treeLibraryOpen, setTreeLibraryOpen] = useState(false);
+  const [activeSavedTreeId, setActiveSavedTreeId] = useState("");
+  const [savedTreeBaseline, setSavedTreeBaseline] = useState("");
+  const treeLibraryRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let alive = true;
     loadPassiveTreeData().then((raw) => {
       if (!alive) return;
       const parsed = parsePassiveTree(raw, locale);
+      const stored = initialSnapshot ?? readCurrentTreeSnapshot();
+      const storedSavedTrees = readSavedTreeSnapshots();
+      const storedSavedTree = stored ? storedSavedTrees.find((row) => row.id === stored.id) ?? null : null;
+      const storedClass = stored?.className && parsed.classByName.has(stored.className) ? stored.className : "";
       const initialClass = parsed.classes[0] || "";
+      const className = storedClass || initialClass;
+      const classAscendancies = className ? parsed.classByName.get(className)?.ascendancies ?? [] : [];
+      const storedAscendancy = stored?.ascendancyName && classAscendancies.some((row) => row.name === stored.ascendancyName) ? stored.ascendancyName : "";
       const initialAscendancy = initialClass ? parsed.classByName.get(initialClass)?.ascendancies[0]?.name || "" : "";
       setTree(parsed);
-      setClassFilter((current) => current || initialClass);
-      setAscendancyFilter((current) => current || initialAscendancy);
+      setClassFilter(className);
+      setAscendancyFilter(stored ? storedAscendancy : initialAscendancy);
+      setTreeBuildName(stored?.name || "");
+      setAllocatedIds(stored ? new Set(stored.allocatedIds) : new Set());
+      setSavedTrees(storedSavedTrees);
+      setActiveSavedTreeId(storedSavedTree?.id || "");
+      setSavedTreeBaseline(storedSavedTree ? treeSnapshotSignature(storedSavedTree) : "");
     }).catch((err: Error) => {
       if (alive) setError(err.message);
     });
     return () => {
       alive = false;
     };
-  }, [locale]);
+  }, [locale, initialSnapshot?.id]);
 
   useEffect(() => {
     let alive = true;
@@ -178,8 +227,35 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
     };
   }, []);
 
+  useEffect(() => {
+    const refreshSavedTrees = () => setSavedTrees(readSavedTreeSnapshots());
+    window.addEventListener("storage", refreshSavedTrees);
+    window.addEventListener("poe-build-tree-saved", refreshSavedTrees);
+    return () => {
+      window.removeEventListener("storage", refreshSavedTrees);
+      window.removeEventListener("poe-build-tree-saved", refreshSavedTrees);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!treeLibraryOpen) return;
+    const closeTreeLibrary = (event: MouseEvent) => {
+      if (treeLibraryRef.current?.contains(event.target as Node)) return;
+      setTreeLibraryOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setTreeLibraryOpen(false);
+    };
+    window.addEventListener("mousedown", closeTreeLibrary);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("mousedown", closeTreeLibrary);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [treeLibraryOpen]);
+
   const effectiveChangesOn = Boolean(changes && activeMode === "changes");
-  const allocationEnabled = activeMode === "build" && !effectiveChangesOn;
+  const allocationEnabled = !readOnly && activeMode === "build" && !effectiveChangesOn;
 
   const visibleSearchIds = useMemo(() => {
     if (!tree || !search.trim()) return new Set<string>();
@@ -296,6 +372,84 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
 
   const runCommand = (type: CanvasCommand["type"], target?: Pick<CanvasCommand, "x" | "y" | "zoom">) => setCommand({ type, nonce: Date.now(), ...target });
 
+  const currentBuildSnapshot = useMemo(() => {
+    if (!tree) return null;
+    return createTreeSnapshot({
+      id: embedded && initialSnapshot?.id ? initialSnapshot.id : "current-tree",
+      name: treeBuildName,
+      className: classFilter,
+      ascendancyName: ascendancyFilter,
+      allocatedIds,
+      startIds: selectedStartIds,
+      treeVersion: "0.5"
+    });
+  }, [tree, treeBuildName, classFilter, ascendancyFilter, allocatedIds, selectedStartIds, embedded, initialSnapshot?.id]);
+  const currentTreeSignature = useMemo(() => treeSnapshotSignature(currentBuildSnapshot), [currentBuildSnapshot]);
+  const hasUnsavedTreeChanges = Boolean(currentBuildSnapshot && (
+    savedTreeBaseline
+      ? currentTreeSignature !== savedTreeBaseline
+      : passiveCount(currentBuildSnapshot) > 0
+  ));
+
+  useEffect(() => {
+    if (!currentBuildSnapshot) return;
+    if (embedded) {
+      onSnapshotChange?.(currentBuildSnapshot);
+      return;
+    }
+    writeCurrentTreeSnapshot(currentBuildSnapshot);
+    window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "current" } }));
+  }, [currentBuildSnapshot, embedded, onSnapshotChange]);
+
+  const loadSavedTreeSnapshot = (snapshot: BuildTreeSnapshot) => {
+    setBuildLimitWarning("");
+    setSearch("");
+    setActiveMode("build");
+    setClassFilter(snapshot.className);
+    setAscendancyFilter(snapshot.ascendancyName);
+    setTreeBuildName(snapshot.name);
+    setAllocatedIds(new Set(snapshot.allocatedIds));
+    setActiveSavedTreeId(snapshot.id);
+    setSavedTreeBaseline(treeSnapshotSignature(snapshot));
+    setTreeLibraryOpen(false);
+    setSaveMessage("");
+  };
+
+  const removeSavedTreeSnapshot = (snapshotId: string) => {
+    const next = deleteTreeSnapshot(snapshotId);
+    setSavedTrees(next);
+    if (activeSavedTreeId === snapshotId) {
+      setActiveSavedTreeId("");
+      setSavedTreeBaseline("");
+    }
+    setSaveMessage(localizedText(passiveCopy.treeDeleted, "", locale));
+    window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "deleted", id: snapshotId } }));
+    window.setTimeout(() => setSaveMessage(""), 1800);
+  };
+
+  const saveCurrentTree = () => {
+    if (!currentBuildSnapshot || passiveCount(currentBuildSnapshot) <= 0) return;
+    const timestamp = new Date().toISOString();
+    const existing = savedTrees.find((row) => row.id === activeSavedTreeId);
+    const saved = {
+      ...currentBuildSnapshot,
+      id: !embedded && activeSavedTreeId ? activeSavedTreeId : `saved-tree-${Date.now().toString(36)}`,
+      createdAt: existing?.createdAt || timestamp,
+      updatedAt: timestamp
+    };
+    if (embedded && onSaveSnapshot) onSaveSnapshot(saved);
+    else {
+      const next = saveTreeSnapshot(saved);
+      setSavedTrees(next);
+      setActiveSavedTreeId(saved.id);
+      setSavedTreeBaseline(treeSnapshotSignature(saved));
+    }
+    if (!treeBuildName) setTreeBuildName(saved.name);
+    setSaveMessage(localizedText(passiveCopy.treeSaved, "", locale));
+    window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "saved", id: saved.id } }));
+    window.setTimeout(() => setSaveMessage(""), 2200);
+  };
+
   const focusChange = (change: PassiveTreeChangeMarker) => {
     if (!tree) return;
     const node = tree.nodeById.get(change.id);
@@ -307,8 +461,10 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
     });
   };
 
-  if (error) return <main className="passive-route"><div className="error-panel">{error}</div></main>;
-  if (!tree) return <main className="passive-route"><div className="loading-panel">{uiText("loadingPassiveTree", locale)}</div></main>;
+  const routeClassName = embedded ? "passive-route passive-route--embedded" : "passive-route";
+
+  if (error) return <main className={routeClassName}><div className="error-panel">{error}</div></main>;
+  if (!tree) return <main className={routeClassName}><div className="loading-panel">{uiText("loadingPassiveTree", locale)}</div></main>;
 
   const hoverChange = effectiveChangesOn && hover.node ? changes?.byId.get(hover.node.id) : undefined;
   const totalChanges = changes ? changes.counts.added + changes.counts.removed + changes.counts.stats + changes.counts.renamed + changes.counts.moved : 0;
@@ -316,7 +472,7 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
   const showChangesPanel = activeMode === "changes" && effectiveChangesOn && changes;
 
   return (
-    <main className="passive-route">
+    <main className={routeClassName}>
       <div className="passive-toolbar">
         <div className="passive-mode-tabs" role="tablist" aria-label="Passive tree mode">
           <button className={`${activeMode === "build" ? "is-active" : ""} ${buildLimitWarning || buildLimitExceeded ? "is-danger" : ""}`} type="button" onClick={() => setActiveMode("build")} aria-pressed={activeMode === "build"}>
@@ -328,6 +484,35 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
             <span className="material-symbols-rounded" aria-hidden="true">change_circle</span>
             <span>Change 0.4</span>
           </button>
+        </div>
+        <div className="passive-tree-library" ref={treeLibraryRef}>
+          <button className="passive-tree-library-toggle" type="button" onClick={() => setTreeLibraryOpen((open) => !open)} aria-expanded={treeLibraryOpen} aria-label={localizedText(passiveCopy.savedTrees, "", locale)}>
+            <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
+            <strong>{savedTrees.find((row) => row.id === activeSavedTreeId)?.name || localizedText(passiveCopy.savedTrees, "", locale)}</strong>
+            <small>{formatNumber(savedTrees.length, locale)}</small>
+            <span className="material-symbols-rounded" aria-hidden="true">expand_more</span>
+          </button>
+          {treeLibraryOpen ? (
+            <div className="passive-tree-menu" role="menu" aria-label={localizedText(passiveCopy.savedTrees, "", locale)}>
+              {savedTrees.length ? savedTrees.map((snapshot) => (
+                <article className={snapshot.id === activeSavedTreeId ? "is-active" : ""} key={snapshot.id}>
+                  <button className="passive-tree-menu-main" type="button" onClick={() => loadSavedTreeSnapshot(snapshot)} role="menuitem">
+                    <span>
+                      <strong>{snapshot.name}</strong>
+                      <small>{snapshot.className}{snapshot.ascendancyName ? ` / ${snapshot.ascendancyName}` : ""}</small>
+                    </span>
+                    <em>{formatNumber(passiveCount(snapshot), locale)}</em>
+                    <b>{localizedText(passiveCopy.openSavedTree, "", locale)}</b>
+                  </button>
+                  <button className="passive-tree-menu-delete" type="button" onClick={() => removeSavedTreeSnapshot(snapshot.id)} aria-label={`${localizedText(passiveCopy.deleteTree, "", locale)}: ${snapshot.name}`}>
+                    <span className="material-symbols-rounded" aria-hidden="true">close</span>
+                  </button>
+                </article>
+              )) : (
+                <p>{localizedText(passiveCopy.noSavedTrees, "", locale)}</p>
+              )}
+            </div>
+          ) : null}
         </div>
         <label>
           <span>{localizedText(passiveCopy.class, "", locale)}</span>
@@ -437,13 +622,21 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
                     <p>{formatNumber(visibleNodeCount, locale)} {localizedText(passiveCopy.visibleNodes, "", locale)}</p>
                   </div>
                   <div className="passive-panel-actions">
-                    <button className="passive-build-clear" type="button" onClick={() => {
-                      setBuildLimitWarning("");
-                      setAllocatedIds(syncSelectedStartNodeIds(new Set(), selectedStartIds, startIds));
-                    }} title={localizedText(passiveCopy.clearBuild, "", locale)} aria-label={localizedText(passiveCopy.clearBuild, "", locale)}>
-                      <span className="material-symbols-rounded" aria-hidden="true">delete_sweep</span>
-                      <span>Clear</span>
-                    </button>
+                    {!readOnly ? (
+                      <>
+                        <button className={`passive-build-save ${hasUnsavedTreeChanges ? "has-changes" : ""}`} type="button" onClick={saveCurrentTree} disabled={!currentBuildSnapshot || passiveCount(currentBuildSnapshot) <= 0} title={localizedText(passiveCopy.saveTree, "", locale)} aria-label={localizedText(passiveCopy.saveTree, "", locale)}>
+                          <span className="material-symbols-rounded" aria-hidden="true">save</span>
+                          <span>Save</span>
+                        </button>
+                        <button className="passive-build-clear" type="button" onClick={() => {
+                          setBuildLimitWarning("");
+                          setAllocatedIds(syncSelectedStartNodeIds(new Set(), selectedStartIds, startIds));
+                        }} title={localizedText(passiveCopy.clearBuild, "", locale)} aria-label={localizedText(passiveCopy.clearBuild, "", locale)}>
+                          <span className="material-symbols-rounded" aria-hidden="true">delete_sweep</span>
+                          <span>Clear</span>
+                        </button>
+                      </>
+                    ) : null}
                     <button className="passive-panel-collapse" type="button" onClick={() => setBuildPanelCollapsed(true)} aria-label="Hide build summary" title="Hide panel">
                       <span className="material-symbols-rounded" aria-hidden="true">chevron_right</span>
                     </button>
@@ -453,6 +646,11 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
                   <span className={buildCounts.passive >= BUILD_PASSIVE_LIMIT ? "is-danger" : ""}><strong>{formatNumber(buildCounts.passive, locale)}</strong>/{BUILD_PASSIVE_LIMIT} {localizedText(passiveCopy.passives, "", locale)}</span>
                   <span className={buildCounts.ascendancy >= BUILD_ASCENDANCY_LIMIT ? "is-danger" : ""}><strong>{formatNumber(buildCounts.ascendancy, locale)}</strong>/{BUILD_ASCENDANCY_LIMIT} {localizedText(passiveCopy.ascendancyPoints, "", locale)}</span>
                 </div>
+                <label className="passive-build-name">
+                  <span>{localizedText(passiveCopy.treeName, "", locale)}</span>
+                  <input value={treeBuildName} onChange={(event) => setTreeBuildName(event.target.value)} placeholder={`${classFilter || "Class"} ${ascendancyFilter || "tree"}`} />
+                </label>
+                {saveMessage ? <p className="passive-build-saved">{saveMessage}</p> : null}
                 {buildLimitWarning ? <p className="passive-build-warning">{buildLimitWarning}</p> : null}
                 <div className="passive-build-section">
                   <h3>{localizedText(passiveCopy.statSummary, "", locale)}</h3>
@@ -486,4 +684,8 @@ export function PassiveTreePage({ locale }: { locale: Locale }) {
       </div>
     </main>
   );
+}
+
+export function PassiveTreePage({ locale }: { locale: Locale }) {
+  return <PassiveTreeWorkspace locale={locale} />;
 }

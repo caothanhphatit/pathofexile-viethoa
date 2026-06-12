@@ -115,7 +115,7 @@ test("tooltip engine never wraps executable or raw text containers", async () =>
 test("routes expose reusable nav metadata for the app shell", async () => {
   const routes = await readProjectFile("app-routes.js");
 
-  for (const key of ["home", "patchnote", "lookup", "newbie", "passivetree", "leveling"]) {
+  for (const key of ["home", "patchnote", "lookup", "newbie", "passivetree", "build", "leveling"]) {
     assert.match(routes, new RegExp(`${key}:\\s*{[\\s\\S]*?icon:`), `${key} route has icon metadata`);
     assert.match(routes, new RegExp(`${key}:\\s*{[\\s\\S]*?navOrder:`), `${key} route has nav order`);
   }
@@ -155,6 +155,7 @@ test("app routes and nav links use clean production URLs without html suffixes",
   assert.match(routes, /href:\s*"\/dictionary"/);
   assert.match(routes, /href:\s*"\/currency"/);
   assert.match(routes, /href:\s*"\/passive-tree"/);
+  assert.match(routes, /href:\s*"\/build"/);
   assert.match(routes, /navActiveRoute/);
   assert.match(routes, /canonicalInternalHref/);
   assert.match(shell, /navActiveRoute/);
@@ -166,6 +167,7 @@ test("app routes and nav links use clean production URLs without html suffixes",
   assert.match(spaRoutes, /path:\s*"\/skill-gems"/);
   assert.match(spaRoutes, /path:\s*"\/currency"/);
   assert.match(spaRoutes, /path:\s*"\/passive-tree"/);
+  assert.match(spaRoutes, /path:\s*"\/build"/);
   assert.match(app, /navRoutes\.map/);
   assert.match(app, /href=\{item\.path\}/);
   assert.match(app, /activeNavKey/);
@@ -236,8 +238,15 @@ test("SPA shell delegates visible navigation and layout to React", async () => {
   assert.match(html, /href="\/dist\/spa\/assets\/app\.css(?:\?[^"]*)?"/);
   assert.match(app, /<header className="app-header">/);
   assert.match(app, /<nav className="nav-rail"/);
+  assert.match(app, /https:\/\/www\.facebook\.com\/poeviethoa/);
+  assert.match(app, /className="facebook-button"/);
+  assert.match(app, /className="facebook-button"[\s\S]*className="segmented"/);
+  assert.match(app, /anchor\.hasAttribute\("download"\)/);
+  assert.match(app, /\^\(https\?:\|mailto:\|tel:\|blob:\|data:\)/);
   assert.match(home, /<main className="page-shell home-page">/);
+  assert.match(home, /Chào mừng đến với bách khoa toàn thư POE2/);
   assert.match(styles, /\.page-shell/);
+  assert.match(styles, /\.facebook-button/);
   assert.doesNotMatch(html, /components\/app-shell\.js/);
 });
 

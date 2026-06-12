@@ -66,6 +66,80 @@ const itemSpecificityScore = (item, index) => {
   return menuScore + contentScore + index / 100000;
 };
 
+const actualItemIconPattern = /\/2DItems\//i;
+const weaponIconPattern = /\/2DItems\/(?:Weapons|Offhand\/Talismans)\//i;
+const offHandIconPattern = /\/2DItems\/(?:Weapons\/OneHandWeapons|Offhand\/(?:Shields|Foci)|Quivers|Armours\/Shields)\//i;
+const helmetIconPattern = /\/2DItems\/Armours\/Helmets\//i;
+const bodyArmourIconPattern = /\/2DItems\/Armours\/BodyArmours\//i;
+const glovesIconPattern = /\/2DItems\/Armours\/Gloves\//i;
+const bootsIconPattern = /\/2DItems\/Armours\/Boots\//i;
+const amuletIconPattern = /\/2DItems\/Amulets\//i;
+const ringIconPattern = /\/2DItems\/Rings\//i;
+const beltIconPattern = /\/2DItems\/Belts\//i;
+const flaskIconPattern = /\/2DItems\/Flasks\//i;
+const lifeFlaskIconPattern = /\/2DItems\/Flasks\/Basetypes\/FlaskLife/i;
+const manaFlaskIconPattern = /\/2DItems\/Flasks\/Basetypes\/FlaskMana/i;
+const charmIconPattern = /\/2DItems\/Charms\//i;
+const relicIconPattern = /\/2DItems\/Relics\//i;
+const uniqueItemIconPattern = /\/(?:Uniques\/|RelicUnique|Demigods|Demibelt)/i;
+const uniqueInternalModPattern = /\buse unique\b/i;
+
+const uniqueStrings = (values = []) => [...new Set(values.filter(Boolean))];
+
+const itemTextLines = (item = {}) => [
+  ...(Array.isArray(item.properties) ? item.properties : []),
+  ...(Array.isArray(item.requirements) ? item.requirements : []),
+  ...(Array.isArray(item.mods) ? item.mods : [])
+].map(String).filter(Boolean);
+
+const itemHasLine = (item, pattern) => itemTextLines(item).some((line) => pattern.test(line));
+
+export const inferItemRarity = (item = {}, itemNames = new Set()) => {
+  if (String(item.rarity || "").toLowerCase() === "unique") return "unique";
+  const iconUrl = item.icon_url || "";
+  if (uniqueItemIconPattern.test(iconUrl)) return "unique";
+  if (itemTextLines(item).some((line) => uniqueInternalModPattern.test(line))) return "unique";
+  const name = String(item.name || "");
+  const hasKnownBaseLine = (Array.isArray(item.properties) ? item.properties : [])
+    .map(String)
+    .some((line) => line && line !== name && !line.includes(":") && itemNames.has(line));
+  return hasKnownBaseLine ? "unique" : "";
+};
+
+export const buildSlotCategoriesForItem = (item = {}) => {
+  const iconUrl = item.icon_url || "";
+  if (!actualItemIconPattern.test(iconUrl)) return [];
+
+  const categories = [];
+  if (weaponIconPattern.test(iconUrl)) categories.push("weapon");
+  if (offHandIconPattern.test(iconUrl)) categories.push("offhand");
+  if (helmetIconPattern.test(iconUrl)) categories.push("helmet");
+  if (bodyArmourIconPattern.test(iconUrl)) categories.push("body-armour");
+  if (glovesIconPattern.test(iconUrl)) categories.push("gloves");
+  if (bootsIconPattern.test(iconUrl)) categories.push("boots");
+  if (amuletIconPattern.test(iconUrl)) categories.push("amulet");
+  if (ringIconPattern.test(iconUrl)) categories.push("ring");
+  if (beltIconPattern.test(iconUrl)) categories.push("belt");
+  if (charmIconPattern.test(iconUrl)) categories.push("charm");
+  if (relicIconPattern.test(iconUrl)) categories.push("relic");
+  if (
+    flaskIconPattern.test(iconUrl) &&
+    (item.menu_key === "life-flasks" || lifeFlaskIconPattern.test(iconUrl) || itemHasLine(item, /\bLife Flask\b/i))
+  ) {
+    categories.push("life-flask");
+  }
+  if (
+    flaskIconPattern.test(iconUrl) &&
+    (item.menu_key === "mana-flasks" || manaFlaskIconPattern.test(iconUrl) || itemHasLine(item, /\bMana Flask\b/i))
+  ) {
+    categories.push("mana-flask");
+  }
+
+  return uniqueStrings(categories);
+};
+
+export const itemCategoryForBuildSlots = (item = {}) => buildSlotCategoriesForItem(item)[0] || "other";
+
 export const dedupeItemsBySlug = (items = []) => {
   const bySlug = new Map();
   items.forEach((item, index) => {
@@ -435,6 +509,17 @@ export const normalizeExportItem = (row, localizationLookup = new Map(), locales
   const properties = parseMaybeJson(row.properties_json, []);
   const requirements = parseMaybeJson(row.requirements_json, []);
   const mods = parseMaybeJson(row.mods_json, []);
+  const sourceItem = {
+    name: row.name,
+    menu_key: row.menu_key,
+    icon_url: row.icon_url || "",
+    icon_alt: row.icon_alt || "",
+    source_url: row.source_url || "",
+    properties,
+    requirements,
+    mods
+  };
+  const buildSlotCategories = buildSlotCategoriesForItem(sourceItem);
   const nameI18n = buildI18nText(localizationLookup, "item", row.slug, "name", row.name, locales);
   const propertiesI18n = buildI18nList(localizationLookup, "item", row.slug, "properties", properties, locales);
   const requirementsI18n = buildI18nList(localizationLookup, "item", row.slug, "requirements", requirements, locales);
@@ -448,6 +533,9 @@ export const normalizeExportItem = (row, localizationLookup = new Map(), locales
     source_url: row.source_url,
     icon_url: row.icon_url || "",
     icon_alt: row.icon_alt || "",
+    rarity: inferItemRarity(sourceItem),
+    item_category: buildSlotCategories[0] || "other",
+    build_slot_categories: buildSlotCategories,
     properties,
     requirements,
     mods,
@@ -475,7 +563,12 @@ export const buildItemsExportPayload = ({
   const normalizedItems = items.map((item) => item.properties_json || item.mods_json
     ? normalizeExportItem(item, localizationLookup, locales)
     : item);
-  const activeItems = normalizedItems.filter((item) => (item.status || "active") === "active");
+  const itemNames = new Set(normalizedItems.map((item) => item.name).filter(Boolean));
+  const itemsWithDerivedFields = normalizedItems.map((item) => ({
+    ...item,
+    rarity: inferItemRarity(item, itemNames)
+  }));
+  const activeItems = itemsWithDerivedFields.filter((item) => (item.status || "active") === "active");
   const menuRows = menus.map((menu) => ({
     key: menu.key,
     label: menu.label,
@@ -489,10 +582,10 @@ export const buildItemsExportPayload = ({
     generated_at: nowIso(),
     source_url: latestRun?.source_url || sourceUrl,
     latest_run: latestRun,
-    total: normalizedItems.length,
+    total: itemsWithDerivedFields.length,
     active_total: activeItems.length,
     menus: menuRows,
-    items: normalizedItems
+    items: itemsWithDerivedFields
   };
 };
 
@@ -535,6 +628,9 @@ export const exportItems = async (pool) => {
 export const writeItemsExport = async (pool, exportPath = EXPORT_PATH) => {
   await retranslateContent(pool);
   const data = await exportItems(pool);
+  if (!data.active_total || !data.items.length) {
+    throw new Error("Refusing to write an empty items export. Run the item crawl before exporting.");
+  }
   await fs.mkdir(path.dirname(exportPath), { recursive: true });
   await fs.writeFile(exportPath, `window.POE2_ITEMS = ${JSON.stringify(data, null, 2)};\n`, "utf8");
   return data;

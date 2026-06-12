@@ -19,6 +19,7 @@ import { DEFAULT_CURRENCY_SOURCE_URL } from "./currency-lib.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, "..");
 const EXPORT_PATH = path.join(ROOT_DIR, "public/data/dictionary-data.js");
+const SKILL_GEMS_EXPORT_PATH = path.join(ROOT_DIR, "public/data/skill-gems-data.js");
 const SKILL_SOURCE_URL = "https://poe2db.tw/us/Skill_Gems";
 
 const parseCliArgs = (argv = process.argv.slice(2)) => new Map(argv.map((arg) => {
@@ -44,6 +45,16 @@ const loadExistingDictionary = () => {
   vm.createContext(context);
   vm.runInContext(source, context);
   return context.window.POE2_DICTIONARY_TERMS || { categories: {}, terms: [] };
+};
+
+const loadExportedSkillGemTags = () => {
+  if (!fs.existsSync(SKILL_GEMS_EXPORT_PATH)) return [];
+  const source = fs.readFileSync(SKILL_GEMS_EXPORT_PATH, "utf8");
+  const context = { window: {} };
+  vm.createContext(context);
+  vm.runInContext(source, context);
+  const gems = context.window.POE2_SKILL_GEMS?.gems || [];
+  return [...new Set(gems.flatMap((gem) => gem.tags || []))];
 };
 
 const runConcurrent = async (items, worker, { concurrency = 8, label = "items" } = {}) => {
@@ -196,7 +207,7 @@ const main = async () => {
   const skillHtml = await fetchText(args.get("skill-source") || SKILL_SOURCE_URL);
   references.push(...extractKeywordReferences(skillHtml, SKILL_SOURCE_URL));
   const gems = parseSkillGemsPage(skillHtml, SKILL_SOURCE_URL);
-  const skillTags = [...new Set(gems.flatMap((gem) => gem.tags || []))];
+  const skillTags = [...new Set([...gems.flatMap((gem) => gem.tags || []), ...loadExportedSkillGemTags()])];
 
   if (shouldCrawlSkillDetails) {
     const detailUrls = uniqueBy(gems.map((gem) => gem.source_url), (url) => url);
