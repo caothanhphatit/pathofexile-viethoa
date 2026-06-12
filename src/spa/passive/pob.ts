@@ -119,10 +119,18 @@ export const parsePobBuild = async (input: string): Promise<PobBuild> => {
   const code = await resolveCode(input);
   const xml = await decodePobXml(code);
   const doc = new DOMParser().parseFromString(xml, "text/xml");
-  // PoE1 exports use <PathOfBuilding>, PoE2 uses <PathOfBuilding2> — accept either.
+  // PoE2 exports use <PathOfBuilding2>; PoE1 uses <PathOfBuilding>. This is a
+  // PoE2 site, so only accept PoE2 codes (and explain if a PoE1 code is pasted).
   const root = doc.documentElement;
-  if (doc.querySelector("parsererror") || !root || !/^PathOfBuilding/i.test(root.tagName)) {
-    throw new Error("Không phải Path of Building code hợp lệ");
+  const tag = (root?.tagName || "").toLowerCase();
+  if (doc.querySelector("parsererror") || !root) {
+    throw new Error("Không đọc được code — không phải Path of Building code hợp lệ");
+  }
+  if (tag === "pathofbuilding") {
+    throw new Error("Đây là code Path of Building 1 (PoE1). Web này chỉ hỗ trợ POB của PoE2.");
+  }
+  if (tag !== "pathofbuilding2") {
+    throw new Error("Không phải Path of Building (PoE2) code hợp lệ");
   }
 
   const buildEl = doc.querySelector("Build");
