@@ -119,7 +119,9 @@ export const parsePobBuild = async (input: string): Promise<PobBuild> => {
   const code = await resolveCode(input);
   const xml = await decodePobXml(code);
   const doc = new DOMParser().parseFromString(xml, "text/xml");
-  if (doc.querySelector("parsererror") || !doc.querySelector("PathOfBuilding")) {
+  // PoE1 exports use <PathOfBuilding>, PoE2 uses <PathOfBuilding2> — accept either.
+  const root = doc.documentElement;
+  if (doc.querySelector("parsererror") || !root || !/^PathOfBuilding/i.test(root.tagName)) {
     throw new Error("Không phải Path of Building code hợp lệ");
   }
 
