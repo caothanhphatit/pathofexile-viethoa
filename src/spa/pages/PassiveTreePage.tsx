@@ -33,6 +33,24 @@ type PassivePanelMode = "build" | "changes" | "items";
 const BUILD_PASSIVE_LIMIT = 124;
 const BUILD_ASCENDANCY_LIMIT = 8;
 
+// Curated build stats shown as chips (POB exposes dozens — these are the headline ones).
+const POB_KEY_STATS: { key: string; label: string; round?: boolean }[] = [
+  { key: "CombinedDPS", label: "DPS", round: true },
+  { key: "TotalDPS", label: "Hit DPS", round: true },
+  { key: "Life", label: "Life", round: true },
+  { key: "EnergyShield", label: "ES", round: true },
+  { key: "Mana", label: "Mana", round: true },
+  { key: "Ward", label: "Ward", round: true },
+  { key: "MeleeEvadeChance", label: "Evade%" },
+  { key: "PhysicalDamageReduction", label: "PhysRed%" },
+  { key: "EffectiveMovementSpeedMod", label: "MoveSpd" },
+  { key: "FireResist", label: "Fire" },
+  { key: "ColdResist", label: "Cold" },
+  { key: "LightningResist", label: "Light" },
+  { key: "ChaosResist", label: "Chaos" }
+];
+const POB_ITEM_CATEGORIES = ["Weapon", "Armour", "Jewellery", "Belt", "Flask", "Jewel", "Other"] as const;
+
 const changeFilterRows: { key: ChangeFilter; label: string }[] = [
   { key: "all", label: "All" },
   { key: "added", label: "New" },
@@ -722,20 +740,35 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
               <span className="material-symbols-rounded" aria-hidden="true">backpack</span>
               <div>
                 <h2 translate="no">{pob.className || "Build"}{pob.ascendClassName ? ` · ${pob.ascendClassName}` : ""}</h2>
-                <p>Lv {formatNumber(pob.level, locale)} · {formatNumber(pob.nodeIds.length, locale)} node · {formatNumber(pob.items.length, locale)} item</p>
+                <p>Lv {formatNumber(pob.level, locale)} · {formatNumber(pob.nodeIds.length, locale)} node · {formatNumber(pob.items.length, locale)} item · {formatNumber(pob.skills.length, locale)} skill</p>
               </div>
             </div>
+
+            {pob.stats.length ? (
+              <div className="passive-build-section">
+                <h3>Chỉ số</h3>
+                <div className="passive-pob-stats" translate="no">
+                  {POB_KEY_STATS.map((def) => {
+                    const row = pob.stats.find((s) => s.stat === def.key);
+                    if (!row) return null;
+                    const val = def.round ? Math.round(row.value).toLocaleString("en-US") : (Math.round(row.value * 100) / 100).toString();
+                    return <span className="passive-pob-stat" key={def.key}><small>{def.label}</small><strong>{val}</strong></span>;
+                  })}
+                </div>
+              </div>
+            ) : null}
+
             {pob.skills.length ? (
               <div className="passive-build-section">
-                <h3>Skill gems</h3>
+                <h3>Skills &amp; Gems</h3>
                 <div className="passive-pob-skills" translate="no">
                   {pob.skills.map((group, gi) => (
-                    <div className="passive-pob-skill" key={`${group.slot}-${gi}`}>
-                      {group.slot ? <span className="passive-pob-slot">{group.slot}</span> : null}
+                    <div className={`passive-pob-skill ${group.enabled ? "" : "is-off"}`} key={`${group.slot}-${gi}`}>
+                      {group.slot ? <span className="passive-pob-slot">{group.slot}{group.source ? " · granted" : ""}</span> : null}
                       {group.gems.map((gem, idx) => (
-                        <div className={`passive-pob-gem ${gem.enabled ? "" : "is-off"}`} key={`${gem.name}-${idx}`}>
-                          <span>{gem.name}</span>
-                          <small>L{gem.level}{gem.quality ? ` · Q${gem.quality}` : ""}</small>
+                        <div className={`passive-pob-gem ${gem.enabled ? "" : "is-off"} ${gem.support ? "is-support" : ""}`} key={`${gem.name}-${idx}`}>
+                          <span>{gem.support ? "↳ " : ""}{gem.name}</span>
+                          {gem.level ? <small>L{gem.level}{gem.quality ? ` · Q${gem.quality}` : ""}</small> : null}
                         </div>
                       ))}
                     </div>
@@ -743,22 +776,53 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
                 </div>
               </div>
             ) : null}
-            {pob.items.length ? (
-              <div className="passive-build-section">
-                <h3>Items</h3>
-                <div className="passive-pob-items" translate="no">
-                  {pob.items.map((item) => (
-                    <details className={`passive-pob-item rarity-${item.rarity.toLowerCase() || "normal"}`} key={item.id}>
-                      <summary>
-                        {item.slot ? <span className="passive-pob-slot">{item.slot}</span> : null}
-                        <strong>{item.name || item.baseType || "Item"}</strong>
-                        {item.baseType && item.baseType !== item.name ? <small>{item.baseType}</small> : null}
-                      </summary>
-                      <pre>{item.text}</pre>
-                    </details>
-                  ))}
+
+            {pob.items.length ? POB_ITEM_CATEGORIES.map((cat) => {
+              const list = pob.items.filter((it) => it.category === cat);
+              if (!list.length) return null;
+              return (
+                <div className="passive-build-section" key={cat}>
+                  <h3>{cat} <span className="passive-pob-count">{list.length}</span></h3>
+                  <div className="passive-pob-items" translate="no">
+                    {list.map((item) => (
+                      <details className={`passive-pob-item rarity-${(item.rarity || "normal").toLowerCase()}`} key={item.id}>
+                        <summary>
+                          {item.slot ? <span className="passive-pob-slot">{item.slot}</span> : null}
+                          <strong>{item.name || item.baseType || "Item"}</strong>
+                          <small>{[item.baseType && item.baseType !== item.name ? item.baseType : "", item.itemLevel ? `iLvl ${item.itemLevel}` : "", item.corrupted ? "Corrupted" : ""].filter(Boolean).join(" · ")}</small>
+                        </summary>
+                        {item.implicits.length ? <div className="passive-pob-mods is-implicit">{item.implicits.map((m, i) => <p key={`i${i}`}>{m}</p>)}</div> : null}
+                        {item.explicits.length ? <div className="passive-pob-mods">{item.explicits.map((m, i) => <p key={`e${i}`}>{m}</p>)}</div> : null}
+                        {!item.implicits.length && !item.explicits.length ? <pre>{item.text}</pre> : null}
+                      </details>
+                    ))}
+                  </div>
                 </div>
+              );
+            }) : null}
+
+            {pob.jewels.length || pob.masteries.length ? (
+              <div className="passive-build-section">
+                <h3>Tree</h3>
+                <p className="passive-pob-meta" translate="no">
+                  {formatNumber(pob.nodeIds.length, locale)} node · {formatNumber(pob.masteries.length, locale)} mastery
+                  {pob.treeVersion ? ` · tree ${pob.treeVersion.replace(/_/g, ".")}` : ""}
+                </p>
+                {pob.jewels.length ? (
+                  <div className="passive-pob-skills" translate="no">
+                    {pob.jewels.map((j, i) => <div className="passive-pob-gem" key={`${j.nodeId}-${i}`}><span>💎 {j.name}</span></div>)}
+                  </div>
+                ) : null}
               </div>
+            ) : null}
+
+            {pob.configs.length ? (
+              <details className="passive-build-section passive-pob-config">
+                <summary><h3 style={{ display: "inline" }}>Config <span className="passive-pob-count">{pob.configs.length}</span></h3></summary>
+                <div className="passive-pob-mods" translate="no">
+                  {pob.configs.map((c, i) => <p key={i}>{c.name}: <strong>{c.value}</strong></p>)}
+                </div>
+              </details>
             ) : null}
           </aside>
         ) : null}

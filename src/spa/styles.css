@@ -5534,3 +5534,22 @@ textarea:focus-visible {
 .passive-import-modal textarea { width: 100%; resize: vertical; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--ink); padding: 8px 10px; font-family: ui-monospace, monospace; font-size: 12px; }
 .passive-import-error { color: #ff6b6b !important; font-weight: 700; margin-top: 8px; }
 .passive-import-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+
+/* POB import — classified entity panel */
+.passive-pob-count { font-size: 10px; font-weight: 800; color: var(--muted); background: var(--surface-2); border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
+.passive-pob-stats { display: flex; flex-wrap: wrap; gap: 6px; }
+.passive-pob-stat { display: flex; flex-direction: column; align-items: flex-start; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); padding: 4px 8px; min-width: 56px; }
+.passive-pob-stat small { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.passive-pob-stat strong { font-size: 13px; font-weight: 800; }
+.passive-pob-meta { font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+.passive-pob-skill.is-off { opacity: .5; }
+.passive-pob-gem.is-support span { color: var(--muted); font-weight: 600; padding-left: 4px; }
+.passive-pob-mods { display: flex; flex-direction: column; gap: 2px; padding: 6px 8px; border-top: 1px solid var(--line); background: rgba(0,0,0,.12); }
+.passive-pob-mods p { font-size: 11px; line-height: 1.4; color: #8aa9ff; margin: 0; }
+.passive-pob-mods.is-implicit p { color: var(--muted); }
+.passive-pob-config { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.passive-pob-config > summary { cursor: pointer; list-style: none; }
+.passive-pob-config > summary::-webkit-details-marker { display: none; }
+.passive-pob-config .passive-pob-mods { border-top: none; background: transparent; padding: 4px 0 0; }
+.passive-pob-config .passive-pob-mods p { color: var(--muted); }
+.passive-pob-config .passive-pob-mods strong { color: var(--ink); }
