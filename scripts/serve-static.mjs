@@ -50,7 +50,11 @@ const cleanRouteFiles = new Map([
   ["/build", "/index.html"],
   ["/build-planner", "/index.html"],
   ["/builds", "/index.html"],
-  ["/leveling", "/index.html"]
+  ["/leveling", "/index.html"],
+  // Standalone boss pages (script-rendered): serve their real HTML directly.
+  ["/boss", "/boss.html"],
+  ["/boss-detail", "/boss_detail.html"],
+  ["/boss_detail", "/boss_detail.html"]
 ]);
 
 const goneRoutes = new Set([

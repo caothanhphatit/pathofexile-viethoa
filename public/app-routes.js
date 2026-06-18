@@ -74,6 +74,13 @@
       navParent: "newbie",
       aliases: ["beginner-guide", "poe2-beginner-guide", "starter-guide", "huong-dan-nhap-mon", "newbie-guide"]
     },
+    boss: {
+      title: "Boss",
+      href: "/boss",
+      icon: "skull",
+      navParent: "newbie",
+      aliases: ["boss", "bosses", "boss-list", "list-of-bosses", "danh-sach-boss"]
+    },
     skillgems: {
       title: "Skill gems",
       href: "/skill-gems",
@@ -113,6 +120,7 @@
     dictionary: "dictionary.html",
     weapon: "weapon.html",
     beginner: "beginner.html",
+    boss: "boss.html",
     skillgems: "skill_gems.html",
     currency: "currency.html",
     passivetree: "passive_tree.html",
@@ -124,7 +132,9 @@
     "currency-detail": { file: "currency_detail.html", href: "/currency-detail" },
     currency_detail: { file: "currency_detail.html", href: "/currency-detail" },
     "skill-gem": { file: "skill_gem_detail.html", href: "/skill-gem" },
-    skill_gem_detail: { file: "skill_gem_detail.html", href: "/skill-gem" }
+    skill_gem_detail: { file: "skill_gem_detail.html", href: "/skill-gem" },
+    "boss-detail": { file: "boss_detail.html", href: "/boss-detail" },
+    boss_detail: { file: "boss_detail.html", href: "/boss-detail" }
   };
 
   const actAliases = {
@@ -214,6 +224,9 @@
     }
     if (last === "skill_gem_detail" || last === "skill-gem") {
       return `${withBasePath("/skill-gem")}${url.search}${url.hash}`;
+    }
+    if (last === "boss_detail" || last === "boss-detail") {
+      return `${withBasePath("/boss-detail")}${url.search}${url.hash}`;
     }
 
     const key = routeByAlias(last);

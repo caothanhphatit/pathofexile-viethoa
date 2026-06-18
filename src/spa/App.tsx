@@ -62,6 +62,10 @@ export function App() {
       if (!href || anchor.hasAttribute("download") || href.startsWith("#") || /^(https?:|mailto:|tel:|blob:|data:)/i.test(href)) return;
       const url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin) return;
+      // Standalone boss pages render their content via inline scripts, so they
+      // must load as full pages instead of being intercepted by the SPA router.
+      const cleanPath = url.pathname.replace(/\.html$/, "");
+      if (cleanPath === "/boss" || cleanPath === "/boss-detail" || cleanPath === "/boss_detail") return;
       event.preventDefault();
       navigateTo(`${url.pathname}${url.search}${url.hash}`);
     };
