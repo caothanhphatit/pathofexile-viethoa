@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danh sách Boss - POE2</title>
-  <meta name="description" content="Danh sách đầy đủ 95 boss Path of Exile 2 Việt hóa: boss campaign theo từng Act, boss optional và toàn bộ boss endgame (Trial, Ritual, Breach, Abyss, Expedition, Pinnacle).">
+  <meta name="description" content="Danh sách boss Path of Exile 2 Việt hóa: boss optional và toàn bộ boss endgame (Trial, Ritual, Breach, Abyss, Delirium, Expedition, Pinnacle) kèm hướng dẫn chi tiết cơ chế và chiến thuật từng con.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://poeviethoa.net/boss">
   <link rel="alternate" hreflang="vi" href="https://poeviethoa.net/boss">
@@ -13,12 +13,12 @@
   <meta property="og:site_name" content="POE2 Việt hóa">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Danh sách Boss POE2 Việt hóa">
-  <meta property="og:description" content="Tổng hợp toàn bộ 95 boss PoE2 theo nhóm: campaign theo Act, optional và endgame.">
+  <meta property="og:description" content="Tổng hợp boss PoE2 (optional + endgame) theo nhóm, kèm trang chi tiết cơ chế/chiến thuật từng boss.">
   <meta property="og:url" content="https://poeviethoa.net/boss">
   <meta property="og:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Danh sách Boss POE2 Việt hóa">
-  <meta name="twitter:description" content="Tổng hợp toàn bộ boss PoE2 theo nhóm: campaign, optional và endgame.">
+  <meta name="twitter:description" content="Tổng hợp boss PoE2 (optional + endgame) theo nhóm, kèm hướng dẫn chi tiết.">
   <meta name="twitter:image" content="https://poeviethoa.net/assets/img/logo.jpg">
   <meta name="theme-color" content="#0f172a">
   <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
@@ -27,6 +27,7 @@
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link href="dist/app.css?v=20260529-font-ui" rel="stylesheet">
   <script defer src="app-routes.js"></script>
+  <script>window.POE2_DISABLE_TOOLTIPS = true;</script>
   <script defer src="components/app-shell.js"></script>
   <style>
     .boss-row {
@@ -61,12 +62,16 @@
             <h1 class="font-display text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">Danh sách Boss</h1>
           </div>
         </div>
-        <div class="inline-flex h-10 w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
-          <span class="material-symbols-rounded text-sm text-purple-500" aria-hidden="true">skull</span>
-          <span data-boss-count>95 boss</span>
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="inline-flex h-10 w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3.5 text-xs font-black text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200">
+            <span class="material-symbols-rounded text-sm text-purple-500" aria-hidden="true">skull</span>
+            <span data-boss-count>56 boss</span>
+          </div>
         </div>
       </div>
     </section>
+
+    <section class="glass-panel rounded-lg p-4 shadow-sm dark:border-slate-800/80" aria-label="Tìm và lọc boss" data-boss-toolbar></section>
 
     <nav class="boss-group-nav glass-panel rounded-lg p-4 shadow-sm dark:border-slate-800/80" aria-label="Chuyển nhanh tới nhóm boss" data-group-nav></nav>
 
@@ -74,6 +79,7 @@
   </main>
 
   <script src="components/poe-ui-utils.js"></script>
+  <script src="data/boss-images.js?v=4"></script>
   <script>
     const { i18nText, onLocaleChange } = window.PoeUi;
 
@@ -81,12 +87,15 @@
       documentTitle: { vi: "Danh sách Boss - POE2", en: "Boss list - POE2" },
       title: { vi: "Danh sách Boss", en: "Boss list" },
       heroLabel: { vi: "Danh sách Boss POE2", en: "POE2 boss list" },
-      count: { vi: "95 boss", en: "95 bosses" },
+      count: { vi: "56 boss", en: "56 bosses" },
       navLabel: { vi: "Chuyển nhanh tới nhóm boss", en: "Jump to boss group" },
       navTitle: { vi: "Nhảy tới nhóm", en: "Jump to group" },
       colLocation: { vi: "Vị trí", en: "Location" },
       colNote: { vi: "Ghi chú", en: "Note" },
-      detail: { vi: "Chi tiết", en: "Details" }
+      detail: { vi: "Chi tiết", en: "Details" },
+      searchPlaceholder: { vi: "Tìm boss theo tên, vị trí hoặc ghi chú…", en: "Search by name, location or note…" },
+      filterAll: { vi: "Tất cả", en: "All" },
+      noResults: { vi: "Không tìm thấy boss nào khớp bộ lọc.", en: "No bosses match the current filter." }
     };
 
     // Type badge labels (vi/en) and accent classes. Pinnacle is visually distinct (amber/red).
@@ -106,145 +115,76 @@
 
     const GROUPS = [
       {
-        id: "act1",
-        label: { vi: "Campaign — Act 1", en: "Campaign — Act 1" },
-        bosses: [
-          { name: "The Rust King", location: "Red Vale", type: "Campaign", note: { vi: "Rớt: Rune Skull Cap", en: "Drops: Rune Skull Cap" } },
-          { name: "The Bloated Miller", location: "Riverbank", type: "Campaign", note: { vi: "Hoàn thành quest Mercy for the Miller", en: "Mercy for the Miller quest completion" } },
-          { name: "Asinia, Praetor Consort", location: "Tomb of the Consort", type: "Campaign", note: { vi: "Tiến trình quest Sorrow Among Stones", en: "Sorrow Among Stones progression" } },
-          { name: "Count Geonor", location: "Ogham Manor", type: "Campaign", note: { vi: "Hoàn thành quest The Mad Wolf of Ogham", en: "The Mad Wolf of Ogham completion" } },
-          { name: "The Executioner", location: "Ogham Village", type: "Campaign", note: { vi: "Tiến trình quest The Trail of Corruption", en: "The Trail of Corruption progression" } },
-          { name: "Lachlann of Endless Lament", location: "Cemetery of the Eternals", type: "Campaign", note: { vi: "Rớt: Count Lachlann's Ring", en: "Drops: Count Lachlann's Ring" } },
-          { name: "Draven, the Eternal Praetor", location: "Mausoleum of the Praetor", type: "Campaign", note: { vi: "Rớt: Draven's Memorial Key Piece", en: "Draven's Memorial Key Piece" } }
-        ]
-      },
-      {
-        id: "act2",
-        label: { vi: "Campaign — Act 2", en: "Campaign — Act 2" },
-        bosses: [
-          { name: "Rudja, Dread Engineer", location: "Mawdun Mine", type: "Campaign", note: { vi: "Tiến trình quest The Trail of Corruption", en: "The Trail of Corruption progression" } },
-          { name: "Rathbreaker", location: "Vastiri Outskirts", type: "Campaign", note: { vi: "Tiến trình quest Earning Passage", en: "Earning Passage progression" } },
-          { name: "Jamanra, the Risen King", location: "The Halani Gates", type: "Campaign", note: { vi: "Tiến trình quest The Trail of Corruption", en: "The Trail of Corruption progression" } },
-          { name: "Zalmarath, the Colossus", location: "The Titan Grotto", type: "Campaign", note: { vi: "Rớt: The Flame Ruby", en: "Drops: The Flame Ruby" } },
-          { name: "Tor Gul, the Defiler", location: "The Spires of Deshar", type: "Campaign", note: { vi: "Quest The Trail of Corruption; mở khóa Ascent to Power", en: "The Trail of Corruption; unlocks Ascent to Power" } },
-          { name: "Ekbab, Ancient Steed", location: "The Bone Pits", type: "Campaign", note: { vi: "Rớt: Mastodon Tusks", en: "Drops: Mastodon Tusks" } },
-          { name: "Azarian, the Forsaken Son", location: "Buried Shrines", type: "Campaign", note: { vi: "Tiến trình quest The City of Seven Waters", en: "The City of Seven Waters progression" } },
-          { name: "Jamanra, the Abomination", location: "Dreadnought Vanguard", type: "Campaign", note: { vi: "Hoàn thành quest The Trail of Corruption", en: "The Trail of Corruption completion" } }
-        ]
-      },
-      {
-        id: "act3",
-        label: { vi: "Campaign — Act 3", en: "Campaign — Act 3" },
-        bosses: [
-          { name: "Doryani", location: "The Black Chambers", type: "Campaign", note: { vi: "Tiến trình quest Legacy of the Vaal", en: "Legacy of the Vaal progression" } },
-          { name: "Viper Napuatzi", location: "Utzaal", type: "Campaign", note: { vi: "Tiến trình quest Legacy of the Vaal", en: "Legacy of the Vaal progression" } },
-          { name: "Ketzuli, High Priest of the Sun", location: "Temple of Topec", type: "Campaign", note: { vi: "Tiến trình quest Legacy of the Vaal", en: "Legacy of the Vaal progression" } },
-          { name: "Xyclucian, the Chimera", location: "Chimeral Wetlands", type: "Campaign", note: { vi: "Cho Chimeral Inscribed Ultimatum (mở khóa Trial of Chaos)", en: "Grants Chimeral Inscribed Ultimatum (unlocks Trial of Chaos)" } },
-          { name: "Zicoatl, Warden of the Core", location: "Jiquani's Sanctum", type: "Campaign", note: { vi: "Rớt: Large Soul Core", en: "Drops: Large Soul Core" } },
-          { name: "Blackjaw, the Remnant", location: "Jiquani's Machinarium", type: "Campaign", note: { vi: "Rớt: The Flame Core (+10% Fire Resistance)", en: "Drops: The Flame Core (+10% Fire Resistance)" } },
-          { name: "Queen of Filth", location: "Apex of Filth", type: "Campaign", note: { vi: "Rớt: Temple Door Icon", en: "Drops: Temple Door Icon" } }
-        ]
-      },
-      {
-        id: "act4",
-        label: { vi: "Campaign — Act 4", en: "Campaign — Act 4" },
-        bosses: [
-          { name: "Scourge of the Skies", location: "Shrike Island", type: "Campaign", note: { vi: "Tiến trình quest The Search", en: "The Search progression" } },
-          { name: "Krutog Lord of Kin", location: "Volcanic Warrens", type: "Campaign", note: { vi: "Tiến trình quest The Search", en: "The Search progression" } },
-          { name: "Tavakai, the Chieftain", location: "Heart of the Tribe", type: "Campaign", note: { vi: "Tiến trình quest The Search", en: "The Search progression" } },
-          { name: "Diamora, Song of Death", location: "Singing Caverns", type: "Campaign", note: { vi: "Tiến trình quest The Search", en: "The Search progression" } },
-          { name: "Benedictus, First Herald of Utopia", location: "The Excavation", type: "Campaign", note: { vi: "Tiến trình quest The Search", en: "The Search progression" } },
-          { name: "The Prisoner", location: "Solitary Confinement", type: "Campaign", note: { vi: "Tiến trình quest The Search", en: "The Search progression" } },
-          { name: "Torvian, Hand of the Saviour", location: "Arastas", type: "Campaign", note: { vi: "Tiến trình quest The Search", en: "The Search progression" } }
-        ]
-      },
-      {
-        id: "interlude",
-        label: { vi: "Campaign — Interlude", en: "Campaign — Interlude" },
-        bosses: [
-          { name: "Azmadi, the Faridun Prince", location: "Qimah Reservoir", type: "Campaign", note: { vi: "Tiến trình Interlude Act", en: "Interlude Act progression" } },
-          { name: "Isolde and Heldra", location: "Scorched Farmlands", type: "Campaign", note: { vi: "Tiến trình quest Recruit the Ezomytes", en: "Recruit the Ezomytes progression" } },
-          { name: "Siora, Blade of the Mists", location: "Stones of Serle", type: "Campaign", note: { vi: "Tiến trình quest Recruit the Ezomytes", en: "Recruit the Ezomytes progression" } },
-          { name: "Thane Wulfric and Lady Elswyth", location: "Holten Estate", type: "Campaign", note: { vi: "Hoàn thành quest Recruit the Ezomytes", en: "Recruit the Ezomytes completion" } },
-          { name: "Vornas, the Fell Flame", location: "The Galai Gates", type: "Campaign", note: { vi: "Tiến trình quest Recruit the Maraketh", en: "Recruit the Maraketh progression" } },
-          { name: "Elzarah, the Cobra Lord", location: "Sel Khari Sanctuary", type: "Campaign", note: { vi: "Tiến trình quest Recruit the Maraketh", en: "Recruit the Maraketh progression" } },
-          { name: "Lythara, the Wayward Spear", location: "Kriar Village", type: "Campaign", note: { vi: "Tiến trình quest Recruit the Vaal", en: "Recruit the Vaal progression" } },
-          { name: "Rakkar, the Frozen Talon", location: "Glacial Tarn", type: "Campaign", note: { vi: "Tiến trình quest Recruit the Vaal", en: "Recruit the Vaal progression" } },
-          { name: "Stormgore, the Guardian", location: "Etched Ravine", type: "Campaign", note: { vi: "Tiến trình quest Recruit the Vaal", en: "Recruit the Vaal progression" } },
-          { name: "Zolin and Zelina", location: "The Cuachic Vault", type: "Campaign", note: { vi: "Hoàn thành quest Recruit the Vaal", en: "Recruit the Vaal completion" } }
-        ]
-      },
-      {
         id: "optional-act1",
         label: { vi: "Optional — Act 1", en: "Optional — Act 1" },
         bosses: [
-          { name: "The Devourer", location: "Mud Burrow (Act 1)", type: "Optional", note: { vi: "Hoàn thành quest Treacherous Ground", en: "Treacherous Ground quest completion" } },
-          { name: "The Brambleghast", location: "The Grelwood (Act 1)", type: "Optional", note: { vi: "Rớt: Uncut Skill Gem Level 2", en: "Drops: Uncut Skill Gem Level 2" } },
-          { name: "The Crowbell", location: "The Hunting Grounds (Act 1)", type: "Optional", note: { vi: "Rớt: Book of Specialization (Weapon Set Passive Points)", en: "Drops: Book of Specialization (Weapon Set Passive Points)" } },
-          { name: "The King in the Mists", location: "Freythorn (Act 1)", type: "Optional", note: { vi: "Rớt: Gembloom Skull, Spirit Skill Gem Level 4", en: "Drops: Gembloom Skull, Spirit Skill Gem Level 4" } },
-          { name: "Candlemass, the Living Rite", location: "Ogham Manor (Act 1)", type: "Optional", note: { vi: "Rớt: Candlemass' Essence", en: "Drops: Candlemass' Essence" } },
-          { name: "Beira of the Rotten Pack", location: "Clearfell (Act 1)", type: "Optional", note: { vi: "Rớt: Head of the Winter Wolf (+10% Cold Resistance)", en: "Drops: Head of the Winter Wolf (+10% Cold Resistance)" } },
-          { name: "The Rotten Druid", location: "The Grim Tangle (Act 1)", type: "Optional", note: { vi: "Rớt: Uncut Support Gem", en: "Drops: Uncut Support Gem" } }
+          { name: "The Devourer", slug: "the-devourer", location: "Mud Burrow (Act 1)", type: "Optional", note: { vi: "Hoàn thành quest Treacherous Ground", en: "Treacherous Ground quest completion" } },
+          { name: "The Brambleghast", slug: "the-brambleghast", location: "The Grelwood (Act 1)", type: "Optional", note: { vi: "Rớt: Uncut Skill Gem Level 2", en: "Drops: Uncut Skill Gem Level 2" } },
+          { name: "The Crowbell", slug: "the-crowbell", location: "The Hunting Grounds (Act 1)", type: "Optional", note: { vi: "Rớt: Book of Specialization (Weapon Set Passive Points)", en: "Drops: Book of Specialization (Weapon Set Passive Points)" } },
+          { name: "The King in the Mists", slug: "the-king-in-the-mists", location: "Freythorn (Act 1)", type: "Optional", note: { vi: "Rớt: Gembloom Skull, Spirit Skill Gem Level 4", en: "Drops: Gembloom Skull, Spirit Skill Gem Level 4" } },
+          { name: "Candlemass, the Living Rite", slug: "candlemass-the-living-rite", location: "Ogham Manor (Act 1)", type: "Optional", note: { vi: "Rớt: Candlemass' Essence", en: "Drops: Candlemass' Essence" } },
+          { name: "Beira of the Rotten Pack", slug: "beira-of-the-rotten-pack", location: "Clearfell (Act 1)", type: "Optional", note: { vi: "Rớt: Head of the Winter Wolf (+10% Cold Resistance)", en: "Drops: Head of the Winter Wolf (+10% Cold Resistance)" } },
+          { name: "The Rotten Druid", slug: "the-rotten-druid", location: "The Grim Tangle (Act 1)", type: "Optional", note: { vi: "Rớt: Uncut Support Gem", en: "Drops: Uncut Support Gem" } }
         ]
       },
       {
         id: "optional-act2",
         label: { vi: "Optional — Act 2", en: "Optional — Act 2" },
         bosses: [
-          { name: "Balbala, The Traitor", location: "Traitor's Passage (Act 2)", type: "Optional", note: { vi: "Rớt: Balbala's Barya (mở khóa Trial of Sekhemas)", en: "Drops: Balbala's Barya (grants Trial of Sekhemas access)" } },
-          { name: "Kabala, Constrictor Queen", location: "Keth (Act 2)", type: "Optional", note: { vi: "Rớt: Book of Specialization", en: "Drops: Book of Specialization" } }
+          { name: "Balbala, The Traitor", slug: "balbala-the-traitor", location: "Traitor's Passage (Act 2)", type: "Optional", note: { vi: "Rớt: Balbala's Barya (mở khóa Trial of Sekhemas)", en: "Drops: Balbala's Barya (grants Trial of Sekhemas access)" } },
+          { name: "Kabala, Constrictor Queen", slug: "kabala-constrictor-queen", location: "Keth (Act 2)", type: "Optional", note: { vi: "Rớt: Book of Specialization", en: "Drops: Book of Specialization" } }
         ]
       },
       {
         id: "optional-act3",
         label: { vi: "Optional — Act 3", en: "Optional — Act 3" },
         bosses: [
-          { name: "Mektul, the Forgemaster", location: "The Molten Vault (Act 3)", type: "Optional", note: { vi: "Rớt: The Hammer of Kamasa", en: "Drops: The Hammer of Kamasa" } },
-          { name: "Ignagduk, the Bog Witch", location: "The Azak Bog (Act 3)", type: "Optional", note: { vi: "Rớt: Gemrot Skull, Ignagduk's Ghastly Spear", en: "Drops: Gemrot Skull, Ignagduk's Ghastly Spear" } },
-          { name: "Rootdredge", location: "Sandswept Marsh (Act 3)", type: "Optional", note: { vi: "Rớt: Uncut Skill Gem Level 9", en: "Drops: Uncut Skill Gem Level 9" } },
-          { name: "Mighty Silverfist", location: "Jungle Ruins (Act 3)", type: "Optional", note: { vi: "Rớt: Book of Specialization", en: "Drops: Book of Specialization" } }
+          { name: "Mektul, the Forgemaster", slug: "mektul-the-forgemaster", location: "The Molten Vault (Act 3)", type: "Optional", note: { vi: "Rớt: The Hammer of Kamasa", en: "Drops: The Hammer of Kamasa" } },
+          { name: "Ignagduk, the Bog Witch", slug: "ignagduk-the-bog-witch", location: "The Azak Bog (Act 3)", type: "Optional", note: { vi: "Rớt: Gemrot Skull, Ignagduk's Ghastly Spear", en: "Drops: Gemrot Skull, Ignagduk's Ghastly Spear" } },
+          { name: "Rootdredge", slug: "rootdredge", location: "Sandswept Marsh (Act 3)", type: "Optional", note: { vi: "Rớt: Uncut Skill Gem Level 9", en: "Drops: Uncut Skill Gem Level 9" } },
+          { name: "Mighty Silverfist", slug: "mighty-silverfist", location: "Jungle Ruins (Act 3)", type: "Optional", note: { vi: "Rớt: Book of Specialization", en: "Drops: Book of Specialization" } }
         ]
       },
       {
         id: "optional-act4",
         label: { vi: "Optional — Act 4", en: "Optional — Act 4" },
         bosses: [
-          { name: "Great White One", location: "Whakapanu Island (Act 4)", type: "Optional", note: { vi: "Rớt: Shark Fin Quest Item", en: "Drops: Shark Fin Quest Item" } },
-          { name: "Captain Hartlin", location: "Journey's End (Act 4)", type: "Optional", note: { vi: "Rớt: Verisium Quest Item", en: "Drops: Verisium Quest Item" } },
-          { name: "The Blind Beast", location: "Isle of Kin (Act 4)", type: "Optional", note: { vi: "Rớt: Artificer's Orb", en: "Drops: Artificer's Orb" } },
-          { name: "Yama the White", location: "Halls of the Dead (Act 4)", type: "Optional", note: { vi: "Tiến trình quest Trial of the Ancestors", en: "Trial of the Ancestors quest progression" } }
+          { name: "Great White One", slug: "great-white-one", location: "Whakapanu Island (Act 4)", type: "Optional", note: { vi: "Rớt: Shark Fin Quest Item", en: "Drops: Shark Fin Quest Item" } },
+          { name: "Captain Hartlin", slug: "captain-hartlin", location: "Journey's End (Act 4)", type: "Optional", note: { vi: "Rớt: Verisium Quest Item", en: "Drops: Verisium Quest Item" } },
+          { name: "The Blind Beast", slug: "the-blind-beast", location: "Isle of Kin (Act 4)", type: "Optional", note: { vi: "Rớt: Artificer's Orb", en: "Drops: Artificer's Orb" } },
+          { name: "Yama the White", slug: "yama-the-white", location: "Halls of the Dead (Act 4)", type: "Optional", note: { vi: "Tiến trình quest Trial of the Ancestors", en: "Trial of the Ancestors quest progression" } }
         ]
       },
       {
         id: "optional-interlude",
         label: { vi: "Optional — Interlude", en: "Optional — Interlude" },
         bosses: [
-          { name: "Akthi and Anundr", location: "The Khari Crossing", type: "Optional", note: { vi: "Hoàn thành side quest Clearing the Way", en: "Clearing the Way side quest completion" } },
-          { name: "Sigbert and Godwin", location: "Holten", type: "Optional", note: { vi: "Nhiều phần thưởng item khác nhau", en: "Various item rewards" } },
-          { name: "Oswin, the Dread Warden", location: "Wolvenhold", type: "Optional", note: { vi: "Thưởng 2 Weapon Set Passive Points", en: "Two Weapon Set Passive Points" } },
-          { name: "The Abominable Yeti", location: "Howling Caves", type: "Optional", note: { vi: "Hoàn thành quest Howling Winds", en: "Howling Winds quest completion" } }
+          { name: "Akthi and Anundr", slug: "akthi-and-anundr", location: "The Khari Crossing", type: "Optional", note: { vi: "Hoàn thành side quest Clearing the Way", en: "Clearing the Way side quest completion" } },
+          { name: "Sigbert and Godwin", slug: "sigbert-and-godwin", location: "Holten", type: "Optional", note: { vi: "Nhiều phần thưởng item khác nhau", en: "Various item rewards" } },
+          { name: "Oswin, the Dread Warden", slug: "oswin-the-dread-warden", location: "Wolvenhold", type: "Optional", note: { vi: "Thưởng 2 Weapon Set Passive Points", en: "Two Weapon Set Passive Points" } },
+          { name: "The Abominable Yeti", slug: "the-abominable-yeti", location: "Howling Caves", type: "Optional", note: { vi: "Hoàn thành quest Howling Winds", en: "Howling Winds quest completion" } }
         ]
       },
       {
         id: "atlas",
         label: { vi: "Boss Atlas / Map", en: "Atlas / Map bosses" },
         bosses: [
-          { name: "The Pale Angel", location: "Corrupted Nexus", type: "Atlas", note: { vi: "Gặp ngẫu nhiên", en: "Random encounter" } },
-          { name: "The Skittermind", location: "Corrupted Nexus", type: "Atlas", note: { vi: "Gặp ngẫu nhiên", en: "Random encounter" } },
-          { name: "The Eater of Flesh", location: "Corrupted Nexus", type: "Atlas", note: { vi: "Gặp trong quest The Cataclysm's Wake", en: "The Cataclysm's Wake quest encounter" } },
-          { name: "The Immured Fury", location: "Cleansed Maps", type: "Atlas", note: { vi: "Spawn ngẫu nhiên trong khu vực cleansed", en: "Random spawn in cleansed areas" } },
-          { name: "Zekoa, the Headcrusher", location: "Riverside/Rupture Map", type: "Atlas", note: { vi: "Gặp tùy chọn trong map", en: "Optional map encounter" } },
-          { name: "Manoki, the Chosen", location: "The Jade Isles", type: "Atlas", note: { vi: "Rớt: Rakiata's Flow", en: "Drops: Rakiata's Flow" } },
-          { name: "Zahmir, the Blade Sovereign", location: "Sacred Reservoir", type: "Atlas", note: { vi: "Rớt: Garukhan's Resolve", en: "Drops: Garukhan's Resolve" } }
+          { name: "The Pale Angel", slug: "the-pale-angel", location: "Corrupted Nexus", type: "Atlas", note: { vi: "Gặp ngẫu nhiên", en: "Random encounter" } },
+          { name: "The Skittermind", slug: "the-skittermind", location: "Corrupted Nexus", type: "Atlas", note: { vi: "Gặp ngẫu nhiên", en: "Random encounter" } },
+          { name: "The Eater of Flesh", slug: "the-eater-of-flesh", location: "Corrupted Nexus", type: "Atlas", note: { vi: "Gặp trong quest The Cataclysm's Wake", en: "The Cataclysm's Wake quest encounter" } },
+          { name: "The Immured Fury", slug: "the-immured-fury", location: "Cleansed Maps", type: "Atlas", note: { vi: "Spawn ngẫu nhiên trong khu vực cleansed", en: "Random spawn in cleansed areas" } },
+          { name: "Zekoa, the Headcrusher", slug: "zekoa-the-headcrusher", location: "Riverside/Rupture Map", type: "Atlas", note: { vi: "Gặp tùy chọn trong map", en: "Optional map encounter" } },
+          { name: "Manoki, the Chosen", slug: "manoki-the-chosen", location: "The Jade Isles", type: "Atlas", note: { vi: "Rớt: Rakiata's Flow", en: "Drops: Rakiata's Flow" } },
+          { name: "Zahmir, the Blade Sovereign", slug: "zahmir-the-blade-sovereign", location: "Sacred Reservoir", type: "Atlas", note: { vi: "Rớt: Garukhan's Resolve", en: "Drops: Garukhan's Resolve" } }
         ]
       },
       {
         id: "trial-sekhemas",
         label: { vi: "Trial of the Sekhemas", en: "Trial of the Sekhemas" },
         bosses: [
-          { name: "Rattlecage, the Earthbreaker", location: "Trial of the Sekhemas Floor 1", type: "Trial", note: { vi: "Boss Tầng 1", en: "Floor 1 boss" } },
-          { name: "Terracota Sentinels", location: "Trial of the Sekhemas Floor 2", type: "Trial", note: { vi: "Boss Tầng 2", en: "Floor 2 boss" } },
-          { name: "Ashar, the Sand Mother", location: "Trial of the Sekhemas Floor 3", type: "Trial", note: { vi: "Boss Tầng 3", en: "Floor 3 boss" } },
+          { name: "Rattlecage, the Earthbreaker", slug: "rattlecage-the-earthbreaker", location: "Trial of the Sekhemas Floor 1", type: "Trial", note: { vi: "Boss Tầng 1", en: "Floor 1 boss" } },
+          { name: "Terracota Sentinels", slug: "terracota-sentinels", location: "Trial of the Sekhemas Floor 2", type: "Trial", note: { vi: "Boss Tầng 2", en: "Floor 2 boss" } },
+          { name: "Ashar, the Sand Mother", slug: "ashar-the-sand-mother", location: "Trial of the Sekhemas Floor 3", type: "Trial", note: { vi: "Boss Tầng 3", en: "Floor 3 boss" } },
           { name: "Zarokh, the Temporal", slug: "zarokh-the-temporal", location: "Trial of the Sekhemas Floor 4", type: "Pinnacle", note: { vi: "Cần Djinn Barya với Area Level 75+", en: "Requires Djinn Barya with Area Level 75+" } }
         ]
       },
@@ -252,9 +192,9 @@
         id: "trial-chaos",
         label: { vi: "Trial of Chaos", en: "Trial of Chaos" },
         bosses: [
-          { name: "Bahlak, the Sky Seer", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
-          { name: "Uxmal, the Beastlord", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
-          { name: "Chetza, the Feathered Plague", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
+          { name: "Bahlak, the Sky Seer", slug: "bahlak-the-sky-seer", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
+          { name: "Uxmal, the Beastlord", slug: "uxmal-the-beastlord", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
+          { name: "Chetza, the Feathered Plague", slug: "chetza-the-feathered-plague", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
           { name: "The Trialmaster", slug: "the-trialmaster", location: "Trial of Chaos (10th trial)", type: "Pinnacle", note: { vi: "Cần 3 vật phẩm Fate key", en: "Requires three Fate key items" } }
         ]
       },
@@ -262,16 +202,16 @@
         id: "ritual",
         label: { vi: "Ritual", en: "Ritual" },
         bosses: [
-          { name: "The King in the Mists (Endgame)", location: "Ritual", type: "Ritual", note: { vi: "Vật phẩm \"An Audience with the King\"; quest Legacy of the Maji", en: "\"An Audience with the King\" item; Legacy of the Maji quest" } },
-          { name: "The Bodach", slug: "the-bodach", location: "Ritual (Caer Tarth)", type: "Pinnacle", note: { vi: "Dùng Head of the King; map Rite of the Nameless; quest Legacy of the Maji", en: "Use Head of the King; Rite of the Nameless maps; Legacy of the Maji quest" } }
+          { name: "The King in the Mists (Endgame)", slug: "ritual", location: "Ritual", type: "Ritual", note: { vi: "Vật phẩm \"An Audience with the King\"; quest Legacy of the Maji", en: "\"An Audience with the King\" item; Legacy of the Maji quest" } },
+          { name: "The Bodach", slug: "ritual", location: "Ritual (Caer Tarth)", type: "Pinnacle", note: { vi: "Dùng Head of the King; map Rite of the Nameless; quest Legacy of the Maji", en: "Use Head of the King; Rite of the Nameless maps; Legacy of the Maji quest" } }
         ]
       },
       {
         id: "delirium",
         label: { vi: "Delirium", en: "Delirium" },
         bosses: [
-          { name: "Kosis, the Revelation", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
-          { name: "Omniphobia, Fear Manifest", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
+          { name: "Kosis, the Revelation", slug: "kosis-the-revelation", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
+          { name: "Omniphobia, Fear Manifest", slug: "omniphobia-fear-manifest", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
           { name: "Tangmazu, The Raven Trickster", slug: "tangmazu-the-raven-trickster", location: "Delirium (Paracosm)", type: "Pinnacle", note: { vi: "Dùng Raven's Reflection tại gương Withered Willow; quest Strange Reflections", en: "Use Raven's Reflection at Withered Willow mirror; Strange Reflections quest" } }
         ]
       },
@@ -279,7 +219,7 @@
         id: "breach",
         label: { vi: "Breach", en: "Breach" },
         bosses: [
-          { name: "It That Was Tul and Esh", location: "Hive Colony (Nest of the Lords)", type: "Breach", note: { vi: "Quest Keepers of the Flame", en: "Keepers of the Flame quest" } },
+          { name: "It That Was Tul and Esh", slug: "it-that-was-tul-and-esh", location: "Hive Colony (Nest of the Lords)", type: "Breach", note: { vi: "Quest Keepers of the Flame", en: "Keepers of the Flame quest" } },
           { name: "Xesht, We That Are One", slug: "xesht-we-that-are-one", location: "Monastery/Twisted Domain", type: "Pinnacle", note: { vi: "Hoàn thành Hive Colony; quest Keepers of the Flame", en: "Complete Hive Colony; Keepers of the Flame quest" } }
         ]
       },
@@ -287,8 +227,8 @@
         id: "abyss",
         label: { vi: "Abyss", en: "Abyss" },
         bosses: [
-          { name: "Vandroth, Blackblooded Enslaver", location: "Dark Domain", type: "Abyss", note: { vi: "Phong ấn Northern Abyssal Wounds; quest Abyssal Power", en: "Seal Northern Abyssal Wounds; Abyssal Power quest" } },
-          { name: "Tasgul, Swallower of Light", location: "Lightless Void", type: "Abyss", note: { vi: "Dọn Eastern Abyssal Wound; quest Abyssal Power", en: "Clear Eastern Abyssal Wound; Abyssal Power quest" } },
+          { name: "Vandroth, Blackblooded Enslaver", slug: "vandroth-blackblooded-enslaver", location: "Dark Domain", type: "Abyss", note: { vi: "Phong ấn Northern Abyssal Wounds; quest Abyssal Power", en: "Seal Northern Abyssal Wounds; Abyssal Power quest" } },
+          { name: "Tasgul, Swallower of Light", slug: "tasgul-swallower-of-light", location: "Lightless Void", type: "Abyss", note: { vi: "Dọn Eastern Abyssal Wound; quest Abyssal Power", en: "Clear Eastern Abyssal Wound; Abyssal Power quest" } },
           { name: "Vessel of Kulemak", slug: "vessel-of-kulemak", location: "Well of Souls", type: "Pinnacle", note: { vi: "Dùng Kulemak's Invitation; quest Abyssal Power", en: "Use Kulemak's Invitation; Abyssal Power quest" } }
         ]
       },
@@ -296,7 +236,7 @@
         id: "atziri-temple",
         label: { vi: "Atziri's Temple", en: "Atziri's Temple" },
         bosses: [
-          { name: "Xipocado, Royal Architect", location: "Atziri's Temple", type: "Temple", note: { vi: "Cần điều khiển Temple Console; quest Fate of the Vaal", en: "Temple Console manipulation required; Fate of the Vaal quest" } },
+          { name: "Xipocado, Royal Architect", slug: "xipocado-royal-architect", location: "Atziri's Temple", type: "Temple", note: { vi: "Cần điều khiển Temple Console; quest Fate of the Vaal", en: "Temple Console manipulation required; Fate of the Vaal quest" } },
           { name: "Atziri, the Red Queen", slug: "atziri-the-red-queen", location: "Atziri's Temple (Royal Access Chamber)", type: "Pinnacle", note: { vi: "Area Level 75+; quest Fate of the Vaal", en: "Area Level 75+; Fate of the Vaal quest" } }
         ]
       },
@@ -312,12 +252,12 @@
         id: "expedition",
         label: { vi: "Expedition", en: "Expedition" },
         bosses: [
-          { name: "Styrn, Fallen Knight of Aldur", location: "Tomb of the Fallen Knight", type: "Expedition", note: { vi: "Phá lối vào trong các encounter Expedition; quest The Grand Expedition", en: "Destroy entrance in Expedition encounters; The Grand Expedition quest" } },
-          { name: "Medved, the Fallen Seer", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Medved's Saga với Logbook; quest The Grand Expedition", en: "Use Medved's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "Vorana, Last to Fall", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Vorana's Saga với Logbook; quest The Grand Expedition", en: "Use Vorana's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "Uhtred, the Stardrinker", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Uhtred's Saga với Logbook; quest The Grand Expedition", en: "Use Uhtred's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "Olroth, Origin of the Fall", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Olroth's Saga với Logbook; quest The Grand Expedition", en: "Use Olroth's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "The Aberration", location: "Verisium Crater", type: "Pinnacle", note: { vi: "Dùng Triskelion Reforged để xóa rào chắn; quest The Grand Expedition", en: "Use Triskelion Reforged to dispel barrier; The Grand Expedition quest" } }
+          { name: "Styrn, Fallen Knight of Aldur", slug: "styrn-fallen-knight-of-aldur", location: "Tomb of the Fallen Knight", type: "Expedition", note: { vi: "Phá lối vào trong các encounter Expedition; quest The Grand Expedition", en: "Destroy entrance in Expedition encounters; The Grand Expedition quest" } },
+          { name: "Medved, the Fallen Seer", slug: "medved-the-fallen-seer", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Medved's Saga với Logbook; quest The Grand Expedition", en: "Use Medved's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "Vorana, Last to Fall", slug: "vorana-last-to-fall", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Vorana's Saga với Logbook; quest The Grand Expedition", en: "Use Vorana's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "Uhtred, the Stardrinker", slug: "uhtred-the-stardrinker", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Uhtred's Saga với Logbook; quest The Grand Expedition", en: "Use Uhtred's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "Olroth, Origin of the Fall", slug: "olroth-origin-of-the-fall", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Olroth's Saga với Logbook; quest The Grand Expedition", en: "Use Olroth's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "The Aberration", slug: "the-aberration", location: "Verisium Crater", type: "Pinnacle", note: { vi: "Dùng Triskelion Reforged để xóa rào chắn; quest The Grand Expedition", en: "Use Triskelion Reforged to dispel barrier; The Grand Expedition quest" } }
         ]
       }
     ];
@@ -327,10 +267,69 @@
 
     const groupsContainer = document.querySelector("[data-boss-groups]");
     const navContainer = document.querySelector("[data-group-nav]");
+    const toolbarContainer = document.querySelector("[data-boss-toolbar]");
+
+    const TOTAL_COUNT = GROUPS.reduce((sum, group) => sum + group.bosses.length, 0);
+    // Filter chip order — only types actually present in the data get a chip.
+    const TYPE_ORDER = ["Campaign", "Optional", "Atlas", "Trial", "Ritual", "Delirium", "Breach", "Abyss", "Temple", "Expedition", "Pinnacle"];
+    const presentTypes = TYPE_ORDER.filter((type) => GROUPS.some((group) => group.bosses.some((boss) => boss.type === type)));
+
+    let searchQuery = "";
+    let activeType = "all";
+
+    const matchesFilter = (boss) => {
+      if (activeType !== "all" && boss.type !== activeType) return false;
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      const haystack = [boss.name, boss.location, boss.note && boss.note.vi, boss.note && boss.note.en]
+        .filter(Boolean).join(" ").toLowerCase();
+      return haystack.includes(q);
+    };
+
+    // Groups with their bosses filtered down; empty groups are dropped entirely.
+    const visibleGroups = () => GROUPS
+      .map((group) => ({ ...group, bosses: group.bosses.filter(matchesFilter) }))
+      .filter((group) => group.bosses.length > 0);
+
+    const renderToolbar = () => {
+      const base = "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition";
+      const activeCls = "border-purple-500 bg-purple-600 text-white dark:border-purple-500 dark:bg-purple-600";
+      const idleCls = "border-slate-200 bg-slate-50/80 text-slate-600 hover:border-purple-300 hover:text-purple-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-purple-700 dark:hover:text-purple-300";
+      const chip = (key, label) => `<button type="button" data-type-chip="${key}" class="${base} ${activeType === key ? activeCls : idleCls}">${label}</button>`;
+      const chips = [chip("all", pageText("filterAll"))]
+        .concat(presentTypes.map((type) => chip(type, i18nText(typeMeta(type).label, type))))
+        .join("");
+      toolbarContainer.innerHTML = `
+        <div class="flex flex-col gap-3">
+          <label class="relative block">
+            <span class="material-symbols-rounded pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base text-slate-400 dark:text-slate-500" aria-hidden="true">search</span>
+            <input data-boss-search type="search" placeholder="${pageText("searchPlaceholder")}" class="w-full rounded-lg border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:ring-purple-900/60" />
+          </label>
+          <div class="flex flex-wrap gap-2">${chips}</div>
+        </div>`;
+      const input = toolbarContainer.querySelector("[data-boss-search]");
+      input.value = searchQuery;
+      input.addEventListener("input", () => { searchQuery = input.value; applyFilters(); });
+      toolbarContainer.querySelectorAll("[data-type-chip]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeType = btn.getAttribute("data-type-chip");
+          renderToolbar();
+          applyFilters();
+        });
+      });
+    };
+
+    const updateCount = () => {
+      const shown = visibleGroups().reduce((sum, group) => sum + group.bosses.length, 0);
+      const el = document.querySelector("[data-boss-count]");
+      if (el) el.textContent = shown === TOTAL_COUNT ? pageText("count") : `${shown}/${TOTAL_COUNT}`;
+    };
 
     const renderNav = () => {
       const heading = `<span class="mr-1 inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wide text-slate-400 dark:text-slate-500"><span class="material-symbols-rounded text-sm" aria-hidden="true">bookmarks</span><span data-nav-title>${pageText("navTitle")}</span></span>`;
-      const links = GROUPS.map((group) => {
+      const groups = visibleGroups();
+      navContainer.classList.toggle("hidden", groups.length === 0);
+      const links = groups.map((group) => {
         const count = group.bosses.length;
         return `<a href="#group-${group.id}" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-1.5 text-xs font-bold text-slate-600 no-underline hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-purple-700 dark:hover:bg-purple-950/40 dark:hover:text-purple-300"><span data-group-link="${group.id}">${i18nText(group.label, group.id)}</span><span class="rounded bg-slate-200/80 px-1.5 text-[10px] font-black text-slate-500 dark:bg-slate-800 dark:text-slate-400">${count}</span></a>`;
       }).join("");
@@ -352,26 +351,38 @@
       const detailLink = boss.slug
         ? `<a class="inline-flex items-center gap-1 rounded bg-purple-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-purple-700 no-underline transition-colors hover:bg-purple-600 hover:text-white dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-500 dark:hover:text-white" href="/boss-detail?boss=${encodeURIComponent(boss.slug)}"><span class="material-symbols-rounded text-sm" aria-hidden="true">menu_book</span><span data-boss-detail>${pageText("detail")}</span></a>`
         : "";
+      const thumbUrl = boss.slug ? (window.POE2_BOSS_IMAGES || {})[boss.slug]?.hero : null;
+      const thumb = thumbUrl
+        ? `<a href="/boss-detail?boss=${encodeURIComponent(boss.slug)}" class="shrink-0"><img src="${thumbUrl}" alt="" class="h-16 w-16 rounded-lg border border-slate-200 object-cover transition hover:opacity-90 dark:border-slate-700" loading="lazy"></a>`
+        : `<span class="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-slate-200 bg-gradient-to-br from-purple-500/15 to-fuchsia-500/15 text-purple-400 dark:border-slate-700"><span class="material-symbols-rounded text-2xl" aria-hidden="true">skull</span></span>`;
       return `
-        <li class="boss-row glass-panel grid gap-2 rounded-lg p-3.5 shadow-sm sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)] sm:items-start ${accent}">
-          <div class="min-w-0">
-            <div class="flex flex-wrap items-center gap-2">
-              ${nameHtml}
-              <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-black ${meta.badge}" data-boss-type>${i18nText(meta.label, boss.type)}</span>
-              ${pinnacleMark}
-              ${detailLink}
+        <li class="boss-row glass-panel flex gap-3 rounded-lg p-3.5 shadow-sm ${accent}">
+          ${thumb}
+          <div class="grid min-w-0 flex-1 gap-2 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)] sm:items-start">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                ${nameHtml}
+                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-black ${meta.badge}" data-boss-type>${i18nText(meta.label, boss.type)}</span>
+                ${pinnacleMark}
+                ${detailLink}
+              </div>
+              <div class="mt-1 flex items-center gap-1.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                <span class="material-symbols-rounded text-sm text-slate-400 dark:text-slate-500" aria-hidden="true">location_on</span>
+                <span>${boss.location}</span>
+              </div>
             </div>
-            <div class="mt-1 flex items-center gap-1.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
-              <span class="material-symbols-rounded text-sm text-slate-400 dark:text-slate-500" aria-hidden="true">location_on</span>
-              <span>${boss.location}</span>
-            </div>
+            <div class="min-w-0 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300" data-boss-note>${i18nText(boss.note, "")}</div>
           </div>
-          <div class="min-w-0 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300" data-boss-note>${i18nText(boss.note, "")}</div>
         </li>`;
     };
 
     const renderGroups = () => {
-      groupsContainer.innerHTML = GROUPS.map((group) => {
+      const groups = visibleGroups();
+      if (groups.length === 0) {
+        groupsContainer.innerHTML = `<div class="glass-panel rounded-lg p-8 text-center text-sm font-semibold text-slate-500 shadow-sm dark:border-slate-800/80 dark:text-slate-400">${pageText("noResults")}</div>`;
+        return;
+      }
+      groupsContainer.innerHTML = groups.map((group) => {
         const rows = group.bosses.map(renderBossRow).join("");
         return `
           <section id="group-${group.id}" class="glass-panel rounded-lg p-5 shadow-sm dark:border-slate-800/80" aria-label="${i18nText(group.label, group.id)}">
@@ -387,19 +398,24 @@
       }).join("");
     };
 
+    const applyFilters = () => {
+      renderNav();
+      renderGroups();
+      updateCount();
+    };
+
     const applyLocale = () => {
       document.title = pageText("documentTitle");
       document.querySelector("h1").textContent = pageText("title");
       document.querySelector("main > section:first-child")?.setAttribute("aria-label", pageText("heroLabel"));
-      document.querySelector("[data-boss-count]").textContent = pageText("count");
       navContainer.setAttribute("aria-label", pageText("navLabel"));
-      // Re-render localized content (group labels, type badges, notes).
-      renderNav();
-      renderGroups();
+      // Re-render localized content (toolbar, group labels, type badges, notes).
+      renderToolbar();
+      applyFilters();
     };
 
-    renderNav();
-    renderGroups();
+    renderToolbar();
+    applyFilters();
     onLocaleChange(applyLocale);
   </script>
 </body>

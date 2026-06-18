@@ -27,6 +27,7 @@
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
   <link href="dist/app.css?v=20260529-font-ui" rel="stylesheet">
   <script defer src="app-routes.js"></script>
+  <script>window.POE2_DISABLE_TOOLTIPS = true;</script>
   <script defer src="components/app-shell.js"></script>
   <style>
     .stat-line + .stat-line { border-top: 1px solid rgb(226 232 240); }
@@ -40,7 +41,9 @@
   <main class="poe-shell-container grid gap-5 py-5" id="detailRoot"></main>
 
   <script src="components/poe-ui-utils.js"></script>
-  <script src="data/boss-data.js"></script>
+  <script src="data/boss-data.js?v=4"></script>
+  <script src="data/boss-images.js?v=4"></script>
+  <script src="data/boss-items.js?v=4"></script>
   <script>
     const data = window.POE2_BOSS_DETAILS || {};
     const params = new URLSearchParams(window.location.search);
@@ -54,14 +57,39 @@
       notFoundDocumentTitle: { vi: "Không tìm thấy boss - POE2", en: "Boss not found - POE2" },
       noData: { vi: "Không có dữ liệu.", en: "No data available." },
       back: { vi: "Boss", en: "Boss" },
+      source: { vi: "Nguồn: Game8", en: "Source: Game8" },
       group: { vi: "Nhóm", en: "Group" },
       location: { vi: "Vị trí", en: "Location" },
       overview: { vi: "Tổng quan", en: "Overview" },
       mechanics: { vi: "Cơ chế", en: "Mechanics" },
       phases: { vi: "Các pha", en: "Phases" },
       strategy: { vi: "Chiến thuật", en: "Strategy" },
-      rewards: { vi: "Phần thưởng", en: "Rewards" },
-      tips: { vi: "Mẹo", en: "Tips" }
+      rewards: { vi: "Phần thưởng / Drop", en: "Rewards / Drops" },
+      tips: { vi: "Mẹo", en: "Tips" },
+      gallery: { vi: "Hình ảnh & cơ chế", en: "Images & mechanics" },
+      conditions: { vi: "Điều kiện mở & vào", en: "Access requirements" },
+      access: { vi: "Cách vào map boss", en: "How to access" }
+    };
+
+    const bossImages = (window.POE2_BOSS_IMAGES || {})[slug] || null;
+    const dropItems = window.POE2_DROP_ITEMS || {};
+    const normTxt = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+    // Full item stats panel (captured from poe2db) shown when a drop row is expanded.
+    const statPanel = (name) => {
+      const it = dropItems[name];
+      if (!it) return "";
+      const mod = (m) => `<div class="leading-5 text-[#8888ff]">${escapeHtml(m)}</div>`;
+      const hr = `<div class="my-1.5 h-px bg-white/10"></div>`;
+      const body = [(it.implicit || []).map(mod).join(""), (it.explicit || []).map(mod).join("")].filter(Boolean).join(hr);
+      return `<div class="mx-4 mb-3 overflow-hidden rounded-md border border-amber-900/50 bg-[#0c0d12]">
+        <div class="bg-gradient-to-b from-amber-950/50 to-transparent px-3 py-2 text-center">
+          ${it.base ? `<div class="text-[13px] font-black tracking-wide text-[#af6025]">${escapeHtml(it.base)}</div>` : ""}
+          ${it.requires ? `<div class="mt-0.5 text-[11px] font-semibold text-slate-400">${escapeHtml(it.requires)}</div>` : ""}
+        </div>
+        ${body ? `<div class="px-3 py-2 text-center text-[12px] font-semibold">${body}</div>` : ""}
+        ${it.flavour ? `<div class="whitespace-pre-line border-t border-white/10 px-3 py-2 text-center text-[11px] italic leading-5 text-[#af6025]/90">${escapeHtml(it.flavour)}</div>` : ""}
+      </div>`;
     };
 
     const { escapeHtml, i18nText, updateDocumentSeo, onLocaleChange } = window.PoeUi;
@@ -91,12 +119,12 @@
 
     const phasesBlock = (title, phases = []) => {
       if (!phases.length) return "";
-      const rows = phases.map((phase) => `
-        <li class="stat-line px-4 py-4">
-          <p class="text-sm font-black tracking-tight text-slate-900 dark:text-slate-100" translate="no">${escapeHtml(phase.name || "")}</p>
-          <p class="mt-1.5 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-300">${escapeHtml(phase.vi || phase.en || "")}</p>
-        </li>
-      `).join("");
+      const rows = phases.map((phase) => {
+        const pts = Array.isArray(phase.points) && phase.points.length
+          ? `<ul class="mt-2 space-y-1.5">${phase.points.map((pt) => `<li class="flex gap-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300"><span class="mt-0.5 shrink-0 font-black text-amber-500">•</span><span>${escapeHtml(pt)}</span></li>`).join("")}</ul>`
+          : `<p class="mt-1.5 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-300">${escapeHtml(phase.vi || phase.en || "")}</p>`;
+        return `<li class="stat-line px-4 py-4"><p class="text-sm font-black tracking-tight text-slate-900 dark:text-slate-100" translate="no">${escapeHtml(phase.name || "")}</p>${pts}</li>`;
+      }).join("");
       return `
         <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
@@ -134,31 +162,149 @@
         boss.location ? `<span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700 ring-1 ring-slate-300 dark:bg-slate-800/60 dark:text-slate-200 dark:ring-slate-700"><span class="material-symbols-rounded text-sm" aria-hidden="true">location_on</span>${escapeHtml(boss.location)}</span>` : ""
       ].join("");
 
-      detailRoot.innerHTML = `
-        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
-          <div class="p-5 sm:p-7">
-            <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="/boss"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>${escapeHtml(pageText("back"))}</a>
-            <div class="mt-5 flex items-start gap-4">
-              <div class="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white dark:border-slate-700">
-                <span class="material-symbols-rounded text-3xl" aria-hidden="true">skull</span>
-              </div>
-              <div class="min-w-0">
-                <h1 class="break-words text-4xl font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(boss.name)}</h1>
-                <div class="mt-3 flex flex-wrap gap-2">${badges}</div>
+      // Combined mechanic guide (a chain of related bosses, e.g. Ritual).
+      if (boss.guide) {
+        const ghero = bossImages?.hero || null;
+        const heroSec = ghero
+          ? `<section class="relative overflow-hidden rounded-2xl border border-slate-200 shadow-md1 dark:border-slate-800">
+              <img src="${escapeHtml(ghero)}" alt="${escapeHtml(boss.name)}" class="h-[270px] w-full object-cover object-top sm:h-[374px]" loading="eager" decoding="async">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/5"></div>
+              <a class="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-lg bg-slate-950/55 px-3 py-1.5 text-xs font-black text-white backdrop-blur transition hover:bg-slate-950/80" href="/boss"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>${escapeHtml(pageText("back"))}</a>
+              <div class="absolute inset-x-0 bottom-0 p-5 sm:p-7"><h1 class="break-words text-3xl font-black leading-tight text-white drop-shadow-lg sm:text-4xl" translate="no">${escapeHtml(boss.name)}</h1><div class="mt-3 flex flex-wrap items-center gap-2">${badges}</div></div>
+            </section>`
+          : `<section class="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"><a class="text-sm font-black text-blue-700 dark:text-blue-300" href="/boss">← ${escapeHtml(pageText("back"))}</a><h1 class="mt-3 text-3xl font-black text-slate-950 dark:text-white" translate="no">${escapeHtml(boss.name)}</h1></section>`;
+        const flowSec = (boss.flow || []).length
+          ? `<section class="overflow-hidden rounded-lg border border-purple-200 bg-white shadow-sm dark:border-purple-900/40 dark:bg-slate-900">
+              <div class="border-b border-purple-200 px-4 py-3 dark:border-purple-900/40"><h2 class="flex items-center gap-1.5 text-sm font-black uppercase tracking-[.14em] text-purple-700 dark:text-purple-300"><span class="material-symbols-rounded text-base" aria-hidden="true">route</span>Lộ trình A→Z</h2></div>
+              <ol class="divide-y divide-slate-100 dark:divide-slate-800">${boss.flow.map((s, i) => `<li class="flex gap-3 px-4 py-3"><span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-purple-600 text-xs font-black text-white">${i + 1}</span><span class="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">${escapeHtml(s)}</span></li>`).join("")}</ol>
+            </section>`
+          : "";
+        const partsSec = (boss.parts || []).map((part) => {
+          const accessNote = part.access ? `<div class="border-b border-amber-200 bg-amber-50/60 px-4 py-2.5 text-sm font-semibold leading-6 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/15 dark:text-amber-200"><span class="material-symbols-rounded mr-1 align-text-bottom text-base text-amber-500" aria-hidden="true">key</span>${escapeHtml(part.access)}</div>` : "";
+          const phasesHtml = (part.phases || []).map((ph) => `<div class="px-4 py-3"><p class="text-sm font-black tracking-tight text-slate-900 dark:text-slate-100" translate="no">${escapeHtml(ph.name || "")}</p><ul class="mt-2 space-y-1.5">${(ph.points || []).map((pt) => `<li class="flex gap-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300"><span class="mt-0.5 shrink-0 font-black text-amber-500">•</span><span>${escapeHtml(pt)}</span></li>`).join("")}</ul></div>`).join("");
+          const drops = part.drops || [];
+          const dropsHtml = drops.length ? `<div class="border-t border-slate-100 dark:border-slate-800"><p class="px-4 pt-3 text-xs font-black uppercase tracking-wide text-slate-400 dark:text-slate-500">Drop</p><div class="divide-y divide-slate-100 dark:divide-slate-800">${drops.map((d) => {
+            const panel = statPanel(d.name);
+            const icon = d.image ? `<img src="${escapeHtml(d.image)}" alt="" class="h-10 w-10 shrink-0 rounded-md border border-slate-200 bg-slate-50 object-contain p-0.5 dark:border-slate-700 dark:bg-slate-800" loading="lazy">` : `<span class="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800"><span class="material-symbols-rounded text-base" aria-hidden="true">inventory_2</span></span>`;
+            const nameCell = `<span class="flex-1 text-sm font-semibold text-slate-700 dark:text-slate-200">${escapeHtml(d.name)}</span>`;
+            return panel ? `<details class="group/d"><summary class="flex cursor-pointer list-none items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40">${icon}${nameCell}<span class="material-symbols-rounded shrink-0 text-slate-400 transition group-open/d:rotate-180" aria-hidden="true">expand_more</span></summary>${panel}</details>` : `<div class="flex items-center gap-3 px-4 py-2.5">${icon}${nameCell}</div>`;
+          }).join("")}</div></div>` : "";
+          return `<section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="flex items-center gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-800">${part.image ? `<img src="${escapeHtml(part.image)}" alt="" class="h-12 w-12 shrink-0 rounded-lg border border-slate-200 object-cover dark:border-slate-700" loading="lazy">` : ""}<div class="min-w-0"><p class="font-display text-lg font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(part.name)}</p>${part.subtitle ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400">${escapeHtml(part.subtitle)}</p>` : ""}</div></div>
+            ${accessNote}${phasesHtml}${dropsHtml}
+          </section>`;
+        }).join("");
+        detailRoot.innerHTML = `${heroSec}${sectionText(pageText("overview"), vi.overview)}${flowSec}${partsSec}`;
+        return;
+      }
+
+      const hero = bossImages?.hero || null;
+      const allImgs = bossImages?.images || [];
+
+      // Curated structured drops (name + R2 image) preferred; fallback to reward text + alt-match.
+      const dropList = Array.isArray(boss.drops) && boss.drops.length
+        ? boss.drops.map((d) => ({ text: d.name, url: d.image || null }))
+        : (vi.rewards || []).map((reward) => {
+            const rn = normTxt(reward);
+            const hit = allImgs.find((im) => { const a = normTxt(im.alt); return a && a.length > 2 && (rn.includes(a) || a.includes(rn.split("(")[0].trim())); });
+            return { text: reward, url: hit ? hit.url : null };
+          });
+      const conditions = Array.isArray(boss.conditions) ? boss.conditions : [];
+      const gallery = allImgs.slice(0, 12);
+
+      const sourceChip = "";
+
+      const heroSection = hero
+        ? `<section class="relative overflow-hidden rounded-2xl border border-slate-200 shadow-md1 dark:border-slate-800">
+            <img src="${escapeHtml(hero)}" alt="${escapeHtml(boss.name)}" class="h-[270px] w-full object-cover object-top sm:h-[374px]" loading="eager" decoding="async">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/5"></div>
+            <a class="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-lg bg-slate-950/55 px-3 py-1.5 text-xs font-black text-white backdrop-blur transition hover:bg-slate-950/80" href="/boss"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>${escapeHtml(pageText("back"))}</a>
+            <div class="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+              <h1 class="break-words text-3xl font-black leading-tight text-white drop-shadow-lg sm:text-4xl" translate="no">${escapeHtml(boss.name)}</h1>
+              <div class="mt-3 flex flex-wrap items-center gap-2">${badges}${sourceChip}</div>
+            </div>
+          </section>`
+        : `<section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md1 dark:border-slate-800 dark:bg-slate-900">
+            <div class="p-5 sm:p-7">
+              <a class="inline-flex items-center gap-2 text-sm font-black text-blue-700 dark:text-blue-300" href="/boss"><span class="material-symbols-rounded text-base" aria-hidden="true">arrow_back</span>${escapeHtml(pageText("back"))}</a>
+              <div class="mt-5 flex items-start gap-4">
+                <div class="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white dark:border-slate-700"><span class="material-symbols-rounded text-3xl" aria-hidden="true">skull</span></div>
+                <div class="min-w-0">
+                  <h1 class="break-words text-4xl font-black leading-tight text-slate-950 dark:text-white" translate="no">${escapeHtml(boss.name)}</h1>
+                  <div class="mt-3 flex flex-wrap items-center gap-2">${badges}${sourceChip}</div>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>`;
+
+      const dropIcon = (d) => d.url
+        ? `<img src="${escapeHtml(d.url)}" alt="" class="h-11 w-11 shrink-0 rounded-md border border-slate-200 bg-slate-50 object-contain p-0.5 dark:border-slate-700 dark:bg-slate-800" loading="lazy">`
+        : `<span class="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800"><span class="material-symbols-rounded" aria-hidden="true">inventory_2</span></span>`;
+      const dropSection = dropList.length
+        ? `<section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800"><h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">${escapeHtml(pageText("rewards"))}</h2></div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-800">
+              ${dropList.map((d) => {
+                const panel = statPanel(d.text);
+                const nameCell = `<span class="flex-1 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">${escapeHtml(d.text)}</span>`;
+                return panel
+                  ? `<details class="group/d">
+                      <summary class="flex cursor-pointer list-none items-center gap-3 px-4 py-3 transition hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        ${dropIcon(d)}${nameCell}
+                        <span class="material-symbols-rounded shrink-0 text-slate-400 transition group-open/d:rotate-180" aria-hidden="true">expand_more</span>
+                      </summary>
+                      ${panel}
+                    </details>`
+                  : `<div class="flex items-center gap-3 px-4 py-3">${dropIcon(d)}${nameCell}</div>`;
+              }).join("")}
+            </div>
+          </section>`
+        : sectionList(pageText("rewards"), vi.rewards || []);
+
+      const conditionSection = conditions.length
+        ? `<section class="overflow-hidden rounded-lg border border-amber-200 bg-amber-50/50 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/15">
+            <div class="border-b border-amber-200 px-4 py-3 dark:border-amber-900/50"><h2 class="flex items-center gap-1.5 text-sm font-black uppercase tracking-[.14em] text-amber-700 dark:text-amber-400"><span class="material-symbols-rounded text-base" aria-hidden="true">key</span>${escapeHtml(pageText("conditions"))}</h2></div>
+            <ul class="divide-y divide-amber-100 dark:divide-amber-900/40">
+              ${conditions.map((c) => `<li class="flex items-start gap-2 px-4 py-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200"><span class="material-symbols-rounded mt-0.5 shrink-0 text-base text-amber-500" aria-hidden="true">chevron_right</span><span>${escapeHtml(c)}</span></li>`).join("")}
+            </ul>
+          </section>`
+        : "";
+
+      const gallerySection = gallery.length
+        ? `<section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-800"><h2 class="text-sm font-black uppercase tracking-[.14em] text-slate-500 dark:text-slate-400">${escapeHtml(pageText("gallery"))}</h2></div>
+            <div class="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3">
+              ${gallery.map((im) => `<a href="${escapeHtml(im.url)}" target="_blank" rel="noopener noreferrer" class="group block overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                <img src="${escapeHtml(im.url)}" alt="${escapeHtml(im.alt)}" class="aspect-video w-full bg-slate-100 object-cover transition group-hover:scale-105 dark:bg-slate-800" loading="lazy">
+                ${im.alt ? `<span class="block truncate px-2 py-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400">${escapeHtml(im.alt)}</span>` : ""}
+              </a>`).join("")}
+            </div>
+          </section>`
+        : "";
+
+      const ac = boss.access;
+      const accessSection = ac
+        ? `<section class="overflow-hidden rounded-lg border border-amber-200 bg-amber-50/50 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/15">
+            <div class="border-b border-amber-200 px-4 py-3 dark:border-amber-900/50"><h2 class="flex items-center gap-1.5 text-sm font-black uppercase tracking-[.14em] text-amber-700 dark:text-amber-400"><span class="material-symbols-rounded text-base" aria-hidden="true">map</span>${escapeHtml(pageText("access"))}</h2></div>
+            <div class="space-y-3 px-4 py-4">
+              ${ac.method ? `<p class="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">${escapeHtml(ac.method)}</p>` : ""}
+              ${Array.isArray(ac.items) && ac.items.length ? `<div class="divide-y divide-amber-200/70 overflow-hidden rounded-lg border border-amber-200/70 dark:divide-amber-900/40 dark:border-amber-900/40">${ac.items.map((it) => `<div class="flex items-center gap-3 bg-white px-3 py-2.5 dark:bg-slate-900">${it.image ? `<img src="${escapeHtml(it.image)}" alt="" class="h-12 w-12 shrink-0 rounded object-contain" loading="lazy">` : ""}<div class="min-w-0"><div class="truncate text-xs font-black text-slate-800 dark:text-slate-100" translate="no">${escapeHtml(it.name)}</div>${it.source ? `<div class="truncate text-[11px] font-semibold text-slate-500 dark:text-slate-400">${escapeHtml(it.source)}</div>` : ""}</div></div>`).join("")}</div>` : ""}
+              ${ac.obtain ? `<p class="rounded-lg bg-amber-100/60 px-3 py-2 text-xs font-semibold leading-6 text-amber-900 dark:bg-amber-950/30 dark:text-amber-200">${escapeHtml(ac.obtain)}</p>` : ""}
+            </div>
+          </section>`
+        : conditionSection;
+
+      detailRoot.innerHTML = `
+        ${heroSection}
         ${sectionText(pageText("overview"), vi.overview)}
-        <div class="grid gap-5 lg:grid-cols-2">
-          ${sectionList(pageText("mechanics"), vi.mechanics || [])}
-          ${phasesBlock(pageText("phases"), vi.phases || [])}
-        </div>
+        ${dropSection}
+        ${accessSection}
+        ${(vi.phases && vi.phases.length)
+          ? phasesBlock(pageText("phases"), vi.phases)
+          : sectionList(pageText("mechanics"), vi.mechanics || [])}
         ${sectionText(pageText("strategy"), vi.strategy)}
-        <div class="grid gap-5 lg:grid-cols-2">
-          ${sectionList(pageText("rewards"), vi.rewards || [])}
-          ${sectionList(pageText("tips"), vi.tips || [])}
-        </div>
+        ${sectionList(pageText("tips"), vi.tips || [])}
+        ${gallerySection}
       `;
     };
 

@@ -463,7 +463,7 @@
     router().syncLinks?.();
     installRouteReadyNavigation();
     initFanpagePrompt();
-    scheduleIdleWork(loadDictionaryAndInitTooltips);
+    if (!window.POE2_DISABLE_TOOLTIPS) scheduleIdleWork(loadDictionaryAndInitTooltips);
   };
 
   // PoE Tooltip Engine - Automatically hover dictionary terms
