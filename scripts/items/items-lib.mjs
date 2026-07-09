@@ -6,13 +6,14 @@ import { translateCurrencyText } from "../currency-lib.mjs";
 const DEFAULT_ITEMS_SOURCE_URL = "https://poe2db.tw/us/Items";
 
 const ITEM_ANCHOR_SELECTOR = [
-  "a.whiteitem",
-  "a.magicitem",
-  "a.rareitem",
-  "a.uniqueitem",
-  "a.currencyitem",
-  "a.gemitem",
-  "a[class*='item']"
+  "a.whiteitem", "a.WhiteItem",
+  "a.magicitem", "a.MagicItem",
+  "a.rareitem", "a.RareItem",
+  "a.uniqueitem", "a.UniqueItem",
+  "a.UniqueItems",
+  "a.currencyitem", "a.CurrencyItem",
+  "a.gemitem", "a.GemItem",
+  "a[class*='item']", "a[class*='Item']"
 ].join(", ");
 
 export const normalizeItemText = (value = "") => String(value)

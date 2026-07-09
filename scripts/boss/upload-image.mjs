@@ -7,7 +7,8 @@ const UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, l
 const [imgBase,key]=process.argv.slice(2);
 if(!imgBase||!key){console.error("usage: upload-image.mjs <game8_img_base> <r2_key>");process.exit(1);}
 const ref="https://game8.co/";
-const buf=execFileSync("curl",["-sS","--proxy",PROXY,"-m","60","-A",UA,"-H",`Referer: ${ref}`,"-H","Accept: image/*,*/*;q=0.8","-H","Sec-Fetch-Dest: image","-H","Sec-Fetch-Mode: no-cors","-H","Sec-Fetch-Site: cross-site",imgBase.replace(/\/(show|thumb)$/,"")+"/show"],{maxBuffer:64*1024*1024});
+const targetUrl = imgBase.endsWith("/poster") ? imgBase : imgBase.replace(/\/(show|thumb)$/,"")+"/show";
+const buf=execFileSync("curl",["-sS","--proxy",PROXY,"-m","60","-A",UA,"-H",`Referer: ${ref}`,"-H","Accept: image/*,*/*;q=0.8","-H","Sec-Fetch-Dest: image","-H","Sec-Fetch-Mode: no-cors","-H","Sec-Fetch-Site: cross-site",targetUrl],{maxBuffer:64*1024*1024});
 if(!buf||buf.length<800||buf.slice(0,5).toString().includes("<?xml")){console.error("ERROR bad image");process.exit(2);}
 const ext=key.split(".").pop().toLowerCase();
 const ct=ext==="png"?"image/png":ext==="webp"?"image/webp":"image/jpeg";

@@ -43,7 +43,8 @@ export function fitCameraToBounds(camera: Camera, bounds: Bounds, padding = 64):
 
 export function zoomCameraAt(camera: Camera, factor: number, sx: number, sy: number): Camera {
   const before = screenToWorld(camera, sx, sy);
-  camera.zoom = Math.min(Math.max(camera.zoom * factor, 0.006), 1.8);
+  const minZoom = camera.width < 600 ? 0.016 : 0.012;
+  camera.zoom = Math.min(Math.max(camera.zoom * factor, minZoom), 1.8);
   const after = screenToWorld(camera, sx, sy);
   camera.x += before.x - after.x;
   camera.y += before.y - after.y;

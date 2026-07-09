@@ -25,7 +25,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
-  <link href="dist/app.css?v=20260529-font-ui" rel="stylesheet">
+  <link href="dist/app.css?v=20260702-header-sync" rel="stylesheet">
   <script defer src="app-routes.js"></script>
   <script>window.POE2_DISABLE_TOOLTIPS = true;</script>
   <script defer src="components/app-shell.js"></script>
@@ -41,9 +41,10 @@
   <main class="poe-shell-container grid gap-5 py-5" id="detailRoot"></main>
 
   <script src="components/poe-ui-utils.js"></script>
-  <script src="data/boss-data.js?v=4"></script>
-  <script src="data/boss-images.js?v=4"></script>
-  <script src="data/boss-items.js?v=4"></script>
+  <script src="data/boss-data.js?v=20260702a"></script>
+  <script src="data/boss-images.js?v=20260702a"></script>
+  <script src="data/boss-items.js?v=20260702a"></script>
+  <script src="data/poe-prices.js?v=20260702a"></script>
   <script>
     const data = window.POE2_BOSS_DETAILS || {};
     const params = new URLSearchParams(window.location.search);
@@ -74,6 +75,31 @@
     const bossImages = (window.POE2_BOSS_IMAGES || {})[slug] || null;
     const dropItems = window.POE2_DROP_ITEMS || {};
     const normTxt = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+    const getItemPriceHtml = (name) => {
+      const prices = window.POE2_PRICES || {};
+      const p = prices[name];
+      if (!p) return "";
+      
+      let priceText = "";
+      if (p.chaos && p.chaos >= 1) {
+        priceText = `${p.chaos}c`;
+      }
+      if (p.divine && p.divine >= 1) {
+        priceText = `${p.divine} Div`;
+      } else if (p.divine && p.divine < 1 && p.divine > 0 && !priceText) {
+        priceText = `${p.divine} Div`;
+      }
+      if (!priceText && p.chaos) {
+        priceText = `${p.chaos}c`;
+      }
+      if (!priceText) return "";
+
+      return `<span class="inline-flex items-center gap-1 rounded bg-amber-500/10 px-2 py-0.5 text-xs font-black text-amber-500 dark:bg-amber-400/10 dark:text-amber-400">
+        <span class="material-symbols-rounded text-xs" style="font-size: 13px;">payments</span>
+        ${priceText}
+      </span>`;
+    };
 
     // Full item stats panel (captured from poe2db) shown when a drop row is expanded.
     const statPanel = (name) => {
@@ -186,7 +212,7 @@
           const dropsHtml = drops.length ? `<div class="border-t border-slate-100 dark:border-slate-800"><p class="px-4 pt-3 text-xs font-black uppercase tracking-wide text-slate-400 dark:text-slate-500">Drop</p><div class="divide-y divide-slate-100 dark:divide-slate-800">${drops.map((d) => {
             const panel = statPanel(d.name);
             const icon = d.image ? `<img src="${escapeHtml(d.image)}" alt="" class="h-10 w-10 shrink-0 rounded-md border border-slate-200 bg-slate-50 object-contain p-0.5 dark:border-slate-700 dark:bg-slate-800" loading="lazy">` : `<span class="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800"><span class="material-symbols-rounded text-base" aria-hidden="true">inventory_2</span></span>`;
-            const nameCell = `<span class="flex-1 text-sm font-semibold text-slate-700 dark:text-slate-200">${escapeHtml(d.name)}</span>`;
+            const nameCell = `<span class="flex-grow flex items-center justify-between text-sm font-semibold text-slate-700 dark:text-slate-200"><span>${escapeHtml(d.name)}</span>${getItemPriceHtml(d.name)}</span>`;
             return panel ? `<details class="group/d"><summary class="flex cursor-pointer list-none items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40">${icon}${nameCell}<span class="material-symbols-rounded shrink-0 text-slate-400 transition group-open/d:rotate-180" aria-hidden="true">expand_more</span></summary>${panel}</details>` : `<div class="flex items-center gap-3 px-4 py-2.5">${icon}${nameCell}</div>`;
           }).join("")}</div></div>` : "";
           return `<section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -246,7 +272,7 @@
             <div class="divide-y divide-slate-100 dark:divide-slate-800">
               ${dropList.map((d) => {
                 const panel = statPanel(d.text);
-                const nameCell = `<span class="flex-1 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200">${escapeHtml(d.text)}</span>`;
+                const nameCell = `<span class="flex-grow flex items-center justify-between text-sm font-semibold leading-6 text-slate-700 dark:text-slate-200"><span>${escapeHtml(d.text)}</span>${getItemPriceHtml(d.text)}</span>`;
                 return panel
                   ? `<details class="group/d">
                       <summary class="flex cursor-pointer list-none items-center gap-3 px-4 py-3 transition hover:bg-slate-50 dark:hover:bg-slate-800/40">

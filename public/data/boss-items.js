@@ -63,7 +63,7 @@ window.POE2_DROP_ITEMS = {
     "requires": "Requires: Level 64",
     "implicit": [],
     "explicit": [
-      "Zarokh, the Temporal drops an additional Barya",
+      "Zarokh, the Temporal drops 1 additional Baryas",
       "Your Armour, Evasion and Energy Shield are zero",
       "This item is destroyed when applied to a Trial"
     ],
@@ -204,38 +204,6 @@ window.POE2_DROP_ITEMS = {
     ],
     "flavour": "At their height, the Vaal glittered under the sun.\nA decade, a century, an aeon of prosperity...\nnow nothing more than a passing wonder."
   },
-  "Vestige of Darkness Tenebrous Crown": {
-    "base": "Tenebrous Crown",
-    "requires": "Requires: Level 65",
-    "implicit": [],
-    "explicit": [
-      "(150—200)% increased Armour and Energy Shield",
-      "+(20—30) to Strength and Intelligence",
-      "Physical damage from Hits Contributes to Chill Magnitude and Freeze Buildup",
-      "Enemies in your Presence are Blinded",
-      "The Bodach haunts your Presence",
-      "the wendigo manifestation delay randomisation ms [500]",
-      "the wendigo manifests +% faster per enemy power in your presence [5]"
-    ],
-    "flavour": "\"Your covetous hands bring the Unlight\never closer to consuming your realm.\""
-  },
-  "Sylvan's Effigy Stoic Sceptre": {
-    "base": "Stoic Sceptre",
-    "requires": "Requires: Level 62",
-    "implicit": [
-      "Grants Skill: Discipline",
-      "Grants Skill: Level 14 Azmerian Wolf"
-    ],
-    "explicit": [
-      "(50—75)% increased Spirit",
-      "Allies in your Presence Regenerate (50—100) Life per second",
-      "+(6—12) to all Attributes",
-      "Companions deal (50—100)% increased damage to your Marked targets",
-      "You can have any number of Companions of different types",
-      "discipline art variation [1]"
-    ],
-    "flavour": "Darkness howls through ancient bones, a wistful cry\non hollow winds. The moon listens. The pack gathers."
-  },
   "Sadist's Mercy Flanged Mace": {
     "base": "Flanged Mace",
     "requires": "Requires: Level 67",
@@ -321,7 +289,7 @@ window.POE2_DROP_ITEMS = {
   },
   "Choir of the Storm Jade Amulet": {
     "base": "Jade Amulet",
-    "requires": "Requires: Level 52",
+    "requires": "Requires: Level 55",
     "implicit": [
       "Grants Skill: Level 13 Lightning Bolt",
       "+(10—15) to Dexterity"
@@ -366,7 +334,8 @@ window.POE2_DROP_ITEMS = {
     "explicit": [
       "(20—30)% reduced Presence Area of Effect",
       "(20—30)% reduced Light Radius",
-      "[Can gain 0-4 custom Desecrated Modifiers]"
+      "[Can gain 1 custom Desecrated Modifiers]",
+      "[Can gain 2 custom Desecrated Modifiers]"
     ],
     "flavour": "Drink deeply of the Well.\nLet the Abyss coil within."
   },
@@ -382,8 +351,7 @@ window.POE2_DROP_ITEMS = {
       "This item gains bonuses from Socketed Items as though it was a Body Armour",
       "Has 2 Augment Sockets (Hidden)",
       "This item gains bonuses from Socketed Items as though it was a Helmet",
-      "This item gains bonuses from Socketed Items as though it was Gloves",
-      "This item gains bonuses from Socketed Items as though it was Boots"
+      "This item gains bonuses from Socketed Items as though it was Gloves"
     ],
     "flavour": "Kulemak sat triumphant, raising the crown.\nDarkness coiled the world in eternal night.\nVictory, a mere moment, came crashing down.\nNo conqueror, no conquered, only searing Light."
   },
@@ -547,10 +515,7 @@ window.POE2_DROP_ITEMS = {
       "(30—50)% increased Rarity of Items found",
       "20% reduced Movement Speed",
       "+(20—30)% to Fire Resistance",
-      "+(20—30) to Intelligence",
-      "You lose 5% of maximum Energy Shield per second",
-      "+(40—60) to maximum Energy Shield",
-      "Excess Life Recovery from Leech is applied to Energy Shield"
+      "+(20—30) to Intelligence"
     ],
     "flavour": ""
   },
@@ -603,12 +568,11 @@ window.POE2_DROP_ITEMS = {
       "Adds Vaal Beacons to a Map\n10 uses remaining",
       "Grants Skill: Level 9 Herald of the Royal Queen",
       "50% increased chance Vaal Beacons summon additional Monsters",
-      "50% chance Rare Vaal Beacon chests contain an additional random Temple Currency Item",
-      "25% chance Vaal Beacon Unique Monsters drop an additional random Temple Currency",
+      "A Rare or Unique Monster in the Area is Corrupted when Vaal Beacons are activated",
       "50% chance Vaal Beacon Unique Monsters have an Essence Modifier",
       "20% chance Vaal Beacon Unique Monsters are added to the Area for each Vaal Beacon in an Area",
       "Vaal Cities are also considered to be another Biome",
-      "Vaal Cities contain an additional Essence",
+      "Vaal Cities contain 1 additional Essences",
       "29% chance to Birth an additional 3 to 7 items of the same type when\nBirthing Vaal Orbs or Chaos Orbs"
     ],
     "explicit": [
@@ -624,44 +588,44 @@ window.POE2_DROP_ITEMS = {
       "Area contains (6—8) additional packs of Vaal Monsters\n18% increased number of Magic Monsters\n10% increased Waystones found in Area",
       "Area contains (9—11) additional packs of Vaal Monsters\n18% increased number of Magic Monsters\n10% increased Waystones found in Area",
       "Area contains (12—13) additional packs of Vaal Monsters\n18% increased number of Magic Monsters\n10% increased Waystones found in Area",
-      "(30—39)% more Monster Life\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\nPlayers have 40% less Recovery Rate of Life and Energy Shield\n15% increased Quantity of Items found in this Area",
-      "Monsters fire 2 additional Projectiles\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Monsters have 70% increased Area of Effect\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n12% increased Quantity of Items found in this Area",
-      "Monsters have (260—300)% increased Critical Hit Chance\nMonsters have +(36—40)% Critical Damage Bonus\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\n18% increased Quantity of Items found in this Area",
-      "+30% Monster Physical Damage Reduction\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "(20—24)% increased Monster Damage\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area",
-      "% of Monster Physical Damage is Converted to Fire\nMonsters deal (70—89)% of Physical Damage as Extra Fire\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n12% increased Quantity of Items found in this Area",
-      "% of Monster Physical Damage is Converted to Cold\nMonsters deal (70—89)% of Physical Damage as Extra Cold\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n12% increased Quantity of Items found in this Area",
-      "% of Monster Physical Damage is Converted to Lightning\nMonsters deal (70—89)% of Physical Damage as Extra Lightning\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n12% increased Quantity of Items found in this Area",
-      "(20—25)% increased Monster Movement Speed\n(25—35)% increased Monster Attack Speed\n(25—35)% increased Monster Cast Speed\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area",
-      "Unique Boss deals 30% increased Damage\nUnique Boss has 20% increased Attack and Cast Speed\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n12% increased Quantity of Items found in this Area",
-      "Monsters Poison on Hit\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Monsters cannot be Stunned\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Monsters are Hexproof\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Area contains many Totems\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "(-12—-8)% maximum Player Resistances\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\n18% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n+20% Monster Chaos Resistance\n+30% Monster Elemental Resistances\n12% increased Quantity of Items found in this Area",
-      "Area contains two Unique Bosses\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area",
-      "Players cannot inflict Exposure\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area\n(20—30)% increased number of Magic Monsters\nmap magic pack mod rules [1]",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area\n(20—30)% increased number of Rare Monsters\nmap rare monsters have nemesis mod [1]",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\nAll Monster Damage from Hits always Ignites\n15% increased Quantity of Items found in this Area",
-      "Players are Cursed with Elemental Weakness\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area",
-      "Players are Cursed with Vulnerability\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area",
-      "Players are Cursed with Enfeeble\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area",
-      "Players are Cursed with Temporal Chains\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area",
-      "Found Items have (25—40)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains (4—7) additional packs of Corrupted Vaal Monsters\n10% increased Quantity of Items found in this Area",
-      "Area has patches of desecrated ground\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n15% increased Quantity of Items found in this Area\nmap ground effect patches per 100 tiles [24]\nmap ground effect radius [16]",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains an additional Sacrifice Fragment\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains an additional Vaal Gem with Experience\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains 1 additional Corrupted Unique Items with two Implicit Modifiers\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains (1—3) additional Corrupted Unique Items\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains an additional Fossil\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains an additional Divination Card that give Corrupted Items\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains an additional Rare Item with an Incursion Modifier\n10% increased Quantity of Items found in this Area",
-      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains an additional Vaal Orb\n10% increased Quantity of Items found in this Area",
+      "(30—39)% more Monster Life\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\nPlayers have 40% less Recovery Rate of Life and Energy Shield\nmap item drop quantity +% [15]",
+      "Monsters fire 2 additional Projectiles\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Monsters have 70% increased Area of Effect\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [12]",
+      "Monsters have (260—300)% increased Critical Hit Chance\nMonsters have +(36—40)% Critical Damage Bonus\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [18]",
+      "+30% Monster Physical Damage Reduction\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "(20—24)% increased Monster Damage\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [15]",
+      "% of Monster Physical Damage is Converted to Fire\nMonsters deal (70—89)% of Physical Damage as Extra Fire\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [12]",
+      "% of Monster Physical Damage is Converted to Cold\nMonsters deal (70—89)% of Physical Damage as Extra Cold\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [12]",
+      "% of Monster Physical Damage is Converted to Lightning\nMonsters deal (70—89)% of Physical Damage as Extra Lightning\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [12]",
+      "(20—25)% increased Monster Movement Speed\n(25—35)% increased Monster Attack Speed\n(25—35)% increased Monster Cast Speed\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [15]",
+      "Unique Boss deals 30% increased Damage\nUnique Boss has 20% increased Attack and Cast Speed\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [12]",
+      "Monsters Poison on Hit\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Monsters cannot be Stunned\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Monsters are Hexproof\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Area contains many Totems\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "(-12—-8)% maximum Player Resistances\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [18]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n+20% Monster Chaos Resistance\n+30% Monster Elemental Resistances\nmap item drop quantity +% [12]",
+      "Area contains two Unique Bosses\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [15]",
+      "Players cannot inflict Exposure\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n(20—30)% increased number of Magic Monsters\nmap item drop quantity +% [10]\nmap magic pack mod rules [1]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\n(20—30)% increased number of Rare Monsters\nmap item drop quantity +% [10]\nmap rare monsters have nemesis mod [1]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 2 additional packs of Corrupted Vaal Monsters\nAll Monster Damage from Hits always Ignites\nmap item drop quantity +% [15]",
+      "Players are Cursed with Elemental Weakness\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [15]",
+      "Players are Cursed with Vulnerability\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [15]",
+      "Players are Cursed with Enfeeble\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [15]",
+      "Players are Cursed with Temporal Chains\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [15]",
+      "Found Items have (25—40)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains (4—7) additional packs of Corrupted Vaal Monsters\nmap item drop quantity +% [10]",
+      "Area has patches of desecrated ground\nFound Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nmap ground effect patches per 100 tiles [24]\nmap ground effect radius [16]\nmap item drop quantity +% [15]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains (1—3) additional Sacrifice Fragments\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains 1 additional Vaal Gems with Experience\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains 1 additional Corrupted Unique Items with two Implicit Modifiers\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains (1—3) additional Corrupted Unique Items\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains (1—3) additional Fossils\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains (1—3) additional Divination Cards that give Corrupted Items\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains (1—3) additional Rare Items with an Incursion Modifier\nmap item drop quantity +% [10]",
+      "Found Items have (1—3)% chance to drop Corrupted in Area\nArea contains 1 additional packs of Corrupted Vaal Monsters\nVaal Vessel contains (1—3) additional Vaal Orbs\nmap item drop quantity +% [10]",
       "Guarded by 3 packs of Monsters\nGuarded by 1 Vaal Side Area Bosses\nchest delay drops until daemons finish [1]",
       "Contains (4—8) extra Vaal Fragments",
       "Contains (1—2) extra Vaal Fragments",
@@ -676,8 +640,8 @@ window.POE2_DROP_ITEMS = {
       "50% chance to gain an additional Vaal Soul per Enemy Shattered",
       "With 5 Corrupted Items Equipped: Gain Soul Eater for 10 seconds on Vaal Skill use",
       "Bathed in the blood of (100—8000) sacrificed in the name of Xibaqua\nPassives in radius are Conquered by the Vaal\nHistoric\nlocal jewel effect base radius [1500]\nlocal unique jewel break timeless jewel calculators [0]",
-      "Items found in your Maps have 5% chance to be Corrupted\n3 uses remaining\nmap corrupted bosses drop x additional vaal items [2]",
-      "Items found in your Maps have 5% chance to be Corrupted\n15 uses remaining\nmap corrupted bosses drop x additional vaal items [3]",
+      "Map Bosses of your Corrupted Maps drop 2 additional Vaal Items\nItems found in your Maps have 5% chance to be Corrupted\n3 uses remaining",
+      "Map Bosses of your Corrupted Maps drop 3 additional Vaal Items\nItems found in your Maps have 5% chance to be Corrupted\n15 uses remaining",
       "Players gain an additional Vaal Soul on Kill\nYour Maps contain 6 additional packs of Corrupted Vaal Monsters\n3 uses remaining",
       "Players gain an additional Vaal Soul on Kill\nYour Maps contain 8 additional packs of Corrupted Vaal Monsters\n15 uses remaining",
       "Your Maps contain 6 additional packs of Corrupted Vaal Monsters\nItems dropped by Corrupted Vaal Monsters in your Maps have 25% chance to be Corrupted\n3 uses remaining",
@@ -690,7 +654,7 @@ window.POE2_DROP_ITEMS = {
       "20% increased Experience gain\nis legion uber fragment vaal [1]\nmap legion endless mode + s [60]\nmap legion endless pack size +% [0]\nmap legion fragment faction vaal [1]",
       "Adds Vaal Beacons to a Map\n10 uses remaining",
       "(10—30)% increased Pack Size for Monsters around Vaal Beacons in Map",
-      "1 extra pack of Monsters around Vaal Beacons in Map",
+      "1 extra packs of Monsters around Vaal Beacons in Map",
       "(30—60)% chance for an extra packs of Monsters around Vaal Beacons in Map",
       "(25—50)% increased chance Vaal Beacons summon additional Monsters in Map",
       "(5—10)% chance to gain an additional Crystal from Vaal Beacons in Map",
@@ -704,7 +668,7 @@ window.POE2_DROP_ITEMS = {
       "Leech 10% of Physical Attack Damage as Life",
       "10% of Physical damage dealt by your Hits causes Blood Loss",
       "Vaal Pact",
-      "Vaal Cities are also considered Forest AreasVaal Cities are also considered Water Areas"
+      "ForestWater"
     ],
     "flavour": ""
   },
@@ -746,7 +710,7 @@ window.POE2_DROP_ITEMS = {
   },
   "Sacred Flame Shrine Sceptre": {
     "base": "Shrine Sceptre",
-    "requires": "Requires: Level 26",
+    "requires": "Requires: Level 55",
     "implicit": [
       "Grants Skill: Purity of Fire"
     ],
@@ -881,6 +845,76 @@ window.POE2_DROP_ITEMS = {
     ],
     "flavour": ""
   },
+  "The Burden of Shadows": {
+    "base": "Chiming Staff",
+    "requires": "Requires: Level 78",
+    "implicit": [
+      "Grants Skill: Sigil of Power"
+    ],
+    "explicit": [
+      "(20—30)% increased Cast Speed",
+      "Skill Mana Costs Converted to Life Costs",
+      "Skills gain 1% of Damage as Chaos Damage per 3 Life Cost"
+    ],
+    "flavour": "Nothingness is loathe to relinquish its grip.\nEvery moment is a struggle to exist."
+  },
+  "Beetlebite": {
+    "base": "Velour Shoes",
+    "requires": "Requires: Level 52",
+    "implicit": [],
+    "explicit": [
+      "(20—30)% increased Movement Speed",
+      "(60—120)% increased Evasion and Energy Shield",
+      "Aggravate Bleeding on Enemies when they Enter your Presence",
+      "100% increased Thorns damage"
+    ],
+    "flavour": "They crawl and chitter and swarm\nin the shadow of his presence."
+  },
+  "Pragmatism": {
+    "base": "Explorer Armour",
+    "requires": "Requires: Level 52",
+    "implicit": [],
+    "explicit": [
+      "(200—300)% increased Armour and Evasion",
+      "+(10—20)% to all Elemental Resistances",
+      "-17% to Chaos Resistance",
+      "Charms use no Charges"
+    ],
+    "flavour": "In an endless war against darkness,\none must be ever vigilant."
+  },
+  "Ingenuity": {
+    "base": "Utility Belt",
+    "requires": "Requires: Level 55",
+    "implicit": [
+      "Has (1—3) Charm Slots",
+      "20% of Flask Recovery applied Instantly"
+    ],
+    "explicit": [
+      "(-20—20)% reduced Charm Charges gained",
+      "(-10—10)% reduced Charm Charges used",
+      "(20—30)% increased bonuses gained from left Equipped Ring",
+      "(20—30)% increased bonuses gained from right Equipped Ring"
+    ],
+    "flavour": "Experiments with geomancy taught\nthe Maji more than they ever expected."
+  },
+  "From Nothing": {
+    "base": "Diamond",
+    "requires": "Requires: Level 20",
+    "implicit": [],
+    "explicit": [
+      "Passives in Radius of Passive Skill can be Allocated\nwithout being connected to your tree"
+    ],
+    "flavour": "They clawed their way up from the agonising depths of nonexistence,\nbreathing deep with joy the exquisite light of meaning."
+  },
+  "Head of the King": {
+    "base": "Head of the King",
+    "requires": "",
+    "implicit": [],
+    "explicit": [
+      "Bring this proof of your victory to Aoife in Caer Tarth."
+    ],
+    "flavour": "To bear the head of a king is to send a\nmessage both concise and profound."
+  },
   "Candlemass' Essence": {
     "base": "Candlemass' Essence",
     "requires": "",
@@ -891,5 +925,422 @@ window.POE2_DROP_ITEMS = {
       "Grants 5% increased maximum Life"
     ],
     "flavour": "A sense of gratefulness and peace radiates with warmth."
+  },
+  "Head of the Winter Wolf": {
+    "base": "Head of the Winter Wolf",
+    "requires": "",
+    "implicit": [],
+    "explicit": [
+      "Right-click to crush it, undoing the Crone's curse.",
+      "Grants +10% to Cold Resistance"
+    ],
+    "flavour": "It howled alone on the eve of\nthe first snow. Now, it snarls\nforever, heralding the cold."
+  },
+  "Uncut Support Gem": {
+    "base": "Uncut Support Gem",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": ""
+  },
+  "Balbala's Barya": {
+    "base": "Balbala's Barya",
+    "requires": "",
+    "implicit": [],
+    "explicit": [
+      "Take this item to the Trial of the Sekhemas. Right-click to listen to Balbala."
+    ],
+    "flavour": "\"Why are you standing there gawking at me?\nWe must go to the Trial of the Sekhemas!\""
+  },
+  "The Hammer of Kamasa": {
+    "base": "The Hammer of Kamasa",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "The smith may not remember higher\npursuits, but the hammer does."
+  },
+  "Gemrot Skull": {
+    "base": "Gemrot Skull",
+    "requires": "",
+    "implicit": [],
+    "explicit": [
+      "Right-click to break the skull and release the energies within.",
+      "Grants +30 to Maximum Spirit"
+    ],
+    "flavour": "The skull of a stolen child, carefully cultivated by the Bog Witch..."
+  },
+  "Ignagduk's Ghastly Spear": {
+    "base": "Ignagduk's Ghastly Spear",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "The skulls of stolen children adorn carved wood."
+  },
+  "Uncut Skill Gem (Level 9)": {
+    "base": "Uncut Skill Gem",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": ""
+  },
+  "Shark Fin": {
+    "base": "Shark Fin",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "The sea gave it strength. Now it serves a greater purpose."
+  },
+  "Verisium Quest Item": {
+    "base": "Verisium",
+    "requires": "",
+    "implicit": [
+      "Adds the Verisium Weapon Effect to any equipped weapon.",
+      "Summons your pet"
+    ],
+    "explicit": [],
+    "flavour": ""
+  },
+  "Blank Rune": {
+    "base": "Blank Rune",
+    "requires": "",
+    "implicit": [],
+    "explicit": [
+      "Take this Rune to Renly in Clearfell Encampment to be forged into a Rune of your choosing"
+    ],
+    "flavour": "Untouched by fate. Its power waits for a purpose."
+  },
+  "Artificer's Orb": {
+    "base": "Artificer's Orb",
+    "requires": "",
+    "implicit": [],
+    "explicit": [
+      "Adds an Augment Socket to a Martial Weapon, wand, staff or Armour"
+    ],
+    "flavour": ""
+  },
+  "Rakiata's Flow": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Hits with Supported Skills treat Enemy Monster Elemental Resistance values as inverted"
+    ],
+    "flavour": "The Tasalio Tribe developed their own Way, seeing\nthe world not as it is, but as it should be, given its\nroiling and endless grace of constant motion."
+  },
+  "Kaom's Madness": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Supported Skills create 3 additional fissures",
+      "Supported Skills deal 20% less Damage",
+      "Supported Skills have 20% less Skill Speed",
+      "Supported Skills have 30% less Area of Effect"
+    ],
+    "flavour": "As King Kaom delved further into Wraeclast, so, too, did he\ndraw closer to the Beast. One night, in a nightmarish fit, he\nswung his axe at his own men, slaughtering hundreds."
+  },
+  "Tasalio's Rhythm": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Successfully executing Perfect Timing with Supported Skills grants a stack of Tasalio's Rhythm\nAll Tasalio's Rhythm is lost on failing to execute any Perfect Timing\nSupported Skills deal 10% more Damage for each stack of Tasalio's Rhythm\nSupported Skills have a 30% shorter Perfect Timing window for each stack of Tasalio's Rhythm\nTasalio's Rhythm stacks up to 5 times",
+      "Supported Skills have a 100% longer Perfect Timing window"
+    ],
+    "flavour": "The Chieftain built a grand waikoama, and boasted that\nit could never be sunk. Tasalio grinned, and the waves\nrolled in, tilting the ship, cresting higher and higher..."
+  },
+  "Tawhoa's Tending": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Totems created by Supported\nSkills have 25% more maximum Life",
+      "Totems created by Supported Skills trigger Tawhoa's Vengeance on death",
+      "Explosion radius is 3 metres",
+      "Explosion deals base Physical Damage equal to 20% of Totem's maximum Life"
+    ],
+    "flavour": "A scavenging warrior found Tawhoa meditating in a grove.\n\"There is only so much jade in this world,\" intoned the god.\n\"Take my gift to your tribe. Ironwood will grow for all time.\""
+  },
+  "Garukhan's Resolve": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Maximum Critical Hit chance with Supported Skills is 50%",
+      "Attack Critical Hit Chance with Supported Skills Bifurcates"
+    ],
+    "flavour": "At the last, her hope gone - but not her resolve - she threw her\nbeloved Tangletongue. That was the day a god bled. For this, the\nGreat Roc graced a Maraketh warrior with a feather for the first time."
+  },
+  "Zarokh's Refrain": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Supported Spells Echo 3 times",
+      "Echoes from Supported Spells have 40% increased Area of Effect"
+    ],
+    "flavour": "Reliving the same day for all time, Zarokh raged against\nthe moments that made up his prison. There would be\nno redemption, for he had broken his only barya."
+  },
+  "Khatal's Rejuvenation": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Remnants created by Supported Skills grant Khatal's Rejuvenation when collected"
+    ],
+    "flavour": "The surging geysers flooded the tunnels of the ancient\nenemy, destroying whole legions. His akhara turned to\npraise the tale-man Khatal, but he was dust on the wind."
+  },
+  "Varashta's Blessing": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Supported Skills deal 10% more Damage for each different Command Skill you have used in the last 15 seconds"
+    ],
+    "flavour": "\"These traditions we shall set forth, so that we may remain\nstrong, so that we may endure throughout the ages. Not to\nbind, not to dominate, but to protect... and guide.\""
+  },
+  "Perfidy Knight Armour": {
+    "base": "Knight Armour",
+    "requires": "Requires: Level 45",
+    "implicit": [],
+    "explicit": [
+      "(300—450)% increased Armour and Evasion",
+      "(10—30)% chance to Avoid Physical Damage from Hits",
+      "(10—30)% chance to Avoid Fire Damage from Hits",
+      "(10—30)% chance to Avoid Cold Damage from Hits",
+      "(10—30)% chance to Avoid Lightning Damage from Hits",
+      "(10—30)% chance to Avoid Chaos Damage from Hits",
+      "Enemies in your Presence are Intimidated"
+    ],
+    "flavour": "The Trickster God turned the very Day and Night against each other.\nWhat hope have you?"
+  },
+  "Strugglescream Stellar Amulet": {
+    "base": "Stellar Amulet",
+    "requires": "Requires: Level 52",
+    "implicit": [
+      "+(5—7) to all Attributes"
+    ],
+    "explicit": [
+      "Can have 3 additional Instilled Modifiers"
+    ],
+    "flavour": "There is no light at the end of this inner strife,\nbut the shadows eventually become home."
+  },
+  "Collapsing Horizon Wyrm Quarterstaff": {
+    "base": "Wyrm Quarterstaff",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "+(5—10)% to Critical Hit Chance",
+      "+(2—4) to Level of all Elemental Skills",
+      "100% increased Elemental Damage",
+      "Trigger skills refund half of Energy spent"
+    ],
+    "flavour": "The edges bend, the world flexes, the infinite spills into view."
+  },
+  "Assailum Closed Helm": {
+    "base": "Closed Helm",
+    "requires": "Requires: Level 45",
+    "implicit": [],
+    "explicit": [
+      "(200—300)% increased Armour and Evasion",
+      "+(200—400) to Accuracy Rating",
+      "(30—50)% increased Critical Hit Chance",
+      "Skills have a (100—150)% longer Perfect Timing window"
+    ],
+    "flavour": "A moment of calm before the battle can end the war."
+  },
+  "Melting Maelstrom Ultimate Mana Flask": {
+    "base": "Ultimate Mana Flask",
+    "requires": "Requires: Level 60",
+    "implicit": [],
+    "explicit": [
+      "Effect is not removed when Unreserved Mana is Filled",
+      "(200—250)% increased Duration",
+      "Every 3 seconds during Effect, deal 100% of Mana spent in those seconds as Chaos Damage to Enemies within 3 metres",
+      "Deals 25% of current Mana as Chaos Damage to you when Effect ends"
+    ],
+    "flavour": "What is life, but a dreamlike spiral of panic?"
+  },
+  "Megalomaniac Diamond": {
+    "base": "Diamond",
+    "requires": "Requires: Level 20",
+    "implicit": [],
+    "explicit": [
+      "Allocates Passive Skill"
+    ],
+    "flavour": "If you're going to act like you're better\nthan everyone else, make sure you are."
+  },
+  "Megalomaniac Diamond Jewel": {
+    "base": "Diamond",
+    "requires": "Requires: Level 20",
+    "implicit": [],
+    "explicit": [
+      "Allocates Passive Skill"
+    ],
+    "flavour": "If you're going to act like you're better\nthan everyone else, make sure you are."
+  },
+  "Breachlord Sac": {
+    "base": "Breachlord Sac",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "Locked within the unseen fabric\nlie the chains of power and control."
+  },
+  "Kulemak's Invitation": {
+    "base": "Kulemak's Invitation",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "Something awaits you in the Well."
+  },
+  "Medved's Crest of the Circle": {
+    "base": "Medved's Crest of the Circle",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "In days of yore, the Druids of the Circle walked\nthe mountains and valleys of Middengard,\ncalming the lava flows and enriching the earth."
+  },
+  "Vorana's Crest of the Scythe": {
+    "base": "Vorana's Crest of the Scythe",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "The Black Scythe Mercenary Company was an\nextension of Vorana. No storied history, no\ncenturies of service... and yet, legendary."
+  },
+  "Uhtred's Crest of the Chalice": {
+    "base": "Uhtred's Crest of the Chalice",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "The Order of the Chalice still exists today.\nIts priests teach engineering, mathematics,\nand science to all those who would learn."
+  },
+  "Olroth's Crest of the Sun": {
+    "base": "Olroth's Crest of the Sun",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": "The Knights of the Sun defined what it\nmeans to be a hero in a world full of\nmonsters, mysteries, and darkness."
+  },
+  "Vorana's Siege": {
+    "base": "Support",
+    "requires": "Requires: Level 65",
+    "implicit": [],
+    "explicit": [
+      "Supported Skills have 35% increased Area of Effect",
+      "Supported Skills deal 20% more Damage with Hits against Isolated targets"
+    ],
+    "flavour": "\"Your laws of war are asinine. I shall prevail!\nI'll crush every pawn you put before me.\nFace me, coward! Play by my rules.\""
+  },
+  "Uhtred's Chalice Transcendent Mana Flask": {
+    "base": "Transcendent Mana Flask",
+    "requires": "Requires: Level 50",
+    "implicit": [],
+    "explicit": [
+      "(200—300)% increased Amount Recovered",
+      "70% reduced Recovery rate",
+      "(50—60)% reduced Charges",
+      "Mana Recovery from Flasks can Overflow maximum Mana during Effect",
+      "Lose 5% Life per second while you have no Runic Ward during Effect"
+    ],
+    "flavour": "Uhtred drank. Verisium burned through his veins.\nHe gazed at death's face. With all his strength,\nhe turned instead to the stars, and witnessed Truth."
+  },
+  "Exceptional Verisium": {
+    "base": "Exceptional Verisium",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": ""
+  },
+  "Verisium": {
+    "base": "Verisium",
+    "requires": "",
+    "implicit": [
+      "Adds the Verisium Weapon Effect to any equipped weapon.",
+      "Summons your pet"
+    ],
+    "explicit": [],
+    "flavour": ""
+  },
+  "Olrovasara Torment Club": {
+    "base": "Torment Club",
+    "requires": "Requires: Level 65",
+    "implicit": [
+      "100% of Lightning Damage Converted to Cold Damage",
+      "local weapon implicit hidden % base damage is cold [100]"
+    ],
+    "explicit": [
+      "Adds 1 to (60—80) Lightning Damage",
+      "+(300—400) to Accuracy Rating",
+      "(5—30)% increased Attack Speed",
+      "On Hitting an enemy, gains maximum added Lightning damage equal to\nthe enemy's Power for 20 seconds, up to a total of 500"
+    ],
+    "flavour": "\"True heroes grow stronger in the face of adversity.\"\n- Fourth Tenet of the Knights of the Sun"
+  },
+  "Keeper of the Arc Spiritbone Crown": {
+    "base": "Spiritbone Crown",
+    "requires": "Requires: Level 62",
+    "implicit": [
+      "Has 3 Sockets",
+      "(25—50)% increased Runic Ward Regeneration Rate",
+      "+250 Intelligence Requirement"
+    ],
+    "explicit": [
+      "(240—340)% increased Armour and Energy Shield",
+      "(15—25) Life Regeneration per second",
+      "(15—25)% increased Mana Regeneration Rate",
+      "Alternating every 5 seconds:\nTake 40% less Damage from Hits\nTake 40% less Damage over time"
+    ],
+    "flavour": "The priests of the Kalguur keep faith through numbers\nand calculation, not unprovable promises."
+  },
+  "Svalinn Crucible Tower Shield": {
+    "base": "Crucible Tower Shield",
+    "requires": "Requires: Level 60",
+    "implicit": [
+      "Grants Skill: Raise Shield",
+      "Grants Skill: Level 14 Cast on Block"
+    ],
+    "explicit": [
+      "+(50—100) to maximum Runic Ward",
+      "(200—300)% increased Armour",
+      "Chance to Block Damage is Lucky",
+      "You take (0—20)% of damage from Blocked Hits"
+    ],
+    "flavour": "The priests found the Great Shield the night it fell to Middengard,\nbut it was the smiths who delved into the secrets it held."
+  },
+  "Olroth's Resolve Ultimate Life Flask": {
+    "base": "Ultimate Life Flask",
+    "requires": "Requires: Level 60",
+    "implicit": [],
+    "explicit": [
+      "(100—150)% increased Charges per use",
+      "Regenerate (2.5—5)% of maximum Runic Ward per second during Effect",
+      "Gain Guard equal to Current Runic Ward for 10 seconds when Effect ends"
+    ],
+    "flavour": "Olroth the Gallant,\ntireless and true,\nhe fights for me,\nhe fights for you!"
+  },
+  "Heroic Tragedy Timeless Jewel": {
+    "base": "Timeless Jewel",
+    "requires": "Requires: Level 20",
+    "implicit": [],
+    "explicit": [
+      "Remembrancing (100—8000) songworthy deeds by the line of Vorana\nPassives in radius are Conquered by the Kalguur",
+      "Historic",
+      "local unique jewel break timeless jewel calculators [0]"
+    ],
+    "flavour": "They believed themselves courageous and selfless,\nbut that bravery became the doom at their door."
+  },
+  "Revered Starlit Ore": {
+    "base": "Revered Starlit Ore",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": ""
+  },
+  "Venerable Starlit Ore": {
+    "base": "Venerable Starlit Ore",
+    "requires": "",
+    "implicit": [],
+    "explicit": [],
+    "flavour": ""
   }
 };

@@ -196,7 +196,25 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   const [buildLimitWarning, setBuildLimitWarning] = useState("");
   const [hover, setHover] = useState<{ node: PassiveNode | null; x: number; y: number; held: boolean }>({ node: null, x: 0, y: 0, held: false });
   const [command, setCommand] = useState<CanvasCommand | null>(null);
+  const [zoom, setZoom] = useState(0.035);
   const [pob, setPob] = useState<PobBuild | null>(null);
+
+  const handleZoomChange = (newZoom: number) => {
+    if (Math.abs(zoom - newZoom) > 0.0001) {
+      setZoom(newZoom);
+    }
+  };
+
+  const handleSliderChange = (newZoom: number) => {
+    setZoom(newZoom);
+    runCommand("zoom", { zoom: newZoom });
+  };
+
+  const handleZoomStep = (factor: number) => {
+    const minZoom = embedded ? 0.016 : 0.012;
+    const targetZoom = Math.min(Math.max(zoom * factor, minZoom), 1.5);
+    handleSliderChange(targetZoom);
+  };
   const [importOpen, setImportOpen] = useState(false);
   const [importText, setImportText] = useState("");
   const [importErr, setImportErr] = useState("");
@@ -621,7 +639,78 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           command={command}
           onHover={(node, x, y, held) => setHover({ node, x, y, held })}
           onToggle={toggleAllocated}
+          onZoomChange={handleZoomChange}
         />
+
+        {/* Zoom Slider Overlay */}
+        <div className="passive-zoom-control" style={{
+          position: "absolute",
+          right: "16px",
+          bottom: "16px",
+          background: "rgba(10, 12, 16, 0.85)",
+          border: "1px solid var(--line)",
+          borderRadius: "8px",
+          padding: "6px 10px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          zIndex: 100,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+          backdropFilter: "blur(4px)"
+        }}>
+          <button
+            type="button"
+            onClick={() => handleZoomStep(1 / 1.2)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--muted)",
+              cursor: "pointer",
+              display: "grid",
+              placeItems: "center",
+              padding: "4px"
+            }}
+            title={locale === "vi" ? "Thu nhỏ" : "Zoom Out"}
+          >
+            <span className="material-symbols-rounded" style={{ fontSize: "16px" }}>remove</span>
+          </button>
+          <input
+            type="range"
+            min={embedded ? "0.016" : "0.012"}
+            max="1.5"
+            step="0.005"
+            value={zoom}
+            onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
+            style={{
+              width: embedded ? "80px" : "110px",
+              accentColor: "var(--gold)",
+              cursor: "pointer",
+              background: "rgba(255,255,255,0.1)",
+              height: "4px",
+              borderRadius: "2px",
+              outline: "none"
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => handleZoomStep(1.2)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--muted)",
+              cursor: "pointer",
+              display: "grid",
+              placeItems: "center",
+              padding: "4px"
+            }}
+            title={locale === "vi" ? "Phóng to" : "Zoom In"}
+          >
+            <span className="material-symbols-rounded" style={{ fontSize: "16px" }}>add</span>
+          </button>
+          <span style={{ fontSize: "10px", color: "var(--gold)", minWidth: "32px", textAlign: "right", fontWeight: "bold" }}>
+            {Math.round(zoom * 100)}%
+          </span>
+        </div>
         {showChangesPanel ? (
           <aside className={`passive-changes-panel passive-side-panel ${changesPanelCollapsed ? "is-collapsed" : ""}`}>
             {changesPanelCollapsed ? (

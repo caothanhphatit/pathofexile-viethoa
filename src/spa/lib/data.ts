@@ -12,7 +12,7 @@ type GlobalName =
 
 const pendingScripts = new Map<string, Promise<unknown>>();
 const passiveTreeDataVersion = "20260528-pruned-nodes";
-const itemsDataVersion = "20260529-item-categories";
+const itemsDataVersion = "20260702-forgotten-warden";
 const skillGemsDataVersion = "20260529-gem-sot-official";
 const dictionaryDataVersion = "20260529-gem-sot";
 

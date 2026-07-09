@@ -17,7 +17,8 @@ export type RouteKey =
   | "currencyDetail"
   | "passiveTree"
   | "buildPlanner"
-  | "leveling";
+  | "leveling"
+  | "boss";
 
 export interface AppRoute {
   key: RouteKey;
@@ -201,6 +202,16 @@ export const routes: AppRoute[] = [
     icon: "checklist",
     navOrder: 70,
     aliases: ["/leveling.html", "/leveling_act1.html", "/leveling_act2.html", "/leveling_act3.html", "/leveling_act4.html", "/leveling_interlude.html"]
+  },
+  {
+    key: "boss",
+    path: "/boss",
+    title: "Hướng dẫn Boss POE2",
+    shortTitle: "Boss",
+    description: "Danh sách boss và hướng dẫn chi tiết cơ chế, chiến thuật, drop.",
+    icon: "skull",
+    navOrder: 72,
+    aliases: ["/boss.html"]
   }
 ];
 
@@ -324,6 +335,13 @@ const routeCopy: Partial<Record<RouteKey, Partial<Record<Locale, Partial<RouteTe
       title: "POE2 Leveling",
       shortTitle: "Leveling",
       description: "A campaign leveling checklist for Path of Exile 2."
+    }
+  },
+  boss: {
+    en: {
+      title: "POE2 Boss Guide",
+      shortTitle: "Bosses",
+      description: "List of Path of Exile 2 bosses with mechanics, strategy, and drop details."
     }
   }
 };

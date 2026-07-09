@@ -25,7 +25,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="components/theme-boot.js"></script>
   <link rel="preload" href="/assets/fonts/material-symbols-rounded.woff2" as="font" type="font/woff2" crossorigin>
-  <link href="dist/app.css?v=20260529-font-ui" rel="stylesheet">
+  <link href="dist/app.css?v=20260702-header-sync" rel="stylesheet">
   <script defer src="app-routes.js"></script>
   <script>window.POE2_DISABLE_TOOLTIPS = true;</script>
   <script defer src="components/app-shell.js"></script>
@@ -79,7 +79,7 @@
   </main>
 
   <script src="components/poe-ui-utils.js"></script>
-  <script src="data/boss-images.js?v=4"></script>
+  <script src="data/boss-images.js?v=20260702a"></script>
   <script>
     const { i18nText, onLocaleChange } = window.PoeUi;
 
@@ -182,20 +182,20 @@
         id: "trial-sekhemas",
         label: { vi: "Trial of the Sekhemas", en: "Trial of the Sekhemas" },
         bosses: [
-          { name: "Rattlecage, the Earthbreaker", slug: "rattlecage-the-earthbreaker", location: "Trial of the Sekhemas Floor 1", type: "Trial", note: { vi: "Boss Tầng 1", en: "Floor 1 boss" } },
-          { name: "Terracota Sentinels", slug: "terracota-sentinels", location: "Trial of the Sekhemas Floor 2", type: "Trial", note: { vi: "Boss Tầng 2", en: "Floor 2 boss" } },
-          { name: "Ashar, the Sand Mother", slug: "ashar-the-sand-mother", location: "Trial of the Sekhemas Floor 3", type: "Trial", note: { vi: "Boss Tầng 3", en: "Floor 3 boss" } },
-          { name: "Zarokh, the Temporal", slug: "zarokh-the-temporal", location: "Trial of the Sekhemas Floor 4", type: "Pinnacle", note: { vi: "Cần Djinn Barya với Area Level 75+", en: "Requires Djinn Barya with Area Level 75+" } }
+          { name: "Rattlecage, the Earthbreaker", slug: "trial-sekhemas", location: "Trial of the Sekhemas Floor 1", type: "Trial", note: { vi: "Boss Tầng 1", en: "Floor 1 boss" } },
+          { name: "Terracota Sentinels", slug: "trial-sekhemas", location: "Trial of the Sekhemas Floor 2", type: "Trial", note: { vi: "Boss Tầng 2", en: "Floor 2 boss" } },
+          { name: "Ashar, the Sand Mother", slug: "trial-sekhemas", location: "Trial of the Sekhemas Floor 3", type: "Trial", note: { vi: "Boss Tầng 3", en: "Floor 3 boss" } },
+          { name: "Zarokh, the Temporal", slug: "trial-sekhemas", location: "Trial of the Sekhemas Floor 4", type: "Pinnacle", note: { vi: "Cần Djinn Barya với Area Level 75+", en: "Requires Djinn Barya with Area Level 75+" } }
         ]
       },
       {
         id: "trial-chaos",
         label: { vi: "Trial of Chaos", en: "Trial of Chaos" },
         bosses: [
-          { name: "Bahlak, the Sky Seer", slug: "bahlak-the-sky-seer", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
-          { name: "Uxmal, the Beastlord", slug: "uxmal-the-beastlord", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
-          { name: "Chetza, the Feathered Plague", slug: "chetza-the-feathered-plague", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
-          { name: "The Trialmaster", slug: "the-trialmaster", location: "Trial of Chaos (10th trial)", type: "Pinnacle", note: { vi: "Cần 3 vật phẩm Fate key", en: "Requires three Fate key items" } }
+          { name: "Bahlak, the Sky Seer", slug: "trial-chaos", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
+          { name: "Uxmal, the Beastlord", slug: "trial-chaos", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
+          { name: "Chetza, the Feathered Plague", slug: "trial-chaos", location: "Trial of Chaos", type: "Trial", note: { vi: "Gặp ngẫu nhiên trong trial", en: "Random encounter in trials" } },
+          { name: "The Trialmaster", slug: "trial-chaos", location: "Trial of Chaos (10th trial)", type: "Pinnacle", note: { vi: "Cần 3 vật phẩm Fate key", en: "Requires three Fate key items" } }
         ]
       },
       {
@@ -210,54 +210,54 @@
         id: "delirium",
         label: { vi: "Delirium", en: "Delirium" },
         bosses: [
-          { name: "Kosis, the Revelation", slug: "kosis-the-revelation", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
-          { name: "Omniphobia, Fear Manifest", slug: "omniphobia-fear-manifest", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
-          { name: "Tangmazu, The Raven Trickster", slug: "tangmazu-the-raven-trickster", location: "Delirium (Paracosm)", type: "Pinnacle", note: { vi: "Dùng Raven's Reflection tại gương Withered Willow; quest Strange Reflections", en: "Use Raven's Reflection at Withered Willow mirror; Strange Reflections quest" } }
+          { name: "Kosis, the Revelation", slug: "delirium", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
+          { name: "Omniphobia, Fear Manifest", slug: "delirium", location: "Delirium/Simulacrum", type: "Delirium", note: { vi: "Spawn trong map Delirium hoặc các wave Simulacrum cao", en: "Spawns in Delirium maps or higher Simulacrum waves" } },
+          { name: "Tangmazu, The Raven Trickster", slug: "delirium", location: "Delirium (Paracosm)", type: "Pinnacle", note: { vi: "Dùng Raven's Reflection tại gương Withered Willow; quest Strange Reflections", en: "Use Raven's Reflection at Withered Willow mirror; Strange Reflections quest" } }
         ]
       },
       {
         id: "breach",
         label: { vi: "Breach", en: "Breach" },
         bosses: [
-          { name: "It That Was Tul and Esh", slug: "it-that-was-tul-and-esh", location: "Hive Colony (Nest of the Lords)", type: "Breach", note: { vi: "Quest Keepers of the Flame", en: "Keepers of the Flame quest" } },
-          { name: "Xesht, We That Are One", slug: "xesht-we-that-are-one", location: "Monastery/Twisted Domain", type: "Pinnacle", note: { vi: "Hoàn thành Hive Colony; quest Keepers of the Flame", en: "Complete Hive Colony; Keepers of the Flame quest" } }
+          { name: "It That Was Tul and Esh", slug: "breach", location: "Hive Colony (Nest of the Lords)", type: "Breach", note: { vi: "Quest Keepers of the Flame", en: "Keepers of the Flame quest" } },
+          { name: "Xesht, We That Are One", slug: "breach", location: "Monastery/Twisted Domain", type: "Pinnacle", note: { vi: "Hoàn thành Hive Colony; quest Keepers of the Flame", en: "Complete Hive Colony; Keepers of the Flame quest" } }
         ]
       },
       {
         id: "abyss",
         label: { vi: "Abyss", en: "Abyss" },
         bosses: [
-          { name: "Vandroth, Blackblooded Enslaver", slug: "vandroth-blackblooded-enslaver", location: "Dark Domain", type: "Abyss", note: { vi: "Phong ấn Northern Abyssal Wounds; quest Abyssal Power", en: "Seal Northern Abyssal Wounds; Abyssal Power quest" } },
-          { name: "Tasgul, Swallower of Light", slug: "tasgul-swallower-of-light", location: "Lightless Void", type: "Abyss", note: { vi: "Dọn Eastern Abyssal Wound; quest Abyssal Power", en: "Clear Eastern Abyssal Wound; Abyssal Power quest" } },
-          { name: "Vessel of Kulemak", slug: "vessel-of-kulemak", location: "Well of Souls", type: "Pinnacle", note: { vi: "Dùng Kulemak's Invitation; quest Abyssal Power", en: "Use Kulemak's Invitation; Abyssal Power quest" } }
+          { name: "Vandroth, Blackblooded Enslaver", slug: "abyss", location: "Dark Domain", type: "Abyss", note: { vi: "Phong ấn Northern Abyssal Wounds; quest Abyssal Power", en: "Seal Northern Abyssal Wounds; Abyssal Power quest" } },
+          { name: "Tasgul, Swallower of Light", slug: "abyss", location: "Lightless Void", type: "Abyss", note: { vi: "Dọn Eastern Abyssal Wound; quest Abyssal Power", en: "Clear Eastern Abyssal Wound; Abyssal Power quest" } },
+          { name: "Vessel of Kulemak", slug: "abyss", location: "Well of Souls", type: "Pinnacle", note: { vi: "Dùng Kulemak's Invitation; quest Abyssal Power", en: "Use Kulemak's Invitation; Abyssal Power quest" } }
         ]
       },
       {
         id: "atziri-temple",
         label: { vi: "Atziri's Temple", en: "Atziri's Temple" },
         bosses: [
-          { name: "Xipocado, Royal Architect", slug: "xipocado-royal-architect", location: "Atziri's Temple", type: "Temple", note: { vi: "Cần điều khiển Temple Console; quest Fate of the Vaal", en: "Temple Console manipulation required; Fate of the Vaal quest" } },
-          { name: "Atziri, the Red Queen", slug: "atziri-the-red-queen", location: "Atziri's Temple (Royal Access Chamber)", type: "Pinnacle", note: { vi: "Area Level 75+; quest Fate of the Vaal", en: "Area Level 75+; Fate of the Vaal quest" } }
+          { name: "Xipocado, Royal Architect", slug: "atziri-temple", location: "Atziri's Temple", type: "Temple", note: { vi: "Cần điều khiển Temple Console; quest Fate of the Vaal", en: "Temple Console manipulation required; Fate of the Vaal quest" } },
+          { name: "Atziri, the Red Queen", slug: "atziri-temple", location: "Atziri's Temple (Royal Access Chamber)", type: "Pinnacle", note: { vi: "Area Level 75+; quest Fate of the Vaal", en: "Area Level 75+; Fate of the Vaal quest" } }
         ]
       },
       {
         id: "precursor-fortress",
         label: { vi: "Precursor Fortress (Pinnacle)", en: "Precursor Fortress (Pinnacle)" },
         bosses: [
-          { name: "The Arbiter of Ash", slug: "the-arbiter-of-ash", location: "Burning Monolith", type: "Pinnacle", note: { vi: "Cần Crisis Fragments; quest Legacy of the Precursors", en: "Crisis Fragments required; Legacy of the Precursors quest" } },
-          { name: "The Arbiter of Divinity", slug: "the-arbiter-of-divinity", location: "Origin Tower", type: "Pinnacle", note: { vi: "Cần Origin Spark và Origin Cradle; quest Legacy of the Precursors", en: "Origin Spark and Origin Cradle required; Legacy of the Precursors quest" } }
+          { name: "The Arbiter of Ash", slug: "precursor-fortress", location: "Burning Monolith", type: "Pinnacle", note: { vi: "Cần Crisis Fragments; quest Legacy of the Precursors", en: "Crisis Fragments required; Legacy of the Precursors quest" } },
+          { name: "The Arbiter of Divinity", slug: "precursor-fortress", location: "Origin Tower", type: "Pinnacle", note: { vi: "Cần Origin Spark và Origin Cradle; quest Legacy of the Precursors", en: "Origin Spark and Origin Cradle required; Legacy of the Precursors quest" } }
         ]
       },
       {
         id: "expedition",
         label: { vi: "Expedition", en: "Expedition" },
         bosses: [
-          { name: "Styrn, Fallen Knight of Aldur", slug: "styrn-fallen-knight-of-aldur", location: "Tomb of the Fallen Knight", type: "Expedition", note: { vi: "Phá lối vào trong các encounter Expedition; quest The Grand Expedition", en: "Destroy entrance in Expedition encounters; The Grand Expedition quest" } },
-          { name: "Medved, the Fallen Seer", slug: "medved-the-fallen-seer", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Medved's Saga với Logbook; quest The Grand Expedition", en: "Use Medved's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "Vorana, Last to Fall", slug: "vorana-last-to-fall", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Vorana's Saga với Logbook; quest The Grand Expedition", en: "Use Vorana's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "Uhtred, the Stardrinker", slug: "uhtred-the-stardrinker", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Uhtred's Saga với Logbook; quest The Grand Expedition", en: "Use Uhtred's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "Olroth, Origin of the Fall", slug: "olroth-origin-of-the-fall", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Olroth's Saga với Logbook; quest The Grand Expedition", en: "Use Olroth's Saga with Logbook; The Grand Expedition quest" } },
-          { name: "The Aberration", slug: "the-aberration", location: "Verisium Crater", type: "Pinnacle", note: { vi: "Dùng Triskelion Reforged để xóa rào chắn; quest The Grand Expedition", en: "Use Triskelion Reforged to dispel barrier; The Grand Expedition quest" } }
+          { name: "Styrn, Fallen Knight of Aldur", slug: "expedition", location: "Tomb of the Fallen Knight", type: "Expedition", note: { vi: "Phá lối vào trong các encounter Expedition; quest The Grand Expedition", en: "Destroy entrance in Expedition encounters; The Grand Expedition quest" } },
+          { name: "Medved, the Fallen Seer", slug: "expedition", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Medved's Saga với Logbook; quest The Grand Expedition", en: "Use Medved's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "Vorana, Last to Fall", slug: "expedition", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Vorana's Saga với Logbook; quest The Grand Expedition", en: "Use Vorana's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "Uhtred, the Stardrinker", slug: "expedition", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Uhtred's Saga với Logbook; quest The Grand Expedition", en: "Use Uhtred's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "Olroth, Origin of the Fall", slug: "expedition", location: "Ocean Biome", type: "Expedition", note: { vi: "Dùng Olroth's Saga với Logbook; quest The Grand Expedition", en: "Use Olroth's Saga with Logbook; The Grand Expedition quest" } },
+          { name: "The Aberration", slug: "expedition", location: "Verisium Crater", type: "Pinnacle", note: { vi: "Dùng Triskelion Reforged để xóa rào chắn; quest The Grand Expedition", en: "Use Triskelion Reforged to dispel barrier; The Grand Expedition quest" } }
         ]
       }
     ];
@@ -275,7 +275,7 @@
     const presentTypes = TYPE_ORDER.filter((type) => GROUPS.some((group) => group.bosses.some((boss) => boss.type === type)));
 
     let searchQuery = "";
-    let activeType = "all";
+    let activeType = "Campaign";
 
     const matchesFilter = (boss) => {
       if (activeType !== "all" && boss.type !== activeType) return false;
@@ -296,8 +296,9 @@
       const activeCls = "border-purple-500 bg-purple-600 text-white dark:border-purple-500 dark:bg-purple-600";
       const idleCls = "border-slate-200 bg-slate-50/80 text-slate-600 hover:border-purple-300 hover:text-purple-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-purple-700 dark:hover:text-purple-300";
       const chip = (key, label) => `<button type="button" data-type-chip="${key}" class="${base} ${activeType === key ? activeCls : idleCls}">${label}</button>`;
-      const chips = [chip("all", pageText("filterAll"))]
-        .concat(presentTypes.map((type) => chip(type, i18nText(typeMeta(type).label, type))))
+      const chips = presentTypes
+        .filter((type) => type !== "Optional")
+        .map((type) => chip(type, i18nText(typeMeta(type).label, type)))
         .join("");
       toolbarContainer.innerHTML = `
         <div class="flex flex-col gap-3">
@@ -346,14 +347,14 @@
         ? `<span class="material-symbols-rounded text-base text-red-500" title="Pinnacle boss" aria-hidden="true">local_fire_department</span>`
         : "";
       const nameHtml = boss.slug
-        ? `<a class="font-display text-base font-black leading-tight text-slate-950 no-underline hover:text-purple-700 hover:underline dark:text-white dark:hover:text-purple-300" href="/boss-detail?boss=${encodeURIComponent(boss.slug)}" translate="no">${boss.name}</a>`
+        ? `<a class="font-display text-base font-black leading-tight text-slate-950 no-underline hover:text-purple-700 hover:underline dark:text-white dark:hover:text-purple-300" href="/boss-detail?boss=${encodeURIComponent(boss.slug)}&v=20260702a" translate="no">${boss.name}</a>`
         : `<span class="font-display text-base font-black leading-tight text-slate-950 dark:text-white">${boss.name}</span>`;
       const detailLink = boss.slug
-        ? `<a class="inline-flex items-center gap-1 rounded bg-purple-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-purple-700 no-underline transition-colors hover:bg-purple-600 hover:text-white dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-500 dark:hover:text-white" href="/boss-detail?boss=${encodeURIComponent(boss.slug)}"><span class="material-symbols-rounded text-sm" aria-hidden="true">menu_book</span><span data-boss-detail>${pageText("detail")}</span></a>`
+        ? `<a class="inline-flex items-center gap-1 rounded bg-purple-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-purple-700 no-underline transition-colors hover:bg-purple-600 hover:text-white dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-500 dark:hover:text-white" href="/boss-detail?boss=${encodeURIComponent(boss.slug)}&v=20260702a"><span class="material-symbols-rounded text-sm" aria-hidden="true">menu_book</span><span data-boss-detail>${pageText("detail")}</span></a>`
         : "";
       const thumbUrl = boss.slug ? (window.POE2_BOSS_IMAGES || {})[boss.slug]?.hero : null;
       const thumb = thumbUrl
-        ? `<a href="/boss-detail?boss=${encodeURIComponent(boss.slug)}" class="shrink-0"><img src="${thumbUrl}" alt="" class="h-16 w-16 rounded-lg border border-slate-200 object-cover transition hover:opacity-90 dark:border-slate-700" loading="lazy"></a>`
+        ? `<a href="/boss-detail?boss=${encodeURIComponent(boss.slug)}&v=20260702a" class="shrink-0"><img src="${thumbUrl}" alt="" class="h-16 w-16 rounded-lg border border-slate-200 object-cover transition hover:opacity-90 dark:border-slate-700" loading="lazy"></a>`
         : `<span class="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-slate-200 bg-gradient-to-br from-purple-500/15 to-fuchsia-500/15 text-purple-400 dark:border-slate-700"><span class="material-symbols-rounded text-2xl" aria-hidden="true">skull</span></span>`;
       return `
         <li class="boss-row glass-panel flex gap-3 rounded-lg p-3.5 shadow-sm ${accent}">

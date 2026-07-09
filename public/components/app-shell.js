@@ -21,7 +21,8 @@
     beginner: { vi: "Beginner guide", en: "Beginner guide" },
     skillgems: { vi: "Skill gems", en: "Skill gems" },
     passivetree: { vi: "Passive tree", en: "Passive tree" },
-    leveling: { vi: "Leveling", en: "Leveling" }
+    leveling: { vi: "Leveling", en: "Leveling" },
+    boss: { vi: "Boss", en: "Bosses" }
   };
   const uiText = {
     navLabel: { vi: "Điều hướng chính", en: "Main navigation" },
@@ -64,7 +65,8 @@
     beginner: { title: "Beginner guide", href: "/beginner-guide", icon: "menu_book", navParent: "newbie" },
     skillgems: { title: "Skill gems", href: "/skill-gems", icon: "auto_awesome_motion", navParent: "lookup" },
     passivetree: { title: "Passive tree", href: "/passive-tree", icon: "account_tree", navOrder: 65 },
-    leveling: { title: "Leveling", href: "/leveling", icon: "checklist", navOrder: 70 }
+    leveling: { title: "Leveling", href: "/leveling", icon: "checklist", navOrder: 70 },
+    boss: { title: "Boss", href: "/boss", icon: "skull", navOrder: 72 }
   };
 
   const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
@@ -127,12 +129,9 @@
     .filter(([, route]) => Number.isFinite(route.navOrder))
     .sort(([, a], [, b]) => a.navOrder - b.navOrder);
 
-  const desktopClass = (active) => `poe-nav-link${active ? " poe-nav-link-active" : ""}`;
-  const mobileClass = (active) => `poe-nav-link poe-nav-link-mobile${active ? " poe-nav-link-mobile-active" : ""}`;
-
-  const renderNavLink = ([key, route], mode, active) => `
-    <a class="${mode === "desktop" ? desktopClass(active) : mobileClass(active)}" href="${escapeHtml(routeHref(key))}" data-route="${escapeHtml(key)}"${active ? " aria-current=\"page\"" : ""}>
-      <span class="material-symbols-rounded poe-nav-icon" aria-hidden="true">${escapeHtml(route.icon || "circle")}</span>${escapeHtml(routeTitle(key, route))}
+  const renderNavLink = ([key, route], active) => `
+    <a class="${active ? "is-active" : ""}" href="${escapeHtml(routeHref(key))}" data-route="${escapeHtml(key)}"${active ? " aria-current=\"page\"" : ""}>
+      <span class="material-symbols-rounded" aria-hidden="true">${escapeHtml(route.icon || "circle")}</span>${escapeHtml(routeTitle(key, route))}
     </a>
   `;
 
@@ -140,45 +139,32 @@
     const active = activeRoute();
     const activeNav = navActiveRoute(active);
     const locale = currentLocale();
-    const desktopBreakpoint = target.dataset.desktopBreakpoint || "lg";
     const subtitle = target.dataset.subtitle || routeTitle(active, routes()[active]) || i18n(defaultSubtitle);
-    const desktopNavClass = `poe-nav-rail ${desktopBreakpoint}:flex`;
-    const mobileNavClass = `nav-scroll -mx-1 flex gap-1 overflow-x-auto pb-3 ${desktopBreakpoint}:hidden`;
     const links = navRoutes();
-    const localeOptionClass = (option) => `inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-[11px] font-black transition ${locale === option ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950" : "text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-800"}`;
 
     target.outerHTML = `
-      <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95" data-component="site-header">
-        <div class="poe-shell-container">
-          <div class="flex h-16 items-center justify-between gap-3">
-            <a class="flex min-w-0 items-center gap-3 no-underline" href="${escapeHtml(routeHref("home"))}" data-route="home" aria-label="${escapeHtml(i18n(uiText.homeLabel))}">
-              <span class="poe-brand-mark">
-                <img class="poe-brand-logo" src="/assets/img/logo.jpg" alt="" width="64" height="57" aria-hidden="true">
-              </span>
-              <span class="min-w-0">
-                <span class="block truncate text-sm font-black leading-tight text-slate-950 sm:text-base dark:text-white">${escapeHtml(brandTitle)}</span>
-                <span class="hidden truncate text-xs font-semibold text-slate-500 sm:block dark:text-slate-400">${escapeHtml(subtitle)}</span>
-              </span>
-            </a>
-            <div class="flex items-center gap-2">
-              <nav class="${desktopNavClass}" aria-label="${escapeHtml(i18n(uiText.navLabel))}">
-                ${links.map((entry) => renderNavLink(entry, "desktop", entry[0] === activeNav)).join("")}
-              </nav>
-              <div class="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-slate-100/80 p-1 dark:border-slate-800 dark:bg-slate-900" role="group" aria-label="${escapeHtml(i18n(uiText.languageLabel))}">
-                <button class="${localeOptionClass("vi")}" type="button" data-locale-option="vi" aria-pressed="${locale === "vi"}">VI</button>
-                <button class="${localeOptionClass("en")}" type="button" data-locale-option="en" aria-pressed="${locale === "en"}">EN</button>
-                <a class="poe-facebook-link" href="${fanpageUrl}" target="_blank" rel="noopener noreferrer" data-no-route-preload="true" aria-label="${escapeHtml(i18n(uiText.fanpageLabel))}" title="${escapeHtml(i18n(uiText.fanpageLabel))}">
-                  <span class="poe-facebook-mark" aria-hidden="true">f</span>
-                </a>
-              </div>
-              <button class="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-slate-200 bg-white text-slate-800 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800" id="themeToggle" type="button" aria-label="${escapeHtml(i18n(uiText.themeDark))}">
-                <span class="material-symbols-rounded" id="themeIcon" aria-hidden="true">dark_mode</span>
-              </button>
-            </div>
+      <header class="app-header" data-component="site-header">
+        <a class="brand" href="${escapeHtml(routeHref("home"))}" data-route="home" aria-label="${escapeHtml(i18n(uiText.homeLabel))}">
+          <img src="/assets/img/logo.jpg" width="42" height="38" alt="" />
+          <span>
+            <strong>${escapeHtml(brandTitle)}</strong>
+            <small>${escapeHtml(subtitle)}</small>
+          </span>
+        </a>
+        <nav class="nav-rail" aria-label="${escapeHtml(i18n(uiText.navLabel))}">
+          ${links.map((entry) => renderNavLink(entry, entry[0] === activeNav)).join("")}
+        </nav>
+        <div class="app-actions">
+          <a class="facebook-button" href="${fanpageUrl}" target="_blank" rel="noopener noreferrer" data-no-route-preload="true" aria-label="${escapeHtml(i18n(uiText.fanpageLabel))}" title="${escapeHtml(i18n(uiText.fanpageLabel))}">
+            <span aria-hidden="true">f</span>
+          </a>
+          <div class="segmented" role="group" aria-label="${escapeHtml(i18n(uiText.languageLabel))}">
+            <button class="${locale === "vi" ? "is-active" : ""}" type="button" data-locale-option="vi" aria-pressed="${locale === "vi"}">VI</button>
+            <button class="${locale === "en" ? "is-active" : ""}" type="button" data-locale-option="en" aria-pressed="${locale === "en"}">EN</button>
           </div>
-          <nav class="${mobileNavClass}" aria-label="${escapeHtml(i18n(uiText.mobileNavLabel))}">
-            ${links.map((entry) => renderNavLink(entry, "mobile", entry[0] === activeNav)).join("")}
-          </nav>
+          <button class="icon-button" id="themeToggle" type="button" aria-label="${escapeHtml(i18n(uiText.themeDark))}">
+            <span class="material-symbols-rounded" id="themeIcon" aria-hidden="true">dark_mode</span>
+          </button>
         </div>
       </header>
     `;

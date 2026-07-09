@@ -1,7 +1,7 @@
 import { type Locale, localizedText, uiText } from "../lib/locale";
 import { routeForKey, routeText, type RouteKey } from "../lib/routes";
 
-const featureKeys: RouteKey[] = ["patchnote", "lookup", "newbie", "skillgems", "currency", "passiveTree", "buildPlanner", "leveling"];
+const featureKeys: RouteKey[] = ["patchnote", "lookup", "newbie", "skillgems", "currency", "passiveTree", "buildPlanner", "leveling", "boss"];
 
 const stats: [string, string | { vi: string; en: string }][] = [
   ["31.468", { vi: "Dòng Việt hóa", en: "Localized lines" }],

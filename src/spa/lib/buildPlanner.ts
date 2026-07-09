@@ -32,6 +32,12 @@ export interface BuildInventoryChoice {
   itemSlug?: string;
   iconUrl?: string;
   baseName?: string;
+  itemLevel?: number;
+  quality?: number;
+  corrupted?: boolean;
+  rareName?: string;
+  implicitCount?: number;
+  rawText?: string;
 }
 
 export interface BuildSupportSkillChoice {
@@ -110,6 +116,13 @@ export interface PobImportData {
     ascendClassName: string;
     level: number;
     mainSkill: string;
+    mainSocketGroup?: string;
+    attribute_overrides?: {
+      dexNodes?: string;
+      intNodes?: string;
+      strNodes?: string;
+    };
+    config?: string;
   };
   treeSpec: PobTreeSpec | null;
   skillGroups: PobSkillGroup[];
@@ -117,6 +130,10 @@ export interface PobImportData {
   items: Array<{
     text: string;
     slot: string;
+  }>;
+  stats?: Array<{
+    stat: string;
+    value: number;
   }>;
 }
 
@@ -235,9 +252,15 @@ const normalizeInventoryChoices = (rows: unknown): BuildInventoryChoice[] => {
     levelEnd: row.levelEnd || "",
     itemSlug: row.itemSlug || "",
     iconUrl: row.iconUrl || "",
-    baseName: row.baseName || ""
+    baseName: row.baseName || "",
+    itemLevel: row.itemLevel !== undefined ? row.itemLevel : (row as any).item_level,
+    quality: row.quality,
+    corrupted: row.corrupted !== undefined ? row.corrupted : (row as any).corrupted,
+    rareName: row.rareName || (row as any).rare_name,
+    implicitCount: row.implicitCount !== undefined ? row.implicitCount : (row as any).implicit_count,
+    rawText: row.rawText || (row as any).raw_text || ""
   }));
-};
+}
 
 const normalizeSupportSkillChoices = (rows: unknown): BuildSupportSkillChoice[] => {
   if (!Array.isArray(rows)) return [];
@@ -436,6 +459,11 @@ export function buildInventorySlot(choice: BuildInventoryChoice): Record<string,
   const row: Record<string, unknown> = { inventory_id: inventoryId };
   if (levelInterval !== undefined) row.level_interval = levelInterval;
   if (choice.isUnique && itemName) row.unique_name = itemName;
+  if (choice.itemLevel !== undefined) row.item_level = choice.itemLevel;
+  if (choice.quality !== undefined) row.quality = choice.quality;
+  if (choice.corrupted !== undefined) row.corrupted = choice.corrupted;
+  if (choice.rareName !== undefined) row.rare_name = choice.rareName;
+  if (choice.implicitCount !== undefined) row.implicit_count = choice.implicitCount;
 
   if (note) {
     row.additional_text = itemName
@@ -443,6 +471,10 @@ export function buildInventorySlot(choice: BuildInventoryChoice): Record<string,
       : `<grey>{${note}}`;
   } else if (itemName && !choice.isUnique) {
     row.additional_text = `<silver>{${itemName}}`;
+  }
+
+  if (choice.rawText) {
+    row.raw_text = choice.rawText;
   }
 
   return row;
@@ -534,16 +566,9 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
     throw new Error(`PoB XML không đúng định dạng: ${rootTag || "không có root"}.`);
   }
 
-  const buildElement = doc.documentElement.querySelector("Build");
-  const build = {
-    className: xmlAttribute(buildElement, "className"),
-    ascendClassName: xmlAttribute(buildElement, "ascendClassName"),
-    level: parseWholeNumber(xmlAttribute(buildElement, "level", "1"), 1),
-    mainSkill: xmlAttribute(buildElement, "mainSkill")
-  };
-
   const treeElement = doc.documentElement.querySelector("Tree");
   let treeSpec: PobTreeSpec | null = null;
+  let attribute_overrides: PobImportData["build"]["attribute_overrides"] = undefined;
   if (treeElement) {
     const activeSpec = Math.max(1, parseWholeNumber(xmlAttribute(treeElement, "activeSpec", "1"), 1));
     const specs = [...treeElement.querySelectorAll("Spec")];
@@ -561,8 +586,34 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
         weaponSet1Nodes: xmlAttribute(weaponSet1, "nodes"),
         weaponSet2Nodes: xmlAttribute(weaponSet2, "nodes")
       };
+
+      const attrOverride = spec.querySelector("AttributeOverride");
+      if (attrOverride) {
+        attribute_overrides = {
+          dexNodes: xmlAttribute(attrOverride, "dexNodes") || undefined,
+          intNodes: xmlAttribute(attrOverride, "intNodes") || undefined,
+          strNodes: xmlAttribute(attrOverride, "strNodes") || undefined
+        };
+      }
     }
   }
+
+  const configEl = doc.documentElement.querySelector("Config");
+  let config: string | undefined = undefined;
+  if (configEl) {
+    config = configEl.outerHTML || new XMLSerializer().serializeToString(configEl);
+  }
+
+  const buildElement = doc.documentElement.querySelector("Build");
+  const build = {
+    className: xmlAttribute(buildElement, "className"),
+    ascendClassName: xmlAttribute(buildElement, "ascendClassName"),
+    level: parseWholeNumber(xmlAttribute(buildElement, "level", "1"), 1),
+    mainSkill: xmlAttribute(buildElement, "mainSkill"),
+    mainSocketGroup: xmlAttribute(buildElement, "mainSocketGroup") || undefined,
+    attribute_overrides,
+    config
+  };
 
   const skillsElement = doc.documentElement.querySelector("Skills");
   const skillGroups: PobSkillGroup[] = [];
@@ -609,6 +660,19 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
       }
     }
 
+    const socketsElement = doc.documentElement.querySelector("Sockets");
+    if (socketsElement) {
+      for (const socket of [...socketsElement.querySelectorAll("Socket")]) {
+        const itemId = xmlAttribute(socket, "itemId");
+        const nodeId = xmlAttribute(socket, "nodeId");
+        if (itemId && nodeId) {
+          slotByItemId.set(itemId, `PassiveJewel:${nodeId}`);
+        } else if (itemId) {
+          slotByItemId.set(itemId, "Jewel");
+        }
+      }
+    }
+
     for (const item of [...itemsElement.querySelectorAll("Item")]) {
       const text = cleanText(item.textContent);
       if (!text) continue;
@@ -620,7 +684,18 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
     }
   }
 
-  return { build, treeSpec, skillGroups, notes, items };
+  const stats: Array<{ stat: string; value: number }> = [];
+  if (buildElement) {
+    for (const statEl of [...buildElement.querySelectorAll("PlayerStat")]) {
+      const stat = xmlAttribute(statEl, "stat");
+      const valStr = xmlAttribute(statEl, "value");
+      if (stat && valStr) {
+        stats.push({ stat, value: parseFloat(valStr) || 0 });
+      }
+    }
+  }
+
+  return { build, treeSpec, skillGroups, notes, items, stats };
 }
 
 export async function parsePobExportCode(code: string): Promise<PobImportData> {
@@ -756,11 +831,11 @@ function pobItemRarity(lines: string[]): string {
 }
 
 function pobItemTitle(lines: string[]): string {
-  return lines.find((line) => !/^(Rarity:|Slot:|Item Level:|Quality:|Sockets:|Requirements:|Level:|Str:|Dex:|Int:|Implicits:|Explicits:|Crafted:|Corrupted|Mirrored|--------)/i.test(line)) ?? "";
+  return lines.find((line) => !/^(Rarity:|Slot:|Item Level:|Quality:|Sockets:|Requirements:|Level:|Str:|Dex:|Int:|Implicits:|Explicits:|Crafted:|Corrupted|Mirrored|--------|Unique ID:|Radius:)/i.test(line)) ?? "";
 }
 
 function pobItemBaseName(lines: string[], title: string, rarity: string): string {
-  const meaningful = lines.filter((line) => !/^(Rarity:|Slot:|Item Level:|Quality:|Sockets:|Requirements:|Level:|Str:|Dex:|Int:|Implicits:|Explicits:|Crafted:|Corrupted|Mirrored|--------)/i.test(line));
+  const meaningful = lines.filter((line) => !/^(Rarity:|Slot:|Item Level:|Quality:|Sockets:|Requirements:|Level:|Str:|Dex:|Int:|Implicits:|Explicits:|Crafted:|Corrupted|Mirrored|--------|Unique ID:|Radius:)/i.test(line));
   if (rarity === "unique" || rarity === "rare") return meaningful.find((line) => line !== title) || "";
   return title;
 }
@@ -779,6 +854,8 @@ function pobInventorySlotId(slotName: string, lines: string[], used: Set<string>
   const explicit: Array<[RegExp, string[]]> = [
     [/^(weapon1|mainhand|weapon)$/i, ["Weapon1"]],
     [/^(weapon2|offhand|offhandweapon|shield|quiver)$/i, ["Weapon2"]],
+    [/^(weapon1swap|mainhandswap|weaponswap1)$/i, ["Weapon3"]],
+    [/^(weapon2swap|offhandswap|offhandweaponswap|shieldswap|quiverswap|weaponswap2)$/i, ["Weapon4"]],
     [/^(helm|helmet)$/i, ["Helm1"]],
     [/^(bodyarmour|bodyarmor|chest|armour|armor)$/i, ["BodyArmour1"]],
     [/^gloves$/i, ["Gloves1"]],
@@ -786,8 +863,7 @@ function pobInventorySlotId(slotName: string, lines: string[], used: Set<string>
     [/^amulet$/i, ["Amulet1"]],
     [/^(ring1|leftring)$/i, ["Ring1"]],
     [/^(ring2|rightring)$/i, ["Ring2"]],
-    [/^ring3$/i, ["Ring3"]],
-    [/^ring$/i, ["Ring1", "Ring2", "Ring3"]],
+    [/^ring$/i, ["Ring1", "Ring2"]],
     [/^belt$/i, ["Belt1"]],
     [/^(lifeflask|flask1)$/i, ["LifeFlask1"]],
     [/^(manaflask|flask2)$/i, ["ManaFlask1"]],
@@ -795,7 +871,12 @@ function pobInventorySlotId(slotName: string, lines: string[], used: Set<string>
     [/^charm2$/i, ["Charm2"]],
     [/^charm3$/i, ["Charm3"]],
     [/^charm$/i, ["Charm1", "Charm2", "Charm3"]],
-    [/^(trinket|relic)$/i, ["Trinket1"]]
+    [/^(trinket|relic)$/i, ["Trinket1"]],
+    [/^jewel\s*1$/i, ["Jewel1"]],
+    [/^jewel\s*2$/i, ["Jewel2"]],
+    [/^jewel\s*3$/i, ["Jewel3"]],
+    [/^jewel\s*4$/i, ["Jewel4"]],
+    [/^jewel$/i, ["Jewel1", "Jewel2", "Jewel3", "Jewel4"]]
   ];
   for (const [pattern, candidates] of explicit) {
     if (pattern.test(normalized)) return firstFreeSlot(candidates, used, allowed);
@@ -806,14 +887,15 @@ function pobInventorySlotId(slotName: string, lines: string[], used: Set<string>
     [/\b(mana flask)\b/i, ["ManaFlask1"]],
     [/\bcharm\b/i, ["Charm1", "Charm2", "Charm3"]],
     [/\b(belt|sash)\b/i, ["Belt1"]],
-    [/\bring\b/i, ["Ring1", "Ring2", "Ring3"]],
+    [/\bring\b/i, ["Ring1", "Ring2"]],
     [/\b(amulet|talisman|torc)\b/i, ["Amulet1"]],
     [/\b(helmet|helm|crown|mask)\b/i, ["Helm1"]],
     [/\b(gloves|gauntlets)\b/i, ["Gloves1"]],
     [/\b(boots|greaves|slippers)\b/i, ["Boots1"]],
     [/\b(body armour|body armor|chest|plate|vest|tunic|robe)\b/i, ["BodyArmour1"]],
     [/\b(shield|buckler|focus|quiver)\b/i, ["Weapon2"]],
-    [/\b(bow|wand|staff|sword|axe|mace|dagger|claw|sceptre|spear|crossbow|flail|quarterstaff)\b/i, ["Weapon1"]]
+    [/\b(bow|wand|staff|sword|axe|mace|dagger|claw|sceptre|spear|crossbow|flail|quarterstaff)\b/i, ["Weapon1"]],
+    [/\bjewel\b/i, ["Jewel1", "Jewel2", "Jewel3", "Jewel4"]]
   ];
   for (const [pattern, candidates] of inferred) {
     if (pattern.test(text)) return firstFreeSlot(candidates, used, allowed);
@@ -821,10 +903,27 @@ function pobInventorySlotId(slotName: string, lines: string[], used: Set<string>
   return "";
 }
 
+function pobIsJewel(lines: string[], slot: string): boolean {
+  const normalizedSlot = (slot || "").toLowerCase();
+  if (normalizedSlot === "jewel" || normalizedSlot.includes("jewel")) return true;
+  
+  const jewelBases = [
+    "emerald", "ruby", "sapphire", "diamond",
+    "time-lost emerald", "time-lost ruby", "time-lost sapphire", "time-lost diamond"
+  ];
+  
+  return lines.slice(0, 5).some((line) => {
+    const clean = line.trim().toLowerCase();
+    return jewelBases.includes(clean) || clean.endsWith("jewel");
+  });
+}
+
 export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: string[]): BuildInventoryChoice[] {
   const allowed = new Set(slotIds);
   const used = new Set<string>();
   const bySlot = new Map<string, BuildInventoryChoice>();
+
+  let jewelIndex = 1;
 
   for (const item of data.items) {
     const lines = pobItemLines(item.text);
@@ -832,25 +931,91 @@ export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: stri
     const rarity = pobItemRarity(lines);
     const title = pobItemTitle(lines);
     const baseName = pobItemBaseName(lines, title, rarity);
+    if (!title) continue;
+
+    const itemLevelLine = lines.find((line) => /^Item Level:/i.test(line));
+    const itemLevel = itemLevelLine ? parseInt(itemLevelLine.replace(/^Item Level:\s*/i, ""), 10) : undefined;
+
+    const qualityLine = lines.find((line) => /^Quality:/i.test(line));
+    const quality = qualityLine ? parseInt(qualityLine.replace(/^Quality:\s*\+?/i, ""), 10) : undefined;
+
+    const corrupted = lines.some((line) => /^Corrupted/i.test(line));
+
+    const implicitLine = lines.find((line) => /^Implicits:/i.test(line));
+    const implicitCount = implicitLine ? parseInt(implicitLine.replace(/^Implicits:\s*/i, ""), 10) : undefined;
+
+    const mods = lines.filter((line) => {
+      const clean = line.trim();
+      if (clean === title || clean === baseName) return false;
+      if (clean.includes("<ModRange") || /^LevelReq:/i.test(clean)) return false;
+      return !/^(Rarity:|Slot:|Item Level:|Quality:|Sockets:|Requirements:|Level:|Str:|Dex:|Int:|Implicits:|Explicits:|Crafted:|Corrupted|Mirrored|--------|Unique ID:|Radius:|Item Class:)/i.test(clean);
+    }).map((line) => line.trim());
+    const noteText = mods.join("\n");
+
+    const isJewel = pobIsJewel(lines, item.slot);
+    if (isJewel) {
+      const slotId = item.slot && item.slot.startsWith("PassiveJewel:")
+        ? item.slot
+        : `PassiveJewel:${jewelIndex++}`;
+      const isUnique = rarity === "unique";
+      const jewelBases = [
+        "time-lost emerald", "time-lost ruby", "time-lost sapphire", "time-lost diamond",
+        "emerald", "ruby", "sapphire", "diamond"
+      ];
+      let resolvedBase = "";
+      const textToSearch = (title + " " + (baseName || "")).toLowerCase();
+      for (const base of jewelBases) {
+        if (textToSearch.includes(base)) {
+          resolvedBase = base;
+          break;
+        }
+      }
+      const itemName = isUnique ? title : (resolvedBase ? resolvedBase.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : baseName || title);
+
+      bySlot.set(slotId, {
+        id: choiceId("pob-item"),
+        inventoryId: slotId,
+        itemName,
+        note: noteText,
+        isUnique,
+        levelStart: "",
+        levelEnd: "",
+        baseName,
+        itemLevel,
+        quality,
+        corrupted,
+        implicitCount,
+        rawText: item.text
+      });
+      used.add(slotId);
+      continue;
+    }
+
     const slotId = pobInventorySlotId(item.slot, lines, used, allowed);
-    if (!slotId || used.has(slotId) || !title) continue;
+    if (!slotId || used.has(slotId)) continue;
     const isUnique = rarity === "unique";
     const itemName = isUnique ? title : baseName || title;
-    const rareNameNote = !isUnique && baseName && title && title !== baseName ? title : "";
+    const rareName = !isUnique && baseName && title && title !== baseName ? title : undefined;
     used.add(slotId);
     bySlot.set(slotId, {
       id: choiceId("pob-item"),
       inventoryId: slotId,
       itemName,
-      note: rareNameNote,
+      note: noteText,
       isUnique,
       levelStart: "",
       levelEnd: "",
-      baseName
+      baseName,
+      itemLevel,
+      quality,
+      corrupted,
+      rareName,
+      implicitCount,
+      rawText: item.text
     });
   }
 
-  return slotIds.map((slotId) => bySlot.get(slotId) ?? {
+  const gearChoices = slotIds.map((slotId) => bySlot.get(slotId) ?? {
     id: choiceId("item"),
     inventoryId: slotId,
     itemName: "",
@@ -859,6 +1024,10 @@ export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: stri
     levelStart: "",
     levelEnd: ""
   });
+
+  const jewelChoices = [...bySlot.values()].filter((choice) => choice.inventoryId.startsWith("PassiveJewel:"));
+
+  return [...gearChoices, ...jewelChoices];
 }
 
 export function stripBuildMarkup(value: string): string {
@@ -902,6 +1071,14 @@ export function inventoryChoiceFromBuildSlot(value: unknown): BuildInventoryChoi
     ? [title, note].filter(Boolean).join("\n\n")
     : note;
 
+  const itemLevel = typeof value.item_level === "number" ? value.item_level : undefined;
+  const quality = typeof value.quality === "number" ? value.quality : undefined;
+  const corrupted = typeof value.corrupted === "boolean" ? value.corrupted : undefined;
+  const rareName = typeof value.rare_name === "string" ? value.rare_name.trim() : undefined;
+  const implicitCount = typeof value.implicit_count === "number" ? value.implicit_count : undefined;
+
+  const rawText = typeof value.raw_text === "string" ? value.raw_text : undefined;
+
   return {
     id: `imported-${inventoryId}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
     inventoryId,
@@ -909,7 +1086,13 @@ export function inventoryChoiceFromBuildSlot(value: unknown): BuildInventoryChoi
     note: cleanNote,
     isUnique: Boolean(uniqueName),
     levelStart: levelFields.levelStart,
-    levelEnd: levelFields.levelEnd
+    levelEnd: levelFields.levelEnd,
+    itemLevel,
+    quality,
+    corrupted,
+    rareName,
+    implicitCount,
+    rawText
   };
 }
 
@@ -957,10 +1140,12 @@ export function inventoryChoicesFromBuildPayload(payload: BuildPayload, slotIds:
   const bySlot = new Map<string, BuildInventoryChoice>();
   for (const row of importedSlots) {
     const choice = inventoryChoiceFromBuildSlot(row);
-    if (choice && slotIds.includes(choice.inventoryId) && !bySlot.has(choice.inventoryId)) bySlot.set(choice.inventoryId, choice);
+    if (choice && (slotIds.includes(choice.inventoryId) || choice.inventoryId.startsWith("PassiveJewel:")) && !bySlot.has(choice.inventoryId)) {
+      bySlot.set(choice.inventoryId, choice);
+    }
   }
 
-  return slotIds.map((slotId) => bySlot.get(slotId) ?? {
+  const gearChoices = slotIds.map((slotId) => bySlot.get(slotId) ?? {
     id: `item-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
     inventoryId: slotId,
     itemName: "",
@@ -969,6 +1154,8 @@ export function inventoryChoicesFromBuildPayload(payload: BuildPayload, slotIds:
     levelStart: "",
     levelEnd: ""
   });
+  const jewelChoices = [...bySlot.values()].filter((choice) => choice.inventoryId.startsWith("PassiveJewel:"));
+  return [...gearChoices, ...jewelChoices];
 }
 
 export function buildSupportSkill(choice: BuildSupportSkillChoice): string | Record<string, unknown> | null {
@@ -1049,11 +1236,25 @@ export function buildPlannerPayload(input: BuildExportInput): BuildPayload {
   return build;
 }
 
+const DEFAULT_INVENTORY_SLOTS = [
+  "Weapon1", "Weapon2", "Weapon3", "Weapon4",
+  "Helm1", "BodyArmour1", "Gloves1", "Boots1",
+  "Amulet1", "Ring1", "Ring2", "Belt1",
+  "LifeFlask1", "ManaFlask1",
+  "Charm1", "Charm2", "Charm3", "Trinket1"
+];
+
 export function buildPayloadFromPobImport(data: PobImportData, options: PobBuildPayloadOptions = {}): BuildPayload {
   const build: BuildPayload = {
     name: pobBuildName(data)
   };
   if (data.notes) build.description = data.notes.slice(0, 1000);
+  if (typeof data.build.level === "number" && data.build.level > 0) {
+    build.level = data.build.level;
+  }
+
+  const { className } = pobBuildClassNames(data, options.plannerData);
+  if (className) build.className = className;
 
   const ascendancy = pobAscendancyId(data, options.plannerData);
   if (ascendancy) build.ascendancy = ascendancy;
@@ -1066,10 +1267,24 @@ export function buildPayloadFromPobImport(data: PobImportData, options: PobBuild
     .filter((row): row is string | Record<string, unknown> => Boolean(row));
   if (skills.length) build.skills = skills;
 
-  const inventorySlots = options.inventorySlotIds?.length
-    ? inventoryChoicesFromPobImport(data, options.inventorySlotIds).map(buildInventorySlot).filter((row): row is Record<string, unknown> => Boolean(row))
-    : [];
+  const slotIds = options.inventorySlotIds && options.inventorySlotIds.length ? options.inventorySlotIds : DEFAULT_INVENTORY_SLOTS;
+  const inventorySlots = inventoryChoicesFromPobImport(data, slotIds)
+    .map(buildInventorySlot)
+    .filter((row): row is Record<string, unknown> => Boolean(row));
   if (inventorySlots.length) build.inventory_slots = inventorySlots;
+  if (data.stats && data.stats.length) {
+    build.stats = data.stats;
+  }
+
+  if (data.build.attribute_overrides) {
+    build.attribute_overrides = data.build.attribute_overrides;
+  }
+  if (data.build.config) {
+    build.config = data.build.config;
+  }
+  if (data.build.mainSocketGroup) {
+    build.mainSocketGroup = data.build.mainSocketGroup;
+  }
 
   return normalizeImportedBuildPayload(build);
 }

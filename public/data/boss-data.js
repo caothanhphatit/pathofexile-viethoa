@@ -450,28 +450,20 @@ window.POE2_BOSS_DETAILS = {
     "location": "Burning Monolith (Sealed Passageway in the Atlas)",
     "vi": {
       "overview": "The Arbiter of Ash là một Pinnacle Boss trong Path of Exile 2, ngự tại The Burning Monolith trong Atlas. Đây là trận đánh thuần sát thương Physical và Fire với rất nhiều đòn flame bomb có thể one-shot bạn, nên hiểu cơ chế là yếu tố sống còn. Boss có resistance cả bốn loại (Physical, Fire, Cold, Lightning) và không có điểm yếu nào, đồng thời gây các debuff Ignite, Chill và Burning Ground. Trận đấu chia làm hai phase rõ rệt, phase 2 nâng độ phức tạp của cơ chế flame bomb lên đáng kể.",
-      "mechanics": [],
+      "mechanics": [
+        "Flame Bombs: Trong suốt trận, boss rải các quả flame bomb khắp đấu trường. Vùng an toàn DUY NHẤT là khoảng đất nhỏ ngay BÊN DƯỚI mỗi quả bomb. Hãy đứng đúng vào vùng này trước khi bom phát nổ, nếu không gần như chắc chắn bị one-shot.",
+        "Laser Beam: Boss bắn một tia laser lớn về phía trước kéo dài vài giây. Lăn (dodge) sang bên để né rồi chờ tia tan hết.",
+        "Elemental Orbs (Phase 2): Trên mặt đất có vài quả cầu nguyên tố mà cả bạn lẫn boss đều có thể kích hoạt. Khi kích hoạt, mặt đất sẽ nhiễm thuộc tính tương ứng. Nếu boss giẫm phải một orb, bạn có thể vô hiệu hóa hiệu ứng bằng cách kích hoạt một orb khác đang có sẵn.",
+        "Burning Ground & Debuff: Boss thường xuyên tạo Burning Ground và áp Ignite/Chill, nên hãy chuẩn bị Fire Resistance cao và khả năng giải/chịu Ignite."
+      ],
       "phases": [
         {
-          "name": "Phase 1 — Tầm xa (phép lửa)",
-          "points": [
-            "Laser Beam: tia lớn bắn thẳng phía trước — lăn sang bên để né.",
-            "Fiery Winds: fire orb nổ ở NGOÀI vòng tròn — đứng TRONG vòng cho an toàn.",
-            "Firebolt: một viên đạn lửa bắn vào bạn — né sang bên.",
-            "Fire Stars: 2 đạn lớn xuyên sàn kèm nhiều đạn nhỏ — lăn tránh đạn lớn, né đạn nhỏ.",
-            "Blazing Waves: sóng lửa chỉ chừa khe hẹp ở giữa — đứng vào khe."
-          ]
+          "name": "Phase 1",
+          "vi": "Boss đánh tầm xa bằng phép lửa. Các đòn chính: Laser Beam Line Attack (tia laser lớn phía trước, lăn sang bên để né); Fiery Winds AoE Combo (boss lao quanh đấu trường và triệu hồi các fire orb phát nổ gây sát thương BÊN NGOÀI vòng tròn, hãy đứng TRONG vòng tròn của orb để an toàn); Firebolt Projectile (vung wand bắn một viên đạn lửa vào bạn); Fire Stars Projectile Combo (bắn 2 viên đạn lửa lớn xuyên đấu trường, đồng thời nhả nhiều đạn nhỏ, lăn tránh viên lớn rồi né sang bên các viên nhỏ); Blazing Waves AoE Combo (tạo các đợt sóng lửa chỉ chừa một khe hẹp ở giữa để bạn đứng)."
         },
         {
-          "name": "Phase 2 — Cận chiến (kiếm + flame bomb)",
-          "points": [
-            "Flame Bombs: vùng an toàn DUY NHẤT là ngay DƯỚI mỗi bomb — đứng đúng vào trước khi nổ, sai là gần như one-shot.",
-            "Sword Slashes: chém nhiều nhát khi di chuyển — cứ chạy liên tục.",
-            "Fire Blast: cả sàn bốc cháy trừ vùng quanh orb đáp. Variant 1 có Laser → đứng NGOÀI tới khi tia tắt rồi vào; Variant 2 boss bổ thẳng vào giữa ngay sau → lăn sang bên.",
-            "Fire Pulse Orb: orb lớn bắn firebolt từng đợt khắp sàn — lăn né giữa mỗi đợt.",
-            "Sword Smash: boss bay lên, triệu cột lửa rồi bổ kiếm AoE lớn — lăn ra xa ngay khi thấy cột lửa.",
-            "Elemental Orbs: orb trên sàn nhiễm thuộc tính; nếu boss giẫm phải, kích một orb khác để vô hiệu."
-          ]
+          "name": "Phase 2",
+          "vi": "Boss chuyển sang đánh cận chiến bằng kiếm và flame bomb phức tạp hơn. Đòn chính: Sword Slashes Melee Combo (chém nhiều nhát khi di chuyển, cứ tiếp tục chạy để không bị dính). Fire Blast AoE (sạc đầy đấu trường khi một orb từ từ hạ xuống, khi orb chạm đất cả khu vực bốc cháy trừ vùng quanh chính orb). Fire Blast có hai biến thể: Variant 1 (boss bắn Laser Beam vào vùng an toàn, hãy đứng NGOÀI vùng an toàn cho tới khi tia kết thúc rồi mới vào), Variant 2 (boss chém thẳng vào giữa vùng an toàn ngay sau khi Fire Blast kích hoạt, phải lập tức lăn sang bên). Fire Pulse Orb Projectile (triệu một fire orb lớn liên tục bắn các đợt firebolt nhỏ khắp đấu trường, lăn giữa từng đợt). Sword Smash Melee Combo (boss bay lên, triệu các cột lửa rồi bổ kiếm xuống gây AoE lớn, lăn ra ngay khi thấy cột lửa và chạy xa khỏi boss)."
         }
       ],
       "strategy": "Ưu tiên cao nhất là xử lý đúng cơ chế flame bomb vì nó có thể giết tức thì. Mỗi khi boss rải bom, di chuyển vào đúng khoảng đất nhỏ ngay dưới quả bomb trước khi nó nổ. Sang phase 2, cơ chế bomb đổi: quả bomb ĐẦU TIÊN có một tia laser quét qua vùng an toàn ngay trước khi nổ, hãy CHỜ tia laser kết thúc rồi mới bước vào dưới bom. Quả bomb THỨ HAI boss sẽ dive bomb nhằm thẳng vào TÂM vùng an toàn, hãy chờ đòn dive bomb xong mới bước vào, rồi lập tức lăn ra để né đòn vertical slash đi kèm. Vì boss kháng cả bốn nguyên tố và không có điểm yếu, hãy tập trung tối đa hóa DPS thuần và sống sót qua cơ chế thay vì trông vào việc khai thác kháng. Giữ Fire Resistance cao để chịu Ignite và Burning Ground.",
@@ -515,7 +507,13 @@ window.POE2_BOSS_DETAILS = {
         "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/drop-6.png"
       }
     ],
-    "conditions": [],
+    "conditions": [
+      "Dùng ba loại Crisis Fragment khác nhau tại Sealed Passageway trong Burning Monolith để mở lối vào trận đánh.",
+      "Ancient Crisis Fragment: lấy từ boss của Iron Citadel.",
+      "Weathered Crisis Fragment: lấy từ boss của Copper Citadel.",
+      "Faded Crisis Fragment: lấy từ boss của Stone Citadel.",
+      "Crisis Fragment rơi khi đánh bại boss tại các Citadel xuất hiện ngẫu nhiên trong Atlas. Mỗi boss đảm bảo rơi 1 fragment; tăng 'Waystone Drop Chance' (từ Waystone hoặc Atlas Passive Tree) làm tăng cơ hội rơi thêm fragment, nhưng Waystone tỉ lệ cao thường kèm map modifier khó hơn."
+    ],
     "curated": true,
     "access": {
       "method": "Dùng 3 Crisis Fragments khác nhau tại Sealed Passageway trong Burning Monolith để mở cửa vào trận pinnacle.",
@@ -730,34 +728,68 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 1",
     "location": "Freythorn (Act 1)",
     "vi": {
-      "overview": "The King in the Mists là boss optional ở Act 1, ẩn trong khu Freythorn. Bạn phải hoàn thành tất cả các Ritual rải rác quanh Freythorn để triệu hồi nó ra. Đây là boss có 2 pha rõ rệt và sau này còn có bản pinnacle (endgame) triệu hồi bằng item An Audience with the King tại Realmgate.",
-      "mechanics": [
-        "Mystic Fetishes & Affliction Totems: ở pha 1 boss gọi ra các totem, vừa tạo hazard kiểu Ritual vừa rải damage over time — phá totem càng sớm càng tốt để cắt hiệu ứng.",
-        "Ground degen: sàn đấu đầy các vùng degen, kết hợp với debuff Ritual khiến trận đánh khó hơn nhiều.",
-        "Ritual of Meditation: bị dính debuff này thì PHẢI đứng yên, di chuyển sẽ bị giam (imprison).",
-        "Ritual of Dance: ngược lại, dính debuff này thì PHẢI di chuyển liên tục, đứng yên sẽ bị giam.",
-        "Maze of rats (pha 2): vào pha 2 bạn bị dịch chuyển sang một mê cung dần đầy chuột, đứng lại là chết — bám theo các wisp phát sáng để tìm portal về arena chính."
-      ],
+      "overview": "The King in the Mists là một boss tùy chọn (Optional Boss) cực kỳ thử thách xuất hiện tại bản đồ Freythorn ở Act 1, và cũng có một phiên bản Atlas nâng cấp (Pinnacle Boss) mở khóa thông qua cơ chế Ritual. Trận chiến đòi hỏi kỹ năng di chuyển nhịp nhàng để đối phó với cơ chế nguyền rủa độc đáo tương tự trò chơi đèn xanh - đèn đỏ, cùng với đó là việc quản lý và phá hủy các vật tế (Mystic Fetish) cũng như vượt qua Mê cung sâu thẳm.",
+      "mechanics": [],
       "phases": [
         {
-          "name": "Phase 1",
-          "vi": "King di chuyển khôn lanh, hay teleport lùi ra sau và đánh AoE cả tầm gần lẫn tầm xa. Nó gọi Mystic Fetishes và Affliction Totems — ưu tiên phá hết totem để chặn hazard và DoT. Đồng thời xử lý đúng debuff Ritual of Meditation (đứng yên) và Ritual of Dance (di chuyển)."
+          "name": "Phase 1 - Khởi đầu trận đấu",
+          "points": [
+            "Ritual of Dance (Keep running!): Boss niệm lời nguyền màu tím lên bạn. Khi dính phải lời nguyền này, bạn phải liên tục di chuyển. Nếu dừng lại, bạn sẽ bị giam cầm (immobilized) và trở thành bia đỡ đạn cho các đòn tấn công mạnh hoặc sát thương mặt đất.",
+            "Ritual of Meditation (Meditation!): Boss niệm lời nguyền màu đỏ lên bạn. Trái ngược với Dance, bạn phải dừng lại lập tức. Nếu tiếp tục di chuyển một khoảng cách đáng kể, bạn sẽ bị giam cầm. Hãy đứng yên tại chỗ và chỉ dùng các cử động cực kỳ nhỏ để né đòn.",
+            "Unblockable Slam (Fàs!): Boss phát sáng đỏ rực rồi đập mạnh trượng xuống đất, gây sát thương diện rộng cực lớn xung quanh hắn. Hãy nhanh chóng lùi xa để giữ khoảng cách an toàn.",
+            "Mystic Fetish (Nothingness approaches!): Boss dịch chuyển lên một trong các bục đá cao và triệu hồi Mystic Fetish kích hoạt các cạm bẫy Ritual ngẫu nhiên trong sân đấu. Hãy leo lên bục đá để phá hủy chúng nhằm chấm dứt cạm bẫy.",
+            "Affliction Totem (Dark effigy!): Triệu hồi một totem xung quanh đấu trường, phát ra các xung mạch gây sát thương vật lý theo thời gian cộng dồn (stacking Physical Damage Over Time). Cần phá hủy totem này càng sớm càng tốt.",
+            "Thorngrip (Lonnsaigh!): Boss triệu hồi gai nhọn trồi lên theo hình nón phía trước mặt. Chỉ cần di chuyển ngang để né tránh đòn đánh này."
+          ]
         },
         {
-          "name": "Phase 2",
-          "vi": "King không còn teleport nữa nhưng tầm và phạm vi AoE của đòn đánh tăng lên. Khi chuyển pha, bạn bị đẩy vào mê cung dần ngập chuột — phải lần theo các wisp sáng để tìm portal quay về arena chính, nếu lề mề sẽ bị bầy chuột giết."
+          "name": "Phase 2 - Mê cung và Cuộc chiến cao trào",
+          "points": [
+            "Maze (Atá... oré Wisps maah!): Khi máu boss giảm xuống khoảng 40%, bạn sẽ bị kéo vào một mê cung tối tăm, trong khi một đàn côn trùng khổng lồ gây sát thương chí mạng sẽ từ từ bò tới nuốt chửng bạn. Hãy nhanh chóng di chuyển theo các đốm sáng dẫn đường (Wisps) để thoát ra ngoài.",
+            "Unblockable Chaos Pustules (Gate to nothingness!): Boss vận sức và bắn ra một quả cầu năng lượng màu tím khổng lồ, nổ tung khi va chạm mặt đất và để lại nhiều mụn mủ màu tím phát nổ nếu bước vào. Hãy di chuyển ra rìa sân để dụ boss bắn quả cầu này tránh làm cản trở khu vực chiến đấu trung tâm.",
+            "Soulrend Swarm: Nhiều đàn côn trùng màu tím nguy hiểm sẽ bao phủ rìa sân đấu suốt Phase 2, gây sát thương vật lý theo thời gian (Physical Damage Over Time) cực nặng. Hãy luôn chú ý vị trí đứng để chiến đấu trong vùng an toàn."
+          ]
         }
       ],
-      "strategy": "Pha 1: tập trung phá totem ngay khi xuất hiện và phản ứng đúng với debuff Ritual — Meditation thì đứng im, Dance thì cứ chạy. Liên tục né vùng degen dưới sàn. Vào pha 2, đừng cố tank giữa mê cung chuột; bám theo wisp sáng tìm portal về arena rồi mới tiếp tục dồn damage trong khi né các AoE đã rộng hơn.",
-      "rewards": [
-        "Gembloom Skull — ăn vào nhận +30 Maximum Spirit"
-      ],
+      "strategy": "Chìa khóa chiến thắng The King in the Mists là sự bình tĩnh khi đối mặt với cơ chế đổi lời nguyền liên tục: khi nghe boss hét 'Rith!' hoặc 'Keep running!', hãy chạy không ngừng; khi nghe 'Slaogarn!' hoặc 'Traveler's bane!', hãy lập tức đứng yên. Trong Phase 1, hãy nhanh chóng dọn dẹp các Mystic Fetish trên bục đá, lưu ý không đứng trên bục quá lâu vì bạn sẽ bị dính hiệu ứng Portent Vapors tăng sát thương nhận vào. Khi bị dịch chuyển vào Mê cung ở mốc 40% máu, tuyệt đối bám sát các đốm sáng Wisps để thoát ra. Vào Phase 2, giữ vị trí ở khu vực trung tâm để tránh đi vào vùng côn trùng Soulrend Swarm ở rìa sân và chủ động né tránh các mụn mủ nổ.",
       "tips": [
-        "Nhớ luật debuff: Meditation = đứng yên, Dance = di chuyển.",
-        "Phá totem là ưu tiên số 1 ở pha 1.",
-        "Pha 2 đừng tham đánh trong mê cung, chạy theo wisp tìm portal trước."
+        "Luôn lắng nghe câu thoại của boss hoặc nhìn màu sắc lời nguyền (tím = chạy, đỏ = đứng yên) để phản xạ chính xác.",
+        "Phá hủy các Mystic Fetish thật nhanh và rời khỏi bục đá ngay lập tức để tránh cộng dồn debuff tăng sát thương Portent Vapors.",
+        "Trong Mê cung (Maze), đi chệch hướng Wisps dẫn đường sẽ khiến bạn bị đàn côn trùng đuổi kịp và gây sát thương chí mạng cực nhanh.",
+        "Ở Phase 2, giữ cho trung tâm sàn đấu luôn thông thoáng bằng cách dụ boss bắn Chaos Pustules ra các vùng rìa."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "The Burden of Shadows",
+        "image": "https://img.poeviethoa.net/boss/the-king-in-the-mists/drop-1.png"
+      },
+      {
+        "name": "Beetlebite",
+        "image": "https://img.poeviethoa.net/boss/the-king-in-the-mists/drop-2.png"
+      },
+      {
+        "name": "Pragmatism",
+        "image": "https://img.poeviethoa.net/boss/the-king-in-the-mists/drop-3.png"
+      },
+      {
+        "name": "Ingenuity",
+        "image": "https://img.poeviethoa.net/boss/the-king-in-the-mists/drop-4.png"
+      },
+      {
+        "name": "From Nothing",
+        "image": "https://img.poeviethoa.net/boss/the-king-in-the-mists/drop-5.png"
+      },
+      {
+        "name": "Head of the King",
+        "image": "https://img.poeviethoa.net/boss/the-king-in-the-mists/drop-6.png"
+      }
+    ],
+    "conditions": [
+      "Để đối mặt trong phần chơi chiến dịch Act 1: Hoàn thành tất cả các sự kiện Ritual tại bản đồ Freythorn.",
+      "Để đối mặt phiên bản Atlas (Pinnacle): Tích lũy Tribute trong các bản đồ có Ritual để mua vật phẩm 'An Audience with the King'."
+    ],
+    "curated": true
   },
   "candlemass-the-living-rite": {
     "name": "Candlemass, the Living Rite",
@@ -802,24 +834,33 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 1",
     "location": "Clearfell (Act 1)",
     "vi": {
-      "overview": "Beira of the Rotten Pack là boss optional ở Act 1, gặp tại khu Clearfell. Tìm Frostblood Ritual gần trung tâm map rồi lần theo tiếng tụng chú của ả là sẽ thấy.",
+      "overview": "Beira of the Rotten Pack là một boss tùy chọn thuộc sự kiện Frostblood Ritual ở Act 1 trong Path of Exile 2. Người chơi có thể tìm thấy cô ta tại khu vực Clearfell bằng cách tìm Frostblood Ritual gần trung tâm bản đồ và lần theo tiếng tụng niệm để bắt đầu trận chiến.",
       "mechanics": [
-        "Summon wolves: ả gọi ra bầy sói có thể vây quanh và stun làm bạn gián đoạn đòn đánh — rất dễ bị ngợp nếu để chúng dồn lại.",
-        "Chill: cẩn thận đừng để bị chilled (làm chậm).",
-        "Ice spikes: vòng tròn xanh dưới đất báo hiệu cọc băng sắp trồi lên ngay chỗ đó — thấy vòng tròn là dodge roll hoặc né ra khỏi vùng ngay."
+        "“Be Still!” (AoE Spikes): Triệu hồi các vòng tròn ma pháp lớn trên mặt đất, phát nổ sau một khoảng trễ ngắn và gây Sát thương Băng (Cold Damage) lớn. Di chuyển liên tục từ bên này sang bên kia để né các vòng tròn màu trắng xuất hiện.",
+        "“Feed!” / “My Pets Hunger” (Summon Wolves): Triệu hồi linh hồn người chết và hồi sinh đàn sói thây ma sau một đợt bùng nổ AoE bất ngờ. Chiêu thức này không gây sát thương trực tiếp và là thời cơ tốt để bạn dồn sát thương lên boss.",
+        "“Swell!” (Creeping Frost Nova): Tích tụ năng lượng trong một giây để giải phóng một vòng sóng băng lan tỏa chậm ra xung quanh, gây nhiều lần Sát thương Băng. Hãy chủ động di chuyển ra xa khi thấy boss đang gồng kỹ năng này.",
+        "“Rotten!” (Ice Spikes): Các vòng tròn cổ tự xuất hiện dưới đất và gai băng sẽ đâm lên gây Sát thương Băng. Quan sát và đứng vào những khu vực an toàn ít vòng tròn cảnh báo nhất.",
+        "Default Attacks: Các đòn đánh thường tầm xa và cận chiến cơ bản bắn ra các mảnh băng. Lăn né (dodge roll) về phía trước hoặc di chuyển sang bên để tránh loạt icicle liên tiếp."
       ],
       "phases": [],
-      "strategy": "Ưu tiên dọn sạch bầy sói trước, vì để chúng vây sẽ liên tục stun và làm bạn không kịp đánh boss. Luôn cơ động để tránh bị chilled và né các cọc băng. Mỗi khi thấy vòng tròn xanh dưới chân, lập tức dodge ra khỏi đó.",
-      "rewards": [
-        "Head of the Winter Wolf — có tỉ lệ rớt khi hạ Beira",
-        "Beira's Anguish (Dousing Charm) — vật phẩm liên quan"
-      ],
+      "strategy": "Trận chiến với Beira of the Rotten Pack đòi hỏi bạn phải xử lý tốt đàn sói triệu hồi và liên tục di chuyển để né các chiêu thức diện rộng (AoE) hệ Băng. Hãy luôn ưu tiên tiêu diệt đàn sói thây ma trước để tránh bị vây quanh và bị gây choáng (stun) ngắt chiêu. Khi boss thi triển các phép đóng băng diện rộng như \"Be Still!\" hay \"Swell!\", hãy nhanh chóng lăn né hoặc di chuyển ra ngoài vùng cảnh báo trên mặt đất. Sử dụng sát thương hệ Hỏa (Fire) là lợi thế lớn do boss có điểm yếu trước nguyên tố này.",
       "tips": [
-        "Dọn bầy sói trước, đánh boss sau.",
-        "Vòng tròn xanh = cọc băng sắp trồi, né ngay.",
-        "Tránh bị chilled để giữ khả năng cơ động."
+        "Luôn luôn tập trung tiêu diệt đàn sói thây ma trước tiên để tránh bị chúng vây và gây choáng (stun).",
+        "Quan sát mặt đất để lăn né hoặc di chuyển kịp thời ra khỏi các vòng tròn cảnh báo của gai băng.",
+        "Tận dụng khoảnh khắc boss đứng yên triệu hồi đàn sói để gây sát thương tối đa vì đòn đó không trực tiếp gây hại cho bạn.",
+        "Tận dụng điểm yếu hệ Hỏa (Fire weakness) của boss để kết liễu nhanh hơn, đồng thời cẩn thận với trạng thái Lạnh buốt (Chill) và Đóng băng (Freeze)."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Head of the Winter Wolf",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Kích hoạt Frostblood Ritual ở gần khu vực trung tâm bản đồ Clearfell (Act 1)"
+    ],
+    "curated": true
   },
   "the-rotten-druid": {
     "name": "The Rotten Druid",
@@ -827,23 +868,39 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 1",
     "location": "The Grim Tangle (Act 1)",
     "vi": {
-      "overview": "The Rotten Druid là boss optional ở Act 1, gặp bên trong The Grim Tangle, cụ thể ở khu Den of the Druid. Boss này gần như không di chuyển nhưng có thể mọc lên ở bất cứ đâu trong arena.",
+      "overview": "The Rotten Druid là một Optional Boss trong Act 1, ngự trị bên trong Den of the Druid thuộc khu vực The Grim Tangle (thường nằm gần lối ra dẫn sang Cemetery of the Eternals). Đây là một boss hệ tự nhiên bị tha hóa, chiến đấu bằng cách sử dụng các đòn phép đất đá và rễ cây độc hại. Trận chiến diễn ra trong một đấu trường có các đám nấm (Fungus) ở trung tâm tạo ra Spore Clouds (Mây bào tử) gây sát thương Chaos và làm chậm, đồng thời các cây nấm xung quanh sẽ phát nổ khi bạn chạm phải. Boss có sát thương chủ đạo là Physical và Chaos, không có điểm yếu hay kháng tính đặc biệt nổi trội nào được ghi nhận. Đánh bại The Rotten Druid lần đầu sẽ thưởng một Uncut Support Gem.",
       "mechanics": [
-        "Spike roots: nó mọc các cọc/rễ từ dưới đất lên rồi quật vào bạn ở khắp arena.",
-        "Spore Clouds (khu trung tâm): vùng giữa arena có Spore Cloud gây Chaos Damage và làm Slow; bản thân Spore còn phát nổ khi bạn lại gần.",
-        "Teleport: nó cast chiêu dịch chuyển kéo bạn vào giữa đám nấm và spore cloud, khiến bạn dễ ăn damage — thấy nó chuẩn bị teleport thì giãn khoảng cách ra."
+        "Force Teleport (Dịch chuyển bắt buộc): The Rotten Druid định kỳ dịch chuyển bạn về trung tâm đấu trường. Khu vực trung tâm này chứa đầy nấm độc tự nổ sau một khoảng trễ ngắn và đám mây bào tử (Spore Clouds) gây sát thương Chaos liên tục kèm hiệu ứng làm chậm.",
+        "Homing Projectiles (Đạn đuổi): Boss giương vũ khí lên và phóng ra một loạt các tia đạn tự động bám đuổi theo hướng di chuyển của bạn.",
+        "Projectile Bursts (Bắn đạn chùm): Boss bắn các luồng đạn theo loạt ba quả về phía bạn. Đòn đánh này hiển thị vòng tròn đỏ chỉ báo vùng ảnh hưởng trước khi đáp xuống đất.",
+        "Heavy Boulder (Ném đá tảng): The Rotten Druid bốc một khối đất đá lớn từ trung tâm đấu trường và ném thẳng về phía bạn sau một khoảng trễ ngắn, gây sát thương vật lý diện rộng (AoE Physical) khi va chạm.",
+        "Teleport (Dịch chuyển): Boss tự bao bọc bản thân trong rễ cây và biến mất, sau đó trồi lên ở một vị trí khác trong đấu trường.",
+        "Root Whips (Roi rễ cây): Nhiều rễ cây lớn mọc lên từ mặt đất và quật mạnh về phía bạn.",
+        "Default Melee Attack (Đòn cận chiến cơ bản): Chuỗi đòn đánh cận chiến bằng vũ khí gây sát thương ở vùng trước mặt boss."
       ],
       "phases": [],
-      "strategy": "Tuyệt đối tránh đứng giữa arena nơi có Spore — vừa dính Chaos Damage và Slow, vừa có thể bị nổ khi tới gần. Né các rễ trồi lên từ mặt đất. Khi druid chuẩn bị teleport bạn vào giữa, hãy giữ khoảng cách và chuẩn bị thoát ra khỏi vùng spore ngay sau khi bị kéo vào.",
-      "rewards": [
-        "Loot ngẫu nhiên đầu game (đầu Act 1)"
-      ],
+      "strategy": "Chiến thuật cốt lõi khi đối đầu với The Rotten Druid là tránh xa khu vực trung tâm đấu trường, nơi có nhiều nấm độc tự phát nổ và các đám mây bào tử (Spore Cloud) làm chậm và rút máu Chaos của bạn. Khi boss thi triển đòn dịch chuyển bắt buộc (Force Teleport) kéo bạn về trung tâm, hãy lập tức di chuyển hoặc lăn (dodge roll) liên tục theo một hướng ra ngoài rìa để tránh bị nấm nổ trúng. Trong suốt trận đấu, đặc biệt là khi boss triệu hồi rễ cây quật đất (Root Whips), hãy luôn giữ trạng thái di chuyển và tạm ngưng tấn công để tập trung né đòn, tránh bị các rễ cây bào mòn lượng máu lớn.",
       "tips": [
-        "Đừng bao giờ đứng giữa arena (vùng Spore).",
-        "Bị teleport vào giữa thì lập tức dodge ra khỏi spore cloud.",
-        "Để mắt né các rễ trồi lên bất chợt."
+        "Tránh đứng ở trung tâm đấu trường để không bị dính sát thương Chaos và hiệu ứng làm chậm từ đám mây bào tử.",
+        "Khi bị dịch chuyển về giữa (Force Teleport), hãy lăn hoặc di chuyển ngay theo một hướng để thoát khỏi tầm nổ của nấm.",
+        "Trong đòn Root Whips, ưu tiên né tránh và di chuyển liên tục, hạn chế đứng yên tấn công boss.",
+        "Dodge roll qua loạt đạn đuổi (Homing Projectiles) cho đến khi đòn đánh kết thúc.",
+        "Tận dụng vòng tròn chỉ thị màu đỏ của đòn Projectile Bursts để di chuyển ra vị trí an toàn trước khi đạn đáp xuống.",
+        "Canh thời gian né (dodge roll) ngay khi boss thả đá tảng (Heavy Boulder) để tránh sát thương AoE Physical lớn.",
+        "Khi boss dùng Default Melee Attack, di chuyển ra phía sau hoặc bên hông để né và phản công."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Uncut Support Gem",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Tìm đến Den of the Druid nằm bên trong khu vực The Grim Tangle (Act 1), thường nằm gần lối ra dẫn sang Cemetery of the Eternals.",
+      "Đánh bại The Rotten Druid để nhận phần thưởng."
+    ],
+    "curated": true
   },
   "balbala-the-traitor": {
     "name": "Balbala, The Traitor",
@@ -851,23 +908,42 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 2",
     "location": "Traitor's Passage (Act 2)",
     "vi": {
-      "overview": "Balbala, The Traitor là optional boss của Act 2, gặp ở Prison of the Disgraced trong Traitor's Passage. Đường tới đây nằm sau checkpoint đầu tiên: thấy tượng Decree of Imprisonment rồi đi theo lối có mấy tờ sealing paper dán dọc tường là tới hang của Balbala. Đây là trận đáng làm vì có cơ hội rớt Balbala's Barya để vào Trial of the Sekhemas.",
+      "overview": "Balbala, the Traitor là một boss phụ (optional) nhưng rất quan trọng ở Act 2 để người chơi mở khóa lớp điểm Thăng Hoa (Ascendancy) càng sớm càng tốt. Bạn sẽ chạm trán Balbala tại Prison of the Disgraced (Nhà Tù Kẻ Bị Sỉ Nhục), nằm phía sau điểm dịch chuyển (checkpoint) đầu tiên ở khu vực Traitor's Passage thuộc Act 2. Để tìm thấy hang ổ của cô ta, sau khi tìm thấy bức tượng Decree of Imprisonment, hãy đi theo con đường có dán các lá bùa niêm phong (sealing papers) dọc trên tường dẫn đến sào huyệt của Balbala.",
       "mechanics": [
-        "Invisibility (tàng hình): Balbala biến mất rồi poison gas bắt đầu lan từ giữa arena ra. Bạn phải chạy quanh sàn để dò tìm cô ta, càng tới gần thì cô ta càng lộ dần. Đủ gần thì cô ta tung Slam Attack và pha này kết thúc.",
-        "Coin Runes (rune đồng xu): Balbala ném xu tạo ra mấy rune màu vàng dưới đất. Sau 10 giây rune sẽ triệu hồi thêm quái, ném nhiều thì ngập quái rất nhanh. Đi lên rune để phá xu trước khi nó gọi quái, nhưng coi chừng: khi bạn giẫm rune, Balbala sẽ teleport tới chỗ bạn và tung AoE slam, để lại Burning Ground.",
-        "Burning Ground: vùng cháy còn lại sau cú teleport slam, đứng vào sẽ ăn fire damage liên tục."
+        "Tìm Balbala khi ẩn thân: Khi Balbala biến mất và khí độc Poison Gas lan tỏa từ tâm đấu trường, hãy chạy quanh rìa để tìm kiếm. Khi bạn đến gần, cô ta sẽ dần hiện hình và thực hiện cú đập đất Slam Attack để kết thúc giai đoạn này.",
+        "Vòng tròn đồng xu (Coin Runes): Balbala ném các đồng xu tạo ra các vòng tròn màu vàng trên mặt đất, sẽ triệu hồi thêm quái phụ (Spirit of Balbala) sau 10 giây. Hãy giẫm lên để phá hủy chúng, nhưng hãy chuẩn bị né tránh (roll away) ngay lập tức vì cô ta sẽ dịch chuyển tới vị trí của bạn và tung đòn đập đất diện rộng Coin Slam để lại Burning Ground.",
+        "Tận dụng quái phụ sạc Flask: Bạn có thể chủ động để các vòng tròn đồng xu triệu hồi quái để sạc lại bình Flask/Charm hoặc kích hoạt các hiệu ứng On-Kill.",
+        "Nhờ cậy Đệ và Bẫy: Sử dụng Minions hoặc Traps để thu hút sự chú ý của boss và hỗ trợ dọn dẹp các đồng xu gọi quái.",
+        "Whirling Blades: Boss lật người rồi lướt về phía trước và xoay tròn vũ khí. Hãy đi sang hai bên ngay khi Balbala thực hiện động tác lật người để né chiêu.",
+        "Coin Toss: Ném đồng xu tạo ra các vòng tròn Coin Runes màu vàng trên đất.",
+        "Coin Slam Attack: Cú đập đất diện rộng (AoE) khi người chơi giẫm lên Coin Rune, để lại Burning Ground (Mặt Đất Rực Cháy).",
+        "Poison Gas: Boss dịch chuyển tàng hình và lan tỏa khí độc từ tâm đấu trường.",
+        "Revealed Slam Attack: Cú đập đất diện rộng ngay khi bị người chơi phát hiện trong lúc tàng hình.",
+        "Spectral Blades: Dịch chuyển và tụ nhiều lưỡi dao rồi phóng vào vị trí của bạn. Hãy liên tục di chuyển ngang để né tránh.",
+        "Poison Daggers: Phóng các dao độc gây sát thương Chaos và Poison. Chiêu này bám đuổi tốt, khuyên dùng lướt ngang khi ở gần boss.",
+        "Blade Barrage: Ném loạt dao găm xuống đất rồi nảy ngược lên, gây sát thương 2 lần. Hãy di chuyển theo một hướng nhất định để né.",
+        "Blade Nova: Phóng một vòng dao găm xung quanh rồi quay ngược lại. Chỉ cần đứng xa boss để dễ dàng luồn lách qua các kẽ hở giữa các dao."
       ],
       "phases": [],
-      "strategy": "Trong pha poison gas, đừng đứng yên giữa arena mà chạy vòng quanh dò vị trí Balbala, lại gần ép cô ta lộ ra rồi đập. Với coin rune: chủ động giẫm rune để diệt xu, nhưng giẫm xong roll né ngay vì Balbala sẽ teleport tới slam và để lại Burning Ground. Build cơ động hoặc nhiều mobility skill sẽ dễ chịu hơn nhiều ở trận này.",
-      "rewards": [
-        "Balbala's Barya (drop có xác suất, dùng để vào Trial of the Sekhemas)"
-      ],
+      "strategy": "Trong cuộc đối đầu với Balbala, thế trận xoay quanh việc quản lý các vòng tròn đồng xu (Coin Runes). Người chơi cần liên tục di chuyển, chủ động giẫm lên các vòng tròn này để ngăn quái phụ xuất hiện và lướt đi ngay lập tức để tránh cú đập đất dịch chuyển (teleport slam) của boss. Khi Balbala ẩn thân và thả độc Poison Gas, hãy đi nhanh quanh rìa để phát hiện và ép boss lộ diện. Đừng quên tận dụng điểm yếu của boss trước sát thương Băng (Cold Damage) để làm chậm tốc độ tấn công và di chuyển của cô ta.",
       "tips": [
-        "Đừng tham đập khi pha tàng hình mới bắt đầu, ưu tiên dò vị trí cô ta trước rồi mới dồn sát thương.",
-        "Giẫm rune rồi roll né liền là quy tắc sống còn, đừng đứng lại ăn teleport slam.",
-        "Giữ khoảng cách với Burning Ground, đừng để mình bị dồn vào vùng cháy."
+        "Balbala rất sợ sát thương Băng (Cold Damage). Tận dụng các kỹ năng như Frostbolt hay Cold Snap sẽ giúp trận đấu dễ thở hơn nhiều.",
+        "Luôn di chuyển theo hướng nằm ngang (sideways) hoặc vòng tròn để tránh các đòn phi dao bám đuổi (Poison Daggers và Spectral Blades).",
+        "Sử dụng các kỹ năng cơ động như Blink, Leap Slam hoặc Shield Charge để nhanh chóng thoát khỏi vùng Burning Ground hoặc Caustic Ground.",
+        "Nếu Flask hết nước, hãy chừa lại một vài vòng tròn Coin Runes để chúng gọi quái phụ ra và tiêu diệt chúng để sạc lại bình Flask."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Balbala's Barya",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Tìm thấy tại Prison of the Disgraced (Nhà Tù Kẻ Bị Sỉ Nhục), đi qua checkpoint đầu tiên ở khu vực Traitor's Passage (Lối Đi Của Kẻ Phản Bội) trong Act 2.",
+      "Lần theo con đường có dán các lá bùa niêm phong (sealing papers) trên tường sau khi nhìn thấy bức tượng Decree of Imprisonment."
+    ],
+    "curated": true
   },
   "kabala-constrictor-queen": {
     "name": "Kabala, Constrictor Queen",
@@ -875,24 +951,34 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 2",
     "location": "Keth (Act 2)",
     "vi": {
-      "overview": "Kabala, Constrictor Queen là optional boss của Act 2, gặp ở Venom Pit trong vùng Keth. Đây là một con rắn khổng lồ với mấy đòn AoE diện rộng và đám quái Gilded Cobra đi kèm. Kabala yếu với Cold damage nên build lạnh sẽ ăn trận này khá ngọt.",
+      "overview": "Kabala, Constrictor Queen là một boss phụ (Optional Boss) xuất hiện tại Venom Pit thuộc khu vực Keth trong Act 2 của Path of Exile 2. Mặc dù là boss tùy chọn, việc hạ gục Kabala sẽ mang lại phần thưởng giá trị là Book of Specialisation (Sách Chuyên Môn hóa). Boss chiến đấu bằng các đòn tấn công vật lý tầm gần và tầm xa sử dụng độc tố cùng khả năng triệu hồi rắn, đòi hỏi người chơi phải linh hoạt di chuyển và tận dụng các sơ hở khi boss triệu hồi đệ để dồn sát thương.",
       "mechanics": [
-        "Bone Walls + Slam: Kabala dựng lên các bức tường xương rồi tung một cú Slam cực mạnh ngay sau đó. Tìm khe hở giữa các Bone Wall và chạy ra khỏi Venom Pit để né cú slam này.",
-        "Spinning Projectiles: Kabala vừa xoay vừa bắn đạn ra xung quanh. Đạn sẽ nằm lại trên sàn một lúc rồi phát nổ, mỗi vụ nổ gây sát thương đáng kể.",
-        "Đòn từ dưới đất (underground attack): Kabala lặn xuống rồi trồi lên tấn công, để ý mặt đất để né.",
-        "Gilded Cobra adds: triệu hồi rắn nhỏ gây phiền, cần xử lý để khỏi bị bủa vây."
+        "Bone Walls: Khi Kabala dựng lên các Bức tường Xương xung quanh, cô ta sẽ chuẩn bị thực hiện một cú nện (Slam) cực mạnh. Hãy tìm khe hở giữa các bức tường và nhanh chóng thoát ra ngoài phạm vi ảnh hưởng.",
+        "Burst Projectiles: Kabala xoay người phóng ra vô số mảnh đạn theo mọi hướng. Những mảnh đạn này sẽ tồn tại trong thời gian ngắn rồi phát nổ gây sát thương lớn. Hãy né (dodge roll) ngược chiều xoay của boss hoặc đứng gần boss vì hầu hết mảnh đạn sẽ bay ra phía rìa ngoài của Venom Pit.",
+        "Summon Snakes: Khi Kabala tập trung triệu hồi bầy Gilded Cobras, cô ta sẽ đứng bất động và không tấn công. Đây là cơ hội tuyệt vời để người chơi dồn sát thương và tích lũy thanh Stun (choáng nặng).",
+        "Tail Swipe: Kabala xoay người quét đuôi. Hãy né qua đòn quét hoặc di chuyển ra ngoài tầm đánh khi thấy boss phát sáng trong chốc lát.",
+        "Default Ranged Attack: Đòn bắn đạn đơn lẻ phát nổ sau một khoảng trễ ngắn. Căn thời gian né ngay trước khi đạn được bắn ra và tránh xa vùng nổ.",
+        "Default Melee Attack: Các cú vung tay nhanh cận chiến phía trước. Hãy né sang hai bên hoặc ra phía sau lưng boss để phản công."
       ],
       "phases": [],
-      "strategy": "Với pha Bone Wall, đừng cố đứng đánh, tìm khe hở chạy ra ngoài Venom Pit để né cú Slam theo sau. Khi Kabala xoay bắn đạn, dodge roll ngược chiều xoay của nó để tránh đợt đạn đầu, rồi áp sát lại gần Kabala vì phần lớn đạn sẽ rơi quanh rìa của pit chứ không phải ở giữa. Né AoE nổ và đòn trồi đất, dọn Gilded Cobra khi cần. Mang Cold damage để khai thác điểm yếu.",
-      "rewards": [
-        "Drop ngẫu nhiên item nâng cấp build (loot thường của optional boss)"
-      ],
+      "strategy": "Chiến thuật cốt lõi khi đối đầu với Kabala là quản lý khoảng cách và tận dụng các thời cơ boss bất động. Khi boss chuẩn bị dựng Bone Walls để chuẩn bị cho đòn Slam diện rộng, hãy ngay lập tức tìm lối thoát ra rìa ngoài khu vực. Đối với chiêu phóng đạn xoay vòng Burst Projectiles, hãy lướt né ngược hướng xoay và di chuyển áp sát boss để né vùng nổ vốn tập trung nhiều ở rìa ngoài. Bất cứ khi nào Kabala bắt đầu Summon Snakes, hãy dồn toàn bộ sát thương lớn nhất để cấu máu và tích lũy thanh Heavy Stun nhằm làm gián đoạn hành động của cô ta. Giữa các nhịp tấn công cận chiến hoặc bắn đạn đơn lẻ của boss, hãy luồn ra sau lưng để phản công an toàn.",
       "tips": [
-        "Kabala yếu Cold, ưu tiên sát thương lạnh nếu có.",
-        "Đứng sát Kabala khi nó xoay bắn đạn lại an toàn hơn vì đạn dồn ra rìa pit.",
-        "Đừng đứng giữa khi thấy Bone Wall mọc lên, lo tìm đường thoát ngay."
+        "Luôn quan sát chuyển động của Kabala để nhận diện lúc cô ta dựng Bone Walls và thoát khỏi khu vực trung tâm kịp thời.",
+        "Áp sát Kabala khi cô ta bắt đầu xoay người bắn đạn, vì các hạt đạn nổ có xu hướng bay ra xa và phát nổ ở rìa ngoài.",
+        "Dành sẵn các kỹ năng dồn sát thương mạnh nhất cho giai đoạn boss triệu hồi Gilded Cobras để tối ưu hóa sát thương khi cô ta bất động.",
+        "Sử dụng đòn né (dodge roll) luồn ra sau lưng boss để tránh các cú đập Melee cận chiến và đòn quét đuôi Tail Swipe."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Book of Specialisation",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Tìm thấy Venom Pit (Hố Độc) ở khu vực Keth trong Act 2 để tiến vào trận chiến."
+    ],
+    "curated": true
   },
   "mektul-the-forgemaster": {
     "name": "Mektul, the Forgemaster",
@@ -900,23 +986,32 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 3",
     "location": "The Molten Vault (Act 3)",
     "vi": {
-      "overview": "Mektul, the Forgemaster là optional boss của Act 3, gặp ở Aureaduct trong The Molten Vault. Đòn đánh của Mektul nguy hiểm nhưng thử thách thật sự của trận này là giới hạn thời gian: nếu bạn đánh quá lâu, molten gold (vàng nóng chảy) sẽ tràn ngập arena và gây Fire Damage rất nặng mỗi giây. Nói cách khác, đây là trận đua DPS.",
+      "overview": "Mektul, the Forgemaster là một boss phụ (optional boss) mà bạn có thể gặp tại khu vực Aureaduct thuộc The Molten Vault trong Act 3. Điểm đặc trưng nhất của trận chiến này chính là áp lực về mặt thời gian khi vàng nóng chảy dần ngập tràn đấu trường.",
       "mechanics": [
-        "Molten flood (vàng nóng chảy tràn): Ngay khi vào arena, Mektul đập vỡ cổng sau lưng và dung nham bắt đầu tràn ra sàn. Đánh càng lâu vàng càng dâng, ngập tới chỗ bạn là ăn fire damage liên tục mỗi giây.",
-        "Big swings + lava waves: Mektul vung búa diện rộng và tạo các đợt sóng dung nham để tấn công bạn.",
-        "AoE cận chiến: Mektul có nhiều đòn AoE chặn bạn áp sát, phải canh nhịp để vào ra."
+        "Giới hạn thời gian (Molten Gold Arena Flood): Thử thách thực sự của trận đấu này là giới hạn thời gian ẩn. Nếu bạn tiêu diệt boss quá chậm, vàng nóng chảy (molten gold) sẽ làm ngập toàn bộ sàn đấu, gây sát thương lửa (Fire Damage) cực lớn mỗi giây lên nhân vật. Bạn cần tối ưu hóa sát thương của mình để kết thúc trận đấu thật nhanh trước khi đấu trường bị lấp đầy.",
+        "Dụ Boss ra khỏi dung nham (Lure the Boss Out the Lava): Mektul có nhiều đòn tấn công AoE ngăn cản bạn tiếp cận gần, và hắn thường di chuyển trong các dòng dung nham. Hãy di chuyển ra xa để dụ hắn bước ra ngoài, giúp các build cận chiến dễ tấn công hơn. Lưu ý không dụ hắn đi quá xa nếu không hắn sẽ quay trở lại dung nham."
       ],
       "phases": [],
-      "strategy": "Đây là trận đua thời gian nên hãy dồn DPS hết sức, đừng kéo dài. Dụ Mektul ra xa khỏi vùng lava đang chảy bằng cách di chuyển ra xa, nhưng đừng dụ quá xa kẻo nó quay lại chỗ lava. Né các đòn vung búa và sóng dung nham, canh khe giữa các AoE để áp sát đánh. Về trang bị: build đánh thường nên ưu tiên flat damage (Adds X to Y Physical Damage hoặc tương đương ở loại sát thương khác); build phép nên kiếm +X to Level of All Y Spell Skills, kế đến là Gain X% of Damage as Extra Y Damage.",
-      "rewards": [
-        "The Hammer of Kamasa"
-      ],
+      "strategy": "Để đánh bại Mektul trước khi sàn đấu ngập vàng nóng chảy, bạn cần ưu tiên tối đa cho sát thương (DPS):\n- Với build tấn công (attack-based): Ưu tiên nâng cấp vũ khí có chỉ số cộng thẳng sát thương vật lý như 'Adds X to Y Physical Damage' hoặc tương tự.\n- Với spellcaster: Chỉ số tốt nhất là cộng cấp độ kỹ năng phép như '+X to Level of All Y Spell Skills', tiếp theo là chỉ số 'Gain X% of Damage as Extra Y Damage'.\n- Tinh chỉnh Support Gems: Sẵn sàng hi sinh tốc độ chạy, khả năng phòng thủ hoặc sự tiện lợi để đổi các Support Gems tiện ích lấy Support Gems tăng sát thương thuần túy.\n- Sử dụng debuffs: Áp dụng các hiệu ứng bất lợi như Armor Break, Exposure, Wither kết hợp cùng Curses (nguyền rủa) và Marks (ấn ký) để làm suy yếu đáng kể khả năng phòng thủ của Mektul.",
       "tips": [
-        "Trận này ăn nhau ở DPS, gear sát thương cao sẽ kết thúc trước khi vàng kịp ngập sàn.",
-        "Dụ Mektul ra khỏi lava nhưng đừng kéo quá xa, nó sẽ tự quay về vũng dung nham.",
-        "Để mắt tới mực vàng đang dâng, đừng để bị dồn vào góc đã ngập."
+        "Melee Slash: Mektul vung rìu về phía trước gây sát thương cận chiến. Bạn có thể chêm xen kẽ các đòn đánh vào giữa các nhịp vung rìu của boss hoặc giữ khoảng cách để né hoàn toàn.",
+        "Charged Smash: Boss lùi lại chuẩn bị đập mạnh vũ khí xuống đất, tạo ra chấn động và các khe nứt lan tỏa dọc đường đi. Hãy nhanh chóng né (dodge) sang một bên.",
+        "Jumping Attack: Khi bạn đứng quá xa, Mektul sẽ nhảy lên không trung và nện mạnh xuống đất khi đáp. Hãy di chuyển né đi ngay khi boss vừa nhảy lên.",
+        "Lava Waves: Sau khi đi vào dung nham, Mektul sẽ tạo ra các đợt sóng dung nham lan tỏa khi bước ngược trở ra. Hãy chọn vị trí đứng xen kẽ giữa các đợt sóng để không nhận sát thương.",
+        "Explosion: Boss triệu hồi một vòng tròn chỉ dấu đỏ dưới đất trước khi kích nổ diện rộng. Nhanh chóng chạy ra ngoài hoặc căn thời gian né tránh chuẩn xác qua vụ nổ.",
+        "Molten Rock Spikes: Mektul giậm chân hai lần rồi vung rìu phóng ra các gai đá nóng chảy theo đường thẳng. Hãy né sang bên ngay khi thấy hắn thực hiện động tác giậm chân hai lần."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "The Hammer of Kamasa",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Tìm đường đến Aureaduct trong khu vực The Molten Vault ở Act 3 để kích hoạt trận đấu."
+    ],
+    "curated": true
   },
   "ignagduk-the-bog-witch": {
     "name": "Ignagduk, the Bog Witch",
@@ -924,23 +1019,40 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 3",
     "location": "The Azak Bog (Act 3)",
     "vi": {
-      "overview": "Ignagduk, the Bog Witch là optional boss của Act 3, gặp ở Gor-Gor Mog trong The Azak Bog. Đây là một mụ phù thủy đầm lầy chuyên tung các đòn AoE đủ loại nguyên tố, đặc biệt nguy hiểm với Fire DoT. Trước khi đánh, nên chuẩn bị buff Ignagduk's Harvest để chịu đòn tốt hơn nhiều.",
+      "overview": "Ignagduk, the Bog Witch (Phù thủy Đầm lầy Ignagduk) là một boss tùy chọn (Optional Boss) xuất hiện tại địa điểm Gor-Gor Mog trong khu vực The Azak Bog ở Act 3. Đây là một trận đấu yêu cầu người chơi phải đối phó với sát thương Lửa lớn theo thời gian (Fire DoT) và khả năng hạn chế di chuyển của boss. Để cuộc chiến trở nên dễ dàng hơn, người chơi có thể kích hoạt bùa lợi (buff) từ Flameskin Ritual để tăng Kháng Lửa (Fire Resistance) trước khi bước vào đấu trường.",
       "mechanics": [
-        "AoE đa nguyên tố: Ignagduk tung nhiều spell AoE diện rộng với các nguyên tố khác nhau, sát thương cao.",
-        "Fire DoT spells: các đòn lửa gây sát thương theo thời gian rất nặng, đây là lý do nên buff Fire Resistance trước.",
-        "Bone structures (cấu trúc xương): Ignagduk dựng các khối xương cản đường di chuyển của bạn, dễ bị kẹt rồi ăn AoE."
+        "Flight (Bay lượn): Ignagduk bay lượn quanh khu vực đấu trường, để lại các cấu trúc xương (bone structures) trên đường bay. Hãy nhanh chóng phá hủy các cấu trúc xương này để tránh bị kẹt và dễ bị dính sát thương.",
+        "AoE Ground Spell (Phép đất diện rộng): Nhiều vòng tròn màu đỏ xuất hiện trên mặt đất, và các gai xương (bone spikes) sẽ trồi lên ngay sau đó.",
+        "Melee Thrust (Đâm cận chiến): Ignagduk nhanh chóng lao vũ khí của mình thẳng về phía bạn.",
+        "Funnel Attack (Tấn công phễu): Một cấu trúc xương lớn xuất hiện trên mặt đất, tạo thành một chiếc phễu với nhân vật của bạn ở trung tâm trước khi lửa phun ra từ phía xa. Hãy nhanh chóng di chuyển ra phía sau Ignagduk hoặc ra ngoài phễu để tránh nhận sát thương lớn.",
+        "Flame Divide (Phân chia lửa): Mặt đất bị chia làm bốn phần bởi lửa. Hãy dẫn dụ Ignagduk di chuyển qua các ngọn lửa để dập tắt khu vực mà cô ta đi qua.",
+        "Fireballs (Cầu lửa): Nhiều cầu lửa nhỏ được bắn về phía trước và lan rộng ra xung quanh.",
+        "Flame Beam (Tia lửa): Một tia lửa dài được bắn thẳng về phía trước, sau đó xoay nhẹ một chút."
       ],
       "phases": [],
-      "strategy": "Trước khi vào trận, hãy thắp hết các effigy trong Flameskin Ritual ở Azak Bog để kích hoạt buff Ignagduk's Harvest (+25% Fire Resistance và tăng Item Rarity khi ở trong vùng) — buff này cực quan trọng để gánh Fire DoT của boss. Vào trận thì lo né các AoE đa nguyên tố, đừng để bị các khối xương dồn vào góc. Giữ sàn thoáng để có chỗ chạy né.",
-      "rewards": [
-        "Ignagduk's Ghastly Spear (item nhặt được, chữ xanh)"
-      ],
+      "strategy": "Trận chiến với Ignagduk, the Bog Witch xoay quanh việc né tránh các kỹ năng gây sát thương Lửa diện rộng và giữ cho bản thân không bị hạn chế di chuyển.\n\nTrước khi bắt đầu, hãy thắp sáng tất cả các tượng thờ trong Flameskin Ritual tại khu vực Azak Bog để nhận được bùa lợi Ignagduk's Harvest (+25% Kháng Lửa và tăng Rarity vật phẩm rơi ra), giúp bạn chống chịu tốt hơn các đòn sát thương Fire DoT cực mạnh của boss.\n\nTrong trận chiến, hãy chú ý phá hủy nhanh các cấu trúc xương mà cô ta triệu hồi hoặc để lại khi bay lượn để giữ cho bản thân có khoảng trống di chuyển. Khi cô ta sử dụng đòn Funnel Attack, hãy nhanh chóng chạy ra phía sau cô ta hoặc thoát khỏi vùng phễu xương trước khi lửa phun ra.\n\nTrong hầu hết các đòn tấn công của Ignagduk, việc di chuyển và đứng ở phía sau cô ta là vị trí an toàn nhất, ngoại trừ các đòn AoE ground spell và đòn gai nhọn có thể đánh trúng phía sau. Đồng thời, hãy liên tục tấn công cô ta ngay cả khi cô ta đang bay lượn để ngăn cô ta hồi phục Energy Shield cũng như Stun Meter, giúp kết thúc trận đấu nhanh hơn.",
       "tips": [
-        "Bắt buộc thắp hết effigy lấy buff Ignagduk's Harvest trước khi đánh, đặc biệt nếu Fire Res của bạn thấp.",
-        "Đừng để bone structure chặn lối thoát, luôn chừa đường chạy né AoE.",
-        "Ưu tiên Fire Resistance trong trận này vì Fire DoT là nguồn sát thương đáng sợ nhất."
+        "Kích hoạt Flameskin Ritual trong khu vực The Azak Bog trước để nhận buff Ignagduk's Harvest giúp tăng +25% Kháng Lửa (Fire Resistance).",
+        "Nhanh chóng phá hủy các cấu trúc xương (bone structures) ngay khi chúng xuất hiện để không bị chặn đường di chuyển.",
+        "Khi thấy phễu xương xuất hiện (Funnel Attack), lập tức né sang hai bên hoặc chạy ra phía sau Ignagduk.",
+        "Liên tục tấn công boss ngay cả khi cô ta đang bay để chặn việc hồi phục lá chắn (shield) và thanh choáng (stun meter).",
+        "Tận dụng vị trí đứng sau lưng Ignagduk để né phần lớn các đòn tấn công định hướng thẳng."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Gemrot Skull",
+        "image": "https://img.poeviethoa.net/boss/ignagduk-the-bog-witch/drop-1.png"
+      },
+      {
+        "name": "Ignagduk's Ghastly Spear",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Có thể tìm thấy tại địa điểm Gor-Gor Mog trong khu vực The Azak Bog ở Act 3. Lối vào The Azak Bog nằm ở Matlan Waterways kể từ bản cập nhật 0.5 Return of the Ancients."
+    ],
+    "curated": true
   },
   "rootdredge": {
     "name": "Rootdredge",
@@ -948,24 +1060,31 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 3",
     "location": "Sandswept Marsh (Act 3)",
     "vi": {
-      "overview": "Rootdredge là optional boss của Act 3, gặp ở Foul Ritual — một vị trí ngẫu nhiên trong vùng Sandswept Marsh. Đây là một con quái kiểu necromancer đầm lầy, chuyên tung AoE và triệu hồi liên tục đám undead. Rootdredge yếu với Fire damage, nên build lửa sẽ trị nó rất nhanh.",
+      "overview": "Rootdredge là một con boss tùy chọn (Spirit Boss) xuất hiện tại Sandswept Marsh thuộc Act 3. Trận chiến diễn ra tại khu vực Foul Ritual, nơi nó liên tục triệu hồi thây ma và kích nổ xác của chúng để gây lượng sát thương lửa khổng lồ. Để chiến thắng, người chơi cần dọn dẹp quái phụ nhanh chóng bằng kỹ năng diện rộng (AoE) và tận dụng điểm yếu chí mạng của boss đối với sát thương Lửa.",
       "mechanics": [
-        "Triệu hồi adds: Rootdredge gọi thêm Bogfelled Commoners, Bogfelled Slaves và Rotting Hulks ra đánh bạn, để lâu là ngập quái.",
-        "Homing green projectiles: bắn đạn xanh đuổi theo bạn, có thể trúng nhiều lần liên tiếp và hạ gục bạn trong tích tắc.",
-        "Corpse explosion: kích nổ xác chết gây sát thương dồn dập, để ý hiệu ứng phát sáng xanh để né.",
-        "AoE spells: nhiều đòn phép diện rộng cần né liên tục."
+        "Corpse Explosion: Các xác chết và zombie gần đó sẽ phát sáng màu xanh lá và phát nổ sau một thời gian ngắn, gây Sát thương Lửa lớn. Tránh bị bao vây, ngay cả bởi các xác chết, vì nhiều vụ nổ chồng lên nhau có thể gây lượng sát thương khổng lồ và hạ gục bạn ngay lập tức.",
+        "Homing Corpse Explosion: Biến đổi zombie thành các phi tiễn tự tìm mục tiêu và phát nổ ngay sau khi va chạm. Chiêu thức này rất nguy hiểm khi nhiều phi tiễn phát nổ cùng lúc. Hãy đợi chúng bắt đầu phát nổ rồi thực hiện Dodge Roll để di chuyển đến vị trí an toàn.",
+        "Summon Zombies: Một bầy zombie sẽ từ từ trồi lên từ mặt nước. Hãy ưu tiên tiêu diệt các kẻ địch bổ sung này càng sớm càng tốt để tránh bị áp đảo và không cho boss sử dụng chúng làm đạn kích nổ xác.",
+        "Quicksand: Tạo ra một vùng cát lún ngay dưới chân bạn, làm chậm tốc độ di chuyển nếu đứng trong đó càng lâu. Chiêu thức này đặc biệt nguy hiểm khi kết hợp với các đòn bộc phá xác. Hãy giữ bình tĩnh và ưu tiên Dodge Roll để né các vụ nổ đang tới. Nếu an toàn, hãy Dodge Roll ra khỏi vùng cát lún."
       ],
       "phases": [],
-      "strategy": "Ưu tiên xử lý đám quái trước: nhắm mấy con phát sáng xanh, dùng AoE quét sạch zombie, kết hợp đòn lửa để khai thác điểm yếu của Rootdredge. Luôn cảnh giác với các hiệu ứng xanh phát sáng — đó là dấu hiệu của đạn đuổi theo và corpse explosion, hai thứ có thể giết bạn ngay nếu trúng liên tiếp. Giữ khoảng cách, dọn adds rồi mới dồn sát thương vào boss.",
-      "rewards": [
-        "Uncut Skill Gem (Level 9)"
-      ],
+      "strategy": "Tập trung dọn dẹp các zombie ngay khi chúng xuất hiện bằng kỹ năng diện rộng (AoE) để ngăn cản boss sử dụng chúng làm đạn kích nổ xác. Khi boss tung chiêu Quicksand làm chậm, hãy sẵn sàng Dodge Roll để né các vụ nổ lân cận. Hãy trang bị và sử dụng các kỹ năng gây Sát thương Lửa để tận dụng điểm yếu của Rootdredge nhằm hạ gục boss nhanh nhất có thể. Lưu ý nhặt sạch toàn bộ vật phẩm rơi ra sau khi hạ gục boss để đảm bảo hệ thống ghi nhận hoàn thành nhiệm vụ (tránh lỗi không hoàn thành).",
       "tips": [
-        "Rootdredge yếu Fire, mang sát thương lửa để hạ nhanh.",
-        "Để ý mọi hiệu ứng phát sáng xanh, đó là cảnh báo cho đạn đuổi và corpse explosion.",
-        "Dọn đám adds bằng AoE trước để khỏi bị bủa vây trong lúc đánh boss."
+        "Cẩn thiện với kẻ địch phát sáng màu xanh lá: Các phép thuật nguy hiểm nhất của Rootdredge đều liên quan đến các zombie và xác chết phát sáng. Chúng có thể gây sát thương chồng chéo ('shotgun') hạ gục bạn trong tích tắc.",
+        "Ưu tiên dọn dẹp Zombie: Tiêu diệt zombie nhanh chóng để boss không có mục tiêu kích nổ xác.",
+        "Sử dụng đòn tấn công hệ Lửa: Rootdredge có điểm yếu lớn với Sát thương Lửa, hãy tận dụng điều này để tối đa hóa lượng sát thương gây ra."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Uncut Skill Gem (Level 9)",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Tìm Foul Ritual, một khu vực ngẫu nhiên trong Sandswept Marsh thuộc Act 3 để kích hoạt trận đấu."
+    ],
+    "curated": true
   },
   "mighty-silverfist": {
     "name": "Mighty Silverfist",
@@ -973,23 +1092,28 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 3",
     "location": "Jungle Ruins (Act 3)",
     "vi": {
-      "overview": "Mighty Silverfist là boss ở Act 3, gặp tại Temple Ruins ngay giữa vùng Jungle Ruins. Đây là một con khỉ khổng lồ cầm cây trụ đá to, đánh cận chiến bằng các cú vung và slam gây sát thương cực mạnh. Moveset của nó khá đơn giản và telegraph rõ, nhưng sát thương Physical thì rất cao — nhiều build không đủ damage reduction sẽ ăn một cú là về thành.",
+      "overview": "Mighty Silverfist là một Boss tùy chọn (Act 3 Main Boss) thuộc Act 3 của Path of Exile 2, nằm ở khu vực Temple Ruins thuộc trung tâm bản đồ Jungle Ruins. Đây là một con vượn khổng lồ sử dụng cây cột đá lớn để thực hiện các đòn tấn công vật lý cận chiến rất chậm chạp nhưng có lượng sát thương khổng lồ. Đặc biệt, đối với lớp nhân vật Huntress đi theo thăng tiến Spirit Walker, Mighty Silverfist là một trong những loài thú đồng hành (companion) cận chiến tốt nhất nhờ lượng sát thương chí mạng cao.",
       "mechanics": [
-        "Pillar swing: vung cây trụ đá quét ngang gây sát thương Physical lớn, đòn này chậm và báo trước rõ.",
-        "Slam: đập trụ xuống đất tạo AoE, cần né bằng cách di chuyển hoặc dodge roll.",
-        "Sát thương Physical cao: phần lớn đòn của Silverfist là Physical, build thiếu giảm sát thương vật lý dễ bị one-shot."
+        "Stay Behind its Back (Luôn giữ vị trí sau lưng): Hãy luôn cố gắng di chuyển vòng quanh hoặc né tránh (dodge roll) ra phía sau lưng của Mighty Silverfist. Boss có các đòn tấn công cận chiến gây sát thương vật lý cực kỳ nguy hiểm có thể tiêu diệt bạn ngay lập tức nếu đứng trước mặt hắn.",
+        "Pillar Slam (Cú Đập Cột Đá): Boss vận lực và đập mạnh cây cột đá về phía trước, tạo ra các làn sóng xung kích. Hãy di chuyển sang hai bên ngay khi thấy hắn bắt đầu chuẩn bị đòn đánh.",
+        "Pillar Slash (Cú Quét Cột Đá): Đòn quét cột theo chiều ngang gây sát thương diện rộng phía trước. Né tránh bằng cách di chuyển ra sau lưng boss hoặc chủ động lùi lại.",
+        "Rolling Attack (Đòn Lăn Tấn Công): Boss bất ngờ lăn trên mặt đất để thu hẹp khoảng cách và gây sát thương lớn mà không có dấu hiệu báo trước rõ rệt. Đòn này thường dùng khi bạn đứng xa, vì vậy hãy giữ khoảng cách gần và lăn né sang bên.",
+        "Spinning Pillar Attack (Xoay Cột Tấn Công): Đòn đánh xoay cột liên tục rồi đập xuống đất tạo sóng xung kích. Hãy chủ động lăn né ra xa và giữ khoảng cách an toàn cho đến khi đòn đánh kết thúc."
       ],
       "phases": [],
-      "strategy": "Chiến thuật cốt lõi là vị trí: luôn cố đứng sau lưng Mighty Silverfist vì các đòn của nó gây Physical damage chí mạng mà nhiều build không gánh nổi. Đi vòng quanh con khỉ trong khi nó thực hiện các đòn chậm và telegraph rõ ràng. Sau mỗi cú pillar swing thường, dodge ra phía sau lưng nó rồi dồn damage. Vì moveset đơn giản nên chỉ cần phản xạ né đúng nhịp là trận này rất kiểm soát được.",
-      "rewards": [
-        "Book of Specialisation"
-      ],
+      "strategy": "Chiến thuật chính trong trận chiến này là luôn duy trì cự ly gần và liên tục di chuyển/lăn né ra phía sau lưng boss. Các đòn đập cột (Pillar Slam) và quét cột (Pillar Slash) của Mighty Silverfist có thời gian chuẩn bị rất dài và rõ ràng. Việc né tránh ra sau lưng giúp bạn tránh hoàn toàn lượng sát thương khổng lồ này.\n\nTránh đứng quá xa boss, vì hắn sẽ thực hiện đòn lăn tấn công (Rolling Attack) rất nhanh và đột ngột để tiếp cận. Nếu bạn chơi Huntress (Spirit Walker), hãy chuẩn bị sẵn kỹ năng thu phục (tame) khi boss xuống máu thấp để sở hữu một người bạn đồng hành DPS cực kỳ mạnh mẽ.",
       "tips": [
-        "Luôn xoay ra sau lưng Silverfist, đừng đứng đối mặt ăn đòn Physical.",
-        "Né về phía sau ngay sau cú pillar swing là thời điểm an toàn nhất để dồn damage.",
-        "Nếu build mỏng máu/thiếu Physical mitigation, ưu tiên né tuyệt đối thay vì đứng tank."
+        "Luôn di chuyển vòng tròn xung quanh boss để tránh đứng trước mặt hướng tấn công chính của hắn.",
+        "Dùng kỹ năng lăn né (dodge roll) xuyên qua hoặc vòng ra sau lưng boss khi hắn chuẩn bị đập cột.",
+        "Không nên đứng quá xa boss để tránh kích hoạt đòn Rolling Attack bất ngờ và nguy hiểm.",
+        "Đối với Huntress, hãy chuẩn bị sẵn kỹ năng thu phục khi máu boss xuống thấp để bắt lấy người bạn đồng hành mạnh mẽ này."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Tìm thấy tại khu vực Temple Ruins ở trung tâm bản đồ Jungle Ruins (Act 3)."
+    ],
+    "curated": true
   },
   "great-white-one": {
     "name": "Great White One",
@@ -997,23 +1121,33 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 4",
     "location": "Whakapanu Island (Act 4)",
     "vi": {
-      "overview": "Great White One là boss optional ở Act 4, một con cá mập khổng lồ trú trong Shark Pit trên Whakapanu Island. Bộ chiêu của nó khá đơn giản, nhưng có một cơ chế burrow (lặn xuống cát) dễ làm bạn bất ngờ nếu chưa biết. Hạ nó xong sẽ rớt Shark Fin để làm quest Tribal Medicine.",
+      "overview": "Great White One là một boss tùy chọn thuộc Act 4 của Path of Exile 2, nằm tại đảo Whakapanu Island. Đây là một con quái thú dạng cá mập khổng lồ có khả năng di chuyển linh hoạt trên cạn và dưới cát. Trận đấu này tương đối đơn giản nhưng yêu cầu người chơi phải cảnh giác với cơ chế đánh dấu con mồi (Prey debuff). Tiêu diệt Great White One sẽ nhận được vật phẩm nhiệm vụ Shark Fin để hoàn thành side quest 'Tribal Medicine', giúp nhận được điểm nội tại (passive point) hoặc các phần thưởng giá trị khác.",
       "mechanics": [
-        "Prey debuff: sau khi bạn ăn một đòn melee của nó, bạn bị dính debuff Prey. Lúc này boss sẽ lặn xuống cát và truy đuổi bạn với tốc độ tăng mạnh, rồi trồi lên cắn.",
-        "Đòn melee cận chiến: cắn và quật khi bạn đứng gần, sát thương khá cao.",
-        "Burrow + trồi lên: nó lặn dưới cát di chuyển rất nhanh rồi bất ngờ nhô lên ngay dưới chân bạn."
+        "Prey: Khi bị trúng đòn cận chiến của boss, người chơi sẽ dính debuff Prey. Great White One sẽ lặn xuống đất và truy đuổi người chơi với tốc độ tăng cao. Hãy di chuyển liên tục để né đòn trồi lên vồ mồi của nó.",
+        "Quicksand: Tạo ra các vũng cát lún làm giảm tốc độ di chuyển của người chơi, khiến việc né tránh trở nên khó khăn hơn.",
+        "Tornado: Triệu hồi các cơn lốc xoáy gây sát thương và cản trở đường chạy của bạn trong đấu trường.",
+        "Feeding Frenzy: Trạng thái cuồng bạo làm tăng tốc độ tấn công và sát thương của boss khi người chơi đang bị dính hiệu ứng Prey."
       ],
       "phases": [],
-      "strategy": "Tránh ăn đòn melee để khỏi dính Prey là chìa khoá. Khi nó lặn xuống và đang đuổi theo (đang Prey bạn), cứ chạy né liên tục, để ý bóng/cát gợn báo hiệu nó sắp trồi lên rồi dodge sang một bên. Khi nó vừa trồi lên xong là lúc nó đứng yên một nhịp, tranh thủ dí damage. Giữ khoảng cách và kiên nhẫn, đừng tham đứng tay đôi cận chiến.",
-      "rewards": [
-        "Shark Fin (item quest cho Tribal Medicine)",
-        "Loot rớt thường + thưởng khi hoàn thành quest"
-      ],
+      "strategy": "Để chiến thắng Great White One, hãy cố gắng né các đòn tấn công cận chiến trực tiếp của nó để không bị dính hiệu ứng Prey. Nếu bị dính Prey và thấy boss lặn xuống đất đuổi theo, hãy dùng kỹ năng di chuyển (travel skills) để né tránh. Tránh xa các vũng cát lún Quicksand và lốc xoáy Tornado.\n\nSử dụng sát thương Lôi (Lightning Damage) là lợi thế cực lớn vì boss có kháng Vật lý và Băng (Physical & Cold) nhưng lại yếu trước Lôi. Hãy tận dụng lúc boss trồi lên và kết thúc đòn đánh để gây sát thương nhiều nhất có thể.",
       "tips": [
-        "Build ranged/tốc độ né cao đánh con này rất dễ vì chủ yếu là tránh đòn burrow.",
-        "Đứng gần mép nước để kích hoạt fight, sau đó kéo nó ra chỗ trống mà kite."
+        "Luôn giữ khoảng cách và di chuyển liên tục để tránh bị áp sát và dính đòn cận chiến kích hoạt Prey.",
+        "Khi boss lặn xuống cát đuổi theo bạn, hãy di chuyển theo đường vòng tròn lớn để dễ dàng né tránh đòn trồi lên của nó.",
+        "Tránh bước vào các vũng cát lún Quicksand để duy trì tốc độ di chuyển tối đa.",
+        "Sử dụng các kỹ năng hệ Lôi (Lightning) để rút máu boss nhanh hơn nhờ điểm yếu kháng tính.",
+        "Đừng quên nhặt Shark Fin sau trận chiến và đem về cho Kaimana tại đảo Ngakanu Island để hoàn thành nhiệm vụ."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Shark Fin",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Yêu cầu tiếp cận đảo Whakapanu Island trong Act 4 để tìm đấu trường boss."
+    ],
+    "curated": true
   },
   "captain-hartlin": {
     "name": "Captain Hartlin",
@@ -1021,23 +1155,30 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 4",
     "location": "Journey's End (Act 4)",
     "vi": {
-      "overview": "Captain Hartlin là boss optional Act 4, gặp ở The Captain's Chair khu Journey's End. Đây là một boss khá dễ thở: chỉ có vài đòn mạnh nhưng đều có động tác báo trước rõ, chỉ cần đứng đúng chỗ là né được hết.",
+      "overview": "Captain Hartlin là một boss tùy chọn thuộc Act 4 của Path of Exile 2, nằm tại khu vực Journey's End. Bạn sẽ chạm trán hắn tại The Captain's Chair. Đây là một trận đấu tương đối đơn giản nhưng yêu cầu bạn phải liên tục di chuyển để né tránh hai đòn đánh diện rộng cực mạnh sử dụng đại bác và mỏ neo. Tiêu diệt hắn để nhận vật phẩm nhiệm vụ Verisium Quest Item phục vụ cho nhiệm vụ phụ 'Dark Mists'.",
       "mechanics": [
-        "Đòn projectile diện rộng: bắn nhiều đạn/loạt pháo xuống đấu trường.",
-        "Đòn melee: vung tay/neo đập khi bạn đứng gần.",
-        "Giơ tay báo hiệu: khi Hartlin giơ một cánh tay lên là chuẩn bị triệu cannon hoặc anchor (neo) giáng xuống."
+        "Cannon Strike (Triệu hồi Đại bác): Boss giơ tay triệu hồi loạt đạn pháo bắn từ trên trời xuống sàn đấu. Vùng ảnh hưởng lớn nhưng có độ trễ, hãy di chuyển ra rìa để né tránh.",
+        "Anchor Smash (Cú đập Mỏ neo): Boss giơ cánh tay còn lại triệu hồi mỏ neo khổng lồ giáng xuống vị trí người chơi. Tấn công gây sát thương diện rộng rất lớn."
       ],
       "phases": [],
-      "strategy": "Để ý động tác giơ tay của nó: vừa thấy giơ tay là lập tức di chuyển ra mép đấu trường rồi đi vòng sang chỗ khác để tránh vùng pháo/neo rơi. Cả hai đòn lớn đều dễ né nếu bạn chịu khó reposition. Tránh né xong là quay lại dí damage, cứ lặp lại nhịp này là hạ gọn.",
-      "rewards": [
-        "Verisium (item quest)",
-        "Loot rớt trực tiếp + thưởng hoàn thành quest"
-      ],
+      "strategy": "Cuộc đối đầu với Captain Hartlin khá đơn giản và dễ kiểm soát nếu bạn nắm được dấu hiệu ra chiêu của hắn. Mỗi khi boss giơ một trong hai cánh tay lên để chuẩn bị triệu hồi đại bác hoặc mỏ neo, hãy lập tức di chuyển hướng ra rìa ngoài của sàn đấu để thoát khỏi vùng ảnh hưởng của đòn đánh. Về mặt thuộc tính, boss có khả năng kháng sát thương Vật lý và Băng (Physical & Cold Resistance), do đó hãy cân nhắc sử dụng các loại sát thương khác như Lửa (Fire) hoặc Lôi (Lightning) để tiêu diệt hắn nhanh hơn.",
       "tips": [
-        "Đừng đứng yên giữa sân spam skill, hãy giữ thói quen vừa đánh vừa quan sát động tác giơ tay.",
-        "Né ra mép sân là an toàn nhất vì vùng sát thương thường rơi quanh trung tâm."
+        "Luôn quan sát chuyển động tay của boss để nhận biết đòn tấn công tiếp theo.",
+        "Di chuyển liên tục sát rìa đấu trường khi boss bắt đầu tung chiêu đại bác hoặc mỏ neo.",
+        "Boss kháng sát thương Vật lý (Physical) và Băng (Cold) khá mạnh, khuyến khích sử dụng các nguồn sát thương thuộc tính khác.",
+        "Mang theo bình giải hiệu ứng đóng băng hoặc tăng tốc độ di chuyển nếu cần để né chiêu linh hoạt hơn."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Verisium Quest Item",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Tiếp cận khu vực Journey's End ở Act 4 và tìm đến vị trí The Captain's Chair."
+    ],
+    "curated": true
   },
   "the-blind-beast": {
     "name": "The Blind Beast",
@@ -1045,24 +1186,33 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 4",
     "location": "Isle of Kin (Act 4)",
     "vi": {
-      "overview": "The Blind Beast là boss optional Act 4 ở Isle of Kin. Bộ chiêu cơ bản gồm slam, đòn quét và đâm, không quá phức tạp. Thứ duy nhất cần để ý kỹ là vùng Voltaxic Sulphite Ground mà nó tạo ra dưới đất.",
+      "overview": "The Blind Beast (Quái Thú Mù) là một boss tùy chọn thuộc Act 4 của Path of Exile 2, nằm tại khu vực Isle of Kin. Đây là một trận đấu tương đối đơn giản nhưng yêu cầu người chơi phải khéo léo kiểm soát vị trí đứng trong đấu trường để đối phó với hiệu ứng Voltaxic Sulphite Ground. Tiêu diệt boss sẽ nhận được Blank Rune, vật phẩm quan trọng cần mang về chuyển đổi tại Dannig để hoàn thành và đánh dấu đã vượt qua boss trên bản đồ.",
       "mechanics": [
-        "Slam: đập mạnh xuống đất theo vùng trước mặt.",
-        "Sweeping attack: đòn quét rộng xung quanh, đứng gần dễ ăn nguyên đòn.",
-        "Strike: đâm thẳng vào mục tiêu.",
-        "Voltaxic Sulphite Ground: tạo vũng sát thương trên nền đất, đứng vào là mất máu liên tục và bị bó hẹp không gian."
+        "Fight Near the Edge of the Arena (Chiến đấu gần rìa đấu trường): Boss sở hữu bộ kỹ năng cơ bản gồm các đòn đập đất (slams), quét diện rộng (sweeps) và tấn công trực diện. Điều quan trọng nhất là bạn cần dụ boss đứng chiến đấu ở sát rìa sàn đấu để các bãi độc Voltaxic Sulphite Ground xuất hiện ở rìa ngoài, giữ cho khu vực trung tâm thông thoáng để dễ dàng né tránh và gây sát thương."
       ],
       "phases": [],
-      "strategy": "Mẹo chính là kiểm soát chỗ nó đặt vùng Voltaxic Sulphite Ground. Hãy đánh nó ở gần mép đấu trường, như vậy vùng ground effect sẽ rơi ra phía ngoài thay vì giữa sân, để lại nhiều chỗ trống cho bạn xoay xở. Còn lại chỉ cần né slam/sweep theo timing là ổn.",
-      "rewards": [
-        "Blank Rune (đem về cho Dannig đổi để xoá icon boss trên map)",
-        "Loot rớt thường"
-      ],
+      "strategy": "Để chiến thắng The Blind Beast, bạn nên luôn duy trì vị trí đứng gần rìa ngoài của đấu trường. Khi boss thực hiện các đòn tấn công và để lại hiệu ứng Voltaxic Sulphite Ground, bãi độc sẽ nằm ở ngoài rìa và không cản trở đường chạy của bạn ở khu vực trung tâm. Về thuộc tính kháng tính, boss có khả năng kháng sát thương Vật lý và Lôi (Physical & Lightning Resistance), đồng thời không có điểm yếu kháng tính đặc biệt. Do đó, hãy ưu tiên sử dụng các loại sát thương khác như Lửa (Fire), Băng (Cold) hoặc Hỗn loạn (Chaos) để rút máu boss hiệu quả hơn.",
       "tips": [
-        "Nhớ mang Blank Rune về cho Dannig đổi, nếu không icon boss vẫn còn trên bản đồ.",
-        "Bám mép sân đánh để dồn vùng độc ra ngoài, đừng để nó phủ kín trung tâm."
+        "Luôn chủ động dụ boss chiến đấu gần rìa đấu trường nhằm tối ưu hóa diện tích di chuyển an toàn ở trung tâm.",
+        "Né tránh các đòn đập đất, quét và húc của boss bằng cách di chuyển vòng qua phía sau lưng nó.",
+        "Boss kháng sát thương Vật lý và Lôi (Physical & Lightning), khuyến khích dùng các thuộc tính sát thương khác.",
+        "Nhặt Blank Rune sau trận chiến và mang về chuyển đổi tại NPC Dannig để hoàn thành đánh dấu boss trên bản đồ."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Blank Rune",
+        "image": null
+      },
+      {
+        "name": "Artificer's Orb",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Tiếp cận khu vực Isle of Kin trong Act 4 để tìm đấu trường boss."
+    ],
+    "curated": true
   },
   "yama-the-white": {
     "name": "Yama the White",
@@ -1070,32 +1220,30 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Act 4",
     "location": "Halls of the Dead (Act 4)",
     "vi": {
-      "overview": "Yama the White là boss optional Act 4, bài thử cuối cùng của Trials of Ancestors. Để tới được boss, bạn đi thuyền tới Eye of Hinekora rồi vào Halls of the Dead. Fight có một pha chuyển giai đoạn rõ rệt khi máu boss xuống dưới 50%, đòi hỏi đọc cơ chế chính xác.",
+      "overview": "Yama the White là một Optional Boss thuộc Act 4 của Path of Exile 2. Người chơi sẽ đối đầu với Yama the White như một thử thách cuối cùng (final test) trong chuỗi Trials of the Ancestors. Để gặp boss này, bạn cần đi thuyền đến Eye of Hinekora thuộc Act 4, sau đó di chuyển đến khu vực Halls of the Dead. Trận đấu này yêu cầu người chơi có khả năng nhận biết cơ chế vị trí đứng an toàn khi boss triệu hồi phân thân nổ diện rộng, đồng thời chuẩn bị kháng tính chống lại sát thương Physical, Chaos và các hiệu ứng bất lợi như Soulrend hay Caustic Ground.",
       "mechanics": [
-        "Bộ đòn thường ở pha đầu khá tiêu chuẩn, chủ yếu là tránh đòn đánh trực diện.",
-        "Pull về trung tâm (sau 50% máu): Yama kéo bạn về giữa sân.",
-        "Apparitions of Disdain: triệu ra các bóng ma rồi cho phát nổ; chỉ có một bóng còn đứng là an toàn."
+        "Apparitions of Disdain (Phân thân Khinh miệt): Khi lượng máu của Yama the White giảm xuống dưới 50%, boss sẽ bắt đầu kéo người chơi vào trung tâm đấu trường và triệu hồi các phân thân Apparitions of Disdain. Các phân thân này sau đó sẽ phát nổ gây sát thương cực lớn. Chỉ có một phân thân duy nhất đứng yên và có vòng tròn bảo vệ xung quanh là an toàn. Người chơi cần nhanh chóng di chuyển vào vòng tròn của phân thân đứng yên này để tránh sát thương.",
+        "Soulrend (Xé hồn): Boss có thể áp dụng debuff Soulrend gây sát thương Chaos theo thời gian và làm giảm khả năng hồi phục.",
+        "Caustic Ground (Mặt đất Độc hại): Tạo ra những vùng độc hại trên mặt đất gây sát thương Chaos theo thời gian cho người đứng trên đó.",
+        "Evasive (Né tránh): Yama the White có khả năng né tránh các đòn tấn công của người chơi tốt hơn bình thường."
       ],
-      "phases": [
-        {
-          "name": "Pha 1 — Trên 50% máu",
-          "vi": "Đánh bình thường, tập trung né các đòn cơ bản và dồn damage để đẩy boss xuống mốc 50%."
-        },
-        {
-          "name": "Pha 2 — Dưới 50% máu",
-          "vi": "Yama bắt đầu kéo bạn về trung tâm và triệu các Apparitions of Disdain để chúng phát nổ. Sau khi bị teleport về giữa, hãy nhìn nhanh xem bóng ma nào còn đứng (có vòng tròn quanh nó) rồi áp sát đứng cạnh nó — đó là điểm an toàn duy nhất để tránh vụ nổ."
-        }
-      ],
-      "strategy": "Pha 1 cứ đánh ổn định để xuống mốc 50%. Vào pha 2, phản xạ quan trọng nhất là: ngay khi bị kéo về trung tâm, tìm cho ra cái apparition còn đứng (cái có vòng tròn bao quanh) và lao tới đứng sát nó, mọi cái còn lại sẽ nổ. Luyện nhận diện safe spot này thật nhanh là qua được pha khó.",
-      "rewards": [
-        "Hoàn thành Trials of Ancestors",
-        "Loot rớt thường"
-      ],
+      "phases": [],
+      "strategy": "Chiến thuật cốt lõi trong trận chiến với Yama the White là giữ bình tĩnh khi lượng máu của hắn giảm xuống dưới 50%. Khi boss kéo bạn vào trung tâm đấu trường, hắn sẽ triệu hồi các phân thân Apparitions of Disdain chuẩn bị phát nổ. Ngay khi bị kéo vào giữa, hãy nhanh chóng quét mắt xung quanh đấu trường để tìm phân thân duy nhất đang đứng yên và có một vòng tròn bảo vệ bao quanh. Lập tức di chuyển hoặc lăn (dodge roll) áp sát phân thân đứng yên này để được bảo vệ khỏi vụ nổ hủy diệt. Ngoài ra, hãy luôn chú ý di chuyển để tránh các vùng đất độc Caustic Ground và chú ý kháng Chaos cũng như kháng Physical để giảm thiểu sát thương từ Soulrend.",
       "tips": [
-        "Đừng panic khi bị pull, hãy giữ mắt nhìn để khoá vị trí apparition an toàn ngay lập tức.",
-        "Nên có sẵn movement skill/dodge roll để áp sát bóng ma an toàn kịp trước khi nổ."
+        "Khi lượng máu của boss dưới 50%, chuẩn bị tinh thần bị kéo vào trung tâm đấu trường.",
+        "Quan sát nhanh để tìm phân thân đứng yên có vòng tròn bao quanh khi cơ chế nổ phân thân (Apparitions of Disdain) được kích hoạt.",
+        "Luôn di chuyển để tránh đứng trên các vùng Caustic Ground gây sát thương Chaos theo thời gian.",
+        "Chuẩn bị trang bị có kháng Chaos và kháng Physical tốt trước trận đấu.",
+        "Do boss có đặc tính Evasive (Né tránh), hãy cân nhắc sử dụng các kỹ năng hoặc trang bị tăng độ chính xác (Accuracy) hoặc sát thương diện rộng không thể né."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Đến Eye of Hinekora bằng thuyền trong Act 4.",
+      "Tìm đường đến khu vực Halls of the Dead.",
+      "Tham gia và vượt qua thử thách cuối cùng (final test) của Trials of the Ancestors."
+    ],
+    "curated": true
   },
   "akthi-and-anundr": {
     "name": "Akthi and Anundr",
@@ -1103,22 +1251,35 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Interlude",
     "location": "The Khari Crossing",
     "vi": {
-      "overview": "Akthi và Anundr là cặp boss optional ở Interlude, đánh chung trong một đấu trường mở tại The Khari Crossing trong quest Recruit the Maraketh. Có checkpoint ngay gần đó nên không lo mất tiến độ. Vì là fight 2 con một lúc, quản lý vị trí là quan trọng nhất.",
+      "overview": "Akthi and Anundr là cặp đôi Boss phụ Interlude (Interlude Optional Bosses) xuất hiện cùng nhau trong Path of Exile 2. Trận chiến diễn ra tại khu vực The Khari Crossing trong chuỗi nhiệm vụ tuyển mộ bộ tộc Maraketh (Recruit the Maraketh). Đây là một thử thách kép độc đáo khi bạn phải đối đầu đồng thời với cả Akthi, the Final Sting (bọ cạp băng giá) và Anundr, the Sandworm (sâu cát độc hại). Để nhận phần thưởng là Book of Specialisation (cho 2 điểm kỹ năng Passive Skill Points), bạn cần quay lại Khari Bazaar và nói chuyện với Risu để bắt đầu và hoàn thành nhiệm vụ phụ 'Clearing the Way'.",
       "mechanics": [
-        "Đánh 2 boss cùng lúc nên áp lực sát thương từ nhiều hướng.",
-        "Quicksand patches (Anundr): chừng nào Anundr còn sống thì các vũng cát lún (quicksand) sẽ liên tục xuất hiện khắp sân. Đứng vào là bị làm chậm nặng và sẽ chết nếu không thoát ra kịp."
+        "Focus on Anundr First (Tiêu diệt Anundr trước): Miễn là Anundr còn sống, các bãi cát lún (quicksand) sẽ liên tục xuất hiện trên đấu trường, làm chậm và khiến bạn dễ bị trúng các đòn tấn công khác. Hãy tập trung hạ gục Anundr trước.",
+        "Respect Ground Effects (Cảnh giác với các hiệu ứng mặt đất): Cả hai boss đều tạo ra nhiều hiệu ứng nguy hiểm dưới đất như Quicksand (cát lún) làm chậm và Caustic Ground (đất ăn mòn) gây sát thương chaos lớn theo thời gian.",
+        "Tail Swipe (Quét đuôi - Akthi): Akthi xoay người và quét đuôi theo hình vòng cung rộng xung quanh. Cần đi ra ngoài tầm quét hoặc né ngược ra sau trước khi đòn đánh trúng.",
+        "Burrowing Assault (Tấn công dưới lòng đất - Akthi): Akthi nhảy về phía bạn trước khi lặn xuống cát và trồi lên tấn công liên tiếp. Hãy né sang một bên mỗi khi boss vồ lên.",
+        "Venom Barrage (Mưa nọc độc - Akthi): Akthi dùng đuôi làm điểm tựa rồi bắn một loạt đạn độc về phía người chơi. Di chuyển liên tục theo chiều ngang để né tránh.",
+        "Stinger Slam (Nện ngòi độc - Akthi): Akthi cắm mạnh ngòi đuôi xuống đất, tạo ra vùng caustic ground gây sát thương ăn mòn. Hãy né sang bên ngay khi thấy boss giơ cao đuôi.",
+        "Poison Smash (Đập độc - Anundr): Khi ở gần, cơ thể Anundr phát sáng màu xanh lá trước khi lao mạnh xuống đất. Nhanh chóng né khỏi đường lao của nó.",
+        "Burrowed Assault (Trồi lên phun độc - Anundr): Anundr lặn xuống đất rồi trồi lên tấn công, phun ra bãi độc và triệu hồi thêm sâu con (larvae) trợ chiến.",
+        "Venom Volley (Loạt đạn độc - Anundr): Anundr bắn một loạt đạn độc về phía bạn. Né bằng cách di chuyển ngang hoặc cuộn lăn liên tục.",
+        "Poison Spit (Phun độc cơ bản - Anundr): Đòn đánh cơ bản bắn ra 3 tia độc chậm và rất dễ né tránh.",
+        "Quicksand (Cát lún - Anundr): Tạo ra các vùng cát lún làm chậm tốc độ di chuyển và khiến việc né tránh các kỹ năng khác trở nên khó khăn hơn."
       ],
       "phases": [],
-      "strategy": "Vì các vũng quicksand chỉ ngừng sinh ra khi Anundr chết, ưu tiên dồn hạ Anundr trước để dọn sạch cơ chế phiền phức này, sau đó xử lý Akthi thong thả. Luôn để ý nền đất và đừng đứng yên một chỗ — vừa thấy vũng cát hiện ra là né khỏi nó ngay. Sau khi clear, về Khari Bazaar nói chuyện với Risu để nhận thưởng.",
-      "rewards": [
-        "Book of Specialisation (dùng được 2 Passive Skill Point)",
-        "Về Khari Bazaar gặp Risu để bắt và hoàn thành quest nhận thưởng"
-      ],
+      "strategy": "Trong trận đấu này, chiến thuật tối ưu là tập trung dồn sát thương tiêu diệt Anundr trước. Lý do là Anundr liên tục tạo ra các bãi cát lún Quicksand trên đấu trường, khiến tốc độ di chuyển của bạn bị giảm nghiêm trọng và cực kỳ dễ trúng các chuỗi chiêu thức nguy hiểm của Akthi. Hãy di chuyển liên tục, tận dụng các kỹ năng di chuyển (movement skills) để thoát khỏi vùng cát lún hoặc caustic ground.\n\nAkthi có điểm yếu trước sát thương Băng (Cold) còn Anundr không có điểm yếu kháng tính đặc biệt nào. Cả hai đều gây sát thương Vật lý và Chaos (Chaos & Physical Damage), đồng thời áp dụng hiệu ứng trúng độc (Poisoned) và làm chậm. Hãy chuẩn bị các trang bị kháng Chaos và bình giải độc/giảm hiệu ứng làm chậm để gia tăng khả năng sinh tồn.",
       "tips": [
-        "Tập trung burst Anundr trước để tắt cơ chế quicksand, fight nhẹ đi hẳn.",
-        "Giữ chân di chuyển liên tục, đừng để bị dính chậm trong vũng cát lúc cả hai boss cùng đánh."
+        "Luôn ưu tiên tập trung tiêu diệt Anundr trước để loại bỏ cơ chế cát lún làm chậm.",
+        "Cảnh giác và tránh xa các bãi Quicksand và Caustic Ground trên mặt đất.",
+        "Khi thấy Akthi chuẩn bị giơ cao đuôi (Stinger Slam) hoặc phóng lên (Venom Barrage), hãy dùng kỹ năng di chuyển để né tránh kịp thời.",
+        "Sử dụng sát thương Băng (Cold Damage) để tận dụng điểm yếu của Akthi.",
+        "Chuẩn bị sẵn kháng độc và kháng Chaos để chống chọi với các đòn đánh độc hại của cả hai boss."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Yêu cầu hoàn thành nhiệm vụ Interlude \"Recruit the Maraketh\" tại khu vực The Khari Crossing để chạm trán boss."
+    ],
+    "curated": true
   },
   "sigbert-and-godwin": {
     "name": "Sigbert and Godwin",
@@ -1126,21 +1287,25 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Interlude",
     "location": "Holten",
     "vi": {
-      "overview": "Sigbert và Godwin là cặp boss optional ở Interlude, tại Holten Estate. Fight được kích hoạt khi bạn tương tác với Psalm of Blood. Điểm mấu chốt của trận này nằm ở cách bạn xử lý lúc kết liễu hai con.",
+      "overview": "Sigbert and Godwin là cặp đôi boss tùy chọn thuộc phần Interlude (Holten Estate) trong Path of Exile 2. Trận chiến diễn ra khi bạn tương tác với Psalm of Blood (Thánh vịnh Máu). Đây là thử thách yêu cầu bạn phải đối đầu cùng lúc với hai hiệp sĩ có thuộc tính đối nghịch nhau (Lửa và Băng). Bạn cần kiểm soát và rút máu của cả hai thật đều trước khi tiêu diệt một trong hai, tránh để kẻ còn sống hấp thụ sức mạnh của đồng minh đã ngã xuống.",
       "mechanics": [
-        "Đánh đồng thời 2 boss anh em.",
-        "Absorb power: khi một con bị hạ, con còn lại sẽ hút sức mạnh của đồng đội đã ngã, mạnh lên hẳn nếu bạn để nó hồi đủ."
+        "Hiệp sĩ Băng Sigbert: Sử dụng đòn tấn công cận chiến gây sát thương Vật lý và Băng (Physical & Cold), có khả năng gây trạng thái Buốt giá (Chill) và Đóng băng (Freeze). Sigbert kháng Băng tốt nhưng lại yếu trước Lửa (Fire).",
+        "Hiệp sĩ Lửa Godwin: Tấn công gây sát thương Vật lý và Lửa (Physical & Fire), có khả năng gây trạng thái Thiêu đốt (Ignite). Godwin kháng Lửa tốt nhưng lại yếu trước Băng (Cold).",
+        "Hấp thụ sức mạnh (Power Absorption): Khi một trong hai hiệp sĩ tử trận, kẻ còn sống sẽ bắt đầu hấp thụ sức mạnh của người đồng hành để trở nên cuồng bạo hơn và gia tăng lượng lớn sát thương. Bạn cần hạ lượng máu của cả hai xuống mức rất thấp trước khi kết liễu một người."
       ],
       "phases": [],
-      "strategy": "Cách tối ưu là hạ cả hai cùng lúc: kéo máu cả Sigbert lẫn Godwin xuống thấp đều nhau, rồi finish một con và lập tức burst con còn lại ngay khi nó đang hút sức mạnh của đồng đội. Đừng giết hẳn một con từ sớm, vì khi đó con còn lại sẽ hấp thụ và trở nên nguy hiểm hơn nhiều.",
-      "rewards": [
-        "Loot rớt thường + thưởng quest Interlude"
-      ],
+      "strategy": "Chiến thuật tối ưu nhất là cấu máu (DPS) song song cả Sigbert và Godwin. Hãy giữ lượng máu của cả hai giảm đều nhau. Khi máu của cả hai đã xuống rất thấp, hãy nhanh chóng kết liễu một hiệp sĩ và lập tức dồn toàn bộ sát thương để tiêu diệt tên còn lại trước khi hắn hoàn tất việc hấp thụ sức mạnh.\n\nNgoài ra, hãy chú ý sử dụng các thuộc tính khắc chế: dùng sát thương Fire để tấn công Sigbert và sát thương Cold để tấn công Godwin nhằm tối đa hóa lượng sát thương gây ra.",
       "tips": [
-        "Chia damage đều cho cả hai thay vì dồn chết một con trước.",
-        "Để dành burst lớn cho khoảnh khắc con thứ hai đang absorb — đó là lúc nó dễ bị hạ gọn nhất."
+        "Không nên tiêu diệt một hiệp sĩ quá sớm khi kẻ còn lại vẫn còn nhiều máu.",
+        "Chuẩn bị các bình dược (Flask) hoặc trang bị kháng Ignite (Lửa) và Chill/Freeze (Băng) để đối phó với hiệu ứng bất lợi từ hai boss.",
+        "Tấn công Sigbert bằng kỹ năng hệ Lửa (Fire) và tấn công Godwin bằng hệ Băng (Cold) để tận dụng điểm yếu thuộc tính của chúng."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Kích hoạt khi tương tác với Psalm of Blood (Thánh vịnh Máu) tại Holten Estate trong phần Interlude."
+    ],
+    "curated": true
   },
   "oswin-the-dread-warden": {
     "name": "Oswin, the Dread Warden",
@@ -1148,22 +1313,26 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Interlude",
     "location": "Wolvenhold",
     "vi": {
-      "overview": "Oswin, the Dread Warden là boss optional ở Interlude, gặp tại Wolvenhold. Đòn nguy hiểm nhất của hắn là bell attack — nếu không quản lý debuff Profane Flame thì rất dễ bị crit một phát chết ngay.",
+      "overview": "Oswin, the Dread Warden là một boss tùy chọn thuộc chương Interlude (Phần giữa hai Chương) trong Path of Exile 2, nằm ở khu vực Wolvenhold. Bạn sẽ đối đầu với hắn trong chuỗi nhiệm vụ 'Recruit the Ezomytes'. Trận đấu với Oswin đòi hỏi người chơi phải cảnh giác cao độ trước các đòn tấn công bằng chuông của hắn, vì chúng gây ra debuff Profane Flame tích lũy cực kỳ nguy hiểm, có khả năng kết liễu bạn chỉ bằng một cú chí mạng.",
       "mechanics": [
-        "Bell attack: Oswin triệu một cái chuông rồi bổ rìu vào đó tạo ra vụ nổ cực mạnh.",
-        "Profane Flame (debuff cộng dồn): mỗi lần dính bell attack lại tăng stack, làm tăng khả năng bạn bị đánh chí mạng (crit). Quá nhiều stack thì một đòn crit có thể giết bạn ngay."
+        "Avoid the Bell Attack (Né tránh Đòn đánh Chuông): Oswin triệu hồi một chiếc chuông lớn và dùng rìu đập mạnh vào nó, tạo ra vụ nổ diện rộng (AoE) cực mạnh.",
+        "Profane Flame (Lửa Bất tịnh): Đòn đánh nổ chuông sẽ áp dụng hiệu ứng debuff tích lũy Profane Flame lên người chơi. Debuff này làm tăng tỉ lệ bị trúng đòn chí mạng từ boss, khiến bạn dễ dàng bị tiêu diệt nếu cộng dồn quá cao.",
+        "Physical & Cold Attacks (Tấn công Vật lý và Băng): Các đòn đánh thường và rìu của boss gây sát thương Vật lý kèm sát thương Băng, có thể gây ra hiệu ứng làm chậm (Chill) hoặc đóng băng (Freeze)."
       ],
       "phases": [],
-      "strategy": "Cốt lõi là dodge cho bằng được bell attack và không để stack Profane Flame chồng lên cao. Mỗi lần Oswin dựng chuông và vung rìu, dodge ra xa khỏi vùng nổ. Nếu lỡ ăn vài stack, hãy chơi an toàn hơn, né kỹ các đòn còn lại để không ăn crit lúc đang nhiều stack. Giữ stack thấp thì trận này không quá đáng sợ.",
-      "rewards": [
-        "+2 Passive Skill Point",
-        "Loot rớt thường"
-      ],
+      "strategy": "Trận chiến với Oswin, the Dread Warden yêu cầu bạn phải liên tục di chuyển và né tránh đòn đánh chuông của hắn. Ngay khi chiếc chuông khổng lồ xuất hiện trên sàn đấu, hãy ngay lập tức dùng kỹ năng di chuyển (dash/dodge roll) để thoát ra ngoài tầm nổ. Tránh để cộng dồn debuff Profane Flame quá nhiều; nếu vô tình bị dính debuff, hãy lùi lại chơi phòng thủ để chờ hiệu ứng biến mất trước khi tiếp tục tấn công. Ngoài ra, hãy chuẩn bị đầy đủ kháng Băng và mang theo bình giải đóng băng để đối phó với hiệu ứng Chill/Freeze từ các đòn đánh của boss.",
       "tips": [
-        "Coi bell attack là ưu tiên né số một — vừa thấy hắn dựng chuông là dodge ngay.",
-        "Để ý số stack Profane Flame; nhiều stack thì chơi thủ hơn vì rủi ro bị crit chết tăng cao."
+        "Luôn chú ý quan sát để phát hiện và né tránh chiếc chuông khổng lồ ngay khi nó được triệu hồi.",
+        "Khi bị tích lũy debuff Profane Flame, hãy tạm thời rút lui để chờ debuff hết thời gian, tránh việc bị boss đánh chí mạng.",
+        "Chuẩn bị đầy đủ kháng Băng (Cold Resistance) và trang bị bình thuốc chống đóng băng/làm chậm.",
+        "Sử dụng các kỹ năng di chuyển cơ động để cấu rỉa và giữ khoảng cách an toàn với boss."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Tiếp cận khu vực Wolvenhold trong chương Interlude để thực hiện nhiệm vụ 'Recruit the Ezomytes'."
+    ],
+    "curated": true
   },
   "the-abominable-yeti": {
     "name": "The Abominable Yeti",
@@ -1171,22 +1340,26 @@ window.POE2_BOSS_DETAILS = {
     "group": "Optional — Interlude",
     "location": "Howling Caves",
     "vi": {
-      "overview": "The Abominable Yeti là boss optional ở Interlude, trong Howling Caves trong quest Howling Winds. Đây là một con boss chậm nhưng đấm rất đau, thiên về sát thương physical và cold. Điểm hay là các đòn của nó đều có wind-up dài nên dễ đọc.",
+      "overview": "The Abominable Yeti (Dã nhân Tuyết Đáng sợ) là một boss tùy chọn thuộc phần Interlude (Giai đoạn chuyển giao giữa các Act / chuỗi nhiệm vụ Recruit the Vaal) trong Path of Exile 2, cư ngụ tại Howling Caves. Người chơi sẽ đối đầu với sinh vật khổng lồ này trong chuỗi nhiệm vụ phụ 'Howling Winds'. Trận đấu kiểm tra khả năng định vị và né tránh các đòn tấn công vật lý cận chiến nặng nề cùng khả năng gây đóng băng (Frozen) của Yeti.",
       "mechanics": [
-        "Đòn physical và cold mạnh, chậm rãi nhưng dính một phát là mất rất nhiều máu.",
-        "Wind-up rõ: hầu hết đòn đều có động tác lấy đà lâu, cho bạn khoảng trống để né hoặc lách vòng quanh nó."
+        "Heavy Swings (Vung tay nặng nề): Boss thực hiện các cú vung tay cận chiến với thời gian chuẩn bị đòn (wind-up) dài, gây sát thương Physical lớn nhưng dễ né tránh nếu di chuyển kịp thời.",
+        "Cold & Freeze (Sát thương Băng & Đóng băng): Các đòn tấn công của boss có thể gây sát thương Cold và áp dụng trạng thái Frozen lên người chơi dính chiêu."
       ],
       "phases": [],
-      "strategy": "Tận dụng việc nó vung tay chậm: chờ cho đòn vung kết thúc rồi mới áp vào đánh trả. Né cẩn thận, đừng tham đánh trong lúc nó đang lấy đà. Cứ kiên nhẫn xoay vòng quanh nó, chờ swing hết là dí damage — chậm mà chắc là thắng.",
-      "rewards": [
-        "Icy Tusks (item quest — đem về The Glade đưa cho Hilda)",
-        "Loot rớt thường"
-      ],
+      "strategy": "Trận chiến với The Abominable Yeti tương đối đơn giản nhưng đòi hỏi sự cẩn trọng. Hầu hết các đòn tấn công của Yeti đều có thời gian chuẩn bị khá lâu, cung cấp cho bạn một khoảng thời gian rõ ràng để né sang một bên hoặc di chuyển vòng ra sau lưng hắn. Đừng cố gắng chịu đòn trực diện vì sát thương gây ra là cực kỳ lớn.\n\nHãy kiên nhẫn chờ đợi Yeti thực hiện xong chuỗi vung đòn của mình, sau đó phản công mạnh mẽ khi hắn xuất hiện sơ hở. Tận dụng việc boss có kháng sát thương Vật lý để sử dụng các nguồn sát thương Nguyên tố khác nhằm rút máu hắn nhanh nhất.",
       "tips": [
-        "Đừng vội, mỗi đòn nó đều báo trước rõ; chỉ cần kiên nhẫn né rồi đánh trả là an toàn.",
-        "Nhớ mang Icy Tusks về The Glade giao cho Hilda để hoàn thành quest."
+        "Chú ý hoạt ảnh chuẩn bị đòn đánh của Yeti để chủ động né tránh bằng cách chạy vòng quanh hoặc sử dụng kỹ năng dịch chuyển.",
+        "Không nên đứng yên một chỗ quá lâu; việc liên tục di chuyển ra sau lưng boss là vị trí an toàn nhất.",
+        "Nên trang bị bình thuốc hoặc vật phẩm có thuộc tính giải Đóng băng (Frozen) phòng trường hợp dính chiêu.",
+        "Tận dụng các nguồn sát thương Nguyên tố (Elemental Damage) thay vì Sát thương Vật lý (Physical Damage) do boss có Kháng Vật lý."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Kích hoạt và thực hiện nhiệm vụ phụ 'Howling Winds' trong phần Interlude (chuỗi nhiệm vụ Recruit the Vaal).",
+      "Tìm đường đến hang động Howling Caves để đối đầu với The Abominable Yeti."
+    ],
+    "curated": true
   },
   "the-pale-angel": {
     "name": "The Pale Angel",
@@ -1194,23 +1367,30 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atlas / Map",
     "location": "Corrupted Nexus",
     "vi": {
-      "overview": "The Pale Angel là một trong các boss Atlas mà bạn gặp khi dọn xong Corrupted Nexus. Đây là dạng boss đánh liên tục, ít pha rõ rệt nhưng tấn công dồn dập nên đòi hỏi bạn phải di chuyển không ngừng.",
+      "overview": "The Pale Angel là một boss thuộc hệ thống Atlas / Map trong Path of Exile 2, mà bạn có thể chạm trán sau khi dọn sạch một khu vực Corrupted Nexus. Đây là một trận đấu thử thách khả năng di chuyển linh hoạt của người chơi khi boss liên tục tung ra các đòn tấn công định hướng và sát thương diện rộng. Phần lớn các chiêu thức của The Pale Angel đều là các đòn đánh trực diện (frontal attacks) về phía trước. Hãy liên tục di chuyển để né tránh chuỗi đòn tấn công dồn dập này.",
       "mechanics": [
-        "Tấn công liên tục với nhiều chiêu khác nhau, hầu hết đều hướng thẳng về phía trước (frontal attacks).",
-        "Các đòn tuy cùng kiểu frontal nhưng khác nhau về tốc độ, tầm và số lượng projectile, nên đừng chủ quan đứng yên.",
-        "Vì đa số đòn đều bắn về trước, đứng lệch sang bên hông boss sẽ né được phần lớn sát thương."
+        "Lightning Arrow: The Pale Angel triệu hồi một cây cung, tích tụ năng lượng và bắn ra một mũi tên sét mạnh sau một khoảng trễ ngắn. Hãy chú ý né sang hai bên ngay khi mũi tên được phóng ra.",
+        "Lightning Dash: The Pale Angel triệu hồi một ngọn giáo sét trước khi lướt nhanh về phía người chơi.",
+        "Flame Discs: The Pale Angel ném liên tiếp hai đĩa lửa về phía bạn.",
+        "Spear Thrust: Không hề có động tác báo trước (wind-up), The Pale Angel đột ngột đâm ngọn giáo về phía trước.",
+        "Circular Slash: Sau một động tác chuẩn bị ngắn, The Pale Angel vung lưỡi hái chém theo hình bán nguyệt về phía trước.",
+        "Ground Slam: The Pale Angel nện mạnh vũ khí xuống đất, tạo ra các gai nhọn trồi lên từ mặt đất hướng về phía người chơi.",
+        "Leap Slam: Khi ở khoảng cách xa, The Pale Angel sẽ nhảy bổ về phía bạn, gây sát thương diện rộng (AoE) khi tiếp đất. Một làn sóng xung kích thứ hai sẽ bùng phát sau một khoảng trễ ngắn."
       ],
       "phases": [],
-      "strategy": "Chìa khóa của trận này là di chuyển liên tục và canh vị trí đứng. Đừng đứng chính diện trước mặt boss vì gần như mọi đòn đều bắn thẳng về trước. Cứ vừa chạy vòng vừa chen đòn (dodge roll qua những đòn né được), tận dụng khoảng nghỉ giữa các chiêu để counterattack.",
-      "rewards": [
-        "Loot Atlas thường khi hạ boss",
-        "Tiến độ dọn region Corrupted Nexus"
-      ],
+      "strategy": "Chìa khóa để đánh bại The Pale Angel là duy trì sự cơ động và luôn chạy vòng quanh boss để né các đòn tấn công trực diện (frontal attacks). Hầu hết các chiêu thức của boss đều đi theo đường thẳng phía trước, vì vậy bạn có thể dễ dàng né tránh bằng cách chạy vòng tròn hoặc lướt sang một bên.\n\nHãy đặc biệt cẩn giác với chiêu Spear Thrust vì nó được thực hiện cực nhanh mà không hề có động tác báo trước. Khi boss nhảy lên thực hiện Leap Slam, hãy di chuyển ra ngoài khu vực ảnh hưởng và đợi làn sóng xung kích thứ hai kết thúc trước khi áp sát phản công.",
       "tips": [
-        "Giữ chân luôn động, tuyệt đối không đứng yên 'tay đôi' chính diện.",
-        "Lách sang hông để né các đòn frontal là cách an toàn và sạch sẽ nhất."
+        "Luôn giữ di chuyển để né tránh các chuỗi đòn tấn công liên tục của boss.",
+        "Phần lớn đòn đánh của The Pale Angel đi theo đường thẳng phía trước, hãy né sang hai bên để tấn công từ mạn sườn.",
+        "Chú ý né cả cú nện ban đầu lẫn làn sóng xung kích thứ hai của chiêu Leap Slam.",
+        "Cảnh giác đòn đâm giáo nhanh (Spear Thrust) không báo trước khi chiến đấu ở cự ly gần."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Có thể chạm trán ngẫu nhiên sau khi dọn sạch một khu vực Corrupted Nexus (Liên Kết Bị Hư Hại) trên bản đồ Atlas."
+    ],
+    "curated": true
   },
   "the-skittermind": {
     "name": "The Skittermind",
@@ -1218,23 +1398,29 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atlas / Map",
     "location": "Corrupted Nexus",
     "vi": {
-      "overview": "The Skittermind là boss Atlas xuất hiện khi bạn dọn xong Corrupted Nexus. Boss này di chuyển khá chậm nhưng bù lại mọi đòn đều có AoE lớn, nên đánh từ xa và né khéo là ăn chắc.",
+      "overview": "The Skittermind là một Atlas Boss trong Path of Exile 2 (PoE 2), xuất hiện sau khi người chơi dọn sạch một khu vực Corrupted Nexus (Liên Kết Bị Hư Hại). Boss này sở hữu các đòn tấn công có phạm vi ảnh hưởng rộng (AoE), chủ yếu gây sát thương vật lý và sát thương lửa với khả năng gây hiệu ứng Ignite (Thiêu đốt). Mặc dù các đòn đánh của The Skittermind có uy lực lớn và diện rộng, nhưng tốc độ di chuyển và ra đòn của nó lại khá chậm chạp so với các kẻ địch khác, mang lại cho người chơi cơ hội tốt để giữ cự ly và né tránh hiệu quả.",
       "mechanics": [
-        "Toàn bộ chiêu của boss đều có AoE đáng kể, dễ trúng nếu đứng sát.",
-        "Tốc độ di chuyển chậm so với nhiều boss khác, dễ kéo giãn khoảng cách.",
-        "Khi boss slam xuống đất sẽ tạo ra các fissure (vết nứt); ở cuối vết nứt mọc lên các cấu trúc kiểu núi lửa nhỏ gây sát thương trong vùng quanh nó."
+        "Constant AoE Attacks: Hầu hết các đòn tấn công của The Skittermind đều có phạm vi diện rộng (AoE) rất lớn. Tuy nhiên, tốc độ ra đòn chậm giúp bạn dễ dàng giữ khoảng cách và di chuyển né tránh kịp thời.",
+        "Small Fissures: Khi boss đập mạnh xuống đất, các vết nứt nhỏ sẽ xuất hiện trên sàn đấu. Các cấu trúc dạng núi lửa nhỏ mọc lên ở cuối vết nứt sẽ gây sát thương diện rộng xung quanh khi phun trào.",
+        "Molten Rock Barrage: Boss phun ra các làn sóng đá nóng chảy lan rộng dần ra phía ngoài với phạm vi rất xa.",
+        "Ground Slam Combo: Boss liên tục đập mạnh xuống đất nhiều lần, tạo ra các vết nứt phun trào đá nóng chảy gây sát thương trong phạm vi nhỏ.",
+        "Leap Slam: Khi người chơi đứng ở cự ly xa, boss sẽ nhảy bổ về phía bạn, gây sát thương diện rộng lớn khi tiếp đất.",
+        "Melee Hit: Boss đá một chân về phía trước để tấn công cận chiến. Đây là đòn đánh cơ bản nhất của nó."
       ],
       "phases": [],
-      "strategy": "Tận dụng việc boss chậm chạp để giữ khoảng cách và đánh tỉa từ xa. Khi thấy boss slam đất, để ý hướng các fissure lan ra và tránh xa điểm cuối nơi mọc 'núi lửa'. Dodge qua những đòn AoE né được, đừng tham đứng cận chiến quá lâu.",
-      "rewards": [
-        "Loot Atlas thường khi hạ boss",
-        "Tiến độ dọn region Corrupted Nexus"
-      ],
+      "strategy": "Chìa khóa để đánh bại The Skittermind là tận dụng tốc độ di chuyển chậm của nó để giữ khoảng cách an toàn và liên tục tấn công từ xa hoặc vòng ra sau lưng. Hãy luôn đề phòng các đòn tấn công diện rộng (AoE) liên tiếp của boss.\n\nĐặc biệt lưu ý cơ chế Small Fissures: mỗi khi boss đập đất tạo ra vết nứt, hãy lập tức di chuyển tránh xa đường nứt đó vì các núi lửa nhỏ mọc ra ở đầu vết nứt sẽ phun trào gây sát thương rất lớn. Nếu chơi cận chiến, hãy chú ý né đòn Melee Hit (đá chân) nhanh của boss và lùi lại khi thấy boss chuẩn bị thực hiện chuỗi Ground Slam Combo. Đối với người chơi tầm xa, hãy luôn chuẩn bị sẵn sàng lướt hoặc chạy ngay khi thấy boss chuẩn bị thực hiện cú Leap Slam nhảy bổ vào bạn.",
       "tips": [
-        "Kéo giãn cự ly là dễ nhất vì boss di chuyển chậm.",
-        "Sau đòn slam, né khỏi cả vết nứt lẫn 'núi lửa' mọc ở đầu nứt."
+        "Chuẩn bị kháng lửa (Fire Resistance) tốt và trang bị bình giải hiệu ứng Ignite (Thiêu đốt) vì boss gây sát thương lửa rất mạnh.",
+        "Luôn giữ di chuyển linh hoạt để dễ dàng tránh né các đòn tấn công diện rộng vốn có tốc độ ra chiêu khá chậm.",
+        "Tránh đứng trên đường đi hoặc điểm cuối của các vết nứt (Fissures) để không bị dính sát thương từ các núi lửa phun trào.",
+        "Khi đứng xa boss, hãy chú ý tư thế chuẩn bị nhảy của boss để né tránh kịp thời cú Leap Slam."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Có thể chạm trán sau khi dọn sạch một khu vực Corrupted Nexus (Liên Kết Bị Hư Hại) trên bản đồ Atlas."
+    ],
+    "curated": true
   },
   "the-eater-of-flesh": {
     "name": "The Eater of Flesh",
@@ -1242,23 +1428,35 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atlas / Map",
     "location": "Corrupted Nexus",
     "vi": {
-      "overview": "The Eater of Flesh là boss Atlas tại Corrupted Nexus, cũng chính là boss bạn phải hạ trong quest The Cataclysm's Wake. Boss đánh dồn dập với cả đòn đơn mục tiêu lẫn AoE, nhưng có vài chiêu chậm để hở sườn cho bạn counter.",
+      "overview": "The Eater of Flesh là một boss thuộc hệ thống Atlas / Map trong Path of Exile 2 (PoE 2). Bạn có thể chạm trán boss này sau khi dọn sạch khu vực Corrupted Nexus (Liên Kết Bị Hư Hại). Đây cũng chính là boss bạn sẽ phải đối mặt khi dọn dẹp Corrupted Nexus trong chuỗi nhiệm vụ The Cataclysm's Wake.",
       "mechanics": [
-        "Tấn công liên tục đan xen giữa đòn single-target và AoE.",
-        "Một số đòn ra chậm, để hở ra khoảng trống để bạn nhảy vào đánh trả.",
-        "Chiêu khó chịu nhất là Whip Barrage trồi lên từ mặt đất; nếu không tank nổi thì nên chạy vòng quanh boss tới khi đòn kết thúc rồi mới counter."
+        "Whip Barrage (Cơn mưa Roi): The Eater of Flesh cắm hai tay xuống đất, triệu hồi nhiều xúc tu lớn giống như những chiếc roi da đập liên tiếp về hướng của bạn.",
+        "Blood Spray (Phun Máu): The Eater of Flesh phun máu thành hình nón diện rộng về phía trước.",
+        "Piercing Blood (Tia Máu Xuyên Thấu): Sau một khoảng trễ ngắn, The Eater of Flesh bắn ra một tia máu duy nhất cực mạnh từ bụng của hắn.",
+        "Body Slam (Cú đè Thân thể): Boss gầm lên, nhảy bổ về phía trước và nện cả cơ thể khổng lồ của mình xuống đất gây sát thương diện rộng (AoE).",
+        "Melee Whip Attack (Vụt Roi Cận chiến): Boss quất mạnh cánh tay về phía trước trong phạm vi cận chiến. Đây là đòn tấn công cơ bản nhất của hắn.",
+        "Flared Burst (Bộc phát Xúc tu): The Eater of Flesh vận lực tích tụ năng lượng trước khi phóng ra nhiều xúc tu tỏa rộng ra xung quanh cùng một lúc."
       ],
       "phases": [],
-      "strategy": "Đọc nhịp đánh của boss: né/tank qua các đòn nhanh, rồi chen damage vào những chiêu chậm để hở sườn. Với Whip Barrage, nếu build không đủ chống chịu thì đừng cố tham, cứ chạy vòng quanh boss đợi đòn hết rồi quay lại đánh.",
-      "rewards": [
-        "Loot khi hạ boss",
-        "Hoàn thành quest The Cataclysm's Wake"
-      ],
+      "strategy": "The Eater of Flesh liên tục tung ra các đòn tấn công đơn mục tiêu lẫn diện rộng (AoE). Tuy nhiên, một số chiêu thức của hắn có tốc độ thi triển khá chậm, tạo cơ hội cho bạn tấn công khi hắn đang sơ hở. Hãy tận dụng những khoảng trống ngắn ngủi giữa các đòn đánh chậm này để phản công.\n\nMột trong những chiêu thức khó chịu và nguy hiểm nhất của The Eater of Flesh là Whip Barrage trồi lên từ mặt đất. Trừ khi nhân vật của bạn cực kỳ cứng cáp và có thể chống chịu trực tiếp qua chuỗi đòn đánh này, khuyến nghị tốt nhất là bạn nên di chuyển vòng quanh boss liên tục cho đến khi chiêu thức kết thúc rồi mới quay lại phản công.",
       "tips": [
-        "Tận dụng các chiêu chậm để hở sườn làm cửa sổ counterattack.",
-        "Whip Barrage: nếu không tank nổi thì chạy vòng đợi nó kết thúc, đừng đôi công."
+        "Tận dụng các khoảng trễ sau những đòn tấn công chậm của boss để áp sát và gây sát thương tối đa.",
+        "Khi boss dùng chiêu Whip Barrage, hãy chạy vòng quanh hắn thay vì đứng lại tấn công để tránh bị các xúc tu đập trúng.",
+        "Đòn Piercing Blood bắn ra tia máu từ bụng có thời gian báo trước ngắn, hãy chú ý né sang hai bên ngay khi thấy hắn vận lực.",
+        "Tránh đứng trước mặt boss để giảm thiểu nguy cơ dính các đòn đánh trực diện cận chiến hoặc phun máu (Blood Spray)."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Book of Knowledge",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Chạm trán sau khi hoàn thành/dọn sạch khu vực Corrupted Nexus (Liên Kết Bị Hư Hại) trên bản đồ Atlas.",
+      "Là boss bắt buộc phải vượt qua trong nhiệm vụ 'The Cataclysm's Wake'."
+    ],
+    "curated": true
   },
   "the-immured-fury": {
     "name": "The Immured Fury",
@@ -1266,23 +1464,30 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atlas / Map",
     "location": "Cleansed Maps",
     "vi": {
-      "overview": "The Immured Fury là boss Atlas spawn ngẫu nhiên, chỉ xuất hiện trên Cleansed Maps. Bạn phải dọn Corrupted Nexus để Cleanse các khu vực xung quanh; boss sẽ spawn trên một cleansed map ở region Corrupted Nexus thứ 3 của bạn.",
+      "overview": "The Immured Fury là một boss thuộc hệ thống Atlas / Map trong Path of Exile 2, xuất hiện ngẫu nhiên và duy nhất trong các bản đồ đã được thanh tẩy (Cleansed Maps). Để tiếp cận các bản đồ này và chạm trán boss, bạn cần phải dọn sạch Corrupted Nexus (Liên Kết Bị Hư Hại) nhằm thanh tẩy các khu vực xung quanh. Đây là một trận đấu thử thách cao độ khả năng chọn vị trí của người chơi, do boss liên tục sử dụng các phép thuật diện rộng (AoE) hệ Lửa nguy hiểm có thể chồng chéo lên nhau trên khắp đấu trường.",
       "mechanics": [
-        "Sở hữu nhiều spell AoE có thể chồng lấn (overlap) lên nhau trên sàn, tạo ra những vùng nguy hiểm rộng.",
-        "Vì các vùng AoE chồng nhau, bạn phải canh vị trí an toàn trước khi đứng lại đánh trả.",
-        "Boss spawn ở vị trí ngẫu nhiên trên map nên cần đi rà tìm khắp map mới gặp."
+        "Charged Explosion: The Immured Fury tập trung năng lượng vào một điểm duy nhất trước khi giải phóng một vụ nổ diện rộng (AoE) cực mạnh.",
+        "Fire Beam: Boss bắn ra một luồng tia lửa tập trung hướng thẳng về phía trước.",
+        "Fire Orbs: Boss triệu hồi hai quả cầu lửa di chuyển liên tục trên sân đấu, gây sát thương lớn khi va chạm với người chơi.",
+        "Orb Explosions: Hai quả cầu lửa được triệu hồi đứng yên trước khi bùng phát thành các cột lửa liên tục gây sát thương khi tiếp xúc.",
+        "Turret Orbs: Triệu hồi các quả cầu lửa xoay tròn hoạt động như những ụ súng bắn ra hàng loạt đạn lửa nhỏ theo quỹ đạo tròn.",
+        "Aura Explosion: Boss vung gậy phép tích tụ năng lượng rồi kích nổ một luồng sóng xung kích từ tâm lan tỏa ra xung quanh.",
+        "Meteor Shower: Gọi xuống một cơn mưa thiên thạch nhỏ rơi ngẫu nhiên dội xuống khắp đấu trường."
       ],
       "phases": [],
-      "strategy": "Đừng đứng yên một chỗ vì các vùng AoE dễ chồng lên nhau và bao trùm vị trí của bạn. Luôn quan sát sàn, dời sang vùng trống trước khi chen damage. Với bản quest, hãy chịu khó đi rà khắp map vì boss spawn ngẫu nhiên.",
-      "rewards": [
-        "Loot khi hạ boss (bản Atlas thường)",
-        "Lưu ý: bản quest của Immured Fury KHÔNG rớt item đặc biệt"
-      ],
+      "strategy": "Chìa khóa để đánh bại The Immured Fury là luôn ưu tiên chọn vị trí an toàn trước khi nghĩ đến việc phản công. Boss sở hữu nhiều kỹ năng diện rộng (AoE) hệ Lửa nguy hiểm và có khả năng chồng chéo lên nhau tạo nên các vùng nguy hiểm trên mặt đất.\n\nHãy đặc biệt cảnh giác với các chiêu thức triệu hồi quả cầu (Fire Orbs, Orb Explosions, Turret Orbs) vì chúng làm thu hẹp không gian né tránh của bạn đáng kể. Khi boss bắt đầu vận năng lượng cho Charged Explosion hoặc Aura Explosion, hãy ngay lập tức lướt ra xa khỏi tầm ảnh hưởng của vòng tròn chỉ báo đỏ. Đồng thời, liên tục di chuyển để né tránh cơn mưa thiên thạch (Meteor Shower) dội xuống sân.",
       "tips": [
-        "Né các vùng AoE chồng lấn; chỉ đứng đánh khi đã chắc chân ở chỗ trống.",
-        "Bản quest spawn random vị trí, cứ đi rà cả map để tìm boss."
+        "Ưu tiên giữ vị trí an toàn và né tránh các vùng đỏ nguy hiểm trước khi phản công.",
+        "Liên tục di chuyển vòng quanh để né các đòn đánh trực diện như Fire Beam.",
+        "Tiêu diệt hoặc tránh xa các khu vực có quả cầu lửa (Fire Orbs, Turret Orbs) để không bị giới hạn không gian né tránh.",
+        "Chú ý chạy liên tục khi Meteor Shower kích hoạt để không bị thiên thạch rơi trúng."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Xuất hiện ngẫu nhiên trong các khu vực bản đồ đã được thanh tẩy (Cleansed Maps). Bạn cần dọn sạch Corrupted Nexus (Liên Kết Bị Hư Hại) để thanh tẩy các bản đồ xung quanh."
+    ],
+    "curated": true
   },
   "zekoa-the-headcrusher": {
     "name": "Zekoa, the Headcrusher",
@@ -1290,23 +1495,29 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atlas / Map",
     "location": "Riverside/Rupture Map",
     "vi": {
-      "overview": "Zekoa, the Headcrusher là boss Atlas gặp trong Riverside hoặc Rupture Map ở endgame. Boss này dùng chung moveset và chỉ số với Mighty Silverfist ở Act 3, đánh nặng về physical damage. Lý do chính để săn Zekoa là sức mạnh của nó khi làm companion.",
+      "overview": "Zekoa, the Headcrusher (Kẻ Nghiền Đầu) là một boss Atlas xuất hiện tại các bản đồ Riverside Map hoặc Rupture Map trong giai đoạn endgame của Path of Exile 2. Boss này sở hữu bộ kỹ năng và chỉ số hoàn toàn tương tự như Mighty Silverfist trong Act 3. Đây là mục tiêu săn lùng hàng đầu để người chơi thu phục làm linh thú đồng hành (Companion) cực kỳ mạnh mẽ bằng kỹ năng Tame Beast nhờ sát thương chí mạng cao và khả năng càn quét tốt. Người chơi thường kết hợp các Unique Tablet hoặc Precursor Tablets với các dòng bổ trợ (ví dụ: cộng thêm Rare Modifier) để tối đa hóa sức mạnh của Zekoa trước khi thu phục.",
       "mechanics": [
-        "Cùng moveset và stats với Mighty Silverfist (Act 3), thiên về các đòn physical sát thương cao.",
-        "Các đòn nặng đa phần hướng về phía trước/chính diện, dễ ăn no nếu đứng đối mặt.",
-        "Có thể gây sát thương physical chí mạng nếu để dính trọn một đòn lớn."
+        "Stay Behind its Back (Luôn giữ vị trí sau lưng): Hãy cố gắng liên tục di chuyển vòng quanh hoặc né tránh (dodge roll) ra phía sau lưng của Zekoa. Boss sở hữu các đòn đánh cận chiến gây sát thương vật lý cực lớn và có thể hạ gục bạn ngay lập tức nếu đứng trực diện.",
+        "Pillar Slam (Cú Đập Cột Đá): Zekoa chuẩn bị và đập mạnh cột đá xuống mặt đất phía trước, tạo ra các sóng xung kích nguy hiểm. Hãy chủ động né sang hai bên ngay khi thấy hắn bắt đầu vận lực.",
+        "Pillar Slash (Cú Quét Cột Đá): Đòn quét cột đá theo chiều ngang gây sát thương diện rộng trước mặt. Hãy né tránh bằng cách lăn xả ra sau lưng boss.",
+        "Rolling Attack (Đòn Lăn Tấn Công): Khi bạn ở khoảng cách xa, Zekoa sẽ bất ngờ lăn trên mặt đất để thu hẹp khoảng cách và gây sát thương lớn mà không có dấu hiệu báo trước rõ ràng. Hãy giữ cự ly gần và sẵn sàng lăn né sang bên.",
+        "Spinning Pillar Attack (Xoay Cột Tấn Công): Đòn đánh xoay cột đá liên tiếp trước khi đập mạnh xuống đất tạo sóng xung kích. Hãy lăn né ra xa và giữ khoảng cách an toàn cho đến khi đòn đánh kết thúc."
       ],
       "phases": [],
-      "strategy": "Tốt nhất là chạy vòng và bám sau lưng boss bất cứ khi nào có thể để tránh ăn các đòn physical chết người ở chính diện. Né các đòn lớn rồi chen damage vào lưng. Nếu bạn nhắm tới việc thu phục nó làm companion, lo phần sống sót qua các đòn nặng trước đã.",
-      "rewards": [
-        "Cơ hội thu phục Zekoa làm companion mạnh (cùng moveset/stats với Mighty Silverfist)",
-        "Loot Atlas khi hạ boss"
-      ],
+      "strategy": "Chiến thuật cốt lõi khi đối đầu với Zekoa là luôn đứng gần và liên tục di chuyển ra sau lưng boss để né tránh các đòn đập cột đá (Pillar Slam/Pillar Slash) vốn có sát thương cực cao nhưng chuẩn bị rất chậm. Đừng đứng quá xa để tránh kích hoạt đòn Rolling Attack bất ngờ.\n\nNếu bạn chơi Spirit Walker, Zekoa là người bạn đồng hành hoàn hảo. Để có phiên bản Zekoa mạnh nhất, hãy chạy các bản đồ có dòng tăng modifier cho quái vật unique (như Cruel Hegemony Unique Tablets hoặc Precursor Tablets) rồi dùng kỹ năng Tame Beast để thu phục khi máu của boss xuống thấp.",
       "tips": [
-        "Bám sau lưng boss để né các đòn physical chính diện.",
-        "Đừng đôi công chính diện; chờ hở sườn rồi mới vào damage."
+        "Luôn di chuyển vòng tròn và né tránh ra phía sau lưng Zekoa để tránh các đòn đánh trực diện nguy hiểm.",
+        "Lăn né (dodge roll) xuyên qua hoặc vòng ra sau lưng boss ngay khi thấy dấu hiệu chuẩn bị đập cột đá.",
+        "Tránh đứng quá xa boss để hạn chế đòn lăn tấn công (Rolling Attack) bất ngờ.",
+        "Sử dụng các modifier tăng hiếm (Unique/Rare Modifiers) từ Map hoặc Tablet trước khi vào trận để thu phục phiên bản đồng hành Zekoa mạnh mẽ nhất."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Tiếp cận hệ thống Bản đồ Atlas ở endgame.",
+      "Tìm thấy và đối đầu trong bản đồ Riverside Map hoặc Rupture Map."
+    ],
+    "curated": true
   },
   "manoki-the-chosen": {
     "name": "Manoki, the Chosen",
@@ -1314,28 +1525,77 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atlas / Map",
     "location": "The Jade Isles",
     "vi": {
-      "overview": "Manoki, the Chosen là boss Atlas trong Anomaly Map The Jade Isles ở endgame. Boss dùng chung moveset với Tavakai, the Chieftain (Act 4) nhưng damage cao hơn hẳn, cơ chế gắt và pattern trừng phạt nặng tay hơn, là bài test thực sự cho người chơi cứng tay.",
-      "mechanics": [
-        "Cùng moveset với Tavakai, the Chieftain (Act 4) nhưng sát thương tăng mạnh và pattern khó hơn nhiều.",
-        "Trận đánh có 3 phase, kéo dài nên cần chuẩn bị kỹ về hồi phục.",
-        "Để mở The Jade Isles: trên Map Device nó hiện ra dưới dạng Eye of the Storm; phải tìm và tương tác với các Karui Beacon ở những map quanh Eye of the Storm để unlock."
-      ],
+      "overview": "Manoki, the Chosen là một boss Atlas ở giai đoạn endgame của Path of Exile 2, ngụ tại bản đồ Anomaly 'The Jade Isles' (ban đầu hiển thị là Eye of the Storm trên Map Device). Boss sở hữu toàn bộ bộ kỹ năng của Tavakai, the Chieftain từ Act 4 của phần chiến dịch nhưng gây sát thương lớn hơn rất nhiều cùng các cơ chế khắc nghiệt hơn. Trận đấu gồm 3 Phase kiểm tra khả năng định vị và di chuyển linh hoạt của người chơi để né tránh liên tục vô số hiệu ứng mặt đất nguy hiểm và sát thương diện rộng.",
+      "mechanics": [],
       "phases": [
         {
-          "name": "3 phase",
-          "vi": "Trận đấu chia làm 3 phase và khá dài hơi. Khuyến nghị dùng flask tự sạc charge để có nguồn hồi phục liên tục mà không lo cạn flask giữa chừng."
+          "name": "Phase 1 - Manoki, the Chosen",
+          "points": [
+            "Summon Warrior Spirits: Triệu hồi các tượng đá sau đó biến thành linh hồn chiến binh (Warrior Spirits) tấn công người chơi. Hãy nhanh chóng tiêu diệt các quái phụ này.",
+            "Shatter: Ném một quả cầu đá lơ lửng lên không trung rồi đập mạnh bằng rìu, bắn ra các mảnh vụn sắc nhọn gây sát thương lớn. Hãy di chuyển né xa quả cầu ngay khi nó xuất hiện.",
+            "Reel-In: Quăng một lưỡi móc xích kéo người chơi về phía boss để bồi thêm một chuỗi đòn đánh cận chiến chớp nhoáng. Lăn né sang hai bên hoặc dùng kỹ năng di chuyển để tránh bị kéo.",
+            "Splintering Jade: Giẫm chân tạo một đường gai ngọc bích sắc nhọn nhô lên rồi đập rìu phá vỡ chúng, bắn mảnh vụn ra mọi hướng. Nhanh chóng lùi lại khi thấy gai nhô lên.",
+            "Colossus Slam: Biến thành một con thú khổng lồ rồi nện mạnh xuống đất, bắn tung tóe các mảnh vỡ ngọc bích phát nổ. Hãy tạo khoảng cách thật xa ngay khi boss bắt đầu hóa lớn.",
+            "Statue Rupture: Nhảy vọt lên phía trước, để lại một bức tượng tại điểm xuất phát. Khi tiếp đất, boss nện rìu phát ra sóng chấn động diện rộng đồng thời kích hoạt bức tượng cũ phát nổ dữ dội. Tránh xa cả điểm nhảy của boss lẫn bức tượng bị bỏ lại."
+          ]
+        },
+        {
+          "name": "Phase 2 - Manoki, the Fallen",
+          "points": [
+            "Void of Rongokurai: Triệu hồi các con rắn hư không bay quanh đấu trường, để lại các vũng năng lượng tối làm chậm tốc độ di chuyển của bạn khi dẫm phải, khiến việc né tránh các chiêu thức khác trở nên cực kỳ nguy hiểm.",
+            "Tasalio's Rain: Gọi các luồng đạn nước bắn liên tục từ trên cao đuổi theo vị trí của người chơi. Hãy chạy và đổi hướng liên tục quanh đấu trường để né.",
+            "Ngamahu's Eruption: Triệu hồi một ngọn núi lửa phun trào dung nham nóng chảy xuống một vùng lớn. Di chuyển ra xa ngọn núi lửa ngay khi nó vừa hình thành.",
+            "Tawhoa's Verdant Cage: Phủ đầy cây cối um tùm khắp đấu trường và chỉ để lại khoảng trống nhỏ ở trung tâm (hiệu ứng Tawhoa's Forest). Hãy giữ vị trí ở vùng trung tâm sạch sẽ, vì nếu dẫm vào vùng cây cối ngoài rìa, sát thương bạn gây ra sẽ bị giảm đáng kể.",
+            "Aronhongui's Moonlight: Triệu hồi một chùm ánh sáng mặt trăng khổng lồ giáng xuống gây trạng thái Chill diện rộng. Đòn đánh đứng yên và rất dễ né bằng cách bước ra ngoài vòng sáng.",
+            "Valako's Storm: Đấu trường tối sầm lại và boss triệu hồi các đợt sấm sét đánh liên tiếp xuống mặt đất. Luôn di chuyển để tránh bị sét đánh trúng.",
+            "Ramako's Sunfall: Một quả cầu mặt trời thiêu đốt rơi xuống tạo ra vùng đất cháy (Burning Ground) trước khi nổ tung (fiery nova). Liên tục di chuyển để tránh lửa cháy và vụ nổ.",
+            "Bloodstream Serpents: Phóng ra các tia máu uốn lượn như những con rắn hướng về phía người chơi. Lăn né sang một bên để tránh.",
+            "Crimson Bloom: Tạo các cụm máu nở hoa trên mặt đất rồi nổ tung mạnh mẽ. Dash hoặc lăn né thoát khỏi vùng ảnh hưởng trước khi chúng nổ.",
+            "Scarlet Spiral: Triệu hồi các gai máu nhô lên theo hình xoắn ốc liên tiếp nhau. Chú ý các vòng tròn cảnh báo dưới đất để né ra ngoài hoặc chọn khe hở đứng.",
+            "Emerald Sundering: Vung rìu chém trước mặt làm nứt đất và mọc gai ngọc bích theo vùng hình nón rộng lớn. Hãy luồn ra phía sau hoặc né sang hai bên sườn boss."
+          ]
+        },
+        {
+          "name": "Phase 3 - Manoki, the Consumed",
+          "points": [
+            "Bloodspikes: Cú nện rìu cực mạnh làm các tinh thể gai máu nhọn hoắt mọc lên ngẫu nhiên khắp nơi trong đấu trường. Cần đứng tránh xa các gai này.",
+            "Bloodspike Detonation: Kích hoạt các gai máu nhọn hoắt mọc trên đất phát nổ dây chuyền bằng một tiếng gầm vang dội. Nhanh chóng di chuyển tránh xa toàn bộ gai máu trước khi nghe tiếng gầm.",
+            "Rampage: Tung ra chuỗi đòn đánh cận chiến liên hoàn liên tiếp rồi nhảy lên nện mạnh xuống đất. Hãy liên tục di chuyển trong khi boss tấn công và lăn né để tránh các đòn đánh liên tiếp."
+          ]
         }
       ],
-      "strategy": "Vì là phiên bản nâng cấp của Tavakai với damage và cơ chế gắt hơn nhiều, hãy ôn lại pattern của Tavakai trước. Trận kéo dài 3 phase nên ưu tiên trang bị flask tự sinh charge để duy trì sustain. Đọc kỹ telegraph, né sạch các đòn lớn rồi mới chen damage.",
-      "rewards": [
-        "Cơ hội rớt Lineage Gems",
-        "Loot Atlas endgame khi hạ boss"
-      ],
+      "strategy": "Trận chiến với Manoki đòi hỏi người chơi phải hết sức cảnh giác với vô số hiệu ứng mặt đất liên tiếp, đặc biệt từ Phase 2 trở đi. Lượng bình máu (Life Flasks) sẽ nhanh chóng cạn kiệt nếu bạn liên tục bị dính đòn hoặc dẫm phải bẫy, vì vậy hãy chuẩn bị các bình sinh tồn có khả năng tự động hồi phục charges (nạp đầy bình tự động).\n\nTrong Phase 1, tập trung tiêu diệt lính phụ Warrior Spirits và né xa cú đập khổng lồ Colossus Slam. Sang Phase 2, khi đấu trường bị giới hạn bởi Tawhoa's Verdant Cage, hãy luôn giữ vị trí đứng ở vùng trung tâm sạch sẽ để tránh bị giảm sát thương nghiêm trọng; đồng thời duy trì di chuyển liên tục để né Tasalio's Rain cũng như tránh xa ngọn núi lửa Ngamahu's Eruption. Tại Phase 3, lập tức rời xa các tinh thể gai Bloodspikes trước khi tiếng gầm của boss kích hoạt vụ nổ dây chuyền hủy diệt.",
       "tips": [
-        "Chuẩn bị flask tự sạc charge vì trận dài 3 phase.",
-        "Nếu từng đánh Tavakai (Act 4), tận dụng kinh nghiệm pattern nhưng nhớ là damage ở đây nặng hơn nhiều."
+        "Chế tạo các bình máu (Life Flasks) có khả năng tự sạc lại (generate charges automatically) để duy trì khả năng sinh tồn trong trận đấu dài hơi.",
+        "Luôn chiến đấu ở vùng trung tâm sạch sẽ khi Tawhoa's Verdant Cage kích hoạt để không bị giảm sát thương đầu ra.",
+        "Khi boss hóa lớn chuẩn bị thực hiện Colossus Slam ở Phase 1, hãy lập tức dùng kỹ năng di chuyển để giữ khoảng cách xa.",
+        "Tiêu diệt Warrior Spirits ngay khi chúng mọc lên để không bị vây hãm trong lúc né các đòn diện rộng khác.",
+        "Ở Phase 3, tránh đứng cạnh các gai máu mọc trên sàn đấu và sẵn sàng né tránh trước khi boss thực hiện tiếng gầm kích nổ."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Rakiata's Flow",
+        "image": "https://img.poeviethoa.net/boss/manoki-the-chosen/drop-1.png"
+      },
+      {
+        "name": "Kaom's Madness",
+        "image": "https://img.poeviethoa.net/boss/manoki-the-chosen/drop-2.png"
+      },
+      {
+        "name": "Tasalio's Rhythm",
+        "image": "https://img.poeviethoa.net/boss/manoki-the-chosen/drop-3.png"
+      },
+      {
+        "name": "Tawhoa's Tending",
+        "image": "https://img.poeviethoa.net/boss/manoki-the-chosen/drop-4.png"
+      }
+    ],
+    "conditions": [
+      "Bản đồ The Jade Isles ban đầu hiển thị dưới tên 'Eye of the Storm' trên Map Device.",
+      "Bạn phải tìm và hoàn thành các bản đồ xung quanh có hiệu ứng nước chảy hướng về cơn bão (streaming water), tiêu diệt boss của chúng để kích hoạt các Hải đăng Karui (Karui Beacons) nhằm mở khóa bản đồ The Jade Isles."
+    ],
+    "curated": true
   },
   "zahmir-the-blade-sovereign": {
     "name": "Zahmir, the Blade Sovereign",
@@ -1343,23 +1603,58 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atlas / Map",
     "location": "Sacred Reservoir",
     "vi": {
-      "overview": "Zahmir, the Blade Sovereign là boss Atlas trong Anomaly Map Sacred Reservoir ở endgame. Boss dùng chung moveset với Azmadi, the Faridun Prince (Interlude Recruit the Maraketh) nhưng damage cao hơn và cơ chế khó nhằn hơn nhiều.",
-      "mechanics": [
-        "Cùng moveset với Azmadi, the Faridun Prince nhưng sát thương tăng mạnh và cơ chế gắt hơn.",
-        "Nhiều đòn có dấu hiệu báo trước rõ (telegraph): specter hình thành, cung nhảy (jump arc), các thanh kiếm bay lơ lửng.",
-        "Để mở Sacred Reservoir: tìm và tương tác với 3 Temporal Tether ở các map quanh sandstorm. Nên kích Precursor Tower gần Desert Biome và dùng Jado's Spycraft cùng Unforeseen Threats để có cơ hội lộ ra Anomaly Map gần đó."
+      "overview": "Zahmir, the Blade Sovereign là một boss Atlas ở giai đoạn endgame của Path of Exile 2 (PoE 2), ngự trị tại bản đồ dị thường Sacred Reservoir (Anomaly Map). Boss sở hữu khả năng kháng sát thương Vật lý (Physical), Hỏa (Fire) và Né tránh (Evasive), đồng thời gây ra sát thương Vật lý chủ yếu mà không áp dụng debuff hay có điểm yếu đặc biệt nào. Để đối đầu với Zahmir, người chơi cần giải quyết cơ chế môi trường Temporal Sandstorm ở các khu vực bản đồ xung quanh đấu trường.",
+      "mechanics": [],
+      "phases": [
+        {
+          "name": "Phase 1 - Đọc telegraph đòn đánh cơ bản",
+          "points": [
+            "Moveset tương tự Azmadi, the Faridun Prince: Zahmir có chuỗi chiêu thức giống hệt với Azmadi ở chương Recruit the Maraketh Interlude. Nhận diện các đòn đánh của Azmadi sẽ giúp ích rất nhiều cho trận chiến này.",
+            "Specters Forming (Bóng ma xuất hiện): Dấu hiệu cảnh báo boss chuẩn bị thi triển các đòn tấn công phối hợp bóng ma. Hãy quan sát vị trí xuất hiện của chúng để né tránh kịp thời.",
+            "Jump Arc (Quỹ đạo nhảy bổ): Zahmir thực hiện cú nhảy bổ để thu hẹp khoảng cách. Hãy di chuyển hoặc dùng dodge roll ngay khi thấy boss bắt đầu cất mình lên không trung.",
+            "Floating Swords (Kiếm trôi nổi): Boss triệu hồi các thanh kiếm bay lơ lửng quanh đấu trường, sẵn sàng lao thẳng vào người chơi. Hãy liên tục di chuyển để né tránh."
+          ]
+        },
+        {
+          "name": "Phase 2 - Zarokh, the Temporal xuất hiện (Dưới 50% máu)",
+          "points": [
+            "Zarokh's Empowerment (Cường hóa từ Zarokh): Khi lượng máu của Zahmir giảm xuống dưới 50%, thực thể Zarokh, the Temporal sẽ xuất hiện để truyền năng lượng thời gian và cường hóa cho boss.",
+            "Tăng tốc độ và sát thương: Các đòn tấn công của Zahmir ở Phase 2 sẽ diễn ra với tốc độ nhanh hơn đáng kể, tầm ảnh hưởng rộng hơn và sát thương cực kỳ khủng khiếp.",
+            "Áp lực dồn dập: Nhịp độ trận đấu tăng cao, đòi hỏi bạn phải hồi phục liên tục và giữ vị trí cực kỳ cẩn thận."
+          ]
+        }
       ],
-      "phases": [],
-      "strategy": "Quan sát kỹ các đòn telegraph để biết lúc nào nên dodge và lúc nào nên counter. Các dấu hiệu như specter đang hình thành, cung nhảy của boss hay đám kiếm bay đều là tín hiệu né. Vì đây là bản nâng cấp của Azmadi, nắm pattern của Azmadi trước sẽ giúp bạn xử lý nhịp tốt hơn.",
-      "rewards": [
-        "Cơ hội rớt Lineage Gems, trong đó có thể có Varashta's Blessing",
-        "Loot Atlas endgame khi hạ boss"
-      ],
+      "strategy": "Trong suốt trận chiến, điều cốt lõi là bạn cần quan sát kỹ các dấu hiệu báo trước (telegraphs) của Zahmir. Các đòn đánh của boss đều có hoạt ảnh báo trước rõ ràng như sự hình thành bóng ma (specters forming), quỹ đạo nhảy (jump arc) hoặc những thanh kiếm lơ lửng (floating swords). Việc nhận diện sớm các dấu hiệu này sẽ mở ra cơ hội để bạn né tránh và phản công.\n\nKhi máu của Zahmir giảm xuống dưới 50% ở Phase 2, thực thể Zarokh, the Temporal sẽ xuất hiện để cường hóa boss. Ở giai đoạn này, nhịp độ trận đấu sẽ được đẩy lên cực nhanh và các đòn đánh sẽ hiểm hóc hơn rất nhiều. Hãy giữ cho các bình máu (flasks) luôn đầy và chuẩn bị các kỹ năng tự hồi phục sẵn sàng để chống chọi lại áp lực lớn.",
       "tips": [
-        "Đọc telegraph (specter, jump arc, kiếm bay) để canh đúng lúc dodge và counter.",
-        "Ôn pattern của Azmadi trước khi vào trận vì Zahmir đánh nặng hơn nhiều."
+        "Theo dõi sát các hoạt ảnh chuẩn bị của boss (bóng ma, cú nhảy, kiếm bay) để kịp thời né tránh.",
+        "Giữ cự ly di chuyển linh hoạt và không nên đứng yên quá lâu.",
+        "Khi máu boss dưới 50%, tập trung né tránh ưu tiên và hồi phục máu trước tốc độ đòn đánh gia tăng của Zahmir.",
+        "Chuẩn bị đầy đủ bình flasks hồi phục trước khi bước vào Phase 2 để đối phó với áp lực dồn dập."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Garukhan's Resolve",
+        "image": "https://img.poeviethoa.net/boss/zahmir-the-blade-sovereign/drop-1.png"
+      },
+      {
+        "name": "Zarokh's Refrain",
+        "image": "https://img.poeviethoa.net/boss/zahmir-the-blade-sovereign/drop-2.png"
+      },
+      {
+        "name": "Khatal's Rejuvenation",
+        "image": "https://img.poeviethoa.net/boss/zahmir-the-blade-sovereign/drop-3.png"
+      },
+      {
+        "name": "Varashta's Blessing",
+        "image": "https://img.poeviethoa.net/boss/zahmir-the-blade-sovereign/drop-4.png"
+      }
+    ],
+    "conditions": [
+      "Tìm và kích hoạt 3 Temporal Tethers (Dây liên kết thời gian) nằm ở các bản đồ xung quanh Temporal Sandstorm (Bão cát thời gian) để mở khóa bản đồ Sacred Reservoir.",
+      "Bản đồ này xuất hiện ngẫu nhiên khi kích hoạt Precursor Towers gần Desert Biomes (Sinh cảnh sa mạc) và sử dụng Jado's Spycraft cùng Unforseen Threats."
+    ],
+    "curated": true
   },
   "rattlecage-the-earthbreaker": {
     "name": "Rattlecage, the Earthbreaker",
@@ -1367,49 +1662,58 @@ window.POE2_BOSS_DETAILS = {
     "group": "Trial of the Sekhemas",
     "location": "Trial of the Sekhemas (Floor 1)",
     "vi": {
-      "overview": "Rattlecage, the Earthbreaker là boss của Floor 1 trong Trial of the Sekhemas (Act 2). Để vào đây bạn cần một Barya và làm quest Ascent to Power. Đây là trận đầu tiên trên đường lấy Ascendancy nên moveset của nó khá dễ đọc, phản xạ kịp; nhưng càng về cuối càng dồn dập, đừng chủ quan.",
+      "overview": "Rattlecage, the Earthbreaker là boss đầu tiên mà người chơi sẽ chạm trán trong thử thách Trial of the Sekhemas ở Act 2. Trận đấu này nằm ở tầng 1 (Floor 1) của Trial. Boss có bộ kỹ năng khá đơn giản và trực quan, chủ yếu gây sát thương vật lý và hỏa thông qua các chấn động mặt đất. Tuy nhiên, khi máu của boss xuống dưới 10%, mật độ thạch nhũ rơi và các mạch phun dung nham (magma geysers) sẽ tăng lên rất mạnh, đòi hỏi người chơi phải tập trung né tránh chướng ngại vật môi trường dưới sự hướng dẫn/cảnh báo của Balbala.",
       "mechanics": [
-        "Đòn ba-tầng nổ (three-part explosion) là chiêu nguy hiểm nhất: mỗi lần nổ gây sát thương cao và vùng nổ to dần sau mỗi lần kích. Thấy nó bắt đầu thì giãn xa ngay lập tức.",
-        "Stalactites rơi từ trần và magma geysers phun lên từ mặt đất là hazard nền của arena, gây fire damage.",
-        "Khi máu boss xuống còn khoảng 10% cuối, số lượng stalactite rơi và magma geyser tăng vọt, đây là giai đoạn căng nhất.",
-        "Phần lớn đòn còn lại đều được telegraph rõ ràng, đủ thời gian Dodge Roll né."
+        "Explosion Combo (Combo Bộc Phá): Rattlecage tích tụ năng lượng rồi phát nổ 3 lần liên tiếp, mỗi vụ nổ sau có phạm vi lớn hơn vụ nổ trước. Hãy chạy càng xa hắn càng tốt để tránh nhận sát thương.",
+        "Ground Fissures (Khe Nứt Mặt Đất): Rattlecage dập mạnh xuống đất, tạo ra các khe nứt lan rộng khắp đấu trường. Ở cuối các khe nứt, các ngọn núi lửa nhỏ sẽ mọc lên và phun trào các mảnh dung nham định kỳ. Hãy đứng xen kẽ giữa các khe nứt hoặc né xa chúng và tránh các núi lửa này khi đang né các đòn đánh khác.",
+        "Stalactite Attack (Mưa Thạch Nhũ): Rattlecage liên tục dậm chân xuống đất, khiến các cột thạch nhũ rơi từ trên trần hang xuống khắp nơi. Rất khó để dự đoán vị trí thạch nhũ rơi, vì vậy hãy liên tục di chuyển để có thể kịp thời né tránh khi thấy dấu hiệu đá rơi.",
+        "Charged Stomp (Cú Dậm Tích Lực): Rattlecage nhấc hai chân trước lên cao và dậm mạnh xuống đất, gây sát thương lớn ra vùng xung quanh bản thân. Khi thấy boss đứng bằng hai chân sau, hãy nhanh chóng lùi lại để tránh dính sát thương."
       ],
       "phases": [],
-      "strategy": "Cứ bình tĩnh đọc đòn và Dodge Roll né, đây là boss làm quen nên không cần vội. Quan trọng nhất là khi thấy đòn ba-tầng nổ thì lập tức chạy ra xa, đừng tham đánh. Để dành burst damage cho đoạn 10% máu cuối vì lúc đó stalactite và magma sẽ ngập arena — kết liễu nhanh để tránh ăn dồn hazard. Chú ý vị trí đứng, tránh các vũng magma đang phun.",
-      "rewards": [
-        "Hạ Rattlecage xong, đến Altar of Ascendency gần Balbala, the Advisor để chọn Ascendancy Class cho nhân vật."
-      ],
+      "strategy": "Trong phần lớn trận chiến, chiến thuật tốt nhất là né tránh về phía sau lưng Rattlecage và tấn công từ phía sau (Stay behind its back) do các đòn đánh của boss khá chậm và hướng về phía trước. Boss luôn mở đầu trận chiến bằng đòn Explosion Combo (tụ năng lượng phát nổ 3 lần liên tiếp) nên hãy giữ khoảng cách ngay khi trận đấu bắt đầu và chỉ lao vào tấn công khi combo này kết thúc. Khi boss dậm đất tạo Ground Fissures, hãy chọn vị trí đứng an toàn giữa các khe nứt và tránh xa các núi lửa nhỏ mới mọc lên. Ở 10% máu cuối cùng, lượng thạch nhũ rơi và địa nhiệt phun trào tăng cao, hãy tập trung cao độ vào việc di chuyển tránh né các chướng ngại vật này, kết hợp lắng nghe lời cảnh báo từ Balbala để né các đòn đập của boss.",
       "tips": [
-        "Cap Fire Resistance trước khi vào, fight này thiên về fire damage (stalactite, magma, đòn nổ).",
-        "Giữ khoảng cách an toàn ngay khi thấy đòn ba-tầng nổ — vùng nổ phình to nên đứng gần là dính cả ba.",
-        "Để dành flask/burst cho 10% máu cuối để vượt qua giai đoạn hazard tăng cường nhanh nhất có thể."
+        "Luôn giữ khoảng cách khi trận chiến bắt đầu vì Rattlecage luôn mở màn bằng đòn Explosion Combo 3 lần phát nổ diện rộng.",
+        "Tìm cách di chuyển và né tránh vòng ra sau lưng boss để dễ dàng né các cú đập trực diện và tối ưu lượng sát thương gây ra.",
+        "Khi thấy boss nhấc chân trước (Charged Stomp) hoặc phát sáng đỏ cúi người (Explosion Combo), hãy nhanh chóng rút lui ra xa.",
+        "Ở giai đoạn 10% máu cuối cùng, hãy ưu tiên né tránh thạch nhũ rơi từ trần hang và các mạch phun dung nham hơn là mải mê tấn công.",
+        "Lắng nghe kỹ các lời cảnh báo của Balbala trong suốt trận đấu để đoán trước và né tránh các đòn đánh nguy hiểm."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Có thể tiếp cận khu vực Trial of the Sekhemas bằng cách thu thập Barya và hoàn thành nhiệm vụ Ascent to Power trong Act 2."
+    ],
+    "curated": true
   },
   "terracota-sentinels": {
-    "name": "Terracota Sentinels",
+    "name": "Terracotta Sentinels",
     "source": "https://game8.co/games/Path-of-Exile-2/archives/491134",
     "group": "Trial of the Sekhemas",
     "location": "Trial of the Sekhemas (Floor 2)",
     "vi": {
-      "overview": "Terracotta Sentinels là cặp boss đôi — Hadi of the Flaming River (lửa) và Rafiq of the Frozen Spring (băng) — ở cuối Floor 2 của Trial of the Sekhemas. Cần Djinn Barya level tối thiểu 45 để vào tầng này. Cơ chế cốt lõi xoay quanh việc xử lý đồng thời cả hai con.",
+      "overview": "Terracotta Sentinels (các Hộ Vệ Đất Nung) gồm Hadi of the Flaming River và Rafiq of the Frozen Spring là cặp đôi boss đối đầu ở cuối tầng 2 của Trial of the Sekhemas. Để vào được tầng này, bạn cần có Djinn Barya đạt cấp độ tối thiểu 45. Trận đấu đòi hỏi bạn phải cân bằng sát thương lên cả hai boss để tiêu diệt chúng cùng lúc, nếu không kẻ còn lại sẽ lập tức hồi đầy máu, đồng thời kích hoạt các hiệu ứng bất lợi diện rộng nguy hiểm trên đấu trường.",
       "mechanics": [
-        "Cơ chế hồi máu: khi một Sentinel bị hạ, con còn lại hồi đầy máu trở lại. Vì vậy phải hạ cả hai cùng lúc, hoặc hạ con thứ hai chỉ trong vài giây sau con đầu.",
-        "Hạ một con sẽ kích hoạt arena hazard theo nguyên tố của con vừa chết (lửa hoặc băng).",
-        "Rafiq (băng): nâng vũ khí qua đầu rồi đập xuống đất, gây cold damage trong một bán kính nhất định.",
-        "Hadi (lửa): đấm hoặc giậm chân xuống đất, bắn ra một làn sóng lửa lan rộng."
+        "Hadi - Melee Swing (Vung đòn cận chiến): Hadi vung nắm đấm lửa nóng chảy về phía trước khi áp sát. Hãy giữ khoảng cách hoặc di chuyển ra sau lưng hắn để phản công.",
+        "Hadi - Ground Slam (Nện mặt đất): Hadi nện mạnh tay xuống đất, tạo ra một làn sóng lửa lan về phía trước. Hãy né sang bên khi thấy hắn giơ hai tay lên.",
+        "Hadi - Ground Slam Variant (Biến thể nện đất): Hadi giẫm mạnh chân xuống đất, phóng ra ba làn sóng lửa theo hình quạt. Hãy đứng xen kẽ giữa các làn sóng để tránh sát thương.",
+        "Rafiq - Melee Swing (Vung đòn cận chiến): Rafiq vung vũ khí băng giá về phía trước khi áp sát. Hãy giữ khoảng cách hoặc vòng ra sau để phản công.",
+        "Rafiq - Ground Slam (Nện mặt đất): Rafiq nện mạnh vũ khí xuống đất, gây sát thương lạnh (Cold Damage) trong một khu vực diện rộng hình tròn. Hãy né ra xa hoặc vòng ra sau hắn.",
+        "Rafiq - Ice Barrage (Mưa gai băng): Rafiq triệu hồi các vòng tròn ký hiệu trên mặt đất, sau đó các gai băng nhọn sẽ bùng phát từ đó. Hãy liên tục di chuyển giữa các ký hiệu để tránh sát thương."
       ],
       "phases": [],
-      "strategy": "Mấu chốt là kéo máu hai con xuống cân bằng rồi burst để hạ cùng lúc, tránh con kia hồi đầy máu. Nếu không thể hạ đồng thời thì ưu tiên hạ Hadi trước, vì hazard lửa do Hadi để lại dễ né hơn hazard băng của Rafiq, và lúc đó bạn chỉ còn phải lo solo Rafiq. Luôn cơ động để tránh dính cả đòn đập băng lẫn sóng lửa cùng lúc.",
-      "rewards": [
-        "Hạ cả hai Sentinel để thông Floor 2 và tiến lên tầng tiếp theo của Trial of the Sekhemas."
-      ],
+      "strategy": "Chìa khóa để chiến thắng cặp đôi Hộ Vệ Đất Nung là phải tiêu diệt cả hai cùng một lúc (hoặc cách nhau tối đa vài giây). Nếu một trong hai chết trước, kẻ còn lại sẽ ngay lập tức được hồi đầy 100% máu.\n\nNếu bạn không thể dồn sát thương tiêu diệt cả hai cùng lúc, hãy ưu tiên tiêu diệt Hadi of the Flaming River trước. Khi một boss bị hạ gục, một hiệu ứng môi trường bất lợi cực kỳ khó chịu sẽ xuất hiện dựa trên nguyên tố của boss đó: hạ gục Rafiq trước sẽ kích hoạt các luồng đạn băng bắn từ rìa sân đấu và tạo ra vùng băng giá (Chilling Ground) làm giảm tốc độ di chuyển của bạn cực mạnh, trong khi hạ gục Hadi trước chỉ để lại các hazard lửa dễ đối phó hơn.",
       "tips": [
-        "Cap cả Fire Resistance lẫn Cold (Ice) Resistance vì fight có cả hai nguyên tố.",
-        "Cân bằng máu hai con trước khi burst — đừng lỡ tay giết sớm một con rồi để con kia full máu.",
-        "Nếu phải giết lẻ thì giết Hadi (lửa) trước cho dễ thở ở pha còn lại."
+        "Luôn cố gắng cấu máu cả hai boss đồng đều và tiêu diệt chúng cùng lúc để tránh việc một tên hồi đầy máu.",
+        "Nếu buộc phải giết một tên trước, hãy chọn tiêu diệt Hadi trước vì các hazard hệ Lửa dễ né hơn vùng Chilling Ground làm chậm của Rafiq.",
+        "Quan sát động tác giơ tay hoặc nâng vũ khí của boss để chủ động lướt ra sau lưng hoặc né sang hai bên trước cú nện đất (Ground Slam).",
+        "Trong chiêu Ice Barrage của Rafiq, hãy chú ý nhìn mặt đất để di chuyển vào các khoảng trống an toàn giữa các vòng tròn ký hiệu."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Yêu cầu sử dụng Djinn Barya đạt cấp độ tối thiểu 45 để kích hoạt và đi vào Floor 2 của Trial of the Sekhemas."
+    ],
+    "curated": true
   },
   "ashar-the-sand-mother": {
     "name": "Ashar, the Sand Mother",
@@ -1417,24 +1721,32 @@ window.POE2_BOSS_DETAILS = {
     "group": "Trial of the Sekhemas",
     "location": "Trial of the Sekhemas (Floor 3)",
     "vi": {
-      "overview": "Ashar, the Sand Mother là boss của Floor 3 trong Trial of the Sekhemas. Cần Djinn Barya level tối thiểu 60 để vào tầng này. Ashar là một con quái mình rắn với loạt đòn tail (đuôi) cực mạnh ở tầm gần, kết hợp với hazard pressure plate đầy arena.",
+      "overview": "Ashar, the Sand Mother là boss cuối cùng ở tầng 3 (Floor 3) của Trial of the Sekhemas trong Path of Exile 2. Trận đấu này diễn ra trong một đấu trường có các đĩa áp suất (pressure plates) kích hoạt bẫy nguy hiểm và đòi hỏi người chơi phải liên tục thích ứng với địa hình cát lún (quicksand) do boss tạo ra khi di chuyển dưới lòng đất. Để khiêu chiến boss này, bạn cần sử dụng một Djinn Barya có cấp độ tối thiểu là 60 để tiến vào tầng 3.",
       "mechanics": [
-        "Các đòn chí mạng nhất của Ashar đều ở melee range nhưng được telegraph rõ; né bằng cách Dodge Roll sang ngang và vòng ra sau lưng nó.",
-        "Bộ đòn đuôi cần thuộc lòng: Tail Slam, Tail Swipe, và một đòn Tail Slam khác đẩy nó lao về phía trước.",
-        "Pressure plate rải giữa arena: dẫm hoặc kích hoạt sẽ bung bẫy — nhả bầy Adorned Beetles, khí độc (poison gas), hoặc loạt phi tiêu độc lửa (fire poison dart volley).",
-        "Các bẫy này gây sát thương lớn lên cả Life lẫn Honour, nên Honour tụt nhanh nếu dính nhiều."
+        "Poison Slam: Boss hơi lùi về phía sau để chuẩn bị cho một cú đập đuôi độc cực mạnh. Đòn tấn công này không thể né bằng Dodge Roll, vì vậy hãy nhanh chóng di chuyển ra phía sau lưng boss để tránh nhận sát thương.",
+        "Tail Swipe: Boss lắc đuôi và quét một vòng xung quanh, gây sát thương cho người chơi đứng ở tầm trung. Mặc dù đòn này không trúng ở cự ly cực gần, bạn vẫn nên thực hiện Dodge Roll về phía trước (sát lưng boss) để né tránh.",
+        "Tail Flip: Boss nhấc cả hai càng lên cao, sau đó đập đuôi xuống đất để lao mạnh về phía trước và chuyển sang tư thế đứng bằng đuôi để bắn đạn độc. Hãy Dodge Roll sang hai bên khi thấy boss nhấc càng.",
+        "Poison Shots: Khi đứng bằng đuôi, Ashar bắn ra các luồng đạn độc tạo thành các bãi độc Caustic Ground trên mặt đất. Hãy liên tục di chuyển và Dodge Roll để né tránh tất cả các loạt đạn.",
+        "Tunnel Phase: Ashar nhảy lên và đào sâu xuống cát, liên tục trồi lên lặn xuống và để lại các bãi cát lún (quicksand) làm chậm tốc độ hành động của bạn. Hãy chủ động di chuyển để tránh dẫm vào chúng.",
+        "Claw Attack: Boss chuẩn bị một trong hai càng của mình và thực hiện một cú đâm nhanh trực diện. Bạn có thể né bằng cách dodge sang hai bên hoặc hướng ra sau lưng boss.",
+        "Pressure Plates (Bẫy Đĩa Áp Suất): Các tấm đĩa áp suất ở giữa sân đấu kích hoạt bẫy thả bọ Adorned Beetles, phun khí độc hoặc phóng phi tiêu độc gây sát thương lớn lên Life và Honour. Hãy chú ý vị trí đứng để tránh dẫm phải chúng."
       ],
       "phases": [],
-      "strategy": "Giữ thói quen Dodge Roll sang ngang rồi vòng ra sau lưng Ashar để vừa né bộ đòn đuôi vừa tiếp tục output damage. Để mắt liên tục tới các pressure plate dưới chân — tránh đứng lên hoặc dụ boss kích chúng vì hazard ăn cả Honour. Vì là tầng 3 của Trial, thắng hay thua phụ thuộc nhiều vào việc bạn chọn Boon mạnh và né được Affliction xấu trên đường đi tới boss.",
-      "rewards": [
-        "Hạ Ashar để thông Floor 3 và tiến tiếp trong Trial of the Sekhemas (hướng tới boss cuối Zarokh)."
-      ],
+      "strategy": "Chiến thuật cốt lõi khi đấu với Ashar, the Sand Mother là luôn thực hiện Dodge Roll hướng về phía sau lưng boss (Dodge Roll forward towards her back) để né hầu hết các đòn tấn công cận chiến nguy hiểm như Tail Slam, Tail Swipe hay Claw Attack. Hãy cực kỳ cẩn thận với đòn Poison Slam vì đòn này không thể tránh bằng Dodge Roll thông thường mà bắt buộc bạn phải chạy vòng ra sau lưng cô ta.\n\nĐồng thời, hãy chú ý cao độ tới địa hình xung quanh. Tuyệt đối không đứng trong các vùng cát lún (Quicksand) do cô ta tạo ra trong pha Tunnel Phase vì hiệu ứng làm chậm cộng dồn sẽ khiến bạn gần như bất động trước các đòn tấn công tiếp theo. Hãy di chuyển cẩn thận để tránh dẫm vào các tấm đĩa áp suất (pressure plates) ở trung tâm đấu trường để không kích hoạt thêm các bẫy bọ và độc tố gây tổn thất Life và Honour.\n\nĐể trận đấu dễ dàng hơn, hãy trang bị các Relic có Honour Resistance cao (cố gắng đạt mốc 75%), chọn các Boon mạnh (như Ornate Dagger để tăng 50% sát thương, Sanguine Vial để giảm 30% máu quái vật) và tránh các Affliction bất lợi giảm phòng thủ. Ngoài ra, việc sử dụng Djinn Barya cấp độ tối thiểu (level 60) sẽ giúp giảm lượng máu và sát thương của boss.",
       "tips": [
-        "Cap Chaos Resistance — fight này có khí độc và phi tiêu độc nên chaos res giúp đỡ rất nhiều.",
-        "Học lộ trình né: Dodge Roll sang ngang + vòng ra sau lưng là an toàn nhất với bộ đòn đuôi.",
-        "Trên đường tới Ashar, luôn cân nhắc kỹ Affliction của từng phòng — vào boss với Affliction nặng dễ thua oan."
+        "Thực hiện Dodge Roll hướng về phía sau lưng boss để dễ dàng né các đòn tấn công đuôi và càng nguy hiểm.",
+        "Tuyệt đối không đứng trong vùng cát lún (Quicksand) để tránh bị dính debuff cộng dồn giảm tốc độ hành động.",
+        "Quan sát mặt đất và tránh dẫm lên các tấm đĩa áp suất (pressure plates) để hạn chế kích hoạt bẫy bọ và phi tiêu độc.",
+        "Trang bị các Relic có chỉ số Honour Resistance cao (tối đa 75%) để tăng đáng kể lượng Honour chống chịu hiệu quả.",
+        "Thu thập các Boon tăng sát thương, giảm máu quái vật và chủ động tránh các phòng có Affliction nguy hiểm trên đường đi.",
+        "Sử dụng Djinn Barya cấp độ 60 (mức tối thiểu yêu cầu cho tầng 3) để giữ lượng máu và sát thương của boss ở mức thấp nhất có thể."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Sử dụng Djinn Barya có cấp độ tối thiểu là 60 để mở khóa và tiến vào Tầng 3 (Floor 3) của Trial of the Sekhemas."
+    ],
+    "curated": true
   },
   "bahlak-the-sky-seer": {
     "name": "Bahlak, the Sky Seer",
@@ -1442,23 +1754,31 @@ window.POE2_BOSS_DETAILS = {
     "group": "Trial of Chaos",
     "location": "Trial of Chaos",
     "vi": {
-      "overview": "Bahlak, the Sky Seer là một trong các boss bạn có thể gặp ở lượt thử thứ 4 của Trial of Chaos. Đây là một con boss bay, điểm khó nhất nằm ở hai đòn unblockable (không thể block) buộc bạn phải né bằng tay.",
+      "overview": "Bahlak, the Sky Seer là một boss thuộc nhóm Trial of Chaos (Thử thách của Sự Hỗn Loạn) trong Path of Exile 2. Trận chiến với boss này diễn ra trong Đền thờ Hỗn loạn (Temple of Chaos), cụ thể là ở Thử thách thứ 4 (4th Trial). Bahlak sở hữu khả năng kháng thuộc tính Lôi (Lightning) nhưng lại có điểm yếu trước thuộc tính Hỏa (Fire). Boss gây ra hai loại sát thương chủ yếu là Vật lý (Physical) và Lôi (Lightning), đồng thời có thể áp dụng các hiệu ứng bất lợi (debuff) nguy hiểm như Tornado và Shock lên người chơi.",
       "mechanics": [
-        "Dive bomb (unblockable): Bahlak bay thẳng lên cao rồi bổ nhào xuống vị trí của bạn, gây Physical damage lớn. Ngay khi thấy nó cất cánh thẳng đứng thì Dodge Roll rời khỏi chỗ đứng để tránh cú slam.",
-        "Wind projectiles (unblockable): Bahlak bay tới trước và lật người (flip), sau đó bắn loạt đạn gió bằng móng vuốt. Để né hết đạn, lập tức di chuyển luồn xuống dưới và ra sau lưng nó ngay sau cú flip.",
-        "Hai đòn unblockable trên là phần khó dodge nhất của trận, không thể đỡ mà chỉ có thể né bằng vị trí."
+        "Melee Slash Combo: Chuỗi chém cận chiến tung ra khi bạn đứng gần boss. Hãy giữ cự ly vừa đủ ngoài tầm đánh của hắn.",
+        "Creeping Lightning: Các quả cầu sét nhỏ di chuyển khắp võ đài, sau đó tự nhân bản. Cần chú ý hướng đi của chúng để né tránh trong lúc dồn sát thương lên boss.",
+        "Lightning Barrage: Chuỗi tia sét bắn thẳng về phía trước. Hãy lướt né sang một bên ngay khi thấy năng lượng sét tích tụ quanh boss.",
+        "Tornadoes: Boss xoay tròn tạo ra một lốc xoáy khổng lồ cùng nhiều lốc xoáy nhỏ di chuyển ngẫu nhiên. Hãy luồn lách qua các lốc xoáy cho đến khi chúng biến mất.",
+        "Wind Slash Combo: Boss bay lên không trung rồi hạ cánh tại trung tâm võ đài, bắn ra các luồng gió chém theo hướng của bạn. Hãy áp sát hoặc chạy ra sau lưng boss để né tránh.",
+        "Unblockable Dive Bomb: Boss bay thẳng lên trời rồi bổ nhào xuống vị trí của bạn, gây sát thương Vật lý cực lớn. Thực hiện Dodge Roll né ngay khi boss cất cánh bay lên.",
+        "Unblockable Talon Wind Projectiles: Boss lộn vòng trên không rồi bắn loạt đạn gió từ móng vuốt. Hãy chạy xuống dưới gầm hoặc vòng ra sau lưng boss ngay sau khi hắn lộn vòng để né tránh toàn bộ loạt đạn."
       ],
       "phases": [],
-      "strategy": "Trọng tâm là nhận diện sớm hai đòn unblockable. Thấy Bahlak bay vọt lên là dive bomb — Dodge Roll rời chỗ ngay. Thấy nó lao tới và lật người là sắp bắn đạn gió — luồn xuống dưới và ra sau lưng để cả loạt đạn bay trượt. Vì là boss bay nên giữa các đòn cứ bám sát ra sau lưng nó là vị trí an toàn nhất để tiếp tục đánh.",
-      "rewards": [
-        "Hoàn thành lượt thử có Bahlak để tiến tới hoàn tất Trial of Chaos (lấy/nâng Ascendancy)."
-      ],
+      "strategy": "Trận chiến với Bahlak, the Sky Seer đòi hỏi bạn phải liên tục di chuyển và nhận biết nhanh các đòn tấn công không thể chặn (unblockable). Khi Bahlak bay thẳng lên trời cao chuẩn bị thực hiện Dive Bomb, hãy lập tức Dodge Roll khỏi vị trí đang đứng để tránh cú đâm bổ đất sát thương diện rộng. Khi hắn bay lên và thực hiện động tác lộn vòng (flip), hãy chủ động chạy thẳng về phía trước để luồn xuống dưới gầm hoặc vòng ra sau lưng hắn, né toàn bộ loạt đạn vuốt gió bắn ra từ phía trước.\n\nHãy tận dụng điểm yếu thuộc tính Hỏa (Fire) của Bahlak để tối ưu lượng sát thương gây ra. Tránh đứng quá sát boss nếu không có khả năng đỡ đòn tốt nhằm hạn chế dính đòn Melee Slash Combo. Đối với Creeping Lightning và các lốc xoáy (Tornadoes), hãy tập trung di chuyển luồn lách qua các vùng nguy hiểm trên đấu trường.",
       "tips": [
-        "Tập phản xạ với hai tín hiệu: bay vọt lên = dive bomb, lao tới + flip = đạn gió.",
-        "Ra sau lưng Bahlak là vị trí an toàn nhất, vừa né đạn gió vừa giữ DPS.",
-        "Ưu tiên một chút Movement Speed / khả năng cơ động để né dive bomb chắc ăn hơn."
+        "Tận dụng sát thương Hỏa (Fire) vì đây là điểm yếu của boss.",
+        "Né tránh đòn Dive Bomb bằng cách Dodge Roll ngay khi boss cất cánh bay thẳng lên trời.",
+        "Khi boss lộn vòng chuẩn bị bắn đạn vuốt gió, hãy di chuyển ngay xuống dưới gầm hoặc ra sau lưng boss.",
+        "Né sang hai bên khi thấy boss tích tụ sấm sét quanh người để tránh đòn Lightning Barrage.",
+        "Luồn lách khéo léo qua các khe hở giữa các cơn lốc xoáy và quả cầu sét di động."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Tham gia Thử thách thứ 4 (4th Trial) của Trial of Chaos tại Temple of Chaos."
+    ],
+    "curated": true
   },
   "uxmal-the-beastlord": {
     "name": "Uxmal, the Beastlord",
@@ -1466,25 +1786,34 @@ window.POE2_BOSS_DETAILS = {
     "group": "Trial of Chaos",
     "location": "Trial of Chaos",
     "vi": {
-      "overview": "Uxmal, the Beastlord là một trong các boss có thể gặp ở thử thách thứ 4 của Trial of Chaos. Arena của Uxmal rộng hơn hẳn các boss khác và được chia thành ba tầng (three layers); boss bay qua lại giữa ba tầng này, buộc bạn phải đuổi theo liên tục để duy trì damage.",
+      "overview": "Uxmal, the Beastlord là một boss thuộc Trial of Chaos (Thử thách Hỗn loạn) trong Path of Exile 2. Đây là một trận đấu đặc biệt diễn ra trong một đấu trường rộng lớn có thiết kế 3 tầng. Điểm độc đáo của trận chiến là Uxmal sẽ liên tục bay qua lại giữa các tầng và mỗi tầng sẽ đi kèm với các cơ chế sát thương/hiệu ứng nguyên tố đặc trưng riêng (Lửa, Băng, Lôi). Trận đấu này đòi hỏi bạn phải có khả năng di chuyển linh hoạt, khả năng né tránh các đòn AoE hình nón liên tục và khả năng nhanh chóng thích nghi với các loại hiệu ứng bất lợi trên mặt đất.",
       "mechanics": [
-        "Boss định kỳ bay đổi tầng — không đuổi theo thì mất DPS, nên phải di chuyển bám sát liên tục.",
-        "Uxmal có ba chiêu đặc biệt, mỗi chiêu gắn với một trong ba tầng arena, để lại ground effect (vũng nền) riêng biệt.",
-        "Shock: tăng toàn bộ sát thương bạn phải nhận.",
-        "Chill: làm chậm hành động của bạn, khiến bạn dễ tổn thương.",
-        "Ignite: liên tục bào mòn Life theo thời gian."
+        "Hiểu rõ hiệu ứng mặt đất của đấu trường (Ground Effects of the Arena): Đấu trường của Uxmal được chia thành 3 tầng riêng biệt, mỗi tầng chịu một loại hiệu ứng mặt đất khác nhau khi boss sử dụng chiêu thức đặc sắc của tầng đó: Tầng 3 (gần lối ra) - Flying Fire Breath tạo ra Burning Ground tạm thời gây trạng thái Ignite (Thiêu đốt) rút Life dần; Tầng 2 (ở giữa các bậc thang) - Ice Breath tạo ra Chilled Ground tạm thời gây trạng thái Chill (Lạnh giá) làm chậm mọi hành động; Tầng 1 (khu vực đầm lầy) - Lightning Balls tạo ra Shocked Ground vĩnh viễn gây trạng thái Shock (Sốc điện) làm tăng sát thương nhận vào.",
+        "Di chuyển liên tục giữa các tầng (Keep Moving Between Levels): Không giống các boss khác, đấu trường của Uxmal rất rộng lớn và hắn sẽ định kỳ bay qua lại giữa 3 tầng của đấu trường. Bạn cần liên tục đuổi theo để duy trì lượng sát thương gây ra lên boss.",
+        "Giant Homing Orb (Quả cầu bám đuổi khổng lồ): Uxmal triệu hồi một quả cầu màu đỏ lớn lơ lửng trên đầu bạn. Quả cầu này sẽ dò theo vị trí của bạn trong một khoảng thời gian ngắn trước khi dừng lại và phát nổ. Hãy liên tục di chuyển để né tránh sát thương từ đòn đánh này.",
+        "Conical AoE Attacks (Các đòn tấn công diện rộng trực diện): Khi tiếp cận bạn ở bất kỳ tầng nào, Uxmal thường tung ra các đòn tấn công AoE hình nón phía trước mặt (frontal conical attacks) với các thuộc tính nguyên tố khác nhau. Hãy chủ động né tránh sang hai bên hoặc di chuyển ra sau lưng boss để phản công.",
+        "Fireball (Quả cầu lửa): Boss bắn một quả cầu lửa chậm về phía bạn. Đường đạn bay khá chậm giúp bạn có dư thời gian để né tránh.",
+        "Flamethrower (Súng phun lửa): Uxmal phun lửa hình nón phía trước mặt và xoay đầu từ bên này sang bên kia. Hãy di chuyển ra sau lưng boss để phản công hoặc đứng ngoài phạm vi của ngọn lửa.",
+        "Fire Beam (Tia lửa từ trên không): Khi đang bay, Uxmal phun một tia lửa xuống đất. Đòn đánh này diễn ra khá chậm, hãy né sang hai bên.",
+        "Poison Barrage (Mưa độc): Uxmal bắn một loạt đạn độc hình nón phía trước mặt và quét từ bên này sang bên kia. Di chuyển ra sau lưng hoặc bên sườn boss để tranh thủ gây sát thương.",
+        "Ice Beam (Tia băng): Uxmal tập trung một tia băng xuống đất, đóng băng khu vực bị ảnh hưởng và gây sát thương Băng. Hãy di chuyển ra ngoài phạm vi của tia băng.",
+        "Lightning Strike Combo (Combo sét đánh): Uxmal triệu hồi nhiều quả cầu điện nhỏ di chuyển xung quanh và phóng tia điện. Sau một khoảng thời gian ngắn, sét sẽ đánh xuống các vị trí của quả cầu. Hãy giữ khoảng cách với những quả cầu này."
       ],
       "phases": [],
-      "strategy": "Đây là trận đòi hỏi di chuyển và quan sát nhiều: luôn bám theo Uxmal khi nó đổi tầng để không mất nhịp đánh. Nhớ đổi cách chơi theo ground effect của từng tầng — đứng trong vùng Shock thì cực kỳ tránh ăn đòn (vì nhân sát thương), vùng Chill thì coi chừng bị làm chậm dồn đòn, vùng Ignite thì tránh đứng lâu để khỏi mất máu liên tục. Né các vũng nền và chọn vị trí đứng sạch để đánh.",
-      "rewards": [
-        "Hoàn thành lượt thử có Uxmal để tiến tới hoàn tất Trial of Chaos (lấy/nâng Ascendancy)."
-      ],
+      "strategy": "Để đánh bại Uxmal, the Beastlord, chìa khóa quan trọng nhất là sự linh hoạt và khả năng di chuyển liên tục. Vì boss thường xuyên bay qua lại giữa 3 tầng của đấu trường, bạn phải bám đuổi theo hắn để duy trì lượng sát thương gây ra. Ghi nhớ cơ chế mặt đất tại mỗi tầng: tránh đứng quá lâu trên Burning Ground ở tầng 3; cẩn thận với Chilled Ground ở tầng 2; và tuyệt đối tránh Shocked Ground vĩnh viễn ở tầng 1. Hầu hết các đòn tấn công của Uxmal (như Flamethrower, Poison Barrage, Fire Beam) đều là các đòn tấn công hình nón hoặc diện rộng trực diện phía trước. Tận dụng tốc độ di chuyển hoặc kỹ năng di chuyển nhanh để luồn ra phía sau lưng hoặc bên sườn boss để phản công an toàn. Khi thấy quả cầu Giant Homing Orb dừng lại trên đầu, hãy nhanh chóng thoát khỏi khu vực ảnh hưởng trước khi nó phát nổ.",
       "tips": [
-        "Đầu tư Movement Speed — arena rộng và boss đổi tầng liên tục nên cơ động là chìa khóa.",
-        "Cap resistance đa nguyên tố (Lightning cho Shock, Cold cho Chill, Fire cho Ignite) để chịu ground effect tốt hơn.",
-        "Tuyệt đối tránh dính đòn khi đang đứng trong vùng Shock vì sát thương bị nhân lên."
+        "Ghi nhớ thuộc tính mặt đất của từng tầng để điều chỉnh lối chơi: Tầng 3 gây Ignite (Thiêu đốt), Tầng 2 gây Chill (Lạnh giá), Tầng 1 gây Shock (Sốc điện).",
+        "Luôn giữ chuyển động để tránh đòn nổ của quả cầu Giant Homing Orb bám đuổi.",
+        "Khi boss sử dụng các đòn quét phun lửa (Flamethrower) hoặc phun độc (Poison Barrage), hãy di chuyển ra sau lưng hắn để tận dụng cơ hội tấn công an toàn.",
+        "Sử dụng các kỹ năng di chuyển nhanh (như Dash, Frostblink) để vượt qua các khoảng cách lớn giữa các tầng khi đuổi theo boss.",
+        "Tránh dẫm vào các quả cầu điện nhỏ trong chiêu Lightning Strike Combo vì chúng sẽ gọi sét đánh trực tiếp xuống vị trí đó."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Được chạm trán ngẫu nhiên ở thử thách thứ 4 (4th challenge) trong Trial of Chaos."
+    ],
+    "curated": true
   },
   "chetza-the-feathered-plague": {
     "name": "Chetza, the Feathered Plague",
@@ -1492,23 +1821,26 @@ window.POE2_BOSS_DETAILS = {
     "group": "Trial of Chaos",
     "location": "Trial of Chaos",
     "vi": {
-      "overview": "Chetza, the Feathered Plague là một trong các boss có thể gặp ở lượt thử thứ 4 của Trial of Chaos. Đây là boss kiểu chim/dịch bệnh, nguy hiểm nhất ở đòn mưa xác chim và việc bị làm chậm bởi Maim khiến né khó hơn nhiều.",
+      "overview": "Chetza, the Feathered Plague là một boss thuộc nhóm Trial of Chaos (Thử thách của Sự Hỗn Loạn) trong Path of Exile 2. Trận chiến với boss này diễn ra tại Temple of Chaos (Đền thờ Hỗn loạn), cụ thể là ở Thử thách thứ 4 (4th Trial). Chetza sở hữu khả năng kháng thuộc tính Băng (Cold) nhưng lại có điểm yếu trước thuộc tính Hỏa (Fire). Boss gây sát thương Vật lý (Physical) và áp dụng các hiệu ứng bất lợi nguy hiểm lên người chơi bao gồm Maim (Làm chậm), Bleeding (Chảy máu) và Tainted Viscera.",
       "mechanics": [
-        "Đòn chí mạng nhất: Chetza rít lên rồi triệu hồi xác chim (bird corpses) trút xuống vị trí của bạn liên tục khoảng 5 giây. Thiếu movement speed hoặc đang bị làm chậm thì đòn này có thể gây sát thương khủng, đủ chết.",
-        "Spiral spike attack gây debuff Maim làm chậm bạn — nguy hiểm vì kết hợp với đòn mưa xác chim sẽ khiến bạn không kịp chạy ra.",
-        "Plagueling adds: định kỳ spawn một con quái nhỏ liên tục lao tới đánh melee. Nó chỉ có một chiêu nhưng dễ làm bạn xao nhãng khi đang phải né boss."
+        "Spiral Spike (Gai xoắn ốc): Boss bắn ra các gai nhọn theo hình xoắn ốc. Đòn đánh này gây sát thương Vật lý và áp dụng debuff Maim làm chậm tốc độ di chuyển của bạn.",
+        "Screech and Rain of Bird Corpses (Tiếng rít và Mưa xác chim): Chetza rít lên và triệu hồi hàng loạt xác chim rơi xuống vị trí của bạn liên tục trong khoảng 5 giây. Đòn đánh này cực kỳ nguy hiểm, có thể gây sát thương chí mạng nếu bạn không kịp di chuyển né tránh.",
+        "Summon Plagueling (Triệu hồi Plagueling): Định kỳ, boss sẽ triệu hồi một quái vật nhỏ gọi là Plagueling. Kẻ địch này sẽ liên tục lao vào tấn công cận chiến, gây phân tâm trong khi bạn né tránh các đòn đánh của Chetza."
       ],
       "phases": [],
-      "strategy": "Ưu tiên giữ tốc độ di chuyển để vượt qua đòn mưa xác chim — khi nghe tiếng rít, lập tức chạy khỏi vùng bị nhắm và liên tục di chuyển suốt ~5 giây. Cẩn thận với spiral spike vì Maim làm chậm sẽ khiến bạn không thoát kịp đòn mưa xác. Khi Plagueling spawn, dọn nó nhanh để rảnh tay tập trung né và đánh Chetza, đừng để nó cắn lén trong lúc bạn đang xử lý đòn boss.",
-      "rewards": [
-        "Hoàn thành lượt thử có Chetza để tiến tới hoàn tất Trial of Chaos (lấy/nâng Ascendancy)."
-      ],
+      "strategy": "Chìa khóa để đánh bại Chetza, the Feathered Plague là kiểm soát tốc độ di chuyển và nhanh chóng dọn dẹp quái vật phụ. Khi boss tung đòn Spiral Spike, hãy tập trung né tránh để không bị dính hiệu ứng Maim (làm chậm). Nếu bị làm chậm, bạn sẽ rất khó né đòn nguy hiểm nhất của boss: Screech and Rain of Bird Corpses. Khi nghe tiếng rít lớn và thấy xác chim bắt đầu rơi xuống, hãy liên tục di chuyển không ngừng trong 5 giây.\n\nMỗi khi Plagueling xuất hiện, hãy nhanh chóng tiêu diệt nó để giảm bớt áp lực cận chiến và tập trung hoàn toàn vào Chetza. Hãy tận dụng điểm yếu của Chetza trước thuộc tính Hỏa (Fire) để dồn sát thương kết liễu boss nhanh hơn.",
       "tips": [
-        "Ưu tiên Movement Speed — đây là yếu tố sống còn để né đòn mưa xác chim.",
-        "Tránh dính spiral spike: Maim làm chậm là nguyên nhân khiến đòn mưa xác trở nên chí mạng.",
-        "Diệt Plagueling ngay khi nó spawn để không bị nó quấy trong lúc né boss."
+        "Tránh dính đòn Spiral Spike bằng mọi giá để không bị giảm tốc độ di chuyển bởi hiệu ứng Maim.",
+        "Khi boss bắt đầu rít lên và triệu hồi mưa xác chim, hãy liên tục chạy để thoát khỏi vùng ảnh hưởng trong suốt 5 giây đòn đánh diễn ra.",
+        "Tiêu diệt nhanh Plagueling ngay khi chúng xuất hiện để rảnh tay đối phó boss chính.",
+        "Sử dụng kỹ năng hoặc vũ khí hệ Hỏa (Fire) để tận dụng điểm yếu thuộc tính của Chetza."
       ]
-    }
+    },
+    "drops": [],
+    "conditions": [
+      "Tham gia Thử thách thứ 4 (4th Trial) của Trial of Chaos tại Temple of Chaos."
+    ],
+    "curated": true
   },
   "kosis-the-revelation": {
     "name": "Kosis, the Revelation",
@@ -1516,24 +1848,58 @@ window.POE2_BOSS_DETAILS = {
     "group": "Delirium",
     "location": "Delirium / Simulacrum",
     "vi": {
-      "overview": "Kosis, the Revelation là một trong hai boss của Simulacrum, thiên về cold damage. Trong hai boss thì Kosis được xem là khó nhằn hơn vì đòn của nó đau và khó né hơn. Kosis có thể spawn ngẫu nhiên trong map Delirium hoặc ở các wave cao của Simulacrum, gần như chắc chắn xuất hiện ở vài wave cuối.",
+      "overview": "Kosis, the Revelation (Sự Khải Huyền) là một Pinnacle Boss Atlas trong Path of Exile 2 thuộc hệ sinh thái Delirium. Boss này có thể xuất hiện ngẫu nhiên trong các bản đồ chịu ảnh hưởng bởi sương mù ảo ảnh Delirium hoặc trong các làn sóng (wave) cao hơn của Simulacrum tại Realmgate (thường chắc chắn xuất hiện ở những làn sóng cuối cùng, đặc biệt là Wave 15). Trận chiến với Kosis yêu cầu người chơi phải nắm vững cơ chế kiểm soát vị trí đứng, phản xạ nhanh để vô hiệu hóa tia bắn băng chết người của hắn, đồng thời chủ động dọn dẹp các quả cầu băng để tránh bị hủy diệt diện rộng bởi các đợt gai nhọn từ mặt đất.",
       "mechanics": [
-        "Sạc năng lượng rồi detonate tạo các vụ nổ AoE diện rộng cực mạnh.",
-        "Ice Beam là đòn nguy hiểm nhất: DoT cao, dính vào bị slow và freeze, gần như chết chắc. Boss sẽ hét, cuộn người và hút cold energy trước khi bắn beam.",
-        "Đòn melee của Kosis gây Corrupting Blood, một loại physical DoT khá nặng nếu để chồng nhiều stack."
+        "Avoid and Interrupt its Ice Beam: Tránh và ngắt tia băng. Chiêu thức này gây sát thương DoT băng giá cực lớn và có thể đóng băng bạn dẫn đến tử vong. Khi thấy boss cuộn tròn và gồng năng lượng, hãy lập tức di chuyển ra góc khuất (Line of Sight) để né tránh. Hãy cố gắng phá vỡ Energy Shield của hắn càng sớm càng tốt trong lúc hắn đang bắn tia băng để ngắt chiêu thức này, vì tia băng duy trì càng lâu thì các quả cầu băng (Ice Orbs) tạo ra sẽ càng to và nguy hiểm.",
+        "Avoid Ice Orbs and Teleportation Slam Attack: Tránh các quả cầu băng và đòn đập dịch chuyển. Đứng gần các quả cầu băng sẽ phải nhận sát thương DoT và bị Chill. Kosis có thể dịch chuyển và đập mạnh xuống quả cầu băng gần bạn nhất để phóng ra các đợt gai băng (ice spikes) từ mặt đất. Kích thước quả cầu băng càng lớn thì phạm vi gai băng càng rộng.",
+        "Controlled Ice Orb Detonation: Kích nổ quả cầu băng có kiểm soát. Cú đập dịch chuyển của Kosis có thể kích nổ nhiều quả cầu băng cùng lúc nếu chúng ở gần nhau. Bạn không nên để các quả cầu tích tụ quá nhiều; hãy chủ động di chuyển ra xa boss một chút để dụ hắn thực hiện đòn dịch chuyển đập đất kích nổ quả cầu ở vị trí an toàn.",
+        "Stay Near Kosis, But Avoid Its Melee Attacks: Giữ cự ly gần và né đòn cận chiến. Nên đứng ở cự ly gần đến trung bình với Kosis vì chạy quá xa sẽ kích hoạt đòn đập dịch chuyển sát thương cực lớn của hắn. Tuy nhiên, cần chú ý né các đòn cận chiến thường của boss để tránh bị dính debuff Corrupting Blood (Máu biến dị) gây sát thương vật lý theo thời gian rất mạnh."
       ],
       "phases": [],
-      "strategy": "Mấu chốt là né Ice Beam: khi thấy Kosis hét, cuộn người và hút cold energy thì lập tức chạy ra khỏi line of sight (đường ngắm) của nó để không ăn beam. Tránh xa đòn melee để khỏi dính Corrupting Blood. Tận dụng lúc boss bắn laser lớn làm cửa sổ để dồn damage và làm gián đoạn đòn kế tiếp. Có resist cold và khả năng chống freeze (anti-freeze) sẽ giúp ích rất nhiều.",
-      "rewards": [
-        "Deranging Book of Knowledge: lần đầu clear wave cuối Simulacrum ở mỗi difficulty tier khi hạ Kosis (hoặc Omniphobia), dùng được 2 Delirium Atlas Passive Points.",
-        "Hạ boss ở Wave 15 có cơ hội rớt Unique item; difficulty càng cao thì tỉ lệ ra Unique hiếm càng tốt."
-      ],
+      "strategy": "Chìa khóa để đánh bại Kosis là quản lý các quả cầu băng (Ice Orbs) trên sân đấu và luôn sẵn sàng ngắt chiêu Ice Beam của hắn. Khi Kosis bắt đầu bắn tia băng, hãy áp sát và dồn sát thương thật nhanh để bào lớp Energy Shield nhằm ngắt đòn đánh, giảm kích thước các quả cầu băng sinh ra.\n\nHãy di chuyển thông minh để kích nổ các quả cầu băng một cách an toàn bằng cách dụ Kosis dịch chuyển đập đất ở xa vị trí của bạn. Giữ cự ly đứng tương đối gần boss để tránh kích hoạt các đòn dịch chuyển tầm xa nguy hiểm, đồng thời chuẩn bị sẵn bình giải hiệu ứng để chống lại debuff Corrupting Blood từ các đòn đánh cận chiến cận của hắn.",
       "tips": [
-        "Chuẩn bị cold resist cao và phương án chống freeze trước khi vào.",
-        "Đừng tham đứng đánh khi boss đang sạc cold energy, ưu tiên cắt line of sight trước.",
-        "Đánh melee thì giật ra ngay sau mỗi đòn để tránh chồng stack Corrupting Blood."
+        "Luôn di chuyển ra sau cột hoặc góc khuất khi Kosis bắt đầu gồng tia Ice Beam.",
+        "Nhanh chóng phá lớp Energy Shield của Kosis trong lúc hắn đang bắn tia băng để giảm lượng Ice Orbs xuất hiện.",
+        "Chủ động kiểm soát việc kích nổ Ice Orbs bằng cách lùi lại dụ boss dịch chuyển đập đất ở khu vực trống trải.",
+        "Mang theo bình giải hiệu ứng chảy máu (Corrupting Blood) để vô hiệu hóa sát thương DoT vật lý từ các đòn cận chiến của hắn.",
+        "Giữ khoảng cách ở mức vừa phải, tránh chạy quá xa để không kích hoạt đòn dịch chuyển sát thương siêu cao của boss."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Deranging Book of Knowledge",
+        "image": null
+      },
+      {
+        "name": "Perfidy Knight Armour",
+        "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-1.png"
+      },
+      {
+        "name": "Strugglescream Stellar Amulet",
+        "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-2.png"
+      },
+      {
+        "name": "Collapsing Horizon Wyrm Quarterstaff",
+        "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-3.png"
+      },
+      {
+        "name": "Assailum Closed Helm",
+        "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-4.png"
+      },
+      {
+        "name": "Melting Maelstrom Ultimate Mana Flask",
+        "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-5.png"
+      },
+      {
+        "name": "Megalomaniac Diamond",
+        "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-6.png"
+      }
+    ],
+    "conditions": [
+      "Có thể xuất hiện ngẫu nhiên trong các bản đồ chịu ảnh hưởng của Delirium, tỉ lệ xuất hiện có thể tăng khi độ Delirious (ảo ảnh) của bản đồ cao hơn.",
+      "Xuất hiện ở các làn sóng (wave) cao hơn trong đấu trường Simulacrum tại Realmgate, với tỉ lệ chắc chắn xuất hiện ở vài làn sóng cuối cùng (thường là Wave 15)."
+    ],
+    "curated": true
   },
   "omniphobia-fear-manifest": {
     "name": "Omniphobia, Fear Manifest",
@@ -1541,23 +1907,56 @@ window.POE2_BOSS_DETAILS = {
     "group": "Delirium",
     "location": "Delirium / Simulacrum",
     "vi": {
-      "overview": "Omniphobia, Fear Manifest là boss còn lại của Simulacrum, thiên về melee với những cú chém rìu và slam chậm nhưng cực đau. Nó có thể spawn ngẫu nhiên trong map Delirium hoặc ở wave cao của Simulacrum, gần như chắc chắn ở vài wave cuối; muốn ăn Unique chắc chắn thì phải hạ nó ở Wave 15.",
+      "overview": "Omniphobia, Fear Manifest (Nỗi Sợ Hiện Hữu) là một Pinnacle Boss thuộc hệ thống Atlas trong Path of Exile 2, liên quan đến cơ chế Delirium. Boss này có thể xuất hiện ngẫu nhiên khi người chơi chạy các bản đồ bị ảnh hưởng bởi sương mù ảo ảnh Delirium hoặc trong các đợt quái (waves) cuối cùng của Simulacrum tại Realmgate. Omniphobia nổi tiếng với những đòn tấn công vật lý cận chiến bằng rìu vô cùng uy lực, kết hợp với đạn chém tầm xa và khả năng phun dịch độc diện rộng. Trận đấu đòi hỏi bạn phải có phản xạ né tránh cực tốt để sinh tồn trước sát thương khổng lồ của hắn.",
       "mechanics": [
-        "Leap slam: nhảy tới giáng rìu xuống đất gây damage chí mạng cộng thêm AoE ground spikes (chông đất) lan ra.",
-        "Đòn nôn (vomit attack): phun ra một vùng damage rộng. Dấu hiệu là các bong bóng đỏ (red bubbles) tụ quanh đầu sau khi boss hơi cúi xuống."
+        "Dodge Earth and Leap Slams: Né các đòn đập đất diện rộng (AoE). Đòn tấn công nguy hiểm nhất của Omniphobia là nhảy đập rìu gây sát thương vật lý cực cao kèm theo các gai đất nhọn trồi lên xung quanh. Để né tránh hiệu quả, hãy lướt né (dodge roll) ngay trước khi chiếc rìu chạm đất để tận dụng các khung hình bất tử (i-frames), sau đó lập tức phản công trong lúc boss đang hồi chiêu.",
+        "Avoid Axe Slash Projectile: Tránh luồng đạn chém rìu tầm xa. Omniphobia xoay người và ném ra một lưỡi rìu năng lượng bay thẳng về phía bạn. Đòn này gây sát thương lớn tương đương với các cú đập cận chiến. Hãy né ra khỏi đường ngắm ngay khi thấy hắn xoay người và quay lưng về phía bạn.",
+        "Avoid Vomit Attack: Tránh đòn phun dịch đỏ. Boss hơi cúi người xuống, tích tụ các bong bóng màu đỏ quanh đầu rồi ngẩng lên phun một luồng dịch độc hình nón phía trước mặt gây sát thương lớn. Hãy quan sát bong bóng đỏ và lập tức né sang bên sườn hoặc phía sau boss khi hắn bắt đầu phun."
       ],
       "phases": [],
-      "strategy": "Để né slam cho chuẩn, hãy dodge ngay TRƯỚC khi rìu chạm đất, dùng đúng i-frame của dodge để vừa tránh slam vừa tránh luôn ground spikes đi kèm. Với đòn nôn: canh khi boss cúi đầu và xuất hiện bong bóng đỏ quanh đầu, đợi nó ngẩng đầu lên thì dodge sang BÊN HÔNG (side) của nó để thoát vùng phun. Vì là boss melee đánh chậm nhưng nặng, cứ giữ khoảng cách, đọc tele và dodge đúng nhịp là an toàn.",
-      "rewards": [
-        "Deranging Book of Knowledge: lần đầu clear wave cuối Simulacrum ở mỗi difficulty tier khi hạ Omniphobia (hoặc Kosis), dùng được 2 Delirium Atlas Passive Points.",
-        "Hạ boss ở Wave 15 có cơ hội rớt Unique item; difficulty càng cao thì tỉ lệ ra Unique hiếm càng tốt."
-      ],
+      "strategy": "Chìa khóa để chiến thắng Omniphobia là di chuyển liên tục và quan sát các động tác chuẩn bị (wind-up) của boss. Các đòn đập rìu (slam) cận chiến có thể hạ gục bạn chỉ trong một chiêu, vì vậy hãy luôn sẵn sàng né tránh ngay khi rìu của hắn chuẩn bị chạm đất. Tận dụng khoảng thời gian hồi chiêu ngắn sau mỗi cú đập của boss để dồn sát thương.\n\nĐối với đòn ném rìu Axe Slash Projectile, hãy giữ cự ly trung bình và lướt sang hai bên khi thấy hắn quay lưng chuẩn bị ném. Khi thấy đầu boss xuất hiện bong bóng đỏ (Vomit Attack), hãy lập tức né sang một bên để tránh luồng dịch độc phun ra phía trước.",
       "tips": [
-        "Tập timing dodge slam: bấm dodge ngay sát lúc rìu sắp chạm đất, đừng dodge sớm quá.",
-        "Nhìn bong bóng đỏ quanh đầu để đoán đòn nôn rồi né sang hông.",
-        "Giữ khoảng cách hợp lý, boss đánh chậm nên có nhiều thời gian phản ứng."
+        "Lướt né (dodge roll) ngay trước khi rìu của boss chạm đất để né sát thương và gai nhọn trồi lên.",
+        "Tránh đứng trước mặt boss khi hắn chuẩn bị phun dịch đỏ (Vomit Attack); né sang bên hông là giải pháp an toàn nhất.",
+        "Khi boss xoay người ném rìu (Axe Slash Projectile), hãy di chuyển ra khỏi đường thẳng của đòn đánh.",
+        "Tận dụng tối đa thời gian hồi phục của boss sau các cú đập mạnh để áp sát và gây sát thương."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Deranging Book of Knowledge",
+        "image": null
+      },
+      {
+        "name": "Perfidy Knight Armour",
+        "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-1.png"
+      },
+      {
+        "name": "Strugglescream Stellar Amulet",
+        "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-2.png"
+      },
+      {
+        "name": "Collapsing Horizon Wyrm Quarterstaff",
+        "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-3.png"
+      },
+      {
+        "name": "Assailum Closed Helm",
+        "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-4.png"
+      },
+      {
+        "name": "Melting Maelstrom Ultimate Mana Flask",
+        "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-5.png"
+      },
+      {
+        "name": "Megalomaniac Diamond Jewel",
+        "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-6.png"
+      }
+    ],
+    "conditions": [
+      "Có thể xuất hiện ngẫu nhiên trong các bản đồ có Delirium hoặc ở các làn sóng (wave) cao hơn trong Simulacrum tại Realmgate, với tỉ lệ chắc chắn xuất hiện trong vài làn sóng cuối cùng.",
+      "Tỉ lệ xuất hiện trong bản đồ Delirium có thể tăng lên khi độ delirious (ảo ảnh) của bản đồ cao hơn."
+    ],
+    "curated": true
   },
   "it-that-was-tul-and-esh": {
     "name": "It That Was Tul and Esh",
@@ -1565,32 +1964,31 @@ window.POE2_BOSS_DETAILS = {
     "group": "Breach",
     "location": "Hive Colony (Nest of the Lords)",
     "vi": {
-      "overview": "It That Was Tul and Esh là boss của cơ chế Breach, gặp lần đầu tại Nest of the Lords trong Hive Colony qua quest Keepers of the Flame. Sau quest, chúng có thể xuất hiện ở các Breach Stronghold ngẫu nhiên trên Atlas. Đây là cặp Breachlord đánh chung một trận: bạn xử lý từng đứa luân phiên qua các phase, đến phase cuối chúng đánh cùng nhau và DÙNG CHUNG thanh máu.",
+      "overview": "It That Was Tul and It That Was Esh (Kẻ Từng Là Tul và Esh) là Boss Tột Đỉnh (Pinnacle Boss) của cơ chế Breach (Rạn nứt) ở giai đoạn endgame trong Path of Exile 2. Cặp boss này có thể được chạm trán đầu tiên trong chiến dịch tại Nest of the Lords thuộc Hive Colony khi làm nhiệm vụ 'Keepers of the Flame'. Trận đấu kiểm tra khả năng quản lý không gian của người chơi khi phải đối đầu đồng thời với sát thương Băng (Tul) và Lôi (Esh), đòi hỏi bạn phải có chiến thuật né tránh linh hoạt và dọn dẹp các cạm bẫy trong đấu trường.",
       "mechanics": [
-        "It That Was Tul: spawn các ngọn giáo băng (ice spears) tung lên trời rồi dựng khiên tạo một vùng barrier an toàn. Khi giáo rơi xuống xong, phải dodge ngay ra khỏi barrier vì Tul sẽ slam xuống gây damage liền.",
-        "It That Was Esh: thả nhiều lightning orbs xuống đất, các orb này phát nổ khi bạn lại gần.",
-        "Phase cuối: cả hai cùng đánh và chia sẻ chung một health pool, đánh đứa nào cũng trừ máu cả hai."
+        "Avoid Tul Ice Spears (Né Giáo Băng của Tul): Tul triệu hồi các ngọn giáo băng bắn lên trời và dựng khiên chắn tạo ra một vùng an toàn bên dưới. Khi giáo băng bắt đầu rơi xuống đất, hãy nhanh chóng di chuyển ra ngoài vùng chắn này vì ngay sau đó Tul sẽ nện mạnh xuống đất gây sát thương cực lớn.",
+        "Walk Over Esh Lightning Traps (Dẫm kích hoạt Bẫy Lôi của Esh): Esh thả các quả cầu sét trên mặt đất, chúng sẽ phát nổ khi bạn đi qua gần. Nếu không được dọn dẹp, các bẫy này sẽ liên tục bắn ra tia sét khắp đấu trường. Hãy chủ động dẫm qua các bẫy này để kích nổ sớm và làm sạch sàn đấu.",
+        "Focus on One Boss in the Last Phase (Tập trung dồn sát thương vào một Boss ở Pha cuối): Ở pha cuối cùng, cả Tul và Esh sẽ cùng xuất hiện và tấn công dồn dập. Tuy nhiên, hai boss này liên kết thanh máu với nhau (sát thương gây ra lên một boss cũng sẽ làm giảm máu của boss kia). Hãy chọn một mục tiêu thuận tiện nhất và dồn toàn bộ sát thương vào đó."
       ],
-      "phases": [
-        {
-          "name": "Phase Tul/Esh luân phiên",
-          "vi": "Đánh từng đứa một, mỗi đứa có bộ đòn riêng (Tul: giáo băng + khiên + slam; Esh: lightning orbs nổ). Học pattern của từng con."
-        },
-        {
-          "name": "Phase cuối (chung máu)",
-          "vi": "Cả hai cùng tham chiến và dùng chung thanh máu, đánh đứa nào cũng trừ chung. Lúc này phải vừa xoay xở né đòn của cả hai vừa dồn damage."
-        }
-      ],
-      "strategy": "Ở phase Tul, sau khi giáo băng rơi xong đừng đứng lì trong barrier, dodge ra ngay để né cú slam. Ở phase Esh, để ý các lightning orb dưới đất và đừng lao bừa vào vì chúng nổ khi bạn lại gần. Sang phase cuối vì chung máu nên cứ dồn output ổn định lên bất kỳ đứa nào ở gần, miễn là tránh được đòn của cả hai. Build cần resist cold và lightning để chịu hai kiểu damage này.",
-      "rewards": [
-        "Breachlord Sac (quest item): mở khóa lối vào Twisted Domain, nơi có Xesht, We That Are One (pinnacle boss Breach)."
-      ],
+      "phases": [],
+      "strategy": "Trận chiến yêu cầu bạn phải phản xạ nhanh trước hai cơ chế nguyên tố khác nhau. Khi Tul bắn giáo băng lên trời và tạo lá chắn, hãy đứng trong lá chắn một lát nhưng chuẩn bị sẵn sàng dịch chuyển/né ra ngoài ngay khi giáo băng rơi để tránh đòn nện búa cận chiến của hắn. Đồng thời, hãy chủ động dọn dẹp các quả cầu sét của Esh bằng cách đi sát qua chúng để kích hoạt nổ trước khi chúng bắn đạn lôi ngập sàn đấu.\n\nỞ pha cuối cùng khi cả hai cùng xuất hiện, đừng phân tán sát thương. Do thanh máu của hai boss liên kết với nhau, hãy tập trung tấn công dồn dập vào một boss duy nhất để kết thúc trận chiến nhanh nhất.",
       "tips": [
-        "Nhớ rời barrier của Tul ngay sau khi giáo rơi để tránh slam.",
-        "Đừng đứng cạnh hay lao vào lightning orb của Esh, chúng kích nổ theo khoảng cách.",
-        "Cân bằng cold + lightning resist vì hai boss đánh hai element khác nhau."
+        "Nhanh chóng né khỏi vùng lá chắn của Tul khi mưa giáo băng rơi để không bị dính cú nện búa cực mạnh.",
+        "Chủ động kích nổ các bẫy cầu sét của Esh bằng cách đi sát qua chúng trước khi chúng kịp bắn tia sét cản trở đường di chuyển.",
+        "Tập trung dồn sát thương vào một boss duy nhất ở pha cuối vì thanh máu của Tul và Esh được liên kết với nhau."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Breachlord Sac",
+        "image": "boss/it-that-was-tul-and-esh/drop-1.png"
+      }
+    ],
+    "conditions": [
+      "Trong chiến dịch: Gặp tại Nest of the Lords thuộc Hive Colony trong chuỗi nhiệm vụ 'Keepers of the Flame'.",
+      "Endgame: Kích hoạt Breachstone (ghép từ 300 Breach Splinter) tại Map Device để mở Breach Stronghold, tiến sâu vào Hive Colony để tìm lối vào Nest of the Lords."
+    ],
+    "curated": true
   },
   "vandroth-blackblooded-enslaver": {
     "name": "Vandroth, Blackblooded Enslaver",
@@ -1598,23 +1996,31 @@ window.POE2_BOSS_DETAILS = {
     "group": "Abyss",
     "location": "Dark Domain",
     "vi": {
-      "overview": "Vandroth, Blackblooded Enslaver là một boss của cơ chế Abyss. Boss thỉnh thoảng xuất hiện ở Abyssal Depths level 79 trở lên: ở cuối khu, thay vì layout thường, bạn có thể tìm thấy lối vào arena boss dẫn tới Dark Domain để gặp Vandroth. Trận này nặng về né hazard môi trường và giữ chân liên tục.",
+      "overview": "Vandroth, Blackblooded Enslaver là một Boss Abyss Atlas trong Path of Exile 2, đôi khi xuất hiện ở cuối các Abyssal Depths từ cấp độ 79 trở lên trong bản đồ Dark Domain. Trận đấu yêu cầu bạn phải liên tục di chuyển để né các quả cầu khổng lồ lăn dọc đấu trường và các vụ nổ từ xác quái (exploding corpses), đồng thời phòng tránh hiệu ứng Đóng băng (Freeze) nguy hiểm có thể làm giảm khả năng cơ động của bạn.",
       "mechanics": [
-        "Giant spheres (cầu khổng lồ) lăn theo các rãnh (grooves) trên arena, trồi ra từ nhiều cửa. Đừng đứng trong rãnh, dính cầu lăn là chết.",
-        "Xác minion của Vandroth biến thành các pustule xanh (green pustules) phát nổ sau một lúc, phải di chuyển và reposition liên tục để tránh.",
-        "Một số đòn của Vandroth gây Freeze làm chậm di chuyển, dễ khiến bạn kẹt rồi ăn cầu lăn hoặc nổ pustule."
+        "Dodge the Spheres (Né các quả cầu lăn): Các quả cầu khổng lồ (giant spheres) lăn dọc theo các rãnh (grooves) trong đấu trường từ nhiều phía. Hãy liên tục di chuyển và tuyệt đối không đứng trên đường rãnh vì bị lăn trúng sẽ nhận lượng sát thương cực lớn.",
+        "Avoid the Exploding Corpses (Tránh xác nổ): Xác của các tay sai (minion corpses) do Vandroth triệu hồi sẽ biến thành các mụn mủ xanh (green pustules) và phát nổ sau thời gian ngắn. Bạn cần liên tục di chuyển và định vị lại vị trí (reposition) để không bị dính sát thương nổ này.",
+        "Watch for Freeze Effects (Cảnh giác hiệu ứng Đóng băng): Các đòn tấn công của Vandroth có thể gây hiệu ứng Freeze (Đóng băng) làm chậm di chuyển. Hãy chuẩn bị các bùa kháng băng (frost resistance charms) và di chuyển khéo léo để tránh bị khống chế, dễ dẫn đến việc bị trúng các quả cầu hoặc vụ nổ xác quái."
       ],
       "phases": [],
-      "strategy": "Mấu chốt là LUÔN di chuyển và để ý vị trí. Tránh xa các rãnh trên sàn vì cầu khổng lồ lăn dọc theo đó. Sau khi giết minion, để ý xác chúng biến thành pustule xanh sẽ nổ, đừng đứng cạnh. Vì boss có thể Freeze nên anti-freeze (chống đóng băng) rất quan trọng để không bị kẹt đúng lúc cầu lăn tới. Cứ giữ nhịp di chuyển ổn định, tranh thủ output giữa các đợt hazard.",
-      "rewards": [
-        "Là boss Abyss endgame, hạ Vandroth cho phần thưởng theo cơ chế Abyss (Abyssal loot, vật phẩm tiến trình Abyssal Power)."
-      ],
+      "strategy": "Chiến thuật chính khi đối đầu với Vandroth là giữ cho nhân vật của bạn luôn luôn di chuyển (stay mobile). Hãy chú ý quan sát các rãnh trên nền đất đấu trường để né hướng di chuyển của các quả cầu lăn. Khi tiêu diệt quái vật tay sai của boss, hãy nhanh chóng rời khỏi khu vực đó trước khi xác của chúng biến thành mụn mủ xanh lá cây và phát nổ. Sử dụng sát thương hệ Hỏa (Fire) vì đây là điểm yếu của boss, đồng thời chuẩn bị đầy đủ kháng Băng (Cold Resistance) để giảm thiểu nguy cơ bị đóng băng hoặc làm chậm.",
       "tips": [
-        "Trang bị chống Freeze để khỏi bị kẹt chân giữa lúc cầu lăn hoặc pustule nổ.",
-        "Tuyệt đối không đứng trong rãnh trên sàn arena.",
-        "Sau khi dọn minion, lùi xa xác chúng vì sắp biến thành pustule nổ."
+        "Không đứng trên các rãnh (grooves) nơi quả cầu lăn qua.",
+        "Liên tục di chuyển để tránh các vụ nổ từ xác quái (exploding corpses).",
+        "Trang bị các frost resistance charms (bùa kháng băng) để phòng tránh hiệu ứng Freeze làm chậm di chuyển.",
+        "Tận dụng điểm yếu của boss với sát thương hệ Fire (Hỏa) và đề phòng sát thương hệ Cold (Băng) và Physical (Vật lý) của boss."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Kulemak's Invitation",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Có thể ngẫu nhiên tìm thấy trong Abyssal Depths (Vực Sâu) có cấp độ từ 79 trở lên. Ở cuối khu vực này, bạn có thể phát hiện một lối vào dẫn đến đấu trường boss trong Dark Domain."
+    ],
+    "curated": true
   },
   "tasgul-swallower-of-light": {
     "name": "Tasgul, Swallower of Light",
@@ -1622,23 +2028,31 @@ window.POE2_BOSS_DETAILS = {
     "group": "Abyss",
     "location": "Lightless Void",
     "vi": {
-      "overview": "Tasgul, Swallower of Light là boss của cơ chế Abyss, gặp trong Lightless Void. Boss thỉnh thoảng xuất hiện ở Abyssal Depths level 79 trở lên: cuối khu có thể mở ra arena boss dẫn vào Lightless Void. Trong mạch quest, Lurking Creature sẽ giao bạn nhiệm vụ hạ Tasgul; đi qua khu hầm tới cánh cửa bị niêm phong ở cuối là gặp boss. Điểm đặc trưng của trận là cơ chế bóng tối che tầm nhìn.",
+      "overview": "Tasgul, Swallower of Light (Tasgul, Kẻ nuốt chửng Ánh sáng) là một Atlas Abyss Boss trong Path of Exile 2, thỉnh thoảng có thể tìm thấy ở Lightless Void (Hư vô Không ánh sáng) thông qua cổng vào Abyssal Depths từ bản đồ cấp 79 trở lên. Trận chiến diễn ra trong một đấu trường tối tăm đầy hiểm họa, đòi hỏi người chơi phải liên tục di chuyển để né tránh các quả cầu lăn khổng lồ lăn về phía tâm sàn đấu. Đồng thời, cơ chế che khuất tầm nhìn định kỳ của bóng tối khiến việc phán đoán đòn đánh của boss trở nên khó khăn hơn. Đánh bại Tasgul sẽ mang lại cơ hội nhận được Kulemak's Invitation.",
       "mechanics": [
-        "Di chuyển liên tục là bắt buộc để tránh hazard và ra khỏi tầm đánh của boss.",
-        "Tasgul định kỳ làm tối cả arena (darkness), che mờ toàn bộ đòn đánh khiến rất khó đọc và bám theo nó.",
-        "Massive rolling spheres (cầu lăn khổng lồ) trồi ra từ nhiều cửa quanh arena, lăn theo rãnh hướng về cái hố ở giữa sàn."
+        "Stay Mobile: Chuyển động không ngừng là yếu tố cốt lõi trong suốt trận chiến để tránh các hiểm họa xung quanh sàn đấu và luôn đứng ngoài tầm đánh trực diện của boss.",
+        "Watch the Darkness: Tasgul định kỳ sẽ làm bóng tối bao trùm cả đấu trường, che khuất toàn bộ các đòn tấn công của mình. Điều này làm cho việc theo dõi hướng đi và chiêu thức của boss trở nên khó khăn hơn, do đó bạn cần phải hết sức cảnh giác và chọn vị trí đứng thật cẩn thận.",
+        "Dodge the Spheres: Những quả cầu lăn khổng lồ sẽ xuất hiện từ các khe hở xung quanh đấu trường, lăn theo các đường rãnh hướng về hố trung tâm. Hãy luôn chú ý và liên tục né tránh vì chúng có thể lao ra từ nhiều hướng khác nhau cùng một lúc."
       ],
       "phases": [],
-      "strategy": "Quan trọng nhất là không bao giờ đứng yên: vừa né cầu lăn vừa giữ khoảng cách an toàn với boss. Khi arena tối đi, đừng panic lao bừa, hãy giữ vị trí an toàn đã biết và dựa vào audio/animation để đoán đòn cho tới khi sáng lại. Tránh các rãnh có cầu lăn và cái hố giữa sàn. Cứ kiên nhẫn output giữa các đợt hazard và đợt darkness.",
-      "rewards": [
-        "Kulemak's Invitation: hạ Tasgul để nhận, dùng cho tiến trình Abyss endgame (mở fight Vessel of Kulemak)."
-      ],
+      "strategy": "Để đánh bại Tasgul, Swallower of Light, chìa khóa quan trọng nhất là khả năng di chuyển linh hoạt và khả năng định vị tốt. Bạn cần liên tục chạy vòng quanh đấu trường để tránh bị kẹt trong các đường lăn của quả cầu (Dodge the Spheres). Hãy chú ý các đòn tấn công của boss ngay cả khi đấu trường bị che phủ bởi bóng tối (Watch the Darkness), giữ khoảng cách an toàn và tấn công khi boss vừa kết thúc một chuỗi chiêu thức. Boss có khả năng kháng sát thương Vật lý (Physical) và Lửa (Fire), nhưng lại có điểm yếu trước sát thương Lôi (Lightning). Tận dụng các kỹ năng gây sát thương Lôi sẽ giúp bạn rút máu của boss nhanh hơn rất nhiều.",
       "tips": [
-        "Trước khi arena tối, định vị sẵn chỗ đứng an toàn để khỏi mò mẫm trong bóng tối.",
-        "Luôn để ý các cửa trồi cầu lăn và tránh đứng trong rãnh.",
-        "Ưu tiên DPS đều thay vì burst liều, vì darkness khiến đánh liều dễ ăn đòn."
+        "Luôn di chuyển liên tục để không bị kẹt trong đường lăn của các quả cầu thép khổng lồ hướng về trung tâm đấu trường.",
+        "Khi đấu trường bị tối đi, hãy di chuyển chậm lại và cẩn thận quan sát xung quanh để chuẩn bị né các đòn tấn công bất ngờ của boss từ bóng tối.",
+        "Tránh sử dụng sát thương Vật lý và Lửa nếu có thể vì boss có kháng tính cao với hai hệ này.",
+        "Sử dụng các kỹ năng hệ Lôi (Lightning) để gây sát thương tối đa lên boss nhờ điểm yếu kháng tính."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Kulemak's Invitation",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Thỉnh thoảng có thể bắt gặp lối vào Lightless Void tại điểm cuối của Abyssal Depths trong các bản đồ Atlas cấp 79 trở lên (level 79+)."
+    ],
+    "curated": true
   },
   "xipocado-royal-architect": {
     "name": "Xipocado, Royal Architect",
@@ -1646,23 +2060,34 @@ window.POE2_BOSS_DETAILS = {
     "group": "Atziri's Temple",
     "location": "Atziri's Temple",
     "vi": {
-      "overview": "Xipocado, Royal Architect là boss trong Atziri's Temple, vào được qua Vaal Ruins. Muốn thách đấu, bạn phải đặt các Path room ở Temple Console để nối tới ô (tile) mà Xipocado đang đứng, xây đường dần tới Architect's Chamber ở phía đối diện console. Mỗi lần bị đánh bại, Xipocado làm rung chuyển Temple và dời sang một tile khác không nối được với các phòng đã đặt, nên bạn phải xây lại đường để truy đuổi.",
+      "overview": "Xipocado, Royal Architect là một boss thuộc Đền thờ Atziri (Atziri's Temple) trong Path of Exile 2. Trận chiến với Xipocado không quá phức tạp nhưng đòi hỏi người chơi phải cảnh giác cao độ trước các đòn tấn công hệ sét (Lightning) cực nhanh của hắn. Đánh bại boss này sẽ giúp bạn nhận được các thẻ phòng đặc biệt để nâng cấp Đền thờ cũng như các Medallion hữu ích để chuẩn bị cho các đợt đi đền thờ tiếp theo.",
       "mechanics": [
-        "Xipocado có nhiều kiểu đòn, nhưng lightning là nhanh nhất và dễ bắt bài bạn, gây Shocked làm bạn dễ tổn thương hơn.",
-        "Khi boss đặt một rune xanh (blue rune) duy nhất xuống đất, nó sẽ teleport tới rune đó rồi bắn một loạt lightning projectiles, phải dodge sang ngang (sideways) để né."
+        "Blue Lightning Runes (Cổ tự Lôi điện Xanh): Đây là cơ chế cốt lõi trong đòn đánh của Xipocado. Hắn sử dụng các cổ tự màu xanh dương trên mặt đất để dịch chuyển và phát động tấn công:\n- Khi Xipocado đặt một cổ tự xanh đơn lẻ trên đất, hắn sẽ dịch chuyển ngay lập tức đến đó và bắn ra một loạt đạn sét liên hoàn theo đường thẳng. Bạn cần nhanh chóng né sang một bên (dodge sideways) để tránh bị trúng đòn.\n- Khi hắn triệu hồi nhiều cổ tự xanh xung quanh bản thân, hãy lập tức lùi lại thật nhanh để tránh các tia điện Spark tỏa ra khắp đấu trường.",
+        "Hiệu ứng Shocked (Tê liệt): Các đòn đánh hệ sét của Xipocado có thể dễ dàng gây trạng thái Shocked lên nhân vật của bạn, khiến bạn nhận thêm nhiều sát thương và dễ bị kết liễu bởi các đòn đánh tiếp theo. Hãy mang theo bình thuốc giải hiệu ứng Shocked hoặc trang bị kháng sét tốt."
       ],
       "phases": [],
-      "strategy": "Đề phòng đòn lightning vì nó rất nhanh và dễ shock. Khi thấy rune xanh hiện trên sàn, biết ngay boss sắp teleport tới đó và bắn loạt projectile, hãy dodge sang ngang để né cả chùm. Có lightning resist và phương án giảm/chống Shock sẽ giúp trận dễ thở hơn nhiều. Về cấu trúc trận, cứ kiên nhẫn: đánh boss, nó dời tile, bạn xây lại Path room nối tới rồi tiếp tục đuổi đánh.",
-      "rewards": [
-        "Royal Access Chamber room card: nhận khi hạ Xipocado lúc Area Level của Temple từ 75 trở lên; đặt card này để mở khóa lối tới Atziri, the Red Queen.",
-        "Các restricted room card khác sau khi hạ boss, cho phần thưởng giá trị: high-tier Runes, Lineage Support Gems, Currency, hoặc phòng cho phép gỡ Rune đã socket."
-      ],
+      "strategy": "Trong suốt trận chiến, hãy luôn quan sát mặt đất để xác định vị trí các cổ tự xanh mà Xipocado tạo ra. \n- Nếu thấy một cổ tự xanh duy nhất xuất hiện, hãy chuẩn bị né tránh sang hai bên vì hắn sẽ dịch chuyển đến đó và bắn đạn sét thẳng vào vị trí của bạn.\n- Nếu thấy nhiều cổ tự xanh bao quanh boss, hãy di chuyển lùi lại để tạo khoảng cách an toàn, giúp bạn dễ dàng luồn lách qua các tia điện Spark đang lan tỏa.\n\nHãy tập trung gây sát thương lớn và kết liễu boss nhanh chóng, đồng thời duy trì lượng máu an toàn bằng cách né tránh các luồng đạn sét nguy hiểm.",
       "tips": [
-        "Giữ Area Level của Temple từ 75 trở lên nếu muốn lấy Royal Access Chamber để mở đường tới Atziri.",
-        "Chuẩn bị lightning resist và chống Shock trước khi vào.",
-        "Thấy rune xanh là dodge sang ngang ngay, đừng dodge tới/lùi."
+        "Né tránh sang hai bên khi boss đặt một cổ tự xanh và chuẩn bị bắn tia chớp liên hoàn.",
+        "Rút lui nhanh chóng khi boss triệu hồi nhiều cổ tự xanh xung quanh hắn để né các đạn Spark tỏa ra.",
+        "Mang theo trang bị có Kháng Lôi điện (Lightning Resistance) cao và các bình thuốc giải trạng thái Shocked để nâng cao khả năng sống sót."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Royal Access Chamber room card",
+        "image": "boss/xipocado-royal-architect/drop-1.jpeg"
+      },
+      {
+        "name": "Advanced Medallions",
+        "image": "boss/xipocado-royal-architect/drop-2.jpeg"
+      }
+    ],
+    "conditions": [
+      "Tiếp cận Đền thờ Atziri (Atziri's Temple) thông qua Phế tích Vaal (Vaal Ruins).",
+      "Đặt các phòng Path (Đường nối) trong Bảng điều khiển Đền thờ (Temple Console) để kết nối đến ô (tile) mà Xipocado đang chiếm giữ."
+    ],
+    "curated": true
   },
   "styrn-fallen-knight-of-aldur": {
     "name": "Styrn, Fallen Knight of Aldur",
@@ -1670,24 +2095,43 @@ window.POE2_BOSS_DETAILS = {
     "group": "Expedition",
     "location": "Tomb of the Fallen Knight",
     "vi": {
-      "overview": "Styrn vốn là một hiệp sĩ huyền thoại phục vụ dưới trướng Aldur và các Runefather, nay đã sa ngã thành boss canh giữ Tomb of the Fallen Knight trong league Runes of Aldur. Đây là dạng boss melee kiểu 'Black Knight' nặng đô: cận chiến tay đôi, ra đòn chậm nhưng đau, đòi hỏi bạn đọc animation và né đúng nhịp. Đánh xong Styrn sẽ chắc chắn rơi Exceptional Verisium.",
+      "overview": "Styrn, Fallen Knight of Aldur (Kị sĩ sa ngã của Aldur) là một boss thuộc cơ chế Expedition ở endgame trong Path of Exile 2. Hắn cư ngụ trong Tomb of the Fallen Knight (Hầm mộ của Kị sĩ sa ngã) - một khu vực đặc biệt có tỉ lệ xuất hiện ngẫu nhiên trong các bản đồ có cơ chế Expedition. Trận chiến với Styrn kiểm tra khả năng di chuyển linh hoạt và né tránh diện rộng (AoE) của bạn, nơi bạn cần liên tục di chuyển vòng quanh boss và tấn công hắn vào những khoảng trống giữa các đòn đánh chậm nhưng uy lực.",
       "mechanics": [
-        "Boss melee thiên về cận chiến: các đòn chém, bổ và lao tới của Styrn có wind-up rõ, cứ canh animation mà dodge roll là né được.",
-        "Ra đòn đau theo kiểu burst, dính một phát có thể mất cả thanh máu nên đừng đứng ăn đòn, ưu tiên kiting và chen damage giữa các nhịp vung kiếm.",
-        "Là boss thuộc Runes of Aldur, Styrn có liên quan tới hệ thống rune/gem của league (ví dụ Styrn's Mountain, Styrn's Ferocity)."
+        "Maximize Windows Between Attacks: Styrn di chuyển khá chậm nhưng sở hữu các đòn đánh cận chiến và diện rộng (AoE) có sát thương cực kỳ lớn. Chìa khóa để chiến thắng là liên tục chạy vòng quanh boss, né tránh các đòn vung vũ khí của hắn và tận dụng khoảng thời gian trễ giữa các đòn đánh để xả sát thương."
       ],
       "phases": [],
-      "strategy": "Giữ cự ly và đọc đòn là chính. Styrn đánh chậm nhưng dứt khoát, bạn chỉ cần dodge roll qua đòn chém rồi vòng ra sau lưng đập vài nhịp là an toàn. Tránh tham lam đứng yên DPS khi boss đang vào đòn nặng. Có sustain và đủ DPS thì đây là fight khá thẳng thắn, không nhiều cơ chế rối.",
-      "rewards": [
-        "Exceptional Verisium (chắc chắn rơi sau khi hạ Styrn)",
-        "Vật phẩm/gem liên quan league Runes of Aldur"
-      ],
+      "strategy": "Khi đối đầu với Styrn, hãy luôn giữ sự tập trung vào việc di chuyển. Boss di chuyển khá chậm chạp, cho phép bạn dễ dàng thả diều (kite) hoặc chạy vòng quanh hắn. Đừng đứng yên một chỗ quá lâu vì các đòn tấn công AoE của hắn có thể quét sạch lượng máu lớn của bạn chỉ trong một cú đánh. Hãy chờ boss tung đòn đánh trước, di chuyển ra sau lưng hoặc bên cạnh hắn để né tránh, sau đó lập tức tấn công ngay trong khoảng thời gian boss đang phục hồi. Tiếp tục lặp lại quá trình này cho đến khi hạ gục hắn.",
       "tips": [
-        "Tập trung tránh đòn burst, đừng greedy ôm mặt boss DPS liên tục.",
-        "Dodge roll canh theo wind-up của animation thay vì spam bừa.",
-        "Build có resist vật lý và lượng sustain tốt sẽ làm fight dễ thở hẳn."
+        "Luôn di chuyển vòng quanh boss để né tránh các đòn tấn công định hướng và diện rộng (AoE).",
+        "Tận dụng tối đa tốc độ di chuyển chậm của Styrn để giữ khoảng cách an toàn khi cần hồi máu hoặc nạp lại bình thuốc (Flasks).",
+        "Học thuộc nhịp độ ra chiêu của boss để biết chính xác thời điểm an toàn để dừng lại gây sát thương.",
+        "Đảm bảo xây dựng lượng giáp và kháng cự vật lý/nguyên tố tốt vì sát thương từ đòn đánh của hắn rất thô và nặng."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Medved's Crest of the Circle",
+        "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-1.png"
+      },
+      {
+        "name": "Vorana's Crest of the Scythe",
+        "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-2.png"
+      },
+      {
+        "name": "Uhtred's Crest of the Chalice",
+        "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-3.png"
+      },
+      {
+        "name": "Olroth's Crest of the Sun",
+        "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-4.png"
+      }
+    ],
+    "conditions": [
+      "Kích hoạt cơ chế Expedition trong các bản đồ endgame (Maps).",
+      "Tìm kiếm khu vực Tomb of the Fallen Knight xuất hiện ngẫu nhiên trên bản đồ.",
+      "Sử dụng chất nổ Expedition (explosives) để phá hủy cửa hầm mộ và đi vào bên trong đối đầu với boss."
+    ],
+    "curated": true
   },
   "medved-the-fallen-seer": {
     "name": "Medved, the Fallen Seer",
@@ -1695,26 +2139,35 @@ window.POE2_BOSS_DETAILS = {
     "group": "Expedition",
     "location": "Ocean Biome",
     "vi": {
-      "overview": "Medved là boss Expedition gặp trong chuỗi The Grand Expedition ở Ocean Biome. Để mở fight, bạn cần vào đảo yêu cầu Waystone Tier 11, dọn quái rồi tìm Gwennen, kích nổ đám explosive cô ấy đặt để lộ ra khu boss. Đây là một gã to xác cầm rìu kép, vừa đập melee vừa triệu hồi minion, nên fight có nhịp dồn đám lúc boss xuống máu. Hạ Medved sẽ nhặt được Vorana's Logbook để đi tiếp.",
+      "overview": "Medved, the Fallen Seer (Medved, Nhà Tiên Tri Sa Ngã) là một boss thuộc cơ chế Expedition giai đoạn cuối game (endgame) trong Path of Exile 2 (PoE 2). Sau khi mở khóa Ruins of Kingsmarch, Medved có thể được tìm thấy tại khu vực Deadly Map Boss đầu tiên mà bạn khai phá trong chuỗi nhiệm vụ The Grand Expedition. Bản đồ đấu trường của Medved có tên là Sprawling Jungle thuộc vùng biển Ocean biome.",
       "mechanics": [
-        "Leap Slam: nhảy bật lên không trung rồi đáp xuống tạo AoE sát thương vùng tại điểm tiếp đất, né bằng cách rời khỏi vòng đáp.",
-        "Cleave: vung một bên rìu thành đòn chém quạt phía trước theo góc nghiêng.",
-        "Combo Attack: vung lần lượt mỗi bên rìu trong khi di chuyển thành đường thẳng rồi kết bằng cú đánh hai rìu cùng lúc.",
-        "Boulder Toss: lao tới đồng thời ném một tảng đá thẳng theo đường line.",
-        "Triệu hồi minion: ở mốc 75%, 50% và 25% máu, Medved gọi minion tether (nối dây) vào người hắn; ngoài ra còn rải ra vài con nhện yếu."
+        "Stay Behind the Boss (Đứng sau lưng boss): Ngoài một vài đòn nện (slam) diện rộng, Medved chủ yếu sử dụng các đòn tấn công định hướng phía trước. Chỉ cần bạn liên tục di chuyển và giữ vị trí ở sau lưng boss, bạn sẽ có rất nhiều cơ hội để phản công an toàn."
       ],
       "phases": [],
-      "strategy": "Đứng chếch sang bên hông để né các đòn chém theo góc và đường thẳng (Cleave, Combo, Boulder Toss), tránh đứng thẳng trước mặt boss. Khi tới mốc 75/50/25% boss gọi minion tether, ưu tiên dọn đám nhện và minion để giảm áp lực rồi quay lại đập boss. Leap Slam có cảnh báo trước nên cứ thấy boss bật lên là roll ra khỏi vùng đáp.",
-      "rewards": [
-        "Vorana's Logbook (mở chặng tiếp theo của Grand Expedition)",
-        "Vật phẩm league Runes of Aldur (Medved's Saga, Medved's Felling, v.v.)"
-      ],
+      "strategy": "Chiến thuật đối đầu với Medved xoay quanh việc kiểm soát vị trí đứng của nhân vật. Do hầu hết các kỹ năng và đòn vung của Medved đều hướng về phía trước, bạn hãy liên tục di chuyển vòng ra sau lưng boss để né tránh. Hãy tận dụng tối đa những khoảng trống khi boss đang thực hiện đòn tấn công frontal để xả sát thương mạnh mẽ. Lưu ý né tránh các cú slam diện rộng bằng cách lùi lại hoặc sử dụng Dodge Roll kịp thời.",
       "tips": [
-        "Dọn minion/nhện ở các mốc máu để không bị bao vây.",
-        "Né Leap Slam bằng cách di chuyển ngay khi thấy boss nhảy lên.",
-        "Đứng lệch hông để các đòn line và quạt trượt qua người."
+        "Luôn cố gắng đứng ở sau lưng Medved trong suốt trận đấu để tránh hầu hết các đòn tấn công frontal.",
+        "Cảnh giác với các đòn slam diện rộng của boss và chủ động lùi lại hoặc Dodge Roll để né tránh.",
+        "Trang bị các bình thuốc (Flasks) hồi phục tốt để đối phó với sát thương đột ngột nếu không kịp né đòn.",
+        "Khi chạy Expedition Logbook, hãy kích hoạt Medved's Saga trong hành trang trước khi mở map để chắc chắn chạm trán Medved ở vùng biển Ocean biome tiếp theo."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Vorana's Siege",
+        "image": "https://img.poeviethoa.net/boss/medved-the-fallen-seer/drop-1.png"
+      },
+      {
+        "name": "Medved's Crest of the Circle",
+        "image": "https://img.poeviethoa.net/boss/medved-the-fallen-seer/drop-2.png"
+      }
+    ],
+    "conditions": [
+      "Mở khóa khu vực Ruins of Kingsmarch.",
+      "Tìm kiếm khu vực Deadly Map Boss đầu tiên được hé lộ tại Ocean biome trong chuỗi nhiệm vụ The Grand Expedition (bản đồ Sprawling Jungle).",
+      "Sau khi hoàn thành chuỗi nhiệm vụ, giữ Medved's Saga trong hành trang trước khi sử dụng Expedition Logbook để chắc chắn gặp boss ở vùng biển Ocean biome tiếp theo."
+    ],
+    "curated": true
   },
   "vorana-last-to-fall": {
     "name": "Vorana, Last to Fall",
@@ -1722,27 +2175,35 @@ window.POE2_BOSS_DETAILS = {
     "group": "Expedition",
     "location": "Ocean Biome",
     "vi": {
-      "overview": "Vorana là boss Expedition ở Ocean Biome, dùng cặp scythe (lưỡi hái kép) cực nhanh. Điểm đặc trưng của fight là màn sương đen ngạt thở phủ kín khu vực: đứng trong sương là dính debuff cộng dồn giết bạn rất nhanh, chỉ có khoảng quang đãng quanh chỗ Vorana mới là arena an toàn. Để mở fight cần nói chuyện với Tujen rồi kích nổ explosive; hạ Vorana sẽ nhặt Uhtred's Logbook.",
+      "overview": "Vorana, Last to Fall (Vorana, Người cuối cùng ngã xuống) là một boss thuộc cơ chế Expedition ở giai đoạn cuối game (endgame) của Path of Exile 2 (PoE 2). Bạn sẽ gặp Vorana trong chuỗi nhiệm vụ The Grand Expedition với tư cách là Deadly Map Boss thứ hai, nằm trong bản đồ Mournful Cliffside (Ocean biome). Trận đấu này là một bài kiểm tra nghiêm ngặt về khả năng di chuyển kỷ luật và kiểm soát vị trí đứng của người chơi, buộc bạn phải luôn chiến đấu trong phạm vi hẹp xung quanh boss để sinh tồn.",
       "mechanics": [
-        "Black fog (sương đen): sương độc phủ quanh khu vực, đứng trong là ăn debuff cộng dồn chết nhanh; chỉ vùng quang đãng quanh boss mới đứng được, phải luôn bám theo Vorana.",
-        "Orbiting stars: các ngôi sao xoay quanh rìa arena bắn projectile về vị trí bạn theo chu kỳ, nên di chuyển liên tục.",
-        "Cyclone: xoay chém liên tục quanh người trong khi lao theo một hướng.",
-        "Lacerate: chém cả hai scythe thành hình bán nguyệt/chữ thập phía trước mặt.",
-        "Dash Slash: lao nhanh tới rồi chém.",
-        "Evasion phase: thỉnh thoảng Vorana biến mất vào trong sương, mất khỏi mini-map rồi bất ngờ lao ra đánh; có hiệu ứng hình ảnh báo hướng cô ấy sẽ charge tới."
+        "Lethal Dark Fog (Sương mù đen chết chóc): Khi trận đấu bắt đầu, sương mù đen sẽ bao phủ toàn bộ đấu trường. Bạn buộc phải di chuyển và chiến đấu bên trong vòng tròn ánh sáng an toàn xung quanh Vorana. Nếu bước ra ngoài vòng tròn này, nhân vật sẽ phải chịu lượng sát thương cực lớn theo thời gian và tử vong trong vài giây.",
+        "Double Scythe Slash (Nhát chém lưỡi hái kép): Vorana vung lưỡi hái thực hiện các cú chém diện rộng (cleave) gây sát thương Vật lý lớn và tạo ra sóng xung kích phía trước. Hãy nhanh chóng di chuyển vòng ra sau lưng boss để né tránh và tranh thủ tấn công khi cô ta đang vận lực.",
+        "Knockback Dashes (Lướt đẩy lùi): Vorana liên tục lướt nhanh xuyên qua người bạn, gây sát thương Vật lý mạnh kèm hiệu ứng đẩy lùi (knockback). Đây là cơ chế cực kỳ nguy hiểm vì nó có thể đẩy bạn ra khỏi vòng tròn an toàn vào vùng sương mù chết chóc. Hãy luôn đứng ở vị trí có góc phòng thủ tốt để tránh bị đẩy ra ngoài.",
+        "Whirlwind Adds (Triệu hồi hộ vệ): Tại các mốc máu (mỗi 25%), Vorana sẽ triệu hồi thêm một nhóm quái vật hỗ trợ để quấy rối bạn. Hãy nhanh chóng dọn dẹp chúng trong khi vẫn phải bám sát vòng tròn an toàn quanh boss."
       ],
       "phases": [],
-      "strategy": "Luật sống còn là luôn bám sát Vorana để ở trong vùng quang đãng, đừng để cô ấy kéo bạn ra rìa nơi có sương và projectile từ sao xoay. Đòn scythe đọc animation rất dễ, canh chém xong thì vòng ra sau lưng đập trả. Khi Vorana biến mất vào sương, để ý hiệu ứng báo hướng charge mà roll né cú lao ra. Di chuyển liên tục là chìa khóa cho cả sương lẫn projectile.",
-      "rewards": [
-        "Uhtred's Logbook (mở thêm đảo trong Grand Expedition)",
-        "Vật phẩm league (Vorana's Saga, Vorana's Siege, Vorana's Carnage, v.v.)"
-      ],
+      "strategy": "Trận chiến với Vorana yêu cầu bạn phải hết sức bình tĩnh và kiểm soát tốt vị trí đứng của mình.\nCác điểm chiến thuật quan trọng cần ghi nhớ:\n- Kiểm tra thuộc tính Remnant: Trước khi kích hoạt đấu trường boss trong Logbook, hãy kiểm tra kỹ các Remnant. Tuyệt đối tránh kích hoạt các Remnant cung cấp miễn nhiễm sát thương Vật lý (Physical Damage Immunity), miễn nhiễm với hệ sát thương chính của bạn, hoặc các Remnant tăng mạnh xuyên giáp/sát thương của boss.\n- Bám sát vòng tròn an toàn: Đây là cơ chế sống còn của trận đấu. Sương mù đen (Dark Fog) bao quanh đấu trường sẽ rút máu bạn cực kỳ nhanh. Hãy luôn di chuyển và giữ vị trí đứng bên trong vòng sáng xung quanh Vorana.\n- Tránh bị đẩy lùi (Knockback): Khi Vorana chuẩn bị tung chiêu lướt (Dash), hãy chuẩn bị né sang hai bên hoặc định vị sao cho hướng đẩy lùi không đẩy bạn ra ngoài sương mù đen.\n- Tấn công từ phía sau: Tận dụng các hoạt ảnh ra đòn tương đối chậm của Vorana để liên tục lăn xả hoặc di chuyển ra sau lưng boss né các đòn chém diện rộng.",
       "tips": [
-        "Bám sát boss, tuyệt đối không lùi ra rìa dính sương đen.",
-        "Đánh xen giữa các nhịp chém rồi step ra sau lưng boss.",
-        "Khi boss tàng hình, nhìn hiệu ứng báo hướng để roll né cú charge."
+        "Luôn giữ nhân vật đứng bên trong vòng tròn ánh sáng di động xung quanh Vorana để tránh dính sát thương sương mù đen chết chóc.",
+        "Tuyệt đối tránh các thuộc tính Remnant nguy hiểm như miễn nhiễm sát thương hoặc tăng khả năng đẩy lùi/xuyên giáp của boss khi đặt mìn.",
+        "Định vị nhân vật cẩn thận trước các đòn lướt của Vorana để tránh bị đẩy lùi (knockback) ra ngoài vùng sương mù.",
+        "Chủ động di chuyển vòng ra sau lưng boss để né đòn Nhát chém lưỡi hái kép (Double Scythe Slash).",
+        "Giữ trận đấu ở khu vực quảng trường trung tâm phẳng, tránh dụ boss lên cầu thang hoặc các địa hình hẹp để không làm lỗi cơ chế vòng tròn an toàn."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Vorana's Crest of the Scythe",
+        "image": "https://img.poeviethoa.net/boss/vorana-last-to-fall/drop-1.png"
+      }
+    ],
+    "conditions": [
+      "Hoàn thành chuỗi nhiệm vụ The Grand Expedition.",
+      "Đánh bại boss tại hầm mộ Vorana's Tomb trong bản đồ Mournful Cliffside thuộc Ocean biome.",
+      "Sau khi hoàn thành chuỗi nhiệm vụ, sử dụng vật phẩm Vorana's Saga trong túi đồ trước khi mở Expedition Logbook để chắc chắn gặp boss trong khu vực Ocean biome tiếp theo."
+    ],
+    "curated": true
   },
   "uhtred-the-stardrinker": {
     "name": "Uhtred, the Stardrinker",
@@ -1750,25 +2211,47 @@ window.POE2_BOSS_DETAILS = {
     "group": "Expedition",
     "location": "Ocean Biome",
     "vi": {
-      "overview": "Uhtred, the Stardrinker là một thực thể Kalguuran cổ đại, kẻ từng triệu hồi các thiên thạch Verisium hàng ngàn năm trước. Tomb của hắn nằm sâu trong các đảo đại dương (Ocean Biome), thuộc chuỗi The Grand Expedition. Để vào fight cần nói chuyện với Rog rồi kích nổ explosive đã đặt sẵn. Fight diễn ra trong tomb với các đợt quái, đòn rune-empowered và arena nhiều lớp cơ chế. Hạ Uhtred sẽ rơi Olroth's Logbook, đồng thời một thiên thạch Verisium khổng lồ rơi xuống biển.",
+      "overview": "Uhtred, the Stardrinker (Kẻ Nuốt Chửng Tinh Tú) là Deadly Map Boss thứ ba trong chuỗi nhiệm vụ The Grand Expedition của Path of Exile 2, nằm tại khu vực Secluded Temple thuộc Ocean Biome. Trận đấu đòi hỏi khả năng di chuyển linh hoạt để né tránh các luồng đạn tinh tú dày đặc, các tia laser phản chiếu qua mạng lưới gương xung quanh sàn đấu và cơ chế thả diều các ngôi sao tìm diệt (Seeking Stars). Đây là cuộc chạm trán đơn giai đoạn, nhưng độ khó sẽ tăng vọt dựa trên các remnants (tàn tích) mà bạn kích hoạt trong bản đồ Logbook.",
       "mechanics": [
-        "Các đòn được rune cường hóa (rune-empowered) với sát thương lớn, cần đọc tín hiệu để né.",
-        "Arena nhiều lớp cơ chế kết hợp với các đợt quái theo chủ đề tomb, dễ làm bạn bị bao vây nếu đứng yên.",
-        "Là entity Kalguuran liên quan thiên thạch Verisium, fight gắn với chủ đề năng lượng Verisium của league."
+        "Seeking Stars (Những Ngôi Sao Tìm Diệt): Uhtred triệu hồi các quả cầu tinh tú đuổi theo người chơi. Chúng sẽ phát nổ khi va chạm hoặc sau một thời gian, gây sát thương Băng lớn và làm chậm. Hãy di chuyển liên tục theo vòng tròn quanh đấu trường để thả diều chúng.",
+        "Rotating Laser Beam (Tia Laser Xoay): Boss vận lực và quét một tia laser lớn chậm rãi quanh phòng đấu. Chiêu thức này gây sát thương duy trì cực kỳ lớn, người chơi cần bám sát boss và di chuyển đồng bộ theo chiều xoay của tia laser để né tránh.",
+        "Mirror Laser Grid (Mạng Lưới Laser Phản Chiếu): Uhtred triệu hồi các tấm gương xung quanh đấu trường để phản chiếu tia laser, tạo thành một ma trận ánh sáng nguy hiểm. Hãy quan sát các vệt chỉ thị màu bạc dưới đất để chọn vị trí đứng an toàn.",
+        "Starlight Cascade (Cơn Mưa Đạn Ánh Sáng): Boss liên tục bắn ra các đợt đạn ánh sáng dày đặc theo làn đường hoặc hình nón, bao phủ diện rộng đấu trường. Đòi hỏi sự bình tĩnh để luồn lách qua các khoảng trống giữa các làn đạn.",
+        "Slow Puddles (Vùng Đất Bị Nguyền Rủa): Uhtred tạo ra những vùng năng lượng tinh tú trên mặt đất gây sát thương duy trì và làm giảm mạnh tốc độ di chuyển. Hãy sử dụng ngay các kỹ năng dịch chuyển để thoát khỏi chúng."
       ],
       "phases": [],
-      "strategy": "Giữ khoảng cách an toàn và liên tục đọc tín hiệu của các đòn rune-empowered để roll né. Vì arena có nhiều lớp cơ chế và quái phụ, hãy ưu tiên không gian thoáng để di chuyển, dọn bớt quái phụ khi cần rồi quay lại dồn boss. Chuẩn bị sustain và DPS ổn định để vượt qua các đợt áp lực dồn dập.",
-      "rewards": [
-        "Olroth's Logbook (mở chặng kế của Grand Expedition)",
-        "Thiên thạch Verisium khổng lồ rơi xuống biển (cốt truyện, dẫn tới nội dung sau)",
-        "Vật phẩm league (Uhtred's Saga, Uhtred's Sidereus, các gem Uhtred's Exodus/Omen/Augury/Rite)"
-      ],
+      "strategy": "Chìa khóa để đánh bại Uhtred là luôn duy trì sự di chuyển (Mobility) và giữ bình tĩnh trước mật độ đạn dày đặc. Tránh đứng yên một chỗ quá lâu vì Seeking Stars và tia laser xoay có thể dồn sát thương hạ gục bạn ngay lập tức. Hãy tập trung thả diều các ngôi sao đuổi theo bằng cách di chuyển vòng quanh (ví dụ: theo chiều kim đồng hồ) và bám sát boss khi hắn thực hiện tia laser xoay để có góc né thuận lợi nhất.\n\nNgoài ra, do Uhtred nằm trong bản đồ Expedition Logbook, hãy cực kỳ cẩn thận khi lựa chọn kích nổ các Remnant. Tránh các Remnant gia tăng Tốc độ tấn công/thi triển (Turbo), Block Chance hoặc Kháng nguyên tố của quái vật nếu nhân vật của bạn chưa đủ mạnh.",
       "tips": [
-        "Đừng đứng yên, arena nhiều cơ chế lớp lang dễ trừng phạt người lười di chuyển.",
-        "Đọc tín hiệu đòn rune-empowered để roll đúng lúc.",
-        "Dọn quái phụ để tránh bị bao vây giữa lúc né đòn boss."
+        "Luôn di chuyển liên tục (tốt nhất là xoay quanh boss) để né tránh Seeking Stars và dẫn dụ hướng bắn của các đòn laser.",
+        "Chuẩn bị Kháng Băng (Cold Resistance) cao và các hiệu ứng kháng làm chậm (Slow/Chill Avoidance) để duy trì độ linh hoạt.",
+        "Tránh kích hoạt các Remnants quá nguy hiểm trong Logbook như tăng Tốc độ (Speed), Block Chance, hay Kháng sát thương.",
+        "Khi boss bắt đầu thi triển tia laser xoay, nhanh chóng áp sát và di chuyển đồng bộ theo chiều xoay của tia để né tránh hiệu quả."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Uhtred's Chalice Transcendent Mana Flask",
+        "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-1.png"
+      },
+      {
+        "name": "Uhtred's Crest of the Chalice",
+        "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-2.png"
+      },
+      {
+        "name": "Exceptional Verisium",
+        "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-3.png"
+      },
+      {
+        "name": "Verisium",
+        "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-4.png"
+      }
+    ],
+    "conditions": [
+      "Gặp trong chuỗi nhiệm vụ: Là Deadly Map Boss thứ ba trong nhiệm vụ The Grand Expedition, chạm trán tại Secluded Temple thuộc Ocean Biome.",
+      "Kích hoạt chủ động: Có Uhtred's Saga trong hành trang trước khi kích hoạt Expedition Logbook để chắc chắn xuất hiện Uhtred tại Ocean Biome tiếp theo.",
+      "Yêu cầu bản đồ: Cần sử dụng Waystone cấp cao (ví dụ: Tier 14+) để tiếp cận khu vực Secluded Temple."
+    ],
+    "curated": true
   },
   "olroth-origin-of-the-fall": {
     "name": "Olroth, Origin of the Fall",
@@ -1776,26 +2259,53 @@ window.POE2_BOSS_DETAILS = {
     "group": "Expedition",
     "location": "Ocean Biome",
     "vi": {
-      "overview": "Olroth, Origin of the Fall là Pinnacle Boss của cơ chế Expedition. Hắn là một chiến binh Kalguuran cổ đại cực nhanh, dùng rune Kalguuran để làm bạn yếu đi và chậm lại. Olroth xuất hiện ngẫu nhiên trong các Expedition Logbook cấp 79 trở lên, lối vào arena đánh dấu bằng icon đầu lâu trên map; bạn kích nổ explosive gần đó để lộ ra Kalguuran Tomb rồi vào fight.",
+      "overview": "Olroth, Origin of the Fall là một boss thuộc cơ chế cuối game Expedition trong Path of Exile 2 (PoE 2). Bạn sẽ chạm trán Olroth trong chuỗi nhiệm vụ The Grand Expedition với vai trò là Deadly Map Boss thứ ba trong bản đồ Obscure Map (thuộc Ocean biome). Ngoài ra, sau khi hoàn thành chuỗi nhiệm vụ, bạn có thể kích hoạt Olroth's Saga trong hành trang trước khi sử dụng Expedition Logbook để chắc chắn chạm trán boss ở khu vực Ocean biome được hé lộ tiếp theo.",
       "mechanics": [
-        "Chuyên sát thương Cold (lạnh) cực mạnh, dễ làm bạn mất máu nhanh nếu thiếu resist.",
-        "Ground effect (vùng hiệu ứng dưới đất) gây Slow, Chill, thậm chí Freeze khiến bạn dính cứng hoặc chậm chạp.",
-        "Là chiến binh swift (nhanh nhẹn), Olroth áp sát và ra đòn liên tục, ép bạn phải xử lý cả slow lẫn damage cùng lúc.",
-        "Lưu ý quan trọng: các Remnant Modifier buff toàn bộ quái trong logbook KHÔNG áp dụng lên Olroth, nên cứ chọn modifier nguy hiểm/nhiều thưởng thoải mái, độ khó của fight không đổi."
+        "Starfire! (Exterminating Chill Beam): Kalguran Rune bắn ra một tia laser mạnh mẽ, để lại hiệu ứng mặt đất gây Exterminating Chill, làm chậm tốc độ và gây sát thương Băng theo thời gian (Cold Damage Over Time). Hãy đứng ở phía đối diện của rune để có nhiều thời gian phản xạ và né tránh.",
+        "Sword Beams: Olroth chém nhiều nhát liên tục, phóng ra các luồng kiếm khí gây sát thương Băng. Giữ khoảng cách gần với boss sẽ giúp bạn dễ dàng di chuyển né tránh các luồng kiếm khí này.",
+        "Sword Slam: Olroth tụ lực vào thanh kiếm và nện mạnh xuống đất, gây sát thương Băng diện rộng kèm theo 7 đợt sóng xung kích lan tỏa. Hãy tránh xa khu vực này vì các đợt sóng tiếp theo sẽ gây Chill và có nguy cơ cao làm bạn bị đóng băng (Freeze).",
+        "Purify! (Orbital Rune Laser): Các tia năng lượng Băng bao quanh nhân vật và thu hẹp dần vào tâm. Hãy sử dụng kỹ năng Dodge Roll để lăn qua các tia này thoát ra ngoài trước khi chúng hội tụ và gây sát thương Băng cực lớn theo thời gian.",
+        "Sword Dash: Olroth lướt nhanh về phía trước và vung kiếm chém. Bạn chỉ cần di chuyển sang hai bên để né đòn.",
+        "Rune Laser: Kalguran Rune sẽ liên tục bắn một tia laser quét qua đấu trường. Kỹ năng này chỉ gây sát thương tại điểm tiếp xúc nhỏ của tia laser nên bạn có thể tự do di chuyển qua lại qua tia sáng.",
+        "You will fail! (Unblockable Sword Throw): Olroth tỏa ra ánh sáng đỏ và ném thanh kiếm của mình như một chiếc boomerang quay trở lại sau một khoảng trễ ngắn. Hãy di chuyển ra phía sau boss để né tránh lưỡi kiếm quay lại và tranh thủ tấn công."
       ],
       "phases": [],
-      "strategy": "Chống Cold và chống bị làm chậm là ưu tiên số một. Mang Silver Charm để giảm hiệu ứng Slow từ Chill và các nguồn slow khác, mang Thawing Charm để miễn Freeze trong một khoảng. Tránh đứng trong vùng ground effect lạnh, vì bị Chill/Freeze ở đây rất dễ ăn combo chết. Vì Olroth nhanh, hãy giữ nhịp di chuyển và đập boss giữa các đợt đòn. Cứ chọn Remnant modifier tốt vì chúng không làm Olroth khó hơn.",
-      "rewards": [
-        "Book of Knowledge cho Olroth: thêm 2 Atlas Passive Point cho phần Expedition của Atlas Passive Tree",
-        "Loot Pinnacle Boss của Expedition (đồ unique, vật phẩm league)"
-      ],
+      "strategy": "Trận chiến với Olroth yêu cầu bạn phải liên tục chú ý đến vị trí của Kalguran Rune xoay quanh đấu trường, vì nó sở hữu nhiều đòn chặn đường (area-denial) khó chịu.\nMột số điểm chiến thuật quan trọng:\n- Bỏ qua Remnant Modifiers: Các thuộc tính Remnant mạnh mẽ ảnh hưởng đến quái vật trong Logbook sẽ KHÔNG áp dụng lên Olroth. Do đó, bạn không cần lo lắng boss bị cường hóa quá mức từ các Remnant. Tuy nhiên, để đến được hầm mộ an toàn, bạn vẫn nên chọn các Remnant ít nguy hiểm.\n- Chú ý Kalguran Rune: Luôn quan sát vị trí của cổ tự này để sẵn sàng né đòn laser hay các cơ chế khống chế diện rộng.\n- Chiến đấu gần rìa bản đồ: Olroth có các đòn để lại hiệu ứng mặt đất gây sát thương và làm chậm rất phiền toái. Hãy dụ boss chiến đấu gần rìa đấu trường để các hiệu ứng này xuất hiện sát mép, chừa lại nhiều không gian di chuyển hơn ở trung tâm.\n- Kháng hiệu ứng làm chậm và đóng băng: Chuẩn bị Silver Charm để giải Chill/Slow và Thawing Charm để kháng Freeze. Nâng cao lượng Life tối đa và Ailment Threshold để tránh bị đóng băng hoàn toàn.",
       "tips": [
-        "Mang Silver Charm (giảm slow) và Thawing Charm (miễn Freeze) trước khi vào.",
-        "Cap Cold Resistance để chịu nổi lượng sát thương lạnh.",
-        "Cứ pick Remnant modifier rewarding, chúng không ảnh hưởng tới Olroth.",
-        "Tránh đứng trong các vũng ground effect lạnh gây Chill/Freeze."
+        "Mang theo Silver Charm để hóa giải hiệu ứng Chill/Slow giúp nhân vật duy trì tốc độ đánh và di chuyển.",
+        "Sử dụng Thawing Charm để miễn nhiễm đóng băng (Freeze) trong những tình huống nguy cấp.",
+        "Dụ boss ra rìa đấu trường trước khi boss tung chiêu Sword Slam để giữ khu vực trung tâm luôn sạch sẽ.",
+        "Luôn đứng đối diện với hướng của Kalguran Rune để có thời gian phản ứng khi nó chuẩn bị phát động laser."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Olrovasara Torment Club",
+        "image": "boss/olroth-origin-of-the-fall/drop-1.png"
+      },
+      {
+        "name": "Keeper of the Arc Spiritbone Crown",
+        "image": "boss/olroth-origin-of-the-fall/drop-2.png"
+      },
+      {
+        "name": "Svalinn Crucible Tower Shield",
+        "image": "boss/olroth-origin-of-the-fall/drop-3.png"
+      },
+      {
+        "name": "Olroth's Resolve Ultimate Life Flask",
+        "image": "boss/olroth-origin-of-the-fall/drop-4.png"
+      },
+      {
+        "name": "Heroic Tragedy Timeless Jewel",
+        "image": "boss/olroth-origin-of-the-fall/drop-5.png"
+      }
+    ],
+    "conditions": [
+      "Hoàn thành chuỗi nhiệm vụ The Grand Expedition.",
+      "Đánh bại boss trong bản đồ Obscure Map thuộc Ocean biome (Deadly Map Boss thứ ba).",
+      "Hoặc giữ kích hoạt Olroth's Saga trong hành trang trước khi sử dụng Expedition Logbook để chắc chắn gặp boss trong khu vực Ocean biome tiếp theo."
+    ],
+    "curated": true
   },
   "the-aberration": {
     "name": "The Aberration",
@@ -1803,39 +2313,58 @@ window.POE2_BOSS_DETAILS = {
     "group": "Expedition",
     "location": "Verisium Crater",
     "vi": {
-      "overview": "The Aberration là Pinnacle Boss khổng lồ dạng nhện của Expedition, chờ bạn ở Verisium Crater. Đây là chặng cuối của chuỗi Grand Expedition: bạn cần hạ Uhtred rồi Olroth để gom được Shattered Triskelion, ghép thành Triskelion Reforged dùng để phá rào chắn quanh thiên thạch và mở fight. Fight đặc trưng bởi các đòn slam vật lý, đòn rơi 'cosmic', và một final phase web hỗn loạn đầy lưỡi xoay.",
-      "mechanics": [
-        "Heavy Slam: boss chồm lên rồi nện một cú slam nặng kèm vụ nổ ngay sau đó; canh wind-up giữ khoảng cách và roll đúng thời điểm.",
-        "Ice Beam: tia băng bám theo vị trí bạn trong một khoảng; khi nó khóa mục tiêu, hãy di chuyển dứt khoát theo một hướng cố định để thoát.",
-        "Cosmic drops: các đòn rơi từ trên xuống theo chủ đề thiên thạch/vũ trụ, kết hợp projectile và đòn diện rộng để bắt lỗi khi bạn đứng yên."
-      ],
+      "overview": "The Aberration (Thực Thể Dị Biệt) là boss tối thượng (pinnacle boss) thuộc cơ chế Expedition và Runes of Aldur League trong Path of Exile 2, ẩn mình tại khu vực Verisium Crater. Trận chiến với quái vật dạng nhện khổng lồ này đòi hỏi khả năng di chuyển linh hoạt qua nhiều giai đoạn khác nhau. Từ một mục tiêu cố định ở giai đoạn đầu, boss sẽ trồi lên và truy đuổi người chơi điên cuồng ở giai đoạn hai, trước khi biến đấu trường thành một bãi chiến trường đầy mạng nhện hạn chế di chuyển và các vòng xoáy sát thương xoay tròn ở giai đoạn cuối.",
+      "mechanics": [],
       "phases": [
         {
-          "name": "Phase 1 - Đứng yên",
-          "vi": "Aberration hoàn toàn bất động, không di chuyển, chủ yếu dựa vào projectile và các đòn diện rộng để bắt lỗi. Cứ tránh né và dồn DPS."
+          "name": "Phase 1 - Thực thể tĩnh lặng và Đạn ma thuật",
+          "points": [
+            "Ice Beam: Boss bắn ra tia băng lớn quét ngang đấu trường. Người chơi cần chạy vòng tròn quanh boss hoặc dùng kỹ năng dịch chuyển vượt qua tia quét để tránh nhận sát thương cực lớn.",
+            "Targeted Projectiles: Bắn một loạt tia đạn định vị hướng về phía người chơi. Hãy liên tục chạy để các tia đạn này rơi lại phía sau bạn.",
+            "Melee Combos: Các đòn tấn công cận chiến như cào và đập chân khi người chơi đứng quá gần boss."
+          ]
         },
         {
-          "name": "Phase 2 - Trồi lên truy đuổi (75% HP)",
-          "vi": "Ở mốc 75% HP, boss hồi đầy máu, trồi lên khỏi mặt đất và bắt đầu di chuyển khắp arena, chủ động đuổi theo bạn nên nguy hiểm hơn hẳn."
+          "name": "Phase 2 - Giải phóng di chuyển (Dưới 75% HP)",
+          "points": [
+            "Emergence & Chase: Boss trồi lên khỏi mặt đất và di chuyển tự do. Tốc độ di chuyển nhanh và liên tục bám đuổi người chơi.",
+            "Leg Stabs: Boss liên tiếp cắm các chân nhọn xuống đất để tấn công. Cần di chuyển liên tục để tránh bị đâm trúng."
+          ]
         },
         {
-          "name": "Final phase - Web hỗn loạn (~30-40% HP)",
-          "vi": "Quanh mốc 30-40% HP, boss lui về giữa và bung một quả cầu web khổng lồ biến arena thành vùng nguy hiểm đầy lưỡi xoay. Cách an toàn nhất là chạy vòng theo rìa ngoài arena, vừa né lưỡi vừa né đòn boss liên tục."
+          "name": "Phase 3 - Mạng nhện và Hiểm họa xoay tròn (Giai đoạn cuối)",
+          "points": [
+            "Spider Webs: Giăng các bẫy mạng nhện trên đấu trường làm chậm tốc độ di chuyển của người chơi. Hãy cẩn thận tránh dẫm vào chúng.",
+            "Spinning Hazards: Các chướng ngại vật ma thuật xoay tròn xung quanh đấu trường, gây sát thương liên tục và ép góc người chơi."
+          ]
         }
       ],
-      "strategy": "Nguyên tắc xuyên suốt: đừng đứng yên quá lâu, luôn giữ cơ động. Phase 1 boss bất động, cứ né projectile và đập. Sang Phase 2 (75% HP) boss hồi đầy và biết đuổi, phải vừa kiting vừa dồn. Vào final phase (~30-40% HP) thì chạy vòng theo rìa ngoài để tránh web lưỡi xoay. Để ý Heavy Slam (chồm lên rồi nổ) và Ice Beam (bám vị trí, khóa xong là chạy thẳng một hướng).",
-      "rewards": [
-        "Starlit Ore (dùng để craft unique ngẫu nhiên)",
-        "1 corrupted rare tablet (chắc chắn rơi sau khi hạ boss)",
-        "Hoàn thành chuỗi Grand Expedition (nói chuyện Dannig ở Ruins of Kingsmarch)"
-      ],
+      "strategy": "Trong giai đoạn đầu, hãy tập trung xả sát thương vào boss khi hắn còn cố định, đồng thời chạy vòng tròn quanh hắn để né Ice Beam và các loạt Targeted Projectiles. Khi boss giảm xuống dưới 75% máu và chuyển sang Phase 2, hãy giữ khoảng cách và liên tục di chuyển để né tránh đòn Leg Stabs đâm chân nhọn. Ở Phase cuối cùng, đấu trường sẽ rất hỗn loạn với mạng nhện và vòng xoáy xoay tròn. Hãy tập trung quan sát mặt đất để tránh dẫm vào mạng nhện (Spider Webs) khiến bạn bị làm chậm và dễ trúng các Spinning Hazards xoay quanh đấu trường, cấu rỉa sát thương để kết liễu boss nhanh nhất có thể.",
       "tips": [
-        "Luôn di chuyển, boss trừng phạt người đứng yên bằng projectile và slam.",
-        "Khi Ice Beam khóa bạn, chạy dứt khoát theo một hướng để né.",
-        "Vào final phase, ôm rìa ngoài arena để tránh lưỡi xoay trong web.",
-        "Canh wind-up của Heavy Slam để roll qua cú slam kèm vụ nổ."
+        "Luôn chạy vòng tròn quanh boss ở Phase 1 để né tránh tia quét băng giá.",
+        "Ở Phase 2, không nên đứng yên một vị trí quá lâu vì boss sẽ đâm chân nhọn (Leg Stabs) liên hồi.",
+        "Mạng nhện ở Phase cuối làm chậm rất khó chịu, hãy ưu tiên các khoảng trống không có tơ nhện để di chuyển.",
+        "Để dành các kỹ năng di chuyển nhanh (Dash/Escape) để thoát khỏi tình huống bị dồn vào góc bởi các vòng xoáy ma thuật."
       ]
-    }
+    },
+    "drops": [
+      {
+        "name": "Revered Starlit Ore",
+        "image": null
+      },
+      {
+        "name": "Venerable Starlit Ore",
+        "image": null
+      }
+    ],
+    "conditions": [
+      "Đánh bại Uhtred, the Stardrinker để nhận Olroth's Logbook.",
+      "Đi đến Obscure Island bằng cách sử dụng Olroth's Logbook trên Atlas và đánh bại Olroth, Origin of the Fall để nhận Shattered Triskelion.",
+      "Mang Shattered Triskelion đến Verisium Anvil tại Ruins of Kingsmarch để chế tạo The Triskelion Reforged.",
+      "Nói chuyện với Makoru trên tàu buồm để di chuyển đến Verisium Crater.",
+      "Giải phóng rào chắn bao quanh thiên thạch bằng cách đặt Triskelion Reforged vào bệ kích hoạt để bắt đầu trận chiến."
+    ],
+    "curated": true
   },
   "ritual": {
     "guide": true,
@@ -1846,19 +2375,19 @@ window.POE2_BOSS_DETAILS = {
       "overview": "Ritual là chuỗi boss endgame gồm 2 con nối tiếp: đánh The King in the Mists để lấy Head of the King, rồi dùng nó mở Rite of the Nameless để đánh boss cuối The Bodach. Bên dưới là lộ trình A→Z và cách đánh từng con."
     },
     "flow": [
-      "Farm Ritual: giết quái trong vòng tròn → kích Ritual Altar (3–4 altar/map) → nhận Tributes đổi Favours. Quái bị giết hồi sinh & carry over sang altar sau. Ritual hiện quanh Caer Tarth (quest Legacy of the Maji) hoặc map có Ritual Tablet.",
-      "Dùng Tributes mua Favour hiếm \"An Audience with the King\".",
-      "Nhét \"An Audience with the King\" vào Realmgate → vào khu Crux of Nothingness.",
-      "Đánh Boss 1 — The King in the Mists. Hạ xong rớt \"Head of the King\".",
-      "Đặt Head of the King → khởi động Rite of the Nameless (Caer Tarth): mọi quái + map boss carry over, khó hơn nhiều.",
-      "Đánh Boss cuối (Pinnacle) — The Bodach."
+      "Farm Ritual: Sử dụng Ritual Tablet để mở bản đồ (hoặc chạy các map có sẵn cơ chế Ritual), kích hoạt các Ritual Altar (từ 3–6 altar mỗi map) để tiêu diệt quái vật trong vòng tròn và tích lũy điểm cống hiến (Tributes). Quái vật bị tiêu diệt sẽ được hồi sinh và carry over (mang sang) các altar tiếp theo để nhân bản lượng điểm thu hoạch. Cơ chế Ritual xuất hiện phổ biến quanh khu vực Caer Tarth (chuỗi quest Legacy of the Maji) hoặc các bản đồ được kích hoạt bằng Ritual Tablet.",
+      "Tích lũy và sử dụng Tributes để mua Favour hiếm có tên \"An Audience with the King\" (Diện kiến Nhà Vua) xuất hiện ngẫu nhiên trong bảng phần thưởng Ritual.",
+      "Nhét vật phẩm \"An Audience with the King\" vào thiết bị Realmgate trên Atlas map để mở cổng dịch chuyển tiến vào đấu trường Crux of Nothingness.",
+      "Đánh bại Boss 1 — The King in the Mists (Vua trong Sương mù). Sau khi hạ gục hắn, bạn sẽ nhận được vật phẩm nhiệm vụ \"Head of the King\" (Đầu của Nhà Vua), đồng thời có tỷ lệ rất cao rơi ra các loại Diamond (kim cương) và trang bị giá trị.",
+      "Đặt vật phẩm \"Head of the King\" vào bức tượng gỗ (Effigy) ở Hideout hoặc Caer Tarth để khởi động Rite of the Nameless (Nghi lễ vô danh): Bạn cần hoàn thành một chuỗi 5 bản đồ liên kết chứa cơ chế Ritual để thu thập đầy đủ 5 mảnh bộ phận hình nhân thế mạng (Effigy Components như Tangled Torso, Frayed Cloth, v.v.).",
+      "Đánh Boss cuối (Pinnacle) — The Bodach: Mang 5 mảnh bộ phận hình nhân thế mạng (Effigy Components) thu hoạch được lắp vào bệ thờ tế tại Caer Tarth để kích hoạt cổng dịch chuyển khiêu chiến."
     ],
     "parts": [
       {
         "name": "The King in the Mists",
         "subtitle": "Boss 1 · Crux of Nothingness",
         "image": "https://img.poeviethoa.net/boss/ritual/hero.png",
-        "access": "Mua \"An Audience with the King\" bằng Tributes từ Ritual → nhét vào Realmgate để vào Crux of Nothingness.",
+        "access": "Dùng Tributes mua Favour hiếm \"An Audience with the King\" → Nhét \"An Audience with the King\" vào Realmgate để vào khu Crux of Nothingness.",
         "phases": [
           {
             "name": "Phase 1 — Sân chính",
@@ -1886,7 +2415,7 @@ window.POE2_BOSS_DETAILS = {
       {
         "name": "The Bodach",
         "subtitle": "Pinnacle · Caer Tarth (Rite of the Nameless)",
-        "access": "Đặt \"Head of the King\" (rớt từ The King in the Mists) để khởi động Rite of the Nameless tại Caer Tarth.",
+        "access": "Thu thập đủ 5 mảnh bộ phận hình nhân (Effigy Components) từ chuỗi 5 map Rite of the Nameless rồi lắp vào bệ thờ tế tại Caer Tarth để kích hoạt cổng khiêu chiến.",
         "phases": [
           {
             "name": "Initial Combat",
@@ -1918,6 +2447,1037 @@ window.POE2_BOSS_DETAILS = {
           "Ở đoạn bóng tối, đừng hoảng — chỉ cần đi đúng theo green wisp do The Mhacha tạo ra là sẽ về lại được chỗ boss.",
           "Đừng bỏ qua bright wisp; buff từ chúng có thể tạo khác biệt lớn trong trận.",
           "Chuẩn bị đủ Effigy Parts trước khi tới Effigy để chắc chắn mở được trận đánh."
+        ]
+      }
+    ]
+  },
+  "breach": {
+    "guide": true,
+    "name": "Chuỗi Boss Breach",
+    "group": "Breach",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/488754",
+    "vi": {
+      "overview": "Breach là cơ chế thử thách thời gian và mật độ quái vật. Bằng cách thu thập Breach Splinter từ các vết nứt (Breach) trong map, bạn ghép thành Breachstone để tiến vào Twisted Domain đối đầu với Xesht, We That Are One."
+    },
+    "flow": [
+      "Mở các vết nứt (Breach) trong Atlas Map để thu thập Breach Splinters.",
+      "Hợp nhất 300 Splinters thành Breachstone.",
+      "Đặt Breachstone vào Realmgate để mở cổng Twisted Domain.",
+      "Đánh bại boss Breach — It That Was Tul and Esh để nhận Splinters / đồ phẩm chất cao.",
+      "Đánh bại Pinnacle boss — Xesht, We That Are One tại Twisted Domain."
+    ],
+    "parts": [
+      {
+        "name": "It That Was Tul and Esh",
+        "subtitle": "Hive Colony (Nest of the Lords)",
+        "image": "boss/it-that-was-tul-and-esh/hero.png",
+        "access": "Trong chiến dịch: Gặp tại Nest of the Lords thuộc Hive Colony trong chuỗi nhiệm vụ 'Keepers of the Flame'.. Endgame: Kích hoạt Breachstone (ghép từ 300 Breach Splinter) tại Map Device để mở Breach Stronghold, tiến sâu vào Hive Colony để tìm lối vào Nest of the Lords.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Avoid Tul Ice Spears (Né Giáo Băng của Tul): Tul triệu hồi các ngọn giáo băng bắn lên trời và dựng khiên chắn tạo ra một vùng an toàn bên dưới. Khi giáo băng bắt đầu rơi xuống đất, hãy nhanh chóng di chuyển ra ngoài vùng chắn này vì ngay sau đó Tul sẽ nện mạnh xuống đất gây sát thương cực lớn.",
+              "Walk Over Esh Lightning Traps (Dẫm kích hoạt Bẫy Lôi của Esh): Esh thả các quả cầu sét trên mặt đất, chúng sẽ phát nổ khi bạn đi qua gần. Nếu không được dọn dẹp, các bẫy này sẽ liên tục bắn ra tia sét khắp đấu trường. Hãy chủ động dẫm qua các bẫy này để kích nổ sớm và làm sạch sàn đấu.",
+              "Focus on One Boss in the Last Phase (Tập trung dồn sát thương vào một Boss ở Pha cuối): Ở pha cuối cùng, cả Tul và Esh sẽ cùng xuất hiện và tấn công dồn dập. Tuy nhiên, hai boss này liên kết thanh máu với nhau (sát thương gây ra lên một boss cũng sẽ làm giảm máu của boss kia). Hãy chọn một mục tiêu thuận tiện nhất và dồn toàn bộ sát thương vào đó."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Breachlord Sac",
+            "image": "boss/it-that-was-tul-and-esh/drop-1.png"
+          }
+        ]
+      },
+      {
+        "name": "Xesht, We That Are One",
+        "subtitle": "Twisted Domain",
+        "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/hero.png",
+        "access": "Chỉ truy cập được ở endgame: Realmgate luôn nằm gần điểm xuất phát của Atlas map.. Cần một Breachstone để dùng tại Realmgate nhằm mở Twisted Domain.. Breachstone được tạo ra khi gom đủ 300 Breach Splinter (tự động hợp thành 1 Breachstone). Splinter kiếm từ việc giết quái hoặc mở các bàn tay (hand) bên trong Breach.. Trong Twisted Domain phải clear Breach lớn duy nhất để mở đường tới khu vực của Xesht; giết càng nhiều quái càng kéo dài thời gian clear Breach.",
+        "phases": [
+          {
+            "name": "Phase 1",
+            "vi": "Giai đoạn đầu Xesht tập trung vào projectile và cận chiến: Finger Guns bắn đạn nổ, Giant Hand đập từ trên cao, các puppet Cold/Lightning rải đạn và Fireball/Wind Blast. Bạn liên tục di chuyển, bám sát Xesht để vòng né Finger Guns, và lùi vào hành lang khi cặp puppet xuất hiện."
+          },
+          {
+            "name": "Phase 2",
+            "vi": "Khi máu Xesht xuống đủ thấp, boss bổ sung cơ chế Arm Portals — các cổng dưới đất sinh ra cánh tay khổng lồ đập đất với tầm cố định. Tiến vào tâm cổng để chui dưới tầm tối thiểu, hoặc né ra xa hẳn. Nhớ rằng các cánh tay này còn đập tiếp cả sau khi Xesht đã chết, nên đừng vội lao vào nhặt loot."
+          }
+        ],
+        "drops": [
+          {
+            "name": "Otherwordly Book of Knowledge (first-time clear: +2 Breach Atlas Passive Points mỗi Tier)",
+            "image": null
+          },
+          {
+            "name": "The Pandemonius Lapis Amulet",
+            "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/drop-1.png"
+          },
+          {
+            "name": "Beyond Reach Visceral Quiver",
+            "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/drop-2.png"
+          },
+          {
+            "name": "Hand of Wisdom and Action Furtive Wraps",
+            "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/drop-3.png"
+          },
+          {
+            "name": "Skin of the Loyal Garment",
+            "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/drop-4.png"
+          },
+          {
+            "name": "Choir of the Storm Jade Amulet",
+            "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/drop-5.png"
+          },
+          {
+            "name": "Xoph's Blood Amber Amulet",
+            "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/drop-6.png"
+          },
+          {
+            "name": "Controlled Metamorphosis Diamond",
+            "image": "https://img.poeviethoa.net/boss/xesht-we-that-are-one/drop-7.png"
+          }
+        ]
+      }
+    ]
+  },
+  "delirium": {
+    "guide": true,
+    "name": "Chuỗi Boss Delirium",
+    "group": "Delirium",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/495435",
+    "vi": {
+      "overview": "Delirium phủ màn sương ảo ảnh lên bản đồ, tăng mạnh độ khó và phần thưởng. Vượt qua sương mù hoặc leo các tầng Simulacrum để chạm trán Kosis, Omniphobia, và thu thập Raven's Reflection để khiêu chiến Tangmazu."
+    },
+    "flow": [
+      "Kích hoạt Mirror of Delirium trong map để chiến đấu trong màn sương.",
+      "Thu thập Simulacrum Splinters để ghép thành Simulacrum (mở đấu trường 20 wave).",
+      "Chạm trán Kosis, the Revelation và Omniphobia, Fear Manifest trong map Delirium / Simulacrum.",
+      "Tìm vật phẩm Raven's Reflection (rớt từ Simulacrum).",
+      "Sử dụng Raven's Reflection tại gương Withered Willow để khiêu chiến Pinnacle boss Tangmazu."
+    ],
+    "parts": [
+      {
+        "name": "Kosis, the Revelation",
+        "subtitle": "Delirium / Simulacrum",
+        "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/hero.png",
+        "access": "Có thể xuất hiện ngẫu nhiên trong các bản đồ chịu ảnh hưởng của Delirium, tỉ lệ xuất hiện có thể tăng khi độ Delirious (ảo ảnh) của bản đồ cao hơn.. Xuất hiện ở các làn sóng (wave) cao hơn trong đấu trường Simulacrum tại Realmgate, với tỉ lệ chắc chắn xuất hiện ở vài làn sóng cuối cùng (thường là Wave 15).",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Avoid and Interrupt its Ice Beam: Tránh và ngắt tia băng. Chiêu thức này gây sát thương DoT băng giá cực lớn và có thể đóng băng bạn dẫn đến tử vong. Khi thấy boss cuộn tròn và gồng năng lượng, hãy lập tức di chuyển ra góc khuất (Line of Sight) để né tránh. Hãy cố gắng phá vỡ Energy Shield của hắn càng sớm càng tốt trong lúc hắn đang bắn tia băng để ngắt chiêu thức này, vì tia băng duy trì càng lâu thì các quả cầu băng (Ice Orbs) tạo ra sẽ càng to và nguy hiểm.",
+              "Avoid Ice Orbs and Teleportation Slam Attack: Tránh các quả cầu băng và đòn đập dịch chuyển. Đứng gần các quả cầu băng sẽ phải nhận sát thương DoT và bị Chill. Kosis có thể dịch chuyển và đập mạnh xuống quả cầu băng gần bạn nhất để phóng ra các đợt gai băng (ice spikes) từ mặt đất. Kích thước quả cầu băng càng lớn thì phạm vi gai băng càng rộng.",
+              "Controlled Ice Orb Detonation: Kích nổ quả cầu băng có kiểm soát. Cú đập dịch chuyển của Kosis có thể kích nổ nhiều quả cầu băng cùng lúc nếu chúng ở gần nhau. Bạn không nên để các quả cầu tích tụ quá nhiều; hãy chủ động di chuyển ra xa boss một chút để dụ hắn thực hiện đòn dịch chuyển đập đất kích nổ quả cầu ở vị trí an toàn.",
+              "Stay Near Kosis, But Avoid Its Melee Attacks: Giữ cự ly gần và né đòn cận chiến. Nên đứng ở cự ly gần đến trung bình với Kosis vì chạy quá xa sẽ kích hoạt đòn đập dịch chuyển sát thương cực lớn của hắn. Tuy nhiên, cần chú ý né các đòn cận chiến thường của boss để tránh bị dính debuff Corrupting Blood (Máu biến dị) gây sát thương vật lý theo thời gian rất mạnh."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Deranging Book of Knowledge",
+            "image": null
+          },
+          {
+            "name": "Perfidy Knight Armour",
+            "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-1.png"
+          },
+          {
+            "name": "Strugglescream Stellar Amulet",
+            "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-2.png"
+          },
+          {
+            "name": "Collapsing Horizon Wyrm Quarterstaff",
+            "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-3.png"
+          },
+          {
+            "name": "Assailum Closed Helm",
+            "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-4.png"
+          },
+          {
+            "name": "Melting Maelstrom Ultimate Mana Flask",
+            "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-5.png"
+          },
+          {
+            "name": "Megalomaniac Diamond",
+            "image": "https://img.poeviethoa.net/boss/kosis-the-revelation/drop-6.png"
+          }
+        ]
+      },
+      {
+        "name": "Omniphobia, Fear Manifest",
+        "subtitle": "Delirium / Simulacrum",
+        "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/hero.png",
+        "access": "Có thể xuất hiện ngẫu nhiên trong các bản đồ có Delirium hoặc ở các làn sóng (wave) cao hơn trong Simulacrum tại Realmgate, với tỉ lệ chắc chắn xuất hiện trong vài làn sóng cuối cùng.. Tỉ lệ xuất hiện trong bản đồ Delirium có thể tăng lên khi độ delirious (ảo ảnh) của bản đồ cao hơn.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Dodge Earth and Leap Slams: Né các đòn đập đất diện rộng (AoE). Đòn tấn công nguy hiểm nhất của Omniphobia là nhảy đập rìu gây sát thương vật lý cực cao kèm theo các gai đất nhọn trồi lên xung quanh. Để né tránh hiệu quả, hãy lướt né (dodge roll) ngay trước khi chiếc rìu chạm đất để tận dụng các khung hình bất tử (i-frames), sau đó lập tức phản công trong lúc boss đang hồi chiêu.",
+              "Avoid Axe Slash Projectile: Tránh luồng đạn chém rìu tầm xa. Omniphobia xoay người và ném ra một lưỡi rìu năng lượng bay thẳng về phía bạn. Đòn này gây sát thương lớn tương đương với các cú đập cận chiến. Hãy né ra khỏi đường ngắm ngay khi thấy hắn xoay người và quay lưng về phía bạn.",
+              "Avoid Vomit Attack: Tránh đòn phun dịch đỏ. Boss hơi cúi người xuống, tích tụ các bong bóng màu đỏ quanh đầu rồi ngẩng lên phun một luồng dịch độc hình nón phía trước mặt gây sát thương lớn. Hãy quan sát bong bóng đỏ và lập tức né sang bên sườn hoặc phía sau boss khi hắn bắt đầu phun."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Deranging Book of Knowledge",
+            "image": null
+          },
+          {
+            "name": "Perfidy Knight Armour",
+            "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-1.png"
+          },
+          {
+            "name": "Strugglescream Stellar Amulet",
+            "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-2.png"
+          },
+          {
+            "name": "Collapsing Horizon Wyrm Quarterstaff",
+            "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-3.png"
+          },
+          {
+            "name": "Assailum Closed Helm",
+            "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-4.png"
+          },
+          {
+            "name": "Melting Maelstrom Ultimate Mana Flask",
+            "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-5.png"
+          },
+          {
+            "name": "Megalomaniac Diamond Jewel",
+            "image": "https://img.poeviethoa.net/boss/omniphobia-fear-manifest/drop-6.png"
+          }
+        ]
+      },
+      {
+        "name": "Tangmazu, The Raven Trickster",
+        "subtitle": "Paracosm",
+        "image": "https://img.poeviethoa.net/boss/tangmazu-the-raven-trickster/hero.png",
+        "access": "Tangmazu, The Raven Trickster là một Atlas Boss xuất hiện trong nội dung Delirium, gặp tại khu vực Paracosm.",
+        "phases": [
+          {
+            "name": "Pha đầu (100% - ~60% máu)",
+            "vi": "Tập trung né các đòn bám theo vị trí và Chain Lightning. Cứ di chuyển liên tục, tranh thủ ra đòn khi an toàn, ép máu boss xuống mốc 60%."
+          },
+          {
+            "name": "Pha hồi máu & nổ lớn (~60% máu trở đi)",
+            "vi": "Ở mốc khoảng 60% máu còn lại, Tangmazu chạy vào giữa và hồi đầy máu, rồi tích một đòn blast lớn ở trung tâm. Ngay lập tức chạy ra rìa đấu trường để tránh sát thương. Sau pha này tiếp tục xử lý các đòn còn lại, đặc biệt là tia sáng khổng lồ quét ngang map."
+          }
+        ],
+        "drops": [
+          {
+            "name": "Sadist's Mercy Flanged Mace",
+            "image": "https://img.poeviethoa.net/boss/tangmazu-the-raven-trickster/drop-1.png"
+          },
+          {
+            "name": "Veilpiercer Amethyst Ring",
+            "image": "https://img.poeviethoa.net/boss/tangmazu-the-raven-trickster/drop-2.png"
+          }
+        ]
+      }
+    ]
+  },
+  "abyss": {
+    "guide": true,
+    "name": "Chuỗi Boss Abyss",
+    "group": "Abyss",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/551525",
+    "vi": {
+      "overview": "Abyss là những vết nứt hắc ám dưới lòng đất. Lần theo vết nứt để tiêu diệt các quái vật cổ xưa, chạm trán Vandroth và Tasgul tại các Abyssal Wounds, và dùng Kulemak's Invitation để khiêu chiến Vessel of Kulemak."
+    },
+    "flow": [
+      "Kích hoạt và đuổi theo các vết nứt Abyss xuất hiện ngẫu nhiên trong map.",
+      "Tiến vào Abyssal Depths / Abyssal Wounds qua hố nứt.",
+      "Đánh bại Vandroth, Blackblooded Enslaver (phong ấn Northern Abyssal Wounds).",
+      "Đánh bại Tasgul, Swallower of Light (dọn sạch Eastern Abyssal Wound).",
+      "Thu thập Kulemak's Invitation rớt từ các boss phụ Abyss.",
+      "Sử dụng Kulemak's Invitation tại Realmgate để khiêu chiến Pinnacle boss Vessel of Kulemak."
+    ],
+    "parts": [
+      {
+        "name": "Vandroth, Blackblooded Enslaver",
+        "subtitle": "Dark Domain",
+        "image": "https://img.poeviethoa.net/boss/vandroth-blackblooded-enslaver/hero.png",
+        "access": "Có thể ngẫu nhiên tìm thấy trong Abyssal Depths (Vực Sâu) có cấp độ từ 79 trở lên. Ở cuối khu vực này, bạn có thể phát hiện một lối vào dẫn đến đấu trường boss trong Dark Domain.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Dodge the Spheres (Né các quả cầu lăn): Các quả cầu khổng lồ (giant spheres) lăn dọc theo các rãnh (grooves) trong đấu trường từ nhiều phía. Hãy liên tục di chuyển và tuyệt đối không đứng trên đường rãnh vì bị lăn trúng sẽ nhận lượng sát thương cực lớn.",
+              "Avoid the Exploding Corpses (Tránh xác nổ): Xác của các tay sai (minion corpses) do Vandroth triệu hồi sẽ biến thành các mụn mủ xanh (green pustules) và phát nổ sau thời gian ngắn. Bạn cần liên tục di chuyển và định vị lại vị trí (reposition) để không bị dính sát thương nổ này.",
+              "Watch for Freeze Effects (Cảnh giác hiệu ứng Đóng băng): Các đòn tấn công của Vandroth có thể gây hiệu ứng Freeze (Đóng băng) làm chậm di chuyển. Hãy chuẩn bị các bùa kháng băng (frost resistance charms) và di chuyển khéo léo để tránh bị khống chế, dễ dẫn đến việc bị trúng các quả cầu hoặc vụ nổ xác quái."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Kulemak's Invitation",
+            "image": null
+          }
+        ]
+      },
+      {
+        "name": "Tasgul, Swallower of Light",
+        "subtitle": "Lightless Void",
+        "image": "https://img.poeviethoa.net/boss/tasgul-swallower-of-light/hero.png",
+        "access": "Thỉnh thoảng có thể bắt gặp lối vào Lightless Void tại điểm cuối của Abyssal Depths trong các bản đồ Atlas cấp 79 trở lên (level 79+).",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Stay Mobile: Chuyển động không ngừng là yếu tố cốt lõi trong suốt trận chiến để tránh các hiểm họa xung quanh sàn đấu và luôn đứng ngoài tầm đánh trực diện của boss.",
+              "Watch the Darkness: Tasgul định kỳ sẽ làm bóng tối bao trùm cả đấu trường, che khuất toàn bộ các đòn tấn công của mình. Điều này làm cho việc theo dõi hướng đi và chiêu thức của boss trở nên khó khăn hơn, do đó bạn cần phải hết sức cảnh giác và chọn vị trí đứng thật cẩn thận.",
+              "Dodge the Spheres: Những quả cầu lăn khổng lồ sẽ xuất hiện từ các khe hở xung quanh đấu trường, lăn theo các đường rãnh hướng về hố trung tâm. Hãy luôn chú ý và liên tục né tránh vì chúng có thể lao ra từ nhiều hướng khác nhau cùng một lúc."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Kulemak's Invitation",
+            "image": null
+          }
+        ]
+      },
+      {
+        "name": "Vessel of Kulemak",
+        "subtitle": "Well of Souls",
+        "image": "https://img.poeviethoa.net/boss/vessel-of-kulemak/mech-1.png",
+        "access": "Nói chuyện với Lurking Creature trong Atlas.. Dâng Kulemak's Invitation từ inventory tại cánh cửa bị niêm phong (sealed door) ở Well of Souls để mở lối vào arena cuối nơi Vessel of Kulemak đang chờ.",
+        "phases": [
+          {
+            "name": "Lần đầu hạ boss",
+            "vi": "Đánh bại Vessel of Kulemak lần đầu. Đừng chọn 'Take the Finger'. Đi ra sau arena để tương tác với petrified Lich, chọn pool modifier mong muốn để hồi sinh boss."
+          },
+          {
+            "name": "Vòng lặp Lich (tối đa 3 lần)",
+            "vi": "Lặp lại việc chọn một petrified Lich và hạ boss đã hồi sinh cho tới khi Grip of Kulemak có đủ 3 Desecrated modifier. Mỗi lần boss mạnh hơn và có thêm chiêu/hazard mới theo Lich đã chọn."
+          },
+          {
+            "name": "Full Strength",
+            "vi": "Sau khi thu đủ sức mạnh Lich, chọn 'Return the Finger' để vào trận cuối với Vessel of Kulemak ở trạng thái Full Strength. Boss có thêm cơ chế, level cao hơn và Abyssal Fissures xuất hiện trong arena. Hạ boss để nhận Grip of Kulemak với đủ modifier (cộng thêm modifier thứ 4 chọn ngẫu nhiên) và mở khoá Abyssal Lich Ascendancy."
+          }
+        ],
+        "drops": [
+          {
+            "name": "Grip of Kulemak (Unique Ring)",
+            "image": "https://img.poeviethoa.net/boss/vessel-of-kulemak/drop-5.png"
+          },
+          {
+            "name": "Darkness Enthroned",
+            "image": "https://img.poeviethoa.net/boss/vessel-of-kulemak/drop-1.png"
+          },
+          {
+            "name": "Undying Hate Timeless Jewel",
+            "image": "https://img.poeviethoa.net/boss/vessel-of-kulemak/drop-2.png"
+          },
+          {
+            "name": "The Unborn Lich Ravenous Staff",
+            "image": "https://img.poeviethoa.net/boss/vessel-of-kulemak/drop-3.png"
+          },
+          {
+            "name": "Tecrod's Revenge (Lineage Gem)",
+            "image": "https://img.poeviethoa.net/boss/vessel-of-kulemak/drop-4.png"
+          }
+        ]
+      }
+    ]
+  },
+  "trial-sekhemas": {
+    "guide": true,
+    "name": "Trial of the Sekhemas",
+    "group": "Trial of the Sekhemas",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/488759",
+    "vi": {
+      "overview": "Trial of the Sekhemas là chuỗi thử thách đấu trường leo tầng đầy cam go. Bằng cách sử dụng Balbala's Barya để mở khóa, bạn cần vượt qua các tầng bảo vệ bởi Rattlecage, Terracota Sentinels, Ashar trước khi đối đầu với Zarokh."
+    },
+    "flow": [
+      "Đánh bại Balbala, the Traitor để lấy Balbala's Barya (kích hoạt đấu trường Sekhemas).",
+      "Kích hoạt đấu trường trên Atlas để bắt đầu leo tầng.",
+      "Vượt qua Tầng 1: Đánh bại Rattlecage, the Earthbreaker.",
+      "Vượt qua Tầng 2: Đánh bại Terracota Sentinels.",
+      "Vượt qua Tầng 3: Đánh bại Ashar, the Sand Mother.",
+      "Đạt Area Level 75+ và đặt Djinn Barya để đối đầu Pinnacle boss Zarokh, the Temporal."
+    ],
+    "parts": [
+      {
+        "name": "Rattlecage, the Earthbreaker",
+        "subtitle": "Trial of the Sekhemas (Floor 1)",
+        "image": "https://img.poeviethoa.net/boss/rattlecage-the-earthbreaker/hero.png",
+        "access": "Có thể tiếp cận khu vực Trial of the Sekhemas bằng cách thu thập Barya và hoàn thành nhiệm vụ Ascent to Power trong Act 2.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Explosion Combo (Combo Bộc Phá): Rattlecage tích tụ năng lượng rồi phát nổ 3 lần liên tiếp, mỗi vụ nổ sau có phạm vi lớn hơn vụ nổ trước. Hãy chạy càng xa hắn càng tốt để tránh nhận sát thương.",
+              "Ground Fissures (Khe Nứt Mặt Đất): Rattlecage dập mạnh xuống đất, tạo ra các khe nứt lan rộng khắp đấu trường. Ở cuối các khe nứt, các ngọn núi lửa nhỏ sẽ mọc lên và phun trào các mảnh dung nham định kỳ. Hãy đứng xen kẽ giữa các khe nứt hoặc né xa chúng và tránh các núi lửa này khi đang né các đòn đánh khác.",
+              "Stalactite Attack (Mưa Thạch Nhũ): Rattlecage liên tục dậm chân xuống đất, khiến các cột thạch nhũ rơi từ trên trần hang xuống khắp nơi. Rất khó để dự đoán vị trí thạch nhũ rơi, vì vậy hãy liên tục di chuyển để có thể kịp thời né tránh khi thấy dấu hiệu đá rơi.",
+              "Charged Stomp (Cú Dậm Tích Lực): Rattlecage nhấc hai chân trước lên cao và dậm mạnh xuống đất, gây sát thương lớn ra vùng xung quanh bản thân. Khi thấy boss đứng bằng hai chân sau, hãy nhanh chóng lùi lại để tránh dính sát thương."
+            ]
+          }
+        ],
+        "drops": []
+      },
+      {
+        "name": "Terracotta Sentinels",
+        "subtitle": "Trial of the Sekhemas (Floor 2)",
+        "image": "https://img.poeviethoa.net/boss/terracota-sentinels/hero.png",
+        "access": "Yêu cầu sử dụng Djinn Barya đạt cấp độ tối thiểu 45 để kích hoạt và đi vào Floor 2 của Trial of the Sekhemas.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Hadi - Melee Swing (Vung đòn cận chiến): Hadi vung nắm đấm lửa nóng chảy về phía trước khi áp sát. Hãy giữ khoảng cách hoặc di chuyển ra sau lưng hắn để phản công.",
+              "Hadi - Ground Slam (Nện mặt đất): Hadi nện mạnh tay xuống đất, tạo ra một làn sóng lửa lan về phía trước. Hãy né sang bên khi thấy hắn giơ hai tay lên.",
+              "Hadi - Ground Slam Variant (Biến thể nện đất): Hadi giẫm mạnh chân xuống đất, phóng ra ba làn sóng lửa theo hình quạt. Hãy đứng xen kẽ giữa các làn sóng để tránh sát thương.",
+              "Rafiq - Melee Swing (Vung đòn cận chiến): Rafiq vung vũ khí băng giá về phía trước khi áp sát. Hãy giữ khoảng cách hoặc vòng ra sau để phản công.",
+              "Rafiq - Ground Slam (Nện mặt đất): Rafiq nện mạnh vũ khí xuống đất, gây sát thương lạnh (Cold Damage) trong một khu vực diện rộng hình tròn. Hãy né ra xa hoặc vòng ra sau hắn.",
+              "Rafiq - Ice Barrage (Mưa gai băng): Rafiq triệu hồi các vòng tròn ký hiệu trên mặt đất, sau đó các gai băng nhọn sẽ bùng phát từ đó. Hãy liên tục di chuyển giữa các ký hiệu để tránh sát thương."
+            ]
+          }
+        ],
+        "drops": []
+      },
+      {
+        "name": "Ashar, the Sand Mother",
+        "subtitle": "Trial of the Sekhemas (Floor 3)",
+        "image": "https://img.poeviethoa.net/boss/ashar-the-sand-mother/hero.png",
+        "access": "Sử dụng Djinn Barya có cấp độ tối thiểu là 60 để mở khóa và tiến vào Tầng 3 (Floor 3) của Trial of the Sekhemas.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Poison Slam: Boss hơi lùi về phía sau để chuẩn bị cho một cú đập đuôi độc cực mạnh. Đòn tấn công này không thể né bằng Dodge Roll, vì vậy hãy nhanh chóng di chuyển ra phía sau lưng boss để tránh nhận sát thương.",
+              "Tail Swipe: Boss lắc đuôi và quét một vòng xung quanh, gây sát thương cho người chơi đứng ở tầm trung. Mặc dù đòn này không trúng ở cự ly cực gần, bạn vẫn nên thực hiện Dodge Roll về phía trước (sát lưng boss) để né tránh.",
+              "Tail Flip: Boss nhấc cả hai càng lên cao, sau đó đập đuôi xuống đất để lao mạnh về phía trước và chuyển sang tư thế đứng bằng đuôi để bắn đạn độc. Hãy Dodge Roll sang hai bên khi thấy boss nhấc càng.",
+              "Poison Shots: Khi đứng bằng đuôi, Ashar bắn ra các luồng đạn độc tạo thành các bãi độc Caustic Ground trên mặt đất. Hãy liên tục di chuyển và Dodge Roll để né tránh tất cả các loạt đạn.",
+              "Tunnel Phase: Ashar nhảy lên và đào sâu xuống cát, liên tục trồi lên lặn xuống và để lại các bãi cát lún (quicksand) làm chậm tốc độ hành động của bạn. Hãy chủ động di chuyển để tránh dẫm vào chúng.",
+              "Claw Attack: Boss chuẩn bị một trong hai càng của mình và thực hiện một cú đâm nhanh trực diện. Bạn có thể né bằng cách dodge sang hai bên hoặc hướng ra sau lưng boss.",
+              "Pressure Plates (Bẫy Đĩa Áp Suất): Các tấm đĩa áp suất ở giữa sân đấu kích hoạt bẫy thả bọ Adorned Beetles, phun khí độc hoặc phóng phi tiêu độc gây sát thương lớn lên Life và Honour. Hãy chú ý vị trí đứng để tránh dẫm phải chúng."
+            ]
+          }
+        ],
+        "drops": []
+      },
+      {
+        "name": "Zarokh, the Temporal",
+        "subtitle": "Trial of the Sekhemas (Floor 4)",
+        "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/hero.png",
+        "access": "Cần một Djinn Barya có Area Level tối thiểu 75 để vào Floor 4 của Trial of the Sekhemas.. Phải vượt qua hết các phòng/floor trước đó của Trial of the Sekhemas để tới phòng cuối gặp Zarokh.. Riêng The Last Flame Incense Relic (mở thử thách thưởng Temporalis): không dùng được với Trial dưới level 80.",
+        "phases": [
+          {
+            "name": "Phase 1 - Trước 60% máu",
+            "vi": "Giai đoạn mở đầu, tập trung né các orb (Temporal Ball, Bubble, Boomerang) và Pillar Projectiles, đồng thời dồn sát thương. Hãy đẩy máu boss xuống nhanh vì đạn không tự biến mất, càng lâu sàn càng ngập đạn."
+          },
+          {
+            "name": "Phase 2 - Time Stop (dưới ~60% máu)",
+            "vi": "Khi máu dưới khoảng 60% và bạn vào giữa sàn, Zarokh ngưng thời gian và bung Hourglass khắp nơi. Đây là pha sống còn: nhặt hết đồng hồ cát trước khi action speed của bạn về 0, nếu không sẽ chết tức thì. Movement Speed cao là chìa khóa qua pha này."
+          },
+          {
+            "name": "Phase 3 - Dưới 50% máu",
+            "vi": "Khi máu dưới 50%, Freeze Traps bắt đầu xuất hiện ngẫu nhiên cùng với Lightning Phase và Backtrack Explosion. Trận đánh trở nên hỗn loạn hơn; ưu tiên đứng góc khi có lightning và luôn giữ flask để chịu đòn kéo dài."
+          }
+        ],
+        "drops": [
+          {
+            "name": "The Last Flame Incense Relic",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-1.png"
+          },
+          {
+            "name": "The Desperate Alliance Vase Relic",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-2.png"
+          },
+          {
+            "name": "The Changing Seasons Seal Relic",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-3.png"
+          },
+          {
+            "name": "The Burden of Leadership Tapestry Relic",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-4.png"
+          },
+          {
+            "name": "The Remembered Tales Coffer Relic",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-5.png"
+          },
+          {
+            "name": "The Peacemaker's Draught Amphora Relic",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-6.png"
+          },
+          {
+            "name": "Temporalis Silk Robe",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-7.png"
+          },
+          {
+            "name": "Against the Darkness Time-Lost Diamond",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-8.png"
+          },
+          {
+            "name": "Sandstorm Visage Chain Tiara",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-9.png"
+          },
+          {
+            "name": "Blessed Bonds Linen Wraps",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-10.png"
+          },
+          {
+            "name": "Djinn Barya",
+            "image": "https://img.poeviethoa.net/boss/zarokh-the-temporal/drop-11.png"
+          },
+          {
+            "name": "Sekhema's Resolve Ring",
+            "image": null
+          }
+        ]
+      }
+    ]
+  },
+  "trial-chaos": {
+    "guide": true,
+    "name": "Trial of Chaos",
+    "group": "Trial of Chaos",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/490749",
+    "vi": {
+      "overview": "Trial of Chaos (trước đây là Ultimatum) là đấu trường sinh tử đầy cám dỗ của Trialmaster. Vượt qua 10 vòng thử thách ngẫu nhiên với các boss phụ Bahlak, Uxmal, Chetza trước khi chiến đấu trực diện với Trialmaster."
+    },
+    "flow": [
+      "Kích hoạt Trial of Chaos trong bản đồ Atlas.",
+      "Lựa chọn các modifier tăng độ khó qua từng vòng (tối đa 10 vòng).",
+      "Chạm trán ngẫu nhiên Bahlak (Sky Seer), Uxmal (Beastlord), Chetza (Feathered Plague).",
+      "Hoàn thành vòng 9 xuất sắc để nhận Fate Keys.",
+      "Đặt 3 Fate Keys để mở khóa vòng 10: đối đầu trực diện Pinnacle boss The Trialmaster."
+    ],
+    "parts": [
+      {
+        "name": "Bahlak, the Sky Seer",
+        "subtitle": "Trial of Chaos",
+        "image": "https://img.poeviethoa.net/boss/bahlak-the-sky-seer/hero.png",
+        "access": "Tham gia Thử thách thứ 4 (4th Trial) của Trial of Chaos tại Temple of Chaos.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Melee Slash Combo: Chuỗi chém cận chiến tung ra khi bạn đứng gần boss. Hãy giữ cự ly vừa đủ ngoài tầm đánh của hắn.",
+              "Creeping Lightning: Các quả cầu sét nhỏ di chuyển khắp võ đài, sau đó tự nhân bản. Cần chú ý hướng đi của chúng để né tránh trong lúc dồn sát thương lên boss.",
+              "Lightning Barrage: Chuỗi tia sét bắn thẳng về phía trước. Hãy lướt né sang một bên ngay khi thấy năng lượng sét tích tụ quanh boss.",
+              "Tornadoes: Boss xoay tròn tạo ra một lốc xoáy khổng lồ cùng nhiều lốc xoáy nhỏ di chuyển ngẫu nhiên. Hãy luồn lách qua các lốc xoáy cho đến khi chúng biến mất.",
+              "Wind Slash Combo: Boss bay lên không trung rồi hạ cánh tại trung tâm võ đài, bắn ra các luồng gió chém theo hướng của bạn. Hãy áp sát hoặc chạy ra sau lưng boss để né tránh.",
+              "Unblockable Dive Bomb: Boss bay thẳng lên trời rồi bổ nhào xuống vị trí của bạn, gây sát thương Vật lý cực lớn. Thực hiện Dodge Roll né ngay khi boss cất cánh bay lên.",
+              "Unblockable Talon Wind Projectiles: Boss lộn vòng trên không rồi bắn loạt đạn gió từ móng vuốt. Hãy chạy xuống dưới gầm hoặc vòng ra sau lưng boss ngay sau khi hắn lộn vòng để né tránh toàn bộ loạt đạn."
+            ]
+          }
+        ],
+        "drops": []
+      },
+      {
+        "name": "Uxmal, the Beastlord",
+        "subtitle": "Trial of Chaos",
+        "image": "https://img.poeviethoa.net/boss/uxmal-the-beastlord/hero.png",
+        "access": "Được chạm trán ngẫu nhiên ở thử thách thứ 4 (4th challenge) trong Trial of Chaos.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Hiểu rõ hiệu ứng mặt đất của đấu trường (Ground Effects of the Arena): Đấu trường của Uxmal được chia thành 3 tầng riêng biệt, mỗi tầng chịu một loại hiệu ứng mặt đất khác nhau khi boss sử dụng chiêu thức đặc sắc của tầng đó: Tầng 3 (gần lối ra) - Flying Fire Breath tạo ra Burning Ground tạm thời gây trạng thái Ignite (Thiêu đốt) rút Life dần; Tầng 2 (ở giữa các bậc thang) - Ice Breath tạo ra Chilled Ground tạm thời gây trạng thái Chill (Lạnh giá) làm chậm mọi hành động; Tầng 1 (khu vực đầm lầy) - Lightning Balls tạo ra Shocked Ground vĩnh viễn gây trạng thái Shock (Sốc điện) làm tăng sát thương nhận vào.",
+              "Di chuyển liên tục giữa các tầng (Keep Moving Between Levels): Không giống các boss khác, đấu trường của Uxmal rất rộng lớn và hắn sẽ định kỳ bay qua lại giữa 3 tầng của đấu trường. Bạn cần liên tục đuổi theo để duy trì lượng sát thương gây ra lên boss.",
+              "Giant Homing Orb (Quả cầu bám đuổi khổng lồ): Uxmal triệu hồi một quả cầu màu đỏ lớn lơ lửng trên đầu bạn. Quả cầu này sẽ dò theo vị trí của bạn trong một khoảng thời gian ngắn trước khi dừng lại và phát nổ. Hãy liên tục di chuyển để né tránh sát thương từ đòn đánh này.",
+              "Conical AoE Attacks (Các đòn tấn công diện rộng trực diện): Khi tiếp cận bạn ở bất kỳ tầng nào, Uxmal thường tung ra các đòn tấn công AoE hình nón phía trước mặt (frontal conical attacks) với các thuộc tính nguyên tố khác nhau. Hãy chủ động né tránh sang hai bên hoặc di chuyển ra sau lưng boss để phản công.",
+              "Fireball (Quả cầu lửa): Boss bắn một quả cầu lửa chậm về phía bạn. Đường đạn bay khá chậm giúp bạn có dư thời gian để né tránh.",
+              "Flamethrower (Súng phun lửa): Uxmal phun lửa hình nón phía trước mặt và xoay đầu từ bên này sang bên kia. Hãy di chuyển ra sau lưng boss để phản công hoặc đứng ngoài phạm vi của ngọn lửa.",
+              "Fire Beam (Tia lửa từ trên không): Khi đang bay, Uxmal phun một tia lửa xuống đất. Đòn đánh này diễn ra khá chậm, hãy né sang hai bên.",
+              "Poison Barrage (Mưa độc): Uxmal bắn một loạt đạn độc hình nón phía trước mặt và quét từ bên này sang bên kia. Di chuyển ra sau lưng hoặc bên sườn boss để tranh thủ gây sát thương.",
+              "Ice Beam (Tia băng): Uxmal tập trung một tia băng xuống đất, đóng băng khu vực bị ảnh hưởng và gây sát thương Băng. Hãy di chuyển ra ngoài phạm vi của tia băng.",
+              "Lightning Strike Combo (Combo sét đánh): Uxmal triệu hồi nhiều quả cầu điện nhỏ di chuyển xung quanh và phóng tia điện. Sau một khoảng thời gian ngắn, sét sẽ đánh xuống các vị trí của quả cầu. Hãy giữ khoảng cách với những quả cầu này."
+            ]
+          }
+        ],
+        "drops": []
+      },
+      {
+        "name": "Chetza, the Feathered Plague",
+        "subtitle": "Trial of Chaos",
+        "image": "https://img.poeviethoa.net/boss/chetza-the-feathered-plague/hero.png",
+        "access": "Tham gia Thử thách thứ 4 (4th Trial) của Trial of Chaos tại Temple of Chaos.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Spiral Spike (Gai xoắn ốc): Boss bắn ra các gai nhọn theo hình xoắn ốc. Đòn đánh này gây sát thương Vật lý và áp dụng debuff Maim làm chậm tốc độ di chuyển của bạn.",
+              "Screech and Rain of Bird Corpses (Tiếng rít và Mưa xác chim): Chetza rít lên và triệu hồi hàng loạt xác chim rơi xuống vị trí của bạn liên tục trong khoảng 5 giây. Đòn đánh này cực kỳ nguy hiểm, có thể gây sát thương chí mạng nếu bạn không kịp di chuyển né tránh.",
+              "Summon Plagueling (Triệu hồi Plagueling): Định kỳ, boss sẽ triệu hồi một quái vật nhỏ gọi là Plagueling. Kẻ địch này sẽ liên tục lao vào tấn công cận chiến, gây phân tâm trong khi bạn né tránh các đòn đánh của Chetza."
+            ]
+          }
+        ],
+        "drops": []
+      },
+      {
+        "name": "The Trialmaster",
+        "subtitle": "Trial of Chaos",
+        "image": "https://img.poeviethoa.net/boss/the-trialmaster/hero.png",
+        "access": "Hoàn thành một Inscribed Ultimatum đủ 10 trial của Trial of Chaos (cần Inscribed Ultimatum cấp tối thiểu 75 mới có đủ 10 trial).. Thu thập đủ 3 key item: Deadly Fate, Cowardly Fate và Victorious Fate — rơi ngẫu nhiên (mỗi lần chỉ 1 trong 3) khi đánh thắng boss ở trial thứ 10 của Trial of Chaos.. Tương tác với cánh cửa ở cuối Inscribed Ultimatum 10 trial và kéo lần lượt mỗi Fate item vào để mở cửa vào đánh The Trialmaster.",
+        "phases": [
+          {
+            "name": "Melee (Spear) Phase",
+            "vi": "Trong khi còn cầm spear, Trialmaster đánh cận chiến mạnh và có nhiều đòn time stop. Sunder: vung spear qua đầu rồi đập xuống tạo spike khắp arena — quan sát động tác vung rồi né sang hông hoặc ra sau lưng hắn, vì đứng ngay chỗ đập có thể trúng nhiều lần và chết ngay. 'Shred' Rapid Swings: chuỗi 4 nhát chém phóng ra blood projectile, nhát thứ 4 đến nhanh hơn 3 nhát đầu nên chú ý nhịp. 'Be obliterated!' Spear Slam: nạp một đòn AoE lớn, thời gian wind-up đủ dài để chạy thoát. Quan trọng: hãy đánh sát tường arena để khi hắn ném spear (chuyển pha) thì cây spear rơi gần rìa, chừa nhiều không gian xoay xở hơn."
+          },
+          {
+            "name": "Ranged (No-Spear) Phase",
+            "vi": "Sau khi ném spear, Trialmaster chuyển sang đánh xa: Time Stop Projectiles (dịch chuyển + bắn đạn trong lúc thời gian đóng băng), Heart Tethers ('Be still!') trói và stun bạn, Elemental Projectiles ('Farcical!') bắn 3 đạn nguyên tố, và Chaos Bolt ('Embrace Chaos!') đạn đỏ nhân lên rồi dội ngược từ tường. Theo dõi kỹ quỹ đạo đạn, ra khỏi vùng heart khi hắn không gây áp lực bằng đòn khác."
+          }
+        ],
+        "drops": [
+          {
+            "name": "Mahuxotl's Machination (Omen Crest Shield)",
+            "image": "https://img.poeviethoa.net/boss/the-trialmaster/drop-1.png"
+          },
+          {
+            "name": "Zerphi's Genesis (Heavy Belt)",
+            "image": "https://img.poeviethoa.net/boss/the-trialmaster/drop-2.png"
+          },
+          {
+            "name": "Hateforge (Moulded Mitts)",
+            "image": "https://img.poeviethoa.net/boss/the-trialmaster/drop-3.png"
+          },
+          {
+            "name": "Glimpse of Chaos (Tribal Mask)",
+            "image": "https://img.poeviethoa.net/boss/the-trialmaster/drop-4.png"
+          },
+          {
+            "name": "The Adorned (Diamond)",
+            "image": "https://img.poeviethoa.net/boss/the-trialmaster/drop-5.png"
+          }
+        ]
+      }
+    ]
+  },
+  "expedition": {
+    "guide": true,
+    "name": "Chuỗi Boss Expedition",
+    "group": "Expedition",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/486754",
+    "vi": {
+      "overview": "Expedition là hành trình khai quật tàn tích cổ xưa. Đặt thuốc nổ để giải phóng quái vật và rương báu, sử dụng các Saga Logbook để săn tìm Medved, Vorana, Uhtred, Olroth, và rèn Triskelion để diệt The Aberration."
+    },
+    "flow": [
+      "Đặt thuốc nổ khai quật các di chỉ Expedition trong map hoặc Logbook.",
+      "Sử dụng Medved's/Vorana's/Uhtred's/Olroth's Saga trên Atlas để vào khu vực Ocean Biome.",
+      "Đánh bại các boss Logbook: Medved, Vorana, Uhtred, và Olroth.",
+      "Thu thập Shattered Triskelion từ Olroth và mang tới Verisium Anvil tại Kingsmarch để rèn The Triskelion Reforged.",
+      "Nói chuyện với Makoru để di chuyển đến Verisium Crater.",
+      "Đặt Triskelion Reforged để phá rào chắn và tiêu diệt Pinnacle boss The Aberration."
+    ],
+    "parts": [
+      {
+        "name": "Styrn, Fallen Knight of Aldur",
+        "subtitle": "Tomb of the Fallen Knight",
+        "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/hero.png",
+        "access": "Kích hoạt cơ chế Expedition trong các bản đồ endgame (Maps).. Tìm kiếm khu vực Tomb of the Fallen Knight xuất hiện ngẫu nhiên trên bản đồ.. Sử dụng chất nổ Expedition (explosives) để phá hủy cửa hầm mộ và đi vào bên trong đối đầu với boss.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Maximize Windows Between Attacks: Styrn di chuyển khá chậm nhưng sở hữu các đòn đánh cận chiến và diện rộng (AoE) có sát thương cực kỳ lớn. Chìa khóa để chiến thắng là liên tục chạy vòng quanh boss, né tránh các đòn vung vũ khí của hắn và tận dụng khoảng thời gian trễ giữa các đòn đánh để xả sát thương."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Medved's Crest of the Circle",
+            "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-1.png"
+          },
+          {
+            "name": "Vorana's Crest of the Scythe",
+            "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-2.png"
+          },
+          {
+            "name": "Uhtred's Crest of the Chalice",
+            "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-3.png"
+          },
+          {
+            "name": "Olroth's Crest of the Sun",
+            "image": "https://img.poeviethoa.net/boss/styrn-fallen-knight-of-aldur/drop-4.png"
+          }
+        ]
+      },
+      {
+        "name": "Medved, the Fallen Seer",
+        "subtitle": "Ocean Biome",
+        "image": null,
+        "access": "Mở khóa khu vực Ruins of Kingsmarch.. Tìm kiếm khu vực Deadly Map Boss đầu tiên được hé lộ tại Ocean biome trong chuỗi nhiệm vụ The Grand Expedition (bản đồ Sprawling Jungle).. Sau khi hoàn thành chuỗi nhiệm vụ, giữ Medved's Saga trong hành trang trước khi sử dụng Expedition Logbook để chắc chắn gặp boss ở vùng biển Ocean biome tiếp theo.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Stay Behind the Boss (Đứng sau lưng boss): Ngoài một vài đòn nện (slam) diện rộng, Medved chủ yếu sử dụng các đòn tấn công định hướng phía trước. Chỉ cần bạn liên tục di chuyển và giữ vị trí ở sau lưng boss, bạn sẽ có rất nhiều cơ hội để phản công an toàn."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Vorana's Siege",
+            "image": "https://img.poeviethoa.net/boss/medved-the-fallen-seer/drop-1.png"
+          },
+          {
+            "name": "Medved's Crest of the Circle",
+            "image": "https://img.poeviethoa.net/boss/medved-the-fallen-seer/drop-2.png"
+          }
+        ]
+      },
+      {
+        "name": "Vorana, Last to Fall",
+        "subtitle": "Ocean Biome",
+        "image": "https://img.poeviethoa.net/boss/vorana-last-to-fall/hero.png",
+        "access": "Hoàn thành chuỗi nhiệm vụ The Grand Expedition.. Đánh bại boss tại hầm mộ Vorana's Tomb trong bản đồ Mournful Cliffside thuộc Ocean biome.. Sau khi hoàn thành chuỗi nhiệm vụ, sử dụng vật phẩm Vorana's Saga trong túi đồ trước khi mở Expedition Logbook để chắc chắn gặp boss trong khu vực Ocean biome tiếp theo.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Lethal Dark Fog (Sương mù đen chết chóc): Khi trận đấu bắt đầu, sương mù đen sẽ bao phủ toàn bộ đấu trường. Bạn buộc phải di chuyển và chiến đấu bên trong vòng tròn ánh sáng an toàn xung quanh Vorana. Nếu bước ra ngoài vòng tròn này, nhân vật sẽ phải chịu lượng sát thương cực lớn theo thời gian và tử vong trong vài giây.",
+              "Double Scythe Slash (Nhát chém lưỡi hái kép): Vorana vung lưỡi hái thực hiện các cú chém diện rộng (cleave) gây sát thương Vật lý lớn và tạo ra sóng xung kích phía trước. Hãy nhanh chóng di chuyển vòng ra sau lưng boss để né tránh và tranh thủ tấn công khi cô ta đang vận lực.",
+              "Knockback Dashes (Lướt đẩy lùi): Vorana liên tục lướt nhanh xuyên qua người bạn, gây sát thương Vật lý mạnh kèm hiệu ứng đẩy lùi (knockback). Đây là cơ chế cực kỳ nguy hiểm vì nó có thể đẩy bạn ra khỏi vòng tròn an toàn vào vùng sương mù chết chóc. Hãy luôn đứng ở vị trí có góc phòng thủ tốt để tránh bị đẩy ra ngoài.",
+              "Whirlwind Adds (Triệu hồi hộ vệ): Tại các mốc máu (mỗi 25%), Vorana sẽ triệu hồi thêm một nhóm quái vật hỗ trợ để quấy rối bạn. Hãy nhanh chóng dọn dẹp chúng trong khi vẫn phải bám sát vòng tròn an toàn quanh boss."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Vorana's Crest of the Scythe",
+            "image": "https://img.poeviethoa.net/boss/vorana-last-to-fall/drop-1.png"
+          }
+        ]
+      },
+      {
+        "name": "Uhtred, the Stardrinker",
+        "subtitle": "Ocean Biome",
+        "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/hero.png",
+        "access": "Gặp trong chuỗi nhiệm vụ: Là Deadly Map Boss thứ ba trong nhiệm vụ The Grand Expedition, chạm trán tại Secluded Temple thuộc Ocean Biome.. Kích hoạt chủ động: Có Uhtred's Saga trong hành trang trước khi kích hoạt Expedition Logbook để chắc chắn xuất hiện Uhtred tại Ocean Biome tiếp theo.. Yêu cầu bản đồ: Cần sử dụng Waystone cấp cao (ví dụ: Tier 14+) để tiếp cận khu vực Secluded Temple.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Seeking Stars (Những Ngôi Sao Tìm Diệt): Uhtred triệu hồi các quả cầu tinh tú đuổi theo người chơi. Chúng sẽ phát nổ khi va chạm hoặc sau một thời gian, gây sát thương Băng lớn và làm chậm. Hãy di chuyển liên tục theo vòng tròn quanh đấu trường để thả diều chúng.",
+              "Rotating Laser Beam (Tia Laser Xoay): Boss vận lực và quét một tia laser lớn chậm rãi quanh phòng đấu. Chiêu thức này gây sát thương duy trì cực kỳ lớn, người chơi cần bám sát boss và di chuyển đồng bộ theo chiều xoay của tia laser để né tránh.",
+              "Mirror Laser Grid (Mạng Lưới Laser Phản Chiếu): Uhtred triệu hồi các tấm gương xung quanh đấu trường để phản chiếu tia laser, tạo thành một ma trận ánh sáng nguy hiểm. Hãy quan sát các vệt chỉ thị màu bạc dưới đất để chọn vị trí đứng an toàn.",
+              "Starlight Cascade (Cơn Mưa Đạn Ánh Sáng): Boss liên tục bắn ra các đợt đạn ánh sáng dày đặc theo làn đường hoặc hình nón, bao phủ diện rộng đấu trường. Đòi hỏi sự bình tĩnh để luồn lách qua các khoảng trống giữa các làn đạn.",
+              "Slow Puddles (Vùng Đất Bị Nguyền Rủa): Uhtred tạo ra những vùng năng lượng tinh tú trên mặt đất gây sát thương duy trì và làm giảm mạnh tốc độ di chuyển. Hãy sử dụng ngay các kỹ năng dịch chuyển để thoát khỏi chúng."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Uhtred's Chalice Transcendent Mana Flask",
+            "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-1.png"
+          },
+          {
+            "name": "Uhtred's Crest of the Chalice",
+            "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-2.png"
+          },
+          {
+            "name": "Exceptional Verisium",
+            "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-3.png"
+          },
+          {
+            "name": "Verisium",
+            "image": "https://img.poeviethoa.net/boss/uhtred-the-stardrinker/drop-4.png"
+          }
+        ]
+      },
+      {
+        "name": "Olroth, Origin of the Fall",
+        "subtitle": "Ocean Biome",
+        "image": "boss/olroth-origin-of-the-fall/hero.png",
+        "access": "Hoàn thành chuỗi nhiệm vụ The Grand Expedition.. Đánh bại boss trong bản đồ Obscure Map thuộc Ocean biome (Deadly Map Boss thứ ba).. Hoặc giữ kích hoạt Olroth's Saga trong hành trang trước khi sử dụng Expedition Logbook để chắc chắn gặp boss trong khu vực Ocean biome tiếp theo.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Starfire! (Exterminating Chill Beam): Kalguran Rune bắn ra một tia laser mạnh mẽ, để lại hiệu ứng mặt đất gây Exterminating Chill, làm chậm tốc độ và gây sát thương Băng theo thời gian (Cold Damage Over Time). Hãy đứng ở phía đối diện của rune để có nhiều thời gian phản xạ và né tránh.",
+              "Sword Beams: Olroth chém nhiều nhát liên tục, phóng ra các luồng kiếm khí gây sát thương Băng. Giữ khoảng cách gần với boss sẽ giúp bạn dễ dàng di chuyển né tránh các luồng kiếm khí này.",
+              "Sword Slam: Olroth tụ lực vào thanh kiếm và nện mạnh xuống đất, gây sát thương Băng diện rộng kèm theo 7 đợt sóng xung kích lan tỏa. Hãy tránh xa khu vực này vì các đợt sóng tiếp theo sẽ gây Chill và có nguy cơ cao làm bạn bị đóng băng (Freeze).",
+              "Purify! (Orbital Rune Laser): Các tia năng lượng Băng bao quanh nhân vật và thu hẹp dần vào tâm. Hãy sử dụng kỹ năng Dodge Roll để lăn qua các tia này thoát ra ngoài trước khi chúng hội tụ và gây sát thương Băng cực lớn theo thời gian.",
+              "Sword Dash: Olroth lướt nhanh về phía trước và vung kiếm chém. Bạn chỉ cần di chuyển sang hai bên để né đòn.",
+              "Rune Laser: Kalguran Rune sẽ liên tục bắn một tia laser quét qua đấu trường. Kỹ năng này chỉ gây sát thương tại điểm tiếp xúc nhỏ của tia laser nên bạn có thể tự do di chuyển qua lại qua tia sáng.",
+              "You will fail! (Unblockable Sword Throw): Olroth tỏa ra ánh sáng đỏ và ném thanh kiếm của mình như một chiếc boomerang quay trở lại sau một khoảng trễ ngắn. Hãy di chuyển ra phía sau boss để né tránh lưỡi kiếm quay lại và tranh thủ tấn công."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Olrovasara Torment Club",
+            "image": "boss/olroth-origin-of-the-fall/drop-1.png"
+          },
+          {
+            "name": "Keeper of the Arc Spiritbone Crown",
+            "image": "boss/olroth-origin-of-the-fall/drop-2.png"
+          },
+          {
+            "name": "Svalinn Crucible Tower Shield",
+            "image": "boss/olroth-origin-of-the-fall/drop-3.png"
+          },
+          {
+            "name": "Olroth's Resolve Ultimate Life Flask",
+            "image": "boss/olroth-origin-of-the-fall/drop-4.png"
+          },
+          {
+            "name": "Heroic Tragedy Timeless Jewel",
+            "image": "boss/olroth-origin-of-the-fall/drop-5.png"
+          }
+        ]
+      },
+      {
+        "name": "The Aberration",
+        "subtitle": "Verisium Crater",
+        "image": "https://img.poeviethoa.net/boss/the-aberration/hero.png",
+        "access": "Đánh bại Uhtred, the Stardrinker để nhận Olroth's Logbook.. Đi đến Obscure Island bằng cách sử dụng Olroth's Logbook trên Atlas và đánh bại Olroth, Origin of the Fall để nhận Shattered Triskelion.. Mang Shattered Triskelion đến Verisium Anvil tại Ruins of Kingsmarch để chế tạo The Triskelion Reforged.. Nói chuyện với Makoru trên tàu buồm để di chuyển đến Verisium Crater.. Giải phóng rào chắn bao quanh thiên thạch bằng cách đặt Triskelion Reforged vào bệ kích hoạt để bắt đầu trận chiến.",
+        "phases": [
+          {
+            "name": "Phase 1 - Thực thể tĩnh lặng và Đạn ma thuật",
+            "points": [
+              "Ice Beam: Boss bắn ra tia băng lớn quét ngang đấu trường. Người chơi cần chạy vòng tròn quanh boss hoặc dùng kỹ năng dịch chuyển vượt qua tia quét để tránh nhận sát thương cực lớn.",
+              "Targeted Projectiles: Bắn một loạt tia đạn định vị hướng về phía người chơi. Hãy liên tục chạy để các tia đạn này rơi lại phía sau bạn.",
+              "Melee Combos: Các đòn tấn công cận chiến như cào và đập chân khi người chơi đứng quá gần boss."
+            ]
+          },
+          {
+            "name": "Phase 2 - Giải phóng di chuyển (Dưới 75% HP)",
+            "points": [
+              "Emergence & Chase: Boss trồi lên khỏi mặt đất và di chuyển tự do. Tốc độ di chuyển nhanh và liên tục bám đuổi người chơi.",
+              "Leg Stabs: Boss liên tiếp cắm các chân nhọn xuống đất để tấn công. Cần di chuyển liên tục để tránh bị đâm trúng."
+            ]
+          },
+          {
+            "name": "Phase 3 - Mạng nhện và Hiểm họa xoay tròn (Giai đoạn cuối)",
+            "points": [
+              "Spider Webs: Giăng các bẫy mạng nhện trên đấu trường làm chậm tốc độ di chuyển của người chơi. Hãy cẩn thận tránh dẫm vào chúng.",
+              "Spinning Hazards: Các chướng ngại vật ma thuật xoay tròn xung quanh đấu trường, gây sát thương liên tục và ép góc người chơi."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Revered Starlit Ore",
+            "image": null
+          },
+          {
+            "name": "Venerable Starlit Ore",
+            "image": null
+          }
+        ]
+      }
+    ]
+  },
+  "atziri-temple": {
+    "guide": true,
+    "name": "Đền Thờ Atziri",
+    "group": "Atziri's Temple",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/574808",
+    "vi": {
+      "overview": "Đền thờ Vaal cổ xưa ẩn chứa sức mạnh tàn bạo của Nữ hoàng Atziri. Vận hành các bảng điều khiển đền thờ để dọn đường qua kiến trúc sư Xipocado và đột kích vào Royal Access Chamber diện kiến Atziri."
+    },
+    "flow": [
+      "Tìm kiếm các tàn tích Vaal trong map để tiến vào Đền Thờ Atziri.",
+      "Vận hành Temple Console để xoay chuyển các phòng đền thờ.",
+      "Đánh bại kiến trúc sư hoàng gia Xipocado, Royal Architect.",
+      "Đạt Area Level 75+ và mở cửa Royal Access Chamber để đối đầu Pinnacle boss Atziri, the Red Queen."
+    ],
+    "parts": [
+      {
+        "name": "Xipocado, Royal Architect",
+        "subtitle": "Atziri's Temple",
+        "image": "boss/xipocado-royal-architect/hero.jpeg",
+        "access": "Tiếp cận Đền thờ Atziri (Atziri's Temple) thông qua Phế tích Vaal (Vaal Ruins).. Đặt các phòng Path (Đường nối) trong Bảng điều khiển Đền thờ (Temple Console) để kết nối đến ô (tile) mà Xipocado đang chiếm giữ.",
+        "phases": [
+          {
+            "name": "Cơ chế chiến đấu",
+            "points": [
+              "Blue Lightning Runes (Cổ tự Lôi điện Xanh): Đây là cơ chế cốt lõi trong đòn đánh của Xipocado. Hắn sử dụng các cổ tự màu xanh dương trên mặt đất để dịch chuyển và phát động tấn công:\n- Khi Xipocado đặt một cổ tự xanh đơn lẻ trên đất, hắn sẽ dịch chuyển ngay lập tức đến đó và bắn ra một loạt đạn sét liên hoàn theo đường thẳng. Bạn cần nhanh chóng né sang một bên (dodge sideways) để tránh bị trúng đòn.\n- Khi hắn triệu hồi nhiều cổ tự xanh xung quanh bản thân, hãy lập tức lùi lại thật nhanh để tránh các tia điện Spark tỏa ra khắp đấu trường.",
+              "Hiệu ứng Shocked (Tê liệt): Các đòn đánh hệ sét của Xipocado có thể dễ dàng gây trạng thái Shocked lên nhân vật của bạn, khiến bạn nhận thêm nhiều sát thương và dễ bị kết liễu bởi các đòn đánh tiếp theo. Hãy mang theo bình thuốc giải hiệu ứng Shocked hoặc trang bị kháng sét tốt."
+            ]
+          }
+        ],
+        "drops": [
+          {
+            "name": "Royal Access Chamber room card",
+            "image": "boss/xipocado-royal-architect/drop-1.jpeg"
+          },
+          {
+            "name": "Advanced Medallions",
+            "image": "boss/xipocado-royal-architect/drop-2.jpeg"
+          }
+        ]
+      },
+      {
+        "name": "Atziri, the Red Queen",
+        "subtitle": "Vaal Temple",
+        "image": "https://img.poeviethoa.net/boss/atziri-the-red-queen/hero.jpeg",
+        "access": "Phải hạ Architect khi Vaal Temple đạt ít nhất Area Level 75 để có thể đặt phòng Royal Access Chamber.. Dùng các path tile và room tile khác để mở đường tới Royal Access Chamber rồi tới room tile của Atziri để bắt đầu trận đánh.",
+        "phases": [
+          {
+            "name": "Phase 2 - Final 20%",
+            "vi": "Khi máu Atziri còn khoảng 20% trong phase 2, cô ta khởi động đòn kết liễu phủ red AoE toàn arena, đủ sức xóa sổ người chơi đứng bên trong. Đây là cửa sổ then chốt: hãy dồn toàn bộ DPS để kết thúc trận trước khi đòn này hoàn tất, đồng thời vẫn để ý né các falling spears còn rơi xuống trong lúc cô ta channel."
+          }
+        ],
+        "drops": [
+          {
+            "name": "Drillneck Penetrating Quiver",
+            "image": "https://img.poeviethoa.net/boss/atziri-the-red-queen/drop-1.png"
+          },
+          {
+            "name": "Atziri's Rule Reflecting Staff",
+            "image": null
+          },
+          {
+            "name": "Atziri's Splendour Sacrificial Regalia",
+            "image": null
+          },
+          {
+            "name": "Atziri's Step Cinched Boots",
+            "image": null
+          },
+          {
+            "name": "Atziri's Contempt Pronged Spear",
+            "image": null
+          },
+          {
+            "name": "Flesh Crucible Diamond",
+            "image": "https://img.poeviethoa.net/boss/atziri-the-red-queen/drop-2.png"
+          },
+          {
+            "name": "Architect's Orb",
+            "image": null
+          },
+          {
+            "name": "Crystallised Corruption",
+            "image": null
+          },
+          {
+            "name": "Vaal Cultivation Orb",
+            "image": null
+          },
+          {
+            "name": "Ancient Infuser",
+            "image": null
+          },
+          {
+            "name": "Orb of Extraction",
+            "image": null
+          },
+          {
+            "name": "Core Destabiliser",
+            "image": null
+          },
+          {
+            "name": "Vaal Siphoner",
+            "image": null
+          },
+          {
+            "name": "Vaal Infuser",
+            "image": null
+          }
+        ]
+      }
+    ]
+  },
+  "precursor-fortress": {
+    "guide": true,
+    "name": "Pháo Đài Precursor",
+    "group": "Precursor Fortress (Pinnacle)",
+    "source": "https://game8.co/games/Path-of-Exile-2/archives/486754",
+    "vi": {
+      "overview": "Precursor Fortress là thử thách tối thượng từ nền văn minh tiền thân cổ xưa. Thu thập các mảnh khóa để khiêu chiến phán quan Arbiter of Ash và Arbiter of Divinity bảo vệ pháo đài."
+    },
+    "flow": [
+      "Thu thập Crisis Fragments từ các map tier cao.",
+      "Sử dụng Crisis Fragments tại Realmgate để tiến vào Burning Monolith khiêu chiến Arbiter of Ash.",
+      "Thu thập Origin Spark và Origin Cradle.",
+      "Đặt chúng tại Realmgate để kích hoạt Origin Tower khiêu chiến Arbiter of Divinity."
+    ],
+    "parts": [
+      {
+        "name": "The Arbiter of Ash",
+        "subtitle": "Burning Monolith (Sealed Passageway in the Atlas)",
+        "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/hero.jpg",
+        "access": "Dùng ba loại Crisis Fragment khác nhau tại Sealed Passageway trong Burning Monolith để mở lối vào trận đánh.. Ancient Crisis Fragment: lấy từ boss của Iron Citadel.. Weathered Crisis Fragment: lấy từ boss của Copper Citadel.. Faded Crisis Fragment: lấy từ boss của Stone Citadel.. Crisis Fragment rơi khi đánh bại boss tại các Citadel xuất hiện ngẫu nhiên trong Atlas. Mỗi boss đảm bảo rơi 1 fragment; tăng 'Waystone Drop Chance' (từ Waystone hoặc Atlas Passive Tree) làm tăng cơ hội rơi thêm fragment, nhưng Waystone tỉ lệ cao thường kèm map modifier khó hơn.",
+        "phases": [
+          {
+            "name": "Phase 1",
+            "vi": "Boss đánh tầm xa bằng phép lửa. Các đòn chính: Laser Beam Line Attack (tia laser lớn phía trước, lăn sang bên để né); Fiery Winds AoE Combo (boss lao quanh đấu trường và triệu hồi các fire orb phát nổ gây sát thương BÊN NGOÀI vòng tròn, hãy đứng TRONG vòng tròn của orb để an toàn); Firebolt Projectile (vung wand bắn một viên đạn lửa vào bạn); Fire Stars Projectile Combo (bắn 2 viên đạn lửa lớn xuyên đấu trường, đồng thời nhả nhiều đạn nhỏ, lăn tránh viên lớn rồi né sang bên các viên nhỏ); Blazing Waves AoE Combo (tạo các đợt sóng lửa chỉ chừa một khe hẹp ở giữa để bạn đứng)."
+          },
+          {
+            "name": "Phase 2",
+            "vi": "Boss chuyển sang đánh cận chiến bằng kiếm và flame bomb phức tạp hơn. Đòn chính: Sword Slashes Melee Combo (chém nhiều nhát khi di chuyển, cứ tiếp tục chạy để không bị dính). Fire Blast AoE (sạc đầy đấu trường khi một orb từ từ hạ xuống, khi orb chạm đất cả khu vực bốc cháy trừ vùng quanh chính orb). Fire Blast có hai biến thể: Variant 1 (boss bắn Laser Beam vào vùng an toàn, hãy đứng NGOÀI vùng an toàn cho tới khi tia kết thúc rồi mới vào), Variant 2 (boss chém thẳng vào giữa vùng an toàn ngay sau khi Fire Blast kích hoạt, phải lập tức lăn sang bên). Fire Pulse Orb Projectile (triệu một fire orb lớn liên tục bắn các đợt firebolt nhỏ khắp đấu trường, lăn giữa từng đợt). Sword Smash Melee Combo (boss bay lên, triệu các cột lửa rồi bổ kiếm xuống gây AoE lớn, lăn ra ngay khi thấy cột lửa và chạy xa khỏi boss)."
+          }
+        ],
+        "drops": [
+          {
+            "name": "Arbiter's Book of Knowledge",
+            "image": null
+          },
+          {
+            "name": "Ab Aeterno Grand Cuisses",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/drop-1.png"
+          },
+          {
+            "name": "Morior Invictus Grand Regalia",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/drop-2.png"
+          },
+          {
+            "name": "Sine Aequo Grand Manchettes",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/drop-3.png"
+          },
+          {
+            "name": "Sacred Flame Shrine Sceptre",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/drop-4.png"
+          },
+          {
+            "name": "Solus Ipse Grand Visage",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/drop-5.png"
+          },
+          {
+            "name": "Prism of Belief Diamond",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-ash/drop-6.png"
+          }
+        ]
+      },
+      {
+        "name": "The Arbiter of Divinity",
+        "subtitle": "The Origin Tower, Precursor Fortress",
+        "image": "https://img.poeviethoa.net/boss/the-arbiter-of-divinity/mech-1.png",
+        "access": "Đánh bại The Arbiter of Ash trước.. Hoàn thành các sảnh Patriarch Halls và Matriarch Halls để lấy Origin Spark và Origin Cradle.. Patriarch/Matriarch Halls xuất hiện ngẫu nhiên trong Atlas, nhận biết qua cặp cột sáng màu cam: Matriarch Halls có 1 điểm trong silhouette, Patriarch Halls có 3 điểm.. Cần Tier 15 Waystones để vào các sảnh này.. Lắp Origin Spark và Origin Cradle trở lại vào The Origin Tower để mở trận đánh boss.",
+        "phases": [
+          {
+            "name": "Phase 1",
+            "vi": "Boss di chuyển vòng quanh tâm arena và liên tục triệu hồi các Volatile Orbs. Nếu bạn né khu vực trung tâm thì phải canh đứng cách xa các quả cầu vì chúng sẽ nổ và gây sát thương. Đồng thời đề phòng đòn sấm sét phủ toàn arena, nhanh chóng tìm điểm trống an toàn."
+          },
+          {
+            "name": "Phase 2",
+            "vi": "Boss bắt đầu tạo ra clone. Hãy nhặt các quả cầu Divine Power màu vàng bằng cách đứng đè lên chúng; buff 6 giây nhận được cho phép bạn hạ clone và miễn nhiễm mọi sát thương. Khi né đòn sét toàn arena, chọn điểm an toàn tránh xa clone để không bị kẹt góc."
+          }
+        ],
+        "drops": [
+          {
+            "name": "Decree of Acuity Ancient Visor",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-divinity/drop-1.png"
+          },
+          {
+            "name": "Decree of Loyalty Ancient Mail",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-divinity/drop-2.png"
+          },
+          {
+            "name": "Decree of Flight Ancient Leggings",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-divinity/drop-3.png"
+          },
+          {
+            "name": "The Ordained Grand Spear",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-divinity/drop-4.png"
+          },
+          {
+            "name": "Immaculate Adherence Solar Amulet",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-divinity/drop-5.png"
+          },
+          {
+            "name": "Her Declaration (Lineage Support Gem)",
+            "image": "https://img.poeviethoa.net/boss/the-arbiter-of-divinity/drop-6.png"
+          }
         ]
       }
     ]

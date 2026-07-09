@@ -1,7 +1,7 @@
 import { type Locale, localizedText } from "../lib/locale";
 import { routeForKey, routeText, type RouteKey } from "../lib/routes";
 
-const lookupKeys: RouteKey[] = ["items", "currency", "dictionary", "skillgems"];
+const lookupKeys: RouteKey[] = ["items", "currency", "dictionary", "skillgems", "boss"];
 
 const copy = {
   title: { vi: "Tra cứu dữ liệu POE2", en: "POE2 data lookup" }

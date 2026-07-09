@@ -5,7 +5,7 @@ import { renderPassiveTree } from "./draw";
 import { boundsForNodes, filteredTreeNodes, hitTestNode, type PassiveNode, type PassiveTreeModel } from "./tree";
 
 export interface CanvasCommand {
-  type: "fit" | "reset" | "focus";
+  type: "fit" | "reset" | "focus" | "zoom";
   nonce: number;
   x?: number;
   y?: number;
@@ -24,9 +24,10 @@ interface Props {
   command: CanvasCommand | null;
   onHover: (node: PassiveNode | null, x: number, y: number, held: boolean) => void;
   onToggle: (node: PassiveNode) => void;
+  onZoomChange?: (zoom: number) => void;
 }
 
-function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesOn, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle }: Props) {
+function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesOn, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle, onZoomChange }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraRef = useRef<Camera>(createCamera());
   const dragging = useRef(false);
@@ -42,6 +43,11 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
   const lastPointer = useRef<{ x: number; y: number } | null>(null);
   const commandNonce = useRef(-1);
   const commandRef = useRef<CanvasCommand | null>(command);
+  const onZoomChangeRef = useRef(onZoomChange);
+
+  useEffect(() => {
+    onZoomChangeRef.current = onZoomChange;
+  }, [onZoomChange]);
 
   const renderOpts = useMemo(() => ({ searchIds, allocatedIds, changeEntries, changesOn, hoverId: hoverId.current, classFilter, ascendancyFilter }), [searchIds, allocatedIds, changeEntries, changesOn, classFilter, ascendancyFilter]);
   const renderOptsRef = useRef(renderOpts);
@@ -92,10 +98,16 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
       const nextCommand = commandRef.current;
       if (nextCommand && nextCommand.nonce !== commandNonce.current) {
         commandNonce.current = nextCommand.nonce;
-        if (nextCommand.type === "focus" && Number.isFinite(nextCommand.x) && Number.isFinite(nextCommand.y)) {
+        const minZoom = camera.width < 600 ? 0.016 : 0.012;
+        if (nextCommand.type === "zoom" && Number.isFinite(nextCommand.zoom)) {
+          const cx = camera.width / 2;
+          const cy = camera.height / 2;
+          const factor = Number(nextCommand.zoom) / camera.zoom;
+          zoomCameraAt(camera, factor, cx, cy);
+        } else if (nextCommand.type === "focus" && Number.isFinite(nextCommand.x) && Number.isFinite(nextCommand.y)) {
           camera.x = Number(nextCommand.x);
           camera.y = Number(nextCommand.y);
-          camera.zoom = Math.min(Math.max(Number(nextCommand.zoom ?? 0.28), 0.012), 1.8);
+          camera.zoom = Math.min(Math.max(Number(nextCommand.zoom ?? 0.28), minZoom), 1.8);
         } else {
           fitCurrentView(nextCommand.type === "reset" ? 96 : 64);
         }
@@ -106,6 +118,10 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
         applyCanvasSize();
       }
       renderPassiveTree(ctx, camera, tree, { ...opts, hoverId: hoverId.current });
+
+      if (onZoomChangeRef.current) {
+        onZoomChangeRef.current(camera.zoom);
+      }
     };
 
     const scheduleDraw = () => {

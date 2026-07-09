@@ -2933,7 +2933,7 @@ textarea:focus-visible {
     "setswitch setswitch .        .        .        .        .        ."
     "weapon   weapon   .        helm     helm     .        offhand  offhand"
     "weapon   weapon   .        helm     helm     .        offhand  offhand"
-    "weapon   weapon   ring3    body     body     amulet   offhand  offhand"
+    "weapon   weapon   .        body     body     amulet   offhand  offhand"
     "weapon   weapon   ring1    body     body     ring2    offhand  offhand"
     ".        gloves   gloves   body     body     boots    boots    ."
     ".        gloves   gloves   belt     belt     boots    boots    ."
@@ -3104,6 +3104,64 @@ textarea:focus-visible {
 .build-equip-slot.has-item img {
   max-width: 94%;
   max-height: 94%;
+}
+
+.build-slot-runes {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+}
+
+.build-slot-runes::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  width: 5px;
+  background: linear-gradient(90deg, #786446, #c29c5b, #786446);
+  border: 1px solid #000;
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  z-index: -1;
+}
+
+.build-equip-slot:hover .build-slot-runes {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.build-slot-rune-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(10, 12, 16, 0.95);
+  border: 2px solid rgba(194, 156, 91, 0.95);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.9), 0 3px 6px rgba(0,0,0,0.9);
+  padding: 1px;
+  cursor: help;
+  transition: transform 0.12s ease-out, border-color 0.12s ease-out, box-shadow 0.12s ease-out;
+}
+
+.build-slot-rune-icon:hover {
+  transform: scale(1.22);
+  border-color: #ffd700;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.95), 0 0 12px rgba(255, 215, 0, 0.8), 0 3px 8px rgba(0,0,0,0.95);
+  z-index: 12;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .build-equip-slot.is-unique {
@@ -5553,3 +5611,150 @@ textarea:focus-visible {
 .passive-pob-config .passive-pob-mods { border-top: none; background: transparent; padding: 4px 0 0; }
 .passive-pob-config .passive-pob-mods p { color: var(--muted); }
 .passive-pob-config .passive-pob-mods strong { color: var(--ink); }
+
+/* Custom PoE Tooltip Styling */
+.poe-custom-tooltip {
+  transition: opacity 0.1s ease-out;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85);
+  max-width: 320px;
+  pointer-events: none;
+}
+
+.poe-tooltip-card {
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  background: rgba(8, 11, 16, 0.98);
+  border: 1px solid #3c301c;
+  border-radius: 3px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #c8c8c8;
+}
+
+/* Rarity border themes */
+.poe-tooltip-card.tooltip-rarity-unique {
+  border-color: #af6025;
+}
+.poe-tooltip-card.tooltip-rarity-rare {
+  border-color: #d4cf5c;
+}
+.poe-tooltip-card.tooltip-rarity-gem {
+  border-color: #1ba29b;
+}
+
+.tooltip-header {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.tooltip-name {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* Unique header colors */
+.tooltip-rarity-unique .tooltip-name {
+  color: #af6025;
+}
+/* Rare header colors */
+.tooltip-rarity-rare .tooltip-name {
+  color: #f1d6a0;
+}
+/* Gem header colors */
+.tooltip-rarity-gem .tooltip-name {
+  color: #1ba29b;
+}
+
+.tooltip-base {
+  font-size: 13px;
+  color: #ead9b8;
+  margin-top: 2px;
+}
+
+.tooltip-divider {
+  border: 0;
+  border-top: 1px solid #3c301c;
+  margin: 8px 0;
+}
+
+/* Unique divider colors */
+.tooltip-rarity-unique .tooltip-divider {
+  border-color: rgba(175, 96, 37, 0.4);
+}
+.tooltip-rarity-rare .tooltip-divider {
+  border-color: rgba(241, 214, 160, 0.3);
+}
+.tooltip-rarity-gem .tooltip-divider {
+  border-color: rgba(27, 162, 155, 0.4);
+}
+
+.tooltip-properties {
+  color: #7f7f7f;
+  font-size: 12px;
+  text-align: center;
+}
+.tooltip-properties div {
+  margin-bottom: 2px;
+}
+
+.tooltip-requirements {
+  font-size: 12px;
+  color: #7f7f7f;
+  text-align: center;
+}
+
+.tooltip-tags {
+  font-size: 12px;
+  color: #1ba29b;
+  text-align: center;
+}
+
+.tooltip-note {
+  font-size: 12px;
+  color: #c8c8c8;
+  text-align: center;
+}
+
+.tooltip-implicits,
+.tooltip-mods {
+  color: #8888ff;
+  font-size: 13px;
+  text-align: center;
+}
+.tooltip-sockets {
+  color: #b0b0b0;
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+}
+.tooltip-rune-mods {
+  color: #e0c068;
+  font-size: 13px;
+  text-align: center;
+}
+.tooltip-enchants {
+  color: #88ccff;
+  font-size: 13px;
+  text-align: center;
+}
+.tooltip-mod-line {
+  margin-bottom: 4px;
+}
+.tooltip-mod-line:last-child {
+  margin-bottom: 0;
+}
+
+.tooltip-value-green {
+  color: #3cd47e;
+}
+.tooltip-item-level {
+  font-size: 12px;
+  color: #7f7f7f;
+  text-align: center;
+}
+.tooltip-corrupted {
+  color: #d20000;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+}
