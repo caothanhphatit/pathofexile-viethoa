@@ -1,6 +1,7 @@
 import compress from "@fastify/compress";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
+import rateLimit from "@fastify/rate-limit";
 import Fastify from "fastify";
 
 import { closePool, createPool, databaseUrlFromEnv } from "../db/pool.mjs";
@@ -23,7 +24,9 @@ export const buildApp = async (options = {}) => {
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
-  const isLocalDevOrigin = (origin = "") => /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(origin);
+  const isLocalDevOrigin = (origin = "") =>
+    process.env.NODE_ENV !== "production" &&
+    /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(origin);
   const allowCorsOrigin = (origin, callback) => {
     if (!origin) return callback(null, true);
     if (!allowedOrigins.length || allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
@@ -36,6 +39,10 @@ export const buildApp = async (options = {}) => {
   await app.register(cors, {
     credentials: true,
     origin: allowCorsOrigin
+  });
+  await app.register(rateLimit, {
+    max: 200,
+    timeWindow: "1 minute"
   });
   await app.register(compress);
 

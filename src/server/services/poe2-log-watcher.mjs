@@ -66,8 +66,16 @@ export const defaultClientLogCandidates = (env = process.env) => {
   ].filter(Boolean);
 };
 
+const isAllowedLogPath = (candidate) => {
+  if (!candidate || typeof candidate !== "string") return false;
+  const normalized = candidate.replace(/\\/g, "/");
+  if (/^\/(etc|proc|sys|dev|root\/\.ssh|var\/log)\b/i.test(normalized)) return false;
+  return true;
+};
+
 const findReadableLogPath = async (candidates) => {
   for (const candidate of candidates) {
+    if (!isAllowedLogPath(candidate)) continue;
     try {
       const info = await stat(candidate);
       if (info.isFile()) return candidate;

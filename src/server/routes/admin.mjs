@@ -1,7 +1,15 @@
+import crypto from "node:crypto";
+
+const safeCompare = (a, b) => {
+  const bufA = Buffer.from(String(a || ""));
+  const bufB = Buffer.from(String(b || ""));
+  return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+};
+
 const requireAdmin = (request) => {
   const configured = process.env.ADMIN_API_TOKEN;
   const provided = request.headers.authorization?.replace(/^Bearer\s+/i, "");
-  if (!configured || provided !== configured) {
+  if (!configured || !provided || !safeCompare(configured, provided)) {
     const error = new Error("Unauthorized");
     error.statusCode = 401;
     throw error;
