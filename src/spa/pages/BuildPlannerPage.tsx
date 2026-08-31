@@ -796,6 +796,29 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [pobImportOpen, setPobImportOpen] = useState(false);
   const [pobCode, setPobCode] = useState("");
   const [pobImporting, setPobImporting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"skills" | "tree" | "notes">("skills");
+
+  const slotSilhouetteIcon = (area: string) => {
+    switch (area) {
+      case "helm": return "smart_toy";
+      case "body": return "shield";
+      case "weapon": return "swords";
+      case "offhand": return "security";
+      case "gloves": return "front_hand";
+      case "boots": return "snowshoe";
+      case "belt": return "fit_screen";
+      case "amulet": return "diamond";
+      case "ring1":
+      case "ring2": return "circle";
+      case "lifeflask":
+      case "manaflask": return "science";
+      case "charm1":
+      case "charm2":
+      case "charm3": return "token";
+      case "trinket": return "auto_awesome";
+      default: return "inventory_2";
+    }
+  };
 
   const [liveStats, setLiveStats] = useState<any>(null);
   const activeStats = useMemo(() => {
@@ -1629,774 +1652,702 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         </section>
       ) : (
       <section className="build-workbench">
-        <aside className="build-source-panel">
-          <div className="build-panel-head build-panel-head--detail">
-            <span className="material-symbols-rounded" aria-hidden="true">dashboard_customize</span>
-            <div>
-              <h2>{buildDetailTitle}</h2>
-            </div>
-            <button className="build-help-button build-help-button--panel" type="button" onClick={() => setShowBuildHelp(true)} aria-label={localizedText(copy.howTitle, "", locale)} title={localizedText(copy.howTitle, "", locale)}>
-              <span className="material-symbols-rounded" aria-hidden="true">help</span>
-            </button>
-          </div>
-
-          <div className="build-project-actions">
-            <button className="build-action-back" type="button" onClick={openBuildLibrary}>
+        {/* Sleek Top Control Bar */}
+        <header className="build-top-bar">
+          <div className="build-top-left">
+            <button className="build-back-btn" type="button" onClick={openBuildLibrary}>
               <span className="material-symbols-rounded" aria-hidden="true">arrow_back</span>
               {localizedText(copy.backToBuilds, "", locale)}
             </button>
-            <button className={`build-action-save ${hasBuildChanges ? "has-changes" : ""}`} type="button" onClick={() => saveCurrentBuild({ showDialog: true })}>
+            <div className="build-name-wrapper">
+              <input
+                className="build-name-input"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="Tên Build..."
+                title="Tên Build"
+              />
+              <span className="build-class-pill">
+                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "14px" }}>shield_person</span>
+                {buildTree?.className || "Class"}
+                {buildTree?.ascendancyName ? ` • ${buildTree.ascendancyName}` : ""}
+              </span>
+            </div>
+          </div>
+
+          <div className="build-top-actions">
+            {activeStats && activeStats.CombinedDPS !== undefined && (
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px",
+                padding: "0 10px",
+                height: "34px",
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+                borderRadius: "7px",
+                color: "#ff6b6b",
+                fontSize: "12px",
+                fontWeight: "900",
+                fontFamily: "var(--font-mono, monospace)"
+              }}>
+                <span className="material-symbols-rounded" style={{ fontSize: "16px" }}>local_fire_department</span>
+                <span>
+                  {(() => {
+                    const hasSkillDps = activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1] !== undefined;
+                    const skillDpsVal = hasSkillDps ? activeStats.skillsDps[mainSocketGroup - 1] : 0;
+                    const activeDps = (skillDpsVal > 0) ? skillDpsVal : activeStats.CombinedDPS;
+                    return Math.round(activeDps).toLocaleString("en-US");
+                  })()} DPS
+                </span>
+              </div>
+            )}
+            <button className={`build-btn build-btn--save ${hasBuildChanges ? "is-changed" : ""}`} type="button" onClick={() => saveCurrentBuild({ showDialog: true })}>
               <span className="material-symbols-rounded" aria-hidden="true">save</span>
               {localizedText(copy.saveBuild, "", locale)}
             </button>
-            <button className="build-action-download" type="button" onClick={exportBuild} disabled={!canExport}>
+            <button className="build-btn build-btn--import" type="button" onClick={openPobImport}>
+              <span className="material-symbols-rounded" aria-hidden="true">data_object</span>
+              {localizedText(copy.importPob, "", locale)}
+            </button>
+            <button className="build-btn build-btn--export" type="button" onClick={exportBuild} disabled={!canExport}>
               <span className="material-symbols-rounded" aria-hidden="true">download</span>
               .build
             </button>
             {activeBuildId ? (
-              <button className="build-action-delete" type="button" onClick={() => removeSavedBuild(activeBuildId)}>
+              <button className="build-btn build-btn--delete" type="button" onClick={() => removeSavedBuild(activeBuildId)} title={localizedText(copy.deleteBuild, "", locale)}>
                 <span className="material-symbols-rounded" aria-hidden="true">delete</span>
-                {localizedText(copy.deleteBuild, "", locale)}
               </button>
             ) : null}
+            <button className="build-help-button" type="button" onClick={() => setShowBuildHelp(true)} aria-label={localizedText(copy.howTitle, "", locale)} title={localizedText(copy.howTitle, "", locale)}>
+              <span className="material-symbols-rounded" aria-hidden="true">help</span>
+            </button>
+          </div>
+        </header>
+
+        {loadError ? <div className="error-panel">{uiText("loadFailed", locale)}: {loadError}</div> : null}
+
+        {/* 2-Column Responsive Body */}
+        <div className="build-workbench-body">
+          {/* Left Column: Equipment Frame & Character Stats HUD */}
+          <div className="build-left-col">
+            <section className="build-card build-equipment-card">
+              <div className="build-section-head">
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>inventory_2</span>
+                  <h2>{localizedText(copy.equipment, "", locale)}</h2>
+                </div>
+                <strong className="build-selected-count">{formatNumber(selectedInventoryCount, locale)} {localizedText(copy.selected, "", locale)}</strong>
+              </div>
+
+              <div className="build-equipment-frame" aria-label={localizedText(copy.equipment, "", locale)}>
+                <div className="build-weapon-set-switch" style={{ gridArea: "setswitch" }} role="group" aria-label="Weapon set">
+                  {[1, 2].map((set) => (
+                    <button
+                      className={activeWeaponSet === set ? "is-active" : ""}
+                      type="button"
+                      onClick={() => setActiveWeaponSet(set as 1 | 2)}
+                      aria-pressed={activeWeaponSet === set}
+                      key={set}
+                    >
+                      {set === 1 ? "I" : "II"}
+                    </button>
+                  ))}
+                </div>
+                {visibleEquipmentSlots.map((slot) => {
+                  const choice = inventoryBySlot.get(slot.id);
+                  const hasItem = Boolean(choice?.itemName);
+                  return (
+                    <button
+                      className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? "has-item" : ""} ${choice?.isUnique ? "is-unique" : ""}`}
+                      type="button"
+                      onClick={() => openPicker(slot.id)}
+                      style={{ gridArea: slot.area }}
+                      key={slot.id}
+                      aria-label={`${localizedText(copy.chooseItem, "", locale)}: ${slot.label}`}
+                    >
+                      {hasItem ? (
+                        choice?.iconUrl ? <img src={choice.iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded build-slot-fallback" aria-hidden="true">inventory_2</span>
+                      ) : (
+                        <>
+                          <span className="material-symbols-rounded build-slot-silhouette" aria-hidden="true">
+                            {slotSilhouetteIcon(slot.area)}
+                          </span>
+                          <span className="build-slot-label">{slot.shortLabel}</span>
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Character Stats HUD */}
+            <section className="build-card build-stats-card">
+              <div className="build-section-head" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>analytics</span>
+                  <h2>{locale === "vi" ? "Chỉ số nhân vật" : "Character Stats"}</h2>
+                </div>
+                {isCalculating && (
+                  <span style={{ fontSize: "11px", color: "var(--gold)", fontStyle: "italic" }}>
+                    {locale === "vi" ? "Đang tính..." : "Calculating..."}
+                  </span>
+                )}
+              </div>
+
+              {(() => {
+                const stats = importedBuild?.payload?.stats || [];
+                const lifeVal = stats.find((s: any) => s.stat === "Life");
+                const esVal = stats.find((s: any) => s.stat === "EnergyShield");
+                const manaVal = stats.find((s: any) => s.stat === "Mana");
+                const fireVal = stats.find((s: any) => s.stat === "FireResist");
+                const coldVal = stats.find((s: any) => s.stat === "ColdResist");
+                const lightningVal = stats.find((s: any) => s.stat === "LightningResist");
+                const chaosVal = stats.find((s: any) => s.stat === "ChaosResist");
+                const evadeVal = stats.find((s: any) => s.stat === "MeleeEvadeChance");
+                const physVal = stats.find((s: any) => s.stat === "PhysicalDamageReduction");
+                const speedVal = stats.find((s: any) => s.stat === "EffectiveMovementSpeedMod");
+
+                const formatVal = (statKey: string, valObj: any, round = true) => {
+                  if (activeStats && activeStats[statKey] !== undefined) {
+                    const val = activeStats[statKey];
+                    return round ? Math.round(val).toLocaleString("en-US") : (Math.round(val * 100) / 100).toString();
+                  }
+                  if (!valObj || typeof valObj.value !== "number") return "-";
+                  return round ? Math.round(valObj.value).toLocaleString("en-US") : (Math.round(valObj.value * 100) / 100).toString();
+                };
+
+                const details = activeStats && activeStats.skillsDetails && activeStats.skillsDetails[mainSocketGroup - 1];
+
+                return (
+                  <div className="build-stats-hud">
+                    {/* Hero DPS Box */}
+                    <div className="build-dps-hero">
+                      <div className="build-dps-hero-head">
+                        <span className="build-dps-hero-title">Combined DPS</span>
+                        {details?.name && (
+                          <span style={{ fontSize: "11px", fontWeight: "bold", color: "rgba(255,255,255,0.7)" }}>
+                            {details.name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="build-dps-hero-val">
+                        {activeStats && activeStats.CombinedDPS !== undefined ? (
+                          (() => {
+                            const hasSkillDps = activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1] !== undefined;
+                            const skillDpsVal = hasSkillDps ? activeStats.skillsDps[mainSocketGroup - 1] : 0;
+                            const activeDps = (skillDpsVal > 0) ? skillDpsVal : activeStats.CombinedDPS;
+                            return Math.round(activeDps).toLocaleString("en-US");
+                          })()
+                        ) : (
+                          getBaseDps() ? Math.round(getBaseDps()).toLocaleString("en-US") : "-"
+                        )}
+                      </div>
+                      {details && (
+                        <div className="build-dps-substats">
+                          {details.Speed > 0 && <span><strong>{(Math.round(details.Speed * 100) / 100).toFixed(2)}</strong>/s</span>}
+                          {details.HitChance < 100 && <span>Hit: <strong>{Math.round(details.HitChance)}%</strong></span>}
+                          {details.CritChance > 0 && <span>Crit: <strong>{(Math.round(details.CritChance * 100) / 100).toFixed(1)}%</strong></span>}
+                          {details.ManaCost > 0 && <span>Mana: <strong>{details.ManaCost}</strong></span>}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Vitals: Life / ES / Mana */}
+                    <div className="build-vitals-bars">
+                      <div className="build-vital-pill vital-life">
+                        <span className="build-vital-label">Life</span>
+                        <strong className="build-vital-val">{formatVal("Life", lifeVal, true)}</strong>
+                      </div>
+                      <div className="build-vital-pill vital-es">
+                        <span className="build-vital-label">ES</span>
+                        <strong className="build-vital-val">{formatVal("EnergyShield", esVal, true)}</strong>
+                      </div>
+                      <div className="build-vital-pill vital-mana">
+                        <span className="build-vital-label">Mana</span>
+                        <strong className="build-vital-val">{formatVal("Mana", manaVal, true)}</strong>
+                      </div>
+                    </div>
+
+                    {/* Resistances 4-Grid */}
+                    <div className="build-resists-grid">
+                      <div className="build-resist-box resist-fire">
+                        <span className="build-resist-name">Fire</span>
+                        <strong className="build-resist-val">{formatVal("FireResist", fireVal, true)}%</strong>
+                      </div>
+                      <div className="build-resist-box resist-cold">
+                        <span className="build-resist-name">Cold</span>
+                        <strong className="build-resist-val">{formatVal("ColdResist", coldVal, true)}%</strong>
+                      </div>
+                      <div className="build-resist-box resist-lightning">
+                        <span className="build-resist-name">Light</span>
+                        <strong className="build-resist-val">{formatVal("LightningResist", lightningVal, true)}%</strong>
+                      </div>
+                      <div className="build-resist-box resist-chaos">
+                        <span className="build-resist-name">Chaos</span>
+                        <strong className="build-resist-val">{formatVal("ChaosResist", chaosVal, true)}%</strong>
+                      </div>
+                    </div>
+
+                    {/* Extra Defenses & Speed */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px", fontSize: "11px" }}>
+                      <div style={{ padding: "6px 8px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--line)", borderRadius: "6px" }}>
+                        <span style={{ color: "var(--muted)", display: "block", fontSize: "10px" }}>Evade</span>
+                        <strong style={{ color: "#2af598" }}>
+                          {activeStats && activeStats.MeleeEvadeChance !== undefined ? (
+                            `${Math.round(activeStats.MeleeEvadeChance * 100)}%`
+                          ) : (
+                            evadeVal && typeof evadeVal.value === "number" ? (evadeVal.value * 100).toFixed(0) + "%" : "-"
+                          )}
+                        </strong>
+                      </div>
+                      <div style={{ padding: "6px 8px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--line)", borderRadius: "6px" }}>
+                        <span style={{ color: "var(--muted)", display: "block", fontSize: "10px" }}>Phys Red</span>
+                        <strong style={{ color: "#2af598" }}>
+                          {activeStats && activeStats.PhysicalDamageReduction !== undefined ? (
+                            `${Math.round(activeStats.PhysicalDamageReduction * 100)}%`
+                          ) : (
+                            physVal && typeof physVal.value === "number" ? (physVal.value * 100).toFixed(0) + "%" : "-"
+                          )}
+                        </strong>
+                      </div>
+                      <div style={{ padding: "6px 8px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--line)", borderRadius: "6px" }}>
+                        <span style={{ color: "var(--muted)", display: "block", fontSize: "10px" }}>Speed</span>
+                        <strong style={{ color: "#2af598" }}>
+                          {activeStats && activeStats.EffectiveMovementSpeedMod !== undefined ? (
+                            `+${Math.round((activeStats.EffectiveMovementSpeedMod - 1) * 100)}%`
+                          ) : (
+                            speedVal ? `+${Math.round((parseFloat(String(speedVal.value)) - 1) * 100)}%` : "-"
+                          )}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </section>
           </div>
 
-        </aside>
-
-        <section className="build-editor-panel">
-          {loadError ? <div className="error-panel">{uiText("loadFailed", locale)}: {loadError}</div> : null}
-          <section className="build-card">
-            <div className="build-section-head">
-              <span className="material-symbols-rounded" aria-hidden="true">edit_note</span>
-              <h2>{localizedText(copy.details, "", locale)}</h2>
+          {/* Right Column: Tab Switcher & Content */}
+          <div className="build-right-col">
+            {/* Tab Segmented Control */}
+            <div className="build-tabs-bar">
+              <button
+                className={`build-tab-btn ${activeTab === "skills" ? "is-active" : ""}`}
+                type="button"
+                onClick={() => setActiveTab("skills")}
+              >
+                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "18px" }}>auto_awesome_motion</span>
+                <span>{localizedText(copy.skills, "", locale)} ({formatNumber(selectedSkillCount, locale)})</span>
+              </button>
+              <button
+                className={`build-tab-btn ${activeTab === "tree" ? "is-active" : ""}`}
+                type="button"
+                onClick={() => setActiveTab("tree")}
+              >
+                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "18px" }}>account_tree</span>
+                <span>{locale === "vi" ? "Cây Thụ Động" : "Passive Tree"} ({formatNumber(buildTree ? passiveCount(buildTree) : 0, locale)})</span>
+              </button>
+              <button
+                className={`build-tab-btn ${activeTab === "notes" ? "is-active" : ""}`}
+                type="button"
+                onClick={() => setActiveTab("notes")}
+              >
+                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "18px" }}>notes</span>
+                <span>{locale === "vi" ? "Thông tin & Ghi chú" : "Notes & Config"}</span>
+              </button>
             </div>
-            <div className="build-form-grid">
-              <label>
-                <span>{localizedText(copy.buildName, "", locale)}</span>
-                <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Titan Slam Leveling" />
-              </label>
-              <label>
-                <span>{localizedText(copy.author, "", locale)}</span>
-                <input value={author} onChange={(event) => setAuthor(event.target.value)} placeholder="POE2 Viet Hoa" />
-              </label>
-            </div>
-          </section>
 
-          <div className="build-editor-split">
-            <div className="build-equipment-column">
-              <section className="build-card build-equipment-card">
+            {/* Tab 1: Skills */}
+            {activeTab === "skills" && (
+              <section className="build-card build-skills-card">
                 <div className="build-section-head">
-                  <span className="material-symbols-rounded" aria-hidden="true">inventory_2</span>
-                  <h2>{localizedText(copy.equipment, "", locale)}</h2>
-                  <strong className="build-selected-count">{formatNumber(selectedInventoryCount, locale)} {localizedText(copy.selected, "", locale)}</strong>
-                </div>
-
-                <div className="build-equipment-frame" aria-label={localizedText(copy.equipment, "", locale)}>
-                  <div className="build-weapon-set-switch" style={{ gridArea: "setswitch" }} role="group" aria-label="Weapon set">
-                    {[1, 2].map((set) => (
-                      <button
-                        className={activeWeaponSet === set ? "is-active" : ""}
-                        type="button"
-                        onClick={() => setActiveWeaponSet(set as 1 | 2)}
-                        aria-pressed={activeWeaponSet === set}
-                        key={set}
-                      >
-                        {set === 1 ? "I" : "II"}
-                      </button>
-                    ))}
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>auto_awesome_motion</span>
+                    <h2>{localizedText(copy.skills, "", locale)}</h2>
                   </div>
-                  {visibleEquipmentSlots.map((slot) => {
-                    const choice = inventoryBySlot.get(slot.id);
-                    const hasItem = Boolean(choice?.itemName);
-                    return (
-                      <button
-                        className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? "has-item" : ""} ${choice?.isUnique ? "is-unique" : ""}`}
-                        type="button"
-                        onClick={() => openPicker(slot.id)}
-                        style={{ gridArea: slot.area }}
-                        key={slot.id}
-                        aria-label={`${localizedText(copy.chooseItem, "", locale)}: ${slot.label}`}
-                      >
-                        {!hasItem ? <span className="build-slot-label">{slot.shortLabel}</span> : null}
-                        {hasItem ? (
-                          choice?.iconUrl ? <img src={choice.iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded build-slot-fallback" aria-hidden="true">inventory_2</span>
-                        ) : (
-                          <>
-                            <span className="material-symbols-rounded build-slot-plus" aria-hidden="true">add</span>
-                            <strong>{slot.label}</strong>
-                          </>
-                        )}
-                      </button>
-                    );
-                  })}
+                  <button type="button" onClick={addBuildSkill} className="build-btn" style={{ height: "32px", padding: "0 10px", borderColor: "rgba(194,156,91,0.4)", color: "var(--gold)" }}>
+                    <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "16px" }}>add</span>
+                    {localizedText(copy.addSkill, "", locale)}
+                  </button>
                 </div>
-              </section>
-
-              {linkedTreeCard}
-
-              {importedBuild?.payload?.stats && importedBuild.payload.stats.length > 0 ? (
-                <section className="build-card build-stats-card" style={{ marginTop: "16px" }}>
-                  <div className="build-section-head" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>analytics</span>
-                      <h2>{locale === "vi" ? "Chỉ số nhân vật" : "Character Stats"}</h2>
-                    </div>
-                    {isCalculating && (
-                      <span style={{ fontSize: "11px", color: "var(--gold)", fontStyle: "italic" }}>
-                        {locale === "vi" ? "Đang tính..." : "Calculating..."}
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ padding: "16px" }}>
-                    {(() => {
-                      const stats = importedBuild.payload.stats;
-                      const lifeVal = stats.find((s: any) => s.stat === "Life");
-                      const esVal = stats.find((s: any) => s.stat === "EnergyShield");
-                      const manaVal = stats.find((s: any) => s.stat === "Mana");
-                      const fireVal = stats.find((s: any) => s.stat === "FireResist");
-                      const coldVal = stats.find((s: any) => s.stat === "ColdResist");
-                      const lightningVal = stats.find((s: any) => s.stat === "LightningResist");
-                      const chaosVal = stats.find((s: any) => s.stat === "ChaosResist");
-                      const evadeVal = stats.find((s: any) => s.stat === "MeleeEvadeChance");
-                      const physVal = stats.find((s: any) => s.stat === "PhysicalDamageReduction");
-                      const speedVal = stats.find((s: any) => s.stat === "EffectiveMovementSpeedMod");
-
-                      const formatVal = (statKey: string, valObj: any, round = true) => {
-                        if (activeStats && activeStats[statKey] !== undefined) {
-                          const val = activeStats[statKey];
-                          return round ? Math.round(val).toLocaleString("en-US") : (Math.round(val * 100) / 100).toString();
-                        }
-                        if (!valObj || typeof valObj.value !== "number") return "-";
-                        return round ? Math.round(valObj.value).toLocaleString("en-US") : (Math.round(valObj.value * 100) / 100).toString();
-                      };
-
+                {buildSkills.length ? (
+                  <div className="build-skill-list" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {buildSkills.map((skill, index) => {
+                      const details = activeStats && activeStats.skillsDetails && activeStats.skillsDetails[index];
+                      const isExpanded = !!expandedSkills[skill.id];
                       return (
-                        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                          {/* Row 1: DPS & Defences */}
-                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "12px" }}>
-                            {/* DPS */}
-                            <div style={{
-                              background: "rgba(255, 75, 75, 0.05)",
-                              border: "1px solid rgba(255, 75, 75, 0.15)",
-                              borderRadius: "6px",
-                              padding: "10px",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              alignItems: "center"
-                            }}>
-                              <span style={{ fontSize: "10px", color: "rgba(255, 100, 100, 0.7)", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.5px" }}>Combined/Full DPS</span>
-                              <strong style={{ fontSize: "18px", color: "#ff5252", fontWeight: "900", marginTop: "4px" }}>
-                                {activeStats && activeStats.CombinedDPS !== undefined ? (
-                                  (() => {
-                                    const hasSkillDps = activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1] !== undefined;
-                                    const skillDpsVal = hasSkillDps ? activeStats.skillsDps[mainSocketGroup - 1] : 0;
-                                    const activeDps = (skillDpsVal > 0) ? skillDpsVal : activeStats.CombinedDPS;
-                                    return Math.round(activeDps).toLocaleString("en-US");
-                                  })()
-                                ) : (
-                                  getBaseDps() ? Math.round(getBaseDps()).toLocaleString("en-US") : "-"
-                                )}
-                              </strong>
-                            </div>
-
-                            {/* Core Defences */}
-                            <div style={{
-                              background: "rgba(255, 255, 255, 0.02)",
-                              border: "1px solid var(--line)",
-                              borderRadius: "6px",
-                              padding: "8px 12px",
-                              display: "grid",
-                              gridTemplateColumns: "1fr",
-                              gap: "4px"
-                            }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontSize: "11px", color: "var(--muted)" }}>Life</span>
-                                <span style={{ fontSize: "12px" }}>
-                                  <strong style={{ color: "#ff4d4d" }}>{formatVal("Life", lifeVal, true)}</strong>
-                                </span>
-                              </div>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontSize: "11px", color: "var(--muted)" }}>ES</span>
-                                <span style={{ fontSize: "12px" }}>
-                                  <strong style={{ color: "#33ccff" }}>{formatVal("EnergyShield", esVal, true)}</strong>
-                                </span>
-                              </div>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontSize: "11px", color: "var(--muted)" }}>Mana</span>
-                                <span style={{ fontSize: "12px" }}>
-                                  <strong style={{ color: "#3366ff" }}>{formatVal("Mana", manaVal, true)}</strong>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Active Skill Details */}
-                          {(() => {
-                            const details = activeStats && activeStats.skillsDetails && activeStats.skillsDetails[mainSocketGroup - 1];
-                            if (!details || !details.name) return null;
-                            const hasDamage = (details.PhysicalMax > 0 || details.LightningMax > 0 || details.ColdMax > 0 || details.FireMax > 0 || details.ChaosMax > 0);
-                            return (
-                              <div style={{
-                                background: "rgba(255, 215, 0, 0.02)",
-                                border: "1px solid rgba(255, 215, 0, 0.1)",
-                                borderRadius: "6px",
-                                padding: "10px",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "8px"
-                              }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--line)", paddingBottom: "4px" }}>
-                                  <span style={{ fontSize: "10px", fontWeight: "bold", color: "var(--gold)" }}>
-                                    {locale === "vi" ? "CHI TIẾT KỸ NĂNG CHÍNH" : "MAIN SKILL DETAILS"}
+                        <article className="build-ninja-skill-card" key={skill.id} style={{
+                          background: "rgba(18, 22, 30, 0.75)",
+                          border: (index + 1) === mainSocketGroup ? "1px solid rgba(194, 156, 91, 0.5)" : "1px solid var(--line)",
+                          borderRadius: "8px",
+                          padding: "12px 14px",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "10px",
+                          boxShadow: (index + 1) === mainSocketGroup ? "0 0 16px rgba(194, 156, 91, 0.12)" : "none"
+                        }}>
+                          {/* Active Skill Header */}
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+                              {skill.skillId && (
+                                <button
+                                  type="button"
+                                  onClick={() => setMainSocketGroup(index + 1)}
+                                  title={locale === "vi" ? "Chọn làm kỹ năng chính để tính DPS" : "Set as main skill for DPS calculation"}
+                                  style={{
+                                    background: "transparent",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    padding: 0,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    color: (index + 1) === mainSocketGroup ? "var(--gold)" : "rgba(255,255,255,0.2)",
+                                    outline: "none",
+                                    transition: "color 0.2s"
+                                  }}
+                                >
+                                  <span className="material-symbols-rounded" style={{ fontSize: "20px" }}>
+                                    {(index + 1) === mainSocketGroup ? "stars" : "star"}
                                   </span>
-                                  <span style={{ fontSize: "11px", fontWeight: "900", color: "#fff" }}>
-                                    {details.name}
-                                  </span>
-                                </div>
-
-                                {hasDamage && (
-                                  <div style={{ display: "flex", flexDirection: "column", gap: "4px", background: "rgba(0,0,0,0.2)", padding: "6px", borderRadius: "4px" }}>
-                                    <span style={{ fontSize: "9px", color: "var(--muted)", fontWeight: "bold" }}>
-                                      {locale === "vi" ? "SÁT THƯƠNG ĐÒN ĐÁNH" : "HIT DAMAGE RANGE"}
-                                    </span>
-                                    {details.PhysicalMax > 0 && (
-                                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-                                        <span style={{ color: "#e0e0e0" }}>{locale === "vi" ? "Vật lý" : "Physical"}</span>
-                                        <strong style={{ color: "#e0e0e0" }}>{Math.round(details.PhysicalMin).toLocaleString("en-US")} - {Math.round(details.PhysicalMax).toLocaleString("en-US")}</strong>
-                                      </div>
-                                    )}
-                                    {details.FireMax > 0 && (
-                                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-                                        <span style={{ color: "#ec5e24" }}>{locale === "vi" ? "Lửa" : "Fire"}</span>
-                                        <strong style={{ color: "#ec5e24" }}>{Math.round(details.FireMin).toLocaleString("en-US")} - {Math.round(details.FireMax).toLocaleString("en-US")}</strong>
-                                      </div>
-                                    )}
-                                    {details.ColdMax > 0 && (
-                                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-                                        <span style={{ color: "#3fd2f4" }}>{locale === "vi" ? "Băng" : "Cold"}</span>
-                                        <strong style={{ color: "#3fd2f4" }}>{Math.round(details.ColdMin).toLocaleString("en-US")} - {Math.round(details.ColdMax).toLocaleString("en-US")}</strong>
-                                      </div>
-                                    )}
-                                    {details.LightningMax > 0 && (
-                                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-                                        <span style={{ color: "#fcd116" }}>{locale === "vi" ? "Sét" : "Lightning"}</span>
-                                        <strong style={{ color: "#fcd116" }}>{Math.round(details.LightningMin).toLocaleString("en-US")} - {Math.round(details.LightningMax).toLocaleString("en-US")}</strong>
-                                      </div>
-                                    )}
-                                    {details.ChaosMax > 0 && (
-                                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-                                        <span style={{ color: "#d020ff" }}>{locale === "vi" ? "Hỗn loạn" : "Chaos"}</span>
-                                        <strong style={{ color: "#d020ff" }}>{Math.round(details.ChaosMin).toLocaleString("en-US")} - {Math.round(details.ChaosMax).toLocaleString("en-US")}</strong>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 12px", fontSize: "11px" }}>
-                                  {details.Speed > 0 && (
-                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                      <span style={{ color: "var(--muted)" }}>{locale === "vi" ? "Tốc độ" : "Speed"}</span>
-                                      <strong>{(Math.round(details.Speed * 100) / 100).toFixed(2)}/s</strong>
-                                    </div>
-                                  )}
-                                  {details.HitChance < 100 && (
-                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                      <span style={{ color: "var(--muted)" }}>{locale === "vi" ? "Tỉ lệ trúng" : "Hit Chance"}</span>
-                                      <strong style={{ color: "#ff5252" }}>{Math.round(details.HitChance)}%</strong>
-                                    </div>
-                                  )}
-                                  {details.CritChance > 0 && (
-                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                      <span style={{ color: "var(--muted)" }}>{locale === "vi" ? "Chí mạng" : "Crit Chance"}</span>
-                                      <strong style={{ color: "var(--gold)" }}>{(Math.round(details.CritChance * 100) / 100).toFixed(2)}%</strong>
-                                    </div>
-                                  )}
-                                  {details.CritMultiplier > 0 && (
-                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                      <span style={{ color: "var(--muted)" }}>{locale === "vi" ? "ST Chí mạng" : "Crit Multi"}</span>
-                                      <strong style={{ color: "var(--gold)" }}>{Math.round(details.CritMultiplier * 100)}%</strong>
-                                    </div>
-                                  )}
-                                  {details.ManaCost > 0 && (
-                                    <div style={{ display: "flex", justifyContent: "space-between", gridColumn: "span 2" }}>
-                                      <span style={{ color: "var(--muted)" }}>{locale === "vi" ? "Tiêu hao năng lượng" : "Mana Cost"}</span>
-                                      <strong style={{ color: "#33ccff" }}>{details.ManaCost} Mana</strong>
-                                    </div>
-                                  )}
-                                  {details.LifeCost > 0 && (
-                                    <div style={{ display: "flex", justifyContent: "space-between", gridColumn: "span 2" }}>
-                                      <span style={{ color: "var(--muted)" }}>{locale === "vi" ? "Tiêu hao sinh mệnh" : "Life Cost"}</span>
-                                      <strong style={{ color: "#ff4d4d" }}>{details.LifeCost} Life</strong>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })()}
-
-                          {/* Row 2: Resistances and Evade/Reduction */}
-                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                            {/* Resists */}
-                            <div style={{
-                              background: "rgba(255, 255, 255, 0.01)",
-                              border: "1px solid var(--line)",
-                              borderRadius: "6px",
-                              padding: "10px",
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "6px"
-                            }}>
-                              <span style={{ fontSize: "10px", color: "var(--muted)", fontWeight: "bold", textTransform: "uppercase", borderBottom: "1px solid var(--line)", paddingBottom: "4px" }}>Resistances</span>
-                              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                  <span style={{ fontSize: "11px", color: "#ff6b6b" }}>Fire</span>
-                                  <strong style={{ fontSize: "11px", color: "#ff6b6b" }}>{formatVal("FireResist", fireVal, true)}%</strong>
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                  <span style={{ fontSize: "11px", color: "#4dadf7" }}>Cold</span>
-                                  <strong style={{ fontSize: "11px", color: "#4dadf7" }}>{formatVal("ColdResist", coldVal, true)}%</strong>
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                  <span style={{ fontSize: "11px", color: "#ffd43b" }}>Lightning</span>
-                                  <strong style={{ fontSize: "11px", color: "#ffd43b" }}>{formatVal("LightningResist", lightningVal, true)}%</strong>
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                  <span style={{ fontSize: "11px", color: "#cc5de8" }}>Chaos</span>
-                                  <strong style={{ fontSize: "11px", color: "#cc5de8" }}>{formatVal("ChaosResist", chaosVal, true)}%</strong>
-                                </div>
-                              </div>
+                                </button>
+                              )}
+                              <span style={{ fontSize: "14px", fontWeight: "bold", color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {skill.skillId ? gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty") : (locale === "vi" ? "Chưa chọn kỹ năng" : "No Skill")}
+                              </span>
                             </div>
 
-                            {/* Avoidance & Mitigations */}
-                            <div style={{
-                              background: "rgba(255, 255, 255, 0.01)",
-                              border: "1px solid var(--line)",
-                              borderRadius: "6px",
-                              padding: "10px",
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "6px"
-                            }}>
-                              <span style={{ fontSize: "10px", color: "var(--muted)", fontWeight: "bold", textTransform: "uppercase", borderBottom: "1px solid var(--line)", paddingBottom: "4px" }}>Defense & Speed</span>
-                              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                  <span style={{ fontSize: "11px", color: "var(--muted)" }}>Evade%</span>
-                                  <strong style={{ fontSize: "11px", color: "#2af598" }}>
-                                    {activeStats && activeStats.MeleeEvadeChance !== undefined ? (
-                                      `${Math.round(activeStats.MeleeEvadeChance * 100)}%`
-                                    ) : (
-                                      evadeVal && typeof evadeVal.value === "number" ? (evadeVal.value * 100).toFixed(0) + "%" : "-"
-                                    )}
-                                  </strong>
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                  <span style={{ fontSize: "11px", color: "var(--muted)" }}>Phys Red%</span>
-                                  <strong style={{ fontSize: "11px", color: "#2af598" }}>
-                                    {activeStats && activeStats.PhysicalDamageReduction !== undefined ? (
-                                      `${Math.round(activeStats.PhysicalDamageReduction * 100)}%`
-                                    ) : (
-                                      physVal && typeof physVal.value === "number" ? (physVal.value * 100).toFixed(0) + "%" : "-"
-                                    )}
-                                  </strong>
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                  <span style={{ fontSize: "11px", color: "var(--muted)" }}>Move Spd</span>
-                                  <strong style={{ fontSize: "11px", color: "#2af598" }}>
-                                    {activeStats && activeStats.EffectiveMovementSpeedMod !== undefined ? (
-                                      `+${Math.round((activeStats.EffectiveMovementSpeedMod - 1) * 100)}%`
-                                    ) : (
-                                      speedVal ? `+${Math.round((parseFloat(String(speedVal.value)) - 1) * 100)}%` : "-"
-                                    )}
-                                  </strong>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </section>
-              ) : null}
-
-              {selected && selectedPassiveCount === 0 ? (
-                <div className="build-warning">
-                  <p>{localizedText(copy.emptyTree, "", locale)}</p>
-                  <a href="/passive-tree">{localizedText(copy.openTree, "", locale)}</a>
-                </div>
-              ) : null}
-            </div>
-
-            <section className="build-card build-skills-card">
-              <div className="build-section-head">
-                <span className="material-symbols-rounded" aria-hidden="true">auto_awesome_motion</span>
-                <h2>{localizedText(copy.skills, "", locale)}</h2>
-                <strong className="build-selected-count">{formatNumber(selectedSkillCount, locale)}</strong>
-                <button type="button" onClick={addBuildSkill}>
-                  <span className="material-symbols-rounded" aria-hidden="true">add</span>
-                  {localizedText(copy.addSkill, "", locale)}
-                </button>
-              </div>
-              {buildSkills.length ? (
-                <div className="build-skill-list" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  {buildSkills.map((skill, index) => {
-                    const details = activeStats && activeStats.skillsDetails && activeStats.skillsDetails[index];
-                    const isExpanded = !!expandedSkills[skill.id];
-                    return (
-                      <article className="build-ninja-skill-card" key={skill.id} style={{
-                        background: "rgba(255, 255, 255, 0.01)",
-                        border: "1px solid var(--line)",
-                        borderRadius: "8px",
-                        padding: "12px",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "12px"
-                      }}>
-                        {/* Active Skill Header */}
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
-                            {skill.skillId && (
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                              {activeStats && Array.isArray(activeStats.skillsDps) && activeStats.skillsDps[index] > 0 && (
+                                <span style={{
+                                  background: "rgba(42, 245, 152, 0.1)",
+                                  border: "1px solid rgba(42, 245, 152, 0.3)",
+                                  borderRadius: "5px",
+                                  padding: "2px 8px",
+                                  color: "#2af598",
+                                  fontSize: "11px",
+                                  fontWeight: "bold",
+                                  fontFamily: "var(--font-mono, monospace)",
+                                  whiteSpace: "nowrap"
+                                }}>
+                                  {Math.round(activeStats.skillsDps[index]).toLocaleString("en-US")} DPS
+                                </span>
+                              )}
                               <button
                                 type="button"
-                                onClick={() => {
-                                  setMainSocketGroup(index + 1);
-                                }}
-                                title={locale === "vi" ? "Chọn làm kỹ năng chính để tính DPS" : "Set as main skill for DPS calculation"}
+                                onClick={() => removeBuildSkill(skill.id)}
                                 style={{
                                   background: "transparent",
                                   border: "none",
                                   cursor: "pointer",
-                                  padding: 0,
+                                  color: "rgba(255, 82, 82, 0.6)",
                                   display: "flex",
                                   alignItems: "center",
-                                  color: (index + 1) === mainSocketGroup ? "var(--gold)" : "rgba(255,255,255,0.15)",
+                                  padding: "2px",
+                                  outline: "none"
+                                }}
+                                title={locale === "vi" ? "Xóa nhóm kỹ năng" : "Remove socket group"}
+                              >
+                                <span className="material-symbols-rounded" style={{ fontSize: "18px" }}>delete</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* PoE2 Style Horizontal Socket Link Chain */}
+                          <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            background: "rgba(0, 0, 0, 0.3)",
+                            border: "1px solid rgba(255, 255, 255, 0.04)",
+                            padding: "10px 14px",
+                            borderRadius: "6px",
+                            justifyContent: "flex-start",
+                            gap: "0",
+                            overflowX: "auto"
+                          }}>
+                            {/* Active Skill Socket */}
+                            <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
+                              <button
+                                type="button"
+                                onClick={() => openSkillGemPicker(skill.id)}
+                                onMouseEnter={() => {
+                                  if (skill.skillId) {
+                                    const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
+                                    if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
+                                  }
+                                }}
+                                onMouseMove={(e) => { handleMouseMove(e); }}
+                                onMouseLeave={() => { handleMouseLeave(); }}
+                                style={{
+                                  width: "50px",
+                                  height: "50px",
+                                  borderRadius: "50%",
+                                  background: "radial-gradient(circle, #201a12 30%, #0a0907 100%)",
+                                  border: "2px solid var(--gold)",
+                                  boxShadow: "0 0 10px rgba(194, 156, 91, 0.35), inset 0 2px 4px rgba(0,0,0,0.8)",
+                                  display: "grid",
+                                  placeItems: "center",
+                                  cursor: "pointer",
+                                  padding: 0,
                                   outline: "none",
-                                  transition: "color 0.2s"
+                                  flexShrink: 0
                                 }}
                               >
-                                <span className="material-symbols-rounded" style={{ fontSize: "18px" }}>
-                                  {(index + 1) === mainSocketGroup ? "stars" : "star"}
-                                </span>
+                                {skill.skillId && gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") ? (
+                                  <img src={gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem")} alt="" style={{ width: "30px", height: "30px", objectFit: "contain" }} />
+                                ) : (
+                                  <span className="material-symbols-rounded" style={{ fontSize: "18px", color: "var(--muted)" }}>add</span>
+                                )}
                               </button>
-                            )}
-                            <span style={{ fontSize: "13px", fontWeight: "bold", color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {skill.skillId ? gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty") : (locale === "vi" ? "Chưa chọn kỹ năng" : "No Skill")}
-                            </span>
-                          </div>
-
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            {activeStats && Array.isArray(activeStats.skillsDps) && activeStats.skillsDps[index] > 0 && (
-                              <span style={{ 
-                                background: "rgba(42, 245, 152, 0.08)", 
-                                border: "1px solid rgba(42, 245, 152, 0.2)", 
-                                borderRadius: "4px", 
-                                padding: "1px 6px", 
-                                color: "#2af598", 
-                                fontSize: "11px", 
-                                fontWeight: "bold",
-                                whiteSpace: "nowrap"
-                              }}>
-                                {Math.round(activeStats.skillsDps[index]).toLocaleString("en-US")} DPS
-                              </span>
-                            )}
-                            {/* Remove Skill Button */}
-                            <button
-                              type="button"
-                              onClick={() => removeBuildSkill(skill.id)}
-                              style={{
-                                background: "transparent",
-                                border: "none",
-                                cursor: "pointer",
-                                color: "rgba(255, 82, 82, 0.6)",
-                                display: "flex",
-                                alignItems: "center",
-                                padding: "2px",
-                                outline: "none"
-                              }}
-                              title={locale === "vi" ? "Xóa kỹ năng" : "Remove skill"}
-                            >
-                              <span className="material-symbols-rounded" style={{ fontSize: "18px" }}>delete</span>
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* PoE2 Style Horizontal Socket Link Chain */}
-                        <div style={{
-                          display: "flex",
-                          alignItems: "center",
-                          background: "rgba(0, 0, 0, 0.25)",
-                          border: "1px solid rgba(255, 255, 255, 0.03)",
-                          padding: "12px 16px",
-                          borderRadius: "6px",
-                          justifyContent: "flex-start",
-                          gap: "0",
-                          overflowX: "auto",
-                          scrollbarWidth: "none"
-                        }}>
-                          {/* Active Skill Socket */}
-                          <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
-                            <button
-                              type="button"
-                              onClick={() => openSkillGemPicker(skill.id)}
-                              onMouseEnter={() => {
-                                if (skill.skillId) {
-                                  const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
-                                  if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
-                                }
-                              }}
-                              onMouseMove={(e) => { handleMouseMove(e); }}
-                              onMouseLeave={() => { handleMouseLeave(); }}
-                              style={{
-                                width: "56px",
-                                height: "56px",
-                                borderRadius: "50%",
-                                background: "radial-gradient(circle, #1a1510 30%, #0c0a08 100%)",
-                                border: "2.5px solid var(--gold)",
-                                boxShadow: "0 0 10px rgba(194, 156, 91, 0.45), inset 0 2px 4px rgba(0,0,0,0.8)",
-                                display: "grid",
-                                placeItems: "center",
-                                cursor: "pointer",
-                                padding: 0,
-                                outline: "none",
-                                flexShrink: 0
-                              }}
-                            >
-                              {skill.skillId && gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") ? (
-                                <img src={gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem")} alt="" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
-                              ) : (
-                                <span className="material-symbols-rounded" style={{ fontSize: "20px", color: "var(--muted)" }}>add</span>
-                              )}
-                            </button>
-                          </div>
-
-                          {/* Support Sockets and Links */}
-                          {skill.supportSkills.map((support) => (
-                            <Fragment key={support.id}>
-                              {/* Link Bridge */}
-                              <div style={{
-                                width: "6px",
-                                height: "6px",
-                                background: "linear-gradient(90deg, var(--gold), #786446)",
-                                border: "1px solid #000",
-                                boxShadow: "0 0 4px rgba(194,156,91,0.2)",
-                                zIndex: 1,
-                                flexShrink: 0
-                              }} />
-                              {/* Support Socket */}
-                              <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
-                                <button
-                                  type="button"
-                                  onClick={() => openSupportGemPicker(skill.id, support.id)}
-                                  onMouseEnter={() => {
-                                    if (support.skillId) {
-                                      const html = getGemTooltipHtml(support.skillId, supportGemOptions, "SupportGem", locale, support.note);
-                                      if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
-                                    }
-                                  }}
-                                  onMouseMove={(e) => { handleMouseMove(e); }}
-                                  onMouseLeave={() => { handleMouseLeave(); }}
-                                  style={{
-                                    width: "46px",
-                                    height: "46px",
-                                    borderRadius: "50%",
-                                    background: "radial-gradient(circle, #101216 30%, #06070a 100%)",
-                                    border: "2px solid #888888",
-                                    boxShadow: "0 0 6px rgba(136,136,136,0.35), inset 0 2px 4px rgba(0,0,0,0.8)",
-                                    display: "grid",
-                                    placeItems: "center",
-                                    cursor: "pointer",
-                                    padding: 0,
-                                    outline: "none",
-                                    flexShrink: 0
-                                  }}
-                                >
-                                  {support.skillId && gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem") ? (
-                                    <img src={gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem")} alt="" style={{ width: "26px", height: "26px", objectFit: "contain" }} />
-                                  ) : (
-                                    <span className="material-symbols-rounded" style={{ fontSize: "18px", color: "var(--muted)" }}>add</span>
-                                  )}
-                                </button>
-                              </div>
-                            </Fragment>
-                          ))}
-
-                          {/* Add Support Socket */}
-                          {skill.supportSkills.length < 5 && (
-                            <Fragment>
-                              {/* Link Bridge */}
-                              <div style={{
-                                width: "6px",
-                                height: "6px",
-                                background: "rgba(255, 255, 255, 0.05)",
-                                border: "1px dashed rgba(255, 255, 255, 0.15)",
-                                zIndex: 1,
-                                flexShrink: 0
-                              }} />
-                              {/* Dash Socket */}
-                              <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
-                                <button
-                                  type="button"
-                                  onClick={() => addSupportSkill(skill.id)}
-                                  style={{
-                                    width: "46px",
-                                    height: "46px",
-                                    borderRadius: "50%",
-                                    background: "transparent",
-                                    border: "2px dashed rgba(255, 255, 255, 0.15)",
-                                    display: "grid",
-                                    placeItems: "center",
-                                    cursor: "pointer",
-                                    color: "var(--muted)",
-                                    padding: 0,
-                                    outline: "none",
-                                    flexShrink: 0
-                                  }}
-                                  title={locale === "vi" ? "Thêm Hỗ trợ" : "Add Support"}
-                                >
-                                  <span className="material-symbols-rounded" style={{ fontSize: "18px" }}>add</span>
-                                </button>
-                              </div>
-                            </Fragment>
-                          )}
-                        </div>
-
-                        {/* PoE2 Style Tooltip details */}
-                        {details && details.name && (
-                          <div className="poe-tooltip-card tooltip-rarity-gem" style={{
-                            background: "#0c0d12",
-                            border: "1px solid var(--gold)",
-                            borderRadius: "4px",
-                            padding: "12px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "6px",
-                            marginTop: "8px",
-                            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.6)"
-                          }}>
-                            {/* Title & Tags */}
-                            <div style={{ borderBottom: "1px solid #33271a", paddingBottom: "6px" }}>
-                              <h3 style={{ fontSize: "13px", fontWeight: "bold", color: "var(--gold)", margin: 0 }}>
-                                {details.name}
-                              </h3>
-                              {skill.skillId && (() => {
-                                const activeGemRec = gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem");
-                                return activeGemRec ? (
-                                  <div className="tooltip-tags" style={{ fontSize: "10px", color: "var(--muted)", marginTop: "2px" }}>
-                                    {localizedLines(activeGemRec, "properties", locale)
-                                      .filter(l => !l.includes(":"))
-                                      .join(", ")}
-                                  </div>
-                                ) : null;
-                              })()}
                             </div>
 
-                            {/* Core properties like Cast Time, Cost */}
-                            <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "11px", color: "#e0e0e0", borderBottom: "1px solid #33271a", paddingBottom: "6px" }}>
-                              {details.Speed > 0 && (
-                                <div>
-                                  <span style={{ color: "var(--muted)" }}>
+                            {/* Support Sockets and Links */}
+                            {skill.supportSkills.map((support) => (
+                              <Fragment key={support.id}>
+                                <div style={{
+                                  width: "6px",
+                                  height: "5px",
+                                  background: "linear-gradient(90deg, var(--gold), #786446)",
+                                  border: "1px solid #000",
+                                  zIndex: 1,
+                                  flexShrink: 0
+                                }} />
+                                <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => openSupportGemPicker(skill.id, support.id)}
+                                    onMouseEnter={() => {
+                                      if (support.skillId) {
+                                        const html = getGemTooltipHtml(support.skillId, supportGemOptions, "SupportGem", locale, support.note);
+                                        if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
+                                      }
+                                    }}
+                                    onMouseMove={(e) => { handleMouseMove(e); }}
+                                    onMouseLeave={() => { handleMouseLeave(); }}
+                                    style={{
+                                      width: "42px",
+                                      height: "42px",
+                                      borderRadius: "50%",
+                                      background: "radial-gradient(circle, #14171e 30%, #07080b 100%)",
+                                      border: "1.5px solid rgba(255, 255, 255, 0.35)",
+                                      boxShadow: "0 0 6px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.8)",
+                                      display: "grid",
+                                      placeItems: "center",
+                                      cursor: "pointer",
+                                      padding: 0,
+                                      outline: "none",
+                                      flexShrink: 0
+                                    }}
+                                  >
+                                    {support.skillId && gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem") ? (
+                                      <img src={gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem")} alt="" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+                                    ) : (
+                                      <span className="material-symbols-rounded" style={{ fontSize: "16px", color: "var(--muted)" }}>add</span>
+                                    )}
+                                  </button>
+                                </div>
+                              </Fragment>
+                            ))}
+
+                            {/* Add Support Socket */}
+                            {skill.supportSkills.length < 5 && (
+                              <Fragment>
+                                <div style={{
+                                  width: "6px",
+                                  height: "5px",
+                                  background: "rgba(255, 255, 255, 0.08)",
+                                  border: "1px dashed rgba(255, 255, 255, 0.2)",
+                                  zIndex: 1,
+                                  flexShrink: 0
+                                }} />
+                                <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => addSupportSkill(skill.id)}
+                                    style={{
+                                      width: "42px",
+                                      height: "42px",
+                                      borderRadius: "50%",
+                                      background: "transparent",
+                                      border: "1.5px dashed rgba(255, 255, 255, 0.25)",
+                                      display: "grid",
+                                      placeItems: "center",
+                                      cursor: "pointer",
+                                      color: "var(--muted)",
+                                      padding: 0,
+                                      outline: "none",
+                                      flexShrink: 0
+                                    }}
+                                    title={locale === "vi" ? "Thêm Hỗ trợ" : "Add Support"}
+                                  >
+                                    <span className="material-symbols-rounded" style={{ fontSize: "16px" }}>add</span>
+                                  </button>
+                                </div>
+                              </Fragment>
+                            )}
+                          </div>
+
+                          {/* PoE2 Style Tooltip details */}
+                          {details && details.name && (
+                            <div className="poe-tooltip-card tooltip-rarity-gem" style={{
+                              background: "#0c0d12",
+                              border: "1px solid var(--gold)",
+                              borderRadius: "4px",
+                              padding: "12px",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "6px",
+                              marginTop: "8px",
+                              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.6)"
+                            }}>
+                              {/* Title & Tags */}
+                              <div style={{ borderBottom: "1px solid #33271a", paddingBottom: "6px" }}>
+                                <h3 style={{ fontSize: "13px", fontWeight: "bold", color: "var(--gold)", margin: 0 }}>
+                                  {details.name}
+                                </h3>
+                                {skill.skillId && (() => {
+                                  const activeGemRec = gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem");
+                                  return activeGemRec ? (
+                                    <div className="tooltip-tags" style={{ fontSize: "10px", color: "var(--muted)", marginTop: "2px" }}>
+                                      {localizedLines(activeGemRec, "properties", locale)
+                                        .filter(l => !l.includes(":"))
+                                        .join(", ")}
+                                    </div>
+                                  ) : null;
+                                })()}
+                              </div>
+
+                              {/* Core properties like Cast Time, Cost */}
+                              <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "11px", color: "#e0e0e0", borderBottom: "1px solid #33271a", paddingBottom: "6px" }}>
+                                {details.Speed > 0 && (
+                                  <div>
                                     {locale === "vi" ? "Thời gian thi triển: " : "Cast Time: "}
-                                  </span>
-                                  <strong>{(1 / details.Speed).toFixed(2)}s</strong>
-                                </div>
-                              )}
-                              {details.ManaCost > 0 && (
-                                <div>
-                                  <span style={{ color: "var(--muted)" }}>
-                                    {locale === "vi" ? "Tiêu hao năng lượng: " : "Mana Cost: "}
-                                  </span>
-                                  <strong style={{ color: "#33ccff" }}>{details.ManaCost}</strong>
-                                </div>
-                              )}
-                              {details.LifeCost > 0 && (
-                                <div>
-                                  <span style={{ color: "var(--muted)" }}>
-                                    {locale === "vi" ? "Tiêu hao sinh mệnh: " : "Life Cost: "}
-                                  </span>
-                                  <strong style={{ color: "#ff4d4d" }}>{details.LifeCost}</strong>
-                                </div>
-                              )}
-                            </div>
+                                    <strong>{(Math.round((1 / details.Speed) * 100) / 100).toFixed(2)} giây</strong>
+                                  </div>
+                                )}
+                                {details.LifeCost > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Tiêu hao: " : "Cost: "}
+                                    <strong style={{ color: "#ff4d4d" }}>{details.LifeCost} Sinh mệnh</strong>
+                                  </div>
+                                )}
+                                {details.ManaCost > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Tiêu hao: " : "Cost: "}
+                                    <strong style={{ color: "#33ccff" }}>{details.ManaCost} Năng lượng</strong>
+                                  </div>
+                                )}
+                              </div>
 
-                            {/* Gem Stats (Light blue list) */}
-                            <div style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px", color: "#88adbf" }}>
-                              {details.PhysicalMax > 0 && (
-                                <div>
-                                  {locale === "vi" ? "Gây " : "Deals "}
-                                  <strong>{Math.round(details.PhysicalMin)} - {Math.round(details.PhysicalMax)}</strong>
-                                  {locale === "vi" ? " Sát thương Vật lý" : " Physical Damage"}
-                                </div>
-                              )}
-                              {details.FireMax > 0 && (
-                                <div>
-                                  {locale === "vi" ? "Gây " : "Deals "}
-                                  <strong>{Math.round(details.FireMin)} - {Math.round(details.FireMax)}</strong>
-                                  {locale === "vi" ? " Sát thương Lửa" : " Fire Damage"}
-                                </div>
-                              )}
-                              {details.ColdMax > 0 && (
-                                <div>
-                                  {locale === "vi" ? "Gây " : "Deals "}
-                                  <strong>{Math.round(details.ColdMin)} - {Math.round(details.ColdMax)}</strong>
-                                  {locale === "vi" ? " Sát thương Băng" : " Cold Damage"}
-                                </div>
-                              )}
-                              {details.LightningMax > 0 && (
-                                <div>
-                                  {locale === "vi" ? "Gây " : "Deals "}
-                                  <strong>{Math.round(details.LightningMin)} - {Math.round(details.LightningMax)}</strong>
-                                  {locale === "vi" ? " Sát thương Sét" : " Lightning Damage"}
-                                </div>
-                              )}
-                              {details.ChaosMax > 0 && (
-                                <div>
-                                  {locale === "vi" ? "Gây " : "Deals "}
-                                  <strong>{Math.round(details.ChaosMin)} - {Math.round(details.ChaosMax)}</strong>
-                                  {locale === "vi" ? " Sát thương Hỗn loạn" : " Chaos Damage"}
-                                </div>
-                              )}
+                              {/* Damage breakdown */}
+                              <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "11px" }}>
+                                {details.PhysicalMax > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Gây " : "Deals "}
+                                    <strong>{Math.round(details.PhysicalMin)} - {Math.round(details.PhysicalMax)}</strong>
+                                    {locale === "vi" ? " Sát thương Vật lý" : " Physical Damage"}
+                                  </div>
+                                )}
+                                {details.FireMax > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Gây " : "Deals "}
+                                    <strong>{Math.round(details.FireMin)} - {Math.round(details.FireMax)}</strong>
+                                    {locale === "vi" ? " Sát thương Lửa" : " Fire Damage"}
+                                  </div>
+                                )}
+                                {details.ColdMax > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Gây " : "Deals "}
+                                    <strong>{Math.round(details.ColdMin)} - {Math.round(details.ColdMax)}</strong>
+                                    {locale === "vi" ? " Sát thương Băng" : " Cold Damage"}
+                                  </div>
+                                )}
+                                {details.LightningMax > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Gây " : "Deals "}
+                                    <strong>{Math.round(details.LightningMin)} - {Math.round(details.LightningMax)}</strong>
+                                    {locale === "vi" ? " Sát thương Sét" : " Lightning Damage"}
+                                  </div>
+                                )}
+                                {details.ChaosMax > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Gây " : "Deals "}
+                                    <strong>{Math.round(details.ChaosMin)} - {Math.round(details.ChaosMax)}</strong>
+                                    {locale === "vi" ? " Sát thương Hỗn loạn" : " Chaos Damage"}
+                                  </div>
+                                )}
 
-                              {details.HitChance < 100 && (
-                                <div>
-                                  {locale === "vi" ? "Tỉ lệ đánh trúng: " : "Chance to Hit: "}
-                                  <strong>{Math.round(details.HitChance)}%</strong>
-                                </div>
-                              )}
-                              {details.CritChance > 0 && (
-                                <div>
-                                  {locale === "vi" ? "Tỉ lệ Chí mạng: " : "Critical Strike Chance: "}
-                                  <strong>{(Math.round(details.CritChance * 100) / 100).toFixed(2)}%</strong>
-                                </div>
-                              )}
-                              {details.CritMultiplier > 0 && (
-                                <div>
-                                  {locale === "vi" ? "Tăng nhân sát thương Chí mạng: " : "Multiplier for Critical Strikes: "}
-                                  <strong>+{Math.round((details.CritMultiplier - 1) * 100)}%</strong>
-                                </div>
-                              )}
+                                {details.HitChance < 100 && (
+                                  <div>
+                                    {locale === "vi" ? "Tỉ lệ đánh trúng: " : "Chance to Hit: "}
+                                    <strong>{Math.round(details.HitChance)}%</strong>
+                                  </div>
+                                )}
+                                {details.CritChance > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Tỉ lệ Chí mạng: " : "Critical Strike Chance: "}
+                                    <strong>{(Math.round(details.CritChance * 100) / 100).toFixed(2)}%</strong>
+                                  </div>
+                                )}
+                                {details.CritMultiplier > 0 && (
+                                  <div>
+                                    {locale === "vi" ? "Tăng nhân sát thương Chí mạng: " : "Multiplier for Critical Strikes: "}
+                                    <strong>+{Math.round((details.CritMultiplier - 1) * 100)}%</strong>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </article>
-                    );
-                  })}
+                          )}
+                        </article>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="build-empty" style={{ padding: "24px" }}>
+                    <span className="material-symbols-rounded" style={{ fontSize: "36px", color: "var(--gold)" }}>auto_awesome_motion</span>
+                    <p>{localizedText(copy.noSkills, "", locale)}</p>
+                    <button type="button" onClick={addBuildSkill} className="build-btn" style={{ borderColor: "var(--gold)", color: "var(--gold)" }}>
+                      <span className="material-symbols-rounded">add</span>
+                      {localizedText(copy.addSkill, "", locale)}
+                    </button>
+                  </div>
+                )}
+              </section>
+            )}
+
+            {/* Tab 2: Passive Tree */}
+            {activeTab === "tree" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                {linkedTreeCard}
+              </div>
+            )}
+
+            {/* Tab 3: Notes & Info */}
+            {activeTab === "notes" && (
+              <section className="build-card">
+                <div className="build-section-head">
+                  <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>edit_note</span>
+                  <h2>{localizedText(copy.details, "", locale)}</h2>
                 </div>
-              ) : (
-                <div className="build-empty">
-                  <p>{localizedText(copy.noSkills, "", locale)}</p>
-                  <button type="button" onClick={addBuildSkill}>{localizedText(copy.addSkill, "", locale)}</button>
+                <div className="build-form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                  <label>
+                    <span style={{ fontSize: "12px", fontWeight: "bold", color: "var(--muted)" }}>{localizedText(copy.buildName, "", locale)}</span>
+                    <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Titan Slam Leveling" style={{ height: "38px", padding: "0 10px", borderRadius: "6px", background: "var(--surface-2)", border: "1px solid var(--line)", color: "var(--ink)", width: "100%" }} />
+                  </label>
+                  <label>
+                    <span style={{ fontSize: "12px", fontWeight: "bold", color: "var(--muted)" }}>{localizedText(copy.author, "", locale)}</span>
+                    <input value={author} onChange={(event) => setAuthor(event.target.value)} placeholder="POE2 Viet Hoa" style={{ height: "38px", padding: "0 10px", borderRadius: "6px", background: "var(--surface-2)", border: "1px solid var(--line)", color: "var(--ink)", width: "100%" }} />
+                  </label>
                 </div>
-              )}
-            </section>
+              </section>
+            )}
           </div>
-
-
-        </section>
+        </div>
       </section>
       )}
 
-      {!editorOpen && pobImportOpen ? (
+      {pobImportOpen ? (
         <div className="build-picker-backdrop build-pob-backdrop" role="presentation" onMouseDown={(event) => {
           if (event.target === event.currentTarget && !pobImporting) setPobImportOpen(false);
         }}>
