@@ -14,6 +14,16 @@ pnpm-debug.log*
 /coverage/
 /data/
 /tools/game-extractor-rs/target/
+/apps/poevh-desktop/target/
+/apps/poevh-desktop/tools/**/bin/
+/apps/poevh-desktop/tools/**/obj/
+/apps/poevh-desktop/tools/**/publish*/
+/apps/poevh-desktop/**/__pycache__/
+/apps/poevh-desktop/**/*.pyc
+/apps/poevh-desktop/**/*.exe
+/apps/poevh-desktop/**/*.dll
+/apps/poevh-desktop/**/*.pdb
+/apps/poevh-desktop/tools/*.log
 
 /*.png
 /*.pdf

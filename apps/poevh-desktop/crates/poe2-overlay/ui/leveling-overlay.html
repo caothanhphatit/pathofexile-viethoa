@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#11110f">
+  <title>POEVH Leveling</title>
+  <link rel="stylesheet" href="/static/leveling-overlay.css">
+</head>
+<body>
+  <main class="leveling-shell" id="leveling-shell">
+    <!-- Super Mini Draggable Header -->
+    <header class="leveling-header" id="leveling-header">
+      <div class="header-left">
+        <div class="brand-mark">V</div>
+        <div class="zone-info">
+          <div class="zone-title-row">
+            <span id="zone-name" class="zone-name">Đang chờ map…</span>
+            <span id="zone-level" class="zone-level">Lvl —</span>
+          </div>
+          <div class="zone-sub">
+            <span id="auto-indicator" class="indicator-dot online" title="Tự động nhận diện từ Client.txt">● Auto</span>
+            <span id="zone-progress" class="zone-progress">0/0</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="btn-prev" title="Map trước">◀</button>
+        <button class="icon-btn" id="btn-next" title="Map tiếp theo">▶</button>
+        <button class="icon-btn" id="btn-collapse" title="Thu gọn/Mở rộng">_</button>
+        <button class="icon-btn close-btn" id="btn-close" title="Ẩn overlay">×</button>
+      </div>
+    </header>
+
+    <!-- Content Panel (Collapsible) -->
+    <section class="leveling-content" id="leveling-content">
+      <!-- Task List (Current Zone) -->
+      <div class="task-list" id="task-list">
+        <div class="empty-hint">Chưa phát hiện map. Khi bạn bước vào khu vực mới trong game, nhiệm vụ sẽ tự động hiện tại đây.</div>
+      </div>
+
+      <!-- Boss Tip Box (optional) -->
+      <div class="tip-box" id="tip-box" hidden>
+        <span class="tip-icon">💡</span>
+        <span id="tip-text" class="tip-text"></span>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/leveling-data.js"></script>
+  <script src="/static/leveling-overlay.js"></script>
+</body>
+</html>

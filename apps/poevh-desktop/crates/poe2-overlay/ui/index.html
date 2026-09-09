@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POEVH — Bảng điều khiển</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="stylesheet" href="/static/theme.css">
+<link rel="stylesheet" href="/static/components.css">
+<link rel="stylesheet" href="/static/layout.css">
+<link rel="stylesheet" href="/static/overview.css">
+</head>
+<body>
+
+  <!-- Top App Bar -->
+  <header class="topbar">
+    <div class="app-brand">
+      <span class="brand-mark" aria-hidden="true">P<span>V</span></span><span class="brand-name">POEVH<small>POE2 · Bảng điều khiển</small></span>
+
+    </div>
+
+    <div id="statusBadge" class="status-pill pill-stopped">
+      <span id="statusDot" class="pill-dot dot-off"></span>
+      <span id="statusLabel">BOT ĐANG TẮT</span>
+    </div>
+
+    <button class="btn btn-neutral btn-sm" onclick="cmdReset()" title="Làm mới trạng thái">
+      <svg style="width:13px;height:13px;margin-right:4px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>Làm mới
+    </button>
+  </header>
+
+  <!-- App Body -->
+  <div class="app-container">
+
+    <!-- Left Navigation Sidebar with Collapsible Accordion Sections -->
+    <nav class="sidebar-nav" aria-label="Điều hướng chức năng">
+
+      <!-- Nhóm 1: Tổng Quan -->
+      <div class="nav-accordion">
+        <button aria-current="page" class="nav-item active" onclick="navTab('tab-home', this)">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 3l9 8M5 10v11h5v-6h4v6h5V10"/></svg></span> <span>Tổng Quan</span>
+        </button>
+      </div>
+
+      <!-- Nhóm 2: HIỆU NĂNG -->
+      <div class="nav-accordion" id="acc-smoother">
+        <button type="button" class="nav-accordion-header" aria-expanded="true" onclick="toggleAccordion('acc-smoother')">
+          <span>HIỆU NĂNG</span>
+          <span class="chevron">▼</span>
+        </button>
+        <div class="nav-accordion-content">
+          <button class="nav-item" onclick="navTab('tab-smoother', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V5m0 14h18M6 15l4-5 4 2 6-8"/></svg></span> <span>Tối ưu đồ họa & FPS</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Nhóm 3: KÉO VONG -->
+      <div class="nav-accordion" id="acc-auto">
+        <button type="button" class="nav-accordion-header" aria-expanded="true" onclick="toggleAccordion('acc-auto')">
+          <span>FOLLOW BOT</span>
+          <span class="chevron">▼</span>
+        </button>
+        <div class="nav-accordion-content">
+          <button class="nav-item" onclick="navTab('tab-movement', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c6 0 4-12 10-12h6m-4-4 4 4-4 4M4 14v8"/></svg></span> <span>Bám theo</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-combat', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 14M16 18l3-3m-2 6 4-4M19 3 5 17m0-2 3 3m-5-1 4 4"/></svg></span> <span>Hỗ trợ chiến đấu</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-flasks', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v5l4 5v7H5v-7l4-5V3M9 5h6M5 14h14"/></svg></span> <span>Tự động dùng bình</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-timed', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5l3 2M9 2h6M19 5l2 2M21 13a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/></svg></span> <span>Buff định kỳ</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-pickup', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 9l9 12 9-12-9-6ZM3 9h18M8 9l4 12 4-12"/></svg></span> <span>Nhặt đồ & lọc vật phẩm</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-stash', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4v13H3V7ZM3 7l9 5 9-5M12 12v8"/></svg></span> <span>Tự động cất hòm</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-party', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-3a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v3M17 4a4 4 0 0 1 0 8M21 21v-3a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg></span> <span>Mời vào nhóm</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-tracker', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v17h17M7 14l4-4 4 2 5-7"/></svg></span> <span>Thống kê tiền tệ</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-waystones', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6ZM9 3v15M15 6v15"/></svg></span> <span>Chuẩn bị map</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-shared', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a4 4 0 0 1 4 4v6l-3-3H6l-3 3v-6a4 4 0 0 1 4-4ZM6 11v4m-2-2h4m8-1h1m1 2h1"/></svg></span> <span>Đồng bộ tay cầm</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Nhóm 4: CÔNG CỤ -->
+      <div class="nav-accordion" id="acc-tools">
+        <button type="button" class="nav-accordion-header" aria-expanded="true" onclick="toggleAccordion('acc-tools')">
+          <span>CÔNG CỤ</span><span class="chevron">▼</span>
+        </button>
+        <div class="nav-accordion-content">
+          <button class="nav-item" onclick="navTab('tab-trade', this)"><span class="nav-icon" aria-hidden="true">$</span> <span>Price-check</span></button>
+          <button class="nav-item" onclick="navTab('tab-expedition', this)"><span class="nav-icon" aria-hidden="true">◈</span> <span>Expedition check</span></button>
+          <button class="nav-item" onclick="navTab('tab-leveling', this)"><span class="nav-icon" aria-hidden="true">🗺</span> <span>Leveling & Quest</span></button>
+        </div>
+      </div>
+
+      <!-- Nhóm 5: HỆ THỐNG -->
+      <div class="nav-accordion" id="acc-system">
+        <button type="button" class="nav-accordion-header" aria-expanded="true" onclick="toggleAccordion('acc-system')">
+          <span>HỆ THỐNG</span>
+          <span class="chevron">▼</span>
+        </button>
+        <div class="nav-accordion-content">
+          <button class="nav-item" onclick="navTab('tab-client-mgr', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v13H3V4ZM8 21h8m-4-4v4"/></svg></span> <span>Quản lý cửa sổ game</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-keybinds', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h20v13H2V6Zm3 3h1m3 0h1m3 0h1m3 0h1M5 12h1m3 0h1m3 0h1m3 0h1M7 16h10"/></svg></span> <span>Phím tắt & WASD</span>
+          </button>
+          <button class="nav-item" onclick="navTab('tab-physical-controllers', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a4 4 0 0 1 4 4v5a3 3 0 0 1-5 2l-2-2h-4l-2 2a3 3 0 0 1-5-2v-5a4 4 0 0 1 4-4Z"/><path d="M7 12v4m-2-2h4m7-1h.01M18 15h.01"/></svg></span> <span>Tay cầm vật lý</span>
+          </button>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- Center Workspace -->
+    <main class="tab-viewport">
+
+      <!-- ══════════════════ TAB 1: TỔNG QUAN ══════════════════ -->
+      <div id="tab-home" class="tab-pane active">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Phiên chơi</p><h1>Tổng quan</h1><p>Theo dõi thời gian chơi, vật phẩm và trạng thái bot.</p></div></header>
+        <div id="memory-compatibility" class="card" role="status" aria-live="polite" style="display:none;margin-bottom:14px"></div>
+
+        <section class="overview-session" aria-labelledby="overview-session-title">
+          <header class="overview-session-hero">
+            <div>
+              <p class="overview-eyebrow">PHIÊN HIỆN TẠI</p>
+              <h2 id="overview-session-title">Chưa có game đang chạy</h2>
+              <p id="overview-session-identity">Mở game hoặc kết nối một cửa sổ đang chạy để bắt đầu.</p>
+            </div>
+            <div class="overview-session-state"><span id="overview-live-dot" class="overview-live-dot"></span><span id="overview-live-label">CHỜ GAME</span></div>
+          </header>
+
+          <div class="overview-metrics">
+            <article class="overview-metric overview-metric-primary"><span>Thời gian chơi</span><strong id="overview-game-time">00:00:00</strong><small>Tính từ khi game được mở</small></article>
+            <article class="overview-metric"><span>Thời gian bot hoạt động</span><strong id="overview-bot-time">00:00:00</strong><small>Chỉ tính khi bot đang chạy</small></article>
+            <article class="overview-metric"><span>Khu vực hiện tại</span><strong id="overview-area">Chưa xác định</strong><small id="overview-area-note">Đang chờ dữ liệu từ game</small></article>
+            <article class="overview-metric"><span>Giá trị đã nhặt</span><strong id="overview-session-value">0.00 div</strong><small id="overview-session-rate">0.00 div/giờ</small></article>
+          </div>
+
+          <div class="overview-detail-grid">
+            <article class="overview-detail-card">
+              <div class="overview-card-heading"><div><span class="overview-card-kicker">TÓM TẮT THỜI GIAN</span><h3>Hoạt động trong phiên</h3></div><span id="overview-session-total">00:00:00</span></div>
+              <div class="overview-timebar" role="img" aria-label="Tỷ lệ thời gian bot hoạt động và thời gian chơi tay"><i id="overview-active-bar"></i><b id="overview-idle-bar"></b></div>
+              <div class="overview-legend"><span><i class="legend-active"></i>Bot hoạt động <b id="overview-active-time">00:00:00</b></span><span><i class="legend-idle"></i>Chơi tay / chờ game <b id="overview-idle-time">00:00:00</b></span></div>
+            </article>
+
+            <article class="overview-detail-card">
+              <div class="overview-card-heading"><div><span class="overview-card-kicker">KẾT QUẢ PHIÊN</span><h3>Vật phẩm & tiền tệ</h3></div><button class="overview-link-button" type="button" onclick="overviewGoToTab('tab-tracker')">Xem chi tiết</button></div>
+              <div class="overview-loot-grid"><div><strong id="overview-items">0</strong><span>Vật phẩm đã nhặt</span></div><div><strong id="overview-gold">0</strong><span>Vàng</span></div><div><strong id="overview-divine">0</strong><span>Divine</span></div><div><strong id="overview-exalted">0</strong><span>Exalted</span></div></div>
+            </article>
+          </div>
+
+          <article class="overview-recent-card">
+            <div class="overview-card-heading"><div><span class="overview-card-kicker">PRICE-CHECK</span><h3>Tra cứu gần đây</h3></div><button class="overview-link-button" type="button" onclick="overviewGoToTab('tab-trade')">Mở Price-check</button></div>
+            <div id="overview-trade-history" class="overview-trade-history"><p>Chưa có lượt tra cứu nào trong phiên.</p></div>
+          </article>
+        </section>
+
+        <!-- Runtime instances are created when a game process is launched. -->
+        <div id="runtime-instance-hud" class="grid-3" style="gap:8px"></div>
+        <div id="runtime-instance-empty" class="card" style="display:none;color:var(--sub)">Chưa có game đang chạy. Vào Quản lý cửa sổ game để mở hoặc kết nối.</div>
+        <!-- Legacy static HUD removed: cards now follow live runtime instances. -->
+        <div id="legacy-static-hud" style="display:none">
+          <!-- Client 1 -->
+          <div class="card" id="hud-card-c1" style="border-color:var(--border);transition:opacity 0.2s">
+            <div class="card-header" style="margin-bottom:6px">
+              <div>
+                <span class="card-title" style="color:var(--cyan)"> Client 1 (Leader + Bot 1)</span>
+                <div style="font-size:11px;color:var(--dim)" id="c1-proc-info">Chưa gắn PID</div>
+              </div>
+              <span id="hud-badge-c1" class="app-badge" style="background:var(--bg3);color:var(--sub)">Chưa mở game</span>
+            </div>
+            <!-- Char 1 -->
+            <div style="background:var(--bg0);padding:6px 8px;border-radius:4px;margin-bottom:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span style="color:var(--cyan);font-weight:700"> Char 1 (Leader DPS)</span>
+                <span id="p1-hp-label" style="color:var(--dim);font-weight:700">-- HP</span>
+              </div>
+              <div class="bar-bg" style="margin-top:3px"><div class="bar-fill-hp" id="p1-hp-bar" style="width:0%"></div></div>
+            </div>
+            <!-- Char 2 -->
+            <div style="background:var(--bg0);padding:6px 8px;border-radius:4px;margin-bottom:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span style="color:var(--green);font-weight:700"> Char 2 (Aurabot Buff)</span>
+                <span id="p2-hp-label" style="color:var(--dim);font-weight:700">-- HP</span>
+              </div>
+              <div class="bar-bg" style="margin-top:3px"><div class="bar-fill-hp" id="p2-hp-bar" style="width:0%"></div></div>
+            </div>
+            <!-- Client 1 Action Controls -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:8px;margin-top:6px">
+              <button class="btn btn-neutral btn-sm" id="client-launch-1" onclick="clientAction(1, 'launch')">▷ Mở game</button>
+              <button class="btn btn-primary btn-sm" id="client-toggle-1" onclick="clientAction(1, 'toggle-bot')">Bật bot</button>
+              <button class="btn btn-neutral btn-sm" id="client-focus-1" onclick="clientAction(1, 'focus')">Focus</button>
+              <button class="btn btn-neutral btn-sm" id="client-min-1" onclick="clientAction(1, 'minimize')">Thu nhỏ</button>
+            </div>
+          </div>
+
+          <!-- Client 2 -->
+          <div class="card" id="hud-card-c2" style="border-color:var(--green);transition:opacity 0.2s">
+            <div class="card-header" style="margin-bottom:6px">
+              <div>
+                <span class="card-title" style="color:var(--green)"> Client 2 (Bot 2 + Bot 3)</span>
+                <div style="font-size:11px;color:var(--dim)" id="c2-proc-info">Chưa gắn PID</div>
+              </div>
+              <span id="hud-badge-c2" class="app-badge" style="background:var(--bg3);color:var(--sub)">Chưa mở game</span>
+            </div>
+            <!-- Char 3 -->
+            <div style="background:var(--bg0);padding:6px 8px;border-radius:4px;margin-bottom:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span style="color:var(--amber);font-weight:700"> Char 3 (Culler / Shock)</span>
+                <span id="p3-hp-label" style="color:var(--dim);font-weight:700">-- HP</span>
+              </div>
+              <div class="bar-bg" style="margin-top:3px"><div class="bar-fill-hp" id="p3-hp-bar" style="width:0%"></div></div>
+            </div>
+            <!-- Char 4 -->
+            <div style="background:var(--bg0);padding:6px 8px;border-radius:4px;margin-bottom:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span style="color:var(--cyan);font-weight:700"> Char 4 (Auto Looter 1)</span>
+                <span id="p4-hp-label" style="color:var(--dim);font-weight:700">-- HP</span>
+              </div>
+              <div class="bar-bg" style="margin-top:3px"><div class="bar-fill-hp" id="p4-hp-bar" style="width:0%"></div></div>
+            </div>
+            <!-- Client 2 Action Controls -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:8px;margin-top:6px">
+              <button class="btn btn-neutral btn-sm" id="client-launch-2" onclick="clientAction(2, 'launch')">▷ Mở game</button>
+              <button class="btn btn-primary btn-sm" id="client-toggle-2" onclick="clientAction(2, 'toggle-bot')">Bật bot</button>
+              <button class="btn btn-neutral btn-sm" id="client-focus-2" onclick="clientAction(2, 'focus')">Focus</button>
+              <button class="btn btn-neutral btn-sm" id="client-min-2" onclick="clientAction(2, 'minimize')">Thu nhỏ</button>
+            </div>
+          </div>
+
+          <!-- Client 3 -->
+          <div class="card" id="hud-card-c3" style="border-color:var(--border);transition:opacity 0.2s">
+            <div class="card-header" style="margin-bottom:6px">
+              <div>
+                <span class="card-title" style="color:var(--accent)"> Client 3 (Bot 4 + Bot 5)</span>
+                <div style="font-size:11px;color:var(--dim)" id="c3-proc-info">Chưa gắn PID</div>
+              </div>
+              <span id="hud-badge-c3" class="app-badge" style="background:var(--bg3);color:var(--sub)">Chưa mở game</span>
+            </div>
+            <!-- Char 5 -->
+            <div style="background:var(--bg0);padding:6px 8px;border-radius:4px;margin-bottom:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span style="color:var(--red);font-weight:700"> Char 5 (Cursebot Debuff)</span>
+                <span id="p5-hp-label" style="color:var(--dim);font-weight:700">-- HP</span>
+              </div>
+              <div class="bar-bg" style="margin-top:3px"><div class="bar-fill-hp" id="p5-hp-bar" style="width:0%"></div></div>
+            </div>
+            <!-- Char 6 -->
+            <div style="background:var(--bg0);padding:6px 8px;border-radius:4px;margin-bottom:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span style="color:var(--cyan);font-weight:700"> Char 6 (Auto Looter 2)</span>
+                <span id="p6-hp-label" style="color:var(--dim);font-weight:700">-- HP</span>
+              </div>
+              <div class="bar-bg" style="margin-top:3px"><div class="bar-fill-hp" id="p6-hp-bar" style="width:0%"></div></div>
+            </div>
+            <!-- Client 3 Action Controls -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:8px;margin-top:6px">
+              <button class="btn btn-neutral btn-sm" id="client-launch-3" onclick="clientAction(3, 'launch')">▷ Mở game</button>
+              <button class="btn btn-primary btn-sm" id="client-toggle-3" onclick="clientAction(3, 'toggle-bot')">Bật bot</button>
+              <button class="btn btn-neutral btn-sm" id="client-focus-3" onclick="clientAction(3, 'focus')">Focus</button>
+              <button class="btn btn-neutral btn-sm" id="client-min-3" onclick="clientAction(3, 'minimize')">Thu nhỏ</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Toggles -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:6px"> Điều khiển nhanh</div>
+          <div class="grid-4" style="margin-top:2px;gap:6px">
+            <div class="toggle-row" style="background:var(--bg2);padding:6px 10px;border-radius:4px">
+              <span class="toggle-label" style="font-weight:600"> Bám Đuôi</span>
+              <label class="toggle"><input type="checkbox" id="tog-follow" checked onchange="cmdToggle('follow', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row" style="background:var(--bg2);padding:6px 10px;border-radius:4px">
+              <span class="toggle-label" style="font-weight:600"> Nhặt Đồ</span>
+              <label class="toggle"><input type="checkbox" id="tog-loot" checked onchange="cmdToggle('loot', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row" style="background:var(--bg2);padding:6px 10px;border-radius:4px">
+              <span class="toggle-label" style="font-weight:600"> Bơm Máu</span>
+              <label class="toggle"><input type="checkbox" id="tog-flask" checked onchange="cmdToggle('flask_life', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row" style="background:var(--bg2);padding:6px 10px;border-radius:4px">
+              <span class="toggle-label" style="font-weight:600"> Điều khiển WASD</span>
+              <label class="toggle"><input type="checkbox" id="tog-kbm" checked onchange="cmdToggle('kbm', this.checked)"><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time Client Resource Consumption Monitor -->
+        <div class="card" style="border-color:var(--bg3)">
+          <div class="card-header">
+            <span class="card-title" style="color:var(--cyan)"> Tài nguyên hệ thống</span>
+            <div style="font-size:12px;color:var(--dim)">Giám sát phần cứng thời gian thực</div>
+          </div>
+          <div class="grid-4" style="gap:6px">
+            <!-- Client 1 -->
+            <div id="res-card-c1" style="background:var(--bg2);padding:8px 10px;border-radius:5px;border-left:3px solid var(--cyan);transition:opacity 0.2s">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <b style="color:var(--cyan);font-size:12px"> Client 1</b>
+                <span id="c1-badge" class="app-badge" style="background:var(--blue-bg);color:var(--cyan);font-size:12px">Chính</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub)">
+                <span>CPU: <b id="c1-cpu" style="color:var(--text)">--</b></span>
+                <span>RAM: <b id="c1-ram" style="color:var(--text)">--</b></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin-top:2px">
+                <span>FPS: <b id="c1-fps" style="color:var(--green)">--</b></span>
+                <span>Render: <b id="c1-render" style="color:var(--cyan)">--</b></span>
+              </div>
+            </div>
+
+            <!-- Client 2 -->
+            <div id="res-card-c2" style="background:var(--bg2);padding:8px 10px;border-radius:5px;border-left:3px solid var(--green);transition:opacity 0.2s">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <b style="color:var(--green);font-size:12px"> Client 2</b>
+                <span id="c2-badge" class="app-badge" style="background:var(--bg3);color:var(--sub);font-size:12px">Chưa bật</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub)">
+                <span>CPU: <b id="c2-cpu" style="color:var(--text)">--</b></span>
+                <span>RAM: <b id="c2-ram" style="color:var(--text)">--</b></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin-top:2px">
+                <span>FPS: <b id="c2-fps" style="color:var(--amber)">--</b></span>
+                <span>Render: <b id="c2-render" style="color:var(--accent)">--</b></span>
+              </div>
+            </div>
+
+            <!-- Client 3 -->
+            <div id="res-card-c3" style="background:var(--bg2);padding:8px 10px;border-radius:5px;border-left:3px solid var(--border);transition:opacity 0.2s">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <b style="color:var(--accent);font-size:12px"> Client 3</b>
+                <span id="c3-badge" class="app-badge" style="background:var(--bg3);color:var(--sub);font-size:12px">Chưa bật</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub)">
+                <span>CPU: <b id="c3-cpu" style="color:var(--text)">--</b></span>
+                <span>RAM: <b id="c3-ram" style="color:var(--text)">--</b></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin-top:2px">
+                <span>FPS: <b id="c3-fps" style="color:var(--amber)">--</b></span>
+                <span>Render: <b id="c3-render" style="color:var(--accent)">--</b></span>
+              </div>
+            </div>
+
+            <!-- System Total Overview -->
+            <div style="background:var(--bg2);padding:8px 10px;border-radius:5px;border-left:3px solid var(--border)">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <b style="color:var(--red);font-size:12px"> Tổng Hệ Thống</b>
+                <span class="app-badge" style="background:var(--red-bg);color:var(--red);font-size:12px">PC Host</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub)">
+                <span>CPU: <b id="sys-cpu" style="color:var(--text)">--</b></span>
+                <span>RAM: <b id="sys-ram" style="color:var(--text)">--</b></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin-top:2px">
+                <span>GPU: <b id="sys-gpu" style="color:var(--green)">--</b></span>
+                <span>Độ Trễ: <b id="sys-latency" style="color:var(--cyan)">--</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Event Stream -->
+        <div class="card" style="flex:1;display:flex;flex-direction:column">
+          <div class="card-header">
+            <span class="card-title"> Nhật ký hoạt động</span>
+          </div>
+          <div id="feedBox" class="feed-box">
+            <div style="color:var(--dim);font-style:italic"> Hệ thống sẵn sàng · Đang chờ sự kiện trong game…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 2: DI CHUYỂN & BÁM ĐUÔI ══════════════════ -->
+      <div id="tab-movement" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Di chuyển & bám đuôi</h1><p>Điều chỉnh khoảng cách, bắt kịp và cách di chuyển trong nhóm.</p></div></header>
+        <div class="card" style="border-color:var(--cyan)">
+          <div class="card-title" style="color:var(--cyan)"> Cài Đặt Di Chuyển & Bám Đuôi</div>
+          <div class="slider-box" style="margin-top:6px">
+            <div class="slider-info">
+              <span style="font-size:12px;color:var(--sub)">Khoảng cách dừng bám đuôi:</span>
+              <span id="val-stop-dist" class="slider-num">9 bước</span>
+            </div>
+            <input type="range" id="follow-stop-distance" min="0" max="40" value="9" step="1" oninput="updateParam('stop_dist', this.value, 'val-stop-dist', ' bước')">
+            <span class="toggle-desc">Mức 9 bước: Bám sát sau lưng Leader 1-2 bước chân cực gọn</span>
+          </div>
+
+          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px">
+            <div class="slider-box">
+              <div class="slider-info">
+                <span style="font-size:12px;color:var(--sub)">Tăng tốc chạy nhanh khi cách xa:</span>
+                <span id="val-sprint-dist" class="slider-num">39 bước</span>
+              </div>
+              <input type="range" id="follow-sprint-distance" min="20" max="80" value="39" step="1" oninput="updateParam('sprint_dist', this.value, 'val-sprint-dist', ' bước')">
+            </div>
+
+            <div class="toggle-row" style="margin-top:6px">
+              <div>
+                <span class="toggle-label">Ưu Tiên Bám Đuôi</span>
+                <span class="toggle-desc">Tạm ngưng nhặt đồ khi bị Leader bỏ lại quá xa</span>
+              </div>
+              <label class="toggle"><input type="checkbox" id="tog-prio-catch" checked onchange="cmdToggle('follow_prioritize', this.checked)"><span class="slider"></span></label>
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <span class="toggle-label">Hướng đánh follower</span>
+                <span class="toggle-desc">Không sao chép input/góc đánh thô từ Leader</span>
+              </div>
+              <b style="color:var(--dim)">ĐỘC LẬP</b>
+            </div>
+
+            <div class="toggle-row" style="border-top:1px solid var(--border);padding-top:8px;margin-top:6px">
+              <div>
+                <span class="toggle-label" style="color:var(--accent);font-weight:700">🚑 Tự Động Cứu Leader Khi Chết (Auto-Revive P1)</span>
+                <span class="toggle-desc">Khi Leader (P1) chết/ngã xuống, bot P2 (Couch Co-op) và đệ tự động chạy lại xác P1 và giữ nút B để hồi sinh P1</span>
+              </div>
+              <label class="toggle"><input type="checkbox" id="tog-auto-revive" checked onchange="cmdToggle('auto_revive', this.checked)"><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 3: TỰ BƠM MÁU / MANA ══════════════════ -->
+      <div id="tab-flasks" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Hồi phục</h1><p>Thiết lập ngưỡng sử dụng bình máu và mana.</p></div></header>
+        <div class="card" style="border-color:var(--red)">
+          <div class="card-title" style="color:var(--red)"> Tự Động Bơm Máu & Mana</div>
+          <div class="grid-2" style="margin-top:10px">
+            <!-- Life Flask Box -->
+            <div style="background:var(--bg2);padding:14px;border-radius:6px;border:1px solid rgba(239,68,68,0.25)">
+              <div class="card-header" style="margin-bottom:8px">
+                <b style="color:var(--red);font-size:13px"> Bình Máu</b>
+                <label class="toggle"><input type="checkbox" id="tog-flask-life" checked onchange="cmdToggle('flask_life', this.checked)"><span class="slider"></span></label>
+              </div>
+              <div class="slider-box">
+                <div class="slider-info">
+                  <span style="font-size:12px;color:var(--sub)">Bơm khi máu dưới:</span>
+                  <span id="val-hp-pct" class="slider-num">&lt; 70%</span>
+                </div>
+                <input type="range" min="30" max="90" value="70" step="5" oninput="updateParam('life_hp_pct', this.value, 'val-hp-pct', '%', '&lt; ')">
+              </div>
+
+              <div class="toggle-row" style="margin-top:8px">
+                <span class="toggle-label">Chống spam khi đang hồi máu</span>
+                <label class="toggle"><input type="checkbox" id="tog-flask-avoid-waste" checked onchange="cmdToggle('flask_avoid_waste', this.checked)"><span class="slider"></span></label>
+              </div>
+            </div>
+
+            <!-- Mana Flask Box -->
+            <div style="background:var(--bg2);padding:14px;border-radius:6px;border:1px solid rgba(59,130,246,0.25)">
+              <div class="card-header" style="margin-bottom:8px">
+                <b style="color:var(--cyan);font-size:13px"> Bình Mana</b>
+                <label class="toggle"><input type="checkbox" id="tog-flask-mana" checked onchange="cmdToggle('flask_mana', this.checked)"><span class="slider"></span></label>
+              </div>
+
+              <div class="slider-box">
+                <div class="slider-info">
+                  <span style="font-size:12px;color:var(--sub)">Bơm khi mana dưới:</span>
+                  <span id="val-mp-pct" class="slider-num">&lt; 45%</span>
+                </div>
+                <input type="range" min="15" max="70" value="45" step="5" oninput="updateParam('mana_mp_pct', this.value, 'val-mp-pct', '%', '&lt; ')">
+              </div>
+
+              <div class="toggle-row" style="margin-top:8px">
+                <span class="toggle-label">Bỏ qua Mana bị Aura khóa</span>
+                <label class="toggle"><input type="checkbox" id="tog-flask-ign-res" checked onchange="cmdToggle('flask_ignore_res', this.checked)"><span class="slider"></span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 4: TỰ NHẶT ĐỒ ══════════════════ -->
+      <!-- ══════════════════ TAB 4: NHẶT ĐỒ ══════════════════ -->
+      <div id="tab-pickup" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Nhặt đồ & bộ lọc</h1><p>Chọn những vật phẩm cần ưu tiên.</p></div></header>
+        <div class="card" style="border-color:var(--green)">
+          <div class="card-header">
+            <span class="card-title" style="color:var(--green)"> Lọc & Tự Động Nhặt Đồ</span>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="font-size:12px;color:var(--sub)">Nút Nhặt: <b style="color:var(--cyan)">[A]</b></span>
+              <label class="toggle"><input type="checkbox" id="tog-pickup-master" checked onchange="cmdToggle('loot', this.checked)"><span class="slider"></span></label>
+            </div>
+          </div>
+
+          <!-- General Pickup Settings -->
+          <div class="slider-box" style="margin-bottom:6px">
+            <div class="slider-info">
+              <span>Bán kính nhặt đồ:</span>
+              <span id="val-pickup-rad" class="slider-num">22 bước</span>
+            </div>
+            <input type="range" min="5" max="50" value="22" step="1" oninput="updateParam('pickup_radius', this.value, 'val-pickup-rad', ' bước')">
+          </div>
+
+          <!-- Party Loot Allocation Toggle -->
+          <div class="toggle-row" style="background:var(--bg2);padding:6px 10px;border-radius:4px;margin-bottom:6px">
+            <span class="toggle-label"> Chỉ nhặt đồ của Bot (Bỏ qua đồ của Leader)</span>
+            <label class="toggle"><input type="checkbox" id="tog-pick-allocated" onchange="cmdToggle('pickup_only_allocated', this.checked)"><span class="slider"></span></label>
+          </div>
+
+          <!-- 1. Currency Tier Dropdown -->
+          <div style="background:var(--bg2);padding:8px 10px;border-radius:4px;display:flex;flex-direction:column;gap:4px;margin-bottom:6px">
+            <span class="toggle-label"> Lọc Tiền Tệ (Currency Tier):</span>
+            <select id="sel-curr-tier" style="background:var(--bg0);color:var(--text);border:1px solid var(--border);padding:5px 8px;border-radius:4px;font-size:12px;outline:none" onchange="updateParam('pickup_currency_tier', this.value, 'curTierVal', '', '')">
+              <option value="3" selected>Tier 3: Nhặt Toàn Bộ Tiền (Từ Alchemy / Chance / Chaos / Divine)</option>
+              <option value="2">Tier 2: Trung Cấp (Từ Chaos / Exalted / Vaal trở lên)</option>
+              <option value="1">Tier 1: Cao Cấp (Chỉ Divine Orb & Mirror of Kalandra)</option>
+              <option value="0">Tắt Nhặt Currency</option>
+            </select>
+          </div>
+
+          <!-- 2. Other Item Categories -->
+          <div class="catalog-list" id="catalogList">
+            <div class="catalog-row">
+              <span class="catalog-name" style="color:var(--amber)"> Tiền Vàng (Gold)</span>
+              <label class="toggle"><input type="checkbox" id="tog-curr-gold" checked onchange="cmdToggle('pickup_gold', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="catalog-row">
+              <span class="catalog-name" style="color:var(--cyan)"> Bản Đồ Waystones (T1 - T16)</span>
+              <label class="toggle"><input type="checkbox" id="tog-curr-waystones" checked onchange="cmdToggle('pickup_waystones', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="catalog-row">
+              <span class="catalog-name" style="color:var(--green)"> Ngọc Kỹ Năng & Hỗ Trợ (Gems)</span>
+              <label class="toggle"><input type="checkbox" id="tog-curr-gems" checked onchange="cmdToggle('pickup_gems', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="catalog-row">
+              <span class="catalog-name" style="color:var(--amber)"> Trang Bị Unique</span>
+              <label class="toggle"><input type="checkbox" id="tog-curr-uniques" checked onchange="cmdToggle('pickup_uniques', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="catalog-row">
+              <span class="catalog-name" style="color:var(--sub)"> Phôi Trang Bị Craft (Bases)</span>
+              <label class="toggle"><input type="checkbox" id="tog-pick-bases" onchange="cmdToggle('pickup_bases', this.checked)"><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 5: THỐNG KÊ TIỀN TỆ ══════════════════ -->
+      <div id="tab-tracker" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Thống kê vật phẩm</h1><p>Theo dõi số lượng và giá trị ước tính trong phiên.</p></div></header>
+        <div class="card" style="border-color:var(--cyan)">
+          <div class="card-header">
+            <div>
+              <div class="card-title" style="color:var(--cyan)"> Thống Kê Giá Trị Nhặt Được (Currency Tracker)</div>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Đếm thời gian thực số lượng và quy đổi giá trị ra Divine</div>
+            </div>
+            <button class="btn btn-neutral btn-sm" onclick="cmdResetTracker()">↺ Làm Mới Phiên</button>
+          </div>
+
+          <div class="grid-3" style="margin-top:6px">
+            <div class="stat-card">
+              <span class="stat-title">TỔNG GIÁ TRỊ PHIÊN CHƠI</span>
+              <span id="trackerTotalDiv" class="stat-val">0.00 div</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-title">TỐC ĐỘ CÀY TIỀN / GIỜ</span>
+              <span id="trackerDivHr" class="stat-val">0.00 div/giờ</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-title">THỜI LƯỢNG PHIÊN</span>
+              <span id="trackerDuration" class="stat-val">00:00:00</span>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;background:var(--bg2);border-radius:6px;padding:10px">
+            <div class="card-title" style="font-size:12px">CHI TIẾT VẬT PHẨM ĐÃ NHẶT</div>
+            <div class="grid-4" style="margin-top:6px">
+              <div style="background:var(--bg1);padding:8px;border-radius:4px;text-align:center">
+                <div style="font-size:12px;color:var(--red);font-weight:700">DIVINE ORBS</div>
+                <div id="countDiv" style="font-size:16px;font-weight:900;color:var(--text);margin-top:3px">0</div>
+              </div>
+              <div style="background:var(--bg1);padding:8px;border-radius:4px;text-align:center">
+                <div style="font-size:12px;color:var(--amber);font-weight:700">EXALTED ORBS</div>
+                <div id="countExalt" style="font-size:16px;font-weight:900;color:var(--text);margin-top:3px">0</div>
+              </div>
+              <div style="background:var(--bg1);padding:8px;border-radius:4px;text-align:center">
+                <div style="font-size:12px;color:var(--cyan);font-weight:700">CHAOS ORBS</div>
+                <div id="countChaos" style="font-size:16px;font-weight:900;color:var(--text);margin-top:3px">0</div>
+              </div>
+              <div style="background:var(--bg1);padding:8px;border-radius:4px;text-align:center">
+                <div style="font-size:12px;color:var(--amber);font-weight:700">TỔNG VÀNG (GOLD)</div>
+                <div id="countGold" style="font-size:16px;font-weight:900;color:var(--text);margin-top:3px">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 6: CẤT HÒM ══════════════════ -->
+      <div id="tab-stash" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Cất đồ vào hòm</h1><p>Thiết lập thao tác kho đồ và phím tắt.</p></div></header>
+        <div class="card" style="border-color:var(--border)">
+          <div class="card-header">
+            <span class="card-title" style="color:var(--accent)"> Tự Động Cất Đồ Vào Hòm (Hideout)</span>
+            <label class="toggle"><input type="checkbox" id="tog-stash" checked onchange="cmdToggle('stash_enabled', this.checked)"><span class="slider"></span></label>
+          </div>
+
+          <div style="background:var(--bg2);padding:8px 10px;border-radius:5px;display:flex;flex-direction:column;gap:6px">
+            <div class="toggle-row">
+              <span class="toggle-label">Tab hòm đồ đích:</span>
+              <select style="background:var(--bg0);color:var(--text);border:1px solid var(--border);padding:3px 6px;border-radius:4px;font-size:12px">
+                <option>G1 (Guild Stash 1)</option>
+                <option>G2 (Guild Stash 2)</option>
+                <option>Currency (Cá Nhân)</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Phím tắt kích hoạt tại Hideout:</span>
+              <b style="color:var(--accent);font-size:12px">[F9]</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 7: MỜI NHÓM PARTY ══════════════════ -->
+      <div id="tab-party" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Nhóm nhân vật</h1><p>Cấu hình lời mời và các thao tác nhóm.</p></div></header>
+        <div class="card" style="border-color:var(--green)">
+          <div class="card-header">
+            <span class="card-title" style="color:var(--green)"> Tự Động Tạo & Mời Party</span>
+            <label class="toggle"><input type="checkbox" id="tog-party" onchange="cmdToggle('party_enabled', this.checked)"><span class="slider"></span></label>
+          </div>
+
+          <div style="background:var(--bg2);padding:8px 10px;border-radius:5px;display:flex;flex-direction:column;gap:6px">
+            <div class="slider-box">
+              <span class="toggle-label">Tên nhân vật Leader:</span>
+              <input type="text" placeholder="Nhập tên nhân vật..." style="background:var(--bg0);color:var(--text);border:1px solid var(--border);padding:5px 8px;border-radius:4px;outline:none;margin-top:3px;font-size:12px">
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Phím khôi phục nhóm nhanh:</span>
+              <b style="color:var(--green);font-size:12px">[F8]</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 8: CHIẾN ĐẤU NHÓM ══════════════════ -->
+      <div id="tab-combat" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Vai trò trong nhóm</h1><p>Xem cách phân vai giữa các nhân vật.</p></div></header>
+        <div class="card" style="border-color:var(--border)">
+          <div class="card-header">
+            <span class="card-title" style="color:var(--amber)"> Phân Vai Đội Hình 6 Nhân Vật Full Party</span>
+            <label class="toggle"><input type="checkbox" id="tog-combat" onchange="cmdToggle('party_combat_enabled', this.checked)"><span class="slider"></span></label>
+          </div>
+
+          <div class="grid-3" style="margin-top:6px;gap:6px">
+            <!-- Client 1 -->
+            <div style="background:var(--bg2);padding:8px;border-radius:5px;border-left:3px solid var(--cyan)">
+              <div style="color:var(--cyan);font-weight:700;font-size:12px"> Client 1 (Slot 0 + 1)</div>
+              <div style="font-size:12px;color:var(--sub);margin-top:3px"> <b>Char 1</b>: Main DPS (Bạn Tự Lái)</div>
+              <div style="font-size:12px;color:var(--green);margin-top:2px"> <b>Char 2</b>: Aurabot Buff Giáp/Kháng</div>
+            </div>
+
+            <!-- Client 2 -->
+            <div style="background:var(--bg2);padding:8px;border-radius:5px;border-left:3px solid var(--green)">
+              <div style="color:var(--green);font-weight:700;font-size:12px"> Client 2 (Slot 2 + 3)</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:3px"> <b>Char 3</b>: Culler / Shock Debuff</div>
+              <div style="font-size:12px;color:var(--cyan);margin-top:2px"> <b>Char 4</b>: Auto Looter 1 (Hút Bụi)</div>
+            </div>
+
+            <!-- Client 3 -->
+            <div style="background:var(--bg2);padding:8px;border-radius:5px;border-left:3px solid var(--border)">
+              <div style="color:var(--accent);font-weight:700;font-size:12px"> Client 3 (Slot 4 + 5)</div>
+              <div style="font-size:12px;color:var(--red);margin-top:3px"> <b>Char 5</b>: Cursebot Nguyền Rủa</div>
+              <div style="font-size:12px;color:var(--cyan);margin-top:2px"> <b>Char 6</b>: Auto Looter 2 (Hút Bụi)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 9: CHẾ TẠO MAP ══════════════════ -->
+      <div id="tab-waystones" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Chế tạo map</h1><p>Các tùy chọn chuẩn bị Waystone.</p></div></header>
+        <div class="card" style="border-color:var(--border)">
+          <div class="card-header">
+            <span class="card-title" style="color:var(--red)"> Tự Động Chế Tạo Map</span>
+            <label class="toggle"><input type="checkbox" id="tog-waystones" onchange="cmdToggle('waystones_enabled', this.checked)"><span class="slider"></span></label>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:3px;margin-top:6px">
+            <div class="toggle-row">
+              <span class="toggle-label">Giám định cuộn Scroll ID</span>
+              <label class="toggle"><input type="checkbox" id="tog-waystone-id" checked onchange="cmdToggle('waystones_id', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Đập ngọc Alchemy lên Rare</span>
+              <label class="toggle"><input type="checkbox" id="tog-waystone-alch" checked onchange="cmdToggle('waystones_alch', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Đập Exalted 6 mod</span>
+              <label class="toggle"><input type="checkbox" id="tog-waystone-exalt" onchange="cmdToggle('waystones_exalt', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Tự cất Map hoàn tất vào hòm</span>
+              <label class="toggle"><input type="checkbox" id="tog-waystone-stash" checked onchange="cmdToggle('waystones_stash', this.checked)"><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 10: ĐỒNG BỘ TAY CẦM ══════════════════ -->
+      <div id="tab-shared" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Đồng bộ điều khiển</h1><p>Thiết lập tay cầm và các thao tác dùng chung.</p></div></header>
+        <div class="card" style="border-color:var(--border)">
+          <div class="card-title" style="color:var(--accent)">🎮 Chính sách điều khiển follower</div>
+          <p style="margin-top:10px"><b>Không sao chép phím thô từ leader.</b> Mỗi follower nhận một báo cáo controller riêng do engine tính từ vị trí và trạng thái của chính nhân vật đó.</p>
+          <div style="display:grid;gap:7px;margin-top:12px">
+            <div class="toggle-row"><span class="toggle-label">Di chuyển / né vật cản</span><b>Tính riêng</b></div>
+            <div class="toggle-row"><span class="toggle-label">Nhặt đồ / flask / chuyển khu vực</span><b>Action riêng</b></div>
+            <div class="toggle-row"><span class="toggle-label">Broadcast nút A</span><b>Chỉ khi gọi lệnh rõ ràng</b></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 12: POESMOOTHER 2 (HIỆU NĂNG & ĐỒ HỌA) ==================== -->
+      <div id="tab-smoother" class="tab-pane">
+        <header class="page-heading">
+          <div>
+            <p class="section-caption">POEVH / Cấu hình</p>
+            <h1>PoeSmoother 2 — Tối Ưu Đồ Họa & Bản Đồ</h1>
+            <p>Bộ công cụ tối ưu đồ họa, mở rộng tầm nhìn Camera, mở sáng Mini-Map & Atlas, tô màu Mod Map.</p>
+          </div>
+        </header>
+
+        <!-- Thẻ 1: Đường Dẫn File Game / GGPK Cần Sửa -->
+        <div class="card" style="border-color:var(--accent)">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--accent)">📁 Đường Dẫn File Game / GGPK Cần Sửa</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Chỉ định file hoặc thư mục cài đặt PoE 2 để áp dụng patch trực tiếp</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span id="smoother-ini-badge" class="badge" style="background:var(--bg2);color:var(--sub);font-size:11px;padding:4px 8px;border:1px solid var(--border)">Đang kiểm tra...</span>
+              <button class="btn btn-neutral btn-sm" onclick="autoDetectGamePath()">🔍 Tự tìm file</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="smoother-game-path" class="profile-control" placeholder="D:\Grinding Gear Games\Path of Exile 2\PathOfExile.exe" style="flex:1;margin-top:0">
+          </div>
+          <div id="smoother-ini-path" style="font-size:11.5px;color:var(--dim);margin-top:6px">File cấu hình: Đang dò tìm...</div>
+        </div>
+
+        <!-- Thẻ 2: CÁC TÍNH NĂNG HAY DÙNG NHẤT (PRIMARY CONTROLS) -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--cyan)">⚡ Tính Năng Hay Dùng (Camera & Bản Đồ)</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Mở rộng tầm nhìn camera và theo dõi bản đồ an toàn</div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-neutral btn-sm" onclick="applyPoeSmootherOptimal()">⚡ Cấu hình chuẩn</button>
+            </div>
+          </div>
+
+          <!-- Slider Zoom -->
+          <div class="slider-box" style="background:var(--bg2);padding:14px;border-radius:6px;border:1px solid var(--border);margin-bottom:12px">
+            <div class="slider-info">
+              <span style="font-weight:600;font-size:13px;color:var(--text)">🔭 Tầm Nhìn Camera (Zoom Out Distance):</span>
+              <span id="ps2-zoom-display" class="slider-num" style="font-size:15px;color:var(--cyan)">1.35x</span>
+            </div>
+            <input type="range" id="ps2-zoom-slider" min="1.0" max="2.5" step="0.05" value="1.35" oninput="onZoomSliderInput(this.value)">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:4px">
+              <span>1.0x (Mặc định)</span>
+              <span>1.25x</span>
+              <span>1.5x</span>
+              <span>1.75x</span>
+              <span>2.0x</span>
+              <span>2.5x (Siêu rộng)</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+              <button class="btn btn-neutral btn-sm" onclick="setZoomValue(1.0)">↺ Mặc định (1.0x)</button>
+              <button class="btn btn-neutral btn-sm" onclick="setZoomValue(1.35)">⚡ Chuẩn Bot (1.35x)</button>
+              <button class="btn btn-neutral btn-sm" onclick="setZoomValue(1.8)">🔭 Toàn Cảnh (1.8x)</button>
+              <button class="btn btn-neutral btn-sm" onclick="setZoomValue(2.4)">🦅 Tối Đa (2.4x)</button>
+            </div>
+          </div>
+
+          <!-- Quick Map Toggles -->
+          <div class="grid-2">
+            <div class="toggle-row" style="background:var(--bg2);padding:12px 14px;border-radius:6px;border:1px solid var(--border)">
+              <div>
+                <span class="toggle-label" style="color:var(--text)">🗺️ Mở Sáng Mini-Map (Maps Revealed) <span class="app-badge" style="background:#e8f1df;color:#395329;border-color:#a8bd97;font-size:10px;margin-left:4px">GGPK asset</span></span>
+                <small class="toggle-desc">Sửa đúng hai shader Mini-map trong Content.ggpk và lưu backup từng asset.</small>
+              </div>
+              <label class="toggle"><input type="checkbox" id="ps2-maps-revealed"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row" style="background:var(--bg2);padding:12px 14px;border-radius:6px;border:1px solid var(--border)">
+              <div>
+                <span class="toggle-label" style="color:var(--text)">🌌 Mở Sáng Bản Đồ Atlas (Atlas Revealed) <span class="app-badge" style="background:#e8f1df;color:#395329;border-color:#a8bd97;font-size:10px;margin-left:4px">GGPK asset</span></span>
+                <small class="toggle-desc">Xóa node/link fog-of-war trong graph Atlas; tự từ chối nếu asset của build hiện tại không khớp.</small>
+              </div>
+              <label class="toggle"><input type="checkbox" id="ps2-atlas-revealed"><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thẻ 3: Color Mods & Map Highlights Editor -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--amber)">🎨 Color Mods Editor — Cảnh Báo & Highlight Mod</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Tô màu mod nguy hiểm, mod thưởng và tự động chặn mở map nguy hiểm</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+              <span style="font-size:12px;font-weight:600;color:var(--text)">Tô màu mod trong game:</span>
+              <label class="toggle" title="Patch stat descriptions để tô màu mod Waystone"><input type="checkbox" id="ps2-color-mods-enabled" checked><span class="slider"></span></label>
+              <span style="font-size:12px;font-weight:600;color:var(--text)">Chặn map tử thần:</span>
+              <label class="toggle" title="Tự động chặn mở map có mod tử thần"><input type="checkbox" id="ps2-block-deadly-mods" checked onchange="saveWaystoneColorSettings()"><span class="slider"></span></label>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <!-- Nhóm 1: Mod Tử Thần -->
+            <div style="background:var(--red-bg);border:1px solid var(--red-border);padding:12px;border-radius:6px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                <span style="font-weight:700;color:var(--red);font-size:12.5px">🔴 Mod Tử Thần (Deadly Mods — Khuyên Chặn Mở)</span>
+                <span class="app-badge" style="background:var(--bg-card);color:var(--red);border-color:var(--red-border)">Tự động chặn</span>
+              </div>
+              <div class="grid-2" style="gap:6px">
+                <div style="font-size:12px"><span style="color:var(--red)">•</span> Phản Đòn Sát Thương (Reflect Phys / Elemental)</div>
+                <div style="font-size:12px"><span style="color:var(--red)">•</span> Không Thể Hồi Máu / Mana (Cannot Regenerate)</div>
+                <div style="font-size:12px"><span style="color:var(--red)">•</span> -% Kháng Tối Đa (-% Maximum Resistances)</div>
+                <div style="font-size:12px"><span style="color:var(--red)">•</span> Không Thể Hút Máu / Mana (Cannot Leech)</div>
+              </div>
+            </div>
+
+            <!-- Nhóm 2: Mod Cảnh Báo -->
+            <div style="background:#fdf6e2;border:1px solid #e0c878;padding:12px;border-radius:6px">
+              <div style="font-weight:700;color:var(--amber);font-size:12.5px;margin-bottom:6px">🟡 Mod Cảnh Báo (Warning Mods — Cân Nhắc)</div>
+              <div class="grid-2" style="gap:6px">
+                <div style="font-size:12px"><span style="color:var(--amber)">•</span> Lời Nguyền Xiềng Xích Khi Đánh Trúng (Temporal Chains)</div>
+                <div style="font-size:12px"><span style="color:var(--amber)">•</span> Quái Tăng % Sát Thương Nguyên Tố (Extra Elemental Dmg)</div>
+              </div>
+            </div>
+
+            <!-- Nhóm 3: Mod Thưởng Rarity & Quality -->
+            <div style="background:var(--green-bg);border:1px solid var(--green-border);padding:12px;border-radius:6px">
+              <div style="font-weight:700;color:var(--green);font-size:12.5px;margin-bottom:6px">🟢 Mod Thưởng & Highlight Rarity / Quality</div>
+              <div class="grid-2" style="gap:6px">
+                <div style="font-size:12px"><span style="color:var(--green)">•</span> +% Số Lượng Đồ Rơi (Increased Item Quantity)</div>
+                <div style="font-size:12px"><span style="color:var(--green)">•</span> +% Độ Hiếm Đồ Rơi (Increased Item Rarity)</div>
+                <div style="font-size:12px"><span style="color:var(--green)">•</span> +% Mật Độ Quái Vật Trong Map (Monster Pack Size)</div>
+                <div style="font-size:12px"><span style="color:var(--green)">•</span> Tăng Tỷ Lệ Rơi Waystone Cấp Cao (Extra Waystones)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thẻ 4: CÀI ĐẶT NÂNG CAO (COLLAPSIBLE ACCORDION) -->
+        <div class="card">
+          <div class="card-header" style="cursor:pointer;margin-bottom:0" onclick="toggleSmootherAdvanced()">
+            <div>
+              <span class="card-title">⚙️ Cài Đặt Đồ Họa & Âm Thanh Nâng Cao</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Khử bóng, hạt particles, tiếng chiêu thức và giới hạn FPS</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button type="button" class="btn btn-neutral btn-sm" id="btn-smoother-adv-toggle">▼ Mở rộng</button>
+            </div>
+          </div>
+
+          <div id="smoother-adv-content" style="display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+            <div class="grid-2" style="gap:14px">
+              <!-- Cột Trái: Đồ họa -->
+              <div style="background:var(--bg2);padding:14px;border-radius:6px;border:1px solid var(--border)">
+                <div style="font-weight:700;font-size:13px;color:var(--cyan);margin-bottom:8px">🎨 Khử Hiệu Ứng & Vân Bề Mặt</div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- remove shadows <small class="toggle-desc">Tắt hoàn toàn bóng đổ</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-remove-shadows" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- remove darkness / better lights <small class="toggle-desc">Làm sáng hầm ngục, xóa góc tối</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-remove-darkness"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- remove soft particles <small class="toggle-desc">Khử khói, sương, bụi lửa</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-remove-soft-particles" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- zero particles <small class="toggle-desc">Triệt tiêu 100% hạt particles</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-zero-particles"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- zero effects <small class="toggle-desc">Tối giản chiêu thức</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-zero-effects"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- clean terrain <small class="toggle-desc">Địa hình phẳng sạch, hạ texture</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-clean-terrain" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- zero materials <small class="toggle-desc">Chế độ đất sét siêu nhẹ</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-zero-materials"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- rain & clouds patch <small class="toggle-desc">Tắt hiệu ứng mưa và mây</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-patch-rain"><span class="slider"></span></label>
+                </div>
+              </div>
+
+              <!-- Cột Phải: Âm thanh & FPS -->
+              <div style="background:var(--bg2);padding:14px;border-radius:6px;border:1px solid var(--border)">
+                <div style="font-weight:700;font-size:13px;color:var(--accent);margin-bottom:8px">🔊 Âm Thanh & Khung Hình</div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- disable sounds <small class="toggle-desc">Tắt âm thanh để giảm 15% CPU</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-disable-sounds"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- silent skills <small class="toggle-desc">Tắt tiếng chiêu thức nhân vật</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-silent-skills"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- silent monsters <small class="toggle-desc">Tắt tiếng gầm rú quái vật</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-silent-monsters"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <span class="toggle-label">- high performance <small class="toggle-desc">Chế độ hiệu năng cao cho Bot</small></span>
+                  <label class="toggle"><input type="checkbox" id="ps2-high-performance" checked><span class="slider"></span></label>
+                </div>
+                <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px">
+                  <label for="smoother-global-bg-fps" style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Giới hạn FPS nền (Background FPS cho Bot)</label>
+                  <select id="smoother-global-bg-fps" class="profile-control">
+                    <option value="10">10 FPS (Siêu nhẹ)</option>
+                    <option value="15" selected>15 FPS (Chuẩn Bot)</option>
+                    <option value="20">20 FPS</option>
+                    <option value="30">30 FPS</option>
+                    <option value="60">60 FPS</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="card" style="border-color:var(--accent);background:var(--bg-card)">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div>
+              <span id="ps2-apply-status" style="font-size:12.5px;color:var(--sub);font-weight:600">Sẵn sàng. Hãy thoát hẳn game trước khi sửa Content.ggpk.</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-neutral" id="btn-probe-ggpk" onclick="probeGgpkCompatibility()">Kiểm tra tương thích bản game</button>
+              <button class="btn btn-neutral" onclick="applyPoeSmootherCheckAll()">☑️ Chọn tất cả</button>
+              <button class="btn btn-neutral" onclick="restoreAllOriginal()">🔄 Restore Original (Khôi Phục Gốc)</button>
+              <button class="btn btn-primary" id="btn-apply-ps2" onclick="applyPoeSmootherChanges()">🚀 Áp Dụng Ngay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+            <!-- ==================== TAB: CHECK GIA & TRADE ==================== -->
+      <div id="tab-trade" class="tab-pane">
+        <header class="page-heading">
+          <div>
+            <p class="section-caption">POEVH / Tien ich</p>
+            <h1>Check giá vật phẩm</h1>
+            <p>Nhấn Alt+E khi đang rê chuột lên item để mở bảng giá nổi trên game.</p>
+          </div>
+        </header>
+
+        <!-- Card 1: Input Section -->
+        <div class="card" style="border-color:var(--cyan)">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--cyan)">Tra cứu nhanh</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Dữ liệu lấy trực tiếp từ Path of Exile Trade2 khi dùng Alt+E trong game.</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" onclick="checkTradeClipboard()">Đọc Clipboard</button>
+              <button class="btn btn-neutral" id="trade-dashboard-search" onclick="searchCurrentTradeItem()" disabled>Tìm trên thị trường</button>
+            </div>
+          </div>
+          <div id="trade-status" style="margin-top:10px;font-size:12.5px;color:var(--sub);font-weight:600">Sẵn sàng. Trong game, dùng Alt+E để mở overlay.</div>
+        </div>
+
+        <!-- Card 2: Item Result -->
+        <div id="trade-result-container" class="card" style="display:none;border-color:var(--border)">
+          <div class="card-header" style="align-items:flex-start;gap:12px">
+            <div style="flex:1">
+              <div id="trade-item-rarity" class="badge" style="font-size:11px;margin-bottom:6px;border:1px solid;display:inline-block">RARE</div>
+              <div id="trade-item-title" style="font-size:20px;font-weight:700;line-height:1.2;color:var(--text)">Ten Vat Pham</div>
+              <div id="trade-item-base" style="font-size:13px;color:var(--sub);margin-top:2px">Base Type</div>
+              <div id="trade-item-meta" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px"></div>
+            </div>
+            <!-- Price Banner -->
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;min-width:200px;text-align:center">
+              <div style="font-size:11px;color:var(--sub);margin-bottom:4px">TRUNG VỊ LISTING</div>
+              <div id="trade-price-val" style="font-size:18px;font-weight:700;color:var(--cyan)">-- Ex</div>
+              <div id="trade-chaos-val" style="font-size:12px;color:var(--sub);margin-top:2px"></div>
+              <div id="trade-conf-badge" class="badge" style="margin-top:8px;font-size:11px"></div>
+            </div>
+          </div>
+          <div id="trade-note" style="font-size:12px;color:var(--sub);margin:8px 0 12px;padding:8px 10px;background:var(--bg2);border-radius:5px;border:1px solid var(--border)"></div>
+
+          <!-- Mod Filter List -->
+          <div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:8px">Modifier dùng để lọc kết quả</div>
+          <div id="trade-item-mods"></div>
+        </div>
+
+        <!-- Card 3: History -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">&#x1F4DC; Lich Su Tra Cuu (Phien nay)</span>
+            <button class="btn btn-neutral btn-sm" onclick="tradeHistory=[];renderTradeHistory()">Xoa lich su</button>
+          </div>
+          <div id="trade-history-list">
+            <div style="color:var(--dim);font-size:12px;font-style:italic">Chua co luot tra cuu nao trong phien nay.</div>
+          </div>
+        </div>
+      </div>
+      <!-- ==================== TAB: EXPEDITION RADAR ==================== -->
+      <div id="tab-expedition" class="tab-pane">
+        <header class="page-heading">
+          <div>
+            <p class="section-caption">POEVH / Expedition</p>
+            <h1>Expedition Radar</h1>
+            <p>Quét Rune Station thật trong map, tính tổ hợp reward và sắp xếp theo giá trị.</p>
+          </div>
+        </header>
+        <div class="card" style="border-color:var(--amber)">
+          <div class="card-header">
+            <div><span class="card-title" style="color:var(--amber)">Radar realtime trong game</span><div style="font-size:12px;color:var(--sub);margin-top:3px">Overlay chỉ tự mở một lần cho mỗi map. Đóng rồi sẽ không tự bật lại cho tới map kế tiếp.</div></div>
+            <span id="expedition-status" class="badge">Tắt</span>
+          </div>
+          <div class="toggle-row">
+            <div><span class="toggle-label">Bật Expedition Radar</span><span class="toggle-desc">Đọc memory ở chế độ chỉ-đọc và hiện overlay khi phát hiện Rune Station.</span></div>
+            <label class="toggle"><input id="exp-enabled" type="checkbox" onchange="saveExpeditionConfig()"><span class="slider"></span></label>
+          </div>
+          <div class="grid-2" style="margin-top:12px;gap:12px">
+            <label class="profile-label">Client đọc memory<select id="exp-client" name="exp-client" autocomplete="off" class="profile-control" onchange="saveExpeditionConfig()"><option value="1">Client 1 / P1</option><option value="2">Client 2 / P2</option><option value="3">Client 3 / P3</option></select></label>
+            <label class="profile-label">League price-check<input id="exp-league" name="exp-league" autocomplete="off" class="profile-control" type="text" value="Standard" maxlength="80" onchange="saveExpeditionConfig()"></label>
+            <label class="profile-label">Giá trị tối thiểu (Exalted)<input id="exp-min-value" name="exp-min-value" autocomplete="off" class="profile-control" type="number" min="0" step="0.1" value="0" onchange="saveExpeditionConfig()"></label>
+            <label class="profile-label">Số dòng mỗi trụ<input id="exp-max-rows" name="exp-max-rows" autocomplete="off" class="profile-control" type="number" min="1" max="30" value="8" onchange="saveExpeditionConfig()"></label>
+            <label class="profile-label">Chu kỳ scan (ms)<input id="exp-interval" name="exp-interval" autocomplete="off" class="profile-control" type="number" min="400" max="3000" value="650" onchange="saveExpeditionConfig()"></label>
+          </div>
+          <div class="toggle-row" style="margin-top:12px"><div><span class="toggle-label">Hiện reward chưa có giá</span><span class="toggle-desc">Giữ lại recipe nhưng đánh dấu “Chưa có giá”.</span></div><label class="toggle"><input id="exp-show-unpriced" type="checkbox" checked onchange="saveExpeditionConfig()"><span class="slider"></span></label></div>
+          <div id="exp-config-status" role="status" aria-live="polite" style="margin-top:10px;color:var(--sub);font-size:12px">Đang tải cấu hình…</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Trạng thái phiên hiện tại</span><button class="btn btn-neutral btn-sm" onclick="refreshExpeditionStatus()">Làm mới</button></div>
+          <pre id="exp-status-detail" role="status" aria-live="polite" style="white-space:pre-wrap;color:var(--sub);font-size:12px;margin:0">Chưa có snapshot Expedition.</pre>
+        </div>
+      </div>
+      <!-- ==================== TAB: LEVELING & QUEST ==================== -->
+      <div id="tab-leveling" class="tab-pane">
+        <header class="page-heading">
+          <div>
+            <p class="section-caption">POEVH / Tiện ích</p>
+            <h1>Hướng Dẫn Leveling & Quest</h1>
+            <p>Tự động phát hiện map qua log game (Client.txt), điều khiển Mini HUD và theo dõi nhiệm vụ từng Act.</p>
+          </div>
+        </header>
+
+        <!-- Card 1: Điều Khiển Mini HUD & Trạng Thái -->
+        <div class="card" style="border-color:var(--gold,#c8a75b)">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--gold,#c8a75b)">Điều khiển Mini HUD Trên Game</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:3px">
+                Bảng quest mini nổi trên màn hình POE2, tự động nhảy quest khi qua cổng map. Phím tắt toàn cục: <strong>F6</strong>.
+              </div>
+            </div>
+            <span id="leveling-hud-status-badge" class="badge">Tắt</span>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <span class="toggle-label">Bật Mini HUD trên màn hình game [F6]</span>
+              <span class="toggle-desc">Hiện cửa sổ quest mini nổi trong game, hỗ trợ kéo thả và thu gọn.</span>
+            </div>
+            <label class="toggle">
+              <input id="leveling-hud-toggle" type="checkbox" onchange="toggleLevelingOverlay(this.checked)">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:10px 14px;background:var(--bg2);border-radius:6px;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:13px;font-weight:600;color:var(--text)">Map hiện tại:</span>
+              <span id="leveling-current-zone-display" style="font-size:13px;font-weight:700;color:var(--sub)">Chưa vào map (chờ Client.txt)</span>
+              <button id="btn-jump-current-zone" class="btn btn-neutral btn-sm" style="display:none" onclick="jumpToCurrentZone()">🎯 Nhảy tới map này</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-neutral btn-sm" onclick="resetLevelingProgress()">🔄 Xóa tick làm lại</button>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div style="margin-top:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin-bottom:6px">
+              <span>Tiến độ hoàn thành nhiệm vụ</span>
+              <span id="leveling-progress-text" style="font-weight:700;color:var(--gold-bright,#f0d887)">0 / 0 nhiệm vụ (0%)</span>
+            </div>
+            <div style="width:100%;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+              <div id="leveling-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg, #c8a75b, #f0d887);transition:width 0.3s ease"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Danh Sách Khu Vực & Nhiệm Vụ -->
+        <div class="card">
+          <div class="card-header" style="flex-wrap:wrap;gap:12px">
+            <div>
+              <span class="card-title">Danh Sách Khu Vực Theo Act</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Chọn Act hoặc tìm kiếm để xem danh sách nhiệm vụ, waypoint và mẹo đánh boss.</div>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="btn btn-sm leveling-act-btn btn-primary" onclick="filterLevelingAct('all', this)">Tất cả</button>
+              <button class="btn btn-sm leveling-act-btn btn-neutral" onclick="filterLevelingAct('act1', this)">Act I</button>
+              <button class="btn btn-sm leveling-act-btn btn-neutral" onclick="filterLevelingAct('act2', this)">Act II</button>
+              <button class="btn btn-sm leveling-act-btn btn-neutral" onclick="filterLevelingAct('act3', this)">Act III</button>
+              <button class="btn btn-sm leveling-act-btn btn-neutral" onclick="filterLevelingAct('act4', this)">Act IV</button>
+              <button class="btn btn-sm leveling-act-btn btn-neutral" onclick="filterLevelingAct('interlude', this)">Interlude</button>
+            </div>
+          </div>
+
+          <div style="margin-bottom:14px">
+            <input type="text" id="leveling-search-input" class="profile-control" placeholder="🔍 Tìm kiếm tên map, boss hoặc vật phẩm nhiệm vụ..." oninput="onLevelingSearchInput(this.value)" style="width:100%">
+          </div>
+
+          <div id="leveling-zones-container">
+            <!-- Zones will be dynamically rendered here by leveling-tab.js -->
+          </div>
+        </div>
+      </div>
+      <!-- Instance identity is independent of Steam / Epic / Standalone. -->
+      <div id="tab-client-mgr" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Quản lý instance</h1><p>Mỗi instance có cấu hình, process và tài khoản riêng.</p></div></header>
+        <div class="card">
+          <div class="card-title">Quản lý instance</div>
+          <p style="font-size:12px;color:var(--dim)">
+            Mỗi ID là một profile riêng; nhiều profile có thể cùng là Standalone.
+            Bạn có thể chọn Steam làm main. Steam/Epic mở thủ công qua launcher.
+            Reset mô phỏng không xóa profile đã lưu.
+          </p>
+          <p style="font-size:12px;color:var(--amber)">
+            Gắn PID xác nhận process ở mức Windows, không xác nhận đọc dữ liệu nhân vật.
+            Main ở đây là profile chính; chưa chuyển nguồn memory reader/tay cầm theo PID.
+            Tự đăng nhập đang thử nghiệm cho Standalone. Ghép tay cầm theo process và áp đồ họa riêng chưa được hỗ trợ.
+          </p>
+          <button class="btn btn-primary" id="scan-instances" onclick="instanceCommand('scan_instances')">Quét process</button>
+          <button class="btn btn-neutral" id="add-instance" onclick="instanceCommand('add_instance')">Thêm instance</button>
+          <p id="instance-persistence-note" style="font-size:12px;color:var(--sub)"></p>
+          <p id="instance-processes-status" role="status" style="font-size:12px;color:var(--sub)"></p>
+          <p style="font-size:12px;color:var(--dim)">Chỉ mở đường dẫn EXE đã lưu cho từng profile; không tự chọn một bản cài đặt khác.</p>
+          <div id="instance-command-status" role="status" aria-live="polite"></div>
+        </div>
+        <div id="instance-profile-list" class="grid-3" style="gap:10px"></div>
+      </div>
+
+      <div id="tab-physical-controllers" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Thiết bị</p><h1>Tay cầm vật lý</h1><p>Kiểm tra tay cầm USB hoặc không dây mà Windows đang nhận.</p></div></header>
+        <section class="controller-summary" aria-labelledby="physical-controller-heading">
+          <div>
+            <p class="controller-kicker">THIẾT BỊ XINPUT</p>
+            <h2 id="physical-controller-heading">Đang quét tay cầm…</h2>
+            <p id="physical-controller-subtitle">Danh sách tự cập nhật cùng trạng thái ứng dụng.</p>
+          </div>
+          <div class="controller-count" aria-live="polite"><strong id="physical-controller-count">—</strong><span>đang kết nối</span></div>
+        </section>
+        <div id="physical-controller-error" class="card controller-error" role="status" aria-live="polite" hidden></div>
+        <section id="physical-controller-list" class="controller-device-list" aria-live="polite"></section>
+        <div class="controller-footnote">
+          <span class="controller-footnote-mark" aria-hidden="true">i</span>
+          <div><strong>Chỉ hiện tay cầm vật lý.</strong><br><span id="virtual-controller-note">Controller Xbox ảo do POEVH tạo được tách khỏi danh sách này.</span></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ TAB 14: BÀN PHÍM & PHÍM TẮT ══════════════════ -->
+      <div id="tab-keybinds" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Phím tắt, Chuột & WASD</h1><p>Gán nút chuột, 2 nút hông, bàn phím và thử nghiệm các thao tác điều khiển.</p></div></header>
+
+        <!-- Virtual Controller Mapping Configuration Card -->
+        <div class="card" style="border-color:var(--accent);background:var(--bg-card);margin-bottom:14px">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--accent)">🎮 Cài đặt controller giả lập</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Bảng cấu hình ánh xạ Bàn phím & Chuột sang các nút tay cầm ảo (Virtual Xbox 360 Controller)</div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-neutral btn-sm" onclick="applyCtrlPreset('default')">↺ Mặc định (WASD)</button>
+              <button class="btn btn-neutral btn-sm" onclick="applyCtrlPreset('mouse')">🖱️ Phím chuột (PoE 1)</button>
+            </div>
+          </div>
+
+          <div class="grid-4" style="margin-top:12px;gap:12px">
+            <!-- Group 1: Left Stick (Movement) -->
+            <div style="background:var(--bg2);padding:12px;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-weight:700;color:var(--cyan);font-size:13px;margin-bottom:10px">🕹️ Cần Di Chuyển (Left Stick)</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Đi Lên (Up)</span>
+                    <span class="keybind-desc">Cần trái đẩy lên</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="move_up" onclick="startKeyRecord(this, 'move_up')">
+                    <span class="keybind-val">W</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Đi Xuống (Down)</span>
+                    <span class="keybind-desc">Cần trái kéo xuống</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="move_down" onclick="startKeyRecord(this, 'move_down')">
+                    <span class="keybind-val">S</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Sang Trái (Left)</span>
+                    <span class="keybind-desc">Cần trái gạt trái</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="move_left" onclick="startKeyRecord(this, 'move_left')">
+                    <span class="keybind-val">A</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Sang Phải (Right)</span>
+                    <span class="keybind-desc">Cần trái gạt phải</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="move_right" onclick="startKeyRecord(this, 'move_right')">
+                    <span class="keybind-val">D</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 2: Action Buttons (A, B, X, Y) -->
+            <div style="background:var(--bg2);padding:12px;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-weight:700;color:var(--green);font-size:13px;margin-bottom:10px">⚔️ Nút Chiêu Chính (ABXY)</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút A</span>
+                    <span class="keybind-desc">Đánh / Nhặt / Lăn né</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_a" onclick="startKeyRecord(this, 'button_a')">
+                    <span class="keybind-val">Space</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút X</span>
+                    <span class="keybind-desc">Kỹ năng chính 1</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_x" onclick="startKeyRecord(this, 'button_x')">
+                    <span class="keybind-val">Q</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút Y</span>
+                    <span class="keybind-desc">Kỹ năng chính 2</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_y" onclick="startKeyRecord(this, 'button_y')">
+                    <span class="keybind-val">E</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút B</span>
+                    <span class="keybind-desc">Kỹ năng 3 / Hồi sinh</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_b" onclick="startKeyRecord(this, 'button_b')">
+                    <span class="keybind-val">R</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 3: Bumpers & Triggers (LB, RB, LT, RT) -->
+            <div style="background:var(--bg2);padding:12px;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-weight:700;color:var(--amber);font-size:13px;margin-bottom:10px">🛡️ Nút Vai & Cò (LB, RB, LT, RT)</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút LB</span>
+                    <span class="keybind-desc">Đổi bảng kỹ năng</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_lb" onclick="startKeyRecord(this, 'button_lb')">
+                    <span class="keybind-val">Shift</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút RB</span>
+                    <span class="keybind-desc">Kỹ năng 4</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_rb" onclick="startKeyRecord(this, 'button_rb')">
+                    <span class="keybind-val">F</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Cò LT</span>
+                    <span class="keybind-desc">Chiêu bổ trợ trái</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_lt" onclick="startKeyRecord(this, 'button_lt')">
+                    <span class="keybind-val">C</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Cò RT</span>
+                    <span class="keybind-desc">Chiêu bổ trợ phải</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_rt" onclick="startKeyRecord(this, 'button_rt')">
+                    <span class="keybind-val">V</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 4: D-Pad & System (Flasks & Menus) -->
+            <div style="background:var(--bg2);padding:12px;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-weight:700;color:var(--red);font-size:13px;margin-bottom:10px">🧪 Bình Máu/Mana & Menu</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">D-Pad Trái</span>
+                    <span class="keybind-desc">Bình Máu 1</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="dpad_left" onclick="startKeyRecord(this, 'dpad_left')">
+                    <span class="keybind-val">1</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">D-Pad Phải</span>
+                    <span class="keybind-desc">Bình Mana 2</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="dpad_right" onclick="startKeyRecord(this, 'dpad_right')">
+                    <span class="keybind-val">2</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">D-Pad Lên</span>
+                    <span class="keybind-desc">Bình/Buff 3</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="dpad_up" onclick="startKeyRecord(this, 'dpad_up')">
+                    <span class="keybind-val">3</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">D-Pad Xuống</span>
+                    <span class="keybind-desc">Bình/Buff 4</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="dpad_down" onclick="startKeyRecord(this, 'dpad_down')">
+                    <span class="keybind-val">4</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút Start</span>
+                    <span class="keybind-desc">Menu Tạm dừng (ESC)</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_start" onclick="startKeyRecord(this, 'button_start')">
+                    <span class="keybind-val">Esc</span>
+                  </button>
+                </div>
+                <div class="keybind-row">
+                  <div class="keybind-label">
+                    <span class="keybind-name">Nút Back</span>
+                    <span class="keybind-desc">Bản đồ toàn cảnh (Tab)</span>
+                  </div>
+                  <button type="button" class="keybind-btn" data-btn="button_back" onclick="startKeyRecord(this, 'button_back')">
+                    <span class="keybind-val">Tab</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mouse & Side Buttons Configuration Card -->
+        <div class="card" style="border-color:var(--accent);background:var(--bg-card)">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--accent)">🖱️ Gán Phím Chuột & Nút Hông (Mouse Remapping)</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Tùy biến Chuột Phải, Chuột Giữa và 2 Nút Hông (Mouse 4 & Mouse 5) theo phong cách cá nhân</div>
+            </div>
+            <span class="app-badge" style="background:var(--accent);color:#fff;font-size:12px">Đang hoạt động</span>
+          </div>
+
+          <div class="grid-2" style="margin-top:10px;gap:12px">
+            <!-- Left Column: Right Click & Key A -->
+            <div style="background:var(--bg2);padding:14px;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-weight:700;color:var(--cyan);font-size:13px;margin-bottom:10px">🖱️ Chuột Phải & Phím A</div>
+              <div class="toggle-row">
+                <div>
+                  <span class="toggle-label" style="font-weight:600">Gán Chuột Phải làm Phím A</span>
+                  <span class="toggle-desc">Bấm chuột phải để đánh / tương tác / nhặt đồ (Nút A Gamepad)</span>
+                </div>
+                <label class="toggle"><input type="checkbox" id="tog-mouse-right-as-a" checked onchange="cmdToggle('mouse_right_as_a', this.checked)"><span class="slider"></span></label>
+              </div>
+
+              <div class="toggle-row" style="margin-top:8px">
+                <div>
+                  <span class="toggle-label" style="font-weight:600">Broadcast (A) Cho Cả Đội Khi Click Phải</span>
+                  <span class="toggle-desc">Khi bạn click chuột phải, tất cả Follower lập tức dùng chiêu A theo</span>
+                </div>
+                <label class="toggle"><input type="checkbox" id="tog-mouse-right-broadcast" checked onchange="cmdToggle('mouse_right_broadcast', this.checked)"><span class="slider"></span></label>
+              </div>
+
+              <div class="toggle-row" style="margin-top:8px">
+                <div>
+                  <span class="toggle-label" style="font-weight:600">Gán phím A trên phím thành Chuột Phải</span>
+                  <span class="toggle-desc">Nhấn phím A trên bàn phím sẽ kích hoạt chiêu A / Chuột Phải thay vì đi sang trái</span>
+                </div>
+                <label class="toggle"><input type="checkbox" id="tog-mouse-key-a-as-right" onchange="cmdToggle('mouse_key_a_as_right', this.checked)"><span class="slider"></span></label>
+              </div>
+            </div>
+
+            <!-- Right Column: Mouse 4, Mouse 5, Middle Click -->
+            <div style="background:var(--bg2);padding:14px;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-weight:700;color:var(--cyan);font-size:13px;margin-bottom:10px">🖱️ Nút Hông Chuột & Cuộn Giữa</div>
+
+              <!-- Mouse 4 (Side Button 1) -->
+              <div style="margin-bottom:10px">
+                <label for="sel-mouse-4" style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">
+                  Nút Hông 1 (Mouse 4 - Nút Lùi):
+                </label>
+                <select id="sel-mouse-4" class="profile-control" onchange="cmdSetMouseAction('mouse_4', this.value)" style="width:100%">
+                  <option value="TOGGLE_BOT">⚡ Bật / Tạm dừng Bot (F10 Toggle)</option>
+                  <option value="REGROUP">🎯 Tụ hợp / Teleport đệ lại gần (F12)</option>
+                  <option value="AUTO_STASH">📦 Tự cất đồ vào rương (F9 Auto-Stash)</option>
+                  <option value="BUTTON_A">⚔️ Phím A (Tương tác / Broadcast A)</option>
+                  <option value="DODGE_ROLL">🏃 Lăn né (Dodge Roll)</option>
+                  <option value="NONE">(Không gán)</option>
+                </select>
+                <span style="font-size:11px;color:var(--dim)">Gợi ý: Dùng ngón cái bấm để tạm dừng/tiếp tục bot cực nhạy khi gặp Boss hoặc nguy hiểm.</span>
+              </div>
+
+              <!-- Mouse 5 (Side Button 2) -->
+              <div style="margin-bottom:10px">
+                <label for="sel-mouse-5" style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">
+                  Nút Hông 2 (Mouse 5 - Nút Tiến):
+                </label>
+                <select id="sel-mouse-5" class="profile-control" onchange="cmdSetMouseAction('mouse_5', this.value)" style="width:100%">
+                  <option value="REGROUP">🎯 Tụ hợp / Teleport đệ lại gần (F12)</option>
+                  <option value="TOGGLE_BOT">⚡ Bật / Tạm dừng Bot (F10 Toggle)</option>
+                  <option value="AUTO_STASH">📦 Tự cất đồ vào rương (F9 Auto-Stash)</option>
+                  <option value="BUTTON_A">⚔️ Phím A (Tương tác / Broadcast A)</option>
+                  <option value="DODGE_ROLL">🏃 Lăn né (Dodge Roll)</option>
+                  <option value="NONE">(Không gán)</option>
+                </select>
+                <span style="font-size:11px;color:var(--dim)">Gợi ý: Bấm để kéo ngay các follower bị kẹt địa hình hoặc warp khẩn cấp về phía bạn.</span>
+              </div>
+
+              <!-- Middle Click -->
+              <div>
+                <label for="sel-mouse-mid" style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">
+                  Nút Cuộn Giữa (Middle Click):
+                </label>
+                <select id="sel-mouse-mid" class="profile-control" onchange="cmdSetMouseAction('middle', this.value)" style="width:100%">
+                  <option value="AUTO_STASH">📦 Tự cất đồ vào rương (F9 Auto-Stash)</option>
+                  <option value="DODGE_ROLL">🏃 Lăn né (Dodge Roll / Phím Space)</option>
+                  <option value="TOGGLE_BOT">⚡ Bật / Tạm dừng Bot (F10 Toggle)</option>
+                  <option value="NONE">(Mặc định của Game)</option>
+                </select>
+                <span style="font-size:11px;color:var(--dim)">Gợi ý: Nhấn chuột giữa khi đứng cạnh hòm đồ để tự động cất hết đồ vào hòm.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Testing & Quick Action Card -->
+        <div class="card" style="border-color:var(--border);background:var(--bg-card)">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--accent)"> Thao Tác Kéo Cấp Nhanh (Campaign Carry Controls)</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Bấm thử nghiệm trực tiếp hoặc dùng phím tắt trong game</div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="background:var(--accent)" onclick="cmdBroadcastA()">
+               Broadcast (A) Cho Cả 6 Acc
+            </button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px">
+            <span style="font-size:12px;color:var(--sub);font-weight:700"> Chuyển Tiêu Điểm Lái:</span>
+            <button class="btn btn-neutral btn-sm" onclick="cmdSetFocus(0)">Char 1 (Main)</button>
+            <button class="btn btn-neutral btn-sm" onclick="cmdSetFocus(1)">Char 2 (Buff)</button>
+            <button class="btn btn-neutral btn-sm" onclick="cmdSetFocus(2)">Char 3 (Cull)</button>
+            <button class="btn btn-neutral btn-sm" onclick="cmdSetFocus(3)">Char 4 (Loot 1)</button>
+            <button class="btn btn-neutral btn-sm" onclick="cmdSetFocus(4)">Char 5 (Curse)</button>
+            <button class="btn btn-neutral btn-sm" onclick="cmdSetFocus(5)">Char 6 (Loot 2)</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-color:var(--border);background:var(--bg-card)">
+          <div class="card-title" style="color:var(--cyan)"> Bảng Ánh Xạ Phím WASD (Lái Char 1 Qua Tay Cầm 1)</div>
+          <div class="grid-4" style="font-size:12px;margin-top:6px">
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">W, A, S, D</b>: Di chuyển 360°</div>
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">Space</b>: Lăn né [A]</div>
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">Q</b>: Skill chính 1 [X]</div>
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">E</b>: Kỹ năng 2 [Y]</div>
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">R</b>: Kỹ năng 3 [B]</div>
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">F</b>: Kỹ năng 4 [RB]</div>
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">1, 2</b>: Bình Máu / Mana</div>
+            <div style="background:var(--bg3);padding:8px 10px;border-radius:4px"><b style="color:var(--cyan)">Tab / ESC</b>: Bản Đồ / Menu</div>
+          </div>
+        </div>
+
+        <div class="card" style="background:var(--bg2);border-color:var(--accent)">
+          <div class="card-title" style="color:var(--accent)"> Phím Tắt Toàn Cục Trong Game (Global Campaign Hotkeys)</div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;margin-top:6px">
+            <div style="background:var(--bg2);padding:7px 10px;border-radius:4px">
+              <b style="color:var(--cyan)">[Alt + Space] hoặc [G]</b>: <b>Broadcast Tương Tác (A)</b> — Cả 6 acc cùng bấm `(A)` để vào Portal / qua cửa / hồi sinh.
+            </div>
+            <div style="background:var(--bg2);padding:7px 10px;border-radius:4px">
+              <b style="color:var(--amber)">[Ctrl + 1] đến [Ctrl + 6]</b>: <b>Focus Switcher</b> — Đổi quyền lái trực tiếp sang Char 1 $\rightarrow$ 6 (mở bảng ngọc `P`, mở hòm `I`).
+            </div>
+            <div style="background:var(--bg2);padding:7px 10px;border-radius:4px">
+              <b style="color:var(--accent)">[F10]</b>: <b>Bật / Tạm Dừng Bot Bám Đuôi</b> (Start / Stop Bot)
+            </div>
+            <div style="background:var(--bg2);padding:7px 10px;border-radius:4px">
+              <b style="color:var(--accent)">[F9]</b>: <b>Tự Động Cất Đồ (Auto Stash)</b> vào hòm trong Hideout
+            </div>
+            <div style="background:var(--bg2);padding:7px 10px;border-radius:4px">
+              <b style="color:var(--accent)">[F8]</b>: <b>Tạo Lại Nhóm Party Nhanh (Auto Party Recovery)</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Keybind Conflict Warning Modal -->
+  <dialog id="keybind-conflict-dialog" aria-labelledby="conflict-dialog-title">
+    <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
+      <div style="font-size:28px;line-height:1;flex-shrink:0;">⚠️</div>
+      <div style="flex:1;min-width:0;">
+        <h3 id="conflict-dialog-title" style="margin:0 0 6px 0;font-size:17px;font-weight:700;color:var(--red);">Phím Tắt Đang Được Sử Dụng!</h3>
+        <p id="conflict-dialog-msg" style="margin:0;font-size:13px;line-height:1.6;color:var(--text);"></p>
+      </div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin-bottom:18px;font-size:12px;line-height:1.5;">
+      <div style="font-weight:600;color:var(--text);margin-bottom:2px;">📌 Quy tắc phím tắt:</div>
+      <div style="color:var(--sub);">Hệ thống không cho phép gán 1 hotkey trùng lặp cho nhiều chức năng. Nếu đồng ý, phím ở chức năng cũ sẽ bị xóa bỏ (trở về trạng thái <em>Chưa gán</em>).</div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;">
+      <button type="button" class="btn btn-neutral" id="conflict-cancel-btn" style="min-width:90px;">Hủy bỏ</button>
+      <button type="button" class="btn btn-primary" id="conflict-confirm-btn" style="min-width:160px;background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;">Xóa bind cũ & Áp dụng</button>
+    </div>
+  </dialog>
+  <!-- Core & Feature JavaScript Modules -->
+  <script src="/static/core.js"></script>
+  <script src="/static/overview.js"></script>
+  <script src="/static/client_mgr.js"></script>
+  <script src="/static/smoother.js"></script>
+  <script src="/static/controller.js"></script>
+  <script src="/static/physical-controllers.js"></script>
+
+  <script src="/static/trade.js"></script>
+  <script src="/static/expedition.js"></script>
+  <script src="/static/leveling-data.js"></script>
+  <script src="/static/leveling-tab.js"></script>
+</body>
+</html>

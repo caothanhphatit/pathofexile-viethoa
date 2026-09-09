@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0e0e10">
+  <title>POEVH — Định giá</title>
+  <link rel="stylesheet" href="/static/trade-overlay.css">
+</head>
+<body>
+  <main class="poe-shell" aria-live="polite">
+    <!-- Titlebar -->
+    <header class="poe-titlebar">
+      <div class="titlebar-left">
+        <span class="titlebar-icon">⚖</span>
+        <span class="titlebar-title">POEVH · Định giá</span>
+        <span class="titlebar-league" id="league-display">(Standard)</span>
+        <select id="league" class="league-select" aria-label="League" title="Chọn League"></select>
+      </div>
+      <div class="titlebar-right">
+        <button class="icon-btn" id="open-trade-top" title="Mở trang Trade GGG">⚙</button>
+        <button class="icon-btn close-btn" id="close" title="Đóng (Esc)">✕</button>
+      </div>
+    </header>
+
+    <!-- Idle / Notice State -->
+    <section id="notice" class="poe-notice">
+      <div class="notice-emblem">⚔</div>
+      <div class="notice-title">Rê chuột lên item trong game rồi nhấn <strong>Alt + E</strong></div>
+      <div class="notice-desc">POEVH sẽ đọc thuộc tính trang bị và định giá tức thì theo GGG Trade.</div>
+    </section>
+
+    <!-- Main Content: Two Columns (Left: Card & Stats, Right: Aligned Inputs) -->
+    <section id="content" class="poe-content" hidden>
+      <div class="evaluate-body">
+
+        <!-- LEFT COLUMN: Item Card & Tooltip -->
+        <div class="col-card">
+          <!-- Item Banner -->
+          <div class="item-banner">
+            <span class="banner-cap cap-left"></span>
+            <div class="banner-titles">
+              <h1 id="item-name" class="item-title">FEATHERED MITTS</h1>
+              <div id="base-type" class="item-sub" style="display:none;"></div>
+            </div>
+            <span class="banner-cap cap-right"></span>
+          </div>
+
+          <!-- Metadata (Rarity, iLvl, Req Level) -->
+          <div class="item-meta-block">
+            <div class="meta-row" data-target="rarity">
+              <span class="meta-label">Item Rarity:</span>
+              <span class="rarity-pill" id="item-rarity-pill">RARE</span>
+            </div>
+            <div class="meta-row" data-target="ilvl">
+              <span class="meta-label">Item Level:</span>
+              <span class="meta-val" id="item-ilvl-val">81</span>
+            </div>
+            <div class="meta-row" data-target="req">
+              <span class="meta-label">Requires Level:</span>
+              <span class="meta-val" id="item-req-val">59</span>
+            </div>
+          </div>
+
+          <div class="poe-divider"></div>
+
+          <!-- Base Properties & Defences (Rune Sockets, Quality, Armour...) -->
+          <div class="item-base-stats" id="base-stats-box">
+            <!-- Dynamically generated -->
+          </div>
+
+          <!-- Modifiers Section -->
+          <div class="mods-header-row">
+            <span class="hdr-tier">TIERING</span>
+            <span class="hdr-score">SCORING</span>
+          </div>
+
+          <div class="mods-container" id="mods-box">
+            <!-- Mod rows dynamically injected -->
+          </div>
+
+          <div class="hidden-mods-row" id="hidden-mods-row" hidden>
+            <button type="button" class="btn-toggle-hidden" id="btn-toggle-hidden">⤹ Collapse Hidden Mods</button>
+          </div>
+
+          <div class="modifiable-tag-row">
+            <span class="tag-modifiable">MODIFIABLE</span>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-bar">
+            <button type="button" class="btn-quick" id="btn-crafting-base">◇ Crafting Base</button>
+            <button type="button" class="btn-quick" id="btn-quick-price">◇ Quick Price</button>
+            <button type="button" class="btn-quick" id="btn-broad-10">◇ Broad (-10%)</button>
+          </div>
+
+          <!-- Estimated Value Card -->
+          <div class="est-card">
+            <div class="est-lbl">Estimated Value <span class="info-icon" title="Ước tính giá trị thị trường">❔</span></div>
+            <div class="est-val" id="median">≈ 88.3 <span class="curr-icon">🪙</span></div>
+            <div class="est-sub" id="median-range">Range: <strong>11.2–651ex</strong> &nbsp; Reliability: <span class="rel-tag" id="rel-tag">Very Low</span></div>
+          </div>
+
+          <!-- Big Search Button -->
+          <button type="button" class="btn-big-search" id="search">
+            <span class="diamond-ornament">❖</span>
+            <span class="search-text">Search</span>
+            <span class="diamond-ornament">❖</span>
+          </button>
+        </div>
+
+        <!-- RIGHT COLUMN: Stack of Filter Inputs -->
+        <div class="col-inputs" id="col-inputs">
+          <!-- Dynamically aligned with the left column rows -->
+        </div>
+
+      </div>
+
+      <!-- Bottom Results Section (GGG Listings) -->
+      <div class="results-section" id="results-section">
+        <div class="results-bar">
+          <span id="matched" class="matched-text">0/0 Results from</span>
+          <button type="button" id="open-trade" class="trade-link" disabled>pathofexile.com/trade ↗</button>
+          <div class="results-pills">
+            <select id="filter-currency-pill" class="pill-select" aria-label="Tiền tệ">
+              <option value="">Tất cả tiền tệ</option>
+              <option value="divine">Divine</option>
+              <option value="exalted">Exalted</option>
+              <option value="chaos">Chaos</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="loading" class="loading-box" hidden>
+          <div class="pulse-dot"></div>
+          <span>Đang tải kết quả từ GGG Trade…</span>
+        </div>
+
+        <div id="search-error" class="error-box" hidden>
+          <span>⚠️ Lỗi kết nối GGG Trade API</span>
+          <button id="search-retry-btn" class="btn-retry">Thử lại</button>
+        </div>
+
+        <div id="empty" class="empty-box" hidden>
+          <span>Không tìm thấy listing phù hợp. Hãy hạ bớt điều kiện lọc.</span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="results-table" id="results-table" hidden>
+            <thead>
+              <tr>
+                <th style="width:28px">👁</th>
+                <th>↑ Price</th>
+                <th>iLvl.</th>
+                <th>Q%</th>
+                <th>Account</th>
+                <th style="text-align:right">Listed</th>
+              </tr>
+            </thead>
+            <tbody id="results"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tooltip popover for listings -->
+    <aside id="listing-tooltip" class="listing-tooltip" role="tooltip" hidden></aside>
+    <!-- Toast notification -->
+    <div id="toast" class="trade-toast" hidden></div>
+  </main>
+
+  <script src="/static/trade-overlay.js"></script>
+</body>
+</html>

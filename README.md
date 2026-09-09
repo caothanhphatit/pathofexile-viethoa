@@ -1,6 +1,6 @@
-# POE2 Viet Hoa
+# Path of Exile Việt Hóa Monorepo
 
-Static-first Vietnamese POE2 reference app with PostgreSQL-backed crawl/export tooling.
+Workspace chung cho trang tham khảo POE2 tiếng Việt và ứng dụng desktop POEVH.
 
 ## Layout
 
@@ -9,6 +9,8 @@ Static-first Vietnamese POE2 reference app with PostgreSQL-backed crawl/export t
 - `scripts/`: crawlers, exporters, translation rebuilds, and local static serving.
 - `migrations/`: PostgreSQL schema migrations.
 - `tests/`: Node test suite.
+- `apps/poevh-desktop/`: ứng dụng desktop Rust quản lý instance, overlay, price-check,
+  memory reader, virtual controller và các công cụ PoE2.
 
 ## What Is Included
 
@@ -25,6 +27,15 @@ npm install
 npm run build
 npm test
 npm run site
+```
+
+POEVH desktop:
+
+```bash
+npm run poevh:check
+npm run poevh:test
+npm run poevh:clippy
+npm run poevh:build
 ```
 
 For backend and crawler workflows, copy `.env.example` to `.env` and fill local values:

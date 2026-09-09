@@ -1,0 +1,96 @@
+/* ==========================================================================
+   POEVH Design System — Theme & Base Tokens
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+  --bg0: #f5f1e7;
+  --bg1: #ece6d8;
+  --bg2: #f0ebdf;
+  --bg3: #e4ddcd;
+  --bg-card: #fffdf7;
+  --bg-card-hover: #fffefb;
+  --bg-input: #fffefb;
+  --border: #d6cdbc;
+  --border-hover: #b4a78f;
+  --border-active: #586847;
+  --border-subtle: #e8e0d2;
+  --accent: #526342;
+  --accent-hover: #3c4d30;
+  --accent-light: #e1e6d6;
+  --green: #42623e;
+  --green-hover: #354f32;
+  --green-bg: #e4ebdc;
+  --green-border: #bccdad;
+  --red: #a04632;
+  --red-hover: #873822;
+  --red-bg: #f6e8df;
+  --red-border: #debaa9;
+  --cyan: #365e6a;
+  --blue-bg: #e4eced;
+  --amber: #795b24;
+  --purple: #66563f;
+  --text: #332e26;
+  --sub: #635b4f;
+  --dim: #736a5d;
+  --font-body: "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-display: "Cambria", "Palatino Linotype", Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg0);
+  color: var(--text);
+  font: 14px/1.5 var(--font-body);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  user-select: none;
+}
+
+input, textarea, .feed-box {
+  user-select: text;
+}
+
+button, input, select {
+  accent-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--accent-light);
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7bda9;
+  border: 2px solid var(--bg0);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

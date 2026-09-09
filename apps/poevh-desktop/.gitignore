@@ -1,0 +1,10 @@
+/target/
+/tools/**/bin/
+/tools/**/obj/
+/tools/**/publish*/
+/**/__pycache__/
+/**/*.pyc
+/**/*.exe
+/**/*.dll
+/**/*.pdb
+/tools/*.log

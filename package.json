@@ -1,7 +1,7 @@
 {
   "name": "poe2",
   "version": "1.0.0",
-  "description": "Vietnamese POE2 static reference app with PostgreSQL crawl/export tooling.",
+  "description": "Path of Exile Vietnamese tools monorepo: reference web app and POEVH desktop companion.",
   "main": "public/app-routes.js",
   "scripts": {
     "crawl:currency": "node scripts/crawl-currency.mjs",
@@ -30,6 +30,10 @@
     "build:spa": "vite build --config vite.spa.config.mjs",
     "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./public/dist/app.css --minify",
     "build": "npm run build:css && npm run build:spa",
+    "poevh:check": "cargo check --manifest-path apps/poevh-desktop/Cargo.toml --workspace",
+    "poevh:test": "cargo test --manifest-path apps/poevh-desktop/Cargo.toml --workspace",
+    "poevh:clippy": "cargo clippy --manifest-path apps/poevh-desktop/Cargo.toml --workspace --all-targets -- -D warnings",
+    "poevh:build": "cargo build --manifest-path apps/poevh-desktop/Cargo.toml --release",
     "crawl:item-mods": "node scripts/crawl-item-mods.mjs",
     "build:craft-index": "node scripts/build-craft-index.mjs",
     "crawl:craft": "node scripts/crawl-item-mods.mjs && node scripts/build-craft-index.mjs"
