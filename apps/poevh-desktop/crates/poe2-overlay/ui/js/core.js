@@ -129,6 +129,8 @@ function renderState(s) {
   if (s.settings) {
     setChecked('tog-follow', s.settings.follow);
     setChecked('tog-prio-catch', s.config?.prioritize_catchup);
+    setChecked('tog-party', s.settings.party?.enabled);
+    setChecked('tog-combat', s.settings.party_combat?.enabled);
   }
   if (s.config) {
     setRange('follow-stop-distance', s.config.stop_distance, 'val-stop-dist', ' bước');

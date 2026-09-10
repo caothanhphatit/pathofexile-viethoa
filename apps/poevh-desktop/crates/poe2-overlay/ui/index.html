@@ -631,21 +631,21 @@
 
       <!-- ══════════════════ TAB 7: MỜI NHÓM PARTY ══════════════════ -->
       <div id="tab-party" class="tab-pane">
-        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Nhóm nhân vật</h1><p>Cấu hình lời mời và các thao tác nhóm.</p></div></header>
+        <header class="page-heading"><div><p class="section-caption">POEVH / Cấu hình</p><h1>Nhóm nhân vật</h1><p>Nhận lời mời thủ công từ leader và đưa follower về đúng instance.</p></div></header>
         <div class="card" style="border-color:var(--green)">
           <div class="card-header">
-            <span class="card-title" style="color:var(--green)"> Tự Động Tạo & Mời Party</span>
+            <span class="card-title" style="color:var(--green)"> Tự nhận lời mời & theo Leader</span>
             <label class="toggle"><input type="checkbox" id="tog-party" onchange="cmdToggle('party_enabled', this.checked)"><span class="slider"></span></label>
           </div>
 
           <div style="background:var(--bg2);padding:8px 10px;border-radius:5px;display:flex;flex-direction:column;gap:6px">
-            <div class="slider-box">
-              <span class="toggle-label">Tên nhân vật Leader:</span>
-              <input type="text" placeholder="Nhập tên nhân vật..." style="background:var(--bg0);color:var(--text);border:1px solid var(--border);padding:5px 8px;border-radius:4px;outline:none;margin-top:3px;font-size:12px">
+            <div class="toggle-row">
+              <span class="toggle-label">Cách dùng:</span>
+              <span style="color:var(--sub);font-size:12px">Leader gửi invite một lần; client follower sẽ nhận và chỉ báo hoàn tất sau khi xác minh cùng instance.</span>
             </div>
             <div class="toggle-row">
-              <span class="toggle-label">Phím khôi phục nhóm nhanh:</span>
-              <b style="color:var(--green);font-size:12px">[F8]</b>
+              <span class="toggle-label">Đưa follower đang trong party về Leader:</span>
+              <b style="color:var(--green);font-size:12px">[F12]</b>
             </div>
           </div>
         </div>
@@ -1535,7 +1535,7 @@
               <b style="color:var(--accent)">[F9]</b>: <b>Tự Động Cất Đồ (Auto Stash)</b> vào hòm trong Hideout
             </div>
             <div style="background:var(--bg2);padding:7px 10px;border-radius:4px">
-              <b style="color:var(--accent)">[F8]</b>: <b>Tạo Lại Nhóm Party Nhanh (Auto Party Recovery)</b>
+              <b style="color:var(--accent)">[F12]</b>: <b>Đưa follower đang trong party về Leader</b>
             </div>
           </div>
         </div>

@@ -170,18 +170,22 @@ impl WorldAdapter for MemoryWorldAdapter {
             if !expected_leader.is_empty()
                 && !raw.local_player.name.eq_ignore_ascii_case(&expected_leader)
             {
-                cmd.running = false;
-                state.running = false;
-                state.memory_reader = MemoryReaderStatus::unavailable(format!(
+                let mismatch = format!(
                     "Main PID character mismatch: expected '{expected_leader}', read '{}'",
                     raw.local_player.name
-                ));
-                error!(
-                    expected = %expected_leader,
-                    actual = %raw.local_player.name,
-                    pid = reader.pid(),
-                    "leader identity mismatch; automation stopped"
                 );
+                let first_report = state.memory_reader.message != mismatch;
+                cmd.running = false;
+                state.running = false;
+                state.memory_reader = MemoryReaderStatus::unavailable(mismatch);
+                if first_report {
+                    error!(
+                        expected = %expected_leader,
+                        actual = %raw.local_player.name,
+                        pid = reader.pid(),
+                        "leader identity mismatch; automation stopped"
+                    );
+                }
                 return state.clone();
             }
 

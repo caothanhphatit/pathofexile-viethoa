@@ -9,86 +9,138 @@ use poe2_input::{ActionMapper, FlaskController, KbmBridge, VirtualGamepadManager
 use poe2_overlay::start_server;
 use poe2_types::{Actor, FollowerAction, MultiClientConfig};
 use std::collections::{HashMap, HashSet};
-use std::sync::Arc;
-use std::time::Duration;
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
+use std::time::{Duration, Instant};
 use tracing::{info, warn};
 use vigem_client::XButtons;
 
 const MAX_PARTY_FOLLOWERS: usize = 5;
 
+fn pulse_controller_button(
+    manager: &Arc<Mutex<VirtualGamepadManager>>,
+    target: &str,
+    button: u16,
+    hold_ms: u64,
+) -> Result<()> {
+    manager
+        .lock()
+        .press_button(target, XButtons { raw: button })?;
+    std::thread::sleep(Duration::from_millis(hold_ms));
+    if let Err(error) = manager
+        .lock()
+        .release_buttons(target, XButtons { raw: button })
+    {
+        let _ = manager.lock().release_all(target);
+        return Err(error);
+    }
+    Ok(())
+}
+
+struct PartyOperationGuard(Arc<AtomicBool>);
+
+impl PartyOperationGuard {
+    fn try_acquire(flag: &Arc<AtomicBool>) -> Option<Self> {
+        flag.compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire)
+            .ok()
+            .map(|_| Self(Arc::clone(flag)))
+    }
+}
+
+impl Drop for PartyOperationGuard {
+    fn drop(&mut self) {
+        self.0.store(false, Ordering::Release);
+    }
+}
+
 #[derive(Debug, Clone)]
-struct PortalAttempt {
-    target: String,
-    attempts: u8,
-    next_tick: u64,
+enum PartyPhase {
+    Waiting,
+    AcceptReady {
+        code: u64,
+        attempts: u8,
+        next_attempt: Instant,
+    },
+    AwaitingInviteClear {
+        code: u64,
+        attempts: u8,
+        deadline: Instant,
+    },
+    WarpReady {
+        attempts: u8,
+        next_attempt: Instant,
+    },
+    AwaitingWarp {
+        attempts: u8,
+        target_instance: u64,
+        deadline: Instant,
+    },
+    Complete {
+        leader_instance: Option<u64>,
+    },
+    Failed,
 }
 
-#[derive(Default)]
-struct PortalRecovery {
-    area: Option<String>,
-    pending: HashMap<String, PortalAttempt>,
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum PartySignalOutcome {
+    Ignored,
+    InviteArmed,
+    InviteCleared,
 }
 
-impl PortalRecovery {
-    /// When the main process changes area, followers may disappear from its
-    /// entity list before they can request a warp. Pulse the documented couch
-    /// teleport input per configured follower, then stop after bounded retries.
-    fn observe(&mut self, snapshot: &poe2_engine::runtime::ApiSnapshot) -> Vec<(String, u8)> {
-        let area = snapshot.leader.area.trim();
-        if area.is_empty() || area == "Unknown" {
-            return Vec::new();
+fn apply_party_signal(
+    phase: &mut PartyPhase,
+    security_code: u64,
+    now: Instant,
+) -> PartySignalOutcome {
+    if security_code != 0 {
+        if matches!(phase, PartyPhase::Complete { .. }) {
+            return PartySignalOutcome::Ignored;
         }
-        match self.area.as_deref() {
-            None => self.area = Some(area.to_owned()),
-            Some(previous) if previous != area => {
-                self.area = Some(area.to_owned());
-                self.pending = configured_party_slots(&snapshot.settings.multi_client)
-                    .into_iter()
-                    .filter(|(name, _)| !name.is_empty())
-                    .map(|(name, target)| {
-                        (
-                            name,
-                            PortalAttempt {
-                                target,
-                                attempts: 0,
-                                next_tick: snapshot.tick.saturating_add(2),
-                            },
-                        )
-                    })
-                    .collect();
-                info!(%area, followers = self.pending.len(), "portal recovery armed after main area transition");
-            }
-            _ => {}
-        }
-
-        for follower in &snapshot.followers {
-            if self.pending.remove(&follower.name).is_some() {
-                info!(actor = %follower.name, %area, "portal recovery confirmed follower in main area");
-            }
-        }
-
-        let retry_ticks = (1_000 / snapshot.config.tick_ms.clamp(10, 1_000)).max(1);
-        let mut pulses = Vec::new();
-        self.pending.retain(|actor, attempt| {
-            if snapshot.tick < attempt.next_tick {
-                return true;
-            }
-            if attempt.attempts >= 3 {
-                warn!(%actor, target = %attempt.target, %area, "portal recovery exhausted after 3 attempts");
-                return false;
-            }
-            attempt.attempts += 1;
-            attempt.next_tick = snapshot.tick.saturating_add(retry_ticks);
-            pulses.push((attempt.target.clone(), attempt.attempts));
-            true
-        });
-        pulses
+        *phase = PartyPhase::AcceptReady {
+            code: security_code,
+            attempts: 0,
+            next_attempt: now,
+        };
+        PartySignalOutcome::InviteArmed
+    } else if let PartyPhase::AwaitingInviteClear { attempts, .. } = phase {
+        *phase = PartyPhase::WarpReady {
+            attempts: *attempts,
+            next_attempt: now,
+        };
+        PartySignalOutcome::InviteCleared
+    } else {
+        PartySignalOutcome::Ignored
     }
+}
 
-    fn reset(&mut self) {
-        self.pending.clear();
-        self.area = None;
-    }
+fn leader_transition_requires_warp(
+    completed_leader_instance: Option<u64>,
+    leader_instance: Option<u64>,
+    follower_instance: Option<u64>,
+) -> Option<(u64, u64)> {
+    let target = leader_instance?;
+    let current = follower_instance?;
+    (Some(target) != completed_leader_instance && target != current).then_some((current, target))
+}
+
+fn run_warp_to_leader(manager: &Arc<Mutex<VirtualGamepadManager>>, target: &str) -> Result<()> {
+    // Current Party route observed in the reference app's shipped guide:
+    // Start -> D-pad Left -> first party member -> Warp -> confirm -> cleanup.
+    pulse_controller_button(manager, target, XButtons::START, 120)?;
+    std::thread::sleep(Duration::from_millis(120));
+    pulse_controller_button(manager, target, XButtons::LEFT, 80)?;
+    std::thread::sleep(Duration::from_millis(50));
+    pulse_controller_button(manager, target, XButtons::A, 100)?;
+    std::thread::sleep(Duration::from_millis(100));
+    pulse_controller_button(manager, target, XButtons::A, 100)?;
+    std::thread::sleep(Duration::from_millis(200));
+    pulse_controller_button(manager, target, XButtons::A, 100)?;
+    std::thread::sleep(Duration::from_millis(400));
+    pulse_controller_button(manager, target, XButtons::B, 100)?;
+    Ok(())
 }
 
 #[cfg(windows)]
@@ -323,6 +375,11 @@ async fn run() -> Result<()> {
     // Virtual Gamepad Manager (Lazy per-instance initialization)
     let raw_gamepad_mgr = VirtualGamepadManager::new();
     let gamepad_mgr = Arc::new(Mutex::new(raw_gamepad_mgr));
+    let party_operation_active = Arc::new(AtomicBool::new(false));
+    // Every multi-step controller operation takes this lock for its entire
+    // lifetime. A delayed release from an older command therefore cannot
+    // neutralize the accept/warp sequence that follows it.
+    let controller_operation = Arc::new(Mutex::new(()));
 
     // Reconcile the configured input topology immediately before launch.
     {
@@ -426,6 +483,351 @@ async fn run() -> Result<()> {
         });
     }
 
+    // Manual invite -> verified accept -> verified warp. Client.txt events are
+    // tagged by exact PID. We report success only after the invitation clears
+    // and both clients expose the same Client-Safe Instance ID.
+    {
+        let rt = Arc::clone(&runtime);
+        let gm = Arc::clone(&gamepad_mgr);
+        let operation_active = Arc::clone(&party_operation_active);
+        let controller_operation = Arc::clone(&controller_operation);
+        std::thread::spawn(move || {
+            let mut sessions = HashMap::<String, PartyPhase>::new();
+            let mut recovery_revision = poe2_world::connector::party_recovery_revision();
+            loop {
+                let party_enabled = rt.lock().to_api_snapshot().settings.party.enabled;
+                if !party_enabled {
+                    sessions.clear();
+                    let _ = poe2_world::connector::take_party_invites();
+                    std::thread::sleep(Duration::from_secs(1));
+                    continue;
+                }
+
+                let (leader, secondaries) = {
+                    let r = rt.lock();
+                    let statuses = r.runtime_instances();
+                    let leader = statuses
+                        .iter()
+                        .find(|status| status.is_main && status.status == "bound")
+                        .and_then(|status| status.binding.clone());
+                    let secondaries = statuses
+                        .into_iter()
+                        .filter(|status| {
+                            !status.is_main
+                                && status.status == "bound"
+                                && r.instance_needs_virtual_controllers(status.instance_id)
+                        })
+                        .filter_map(|status| {
+                            status
+                                .binding
+                                .map(|identity| (status.instance_id, identity))
+                        })
+                        .collect::<Vec<_>>();
+                    (leader, secondaries)
+                };
+
+                sessions.retain(|started_at, _| {
+                    secondaries
+                        .iter()
+                        .any(|(_, identity)| identity.started_at == *started_at)
+                });
+                for (_, identity) in &secondaries {
+                    sessions
+                        .entry(identity.started_at.clone())
+                        .or_insert(PartyPhase::Waiting);
+                }
+
+                let requested_revision = poe2_world::connector::party_recovery_revision();
+                if requested_revision != recovery_revision {
+                    recovery_revision = requested_revision;
+                    for (_, identity) in &secondaries {
+                        sessions.insert(
+                            identity.started_at.clone(),
+                            PartyPhase::WarpReady {
+                                attempts: 0,
+                                next_attempt: Instant::now(),
+                            },
+                        );
+                    }
+                    info!(
+                        revision = requested_revision,
+                        followers = secondaries.len(),
+                        "manual follower regroup armed for bound secondary clients"
+                    );
+                }
+
+                for signal in poe2_world::connector::take_party_invites() {
+                    let Some((_, identity)) = secondaries
+                        .iter()
+                        .find(|(_, identity)| identity.pid == signal.pid)
+                    else {
+                        continue;
+                    };
+                    let phase = sessions
+                        .entry(identity.started_at.clone())
+                        .or_insert(PartyPhase::Waiting);
+                    match apply_party_signal(phase, signal.security_code, Instant::now()) {
+                        PartySignalOutcome::InviteArmed => {
+                            info!(
+                                pid = signal.pid,
+                                "party invitation armed for automatic acceptance"
+                            );
+                        }
+                        PartySignalOutcome::InviteCleared => {
+                            info!(
+                                pid = signal.pid,
+                                "party invitation cleared; preparing verified warp"
+                            );
+                        }
+                        PartySignalOutcome::Ignored => {}
+                    }
+                }
+
+                let Some(leader) = leader else {
+                    std::thread::sleep(Duration::from_millis(250));
+                    continue;
+                };
+
+                for (instance_id, identity) in &secondaries {
+                    let phase = sessions
+                        .get(&identity.started_at)
+                        .cloned()
+                        .unwrap_or(PartyPhase::Waiting);
+                    let (first, second) = VirtualGamepadManager::targets_for_instance(*instance_id);
+                    match phase {
+                        PartyPhase::AcceptReady {
+                            code,
+                            attempts,
+                            next_attempt,
+                        } => {
+                            if Instant::now() < next_attempt {
+                                continue;
+                            }
+                            if attempts >= 3 {
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(instance_id, pid = identity.pid, "party acceptance failed after 3 attempts; waiting for a new invite");
+                                continue;
+                            }
+                            let Some(_guard) = PartyOperationGuard::try_acquire(&operation_active)
+                            else {
+                                continue;
+                            };
+                            let _controller_guard = controller_operation.lock();
+                            if let Err(error) =
+                                poe2_world::instances::operate_window(identity, "focus")
+                            {
+                                let next_attempt_count = attempts + 1;
+                                sessions.insert(
+                                    identity.started_at.clone(),
+                                    PartyPhase::AcceptReady {
+                                        code,
+                                        attempts: next_attempt_count,
+                                        next_attempt: Instant::now() + Duration::from_millis(500),
+                                    },
+                                );
+                                warn!(instance_id, pid = identity.pid, attempt = next_attempt_count, %error, "party accept could not focus secondary client; bounded retry scheduled");
+                                continue;
+                            }
+                            std::thread::sleep(Duration::from_millis(180));
+                            {
+                                let mut manager = gm.lock();
+                                let _ = manager.release_all(&first);
+                                let _ = manager.release_all(&second);
+                            }
+                            let next_attempt = attempts + 1;
+                            match pulse_controller_button(&gm, &first, XButtons::A, 450) {
+                                Ok(()) => {
+                                    sessions.insert(
+                                        identity.started_at.clone(),
+                                        PartyPhase::AwaitingInviteClear {
+                                            code,
+                                            attempts: next_attempt,
+                                            deadline: Instant::now() + Duration::from_secs(2),
+                                        },
+                                    );
+                                    info!(instance_id, pid = identity.pid, target = %first, attempt = next_attempt, "party accept input delivered; awaiting invitation-clear confirmation");
+                                }
+                                Err(error) => {
+                                    sessions.insert(
+                                        identity.started_at.clone(),
+                                        PartyPhase::AcceptReady {
+                                            code,
+                                            attempts: next_attempt,
+                                            next_attempt: Instant::now()
+                                                + Duration::from_millis(500),
+                                        },
+                                    );
+                                    warn!(instance_id, pid = identity.pid, target = %first, %error, "party accept input delivery failed");
+                                }
+                            }
+                        }
+                        PartyPhase::AwaitingInviteClear {
+                            code,
+                            attempts,
+                            deadline,
+                        } => {
+                            if Instant::now() >= deadline {
+                                sessions.insert(
+                                    identity.started_at.clone(),
+                                    PartyPhase::AcceptReady {
+                                        code,
+                                        attempts,
+                                        next_attempt: Instant::now(),
+                                    },
+                                );
+                            }
+                        }
+                        PartyPhase::WarpReady {
+                            attempts,
+                            next_attempt,
+                        } => {
+                            if Instant::now() < next_attempt {
+                                continue;
+                            }
+                            let leader_location =
+                                poe2_world::connector::get_client_location(leader.pid);
+                            let follower_location =
+                                poe2_world::connector::get_client_location(identity.pid);
+                            if leader_location.instance_id.is_some()
+                                && leader_location.instance_id == follower_location.instance_id
+                            {
+                                sessions.insert(
+                                    identity.started_at.clone(),
+                                    PartyPhase::Complete {
+                                        leader_instance: leader_location.instance_id,
+                                    },
+                                );
+                                info!(instance_id, pid = identity.pid, instance = ?leader_location.instance_id, "party onboarding verified complete; follower already with leader");
+                                continue;
+                            }
+                            let Some(target_instance) = leader_location.instance_id else {
+                                continue;
+                            };
+                            if attempts >= 3 {
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(
+                                    instance_id,
+                                    pid = identity.pid,
+                                    "party warp failed after 3 attempts"
+                                );
+                                continue;
+                            }
+                            let Some(_guard) = PartyOperationGuard::try_acquire(&operation_active)
+                            else {
+                                continue;
+                            };
+                            let _controller_guard = controller_operation.lock();
+                            if let Err(error) =
+                                poe2_world::instances::operate_window(identity, "focus")
+                            {
+                                let next_attempt_count = attempts + 1;
+                                sessions.insert(
+                                    identity.started_at.clone(),
+                                    PartyPhase::WarpReady {
+                                        attempts: next_attempt_count,
+                                        next_attempt: Instant::now() + Duration::from_millis(500),
+                                    },
+                                );
+                                warn!(instance_id, pid = identity.pid, attempt = next_attempt_count, %error, "party warp could not focus secondary client; bounded retry scheduled");
+                                continue;
+                            }
+                            std::thread::sleep(Duration::from_millis(180));
+                            match run_warp_to_leader(&gm, &first) {
+                                Ok(()) => {
+                                    let next_attempt = attempts + 1;
+                                    sessions.insert(
+                                        identity.started_at.clone(),
+                                        PartyPhase::AwaitingWarp {
+                                            attempts: next_attempt,
+                                            target_instance,
+                                            deadline: Instant::now() + Duration::from_secs(8),
+                                        },
+                                    );
+                                    info!(instance_id, pid = identity.pid, target = %first, attempt = next_attempt, target_instance, "party warp route delivered; awaiting instance confirmation");
+                                }
+                                Err(error) => {
+                                    let _ = gm.lock().release_all(&first);
+                                    sessions.insert(
+                                        identity.started_at.clone(),
+                                        PartyPhase::WarpReady {
+                                            attempts: attempts + 1,
+                                            next_attempt: Instant::now()
+                                                + Duration::from_millis(500),
+                                        },
+                                    );
+                                    warn!(instance_id, pid = identity.pid, target = %first, %error, "party warp input delivery failed");
+                                }
+                            }
+                        }
+                        PartyPhase::AwaitingWarp {
+                            attempts,
+                            target_instance,
+                            deadline,
+                        } => {
+                            let location = poe2_world::connector::get_client_location(identity.pid);
+                            if location.instance_id == Some(target_instance) {
+                                sessions.insert(
+                                    identity.started_at.clone(),
+                                    PartyPhase::Complete {
+                                        leader_instance: Some(target_instance),
+                                    },
+                                );
+                                info!(
+                                    instance_id,
+                                    pid = identity.pid,
+                                    target_instance,
+                                    "party onboarding verified complete"
+                                );
+                            } else if Instant::now() >= deadline {
+                                sessions.insert(
+                                    identity.started_at.clone(),
+                                    PartyPhase::WarpReady {
+                                        attempts,
+                                        next_attempt: Instant::now(),
+                                    },
+                                );
+                                warn!(
+                                    instance_id,
+                                    pid = identity.pid,
+                                    attempt = attempts,
+                                    "party warp not confirmed; retry scheduled"
+                                );
+                            }
+                        }
+                        PartyPhase::Complete { leader_instance } => {
+                            let leader_location =
+                                poe2_world::connector::get_client_location(leader.pid);
+                            let follower_location =
+                                poe2_world::connector::get_client_location(identity.pid);
+                            if let Some((current, target)) = leader_transition_requires_warp(
+                                leader_instance,
+                                leader_location.instance_id,
+                                follower_location.instance_id,
+                            ) {
+                                sessions.insert(
+                                    identity.started_at.clone(),
+                                    PartyPhase::WarpReady {
+                                        attempts: 0,
+                                        next_attempt: Instant::now() + Duration::from_millis(800),
+                                    },
+                                );
+                                info!(
+                                    instance_id,
+                                    pid = identity.pid,
+                                    from_instance = current,
+                                    target_instance = target,
+                                    "leader changed instance; verified follower warp scheduled"
+                                );
+                            }
+                        }
+                        PartyPhase::Waiting | PartyPhase::Failed => {}
+                    }
+                }
+                std::thread::sleep(Duration::from_millis(100));
+            }
+        });
+    }
+
     let mut flask_ctrl = FlaskController::new();
 
     // Start the foreground-only WASD-to-controller polling bridge.
@@ -459,10 +861,11 @@ async fn run() -> Result<()> {
     {
         let rt = Arc::clone(&runtime);
         let gm = Arc::clone(&gamepad_mgr);
+        let party_op = Arc::clone(&party_operation_active);
+        let controller_operation = Arc::clone(&controller_operation);
         std::thread::spawn(move || {
             info!("Main decision & input tick loop started");
             let mut active_follow_targets = HashMap::<String, String>::new();
-            let mut portal_recovery = PortalRecovery::default();
 
             loop {
                 // 1. Advance engine state and get snapshot
@@ -472,6 +875,12 @@ async fn run() -> Result<()> {
                     r.advance();
                     r.to_api_snapshot()
                 };
+
+                if party_op.load(Ordering::Acquire) {
+                    flask_ctrl.release_pending(&mut gm.lock());
+                    std::thread::sleep(Duration::from_millis(20));
+                    continue;
+                }
 
                 // 2. Sync KBM bridge toggle and mouse bindings from UI settings
                 kbm_bridge
@@ -487,6 +896,13 @@ async fn run() -> Result<()> {
                     continue;
                 }
 
+                // Serialize the complete tick's controller output against
+                // party accept/warp and older transient macros.
+                let Some(_controller_cycle) = controller_operation.try_lock() else {
+                    std::thread::sleep(Duration::from_millis(10));
+                    continue;
+                };
+
                 // 3. Process pad commands - spawn each as own thread (non-blocking)
                 let pad_cmds = {
                     let mut r = rt.lock();
@@ -495,6 +911,7 @@ async fn run() -> Result<()> {
 
                 for cmd in pad_cmds {
                     let gm_clone = Arc::clone(&gm);
+                    let operation = Arc::clone(&controller_operation);
                     if cmd.target == "FOCUS" {
                         let slot = cmd.button.parse::<u8>().unwrap_or(0);
                         poe2_input::KbmBridge::set_focus_slot(slot);
@@ -502,30 +919,13 @@ async fn run() -> Result<()> {
                         poe2_input::stash_macro::execute_stash_sweep();
                     } else if cmd.button == "BROADCAST_A" {
                         std::thread::spawn(move || {
+                            let _operation_guard = operation.lock();
                             let mut mgr = gm_clone.lock();
                             let _ = mgr.broadcast_button_a();
                             drop(mgr);
                             std::thread::sleep(Duration::from_millis(150));
                             let mut mgr = gm_clone.lock();
                             let _ = mgr.broadcast_release();
-                        });
-                    } else if cmd.button == "JOIN" {
-                        let target = cmd.target.clone();
-                        std::thread::spawn(move || {
-                            info!(
-                                "Holding START+A+X for Couch Co-Op join on {target} (non-blocking)"
-                            );
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.press_button(
-                                &target,
-                                XButtons {
-                                    raw: XButtons::START | XButtons::A | XButtons::X,
-                                },
-                            );
-                            drop(mgr);
-                            std::thread::sleep(Duration::from_millis(2000));
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.release_all(&target);
                         });
                     } else if cmd.button == "A" || cmd.button == "START" {
                         let target = cmd.target.clone();
@@ -535,6 +935,7 @@ async fn run() -> Result<()> {
                             XButtons::START
                         };
                         std::thread::spawn(move || {
+                            let _operation_guard = operation.lock();
                             let mut mgr = gm_clone.lock();
                             let _ = mgr.press_button(&target, XButtons { raw: raw_btn });
                             drop(mgr);
@@ -550,6 +951,7 @@ async fn run() -> Result<()> {
                             XButtons::RIGHT
                         };
                         std::thread::spawn(move || {
+                            let _operation_guard = operation.lock();
                             let mut mgr = gm_clone.lock();
                             let _ = mgr.press_button(&target, XButtons { raw: raw_btn });
                             drop(mgr);
@@ -560,6 +962,7 @@ async fn run() -> Result<()> {
                     } else if cmd.dx != 0.0 || cmd.dy != 0.0 {
                         let target = cmd.target.clone();
                         std::thread::spawn(move || {
+                            let _operation_guard = operation.lock();
                             let mut mgr = gm_clone.lock();
                             let _ = mgr.set_movement(&target, cmd.dx, cmd.dy, true);
                             drop(mgr);
@@ -581,36 +984,6 @@ async fn run() -> Result<()> {
                 if live_input_allowed {
                     let mut extra_events = Vec::new();
                     let mut pickup_outcomes = Vec::new();
-
-                    for (target, attempt) in portal_recovery.observe(&snapshot) {
-                        let gm_clone = Arc::clone(&gm);
-                        std::thread::spawn(move || {
-                            let mut mgr = gm_clone.lock();
-                            let result = mgr.press_button(
-                                &target,
-                                XButtons {
-                                    raw: XButtons::DOWN,
-                                },
-                            );
-                            drop(mgr);
-                            std::thread::sleep(Duration::from_millis(120));
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.release_buttons(
-                                &target,
-                                XButtons {
-                                    raw: XButtons::DOWN,
-                                },
-                            );
-                            match result {
-                                Ok(()) => {
-                                    info!(%target, attempt, "portal recovery input pulse sent")
-                                }
-                                Err(error) => {
-                                    warn!(%target, attempt, %error, "portal recovery input failed")
-                                }
-                            }
-                        });
-                    }
 
                     {
                         let mut mgr = gm.lock();
@@ -693,8 +1066,6 @@ async fn run() -> Result<()> {
                     for (_, target) in active_follow_targets.drain() {
                         let _ = mgr.release_all(&target);
                     }
-                } else {
-                    portal_recovery.reset();
                 }
 
                 // 6. Dynamic tick - reads fresh value every loop
@@ -779,24 +1150,55 @@ mod tests {
     }
 
     #[test]
-    fn portal_recovery_is_armed_only_after_a_real_area_transition() {
-        let runtime = BotRuntime::default_mock();
-        let mut snapshot = runtime.to_api_snapshot();
-        snapshot.leader.area = "Area A".into();
-        snapshot.followers.clear();
-        snapshot.tick = 1;
-        let mut recovery = PortalRecovery::default();
-        assert!(recovery.observe(&snapshot).is_empty());
+    fn party_signal_requires_nonzero_invite_before_zero_can_advance() {
+        let now = Instant::now();
+        let mut phase = PartyPhase::Waiting;
+        assert_eq!(
+            apply_party_signal(&mut phase, 0, now),
+            PartySignalOutcome::Ignored
+        );
+        assert!(matches!(phase, PartyPhase::Waiting));
 
-        snapshot.leader.area = "Area B".into();
-        snapshot.tick = 2;
-        assert!(recovery.observe(&snapshot).is_empty());
-        snapshot.tick = 4;
-        let pulses = recovery.observe(&snapshot);
-        assert_eq!(pulses.len(), 4);
-        assert!(pulses.iter().all(|(target, attempt)| matches!(
-            target.as_str(),
-            "P3" | "P4" | "P5" | "P6"
-        ) && *attempt == 1));
+        assert_eq!(
+            apply_party_signal(&mut phase, 1234, now),
+            PartySignalOutcome::InviteArmed
+        );
+        assert!(matches!(phase, PartyPhase::AcceptReady { code: 1234, .. }));
+
+        phase = PartyPhase::AwaitingInviteClear {
+            code: 1234,
+            attempts: 1,
+            deadline: now,
+        };
+        assert_eq!(
+            apply_party_signal(&mut phase, 0, now),
+            PartySignalOutcome::InviteCleared
+        );
+        assert!(matches!(phase, PartyPhase::WarpReady { attempts: 1, .. }));
+    }
+
+    #[test]
+    fn completed_party_ignores_invites_and_tracks_real_leader_transition() {
+        let now = Instant::now();
+        let mut phase = PartyPhase::Complete {
+            leader_instance: Some(100),
+        };
+        assert_eq!(
+            apply_party_signal(&mut phase, 4321, now),
+            PartySignalOutcome::Ignored
+        );
+        assert!(matches!(phase, PartyPhase::Complete { .. }));
+        assert_eq!(
+            leader_transition_requires_warp(Some(100), Some(100), Some(90)),
+            None
+        );
+        assert_eq!(
+            leader_transition_requires_warp(Some(100), Some(200), Some(100)),
+            Some((100, 200))
+        );
+        assert_eq!(
+            leader_transition_requires_warp(Some(100), Some(200), Some(200)),
+            None
+        );
     }
 }

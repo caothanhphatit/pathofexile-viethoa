@@ -5,9 +5,11 @@
 
 use anyhow::Result;
 use poe2_types::{ClientFlavor, ClientStatus};
+use std::collections::{HashMap, VecDeque};
 use std::fs::{self, File};
 use std::io::{Read, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
+use std::sync::LazyLock;
 use std::time::{Duration, Instant};
 use tracing::{info, warn};
 
@@ -29,6 +31,23 @@ static LEVELING_OVERLAY_VISIBLE: std::sync::atomic::AtomicBool =
     std::sync::atomic::AtomicBool::new(false);
 static LOG_WATCHER_INITIALIZED: std::sync::atomic::AtomicBool =
     std::sync::atomic::AtomicBool::new(false);
+static PARTY_INVITES: parking_lot::Mutex<VecDeque<PartyInviteEvent>> =
+    parking_lot::Mutex::new(VecDeque::new());
+static PARTY_RECOVERY_REVISION: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+static CLIENT_LOCATIONS: LazyLock<parking_lot::RwLock<HashMap<u32, ClientLocation>>> =
+    LazyLock::new(|| parking_lot::RwLock::new(HashMap::new()));
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PartyInviteEvent {
+    pub pid: u32,
+    pub security_code: u64,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct ClientLocation {
+    pub area: String,
+    pub instance_id: Option<u64>,
+}
 
 /// Ensure the background Client.txt log watcher is running continuously.
 pub fn ensure_log_watcher_started() {
@@ -60,6 +79,33 @@ pub fn ensure_log_watcher_started() {
 pub fn get_last_logged_zone() -> String {
     ensure_log_watcher_started();
     LAST_LOGGED_ZONE.read().clone()
+}
+
+/// Drain account-level party invitation state changes observed in Client.txt.
+/// A non-zero code means an active invitation; zero clears that invitation.
+pub fn take_party_invites() -> Vec<PartyInviteEvent> {
+    ensure_log_watcher_started();
+    PARTY_INVITES.lock().drain(..).collect()
+}
+
+/// Request a one-shot regroup for every bound follower. The party worker
+/// consumes revisions, so repeated hotkey presses cannot enqueue stale pad
+/// commands tied to old fixed controller slots.
+pub fn request_party_recovery() -> u64 {
+    PARTY_RECOVERY_REVISION.fetch_add(1, std::sync::atomic::Ordering::AcqRel) + 1
+}
+
+pub fn party_recovery_revision() -> u64 {
+    PARTY_RECOVERY_REVISION.load(std::sync::atomic::Ordering::Acquire)
+}
+
+pub fn get_client_location(pid: u32) -> ClientLocation {
+    ensure_log_watcher_started();
+    CLIENT_LOCATIONS
+        .read()
+        .get(&pid)
+        .cloned()
+        .unwrap_or_default()
 }
 
 /// Check whether the Leveling HUD overlay window is visible.
@@ -248,6 +294,26 @@ impl Poe2Connector {
     }
 
     fn parse_log_line(&mut self, line: &str) {
+        if !self.suppress_event_logs {
+            if let Some(event) = parse_party_invite_event(line) {
+                let mut invitations = PARTY_INVITES.lock();
+                if invitations.len() >= 64 {
+                    invitations.pop_front();
+                    warn!("party invitation event queue full; discarded oldest event");
+                }
+                invitations.push_back(event);
+                info!(
+                    pid = event.pid,
+                    active = event.security_code != 0,
+                    "party invitation state changed for game client"
+                );
+            }
+        }
+
+        if let Some((pid, instance_id)) = parse_client_instance(line) {
+            CLIENT_LOCATIONS.write().entry(pid).or_default().instance_id = Some(instance_id);
+        }
+
         // 1. PoE 2 Loading Screen: e.g. "[INFO Client 17932] [LOADING SCREEN] (Cemetery of the Eternals) Duration = 3.08363 seconds"
         if let Some(pos) = line.find("[LOADING SCREEN] (") {
             let rest = &line[pos + "[LOADING SCREEN] (".len()..];
@@ -262,6 +328,9 @@ impl Poe2Connector {
                     }
                     self.status.current_area = area.to_string();
                     *LAST_LOGGED_ZONE.write() = area.to_string();
+                    if let Some(pid) = parse_client_pid(line) {
+                        CLIENT_LOCATIONS.write().entry(pid).or_default().area = area.to_string();
+                    }
                     return;
                 }
             }
@@ -284,6 +353,11 @@ impl Poe2Connector {
                     }
                     self.status.current_area = area.to_string();
                     *LAST_LOGGED_ZONE.write() = area.to_string();
+                    if let Some(pid) = parse_client_pid(line) {
+                        let mut locations = CLIENT_LOCATIONS.write();
+                        let location = locations.entry(pid).or_default();
+                        location.area = area.to_string();
+                    }
                     return;
                 }
             }
@@ -310,6 +384,46 @@ impl Poe2Connector {
             }
         }
     }
+}
+
+fn parse_party_invite_event(line: &str) -> Option<PartyInviteEvent> {
+    const CODE_MARKER: &str = "InstanceClientSetSelfPartyInvitationSecurityCode = ";
+    let pid = parse_client_pid(line)?;
+    let code_start = line.find(CODE_MARKER)? + CODE_MARKER.len();
+    let security_code = line[code_start..]
+        .split_whitespace()
+        .next()?
+        .parse::<u64>()
+        .ok()?;
+    Some(PartyInviteEvent { pid, security_code })
+}
+
+fn parse_client_pid(line: &str) -> Option<u32> {
+    // Real PoE2 log prefixes are `[INFO Client 1234]`,
+    // `[DEBUG Client 1234]`, etc. The severity is variable, so anchor on the
+    // space-delimited Client field and require the closing bracket.
+    const CLIENT_MARKER: &str = " Client ";
+    let marker = line.find(CLIENT_MARKER)?;
+    let open = line[..marker].rfind('[')?;
+    let level = line[open + 1..marker].trim();
+    if !matches!(level, "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR") {
+        return None;
+    }
+    let start = marker + CLIENT_MARKER.len();
+    let end = line[start..].find(']')? + start;
+    let value = line[start..end].trim();
+    if value.is_empty() || !value.bytes().all(|byte| byte.is_ascii_digit()) {
+        return None;
+    }
+    value.parse().ok()
+}
+
+fn parse_client_instance(line: &str) -> Option<(u32, u64)> {
+    const INSTANCE_MARKER: &str = "Client-Safe Instance ID = ";
+    let pid = parse_client_pid(line)?;
+    let start = line.find(INSTANCE_MARKER)? + INSTANCE_MARKER.len();
+    let instance_id = line[start..].split_whitespace().next()?.parse().ok()?;
+    Some((pid, instance_id))
 }
 
 // ─── Windows Process Detection ────────────────────────────────────────────────
@@ -478,5 +592,40 @@ mod tests {
             "2026/09/02 12:00:00 123456 abc [INFO Client 4356] : You have entered Ashen Yard.",
         );
         assert_eq!(conn.status.current_area, "Ashen Yard");
+    }
+
+    #[test]
+    fn party_invite_parser_keeps_reset_and_exact_pid() {
+        assert_eq!(
+            parse_party_invite_event(
+                "[DEBUG Client 1976] InstanceClientSetSelfPartyInvitationSecurityCode = 0"
+            ),
+            Some(PartyInviteEvent {
+                pid: 1976,
+                security_code: 0,
+            })
+        );
+        assert_eq!(
+            parse_party_invite_event(
+                "[DEBUG Client 1976] InstanceClientSetSelfPartyInvitationSecurityCode = 847221"
+            ),
+            Some(PartyInviteEvent {
+                pid: 1976,
+                security_code: 847221,
+            })
+        );
+    }
+
+    #[test]
+    fn client_instance_parser_keeps_pid_and_server_instance_separate() {
+        assert_eq!(
+            parse_client_instance("[DEBUG Client 1976] Client-Safe Instance ID = 1392222052"),
+            Some((1976, 1_392_222_052))
+        );
+        assert_eq!(parse_client_pid("line without a client"), None);
+        assert_eq!(
+            parse_client_pid("user text Client 1976] without a structured log prefix"),
+            None
+        );
     }
 }

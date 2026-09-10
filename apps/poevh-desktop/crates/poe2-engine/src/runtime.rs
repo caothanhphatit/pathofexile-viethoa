@@ -1085,30 +1085,30 @@ impl BotRuntime {
 
     pub fn cmd_toggle_client_bot(&mut self, id: u32) -> bool {
         let mut state = self.adapter.snapshot();
-        let mut new_enabled = true;
-        if let Some(c) = state
-            .settings
-            .multi_client
-            .clients
-            .iter_mut()
-            .find(|c| c.id == id)
-        {
-            c.enabled = !c.enabled;
-            new_enabled = c.enabled;
-        }
-        let any_enabled = state
+        let profile_exists = state
             .settings
             .multi_client
             .clients
             .iter()
-            .any(|c| c.enabled);
-        if !any_enabled {
-            state.running = false;
-        } else if new_enabled {
-            state.running = true;
+            .any(|c| c.id == id && c.enabled);
+        if !profile_exists {
+            self.push_event(
+                "INSTANCE",
+                "BOT_REJECTED",
+                &format!("Client #{id}: profile không tồn tại hoặc đang bị tắt"),
+                true,
+            );
+            return false;
         }
+
+        // `ClientAccountProfile.enabled` controls whether a profile may bind a
+        // process. It is not a play/pause flag. Mutating it here made the
+        // inventory thread classify a still-running client as disabled and
+        // immediately unplug its two ViGEm controllers, which disconnects a
+        // couch-coop character from the game.
+        let new_enabled = !state.running;
+        state.running = new_enabled;
         self.adapter.apply_state(state.clone());
-        self.persist_runtime_settings(&state);
         self.last_state = state;
         self.push_event(
             "INSTANCE",
@@ -1121,6 +1121,39 @@ impl BotRuntime {
             true,
         );
         new_enabled
+    }
+
+    /// Persist the primary character observed from the exact PID bound to a
+    /// secondary runtime instance. This replaces migration placeholders such
+    /// as `Culler`/`Character 1`, allowing party and follow mapping to use the
+    /// real in-game identity without guessing from nearby actors.
+    pub fn set_detected_primary_character(
+        &mut self,
+        id: u32,
+        name: &str,
+    ) -> Result<bool, InstanceUpdateError> {
+        let name = name.trim();
+        if name.is_empty() || name.len() > 96 || name.chars().any(char::is_control) {
+            return Err(InstanceUpdateError::Invalid("Invalid character name"));
+        }
+        let mut config = self.last_state.settings.multi_client.clone();
+        let profile = config
+            .clients
+            .iter_mut()
+            .find(|profile| profile.id == id)
+            .ok_or(InstanceUpdateError::NotFound)?;
+        if profile.char1_name == name {
+            return Ok(false);
+        }
+        profile.char1_name = name.to_owned();
+        self.commit_profiles(config)?;
+        self.push_event(
+            "PARTY",
+            "CHARACTER_DETECTED",
+            &format!("Client #{id}: {name}"),
+            true,
+        );
+        Ok(true)
     }
 
     pub fn cmd_update_instance(
@@ -1275,22 +1308,11 @@ impl BotRuntime {
     }
 
     pub fn cmd_join_p2(&mut self) {
-        self.pending_pad_commands.push(PadCommand {
-            target: "P1".into(),
-            button: "JOIN".into(),
-            dx: 0.0,
-            dy: 0.0,
-        });
-        self.pending_pad_commands.push(PadCommand {
-            target: "P2".into(),
-            button: "JOIN".into(),
-            dx: 0.0,
-            dy: 0.0,
-        });
+        let revision = poe2_world::connector::request_party_recovery();
         self.push_event(
             "PARTY",
-            "JOIN_COOP",
-            "Holding [A]+[START] for 2.5s on all Virtual Pads",
+            "REGROUP_REQUESTED",
+            &format!("Yêu cầu đưa follower về leader (#{revision})"),
             true,
         );
     }

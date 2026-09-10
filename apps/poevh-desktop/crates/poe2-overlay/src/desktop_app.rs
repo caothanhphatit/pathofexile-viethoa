@@ -4,7 +4,7 @@
 //! 1. Main Studio Management Window (1140x800, cream/light theme)
 //! 2. Global Hotkeys:
 //!    - [F10]: Toggle Bot Start / Pause
-//!    - [F12]: 1-Click Join Char 2 / Warp
+//!    - [F12]: Regroup bound followers to the leader
 
 use anyhow::Result;
 use parking_lot::Mutex;
@@ -346,7 +346,7 @@ pub fn run_desktop_app(runtime: Arc<Mutex<BotRuntime>>) -> Result<()> {
 
     let trade_visible = Arc::new(std::sync::atomic::AtomicBool::new(false));
 
-    // ── Global Hotkey Polling Thread (Esc: Close Trade, F6: Leveling, F10: Toggle Bot, F12: 1-Click Join/Warp) ──
+    // ── Global Hotkey Polling Thread (Esc: Close Trade, F6: Leveling, F10: Toggle Bot, F12: Regroup followers) ──
     {
         let rt = Arc::clone(&runtime);
         let leveling_hotkey_proxy = event_loop.create_proxy();
@@ -390,12 +390,12 @@ pub fn run_desktop_app(runtime: Arc<Mutex<BotRuntime>>) -> Result<()> {
                     }
                     last_f10 = f10;
 
-                    // F12 (0x7B): Join Char 2 / Emergency Warp
+                    // F12 (0x7B): request a PID-bound follower regroup.
                     let f12 = (GetAsyncKeyState(0x7B) as u16 & 0x8000) != 0;
                     if f12 && !last_f12 && !poe2_world::login::is_active() && is_poe2_foreground() {
                         let mut r = rt.lock();
                         r.cmd_join_p2();
-                        info!("⌨️ [F12] Hotkey triggered 1-Click Join Char 2");
+                        info!("⌨️ [F12] Hotkey requested follower regroup");
                     }
                     last_f12 = f12;
                 }

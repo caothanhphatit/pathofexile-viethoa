@@ -508,3 +508,63 @@ fn runtime_instance_is_ephemeral_but_account_profile_is_persistent() {
         .iter()
         .any(|p| p.id == 1));
 }
+
+#[test]
+fn toggling_bound_client_bot_never_disables_profile_or_unbinds_process() {
+    let mut runtime = BotRuntime::default_mock();
+    let process = discovered_process(9002, "0002");
+    runtime.update_instance_inventory(Ok(vec![process.clone()]));
+    runtime
+        .ensure_runtime_instance(2, Some(false), Some(true), Some(15))
+        .unwrap();
+    runtime
+        .cmd_bind_instance(2, process.identity.clone())
+        .unwrap();
+
+    let enabled_before = runtime
+        .to_api_snapshot()
+        .settings
+        .multi_client
+        .clients
+        .iter()
+        .find(|profile| profile.id == 2)
+        .unwrap()
+        .enabled;
+    assert!(enabled_before);
+
+    assert!(runtime.cmd_toggle_client_bot(2));
+    let running = runtime.to_api_snapshot();
+    assert!(running.running);
+    assert!(
+        running
+            .settings
+            .multi_client
+            .clients
+            .iter()
+            .find(|profile| profile.id == 2)
+            .unwrap()
+            .enabled
+    );
+    assert_eq!(
+        running.instance_services.runtime_instances[0].status,
+        "bound"
+    );
+
+    assert!(!runtime.cmd_toggle_client_bot(2));
+    let paused = runtime.to_api_snapshot();
+    assert!(!paused.running);
+    assert!(
+        paused
+            .settings
+            .multi_client
+            .clients
+            .iter()
+            .find(|profile| profile.id == 2)
+            .unwrap()
+            .enabled
+    );
+    assert_eq!(
+        paused.instance_services.runtime_instances[0].status,
+        "bound"
+    );
+}
