@@ -415,12 +415,13 @@ async fn run() -> Result<()> {
     {
         let rt = Arc::clone(&runtime);
         let gm = Arc::clone(&gamepad_mgr);
+        let controller_operation = Arc::clone(&controller_operation);
         std::thread::spawn(move || {
             let mut tuned_processes = std::collections::HashSet::new();
             loop {
                 let processes =
                     poe2_world::instances::discover_game_processes().map_err(|e| e.to_string());
-                {
+                let (active_controller_ids, controller_modes, tuning_requests, live_identities) = {
                     let mut r = rt.lock();
                     r.update_instance_inventory(processes);
                     r.auto_bind_unbound_instances();
@@ -434,50 +435,82 @@ async fn run() -> Result<()> {
                         })
                         .map(|s| s.instance_id)
                         .collect();
-                    for s in statuses {
-                        if s.status == "bound" {
-                            if r.instance_needs_virtual_controllers(s.instance_id)
-                                && !gm.lock().has_instance_controllers(s.instance_id)
-                            {
-                                let _ = gm.lock().ensure_instance_controllers(s.instance_id);
-                            } else if !r.instance_needs_virtual_controllers(s.instance_id) {
-                                gm.lock().remove_instance_controllers(s.instance_id);
+                    let controller_modes = statuses
+                        .iter()
+                        .filter(|status| status.status == "bound")
+                        .map(|status| {
+                            (
+                                status.instance_id,
+                                r.instance_needs_virtual_controllers(status.instance_id),
+                            )
+                        })
+                        .collect::<Vec<_>>();
+                    let tuning_requests = statuses
+                        .iter()
+                        .filter(|status| status.status == "bound")
+                        .filter_map(|status| {
+                            let process = status.process.as_ref()?;
+                            let profile = r.client_profile(status.instance_id)?;
+                            Some((
+                                process.identity.clone(),
+                                process.identity.pid,
+                                profile.black_screen,
+                            ))
+                        })
+                        .collect::<Vec<_>>();
+                    let live_identities = statuses
+                        .iter()
+                        .filter_map(|status| {
+                            status
+                                .process
+                                .as_ref()
+                                .map(|process| process.identity.clone())
+                        })
+                        .collect::<HashSet<_>>();
+                    (
+                        active_controller_ids,
+                        controller_modes,
+                        tuning_requests,
+                        live_identities,
+                    )
+                };
+
+                // Driver waits and unplug calls must never run while holding
+                // the shared runtime mutex. Serialize them with button macros
+                // so a lifecycle refresh cannot neutralize an in-flight route.
+                {
+                    let _operation_guard = controller_operation.lock();
+                    let mut manager = gm.lock();
+                    for (instance_id, needs_controllers) in controller_modes {
+                        if needs_controllers && !manager.has_instance_controllers(instance_id) {
+                            if let Err(error) = manager.ensure_instance_controllers(instance_id) {
+                                warn!(instance_id, %error, "failed to ensure instance controllers");
                             }
-                            if let Some(ref proc) = s.process {
-                                if let Some(profile) = r.client_profile(s.instance_id) {
-                                    let tuning_key = (
-                                        proc.identity.clone(),
-                                        profile.black_screen,
-                                        profile.black_screen,
-                                    );
-                                    if tuned_processes.insert(tuning_key) {
-                                        let _ = poe2_world::smoother::apply_process_tuning(
-                                            proc.identity.pid,
-                                            profile.black_screen,
-                                            profile.black_screen,
-                                        );
-                                    }
-                                }
-                            }
+                        } else if !needs_controllers {
+                            manager.remove_instance_controllers(instance_id);
                         }
                     }
                     // Controllers exist only for live bound instances. This also
                     // cleans up a pre-launch pair if the game launch fails.
-                    let controller_instances = gm.lock().controller_instance_ids();
+                    let controller_instances = manager.controller_instance_ids();
                     for instance_id in controller_instances {
                         if !active_controller_ids.contains(&instance_id) {
-                            gm.lock().remove_instance_controllers(instance_id);
+                            manager.remove_instance_controllers(instance_id);
                         }
                     }
-                    tuned_processes.retain(|(identity, _, _)| {
-                        r.instance_statuses().iter().any(|status| {
-                            status
-                                .process
-                                .as_ref()
-                                .is_some_and(|process| process.identity == *identity)
-                        })
-                    });
                 }
+
+                for (identity, pid, black_screen) in tuning_requests {
+                    let tuning_key = (identity, black_screen, black_screen);
+                    if tuned_processes.insert(tuning_key) {
+                        let _ = poe2_world::smoother::apply_process_tuning(
+                            pid,
+                            black_screen,
+                            black_screen,
+                        );
+                    }
+                }
+                tuned_processes.retain(|(identity, _, _)| live_identities.contains(identity));
                 std::thread::sleep(Duration::from_secs(2));
             }
         });
