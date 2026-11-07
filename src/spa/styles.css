@@ -2310,11 +2310,11 @@ textarea:focus-visible {
 }
 
 .build-workbench {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
   width: 100%;
-  max-width: 1440px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 0 4px;
 }
@@ -2744,11 +2744,12 @@ textarea:focus-visible {
 }
 
 .build-project-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
-  gap: 7px;
-  justify-self: center;
-  width: min(680px, 100%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-self: auto;
+  width: auto;
 }
 
 .build-project-actions button {

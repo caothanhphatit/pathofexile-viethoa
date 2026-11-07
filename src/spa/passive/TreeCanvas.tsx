@@ -1,6 +1,5 @@
 import { memo, useEffect, useMemo, useRef } from "react";
 import { createCamera, fitCameraToBounds, panCamera, screenToWorld, zoomCameraAt, type Camera } from "./camera";
-import type { PassiveTreeChangeMarker } from "./changes";
 import { renderPassiveTree } from "./draw";
 import { boundsForNodes, filteredTreeNodes, hitTestNode, type PassiveNode, type PassiveTreeModel } from "./tree";
 
@@ -16,8 +15,6 @@ interface Props {
   tree: PassiveTreeModel;
   searchIds: Set<string>;
   allocatedIds: Set<string>;
-  changeEntries: PassiveTreeChangeMarker[];
-  changesOn: boolean;
   allocationEnabled: boolean;
   classFilter: string;
   ascendancyFilter: string;
@@ -27,7 +24,7 @@ interface Props {
   onZoomChange?: (zoom: number) => void;
 }
 
-function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesOn, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle, onZoomChange }: Props) {
+function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle, onZoomChange }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraRef = useRef<Camera>(createCamera());
   const dragging = useRef(false);
@@ -49,7 +46,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
     onZoomChangeRef.current = onZoomChange;
   }, [onZoomChange]);
 
-  const renderOpts = useMemo(() => ({ searchIds, allocatedIds, changeEntries, changesOn, hoverId: hoverId.current, classFilter, ascendancyFilter }), [searchIds, allocatedIds, changeEntries, changesOn, classFilter, ascendancyFilter]);
+  const renderOpts = useMemo(() => ({ searchIds, allocatedIds, hoverId: hoverId.current, classFilter, ascendancyFilter }), [searchIds, allocatedIds, classFilter, ascendancyFilter]);
   const renderOptsRef = useRef(renderOpts);
 
   useEffect(() => {
@@ -90,7 +87,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, changeEntries, changesO
     const renderFrame = () => {
       raf = 0;
       const opts = renderOptsRef.current;
-      const nextViewKey = `${opts.classFilter}|${opts.ascendancyFilter}|${opts.changesOn ? "base" : "target"}`;
+      const nextViewKey = `${opts.classFilter}|${opts.ascendancyFilter}`;
       if (nextViewKey !== viewKey) {
         viewKey = nextViewKey;
         fitCurrentView(88);

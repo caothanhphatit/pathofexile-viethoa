@@ -129,9 +129,12 @@
     .filter(([, route]) => Number.isFinite(route.navOrder))
     .sort(([, a], [, b]) => a.navOrder - b.navOrder);
 
+  const desktopClass = (active) => `poe-nav-link ${active ? "poe-nav-link-active" : ""}`.trim();
+  const mobileClass = (active) => `poe-nav-link poe-nav-link-mobile ${active ? "poe-nav-link-mobile-active" : ""}`.trim();
+
   const renderNavLink = ([key, route], active) => `
-    <a class="${active ? "is-active" : ""}" href="${escapeHtml(routeHref(key))}" data-route="${escapeHtml(key)}"${active ? " aria-current=\"page\"" : ""}>
-      <span class="material-symbols-rounded" aria-hidden="true">${escapeHtml(route.icon || "circle")}</span>${escapeHtml(routeTitle(key, route))}
+    <a class="${desktopClass(active)}" href="${escapeHtml(routeHref(key))}" data-route="${escapeHtml(key)}"${active ? " aria-current=\"page\"" : ""}>
+      <span class="poe-nav-icon material-symbols-rounded" aria-hidden="true">${escapeHtml(route.icon || "circle")}</span>${escapeHtml(routeTitle(key, route))}
     </a>
   `;
 
@@ -143,7 +146,7 @@
     const links = navRoutes();
 
     target.outerHTML = `
-      <header class="app-header" data-component="site-header">
+      <header class="app-header poe-shell-container" data-component="site-header">
         <a class="brand" href="${escapeHtml(routeHref("home"))}" data-route="home" aria-label="${escapeHtml(i18n(uiText.homeLabel))}">
           <img src="/assets/img/logo.jpg" width="42" height="38" alt="" />
           <span>
@@ -155,7 +158,7 @@
           ${links.map((entry) => renderNavLink(entry, entry[0] === activeNav)).join("")}
         </nav>
         <div class="app-actions">
-          <a class="facebook-button" href="${fanpageUrl}" target="_blank" rel="noopener noreferrer" data-no-route-preload="true" aria-label="${escapeHtml(i18n(uiText.fanpageLabel))}" title="${escapeHtml(i18n(uiText.fanpageLabel))}">
+          <a class="facebook-button poe-facebook-link" href="${fanpageUrl}" target="_blank" rel="noopener noreferrer" data-no-route-preload="true" aria-label="${escapeHtml(i18n(uiText.fanpageLabel))}" title="${escapeHtml(i18n(uiText.fanpageLabel))}">
             <span aria-hidden="true">f</span>
           </a>
           <div class="segmented" role="group" aria-label="${escapeHtml(i18n(uiText.languageLabel))}">

@@ -75,7 +75,7 @@ test("production pages load compiled Tailwind CSS instead of the browser CDN run
     const html = await readProjectFile(page);
 
     assert.match(html, /<link rel="preload" href="\/assets\/fonts\/material-symbols-rounded\.woff2" as="font" type="font\/woff2" crossorigin>/, `${page} preloads local icon font`);
-    assert.match(html, /<link href="\/?dist\/app\.css\?v=20260529-font-ui" rel="stylesheet">/, `${page} loads versioned compiled app CSS`);
+    assert.match(html, /<link href="\/?dist\/app\.css\?v=20260702-header-sync" rel="stylesheet">/, `${page} loads versioned compiled app CSS`);
     assert.doesNotMatch(html, /https:\/\/cdn\.tailwindcss\.com/, `${page} does not load Tailwind CDN runtime`);
     assert.doesNotMatch(html, /https:\/\/fonts\.(googleapis|gstatic)\.com/, `${page} does not block on remote Google Fonts`);
     assert.doesNotMatch(html, /components\/tailwind-config\.js/, `${page} does not load runtime Tailwind config`);
@@ -89,7 +89,7 @@ test("large data exports are loaded near their runtime instead of blocking the d
     const head = html.slice(0, html.indexOf("</head>"));
 
     assert.doesNotMatch(head, new RegExp(`<script\\s+src=["']${dataFile}["']><\\/script>`), `${page} must not block head parsing with ${dataFile}`);
-    assert.match(html, new RegExp(`<script\\s+src=["']${dataFile}["']><\\/script>[\\s\\S]*<script>`), `${page} loads ${dataFile} before its inline runtime`);
+    assert.match(html, new RegExp(`<script\\s+src=["']${dataFile}(?:\\?[^"']*)?["']><\\/script>[\\s\\S]*<script>`), `${page} loads ${dataFile} before its inline runtime`);
   }
 });
 

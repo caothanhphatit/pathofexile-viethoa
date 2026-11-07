@@ -162,50 +162,17 @@ test("React passive tree keeps selected ascendancy projected into the class disc
   assert.match(styles, /\.passive-action/);
 });
 
-test("React passive tree exposes the official 0.4 to 0.5 changes overlay", async () => {
-  const [page, draw, changes, data, dataFile, styles, script] = await Promise.all([
+test("React passive tree shows only the current tree (old 0.4 -> 0.5 changes overlay removed)", async () => {
+  const [page, draw, canvas, data] = await Promise.all([
     readRepoFile("src/spa/pages/PassiveTreePage.tsx"),
     readRepoFile("src/spa/passive/draw.ts"),
-    readRepoFile("src/spa/passive/changes.ts"),
-    readRepoFile("src/spa/lib/data.ts"),
-    readRepoFile("public/data/passive-tree-changes.js"),
-    readRepoFile("src/spa/styles.css"),
-    readRepoFile("scripts/passive-tree/build-changes.mjs")
+    readRepoFile("src/spa/passive/TreeCanvas.tsx"),
+    readRepoFile("src/spa/lib/data.ts")
   ]);
 
-  assert.match(data, /loadPassiveTreeChanges/);
-  assert.match(changes, /parsePassiveTreeChanges/);
-  assert.match(changes, /CHANGE_COLORS/);
-  assert.match(page, /loadPassiveTreeChanges/);
-  assert.match(page, /passive-changes-panel/);
-  assert.match(page, /changesOn/);
-  assert.match(page, /runCommand\("focus"/);
-  assert.match(draw, /changeById/);
-  assert.match(draw, /drawRemovedGhosts/);
-  assert.match(draw, /pushRing\(CHANGE_COLORS\[change\.status\]/);
-  assert.match(styles, /\.passive-changes-panel/);
-  assert.match(script, /buildPassiveTreeChanges/);
-  assert.match(dataFile, /POE2_PASSIVE_TREE_CHANGES/);
-  assert.match(dataFile, /"base_version":"0\.4\.0"/);
-  assert.match(dataFile, /"target_version":"0\.5\.0"/);
-  assert.match(dataFile, /"added":/);
-  assert.match(dataFile, /"stats":/);
-});
-
-test("React passive tree renders newly added change nodes as real nodes", async () => {
-  const [draw, changes, dataFile, script] = await Promise.all([
-    readRepoFile("src/spa/passive/draw.ts"),
-    readRepoFile("src/spa/passive/changes.ts"),
-    readRepoFile("public/data/passive-tree-changes.js"),
-    readRepoFile("scripts/passive-tree/build-changes.mjs")
-  ]);
-
-  assert.match(changes, /iconPath: string/);
-  assert.match(changes, /iconPath:\s*String\(entry\.iconPath/);
-  assert.match(script, /iconPath:\s*passiveIconAssetPath/);
-  assert.match(dataFile, /"status":"added"/);
-  assert.match(dataFile, /"iconPath":"\/assets\/passive-tree\/icons\//);
-  assert.match(draw, /passiveIconForNode/);
-  assert.match(draw, /change\.status === "added"/);
-  assert.match(draw, /change\.status === "added"/);
+  for (const source of [page, draw, canvas, data]) {
+    assert.doesNotMatch(source, /passive\/changes|loadPassiveTreeChanges|changesOn|PASSIVE_TREE_CHANGES/);
+  }
+  assert.doesNotMatch(page, /Change 0\.4|passive-changes-panel/);
+  assert.match(page, /runCommand\("fit"\)/);
 });

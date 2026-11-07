@@ -1,21 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { loadPassiveTreeChanges, loadPassiveTreeData } from "../lib/data";
+import { loadPassiveTreeData } from "../lib/data";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
 import { matchesQuery } from "../lib/text";
 import { createTreeSnapshot, deleteTreeSnapshot, passiveCount, readCurrentTreeSnapshot, readSavedTreeSnapshots, saveTreeSnapshot, writeCurrentTreeSnapshot, type BuildTreeSnapshot } from "../lib/buildPlanner";
 import { TreeCanvas, type CanvasCommand } from "../passive/TreeCanvas";
-import {
-  CHANGE_COLORS,
-  CHANGE_LABELS,
-  changeMatchesView,
-  changePreview,
-  changeTitle,
-  changeToPassiveNode,
-  parsePassiveTreeChanges,
-  type PassiveChangeStatus,
-  type PassiveTreeChangeMarker,
-  type PassiveTreeChanges
-} from "../passive/changes";
 import {
   allStartNodeIds,
   allocatePathToNode,
@@ -27,8 +15,7 @@ import {
 import { filteredTreeNodes, parsePassiveTree, projectNodeForView, type PassiveNode, type PassiveTreeModel } from "../passive/tree";
 import { parsePobBuild, type PobBuild } from "../passive/pob";
 
-type ChangeFilter = PassiveChangeStatus | "all";
-type PassivePanelMode = "build" | "changes" | "items";
+type PassivePanelMode = "build" | "items";
 
 const BUILD_PASSIVE_LIMIT = 124;
 const BUILD_ASCENDANCY_LIMIT = 8;
@@ -50,15 +37,6 @@ const POB_KEY_STATS: { key: string; label: string; round?: boolean }[] = [
   { key: "ChaosResist", label: "Chaos" }
 ];
 const POB_ITEM_CATEGORIES = ["Weapon", "Armour", "Jewellery", "Belt", "Flask", "Jewel", "Other"] as const;
-
-const changeFilterRows: { key: ChangeFilter; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "added", label: "New" },
-  { key: "stats", label: "Stats" },
-  { key: "renamed", label: "Rename" },
-  { key: "moved", label: "Moved" },
-  { key: "removed", label: "Removed" }
-];
 
 interface AggregatedStat {
   key: string;
@@ -145,9 +123,6 @@ const passiveCopy = {
   all: { vi: "All", en: "All" },
   baseTree: { vi: "Base tree", en: "Base tree" },
   search: { vi: "Search node/stat...", en: "Search node/stat..." },
-  treeChanges: { vi: "Tree changes", en: "Tree changes" },
-  highlight: { vi: "Highlight 0.5 changes", en: "Highlight 0.5 changes" },
-  officialUpdates: { vi: "node updates from official export", en: "node updates from official export" },
   buildSummary: { vi: "Build summary", en: "Build summary" },
   statSummary: { vi: "Stat summary", en: "Stat summary" },
   visibleNodes: { vi: "visible", en: "visible" },
@@ -183,15 +158,12 @@ function treeSnapshotSignature(snapshot: BuildTreeSnapshot | null | undefined): 
 
 export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, initialSnapshot = null, onSnapshotChange, onSaveSnapshot }: PassiveTreeWorkspaceProps) {
   const [tree, setTree] = useState<PassiveTreeModel | null>(null);
-  const [changes, setChanges] = useState<PassiveTreeChanges | null>(null);
   const [error, setError] = useState("");
   const [classFilter, setClassFilter] = useState("");
   const [ascendancyFilter, setAscendancyFilter] = useState("");
   const [search, setSearch] = useState("");
   const [activeMode, setActiveMode] = useState<PassivePanelMode>("build");
   const [buildPanelCollapsed, setBuildPanelCollapsed] = useState(false);
-  const [changesPanelCollapsed, setChangesPanelCollapsed] = useState(false);
-  const [changeFilter, setChangeFilter] = useState<ChangeFilter>("all");
   const [allocatedIds, setAllocatedIds] = useState<Set<string>>(() => new Set());
   const [buildLimitWarning, setBuildLimitWarning] = useState("");
   const [hover, setHover] = useState<{ node: PassiveNode | null; x: number; y: number; held: boolean }>({ node: null, x: 0, y: 0, held: false });
@@ -258,18 +230,6 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   }, [locale, initialSnapshot?.id]);
 
   useEffect(() => {
-    let alive = true;
-    loadPassiveTreeChanges().then((raw) => {
-      if (alive) setChanges(parsePassiveTreeChanges(raw));
-    }).catch(() => {
-      if (alive) setChanges(null);
-    });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  useEffect(() => {
     const refreshSavedTrees = () => setSavedTrees(readSavedTreeSnapshots());
     window.addEventListener("storage", refreshSavedTrees);
     window.addEventListener("poe-build-tree-saved", refreshSavedTrees);
@@ -296,8 +256,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     };
   }, [treeLibraryOpen]);
 
-  const effectiveChangesOn = Boolean(changes && activeMode === "changes");
-  const allocationEnabled = !readOnly && activeMode === "build" && !effectiveChangesOn;
+  const allocationEnabled = !readOnly && activeMode === "build";
 
   const visibleSearchIds = useMemo(() => {
     if (!tree || !search.trim()) return new Set<string>();
@@ -336,24 +295,11 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   const buildStatRows = useMemo(() => aggregateNodeStats(selectedBuildNodes), [selectedBuildNodes]);
   const buildLimitExceeded = buildCounts.passive > BUILD_PASSIVE_LIMIT || buildCounts.ascendancy > BUILD_ASCENDANCY_LIMIT;
   const visibleNodeCount = visibleNodeIds.size;
-  const displayAllocatedIds = useMemo(() => effectiveChangesOn ? new Set<string>() : allocatedIds, [effectiveChangesOn, allocatedIds]);
 
   useEffect(() => {
     if (!tree) return;
     setAllocatedIds((current) => syncSelectedStartNodeIds(current, selectedStartIds, startIds));
   }, [tree, selectedStartIds, startIds]);
-
-  const filteredChanges = useMemo(() => {
-    if (!changes) return [];
-    return changes.entries.filter((entry) => {
-      if (changeFilter !== "all" && entry.status !== changeFilter) return false;
-      if (classFilter && entry.className && entry.className !== classFilter) return false;
-      if (ascendancyFilter && entry.ascendancyName && entry.ascendancyName !== ascendancyFilter) return false;
-      return true;
-    });
-  }, [changes, changeFilter, classFilter, ascendancyFilter]);
-
-  const changeRows = useMemo(() => filteredChanges.slice(0, 36), [filteredChanges]);
 
   const filteredAscendancies = useMemo(() => {
     if (!tree) return [];
@@ -526,26 +472,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     window.setTimeout(() => setSaveMessage(""), 2200);
   };
 
-  const focusChange = (change: PassiveTreeChangeMarker) => {
-    if (!tree) return;
-    const node = tree.nodeById.get(change.id);
-    const target = node ? projectNodeForView(tree, node, classFilter, ascendancyFilter) : projectNodeForView(tree, changeToPassiveNode(change), classFilter, ascendancyFilter);
-    runCommand("focus", {
-      x: target.x,
-      y: target.y,
-      zoom: node?.type.includes("small") ? 0.34 : 0.24
-    });
-  };
-
   const routeClassName = embedded ? "passive-route passive-route--embedded" : "passive-route";
 
   if (error) return <main className={routeClassName}><div className="error-panel">{error}</div></main>;
   if (!tree) return <main className={routeClassName}><div className="loading-panel">{uiText("loadingPassiveTree", locale)}</div></main>;
 
-  const hoverChange = effectiveChangesOn && hover.node ? changes?.byId.get(hover.node.id) : undefined;
-  const totalChanges = changes ? changes.counts.added + changes.counts.removed + changes.counts.stats + changes.counts.renamed + changes.counts.moved : 0;
   const allocatedBuildCount = buildCounts.total;
-  const showChangesPanel = activeMode === "changes" && effectiveChangesOn && changes;
 
   return (
     <main className={routeClassName}>
@@ -555,10 +487,6 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             <span className="material-symbols-rounded" aria-hidden="true">summarize</span>
             <span>{localizedText(passiveCopy.build, "", locale)}</span>
             <strong>{formatNumber(allocatedBuildCount, locale)}</strong>
-          </button>
-          <button className={activeMode === "changes" ? "is-active" : ""} type="button" onClick={() => setActiveMode("changes")} aria-pressed={activeMode === "changes"} disabled={!changes}>
-            <span className="material-symbols-rounded" aria-hidden="true">change_circle</span>
-            <span>Change 0.4</span>
           </button>
           <button className={activeMode === "items" ? "is-active" : ""} type="button" onClick={() => setActiveMode("items")} aria-pressed={activeMode === "items"} disabled={!pob}>
             <span className="material-symbols-rounded" aria-hidden="true">backpack</span>
@@ -630,9 +558,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
         <TreeCanvas
           tree={tree}
           searchIds={visibleSearchIds}
-          allocatedIds={displayAllocatedIds}
-          changeEntries={filteredChanges}
-          changesOn={effectiveChangesOn}
+          allocatedIds={allocatedIds}
           allocationEnabled={allocationEnabled}
           classFilter={classFilter}
           ascendancyFilter={ascendancyFilter}
@@ -711,56 +637,6 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             {Math.round(zoom * 100)}%
           </span>
         </div>
-        {showChangesPanel ? (
-          <aside className={`passive-changes-panel passive-side-panel ${changesPanelCollapsed ? "is-collapsed" : ""}`}>
-            {changesPanelCollapsed ? (
-              <button className="passive-panel-rail" type="button" onClick={() => setChangesPanelCollapsed(false)} aria-label="Show changes panel" title="Show changes panel">
-                <span className="material-symbols-rounded" aria-hidden="true">chevron_left</span>
-                <strong>Changes</strong>
-                <small>{formatNumber(totalChanges, locale)}</small>
-              </button>
-            ) : (
-              <>
-                <div className="passive-panel-title">
-                  <span className="material-symbols-rounded" aria-hidden="true">published_with_changes</span>
-                  <div>
-                    <h2>{localizedText(passiveCopy.treeChanges, "", locale)}</h2>
-                    <p>{changes.baseVersion} -&gt; {changes.targetVersion}</p>
-                  </div>
-                  <div className="passive-panel-actions">
-                    <button className="passive-panel-collapse" type="button" onClick={() => setChangesPanelCollapsed(true)} aria-label="Hide changes panel" title="Hide panel">
-                      <span className="material-symbols-rounded" aria-hidden="true">chevron_right</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="passive-change-tabs" aria-label="Passive change filters">
-                  {changeFilterRows.map((row) => {
-                    const count = row.key === "all" ? totalChanges : changes.counts[row.key] ?? 0;
-                    return (
-                      <button key={row.key} className={changeFilter === row.key ? "is-active" : ""} type="button" onClick={() => setChangeFilter(row.key)}>
-                        <span>{row.label}</span>
-                        <strong>{formatNumber(count, locale)}</strong>
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="passive-change-list">
-                  {changeRows.map((change) => (
-                    <button key={`${change.status}:${change.id}`} className="passive-change-row" type="button" onClick={() => focusChange(change)}>
-                      <span className="passive-change-dot" style={{ color: CHANGE_COLORS[change.status] }} aria-hidden="true" />
-                      <span>
-                        <strong translate="no">{changeTitle(change)}</strong>
-                        <small>{CHANGE_LABELS[change.status]} - {change.ascendancyName || change.className || "Passive tree"}</small>
-                        <em>{changePreview(change)}</em>
-                      </span>
-                      <span className="material-symbols-rounded" aria-hidden="true">my_location</span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </aside>
-        ) : null}
         {activeMode === "build" ? (
           <aside className={`passive-build-panel passive-side-panel ${buildLimitExceeded ? "is-danger" : ""} ${buildPanelCollapsed ? "is-collapsed" : ""}`}>
             {buildPanelCollapsed ? (
@@ -920,13 +796,6 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             <strong translate="no">{hover.node.name || `Node ${hover.node.id}`}</strong>
             <span>{hover.node.type}</span>
             {hover.node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}
-            {hoverChange ? (
-              <div className="passive-tooltip__change">
-                <b style={{ color: CHANGE_COLORS[hoverChange.status] }}>{CHANGE_LABELS[hoverChange.status]}</b>
-                {hoverChange.oldStats.slice(0, 3).map((line) => <del key={`old:${line}`}>{formatPassiveStatText(line)}</del>)}
-                {hoverChange.newStats.slice(0, 3).map((line) => <ins key={`new:${line}`}>{formatPassiveStatText(line)}</ins>)}
-              </div>
-            ) : null}
           </div>
         ) : null}
       </div>
