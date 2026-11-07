@@ -122,7 +122,7 @@ internal static class Program
             if (args.Length == 1 && args[0].Equals("--self-test", StringComparison.OrdinalIgnoreCase))
                 return SelfTest();
             if (args.Length < 2)
-                return Fail("Usage: --apply|--probe|--restore <Content.ggpk|_.index.bin> [features] [backup-dir]");
+                return Fail("Usage: --apply|--probe|--restore|--list|--extract|--replace <Content.ggpk|_.index.bin> [features|paths|path=file,...] [backup-dir|out-dir]");
 
             var command = args[0].ToLowerInvariant();
             var target = Path.GetFullPath(args[1]);
@@ -136,7 +136,7 @@ internal static class Program
             if (!File.Exists(target))
                 return Fail($"Không tìm thấy asset container: {target}");
 
-            if (command is "--apply" or "--restore")
+            if (command is "--apply" or "--restore" or "--replace")
                 EnsureGameIsClosed(target);
 
             return command switch
@@ -144,6 +144,10 @@ internal static class Program
                 "--probe" => Probe(target),
                 "--apply" => Apply(target, features, backupDir),
                 "--restore" => Restore(target, backupDir),
+                "--list" => ListFiles(target, args.Length >= 3 ? args[2] : string.Empty),
+                "--ggpk-tree" => GgpkTree(target, args.Length >= 3 && int.TryParse(args[2], out var depth) ? depth : 2),
+                "--extract" => Extract(target, features, backupDir),
+                "--replace" => Replace(target, args.Length >= 3 ? args[2] : string.Empty, backupDir),
                 _ => Fail($"Lệnh không hợp lệ: {command}")
             };
         }
@@ -208,6 +212,178 @@ internal static class Program
             [],
             ok ? "Self-test passed" : "Self-test failed",
             ok ? null : $"visibility={first.Changed}/{second.Already}:{first.Error}; blending={blending.Changed}/{blendingSecond.Already}:{blending.Error}; unsupported={unsupported.Error}; atlas={atlas.Changed}; rain={rain.Changed}:{rain.Data}; environment={environment.Changed}:{environment.Data}; camera={camera.Changed}:{camera.Data}; color={color.Changed}:{color.Data}"));
+    }
+
+    /// <summary>
+    /// Print the raw GGPK directory tree (not the bundle index) up to a depth,
+    /// to diagnose containers whose layout differs from the standard
+    /// <c>Bundles2/_.index.bin</c> arrangement.
+    /// </summary>
+    private static int GgpkTree(string target, int maxDepth)
+    {
+        using var ggpk = new LibGGPK3.GGPK(target);
+        var entries = new List<string>();
+        foreach (var node in LibGGPK3.Records.TreeNode.RecurseTree(ggpk.Root))
+        {
+            var path = node.GetPath();
+            var depth = path.Count(ch => ch == '/');
+            if (depth > maxDepth)
+                continue;
+            var kind = node is LibGGPK3.Records.FileRecord file ? $"file:{file.DataLength}" : "dir";
+            entries.Add($"{path} [{kind}]");
+            if (entries.Count >= 400)
+                break;
+        }
+        return Write(new PatchResult(true, false, $"ggpk-v{ggpk.Version}", entries, [], $"{entries.Count} node(s)"));
+    }
+
+    /// <summary>
+    /// List bundle paths containing the given substring (case-insensitive).
+    /// The matches are returned in ChangedAssets.
+    /// </summary>
+    private static int ListFiles(string target, string needle)
+    {
+        var openError = OpenIndex(target, readOnly: true, out var index, out var disposable);
+        if (openError is not null)
+            return Write(openError);
+
+        using (disposable)
+        {
+            // Some PoE2 indexes contain a handful of entries whose path cannot
+            // be rebuilt; parsing still populates every other record's Path.
+            var parseNote = string.Empty;
+            try
+            {
+                index!.ParsePaths();
+            }
+            catch (Exception ex)
+            {
+                parseNote = $" ({ex.GetBaseException().Message})";
+            }
+            var matches = index!.Files.Values
+                .Select(record => record.Path)
+                .Where(path => !string.IsNullOrWhiteSpace(path)
+                    && (needle.Length == 0 || path.Contains(needle, StringComparison.OrdinalIgnoreCase)))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .Take(5000)
+                .ToList();
+            return Write(new PatchResult(true, false, "", matches, [], $"{matches.Count} file(s){parseNote}"));
+        }
+    }
+
+    /// <summary>
+    /// Extract the given bundle paths into <paramref name="outDir"/>. Each file is
+    /// written under its safe name (path separators replaced) so the caller can
+    /// map it back to the bundle path.
+    /// </summary>
+    private static int Extract(string target, HashSet<string> paths, string outDir)
+    {
+        if (string.IsNullOrWhiteSpace(outDir))
+            return Fail("Thiếu thư mục output cho --extract");
+        Directory.CreateDirectory(outDir);
+
+        var openError = OpenIndex(target, readOnly: true, out var index, out var disposable);
+        if (openError is not null)
+            return Write(openError);
+
+        using (disposable)
+        {
+            var written = new List<string>();
+            var missing = new List<string>();
+            foreach (var path in paths)
+            {
+                if (!index!.TryGetFile(path, out var record) || record is null)
+                {
+                    missing.Add(path);
+                    continue;
+                }
+                // Keep the bundle path readable in the file name so callers can
+                // map extracted files back without the manifest.
+                var destination = Path.Combine(outDir, path.Replace('/', '_').Replace('\\', '_'));
+                File.WriteAllBytes(destination, record.Read().ToArray());
+                written.Add(destination);
+            }
+            return Write(new PatchResult(
+                missing.Count == 0,
+                false,
+                "",
+                written,
+                missing,
+                missing.Count == 0 ? $"Đã trích {written.Count} file" : $"Thiếu trong bundle: {string.Join(", ", missing)}"));
+        }
+    }
+
+    /// <summary>
+    /// Replace bundle files with the contents of local files. The argument is a
+    /// comma-separated list of <c>bundle/path=C:\local\file</c>. Originals are
+    /// backed up through the same manifest <c>--restore</c> consumes.
+    /// </summary>
+    private static int Replace(string target, string mapping, string backupDir)
+    {
+        if (string.IsNullOrWhiteSpace(backupDir))
+            return Fail("Thiếu thư mục backup asset");
+        var pairs = mapping
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(entry =>
+            {
+                var separator = entry.IndexOf('=');
+                if (separator <= 0 || separator == entry.Length - 1)
+                    throw new ArgumentException($"Mapping không hợp lệ (cần bundle/path=file): {entry}");
+                return (BundlePath: entry[..separator].Trim(), LocalFile: Path.GetFullPath(entry[(separator + 1)..].Trim()));
+            })
+            .ToArray();
+        if (pairs.Length == 0)
+            return Fail("Không có file nào để thay thế");
+        foreach (var pair in pairs)
+        {
+            if (!File.Exists(pair.LocalFile))
+                return Fail($"Không tìm thấy file thay thế: {pair.LocalFile}");
+        }
+
+        Directory.CreateDirectory(backupDir);
+        var openError = OpenIndex(target, readOnly: false, out var index, out var disposable);
+        if (openError is not null)
+            return Write(openError);
+
+        using (disposable)
+        {
+            var changed = new List<string>();
+            var already = new List<string>();
+            var manifest = Path.Combine(backupDir, "ggpk_assets_manifest.json");
+            var backups = File.Exists(manifest)
+                ? JsonSerializer.Deserialize<List<AssetBackup>>(File.ReadAllText(manifest, Encoding.UTF8), JsonOptions) ?? []
+                : [];
+
+            foreach (var pair in pairs)
+            {
+                if (!index!.TryGetFile(pair.BundlePath, out var record) || record is null)
+                    throw new InvalidOperationException($"Không tìm thấy trong bundle: {pair.BundlePath}");
+                var original = record.Read().ToArray();
+                var replacement = File.ReadAllBytes(pair.LocalFile);
+                if (original.AsSpan().SequenceEqual(replacement))
+                {
+                    already.Add(pair.BundlePath);
+                    continue;
+                }
+                EnsureBackup(pair.BundlePath, original, replacement, backupDir, backups);
+                record.Write(replacement);
+                changed.Add(pair.BundlePath);
+            }
+
+            if (changed.Count > 0)
+                index!.Save();
+            if (backups.Count > 0)
+                WriteJsonAtomically(manifest, backups);
+
+            return Write(new PatchResult(
+                true,
+                changed.Count > 0,
+                target.EndsWith("Content.ggpk", StringComparison.OrdinalIgnoreCase) ? "bundled-ggpk" : "bundles2-index",
+                changed,
+                already,
+                changed.Count > 0 ? $"Đã thay {changed.Count} file" : "Nội dung đã giống file thay thế"));
+        }
     }
 
     private static int Probe(string target)

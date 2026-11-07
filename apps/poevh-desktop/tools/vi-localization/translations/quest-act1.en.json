@@ -1,0 +1,1885 @@
+{
+ "quests": [
+  {
+   "row": 0,
+   "id": "TheMiller",
+   "name": "Reaching Clearfell"
+  },
+  {
+   "row": 1,
+   "id": "MudBurrower",
+   "name": "Treacherous Ground"
+  },
+  {
+   "row": 2,
+   "id": "TreeOfSouls",
+   "name": "Secrets in the Dark"
+  },
+  {
+   "row": 3,
+   "id": "TreeOfSouls2",
+   "name": "Secrets in the Dark"
+  },
+  {
+   "row": 4,
+   "id": "ReviveHoodedMentor",
+   "name": "The Mysterious Shade"
+  },
+  {
+   "row": 5,
+   "id": "RenlysTools",
+   "name": "Finding the Forge"
+  },
+  {
+   "row": 6,
+   "id": "UnaLute",
+   "name": "The Lost Lute"
+  },
+  {
+   "row": 7,
+   "id": "GraveyardFight",
+   "name": "Sorrow Among Stones"
+  },
+  {
+   "row": 8,
+   "id": "TheOutcast",
+   "name": "Ominous Altars"
+  },
+  {
+   "row": 9,
+   "id": "TheExecutioner",
+   "name": "The Trail of Corruption"
+  },
+  {
+   "row": 10,
+   "id": "TheIronCount",
+   "name": "The Mad Wolf of Ogham"
+  },
+  {
+   "row": 11,
+   "id": "GoToAct2",
+   "name": "[DNT-UNUSED] The Mysterious Boat"
+  },
+  {
+   "row": 72,
+   "id": "TormentedSpirits",
+   "name": "The Hunt Begins"
+  },
+  {
+   "row": 84,
+   "id": "BlankRuneQuest",
+   "name": "Blank Runes"
+  },
+  {
+   "row": 90,
+   "id": "AbyssQuest",
+   "name": "Cracks in the Earth"
+  },
+  {
+   "row": 107,
+   "id": "IncursionQuest1_Act1",
+   "name": "Ancient Beacons"
+  },
+  {
+   "row": 120,
+   "id": "Expedition2Act1",
+   "name": "The Runeseeker"
+  },
+  {
+   "row": 126,
+   "id": "RitualGroupLeague0",
+   "name": "Grim Portents"
+  },
+  {
+   "row": 127,
+   "id": "RitualGroupLeague1",
+   "name": "Grave Tidings"
+  }
+ ],
+ "states": [
+  {
+   "row": 0,
+   "quest": "TheMiller",
+   "order": 0,
+   "text": "Quest Complete - You have slain the Bloated Miller and received a reward from Renly.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 1,
+   "quest": "TheMiller",
+   "order": 1,
+   "text": "Renly has offered you a reward for slaying the Bloated Miller. Take it.",
+   "message": "Take Renly's reward",
+   "pins": "Take Renly's reward"
+  },
+  {
+   "row": 2,
+   "quest": "TheMiller",
+   "order": 2,
+   "text": "The Blacksmith appears to be in charge in this logging encampment. Talk to him.",
+   "message": "Talk to the Blacksmith",
+   "pins": "Talk to the Blacksmith"
+  },
+  {
+   "row": 3,
+   "quest": "TheMiller",
+   "order": 3,
+   "text": "You have slain the Bloated Miller and levelled up. Open the Passive Skill Screen and spend a Passive Skill Point to upgrade your character.",
+   "message": "",
+   "pins": "Open the Passive Skill Screen\nSpend your Passive Skill Point"
+  },
+  {
+   "row": 4,
+   "quest": "TheMiller",
+   "order": 4,
+   "text": "You have slain the Bloated Miller. Enter the logging encampment.",
+   "message": "Enter town",
+   "pins": "Enter the logging encampment"
+  },
+  {
+   "row": 5,
+   "quest": "TheMiller",
+   "order": 5,
+   "text": "A logging encampment is under attack by a diseased monstrosity that was once human. Kill it.",
+   "message": "Slay the Bloated Miller",
+   "pins": "Kill the Bloated Miller and end his rage"
+  },
+  {
+   "row": 6,
+   "quest": "TheMiller",
+   "order": 6,
+   "text": "The wounded man mentioned his chief Miller went to warn Clearfell about a sickness plaguing their men. Track down the Miller and find safety in Clearfell.",
+   "message": "Find Clearfell",
+   "pins": "Search for the Miller and find safety in Clearfell"
+  },
+  {
+   "row": 7,
+   "quest": "MudBurrower",
+   "order": 0,
+   "text": "Quest Complete - You have slain the Devourer and have received a reward from Renly.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 8,
+   "quest": "MudBurrower",
+   "order": 1,
+   "text": "You have slain the Devourer. Talk to Renly in Clearfell for your reward.",
+   "message": "Talk to Renly for your reward",
+   "pins": "Talk to Renly for your reward"
+  },
+  {
+   "row": 9,
+   "quest": "MudBurrower",
+   "order": 2,
+   "text": "You have cornered the Devourer. Kill it.",
+   "message": "Kill the Devourer",
+   "pins": "Kill the Devourer"
+  },
+  {
+   "row": 10,
+   "quest": "MudBurrower",
+   "order": 3,
+   "text": "You have found the Mud Burrow. Search the tunnels for the Devourer.",
+   "message": "Search the Mud Burrow",
+   "pins": "Find the Devourer and slay it"
+  },
+  {
+   "row": 11,
+   "quest": "MudBurrower",
+   "order": 4,
+   "text": "The Devourer lives underground in a Mud Burrow. Find it.",
+   "message": "Find the Mud Burrow",
+   "pins": "Search Clearfell to find the Mud Burrow entrance\nSlay the Devourer in its lair"
+  },
+  {
+   "row": 12,
+   "quest": "MudBurrower",
+   "order": 5,
+   "text": "Find the Devourer in its Mud Burrow and slay it so that the Ezomytes can safely leave the walls of Clearfell once more.",
+   "message": "Slay the Devourer",
+   "pins": "Search Clearfell for the entrance to the Mud Burrow\nSlay the Devourer in its lair"
+  },
+  {
+   "row": 13,
+   "quest": "TreeOfSouls",
+   "order": 0,
+   "text": "Quest Complete - You have released a dark entity called the Hooded One from the Tree of Souls.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 14,
+   "quest": "TreeOfSouls",
+   "order": 1,
+   "text": "You have released a dark entity called the Hooded One from the Tree of Souls. Return to Clearfell Encampment and speak to Una.",
+   "message": "Meet Una in Clearfell",
+   "pins": "Return to Clearfell Encampment and speak to Una"
+  },
+  {
+   "row": 15,
+   "quest": "TreeOfSouls",
+   "order": 2,
+   "text": "You have released a dark entity called the Hooded One from the Tree of Souls. Speak to Una for more information.",
+   "message": "Speak to Una",
+   "pins": "Speak to Una about what you have just witnessed"
+  },
+  {
+   "row": 16,
+   "quest": "TreeOfSouls",
+   "order": 3,
+   "text": "Stab each Rune Spike into the Ancient Runes on the Tree of Souls to ask it to release the Hooded One.",
+   "message": "Use the Last Rune Spike",
+   "pins": "Stab the last Rune Spike into the Tree of Souls"
+  },
+  {
+   "row": 17,
+   "quest": "TreeOfSouls",
+   "order": 4,
+   "text": "Stab each Rune Spike into the Ancient Runes on the Tree of Souls to ask it to release the Hooded One.",
+   "message": "Use the Last Rune Spike",
+   "pins": "Stab the last Rune Spike into the Tree of Souls"
+  },
+  {
+   "row": 18,
+   "quest": "TreeOfSouls",
+   "order": 5,
+   "text": "Stab each Rune Spike into the Ancient Runes on the Tree of Souls to ask it to release the Hooded One.",
+   "message": "Use the Last Rune Spike",
+   "pins": "Stab the last Rune Spike into the Tree of Souls"
+  },
+  {
+   "row": 19,
+   "quest": "TreeOfSouls",
+   "order": 6,
+   "text": "Stab each Rune Spike into the Ancient Runes on the Tree of Souls to ask it to release the Hooded One.",
+   "message": "Use the Rune Spikes",
+   "pins": "Stab the 2 remaining Rune Spikes into the Tree of Souls"
+  },
+  {
+   "row": 20,
+   "quest": "TreeOfSouls",
+   "order": 7,
+   "text": "Stab each Rune Spike into the Ancient Runes on the Tree of Souls to ask it to release the Hooded One.",
+   "message": "Use the Rune Spikes",
+   "pins": "Stab the 2 remaining Rune Spikes into the Tree of Souls"
+  },
+  {
+   "row": 21,
+   "quest": "TreeOfSouls",
+   "order": 8,
+   "text": "Stab each Rune Spike into the Ancient Runes on the Tree of Souls to ask it to release the Hooded One.",
+   "message": "Use the Rune Spikes",
+   "pins": "Stab the 2 remaining Rune Spikes into the Tree of Souls"
+  },
+  {
+   "row": 22,
+   "quest": "TreeOfSouls",
+   "order": 9,
+   "text": "Stab each Rune Spike into the Ancient Runes on the Tree of Souls to ask it to release the Hooded One.",
+   "message": "Use the Rune Spikes",
+   "pins": "Stab the Rune Spikes into the Tree of Souls"
+  },
+  {
+   "row": 23,
+   "quest": "TreeOfSouls",
+   "order": 10,
+   "text": "You have taken the forged Rune Spikes from Renly. Return to the Grelwood with them.",
+   "message": "Return to the Grelwood",
+   "pins": "Take the forged Rune Spikes to the Hooded One in the Grelwood"
+  },
+  {
+   "row": 24,
+   "quest": "TreeOfSouls",
+   "order": 11,
+   "text": "Renly has forged the Runes of Power from the Red Vale into spikes. Take them from him.",
+   "message": "Take the Rune Spikes from Renly",
+   "pins": "Take the forged Rune Spikes from Renly"
+  },
+  {
+   "row": 25,
+   "quest": "TreeOfSouls",
+   "order": 12,
+   "text": "You have found the Runes of Power in the Red Vale. Take them to Renly for forging.",
+   "message": "Bring the Runes to Renly",
+   "pins": "Bring the Runes to Renly for forging"
+  },
+  {
+   "row": 26,
+   "quest": "TreeOfSouls",
+   "order": 13,
+   "text": "Destroy the Rust King guarding the final Rune of Power.",
+   "message": "Defeat the Rust King",
+   "pins": "Defeat the Rust King to obtain the final Rune of Power"
+  },
+  {
+   "row": 27,
+   "quest": "TreeOfSouls",
+   "order": 14,
+   "text": "Destroy the monsters guarding the Rune of Power.",
+   "message": "Defeat the Monsters",
+   "pins": "Defeat the monsters guarding the Rune of Power"
+  },
+  {
+   "row": 28,
+   "quest": "TreeOfSouls",
+   "order": 15,
+   "text": "Collect the last Rune of Power from the Obelisks of Rust in the Red Vale.",
+   "message": "Collect Runes of Power",
+   "pins": "Collect the last Rune of Power"
+  },
+  {
+   "row": 29,
+   "quest": "TreeOfSouls",
+   "order": 16,
+   "text": "Collect the last Rune of Power from the Obelisks of Rust in the Red Vale.",
+   "message": "Collect Runes of Power",
+   "pins": "Collect the last Rune of Power"
+  },
+  {
+   "row": 30,
+   "quest": "TreeOfSouls",
+   "order": 17,
+   "text": "Collect the last Rune of Power from the Obelisks of Rust in the Red Vale.",
+   "message": "Collect Runes of Power",
+   "pins": "Collect the last Rune of Power"
+  },
+  {
+   "row": 31,
+   "quest": "TreeOfSouls",
+   "order": 18,
+   "text": "Collect the 2 remaining Runes of Power from the Obelisks of Rust in the Red Vale.",
+   "message": "Collect Runes of Power",
+   "pins": "Collect the 2 remaining Runes of Power"
+  },
+  {
+   "row": 32,
+   "quest": "TreeOfSouls",
+   "order": 19,
+   "text": "Collect the 2 remaining Runes of Power from the Obelisks of Rust in the Red Vale.",
+   "message": "Collect Runes of Power",
+   "pins": "Collect the 2 remaining Runes of Power"
+  },
+  {
+   "row": 33,
+   "quest": "TreeOfSouls",
+   "order": 20,
+   "text": "Collect the 2 remaining Runes of Power from the Obelisks of Rust in the Red Vale.",
+   "message": "Collect Runes of Power",
+   "pins": "Collect the 2 remaining Runes of Power"
+  },
+  {
+   "row": 34,
+   "quest": "TreeOfSouls",
+   "order": 21,
+   "text": "Collect all the Runes of Power in the Red Vale.",
+   "message": "Collect Runes of Power",
+   "pins": "Collect all 3 Runes of Power"
+  },
+  {
+   "row": 35,
+   "quest": "TreeOfSouls",
+   "order": 22,
+   "text": "Activate the Obelisks of Rust in the Red Vale to collect the Runes of Power for the Hooded One.",
+   "message": "Activate the Obelisk of Rust",
+   "pins": "Activate the Obelisks of Rust\nCollect the Runes of Power"
+  },
+  {
+   "row": 36,
+   "quest": "TreeOfSouls",
+   "order": 23,
+   "text": "The Runes of Power are clearly powerful. Collect all that the Red Vale has to offer.",
+   "message": "Loot the Runes of Power",
+   "pins": "Search for the 3 Runes of Power"
+  },
+  {
+   "row": 37,
+   "quest": "TreeOfSouls",
+   "order": 24,
+   "text": "Residual magic clearly still resides in the Red Vale. Investigate the Obelisks of Rust for the Runes of Power.",
+   "message": "Investigate the Obelisks of Rust",
+   "pins": "Investigate the Obelisks of Rust\nCollect the Rune of Power"
+  },
+  {
+   "row": 38,
+   "quest": "TreeOfSouls",
+   "order": 25,
+   "text": "This vale is littered with the debris of countless battles. Search it for anything that may still be useful.",
+   "message": "Search the Red Vale",
+   "pins": "Search the Red Vale for Obelisks of Rust containing Runes of Power"
+  },
+  {
+   "row": 39,
+   "quest": "TreeOfSouls",
+   "order": 26,
+   "text": "The runes you need to release the Hooded One are somewhere in the Red Vale. Look for them.",
+   "message": "Search for Runes of Power",
+   "pins": "Search the Red Vale for the 3 Runes of Power"
+  },
+  {
+   "row": 40,
+   "quest": "TreeOfSouls",
+   "order": 27,
+   "text": "To release the Hooded One, you must find the 3 runes in the Red Vale. Look for the Vale in the Grelwood.",
+   "message": "Find the Red Vale",
+   "pins": "Find the entrance to the Red Vale\nSearch the Red Vale for 3 Runes of Power"
+  },
+  {
+   "row": 41,
+   "quest": "TreeOfSouls",
+   "order": 28,
+   "text": "To release the Hooded One, you must find the 3 runes in the Red Vale. Look for the Red Vale in the Grelwood.",
+   "message": "Find the Red Vale",
+   "pins": "Find the entrance to the Red Vale in the Grelwood\nSearch the Red Vale for Obelisks of Rust which contain Runes of Power"
+  },
+  {
+   "row": 42,
+   "quest": "TreeOfSouls",
+   "order": 29,
+   "text": "You have found the Tree of Souls. An ancient entity hangs upon it. Summon Una and ask her for advice.",
+   "message": "Ask Una for help",
+   "pins": "Summon Una and ask her about the entity in the Tree"
+  },
+  {
+   "row": 43,
+   "quest": "TreeOfSouls",
+   "order": 30,
+   "text": "Search the Grelwood for any hint of what might have happened to the Count and his men that fateful night.",
+   "message": "Search the Grelwood",
+   "pins": "Search the Grelwood for evidence of the Count's activities"
+  },
+  {
+   "row": 44,
+   "quest": "TreeOfSouls",
+   "order": 31,
+   "text": "Travel through Clearfell to the Grelwood and search for any clues about the night the Count took his men out there.",
+   "message": "Travel to the Grelwood",
+   "pins": "Travel through Clearfell to the Grelwood"
+  },
+  {
+   "row": 45,
+   "quest": "ReviveHoodedMentor",
+   "order": 0,
+   "text": "Quest Complete - You have found Count Lachlann's ring and helped revive the Hooded One.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 46,
+   "quest": "ReviveHoodedMentor",
+   "order": 1,
+   "text": "You have given Count Lachlann's ring to Una and she is reviving the Hooded One. Witness this.",
+   "message": "Witness the revival of the Hooded One",
+   "pins": "Witness the revival of the Hooded One"
+  },
+  {
+   "row": 47,
+   "quest": "ReviveHoodedMentor",
+   "order": 2,
+   "text": "To heal the Hooded One's runic wound, Una needs a ring from an ancient Count. Bring Count Lachlann's ring to her in Clearfell Encampment.",
+   "message": "Bring Count Lachlann's Ring to Una",
+   "pins": "Bring Count Lachlann's Ring to Una"
+  },
+  {
+   "row": 48,
+   "quest": "ReviveHoodedMentor",
+   "order": 3,
+   "text": "To heal the Hooded One's runic wound, Una needs a ring from an ancient Count. Find his grave past the Memorial Gate.",
+   "message": "Search for the Count's grave past the Memorial Gate",
+   "pins": "Search for the Count's grave past the Memorial Gate"
+  },
+  {
+   "row": 49,
+   "quest": "ReviveHoodedMentor",
+   "order": 4,
+   "text": "Una has helped clear the roots. Continue through the Grim Tangle.",
+   "message": "Continue through the Grim Tangle",
+   "pins": "Continue through the Grim Tangle"
+  },
+  {
+   "row": 50,
+   "quest": "ReviveHoodedMentor",
+   "order": 5,
+   "text": "Speak to Una about the roots.",
+   "message": "Speak to Una about the roots",
+   "pins": "Speak to Una about the roots"
+  },
+  {
+   "row": 51,
+   "quest": "ReviveHoodedMentor",
+   "order": 6,
+   "text": "Summon Una to ask for help clearing the roots.",
+   "message": "Summon Una to ask for help clearing the roots",
+   "pins": "Summon Una to ask for help clearing the roots"
+  },
+  {
+   "row": 52,
+   "quest": "ReviveHoodedMentor",
+   "order": 7,
+   "text": "Una has told you about the Count's Signet. She has instructed you to travel through the Grim Tangle in the Grelwood.",
+   "message": "Travel through the Grim Tangle",
+   "pins": "Travel through the Grim Tangle"
+  },
+  {
+   "row": 53,
+   "quest": "ReviveHoodedMentor",
+   "order": 8,
+   "text": "Una has told you about the Count's Signet. She has instructed you to travel through the Grim Tangle in the Grelwood.",
+   "message": "Travel to the Grim Tangle",
+   "pins": "Return to the entrance to the Grim Tangle in the Grelwood"
+  },
+  {
+   "row": 54,
+   "quest": "ReviveHoodedMentor",
+   "order": 9,
+   "text": "Una has told you about the Count's Signet. She has instructed you to travel through the Grim Tangle in the Grelwood.",
+   "message": "Find the Grim Tangle",
+   "pins": "Find the entrance to the Grim Tangle in the Grelwood"
+  },
+  {
+   "row": 55,
+   "quest": "ReviveHoodedMentor",
+   "order": 10,
+   "text": "You have found roots blocking the path forward through the Grim Tangle. They are impassable for now.",
+   "message": "The roots are impassable for now",
+   "pins": "The roots are impassable for now"
+  },
+  {
+   "row": 56,
+   "quest": "RenlysTools",
+   "order": 0,
+   "text": "Quest Complete - You have returned the Smithing Tools to Renly and he has restored his salvage bench to its former glory.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 57,
+   "quest": "RenlysTools",
+   "order": 1,
+   "text": "Bring the tools back to Renly.",
+   "message": "Bring the tools back to Renly",
+   "pins": "Bring the tools back to Renly"
+  },
+  {
+   "row": 58,
+   "quest": "RenlysTools",
+   "order": 2,
+   "text": "Find Renly's tools.",
+   "message": "Find Renly's tools",
+   "pins": "Find Renly's tools"
+  },
+  {
+   "row": 59,
+   "quest": "RenlysTools",
+   "order": 3,
+   "text": "Travel to Ogham Village and find Renly's tools.",
+   "message": "Travel to Ogham Village",
+   "pins": "Travel to Ogham Village"
+  },
+  {
+   "row": 60,
+   "quest": "RenlysTools",
+   "order": 4,
+   "text": "Speak to Renly in Clearfell Encampment.",
+   "message": "Speak to Renly",
+   "pins": "Speak to Renly"
+  },
+  {
+   "row": 61,
+   "quest": "UnaLute",
+   "order": 0,
+   "text": "Quest Complete - You have returned Una's lute to her and gained two [WeaponSetPassiveSkillPoints|Weapon Set Passive Skill Points] from her reward.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 62,
+   "quest": "UnaLute",
+   "order": 1,
+   "text": "You have returned Una's lute to her, and she has given you a reward.",
+   "message": "Use the Book of Specialisation",
+   "pins": "Use the Book of Specialisation"
+  },
+  {
+   "row": 63,
+   "quest": "UnaLute",
+   "order": 2,
+   "text": "You have returned Una's lute to her. Speak to her for your reward.",
+   "message": "Speak to Una",
+   "pins": "Speak to Una for a reward"
+  },
+  {
+   "row": 64,
+   "quest": "UnaLute",
+   "order": 3,
+   "text": "You have found Una's lute. Return it to her at Clearfell Encampment.",
+   "message": "Return the Lute to Una",
+   "pins": "Return Una's Lute to her"
+  },
+  {
+   "row": 65,
+   "quest": "UnaLute",
+   "order": 4,
+   "text": "You have spotted Una's lute in her home in Ogham Farmlands. Retrieve it for her.",
+   "message": "Retrieve Una's Lute",
+   "pins": "Retrieve Una's Lute"
+  },
+  {
+   "row": 66,
+   "quest": "UnaLute",
+   "order": 5,
+   "text": "Una's lute was left behind at her home in Ogham Farmlands. Look for it.",
+   "message": "Search for Una's Lute",
+   "pins": "Search Ogham Farmlands for Una's Lute"
+  },
+  {
+   "row": 67,
+   "quest": "UnaLute",
+   "order": 6,
+   "text": "Una has asked you to find her lute, left behind at her home in Ogham Farmlands. Go there to look for it.",
+   "message": "Travel to Ogham Farmlands",
+   "pins": "Go to Ogham Farmlands\nFind Una's Lute"
+  },
+  {
+   "row": 68,
+   "quest": "GraveyardFight",
+   "order": 0,
+   "text": "Quest Complete - You have reunited Lachlann with his family.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 69,
+   "quest": "GraveyardFight",
+   "order": 1,
+   "text": "You have reunited Lachlann with his family... but it isn't going well. Give him the rest he deserves.",
+   "message": "End Lachlann's Suffering",
+   "pins": "Put Lachlann to rest"
+  },
+  {
+   "row": 70,
+   "quest": "GraveyardFight",
+   "order": 2,
+   "text": "You have opened the Memorial Gate. Follow Lachlann.",
+   "message": "Follow Lachlann",
+   "pins": "Follow Lachlann"
+  },
+  {
+   "row": 71,
+   "quest": "GraveyardFight",
+   "order": 3,
+   "text": "You have retrieved both pieces of the Memorial Gate key. Return to the Cemetery of the Eternals and open the gate.",
+   "message": "Return to the Cemetery of the Eternals",
+   "pins": "Return to the Cemetery of the Eternals and open the Memorial Gate"
+  },
+  {
+   "row": 72,
+   "quest": "GraveyardFight",
+   "order": 4,
+   "text": "Pick up Asinia's Memorial Key Piece.",
+   "message": "Pick up Asinia's Memorial Key Piece",
+   "pins": "Pick up Asinia's Memorial Key Piece"
+  },
+  {
+   "row": 73,
+   "quest": "GraveyardFight",
+   "order": 5,
+   "text": "You have found Asinia, Praetor Draven's Consort. Destroy her and retrieve her piece of the Memorial Gate key.",
+   "message": "Destroy Asinia",
+   "pins": "Destroy Asinia, the Praetor's Consort"
+  },
+  {
+   "row": 74,
+   "quest": "GraveyardFight",
+   "order": 6,
+   "text": "Search the Tomb of the Consort for Asinia.",
+   "message": "Explore the Tomb of the Consort",
+   "pins": "Search for Asinia in the Tomb of the Consort"
+  },
+  {
+   "row": 75,
+   "quest": "GraveyardFight",
+   "order": 7,
+   "text": "Search the Tomb of the Consort for Asinia.",
+   "message": "Enter the Tomb of the Consort",
+   "pins": "Enter the Tomb of the Consort in search of Asinia"
+  },
+  {
+   "row": 76,
+   "quest": "GraveyardFight",
+   "order": 8,
+   "text": "You have destroyed Praetor Draven, but Asinia remains yet to be found. Search for the Tomb of the Consort.",
+   "message": "Return to the Cemetery of the Eternals",
+   "pins": "Return to the Cemetery of the Eternals and search for the Tomb of the Consort"
+  },
+  {
+   "row": 77,
+   "quest": "GraveyardFight",
+   "order": 9,
+   "text": "Pick up Draven's Memorial Key Piece.",
+   "message": "Pick up Draven's Memorial Key Piece",
+   "pins": "Pick up Draven's Memorial Key Piece"
+  },
+  {
+   "row": 78,
+   "quest": "GraveyardFight",
+   "order": 10,
+   "text": "You have found Praetor Draven. Destroy him and retrieve his piece of the Memorial Gate key.",
+   "message": "Destroy Praetor Draven",
+   "pins": "Destroy Praetor Draven"
+  },
+  {
+   "row": 79,
+   "quest": "GraveyardFight",
+   "order": 11,
+   "text": "Search the Mausoleum for Draven and his Consort.",
+   "message": "Search the Mausoleum",
+   "pins": "Search the Mausoleum for Draven and his Consort"
+  },
+  {
+   "row": 80,
+   "quest": "GraveyardFight",
+   "order": 12,
+   "text": "Search the Mausoleum for Draven and his Consort.",
+   "message": "Enter the Mausoleum",
+   "pins": "Enter the Mausoleum"
+  },
+  {
+   "row": 81,
+   "quest": "GraveyardFight",
+   "order": 13,
+   "text": "You have destroyed Praetor Draven and taken his Memorial Key piece, but his consort, Asinia, has yet to be found. Return to the Cemetery of the Eternals and search for the Tomb of the Consort.",
+   "message": "Return to the Cemetery of the Eternals",
+   "pins": "Return to the Cemetery of the Eternals and search for the Tomb of the Consort"
+  },
+  {
+   "row": 82,
+   "quest": "GraveyardFight",
+   "order": 14,
+   "text": "Pick up Draven's Memorial Key Piece.",
+   "message": "Pick up Draven's Memorial Key Piece",
+   "pins": "Pick up Draven's Memorial Key Piece"
+  },
+  {
+   "row": 83,
+   "quest": "GraveyardFight",
+   "order": 15,
+   "text": "You have found Praetor Draven. Destroy him and retrieve his piece of the Memorial Gate key.",
+   "message": "Destroy Praetor Draven",
+   "pins": "Destroy Praetor Draven"
+  },
+  {
+   "row": 84,
+   "quest": "GraveyardFight",
+   "order": 16,
+   "text": "Search the Mausoleum for Praetor Draven.",
+   "message": "Search the Mausoleum",
+   "pins": "Search the Mausoleum for Praetor Draven"
+  },
+  {
+   "row": 85,
+   "quest": "GraveyardFight",
+   "order": 17,
+   "text": "Search the Mausoleum for Praetor Draven.",
+   "message": "Enter the Mausoleum",
+   "pins": "Investigate the Mausoleum in search of Praetor Draven"
+  },
+  {
+   "row": 86,
+   "quest": "GraveyardFight",
+   "order": 18,
+   "text": "You have destroyed Asinia, but Draven remains yet to be found. Return to the Cemetery of the Eternals and search for the Mausoleum.",
+   "message": "Return to the Cemetery of the Eternals",
+   "pins": "Return to the Cemetery of the Eternals and search for Draven"
+  },
+  {
+   "row": 87,
+   "quest": "GraveyardFight",
+   "order": 19,
+   "text": "Pick up Asinia's Memorial Key Piece.",
+   "message": "Pick up Asinia's Memorial Key Piece",
+   "pins": "Pick up Asinia's Memorial Key Piece"
+  },
+  {
+   "row": 88,
+   "quest": "GraveyardFight",
+   "order": 20,
+   "text": "You have found Asinia, Praetor Draven's Consort. Destroy her and retrieve her piece of the Memorial Gate key.",
+   "message": "Destroy Asinia",
+   "pins": "Destroy Asinia"
+  },
+  {
+   "row": 89,
+   "quest": "GraveyardFight",
+   "order": 21,
+   "text": "Search the Tomb of the Consort for Draven and his Consort.",
+   "message": "Explore the Tomb of the Consort",
+   "pins": "Explore the Tomb of the Consort in search of Draven and his Consort"
+  },
+  {
+   "row": 90,
+   "quest": "GraveyardFight",
+   "order": 22,
+   "text": "Search the Tomb of the Consort for Draven and his Consort.",
+   "message": "Enter the Tomb of the Consort",
+   "pins": "Explore the Tomb of the Consort in search of Draven and his Consort"
+  },
+  {
+   "row": 91,
+   "quest": "GraveyardFight",
+   "order": 23,
+   "text": "Lachlann has asked you to help him find the keys to the Memorial gate to save his family. Find Draven and his Consort in the Tomb of the Consort and the Mausoleum.",
+   "message": "Find Draven and his Consort",
+   "pins": "Search the Cemetery of the Eternals for the Tomb of the Consort and the Mausoleum"
+  },
+  {
+   "row": 92,
+   "quest": "TheOutcast",
+   "order": 0,
+   "text": "Quest Complete - You have cleansed the Ritual Altars for Finn and he has rewarded you with an Uncut Support Gem.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 93,
+   "quest": "TheOutcast",
+   "order": 1,
+   "text": "You have defeated the King in the Mists and cleansed the Ritual Altars in Freythorn. Speak to Finn for a reward.",
+   "message": "Talk to Finn for your reward",
+   "pins": "Talk to Finn for your reward"
+  },
+  {
+   "row": 94,
+   "quest": "TheOutcast",
+   "order": 2,
+   "text": "You have found the King in the Mists guarding the final Ritual Altar in Freythorn. Defeat him to cleanse the altar.",
+   "message": "Defeat the King in the Mists",
+   "pins": "Defeat the King in the Mists"
+  },
+  {
+   "row": 95,
+   "quest": "TheOutcast",
+   "order": 3,
+   "text": "Search for Ritual Altars in Freythorn, and cleanse them.",
+   "message": "Cleanse the Ritual Altars",
+   "pins": "Search for Ritual Altars and cleanse them"
+  },
+  {
+   "row": 96,
+   "quest": "TheOutcast",
+   "order": 4,
+   "text": "Search for Freythorn above the Hunting Grounds, beyond the Graveyard.",
+   "message": "Find Freythorn",
+   "pins": "Search for Freythorn above the Hunting Grounds"
+  },
+  {
+   "row": 97,
+   "quest": "TheExecutioner",
+   "order": 0,
+   "text": "Quest Complete - You have killed the Executioner and freed Leitis. You have been rewarded with an Uncut Skill Gem.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 98,
+   "quest": "TheExecutioner",
+   "order": 1,
+   "text": "You have freed Leitis and she has returned to Clearfell. Return to Clearfell and speak to her.",
+   "message": "Talk to Leitis in Clearfell",
+   "pins": "Talk to Leitis in Clearfell"
+  },
+  {
+   "row": 99,
+   "quest": "TheExecutioner",
+   "order": 2,
+   "text": "You have freed the Executioner's prisoner. Talk to her.",
+   "message": "Talk to Leitis",
+   "pins": "Talk to Leitis"
+  },
+  {
+   "row": 100,
+   "quest": "TheExecutioner",
+   "order": 3,
+   "text": "The Executioner had an imprisoned woman nearby. Free her.",
+   "message": "Free the Prisoner",
+   "pins": "Free the Prisoner"
+  },
+  {
+   "row": 101,
+   "quest": "TheExecutioner",
+   "order": 4,
+   "text": "You have spotted the Executioner that tried to hang you before your escape. Kill him.",
+   "message": "Kill the Executioner",
+   "pins": "Kill the Executioner"
+  },
+  {
+   "row": 102,
+   "quest": "TheExecutioner",
+   "order": 5,
+   "text": "You have found Ogham Village. Look for the Seed of Corruption.",
+   "message": "Search for the Seed of Corruption",
+   "pins": "Search for the Seed of Corruption"
+  },
+  {
+   "row": 103,
+   "quest": "TheExecutioner",
+   "order": 6,
+   "text": "Continue through Ogham Farmlands to look for the entrance to Ogham Village.",
+   "message": "Find the entrance to the Village",
+   "pins": "Find the entrance to the Village"
+  },
+  {
+   "row": 104,
+   "quest": "TheExecutioner",
+   "order": 7,
+   "text": "Cut through the Hunting Grounds and find the entrance to Ogham Village.",
+   "message": "Find the entrance to the Village",
+   "pins": "Find the entrance to the Village"
+  },
+  {
+   "row": 105,
+   "quest": "TheExecutioner",
+   "order": 8,
+   "text": "Una has told you to get to the village by cutting through the Hunting Grounds. Return to the Graveyard and enter the Hunting Grounds.",
+   "message": "Enter the Hunting Grounds",
+   "pins": "Enter the Hunting Grounds"
+  },
+  {
+   "row": 106,
+   "quest": "TheIronCount",
+   "order": 0,
+   "text": "Quest Complete - You have slain the Mad Wolf, freeing the Ezomytes from Count Geonor's reign.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 107,
+   "quest": "TheIronCount",
+   "order": 1,
+   "text": "Speak to the Hooded One to travel to the Vastiri Outskirts in pursuit of Oriana and the Beast.",
+   "message": "Travel East",
+   "pins": "Travel East"
+  },
+  {
+   "row": 108,
+   "quest": "TheIronCount",
+   "order": 2,
+   "text": "You have slain the Mad Wolf and freed Ogham, but Oriana has escaped with the Beast. Return to town and speak to the Hooded one.",
+   "message": "Return to Town",
+   "pins": "Return to Clearfell Encampment and speak to the Hooded One"
+  },
+  {
+   "row": 109,
+   "quest": "TheIronCount",
+   "order": 3,
+   "text": "You have finally come face to face with Count Geonor. Slay him and free Ogham.",
+   "message": "Kill the Mad Wolf",
+   "pins": "Slay the Count of Ogham"
+  },
+  {
+   "row": 110,
+   "quest": "TheIronCount",
+   "order": 4,
+   "text": "You have found the diseased heart of the Manor. Face Count Geonor.",
+   "message": "Face the Mad Wolf",
+   "pins": "Approach the throne"
+  },
+  {
+   "row": 111,
+   "quest": "TheIronCount",
+   "order": 5,
+   "text": "You have spotted the Mad Wolf. Find your way into the pit below the Manor.",
+   "message": "Find your way down",
+   "pins": "Find your way down beneath the Manor"
+  },
+  {
+   "row": 112,
+   "quest": "TheIronCount",
+   "order": 6,
+   "text": "Something horrible has happened in the Manor. Fight through the madness and find Count Geonor.",
+   "message": "Search the Manor",
+   "pins": "Search the manor for Count Geonor"
+  },
+  {
+   "row": 113,
+   "quest": "TheIronCount",
+   "order": 7,
+   "text": "Leitis has asked you to find a way into the Manor and to depose Count Geonor.",
+   "message": "Infiltrate the Manor",
+   "pins": "Infiltrate the Manor beyond the Village\nFind Count Geonor"
+  },
+  {
+   "row": 843,
+   "quest": "TormentedSpirits",
+   "order": 0,
+   "text": "Quest Complete - You have learned about Azmeri Spirits and defeated the Hunted Monster.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 844,
+   "quest": "TormentedSpirits",
+   "order": 1,
+   "text": "Speak to Delwyn, the Azmeri hunter in the Hunting Grounds.",
+   "message": "Speak to Delwyn",
+   "pins": "Speak to Delwyn"
+  },
+  {
+   "row": 845,
+   "quest": "TormentedSpirits",
+   "order": 2,
+   "text": "Defeat the Hunted Monster.",
+   "message": "Defeat the Hunted Monster",
+   "pins": "Defeat the Hunted Monster"
+  },
+  {
+   "row": 846,
+   "quest": "TormentedSpirits",
+   "order": 3,
+   "text": "Track the Spirit as it leads you to a monster.",
+   "message": "Track the Spirit",
+   "pins": "Track the Spirit"
+  },
+  {
+   "row": 847,
+   "quest": "TormentedSpirits",
+   "order": 4,
+   "text": "Speak to Delwyn, the Azmeri hunter in the Hunting Grounds.",
+   "message": "Speak to Delwyn",
+   "pins": "Speak to Delwyn"
+  },
+  {
+   "row": 893,
+   "quest": "IncursionQuest1_Act1",
+   "order": 0,
+   "text": "Quest Complete - You have cleansed Ancient Beacons, built and opened your first Temple.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 894,
+   "quest": "IncursionQuest1_Act1",
+   "order": 1,
+   "text": "Place Rooms using the Temple Console to build a Temple.",
+   "message": "Use the Temple Console",
+   "pins": "Place Rooms using the Temple Console to build a Temple"
+  },
+  {
+   "row": 895,
+   "quest": "IncursionQuest1_Act1",
+   "order": 2,
+   "text": "Explore the Vaal Ruins.",
+   "message": "Explore the Vaal Ruins",
+   "pins": "Explore the Vaal Ruins"
+  },
+  {
+   "row": 896,
+   "quest": "IncursionQuest1_Act1",
+   "order": 3,
+   "text": "Return to the Vaal Ruins.",
+   "message": "Return to the Vaal Ruins",
+   "pins": "Return to the Vaal Ruins"
+  },
+  {
+   "row": 897,
+   "quest": "IncursionQuest1_Act1",
+   "order": 4,
+   "text": "Enter the Vaal Ruins.",
+   "message": "Enter the Vaal Ruins",
+   "pins": "Enter the Vaal Ruins"
+  },
+  {
+   "row": 898,
+   "quest": "IncursionQuest1_Act1",
+   "order": 5,
+   "text": "Find and activate an Ancient Beacon.",
+   "message": "Find and activate an Ancient Beacon",
+   "pins": "Find and activate an Ancient Beacon"
+  },
+  {
+   "row": 899,
+   "quest": "IncursionQuest1_Act1",
+   "order": 6,
+   "text": "You have activated an Ancient Beacon but it doesn't seem to have done anything notable. Find one additional Ancient Beacon and activate it.",
+   "message": "Activate one additional Beacon",
+   "pins": "Activate one additional Ancient Beacon"
+  },
+  {
+   "row": 900,
+   "quest": "IncursionQuest1_Act1",
+   "order": 7,
+   "text": "You have activated an Ancient Beacon but it doesn't seem to have done anything notable. Find two additional Ancient Beacons and activate them.",
+   "message": "Activate two additional Beacons",
+   "pins": "Activate two additional Ancient Beacons"
+  },
+  {
+   "row": 901,
+   "quest": "IncursionQuest1_Act1",
+   "order": 8,
+   "text": "You have activated an Ancient Beacon but it doesn't seem to have done anything notable. Find three additional Ancient Beacons and activate them.",
+   "message": "Activate three additional Beacons",
+   "pins": "Activate three additional Ancient Beacons"
+  },
+  {
+   "row": 902,
+   "quest": "IncursionQuest1_Act1",
+   "order": 9,
+   "text": "You have activated an Ancient Beacon but it doesn't seem to have done anything notable. Find four additional Ancient Beacons and activate them.",
+   "message": "Activate four additional Beacons",
+   "pins": "Activate four additional Ancient Beacons"
+  },
+  {
+   "row": 903,
+   "quest": "IncursionQuest1_Act1",
+   "order": 10,
+   "text": "You have activated an Ancient Beacon but it doesn't seem to have done anything notable. Find five additional Ancient Beacons and activate them.",
+   "message": "Activate five additional Beacons",
+   "pins": "Activate five additional Ancient Beacons"
+  },
+  {
+   "row": 904,
+   "quest": "IncursionQuest1_Act1",
+   "order": 11,
+   "text": "You have sacrificed the monsters around the ancient beacon. Activate the beacon.",
+   "message": "Investigate the Beacon",
+   "pins": "Activate the Ancient Beacon"
+  },
+  {
+   "row": 905,
+   "quest": "IncursionQuest1_Act1",
+   "order": 12,
+   "text": "You have encountered an ancient beacon surrounded by monsters. Defeat them to sacrifice them to it.",
+   "message": "Sacrifice the Monsters",
+   "pins": "Defeat the monsters to sacrifice them to the beacon"
+  },
+  {
+   "row": 1299,
+   "quest": "Expedition2Act1",
+   "order": 0,
+   "text": "Quest Complete - You have activated the Runestones and unlocked the Verisium Anvil.",
+   "message": "Quest Complete",
+   "pins": ""
+  },
+  {
+   "row": 1300,
+   "quest": "Expedition2Act1",
+   "order": 1,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1301,
+   "quest": "Expedition2Act1",
+   "order": 2,
+   "text": "Use the Verisium Anvil to Reforge an Armour.",
+   "message": "Use the Verisium Anvil",
+   "pins": "Use the Verisium Anvil to Reforge an Armour"
+  },
+  {
+   "row": 1302,
+   "quest": "Expedition2Act1",
+   "order": 3,
+   "text": "Listen to Farrow.",
+   "message": "Listen to Farrow",
+   "pins": "Listen to Farrow"
+  },
+  {
+   "row": 1303,
+   "quest": "Expedition2Act1",
+   "order": 4,
+   "text": "Take the Verisium from Farrow.",
+   "message": "Take the Verisium",
+   "pins": "Take the Verisium from Farrow"
+  },
+  {
+   "row": 1304,
+   "quest": "Expedition2Act1",
+   "order": 5,
+   "text": "Speak to Farrow in Clearfell.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow in Clearfell"
+  },
+  {
+   "row": 1305,
+   "quest": "Expedition2Act1",
+   "order": 6,
+   "text": "Speak to Farrow about the Tome.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow about the Tome"
+  },
+  {
+   "row": 1306,
+   "quest": "Expedition2Act1",
+   "order": 7,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1307,
+   "quest": "Expedition2Act1",
+   "order": 8,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1308,
+   "quest": "Expedition2Act1",
+   "order": 9,
+   "text": "Explore the Lost Catacombs.",
+   "message": "Explore the Lost Catacombs",
+   "pins": "Explore the Lost Catacombs"
+  },
+  {
+   "row": 1309,
+   "quest": "Expedition2Act1",
+   "order": 10,
+   "text": "Enter the Lost Catacombs.",
+   "message": "Enter the Lost Catacombs",
+   "pins": "Enter the Lost Catacombs"
+  },
+  {
+   "row": 1310,
+   "quest": "Expedition2Act1",
+   "order": 11,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1311,
+   "quest": "Expedition2Act1",
+   "order": 12,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1312,
+   "quest": "Expedition2Act1",
+   "order": 13,
+   "text": "Return to the Tree of Souls.",
+   "message": "Return to the Tree of Souls",
+   "pins": "Return to the Tree of Souls"
+  },
+  {
+   "row": 1313,
+   "quest": "Expedition2Act1",
+   "order": 14,
+   "text": "Return to the Tree of Souls.",
+   "message": "Return to the Tree of Souls",
+   "pins": "Return to the Tree of Souls"
+  },
+  {
+   "row": 1314,
+   "quest": "Expedition2Act1",
+   "order": 15,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1315,
+   "quest": "Expedition2Act1",
+   "order": 16,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1316,
+   "quest": "Expedition2Act1",
+   "order": 17,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1317,
+   "quest": "Expedition2Act1",
+   "order": 18,
+   "text": "Search Ogham Farmlands for Runestones.",
+   "message": "Search Ogham Farmlands for Runestones",
+   "pins": "Search Ogham Farmlands for Runestones"
+  },
+  {
+   "row": 1318,
+   "quest": "Expedition2Act1",
+   "order": 19,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1319,
+   "quest": "Expedition2Act1",
+   "order": 20,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1320,
+   "quest": "Expedition2Act1",
+   "order": 21,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1321,
+   "quest": "Expedition2Act1",
+   "order": 22,
+   "text": "Search the Hunting Grounds for Runestones.",
+   "message": "Search the Hunting Grounds for Runestones",
+   "pins": "Search the Hunting Grounds for Runestones"
+  },
+  {
+   "row": 1322,
+   "quest": "Expedition2Act1",
+   "order": 23,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1323,
+   "quest": "Expedition2Act1",
+   "order": 24,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1324,
+   "quest": "Expedition2Act1",
+   "order": 25,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1325,
+   "quest": "Expedition2Act1",
+   "order": 26,
+   "text": "Search the Grim Tangle for Runestones.",
+   "message": "Search the Grim Tangle for Runestones",
+   "pins": "Search the Grim Tangle for Runestones"
+  },
+  {
+   "row": 1326,
+   "quest": "Expedition2Act1",
+   "order": 27,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1327,
+   "quest": "Expedition2Act1",
+   "order": 28,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1328,
+   "quest": "Expedition2Act1",
+   "order": 29,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1329,
+   "quest": "Expedition2Act1",
+   "order": 30,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1330,
+   "quest": "Expedition2Act1",
+   "order": 31,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1331,
+   "quest": "Expedition2Act1",
+   "order": 32,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1332,
+   "quest": "Expedition2Act1",
+   "order": 33,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1333,
+   "quest": "Expedition2Act1",
+   "order": 34,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1334,
+   "quest": "Expedition2Act1",
+   "order": 35,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1335,
+   "quest": "Expedition2Act1",
+   "order": 36,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1336,
+   "quest": "Expedition2Act1",
+   "order": 37,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1337,
+   "quest": "Expedition2Act1",
+   "order": 38,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1338,
+   "quest": "Expedition2Act1",
+   "order": 39,
+   "text": "Search Ogham Farmlands for Runestones.",
+   "message": "Search Ogham Farmlands for Runestones",
+   "pins": "Search Ogham Farmlands for Runestones"
+  },
+  {
+   "row": 1339,
+   "quest": "Expedition2Act1",
+   "order": 40,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1340,
+   "quest": "Expedition2Act1",
+   "order": 41,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1341,
+   "quest": "Expedition2Act1",
+   "order": 42,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1342,
+   "quest": "Expedition2Act1",
+   "order": 43,
+   "text": "Search Ogham Farmlands for Runestones.",
+   "message": "Search Ogham Farmlands for Runestones",
+   "pins": "Search Ogham Farmlands for Runestones"
+  },
+  {
+   "row": 1343,
+   "quest": "Expedition2Act1",
+   "order": 44,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1344,
+   "quest": "Expedition2Act1",
+   "order": 45,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1345,
+   "quest": "Expedition2Act1",
+   "order": 46,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1346,
+   "quest": "Expedition2Act1",
+   "order": 47,
+   "text": "Search the Hunting Grounds for Runestones.",
+   "message": "Search the Hunting Grounds for Runestones",
+   "pins": "Search the Hunting Grounds for Runestones"
+  },
+  {
+   "row": 1347,
+   "quest": "Expedition2Act1",
+   "order": 48,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1348,
+   "quest": "Expedition2Act1",
+   "order": 49,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1349,
+   "quest": "Expedition2Act1",
+   "order": 50,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1350,
+   "quest": "Expedition2Act1",
+   "order": 51,
+   "text": "Search the Hunting Grounds for Runestones.",
+   "message": "Search the Hunting Grounds for Runestones",
+   "pins": "Search the Hunting Grounds for Runestones"
+  },
+  {
+   "row": 1351,
+   "quest": "Expedition2Act1",
+   "order": 52,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1352,
+   "quest": "Expedition2Act1",
+   "order": 53,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1353,
+   "quest": "Expedition2Act1",
+   "order": 54,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1354,
+   "quest": "Expedition2Act1",
+   "order": 55,
+   "text": "Search the Grim Tangle for Runestones.",
+   "message": "Search the Grim Tangle for Runestones",
+   "pins": "Search the Grim Tangle for Runestones"
+  },
+  {
+   "row": 1355,
+   "quest": "Expedition2Act1",
+   "order": 56,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1356,
+   "quest": "Expedition2Act1",
+   "order": 57,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1357,
+   "quest": "Expedition2Act1",
+   "order": 58,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1358,
+   "quest": "Expedition2Act1",
+   "order": 59,
+   "text": "Search the Grim Tangle for Runestones.",
+   "message": "Search the Grim Tangle for Runestones",
+   "pins": "Search the Grim Tangle for Runestones"
+  },
+  {
+   "row": 1359,
+   "quest": "Expedition2Act1",
+   "order": 60,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1360,
+   "quest": "Expedition2Act1",
+   "order": 61,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1361,
+   "quest": "Expedition2Act1",
+   "order": 62,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1362,
+   "quest": "Expedition2Act1",
+   "order": 63,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1363,
+   "quest": "Expedition2Act1",
+   "order": 64,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1364,
+   "quest": "Expedition2Act1",
+   "order": 65,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1365,
+   "quest": "Expedition2Act1",
+   "order": 66,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1366,
+   "quest": "Expedition2Act1",
+   "order": 67,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1367,
+   "quest": "Expedition2Act1",
+   "order": 68,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1368,
+   "quest": "Expedition2Act1",
+   "order": 69,
+   "text": "Search Ogham Farmlands for Runestones.",
+   "message": "Search Ogham Farmlands for Runestones",
+   "pins": "Search Ogham Farmlands for Runestones"
+  },
+  {
+   "row": 1369,
+   "quest": "Expedition2Act1",
+   "order": 70,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1370,
+   "quest": "Expedition2Act1",
+   "order": 71,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1371,
+   "quest": "Expedition2Act1",
+   "order": 72,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1372,
+   "quest": "Expedition2Act1",
+   "order": 73,
+   "text": "Search the Hunting Grounds for Runestones.",
+   "message": "Search the Hunting Grounds for Runestones",
+   "pins": "Search the Hunting Grounds for Runestones"
+  },
+  {
+   "row": 1373,
+   "quest": "Expedition2Act1",
+   "order": 74,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1374,
+   "quest": "Expedition2Act1",
+   "order": 75,
+   "text": "Summon Farrow.",
+   "message": "Summon Farrow",
+   "pins": "Summon Farrow"
+  },
+  {
+   "row": 1375,
+   "quest": "Expedition2Act1",
+   "order": 76,
+   "text": "Touch the Runestones.",
+   "message": "Touch the Runestones",
+   "pins": "Touch the Runestones"
+  },
+  {
+   "row": 1376,
+   "quest": "Expedition2Act1",
+   "order": 77,
+   "text": "Search the Grim Tangle for Runestones.",
+   "message": "Search the Grim Tangle for Runestones",
+   "pins": "Search the Grim Tangle for Runestones"
+  },
+  {
+   "row": 1377,
+   "quest": "Expedition2Act1",
+   "order": 78,
+   "text": "Search the region for more Runestones similar to the ones that were etched into the Tree of Souls.",
+   "message": "Search for the meaning of the Runes etched into the Tree of Souls",
+   "pins": "Search for the meaning of the Runes etched into the Tree of Souls"
+  },
+  {
+   "row": 1378,
+   "quest": "Expedition2Act1",
+   "order": 79,
+   "text": "Search the region for more Runestones.",
+   "message": "Search the region for more Runestones",
+   "pins": "Search the region for more Runestones"
+  },
+  {
+   "row": 1379,
+   "quest": "Expedition2Act1",
+   "order": 80,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1380,
+   "quest": "Expedition2Act1",
+   "order": 81,
+   "text": "Collect your Reward.",
+   "message": "Collect your Reward",
+   "pins": "Collect your Reward"
+  },
+  {
+   "row": 1381,
+   "quest": "Expedition2Act1",
+   "order": 82,
+   "text": "Defeat the ambush.",
+   "message": "Defeat the ambush",
+   "pins": "Defeat the ambush"
+  },
+  {
+   "row": 1382,
+   "quest": "Expedition2Act1",
+   "order": 83,
+   "text": "Inscribe runes from the Runeshape Tome on the Remnant.",
+   "message": "Inscribe Runes",
+   "pins": "Inscribe runes from the Runeshape Tome on the Remnant"
+  },
+  {
+   "row": 1383,
+   "quest": "Expedition2Act1",
+   "order": 84,
+   "text": "Use the Runeshape Tome.",
+   "message": "Use the Runeshape Tome",
+   "pins": "Use the Runeshape Tome"
+  },
+  {
+   "row": 1384,
+   "quest": "Expedition2Act1",
+   "order": 85,
+   "text": "Speak to Farrow.",
+   "message": "Speak to Farrow",
+   "pins": "Speak to Farrow"
+  },
+  {
+   "row": 1385,
+   "quest": "Expedition2Act1",
+   "order": 86,
+   "text": "Help the man.",
+   "message": "Help the man",
+   "pins": "Help the man"
+  },
+  {
+   "row": 1467,
+   "quest": "RitualGroupLeague0",
+   "order": 0,
+   "text": "",
+   "message": "Rituals Completed",
+   "pins": ""
+  },
+  {
+   "row": 1468,
+   "quest": "RitualGroupLeague0",
+   "order": 1,
+   "text": "Complete Rituals in these areas:{0}.",
+   "message": "Complete Rituals in {0}",
+   "pins": "Complete Rituals in these areas:{0}"
+  },
+  {
+   "row": 1469,
+   "quest": "RitualGroupLeague1",
+   "order": 0,
+   "text": "",
+   "message": "Rituals Completed",
+   "pins": ""
+  },
+  {
+   "row": 1470,
+   "quest": "RitualGroupLeague1",
+   "order": 1,
+   "text": "Complete Rituals in these areas:{0}.",
+   "message": "Complete Rituals in {0}",
+   "pins": "Complete Rituals in these areas:{0}"
+  }
+ ]
+}
