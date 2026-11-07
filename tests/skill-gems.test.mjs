@@ -9,8 +9,33 @@ import {
   parseSkillGemsPage,
   translateSkillDetailLine,
   translateSkillText,
-  translateTags
+  translateTags,
+  withoutUnreleasedGems
 } from "../scripts/skill-gems-lib.mjs";
+
+test("gem export leaves out [DNT] gems and recounts", () => {
+  const data = withoutUnreleasedGems({
+    total: 3,
+    active_total: 2,
+    support_total: 1,
+    gems: [
+      { name: "[DNT] Crushing Earth", gem_type: "skill" },
+      { name: "Arc", gem_type: "skill" },
+      { name: "Faster Casting", gem_type: "support" }
+    ]
+  });
+  assert.deepEqual(data.gems.map((gem) => gem.name), ["Arc", "Faster Casting"]);
+  assert.equal(data.total, 2);
+  assert.equal(data.active_total, 1);
+  assert.equal(data.support_total, 1);
+});
+
+test("the shipped gem data has no [DNT] gems", () => {
+  const sandbox = { window: {} };
+  vm.runInNewContext(readFileSync(new URL("../public/data/skill-gems-data.js", import.meta.url), "utf8"), sandbox);
+  const unreleased = sandbox.window.POE2_SKILL_GEMS.gems.filter((gem) => /\[DNT/i.test(gem.name)).map((gem) => gem.name);
+  assert.equal(unreleased.length, 0, `unexpected [DNT] gems: ${unreleased.join(", ")}`);
+});
 
 const sampleHtml = `
 <div id="SkillGemsGem">

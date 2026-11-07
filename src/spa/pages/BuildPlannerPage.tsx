@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { loadBuildPlannerData, loadItemsData, loadSkillGemsData } from "../lib/data";
 import { displayImageUrl } from "../lib/image";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
@@ -7,6 +7,8 @@ import { matchesQuery } from "../lib/text";
 import { PassiveTreeWorkspace } from "./PassiveTreePage";
 import {
   buildPayloadFromPobImport,
+  gemNameRank,
+  gemPickerOptions,
   buildFileName,
   buildPlannerPayload,
   createBuildProject,
@@ -80,6 +82,7 @@ type ItemRecord = {
   group_label?: string;
   name?: string;
   gem_type?: string;
+  color?: string;
   official_id?: string;
   icon_url?: string;
   icon_alt?: string;
@@ -449,22 +452,22 @@ function getGemTooltipHtml(id: string, options: ItemRecord[], prefix: "SkillGem"
   const item = gemChoiceItem(id, options, prefix);
   if (!item) {
     return note
-      ? `<div class="poe-tooltip-card poe-no-tooltip tooltip-rarity-gem"><div class="tooltip-header"><div class="tooltip-name">${note}</div></div></div>`
+      ? `<div class="poe-tooltip-card poe-no-tooltip tooltip-rarity-gem"><div class="tooltip-header"><div class="tooltip-name">${escapeHtml(note)}</div></div></div>`
       : "";
   }
   const title = itemTitle(item, locale);
   const tags = localizedLines(item, "properties", locale).filter(l => !l.includes(":"));
   const properties = localizedLines(item, "properties", locale).filter(l => l.includes(":")).map(cleanTooltipLine);
   const requirements = localizedLines(item, "requirements", locale).map(cleanTooltipLine);
-  const mods = localizedLines(item, "mods", locale).map(cleanTooltipLine);
+  const mods = localizedLines(item, "mods", locale).filter((line) => !isInternalStatLine(line)).map(cleanTooltipLine);
 
   let h = "";
   if (tags.length) {
-    h += `<div class="tooltip-tags">${tags.join(", ")}</div>`;
+    h += `<div class="tooltip-tags">${escapeHtml(tags.join(", "))}</div>`;
   }
   if (note) {
     if (h) h += '<hr class="tooltip-divider" />';
-    h += `<div class="tooltip-note">${note}</div>`;
+    h += `<div class="tooltip-note">${escapeHtml(note)}</div>`;
   }
   if (properties.length) {
     if (h) h += '<hr class="tooltip-divider" />';
@@ -476,13 +479,13 @@ function getGemTooltipHtml(id: string, options: ItemRecord[], prefix: "SkillGem"
   }
   if (mods.length) {
     if (h || requirements.length) h += '<hr class="tooltip-divider" />';
-    h += `<div class="tooltip-mods">${mods.map((g) => `<div class="tooltip-mod-line">${g}</div>`).join("")}</div>`;
+    h += `<div class="tooltip-mods">${mods.map((g) => `<div class="tooltip-mod-line">${escapeHtml(g)}</div>`).join("")}</div>`;
   }
 
   return `
     <div class="poe-tooltip-card poe-no-tooltip tooltip-rarity-gem">
       <div class="tooltip-header">
-        <div class="tooltip-name">${title}</div>
+        <div class="tooltip-name">${escapeHtml(title)}</div>
       </div>
       ${h ? `<hr class="tooltip-divider" />${h}` : ""}
     </div>
@@ -507,6 +510,15 @@ function isUniqueItem(item: ItemRecord): boolean {
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[ch] as string));
+}
+
+/**
+ * poe2db's gem pages also list the raw stats the client never displays, e.g.
+ * "disable visual hit effect [1]" or "... locked duration % [50]". Shown lines never end
+ * in a bracketed number, so those are dropped from tooltips.
+ */
+function isInternalStatLine(line: string): boolean {
+  return /\[[-+]?\d+(?:\.\d+)?\]\s*\.?$/.test(line.trim());
 }
 
 /** Localised lines end with a stray "." in the vi data; the game never shows one. */
@@ -898,6 +910,14 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [mainSocketGroup, setMainSocketGroup] = useState<number>(1);
   const mainSocketGroupRef = useRef(mainSocketGroup);
   mainSocketGroupRef.current = mainSocketGroup;
+  // PoB's calculate.lua returns totals for the main socket group only (no per-skill
+  // skillsDps array), so the main skill shows CombinedDPS and the others show nothing
+  // until they are picked as main.
+  const skillDps = (index: number): number => {
+    const perSkill = activeStats?.skillsDps?.[index];
+    if (typeof perSkill === "number") return perSkill;
+    return index + 1 === mainSocketGroup ? Number(activeStats?.CombinedDPS ?? activeStats?.TotalDPS ?? 0) : 0;
+  };
 
   const [tooltip, setTooltip] = useState<{
     visible: boolean;
@@ -906,11 +926,28 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     content: string;
   }>({ visible: false, x: 0, y: 0, content: "" });
 
+  // Place the tooltip above the cursor, or below it when there is no room above, and
+  // keep it inside the viewport (it used to run off the top for the upper slots).
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const el = tooltipRef.current;
+    if (!el || !tooltip.visible) return;
+    const margin = 8;
+    const gap = 14;
+    const { width, height } = el.getBoundingClientRect();
+    const left = Math.min(Math.max(tooltip.x - width / 2, margin), window.innerWidth - width - margin);
+    let top = tooltip.y - height - gap;
+    if (top < margin) top = tooltip.y + gap + 6;
+    if (top + height > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - height - margin);
+    el.style.left = `${Math.max(margin, left)}px`;
+    el.style.top = `${top}px`;
+  }, [tooltip]);
+
   const handleMouseMove = (e: React.MouseEvent) => {
     setTooltip(prev => ({
       ...prev,
-      x: e.clientX + 15,
-      y: e.clientY + 15
+      x: e.clientX,
+      y: e.clientY
     }));
   };
 
@@ -1015,12 +1052,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       && (slot.id !== "Ring3" || Boolean(inventoryBySlot.get("Ring3")?.itemName))),
     [activeWeaponSet, inventoryBySlot]
   );
-  const skillGemOptions = useMemo(() => gemsData
-    .filter((item) => item.gem_type === "skill" && item.name)
-    .sort((a, b) => itemTitle(a, locale).localeCompare(itemTitle(b, locale))), [gemsData, locale]);
-  const supportGemOptions = useMemo(() => gemsData
-    .filter((item) => item.gem_type === "support" && item.name)
-    .sort((a, b) => itemTitle(a, locale).localeCompare(itemTitle(b, locale))), [gemsData, locale]);
+  const skillGemOptions = useMemo(() => gemPickerOptions(gemsData, "skill"), [gemsData, locale]);
+  const supportGemOptions = useMemo(() => gemPickerOptions(gemsData, "support"), [gemsData, locale]);
 
   const pickerItems = useMemo(() => {
     if (!activeSlot) return [];
@@ -1036,6 +1069,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const kind = activeGemPicker?.kind ?? "skill";
     const prefix = kind === "support" ? "SupportGem" : "SkillGem";
     const rows = kind === "support" ? supportGemOptions : skillGemOptions;
+    const query = gemPickerQuery.trim().toLowerCase();
     return rows
       .filter((item) => matchesQuery({
         title: itemTitle(item, locale),
@@ -1044,6 +1078,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         summary: localizedText(item.i18n?.summary, item.summary_en ?? "", locale),
         lines: itemSummaryLines(item, locale, 4)
       }, gemPickerQuery, ["title", "id", "tags", "summary", "lines"]))
+      // Name hits first ("Arc" before gems that only match through a "Warcry" tag);
+      // the sort is stable, so each group keeps alphabetical order.
+      .sort((a, b) => gemNameRank(itemTitle(a, locale), query) - gemNameRank(itemTitle(b, locale), query))
       .slice(0, 80);
   }, [activeGemPicker, gemPickerQuery, locale, skillGemOptions, supportGemOptions]);
   const currentSupportGemId = useMemo(() => {
@@ -1874,8 +1911,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""}`}
                       type="button"
                       onClick={() => openPicker(slot.id)}
-                      onMouseEnter={() => {
-                        if (record) setTooltip({ x: 0, y: 0, content: getItemTooltipHtml(record, locale), visible: true });
+                      onMouseEnter={(event) => {
+                        if (record) setTooltip({ x: event.clientX, y: event.clientY, content: getItemTooltipHtml(record, locale), visible: true });
                       }}
                       onMouseMove={record ? handleMouseMove : undefined}
                       onMouseLeave={record ? handleMouseLeave : undefined}
@@ -1959,7 +1996,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               const manaRegen = readStat("ManaRegenRecovery") ?? readStat("ManaRegen");
               const esRecharge = readStat("EnergyShieldRecharge");
               const mainSkills = buildSkills
-                .map((skill, index) => ({ skill, index, dps: activeStats?.skillsDps?.[index] ?? 0, details: activeStats?.skillsDetails?.[index] }))
+                .map((skill, index) => ({ skill, index, dps: skillDps(index), details: activeStats?.skillsDetails?.[index] }))
                 .filter((entry) => entry.skill.skillId && (entry.dps > 0 || entry.index + 1 === mainSocketGroup));
               return (
                 <div className="nj-panel-body poe-no-tooltip">
@@ -2095,7 +2132,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <div className="nj-skill-grid">
                 {buildSkills.map((skill, index) => {
                   const isMain = (index + 1) === mainSocketGroup;
-                  const dps = activeStats?.skillsDps?.[index] ?? 0;
+                  const dps = skillDps(index);
                   const mainIcon = skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "";
                   return (
                     <article className={`nj-skill-card ${isMain ? "is-main" : ""}`} key={skill.id}>
@@ -2104,10 +2141,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                           type="button"
                           className="nj-gem-pick"
                           onClick={() => openSkillGemPicker(skill.id)}
-                          onMouseEnter={() => {
+                          onMouseEnter={(event) => {
                             if (skill.skillId) {
                               const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
-                              if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
+                              if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
                             }
                           }}
                           onMouseMove={handleMouseMove}
@@ -2151,10 +2188,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                               type="button"
                               className="nj-gem-pick"
                               onClick={() => openSupportGemPicker(skill.id, support.id)}
-                              onMouseEnter={() => {
+                              onMouseEnter={(event) => {
                                 if (support.skillId) {
                                   const html = getGemTooltipHtml(support.skillId, supportGemOptions, "SupportGem", locale, support.note);
-                                  if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
+                                  if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
                                 }
                               }}
                               onMouseMove={handleMouseMove}
@@ -2432,14 +2469,13 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       ) : null}
 
       {tooltip.visible && (
-        <div className="poe-tooltip-float poe-no-tooltip" style={{
+        <div ref={tooltipRef} className="poe-tooltip-float poe-no-tooltip" style={{
           position: "fixed",
-          left: tooltip.x,
-          top: tooltip.y,
+          left: 0,
+          top: 0,
           pointerEvents: "none",
           zIndex: 9999,
-          maxWidth: "400px",
-          transform: "translate(-50%, -105%)"
+          maxWidth: "400px"
         }} dangerouslySetInnerHTML={{ __html: tooltip.content }} />
       )}
     </main>

@@ -16,6 +16,9 @@
   font-weight: 400;
   font-display: swap;
   src: url("/assets/fonts/fontin-regular.ttf") format("truetype");
+  /* Basic Latin + Latin-1 only: the bundled Fontin has broken Vietnamese glyphs
+     ("Cấp" rendered as "Ca`p"), so letters like ấ ư ơ đ fall back to the next font. */
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-201E, U+2022, U+2026;
 }
 
 @font-face {
@@ -24,6 +27,9 @@
   font-weight: 700;
   font-display: swap;
   src: url("/assets/fonts/fontin-bold.ttf") format("truetype");
+  /* Basic Latin + Latin-1 only: the bundled Fontin has broken Vietnamese glyphs
+     ("Cấp" rendered as "Ca`p"), so letters like ấ ư ơ đ fall back to the next font. */
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-201E, U+2022, U+2026;
 }
 
 @font-face {
@@ -32,10 +38,13 @@
   font-weight: 400;
   font-display: swap;
   src: url("/assets/fonts/fontin-smallcaps.ttf") format("truetype");
+  /* Basic Latin + Latin-1 only: the bundled Fontin has broken Vietnamese glyphs
+     ("Cấp" rendered as "Ca`p"), so letters like ấ ư ơ đ fall back to the next font. */
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-201E, U+2022, U+2026;
 }
 
 :root {
-  --poe-num: "Fontin", Georgia, serif;
+  --poe-num: "Fontin", "Times New Roman", "Noto Serif", Georgia, serif;
   --poe-serif: var(--font-body);
   --poe-caps: var(--font-body);
 
@@ -1368,7 +1377,8 @@ body:has(.build-page) {
 
 :root {
   --poe-flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M4 22c0-10 7-16 18-15-7 2-10 6-8 12 4-5 11-5 14 1-5-2-10 0-11 6 5 0 9 3 10 9-4-4-9-4-13-1 2 5 6 7 12 7C14 41 4 34 4 22z'/%3E%3Ccircle cx='33' cy='30' r='2.3'/%3E%3Ccircle cx='35' cy='12' r='1.7'/%3E%3Cpath d='M4 22h40' stroke='%23000' stroke-width='1.2' opacity='.55'/%3E%3C/svg%3E");
-  --poe-tip-font: "Fontin SmallCaps", "Fontin", Georgia, serif;
+  /* Georgia has no precomposed Vietnamese letters (it split "cầu" into a + accents); Times New Roman / Noto Serif have them. */
+  --poe-tip-font: "Fontin SmallCaps", "Fontin", "Times New Roman", "Noto Serif", Georgia, serif;
 }
 
 .poe-tooltip-float {

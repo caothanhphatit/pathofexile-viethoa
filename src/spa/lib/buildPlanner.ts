@@ -1323,3 +1323,32 @@ export function downloadBuildFile(payload: Record<string, unknown>, fileName: st
   link.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+export type GemPickerRecord = { slug?: string; name?: string; gem_type?: string; color?: string };
+
+// poe2db lists a gem once per class table, so the data carries copies such as
+// "Herald_of_Thunder__3". The picker shows each gem once (the plain slug wins, then a
+// coloured copy over an "item" one) and leaves out gems the game marks [DNT].
+export function gemPickerOptions<T extends GemPickerRecord>(gems: T[], kind: "skill" | "support"): T[] {
+  const copyRank = (gem: T) => (/__\d+$/.test(String(gem.slug ?? "")) ? 2 : 0) + (gem.color === "item" ? 1 : 0);
+  const byName = new Map<string, T>();
+  for (const gem of gems) {
+    if (gem.gem_type !== kind || !gem.name || /\[DNT/i.test(gem.name)) continue;
+    const key = gem.name.toLowerCase();
+    const current = byName.get(key);
+    if (!current || copyRank(gem) < copyRank(current)) byName.set(key, gem);
+  }
+  return [...byName.values()].sort((a, b) => String(a.name).localeCompare(String(b.name)));
+}
+
+// 0 exact name, 1 name starts with the query, 2 a word in the name does, 3 the name
+// contains it, 4 matched only through tags/text. `query` is already lower-cased.
+export function gemNameRank(name: string, query: string): number {
+  if (!query) return 0;
+  const lower = name.toLowerCase();
+  if (lower === query) return 0;
+  if (lower.startsWith(query)) return 1;
+  if (lower.split(/[\s'-]+/).some((word) => word.startsWith(query))) return 2;
+  if (lower.includes(query)) return 3;
+  return 4;
+}

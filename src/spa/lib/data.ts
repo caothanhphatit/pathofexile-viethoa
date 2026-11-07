@@ -14,7 +14,7 @@ const passiveTreeDataVersion = "20260528-pruned-nodes";
 // Bump these whenever the matching public/data/*.js export is regenerated, or browsers
 // keep serving the cached copy.
 const itemsDataVersion = "20261107-recrawl";
-const skillGemsDataVersion = "20261107-ggpk-ids";
+const skillGemsDataVersion = "20261107-no-dnt";
 const dictionaryDataVersion = "20261107-recrawl";
 
 export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promise<T> {

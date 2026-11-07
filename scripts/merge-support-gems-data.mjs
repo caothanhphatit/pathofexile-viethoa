@@ -9,7 +9,8 @@ import {
   translateSkillDetailLine,
   translateSkillName,
   translateSkillText,
-  translateTags
+  translateTags,
+  withoutUnreleasedGems
 } from "./skill-gems-lib.mjs";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -257,8 +258,9 @@ export const mergeSupportGemsIntoSkillData = async () => {
     gems
   };
 
-  fs.writeFileSync(EXPORT_PATH, `window.POE2_SKILL_GEMS = ${JSON.stringify(data, null, 2)};\n`, "utf8");
-  return { exportPath: EXPORT_PATH, active: active.length, support: supports.length, total: gems.length };
+  const released = withoutUnreleasedGems(data);
+  fs.writeFileSync(EXPORT_PATH, `window.POE2_SKILL_GEMS = ${JSON.stringify(released, null, 2)};\n`, "utf8");
+  return { exportPath: EXPORT_PATH, active: released.active_total, support: released.support_total, total: released.total };
 };
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

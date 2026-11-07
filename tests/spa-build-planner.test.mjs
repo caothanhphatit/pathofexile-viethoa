@@ -188,14 +188,32 @@ test("Build planner uses the shared skill gem SOT for active and support pickers
   assert.match(page, /loadSkillGemsData/);
   assert.match(page, /Promise\.all\(\[loadItemsData\(\),\s*loadBuildPlannerData\(\),\s*loadSkillGemsData\(\)\]\)/);
   assert.match(page, /setGemsData\(Array\.isArray\(gemData\?\.gems\)\s*\?\s*gemData\.gems\s*:\s*\[\]\)/);
-  assert.match(page, /skillGemOptions[\s\S]*item\.gem_type === "skill"/);
-  assert.match(page, /supportGemOptions[\s\S]*item\.gem_type === "support"/);
+  assert.match(page, /skillGemOptions = useMemo\(\(\) => gemPickerOptions\(gemsData, "skill"\)/);
+  assert.match(page, /supportGemOptions = useMemo\(\(\) => gemPickerOptions\(gemsData, "support"\)/);
   assert.match(page, /const rows = kind === "support" \? supportGemOptions : skillGemOptions/);
   assert.match(page, /official_id/);
   assert.match(page, /compactSupportGemSlug/);
   assert.match(page, /officialGemAliases/);
   assert.doesNotMatch(page, /menu_key === "skill-gems"/);
   assert.doesNotMatch(page, /menu_key === "support-gems"/);
+});
+
+test("gem picker shows each gem once, hides [DNT] gems and ranks name hits first", async () => {
+  const { gemPickerOptions, gemNameRank } = await loadBuildPlannerModule();
+  const gems = [
+    { slug: "Herald_of_Thunder__2", name: "Herald of Thunder", gem_type: "skill", color: "item" },
+    { slug: "Herald_of_Thunder", name: "Herald of Thunder", gem_type: "skill", color: "green" },
+    { slug: "Herald_of_Thunder__3", name: "Herald of Thunder", gem_type: "skill", color: "green" },
+    { slug: "DNT_Crushing_Earth", name: "[DNT] Crushing Earth", gem_type: "skill", color: "red" },
+    { slug: "Arc", name: "Arc", gem_type: "skill", color: "blue" },
+    { slug: "Faster_Casting", name: "Faster Casting", gem_type: "support", color: "blue" }
+  ];
+  const skills = gemPickerOptions(gems, "skill");
+  assert.deepEqual(plain(skills.map((gem) => gem.slug)), ["Arc", "Herald_of_Thunder"]);
+  assert.deepEqual(plain(gemPickerOptions(gems, "support").map((gem) => gem.slug)), ["Faster_Casting"]);
+
+  const ranked = ["Earthshatter", "Archmage", "Mirage Archer", "Arc"].sort((a, b) => gemNameRank(a, "arc") - gemNameRank(b, "arc"));
+  assert.deepEqual(ranked, ["Arc", "Archmage", "Mirage Archer", "Earthshatter"]);
 });
 
 test("SPA item and gem surfaces keep names in English while localizing descriptions", async () => {

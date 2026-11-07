@@ -398,10 +398,13 @@ export const publicRoutes = async (app) => {
   };
 
   const buildXml = (build) => {
-    const level = Number(build.level || 90);
-    const className = build.className || "Witch";
-    const ascendClassName = build.ascendancy || "None";
-    const passives = Array.isArray(build.passives) ? build.passives : [];
+    // Everything below lands in XML attributes: keep it to the shapes PoB expects.
+    const level = Math.min(Math.max(Number.parseInt(build.level, 10) || 90, 1), 100);
+    const className = String(build.className || "Witch").replace(/[^A-Za-z ]/g, "") || "Witch";
+    const ascendClassName = String(build.ascendancy || "None").replace(/[^A-Za-z' -]/g, "").replace(/'/g, "&apos;") || "None";
+    const passives = Array.isArray(build.passives)
+      ? build.passives.map((id) => Number.parseInt(id, 10)).filter((id) => Number.isInteger(id) && id > 0)
+      : [];
 
     const inventory = Array.isArray(build.inventory_slots) ? build.inventory_slots : [];
     const activeWeaponSet = Number(build.activeWeaponSet || 1);
@@ -474,19 +477,22 @@ export const publicRoutes = async (app) => {
     const skills = Array.isArray(build.skills) ? build.skills : [];
     const skillElements = [];
 
+    // Gem ids and levels come straight from the request body; escape/clamp them so a
+    // crafted value cannot break out of the attribute and inject PoB XML.
+    const gemXml = (gem) => {
+      const skillId = String(gem.skill_id);
+      const gemLevel = Math.min(Math.max(Number.parseInt(gem.level, 10) || 20, 1), 40);
+      return `<Gem enableGlobal2="false" level="${gemLevel}" gemId="${escapeXml(mapGemId(skillId))}" skillId="${escapeXml(skillId)}" quality="0" enabled="true"/>`;
+    };
+
     for (const group of skills) {
       if (!group || !group.skill_id) continue;
-      
-      const activeGemId = mapGemId(group.skill_id);
-      const gems = [
-        `<Gem enableGlobal2="false" level="${group.level || 20}" gemId="${activeGemId}" skillId="${group.skill_id}" quality="0" enabled="true"/>`
-      ];
+      const gems = [gemXml(group)];
 
       if (Array.isArray(group.support)) {
         for (const support of group.support) {
           if (!support || !support.skill_id) continue;
-          const supportGemId = mapGemId(support.skill_id);
-          gems.push(`<Gem enableGlobal2="false" level="${support.level || 20}" gemId="${supportGemId}" skillId="${support.skill_id}" quality="0" enabled="true"/>`);
+          gems.push(gemXml(support));
         }
       }
 
@@ -608,7 +614,7 @@ export const publicRoutes = async (app) => {
     const ascId = mapAscendClassId(className, ascendClassName);
     const ascIntId = mapAscendancyInternalId(className, ascendClassName);
 
-    const mainSocketGroup = build.main_socket_group || "1";
+    const mainSocketGroup = Math.max(Number.parseInt(build.main_socket_group, 10) || 1, 1);
     const attrOverride = build.attribute_overrides;
     const attrOverrideBlock = attrOverride ? `
 			<Overrides>

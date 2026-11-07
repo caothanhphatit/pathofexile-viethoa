@@ -13,6 +13,7 @@ import {
   upsertContentStrings
 } from "../../src/localization/content-strings.mjs";
 import { retranslateContent } from "../retranslate-content.mjs";
+import { withoutUnreleasedGems } from "../skill-gems-lib.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -335,7 +336,7 @@ export const exportSkillGemsPostgres = async (pool) => {
 
 export const writeSkillGemExportPostgres = async (pool) => {
   await retranslateContent(pool);
-  const data = await exportSkillGemsPostgres(pool);
+  const data = withoutUnreleasedGems(await exportSkillGemsPostgres(pool));
   fs.writeFileSync(EXPORT_PATH, `window.POE2_SKILL_GEMS = ${JSON.stringify(data, null, 2)};\n`, "utf8");
   return data;
 };

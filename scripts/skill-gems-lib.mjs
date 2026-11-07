@@ -2692,3 +2692,18 @@ export const parseSkillGemsPage = (html, sourcePageUrl = "https://poe2db.tw/us/S
 
   return gems.sort((a, b) => (a.tier ?? 999) - (b.tier ?? 999) || a.name.localeCompare(b.name));
 };
+
+// Gems the game itself marks "[DNT]" (do not translate: unused / not released) are
+// left out of the web export, together with the counts that describe it.
+export const isUnreleasedGemName = (name = "") => /\[DNT/i.test(String(name));
+
+export const withoutUnreleasedGems = (data) => {
+  const gems = (data?.gems || []).filter((gem) => !isUnreleasedGemName(gem.name));
+  return {
+    ...data,
+    total: gems.length,
+    active_total: gems.filter((gem) => gem.gem_type === "skill").length,
+    support_total: gems.filter((gem) => gem.gem_type === "support").length,
+    gems
+  };
+};
