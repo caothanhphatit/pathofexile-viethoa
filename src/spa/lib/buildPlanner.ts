@@ -57,7 +57,22 @@ export interface BuildSkillChoice {
   supportSkills: BuildSupportSkillChoice[];
 }
 
-export type BuildPayload = Record<string, unknown>;
+/** Raw stat row as exported in a `.build` / PoB payload. */
+export interface BuildPayloadStat {
+  stat: string;
+  value?: unknown;
+}
+
+/**
+ * A `.build` payload is mostly opaque (it is passed through to the calculator),
+ * but the planner reads a few well-known fields from it.
+ */
+export interface BuildPayload {
+  mainSocketGroup?: number | string;
+  build?: { mainSocketGroup?: number | string; [key: string]: unknown };
+  stats?: BuildPayloadStat[];
+  [key: string]: unknown;
+}
 
 export interface BuildProject {
   id: string;
@@ -770,7 +785,8 @@ export function pobBuildName(data: PobImportData): string {
 
 function fallbackPobGemId(gem: PobGem, prefix: "SkillGem" | "SupportGem"): string {
   const rawId = cleanText(gem.skillId);
-  if (/^Metadata\/Items\/Gems\//.test(rawId)) return rawId;
+  // The game uses both Metadata/Items/Gem/ and Metadata/Items/Gems/ ids; keep either as-is.
+  if (/^Metadata\/Items\/Gems?\//.test(rawId)) return rawId;
   if (rawId.startsWith(prefix)) return `Metadata/Items/Gems/${rawId}`;
   const compactName = cleanText(gem.nameSpec).replace(/[^A-Za-z0-9]+/g, "");
   return compactName ? `Metadata/Items/Gems/${prefix}${compactName}` : "";
@@ -996,12 +1012,13 @@ export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: stri
     const isUnique = rarity === "unique";
     const itemName = isUnique ? title : baseName || title;
     const rareName = !isUnique && baseName && title && title !== baseName ? title : undefined;
+    const itemNote = [rareName, noteText].filter(Boolean).join("\n");
     used.add(slotId);
     bySlot.set(slotId, {
       id: choiceId("pob-item"),
       inventoryId: slotId,
       itemName,
-      note: noteText,
+      note: itemNote,
       isUnique,
       levelStart: "",
       levelEnd: "",

@@ -50,7 +50,9 @@ test("Build tab exports the official .build root payload shape", async () => {
   const planner = await readRepoFile("src/spa/lib/buildPlanner.ts");
 
   assert.match(planner, /export function buildPlannerPayload/);
-  assert.match(planner, /export type BuildPayload = Record<string, unknown>/);
+  // The root payload stays an open object (pass-through to the calculator)
+  // while naming the few fields the planner itself reads.
+  assert.match(planner, /export interface BuildPayload \{[\s\S]*?\[key: string\]: unknown;[\s\S]*?\}/);
   assert.match(planner, /const build:\s*BuildPayload\s*=\s*isPlainObject\(input\.basePayload\)/);
   assert.match(planner, /build\.name\s*=\s*name/);
   assert.match(planner, /build\.ascendancy\s*=\s*ascendancy/);
@@ -144,9 +146,11 @@ test("Build planner page lets users choose saved trees and item hints", async ()
   assert.doesNotMatch(page, /className="build-tree-action build-tree-edit"/);
   assert.match(page, /build-action-dialog/);
   assert.match(page, /build-item-picker/);
-  assert.match(page, /build-editor-split/);
+  assert.match(page, /className="nj-row nj-row--top"/);
   assert.match(page, /downloadBuildFile/);
   assert.match(page, /parseBuildFileText/);
+  // Imports are saved immediately so a reload on /build/<id> keeps them.
+  assert.match(page, /const applyImportedBuild = [\s\S]*?setSavedBuilds\(saveBuildProject\(project\)\)[\s\S]*?navigateTo\(saved \? `\/build\/\$\{encodeURIComponent\(project\.id\)\}`/);
   assert.match(page, /parsePobExportCode/);
   assert.match(page, /buildPayloadFromPobImport/);
   assert.match(page, /pobImportOpen/);
@@ -227,7 +231,7 @@ test("Build planner uses separate routes for library and detail screens", async 
   assert.match(page, /screen:\s*"library"\s*\|\s*"detail"/);
   assert.match(page, /!\s*editorOpen \? \(/);
   assert.match(page, /className="build-library"/);
-  assert.match(page, /className="build-workbench"/);
+  assert.match(page, /className="build-workbench nj-page"/);
   assert.match(page, /className="build-tree-mini"/);
   assert.match(page, /navigateTo\("\/build\/new"\)/);
   assert.match(page, /navigateTo\(`\/build\/\$\{encodeURIComponent\(project\.id\)\}`\)/);
@@ -348,7 +352,8 @@ test("Build planner can import another .build file and export it again", async (
   assert.match(page, /setSavedTrees\(saveTreeSnapshot\(importedTree\)\)/);
   assert.match(page, /setImportedBuild/);
   assert.match(page, /inventoryChoicesFromBuildPayload\(payload,\s*equipmentSlotIds\)/);
-  assert.match(page, /setBuildSkills\(skillChoicesFromBuildPayload\(payload\)\)/);
+  assert.match(page, /const nextSkills = skillChoicesFromBuildPayload\(payload\)/);
+  assert.match(page, /setBuildSkills\(nextSkills\)/);
   assert.match(page, /enrichInventoryChoices\(inventoryChoicesFromBuildPayload\(payload,\s*equipmentSlotIds\),\s*itemsData,\s*locale\)/);
   assert.match(page, /canExport = Boolean\(payload && \(importedBuild \|\|/);
   assert.match(page, /type="file"/);

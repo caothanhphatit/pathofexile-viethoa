@@ -1,0 +1,1640 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Build Planner theme, modelled on poe.ninja's PoE2 character page.
+   Loaded after styles.css: same selectors win by source order. Everything
+   here is scoped to .build-* / .nj-* / .poe-* classes used only by the planner.
+
+   Layout: hero header (name, class, actions) → Equipment | Stats →
+   Passive tree | Build info → Skills (gem groups). Flat slate panels with a
+   title bar, white values right-aligned, rarity colours from the game, and
+   in-game style item / gem tooltips on hover.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Fontin: the game's own UI face, used only inside item / gem tooltips. */
+@font-face {
+  font-family: "Fontin";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/fontin-regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Fontin";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/assets/fonts/fontin-bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Fontin SmallCaps";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/fontin-smallcaps.ttf") format("truetype");
+}
+
+:root {
+  --poe-num: "Fontin", Georgia, serif;
+  --poe-serif: var(--font-body);
+  --poe-caps: var(--font-body);
+
+  --nj-bg: #0a0d11;
+  --nj-hero: #151b22;
+  --nj-panel: #1c232c;
+  --nj-panel-head: #222b35;
+  --nj-well: #141a21;
+  --nj-slot: #11171e;
+  --nj-slot-empty: #262f3a;
+  --nj-line: #2b343f;
+  --nj-line-soft: #232c36;
+  --nj-text: #e5e8eb;
+  --nj-text-strong: #f5f7fa;
+  --nj-muted: #8b96a5;
+  --nj-green: #22c55e;
+  --nj-green-deep: #15803d;
+  --nj-red: #ff5a5a;
+  --nj-blue: #4aa3ff;
+  --nj-shadow: 0 1px 0 rgba(0, 0, 0, .4);
+
+  /* Rarity and element colours straight from the game client. */
+  --poe-normal: #c8c8c8;
+  --poe-magic: #8888ff;
+  --poe-rare: #ffff77;
+  --poe-unique: #af6025;
+  --poe-gem: #1ba29b;
+  --poe-life: #e04a3c;
+  --poe-mana: #5b7fe0;
+  --poe-es: #9fd3ff;
+  --poe-fire: #ff6a3d;
+  --poe-cold: #5fb2ff;
+  --poe-lightning: #ffd84a;
+  --poe-chaos: #d85ddb;
+  --poe-good: #8ad46c;
+  --poe-grey: #7f7f7f;
+  --poe-text-strong: #f5f7fa;
+  --poe-muted: var(--nj-muted);
+  --poe-gold-dim: #8a7141;
+}
+
+/* ── Page shell ────────────────────────────────────────────────────────── */
+
+body:has(.build-page) {
+  background: var(--nj-bg);
+}
+
+.build-page {
+  color: var(--nj-text);
+  background: var(--nj-bg);
+}
+
+.build-page,
+.build-page input,
+.build-page button,
+.build-page textarea,
+.build-page select {
+  font-family: var(--font-body);
+}
+
+.build-workbench {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 1440px;
+}
+
+/* ── Flat panels with a title bar ──────────────────────────────────────── */
+
+.nj-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background: var(--nj-panel);
+  box-shadow: var(--nj-shadow);
+  color: var(--nj-text);
+}
+
+.nj-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--nj-line);
+  background: var(--nj-panel-head);
+}
+
+.nj-panel-head h2 {
+  margin: 0;
+  color: #c3cad3;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.nj-panel-aside {
+  color: var(--nj-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nj-panel-body {
+  min-width: 0;
+  padding: 18px;
+}
+
+.nj-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(360px, 2fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+  .nj-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+
+.build-btn,
+.build-back-btn,
+.build-help-button,
+.build-import-button,
+.build-library-toolbar button,
+.build-library-card-actions button,
+.build-tree-icon-action,
+.build-picker-mode button,
+.build-picker-clear,
+.build-project-load,
+.build-project-delete,
+.build-action-dialog-actions button,
+.build-pob-actions button,
+.build-empty .build-btn,
+.build-empty > button:not(.poe-term),
+.nj-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: #242d38;
+  box-shadow: none;
+  color: var(--nj-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-shadow: none;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+
+.build-btn:hover,
+.build-back-btn:hover,
+.build-help-button:hover,
+.build-import-button:hover,
+.build-library-toolbar button:hover,
+.build-library-card-actions button:hover,
+.build-tree-icon-action:hover,
+.build-picker-mode button:hover,
+.build-picker-clear:hover,
+.build-project-load:hover,
+.build-action-dialog-actions button:hover,
+.build-pob-actions button:hover,
+.build-empty .build-btn:hover,
+.nj-btn:hover {
+  border-color: #3b4654;
+  background: #2b3542;
+  color: var(--nj-text-strong);
+  box-shadow: none;
+}
+
+.build-btn .material-symbols-rounded,
+.nj-btn .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.build-btn:disabled,
+.build-btn[disabled],
+.build-pob-actions button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* Primary: the poe.ninja green. */
+.build-btn--save,
+.build-btn--primary,
+.build-pob-actions button:last-child,
+.build-library-toolbar button:last-child,
+.nj-btn--primary {
+  border-color: var(--nj-green);
+  background: var(--nj-green);
+  color: #06250f;
+}
+
+.build-btn--save:hover,
+.build-btn--primary:hover,
+.build-pob-actions button:last-child:hover,
+.build-library-toolbar button:last-child:hover,
+.nj-btn--primary:hover {
+  border-color: #2fd572;
+  background: #2fd572;
+  color: #06250f;
+}
+
+.build-btn--save.is-changed {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, .22);
+}
+
+.nj-btn--outline,
+.build-btn--import {
+  border-color: var(--nj-green);
+  background: transparent;
+  color: var(--nj-green);
+}
+
+.nj-btn--outline:hover,
+.build-btn--import:hover {
+  background: rgba(34, 197, 94, .10);
+  color: #2fd572;
+}
+
+.build-btn--delete,
+.build-project-delete {
+  color: var(--nj-red);
+}
+
+.build-btn--delete:hover,
+.build-project-delete:hover {
+  border-color: rgba(255, 90, 90, .5);
+  color: #ff7a7a;
+}
+
+.build-help-button {
+  width: 36px;
+  padding: 0;
+}
+
+.build-picker-mode button.is-active {
+  border-color: var(--nj-green);
+  background: rgba(34, 197, 94, .12);
+  color: var(--nj-green);
+}
+
+/* ── Hero header ───────────────────────────────────────────────────────── */
+
+.nj-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px 32px;
+  align-items: end;
+  padding: 18px 22px 20px;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background:
+    radial-gradient(ellipse at 80% 0%, rgba(74, 163, 255, .08), transparent 55%),
+    linear-gradient(180deg, #181f27, var(--nj-hero));
+  box-shadow: var(--nj-shadow);
+}
+
+.nj-hero-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nj-hero-eyebrow {
+  margin: 0 0 2px;
+  color: var(--nj-green);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.nj-hero-main .build-back-btn {
+  justify-self: start;
+  margin-bottom: 8px;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.build-name-input,
+.nj-hero-title {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--nj-text-strong);
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -.01em;
+  line-height: 1.1;
+  text-shadow: none;
+}
+
+.build-name-input::placeholder {
+  color: #5c6774;
+}
+
+.build-name-input:hover,
+.build-name-input:focus {
+  border-color: var(--nj-line);
+  background: rgba(255, 255, 255, .03);
+  box-shadow: none;
+  outline: none;
+}
+
+.nj-hero-sub {
+  margin: 0;
+  color: #c3cad3;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.nj-hero-sub .is-empty {
+  color: var(--nj-muted);
+  font-weight: 500;
+}
+
+.nj-hero-side {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.nj-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 32px;
+}
+
+.nj-meta > div {
+  display: grid;
+  gap: 4px;
+}
+
+.nj-meta-label,
+.nj-meta > div > span {
+  color: var(--nj-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.nj-meta > div > strong {
+  color: var(--nj-text-strong);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nj-meta > div > strong.is-changed {
+  color: #ffb84a;
+}
+
+.nj-meta > div > strong.is-saved {
+  color: var(--nj-green);
+}
+
+.nj-hero-actions {
+  display: grid;
+  gap: 6px;
+}
+
+.nj-hero-actions .build-top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.build-class-pill {
+  display: none;
+}
+
+/* ── Equipment ─────────────────────────────────────────────────────────── */
+
+.nj-equipment .nj-panel-body {
+  display: grid;
+  justify-items: center;
+  padding: 24px 18px 20px;
+}
+
+.build-equipment-frame {
+  --build-slot-cell: 70px;
+  --build-slot-gap: 6px;
+
+  width: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.build-weapon-set-switch {
+  gap: 4px;
+  width: auto;
+  justify-self: start;
+}
+
+.build-weapon-set-switch button {
+  width: 28px;
+  height: 30px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: #2a3340;
+  box-shadow: none;
+  color: var(--nj-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.build-weapon-set-switch button.is-active {
+  border-color: #4a5566;
+  background: #3a4552;
+  color: var(--nj-text-strong);
+  box-shadow: none;
+}
+
+/* Slots: poe.ninja draws empty slots as lighter slate blocks and filled ones
+   as dark cells whose border takes the item's rarity colour. */
+.build-equip-slot {
+  gap: 4px;
+  padding: 2px;
+  border: 1px solid #323c48;
+  border-radius: 2px;
+  background: var(--nj-slot-empty);
+  box-shadow: none;
+  color: var(--nj-muted);
+  transition: border-color .12s ease, background .12s ease;
+}
+
+.build-equip-slot:hover,
+.build-equip-slot:focus-visible {
+  border-color: #5a6778;
+  background: #2d3845;
+  box-shadow: none;
+  transform: none;
+}
+
+.build-equip-slot.has-item {
+  border-color: #6b7280;
+  background: var(--nj-slot);
+}
+
+.build-equip-slot.has-item:hover {
+  background: #171e26;
+}
+
+.build-equip-slot.has-item.is-unique {
+  border-color: var(--poe-unique);
+}
+
+.build-equip-slot.has-item.is-rare {
+  border-color: #8f8f3c;
+}
+
+.build-equip-slot.has-item.is-magic {
+  border-color: #5c5cb8;
+}
+
+.build-equip-slot img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .6));
+}
+
+.build-slot-silhouette {
+  color: rgba(197, 206, 218, .28);
+  font-size: 22px;
+}
+
+.build-equip-slot:hover .build-slot-silhouette {
+  color: rgba(197, 206, 218, .6);
+  transform: none;
+}
+
+.build-slot-label {
+  color: rgba(197, 206, 218, .55);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.build-slot-fallback {
+  color: var(--nj-muted);
+}
+
+/* ── Stats list ────────────────────────────────────────────────────────── */
+
+.nj-stats .nj-panel-body {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 14px 18px 18px;
+}
+
+.nj-stat-group {
+  margin: 14px 0 6px;
+  color: var(--nj-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.nj-stat-group:first-child {
+  margin-top: 4px;
+}
+
+.nj-stat-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 23px;
+  font-size: 14px;
+}
+
+.nj-stat-row > span {
+  color: #d7dde5;
+}
+
+.nj-stat-row > strong {
+  color: var(--nj-text-strong);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.nj-stat-row > strong.is-empty {
+  color: var(--nj-muted);
+}
+
+.nj-stat-sep {
+  color: var(--nj-muted);
+  font-weight: 500;
+  padding: 0 3px;
+}
+
+.nj-c-str { color: var(--nj-red); }
+.nj-c-dex { color: #4ade80; }
+.nj-c-int { color: var(--nj-blue); }
+.nj-c-fire { color: var(--poe-fire); }
+.nj-c-cold { color: var(--poe-cold); }
+.nj-c-lightning { color: var(--poe-lightning); }
+.nj-c-chaos { color: var(--poe-chaos); }
+
+.nj-stat-row > strong .is-capped {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+/* Main skills rows inside the stats panel. */
+.nj-main-skill {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--nj-line-soft);
+}
+
+.nj-main-skill:last-child {
+  border-bottom: 0;
+}
+
+.nj-gem-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1f2730, #0f141a);
+  box-shadow: inset 0 0 0 1px #2d3742;
+  overflow: hidden;
+}
+
+.nj-gem-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.nj-gem-icon .material-symbols-rounded {
+  color: var(--nj-muted);
+  font-size: 20px;
+}
+
+.nj-main-skill-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nj-main-skill-copy strong {
+  color: var(--nj-text-strong);
+  font-size: 14px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nj-main-skill-copy small {
+  color: var(--nj-muted);
+  font-size: 12px;
+}
+
+.nj-main-skill-copy small b {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.nj-dps {
+  display: grid;
+  gap: 3px;
+  justify-items: stretch;
+  min-width: 56px;
+}
+
+.nj-dps > span {
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: #e5e8eb;
+  color: #0f141a;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.nj-dps > i {
+  display: flex;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #2b343f;
+}
+
+.nj-dps > i > b {
+  display: block;
+  height: 100%;
+}
+
+.nj-dps-phys { background: #c8c8c8; }
+.nj-dps-fire { background: var(--poe-fire); }
+.nj-dps-cold { background: var(--poe-cold); }
+.nj-dps-lightning { background: var(--poe-lightning); }
+.nj-dps-chaos { background: var(--poe-chaos); }
+
+/* ── Passive tree + info ───────────────────────────────────────────────── */
+
+.nj-tree .nj-panel-body {
+  padding: 12px;
+}
+
+.nj-tree .build-card,
+.nj-tree .build-linked-trees {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.nj-tree .build-tree-mini {
+  height: clamp(420px, 46vw, 640px);
+  min-height: 420px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: #06080a;
+}
+
+.nj-tree .build-mini-head h3 {
+  color: var(--nj-muted);
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+
+.nj-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: 3px;
+  background: #2b343f;
+  color: var(--nj-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nj-badge .material-symbols-rounded {
+  color: var(--nj-red);
+  font-size: 14px;
+}
+
+.nj-info .nj-panel-body {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.nj-field {
+  display: grid;
+  gap: 6px;
+}
+
+.nj-field > span {
+  color: var(--nj-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.nj-field > input,
+.nj-field > textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: var(--nj-well);
+  color: var(--nj-text-strong);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.nj-field > input:focus,
+.nj-field > textarea:focus {
+  border-color: var(--nj-green);
+  outline: none;
+}
+
+.nj-info-hint {
+  margin: 0;
+  color: var(--nj-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── Skills: gem group cards ───────────────────────────────────────────── */
+
+.nj-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+@media (max-width: 520px) {
+  .nj-skill-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.nj-skill-card {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background: #212932;
+}
+
+.nj-skill-card.is-main {
+  border-color: #3a4656;
+  box-shadow: inset 2px 0 0 var(--nj-green);
+}
+
+.nj-gem-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 34px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: var(--nj-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+
+.nj-gem-row:hover {
+  background: rgba(255, 255, 255, .04);
+}
+
+.nj-gem-row .nj-gem-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: #11171e;
+  box-shadow: inset 0 0 0 1px #2b343f;
+}
+
+.nj-gem-row .nj-gem-icon img {
+  width: 26px;
+  height: 26px;
+}
+
+.nj-gem-row .nj-gem-icon .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.nj-gem-name {
+  color: var(--nj-text-strong);
+  font-size: 13px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nj-gem-row--main .nj-gem-name {
+  font-size: 14px;
+}
+
+.nj-gem-name.is-empty {
+  color: var(--nj-muted);
+  font-weight: 500;
+}
+
+.nj-gem-row--support .nj-gem-name {
+  color: #d7dde5;
+}
+
+.nj-gem-aside {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--nj-muted);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.nj-gem-aside .nj-dps-mini {
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: #e5e8eb;
+  color: #0f141a;
+  font-weight: 800;
+}
+
+.nj-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: var(--nj-muted);
+  cursor: pointer;
+  opacity: .6;
+  transition: opacity .12s ease, color .12s ease, background .12s ease;
+}
+
+.nj-icon-btn .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.nj-skill-card:hover .nj-icon-btn,
+.nj-icon-btn.is-on {
+  opacity: 1;
+}
+
+.nj-icon-btn:hover {
+  background: rgba(255, 255, 255, .06);
+  color: var(--nj-text-strong);
+}
+
+.nj-icon-btn.is-on {
+  color: #ffb84a;
+}
+
+.nj-icon-btn--danger:hover {
+  color: var(--nj-red);
+}
+
+.nj-gem-row--add {
+  color: var(--nj-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nj-gem-row--add .nj-gem-icon {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px dashed;
+  box-shadow: none;
+  border: 1px dashed #3a4656;
+}
+
+.nj-gem-row--add:hover {
+  color: var(--nj-text);
+}
+
+/* ── Library (build list) ──────────────────────────────────────────────── */
+
+.build-library-toolbar,
+.build-library-card,
+.build-library-empty {
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background: var(--nj-panel);
+  box-shadow: var(--nj-shadow);
+  color: var(--nj-text);
+  backdrop-filter: none;
+}
+
+.build-library-summary h2 {
+  color: var(--nj-text-strong);
+  font-size: 22px;
+  font-weight: 900;
+  text-transform: none;
+  letter-spacing: -.01em;
+  text-shadow: none;
+}
+
+.build-library-metrics span,
+.build-library-stats span {
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: var(--nj-well);
+  box-shadow: none;
+  color: var(--nj-text);
+}
+
+.build-library-metrics strong,
+.build-library-stats strong {
+  color: var(--nj-text-strong);
+}
+
+.build-library-metrics small,
+.build-library-stats small {
+  color: var(--nj-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.build-library-card-head > .material-symbols-rounded {
+  border-radius: 3px;
+  background: #2b343f;
+  color: var(--nj-green);
+}
+
+.build-library-card-head h2 {
+  color: var(--nj-text-strong);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.build-library-card-head p,
+.build-library-card > p {
+  color: var(--nj-muted);
+}
+
+.build-library-empty {
+  padding: 40px 16px;
+  color: var(--nj-muted);
+  text-align: center;
+}
+
+.build-library-empty .material-symbols-rounded {
+  background: #2b343f;
+  color: var(--nj-muted);
+}
+
+/* ── Pickers and dialogs ───────────────────────────────────────────────── */
+
+.build-item-picker,
+.build-gem-picker,
+.build-help-dialog,
+.build-action-dialog,
+.build-pob-import {
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: var(--nj-panel);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .7);
+  color: var(--nj-text);
+}
+
+.build-picker-backdrop,
+.build-action-dialog-backdrop,
+.build-help-backdrop {
+  background: rgba(4, 6, 8, .78);
+  backdrop-filter: blur(2px);
+}
+
+.build-picker-head,
+.build-help-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--nj-line);
+  background: none;
+}
+
+.build-picker-head h2,
+.build-picker-copy h2,
+.build-gem-picker-copy h2,
+.build-help-head h2 {
+  color: var(--nj-text-strong);
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.build-picker-head p,
+.build-help-head p {
+  color: var(--nj-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.build-picker-head > button,
+.build-help-head > button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: #242d38;
+  color: var(--nj-text);
+}
+
+.build-picker-head > button:hover,
+.build-help-head > button:hover {
+  border-color: #3b4654;
+  color: var(--nj-text-strong);
+}
+
+.build-picker-controls,
+.build-gem-picker-controls {
+  gap: 8px;
+}
+
+.build-picker-list,
+.build-gem-list,
+.build-item-list {
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background: var(--nj-well);
+  box-shadow: none;
+}
+
+.build-picker-search,
+.build-import-box textarea,
+.build-form-grid input,
+.build-form-grid textarea,
+.build-level-fields input,
+.build-pob-body textarea {
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: var(--nj-well);
+  box-shadow: none;
+  color: var(--nj-text);
+  font-family: var(--font-body);
+}
+
+.build-picker-search input {
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.build-picker-search:focus-within,
+.build-import-box textarea:focus,
+.build-form-grid input:focus,
+.build-form-grid textarea:focus,
+.build-pob-body textarea:focus {
+  border-color: var(--nj-green);
+  box-shadow: none;
+  outline: none;
+}
+
+/* Gem picker rows: compact, poe.ninja style. */
+.build-gem-result,
+.build-gem-choice {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+}
+
+.build-gem-result:hover,
+.build-gem-choice.is-active {
+  border-color: var(--nj-line);
+  background: #242d38;
+  box-shadow: none;
+}
+
+.build-gem-picker-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  min-height: 0;
+  border: 0;
+  border-radius: 4px;
+  background: #11171e;
+  box-shadow: inset 0 0 0 1px #2b343f;
+  color: var(--nj-muted);
+}
+
+.build-gem-picker-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.build-gem-result strong,
+.build-gem-choice strong,
+.build-gem-copy strong {
+  color: var(--nj-text-strong);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+.build-picker-empty {
+  padding: 24px;
+  color: var(--nj-muted);
+  text-align: center;
+}
+
+.build-pob-body p,
+.build-pob-body label span {
+  color: var(--nj-muted);
+}
+
+.build-pob-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.build-help-dialog p,
+.build-help-dialog li {
+  color: var(--nj-text);
+}
+
+/* ── Empty states, warnings ────────────────────────────────────────────── */
+
+.build-empty,
+.build-warning {
+  border: 1px dashed #3a4656;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, .18);
+  color: var(--nj-muted);
+}
+
+.build-empty p,
+.build-warning p {
+  color: var(--nj-text);
+  font-weight: 600;
+}
+
+.build-empty .material-symbols-rounded {
+  color: var(--nj-muted);
+}
+
+.build-empty .poe-term,
+.build-warning .poe-term {
+  display: inline;
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dotted var(--nj-muted);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--nj-text-strong);
+  font: inherit;
+}
+
+.build-page .poe-term {
+  border-bottom-color: rgba(139, 150, 165, .5);
+  font-weight: inherit;
+}
+
+/* Tree chooser list inside the tree panel. */
+.nj-tree .build-tree-list > article,
+.nj-tree .build-tree-list > button {
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background: #242d38;
+  color: var(--nj-text);
+}
+
+.nj-tree .build-tree-list > article.is-active,
+.nj-tree .build-tree-list > button.is-active {
+  border-color: var(--nj-green);
+}
+
+.nj-tree .build-tree-list strong {
+  color: var(--nj-text-strong);
+}
+
+.nj-tree .build-tree-list small,
+.nj-tree .build-tree-list em {
+  color: var(--nj-muted);
+}
+
+/* ── Rarity text helpers (item names) ──────────────────────────────────── */
+
+.poe-rarity-normal { color: var(--poe-normal); }
+.poe-rarity-magic { color: var(--poe-magic); }
+.poe-rarity-rare { color: var(--poe-rare); }
+.poe-rarity-unique { color: var(--poe-unique); }
+.poe-rarity-gem { color: var(--poe-gem); }
+
+/* ── Small screens ─────────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .nj-hero {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    padding: 14px 14px 16px;
+  }
+
+  .build-name-input,
+  .nj-hero-title {
+    font-size: 26px;
+  }
+
+  .nj-hero-sub {
+    font-size: 15px;
+  }
+
+  .nj-meta {
+    gap: 8px 20px;
+  }
+
+  .nj-panel-head {
+    padding: 0 12px;
+  }
+
+  .nj-panel-body {
+    padding: 12px;
+  }
+
+  .nj-equipment .nj-panel-body {
+    padding: 14px 8px;
+  }
+
+  .build-equipment-frame {
+    --build-slot-cell: 40px;
+    --build-slot-gap: 4px;
+  }
+
+  .nj-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nj-tree .build-tree-mini {
+    height: 360px;
+    min-height: 360px;
+  }
+}
+
+@media (max-width: 420px) {
+  .build-equipment-frame {
+    --build-slot-cell: 34px;
+    --build-slot-gap: 3px;
+  }
+
+  .build-slot-label {
+    font-size: 8px;
+  }
+}
+
+/* ── Item tooltip (floating + in-panel) ────────────────────────────────── */
+
+/* Layout copied from the in-game / trade-site tooltip: a rarity-coloured
+   header band with corner flourishes (one line for magic / normal, name +
+   base for rare / unique), then a black body split by soft gradient rules:
+   item class + base stats, requirements, mods. */
+
+:root {
+  --poe-flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M4 22c0-10 7-16 18-15-7 2-10 6-8 12 4-5 11-5 14 1-5-2-10 0-11 6 5 0 9 3 10 9-4-4-9-4-13-1 2 5 6 7 12 7C14 41 4 34 4 22z'/%3E%3Ccircle cx='33' cy='30' r='2.3'/%3E%3Ccircle cx='35' cy='12' r='1.7'/%3E%3Cpath d='M4 22h40' stroke='%23000' stroke-width='1.2' opacity='.55'/%3E%3C/svg%3E");
+  --poe-tip-font: "Fontin SmallCaps", "Fontin", Georgia, serif;
+}
+
+.poe-tooltip-float {
+  font-family: var(--poe-serif);
+}
+
+.poe-tooltip-card {
+  --tip-a: #3d3d3d;
+  --tip-b: #1c1c1c;
+  --tip-edge: #5a5a5a;
+  --tip-name: var(--poe-normal);
+  --tip-orn: #9a9a9a;
+  --tip-rule: #5a5a5a;
+  min-width: 300px;
+  max-width: 380px;
+  padding: 0 0 8px;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: rgba(0, 0, 0, .94);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .05), 0 16px 34px rgba(0, 0, 0, .9);
+  color: var(--poe-normal);
+  font-family: var(--poe-tip-font);
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.poe-tooltip-card.tooltip-rarity-magic  { --tip-a: #2a2762; --tip-b: #15133a; --tip-edge: #4d49a8; --tip-name: var(--poe-magic); --tip-orn: #8f8cf0; --tip-rule: #5550b0; }
+.poe-tooltip-card.tooltip-rarity-rare   { --tip-a: #564d22; --tip-b: #2a2510; --tip-edge: #8f7f2e; --tip-name: var(--poe-rare); --tip-orn: #d9c24a; --tip-rule: #8f8030; }
+.poe-tooltip-card.tooltip-rarity-unique { --tip-a: #633214; --tip-b: #2e1708; --tip-edge: #8a4f1f; --tip-name: #c8722c; --tip-orn: #d2803a; --tip-rule: #8a5a2a; }
+.poe-tooltip-card.tooltip-rarity-gem    { --tip-a: #15443f; --tip-b: #0a2422; --tip-edge: #1f6a65; --tip-name: var(--poe-gem); --tip-orn: #2cc7bd; --tip-rule: #1f6a65; }
+
+.tooltip-header {
+  position: relative;
+  margin: 0;
+  padding: 7px 54px;
+  min-height: 42px;
+  display: grid;
+  align-content: center;
+  border-top: 1px solid var(--tip-edge);
+  border-bottom: 1px solid var(--tip-edge);
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, .04) 0 2px, transparent 2px 7px),
+    linear-gradient(180deg, var(--tip-a), var(--tip-b) 55%, #000);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), inset 0 -2px 6px rgba(0, 0, 0, .7);
+  text-align: center;
+}
+
+/* Corner flourishes, coloured per rarity through a mask. */
+.tooltip-header::before,
+.tooltip-header::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: 44px;
+  height: 44px;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg, var(--tip-orn), color-mix(in srgb, var(--tip-orn) 55%, #000));
+  -webkit-mask: var(--poe-flourish) center / contain no-repeat;
+  mask: var(--poe-flourish) center / contain no-repeat;
+  opacity: .9;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.tooltip-header::after {
+  left: auto;
+  right: 4px;
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.tooltip-name {
+  color: var(--tip-name);
+  font-family: var(--poe-tip-font);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.15;
+  text-shadow: 0 1px 0 #000;
+}
+
+.tooltip-base {
+  margin: 0;
+  color: var(--tip-name);
+  font-family: var(--poe-tip-font);
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.tooltip-section {
+  padding: 6px 14px 4px;
+}
+
+.tooltip-divider {
+  height: 1px;
+  margin: 3px 14px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--tip-rule) 30%, var(--tip-rule) 70%, transparent);
+}
+
+.tip-line { line-height: 1.45; }
+.tip-class { color: var(--poe-grey); }
+.tip-label { color: var(--poe-grey); }
+.tip-value { color: #fff; }
+.tip-value--aug { color: var(--poe-magic); }
+.tip-req { color: var(--poe-grey); }
+
+.tooltip-tags,
+.tooltip-properties,
+.tooltip-requirements,
+.tooltip-note,
+.tooltip-mods,
+.tooltip-implicits {
+  padding: 4px 14px;
+}
+
+.tooltip-section > .tooltip-mods { padding: 0; }
+
+.tooltip-tags { color: var(--poe-gem); font-size: 13px; }
+.tooltip-properties { color: var(--poe-grey); }
+.tooltip-requirements { color: var(--poe-grey); font-size: 14px; }
+.tooltip-note { color: var(--poe-normal); font-size: 13px; }
+.tooltip-mods, .tooltip-implicits { color: var(--poe-magic); }
+.tooltip-mod-line { line-height: 1.45; }
+.tooltip-flavour { padding: 4px 18px; color: var(--poe-unique); font-family: var(--poe-serif); font-style: italic; }
+
+/* Picker rows carry the full tooltip card next to the item art. */
+.build-picker-result--card {
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+  background: #000;
+}
+
+.build-picker-result--card .build-picker-icon {
+  width: 72px;
+  min-height: 72px;
+}
+
+.build-picker-result--card .build-picker-icon img {
+  width: 56px;
+  height: 56px;
+}
+
+.build-picker-tooltip {
+  display: block;
+  min-width: 0;
+}
+
+.build-picker-tooltip .poe-tooltip-card {
+  min-width: 0;
+  max-width: none;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.build-picker-tooltip .tooltip-header {
+  border-top: 0;
+}
+
+
+/* ── Late overrides (specificity fixes against styles.css) ─────────────── */
+
+.build-page .material-symbols-rounded,
+.build-page button .material-symbols-rounded {
+  font-family: "Material Symbols Rounded";
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Item picker rows: a flat dark card holding the in-game tooltip. */
+.build-picker-result,
+.build-picker-result.is-unique,
+.build-picker-result:hover,
+.build-picker-result.is-unique:hover {
+  padding: 0;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background: #0b0f14;
+  box-shadow: none;
+}
+
+.build-picker-result:hover,
+.build-picker-result.is-unique:hover {
+  border-color: #3b4654;
+}
+
+.build-picker-result--card .build-picker-icon {
+  border: 0;
+  border-right: 1px solid var(--nj-line-soft);
+  border-radius: 0;
+  background: #11171e;
+  box-shadow: none;
+  color: var(--nj-muted);
+}
+
+.build-picker-tooltip .poe-tooltip-card {
+  background: transparent;
+}
+
+/* Gem rows: the clickable part is its own button so the aside can hold controls. */
+.nj-gem-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  cursor: default;
+}
+
+.nj-gem-row:hover {
+  background: none;
+}
+
+.nj-gem-pick {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 34px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: inherit;
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+
+.nj-gem-pick:hover {
+  background: rgba(255, 255, 255, .05);
+}
+
+.nj-gem-row--add {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 32px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.nj-gem-row--add:hover {
+  background: rgba(255, 255, 255, .05);
+}
+
+.nj-gem-row--add .nj-gem-icon {
+  width: 28px;
+  height: 28px;
+  border: 1px dashed #3a4656;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.nj-gem-row--add .nj-gem-icon .material-symbols-rounded {
+  font-size: 16px;
+}

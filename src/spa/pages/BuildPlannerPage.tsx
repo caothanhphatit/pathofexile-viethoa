@@ -378,8 +378,14 @@ function officialGemId(item: ItemRecord, prefix: "SkillGem" | "SupportGem"): str
 function officialGemAliases(item: ItemRecord, prefix: "SkillGem" | "SupportGem"): string[] {
   const primary = officialGemId(item, prefix);
   const aliases = new Set([primary]);
+  // Builds saved before ids came from the game data used name-based guesses; keep matching them.
+  const slug = prefix === "SupportGem" ? compactSupportGemSlug(item) : compactGemSlug(item);
+  if (slug) aliases.add(`Metadata/Items/Gems/${prefix}${slug}`);
+  // The game mixes Metadata/Items/Gem/ and Metadata/Items/Gems/; accept either spelling.
+  aliases.add(primary.replace(/^Metadata\/Items\/Gem\//, "Metadata/Items/Gems/"));
+  aliases.add(primary.replace(/^Metadata\/Items\/Gems\//, "Metadata/Items/Gem/"));
   if (prefix === "SupportGem") {
-    const tail = primary.replace(/^Metadata\/Items\/Gems\/SupportGem/, "");
+    const tail = primary.replace(/^Metadata\/Items\/Gems?\/SupportGem/, "");
     if (tail) aliases.add(`Metadata/Items/Gems/SupportGem${tail.replace(/(?:One|Two|Three|Four|Five|I|II|III|IV|V)$/i, "")}`);
   }
   return [...aliases].filter(Boolean);
@@ -443,14 +449,14 @@ function getGemTooltipHtml(id: string, options: ItemRecord[], prefix: "SkillGem"
   const item = gemChoiceItem(id, options, prefix);
   if (!item) {
     return note
-      ? `<div class="poe-tooltip-card tooltip-rarity-gem"><div class="tooltip-header"><div class="tooltip-name">${note}</div></div></div>`
+      ? `<div class="poe-tooltip-card poe-no-tooltip tooltip-rarity-gem"><div class="tooltip-header"><div class="tooltip-name">${note}</div></div></div>`
       : "";
   }
   const title = itemTitle(item, locale);
   const tags = localizedLines(item, "properties", locale).filter(l => !l.includes(":"));
-  const properties = localizedLines(item, "properties", locale);
-  const requirements = localizedLines(item, "requirements", locale);
-  const mods = localizedLines(item, "mods", locale);
+  const properties = localizedLines(item, "properties", locale).filter(l => l.includes(":")).map(cleanTooltipLine);
+  const requirements = localizedLines(item, "requirements", locale).map(cleanTooltipLine);
+  const mods = localizedLines(item, "mods", locale).map(cleanTooltipLine);
 
   let h = "";
   if (tags.length) {
@@ -462,11 +468,11 @@ function getGemTooltipHtml(id: string, options: ItemRecord[], prefix: "SkillGem"
   }
   if (properties.length) {
     if (h) h += '<hr class="tooltip-divider" />';
-    h += `<div class="tooltip-properties">${properties.map((g) => `<div>${g}</div>`).join("")}</div>`;
+    h += `<div class="tooltip-properties">${properties.map(tooltipPropertyHtml).join("")}</div>`;
   }
   if (requirements.length) {
     if (h) h += '<hr class="tooltip-divider" />';
-    h += `<div class="tooltip-requirements">${requirements.join(", ")}</div>`;
+    h += `<div class="tooltip-requirements">${requirements.map(tooltipRequirementHtml).join("")}</div>`;
   }
   if (mods.length) {
     if (h || requirements.length) h += '<hr class="tooltip-divider" />';
@@ -474,7 +480,7 @@ function getGemTooltipHtml(id: string, options: ItemRecord[], prefix: "SkillGem"
   }
 
   return `
-    <div class="poe-tooltip-card tooltip-rarity-gem">
+    <div class="poe-tooltip-card poe-no-tooltip tooltip-rarity-gem">
       <div class="tooltip-header">
         <div class="tooltip-name">${title}</div>
       </div>
@@ -497,6 +503,67 @@ function isUniqueItem(item: ItemRecord): boolean {
   if (String(item.rarity || "").toLowerCase() === "unique") return true;
   if (uniqueItemIconPattern.test(item.icon_url ?? "")) return true;
   return (item.mods ?? []).some((line) => /\buse unique\b/i.test(line));
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[ch] as string));
+}
+
+/** Localised lines end with a stray "." in the vi data; the game never shows one. */
+function cleanTooltipLine(line: string): string {
+  return line.trim().replace(/(?<![.])\.$/, "");
+}
+
+function itemRarity(item: ItemRecord): "normal" | "magic" | "rare" | "unique" {
+  if (isUniqueItem(item)) return "unique";
+  const rarity = String(item.rarity || "").toLowerCase();
+  if (rarity === "magic" || rarity === "rare") return rarity;
+  return "normal";
+}
+
+/** "Armour: 179" -> grey label, white value; ranged values "(447-626)" are augmented (blue). */
+function tooltipPropertyHtml(line: string): string {
+  const split = line.indexOf(":");
+  if (split < 0) return `<div class="tip-line">${escapeHtml(line)}</div>`;
+  const label = line.slice(0, split + 1);
+  const value = line.slice(split + 1).trim();
+  const aug = /[(—]/.test(value) ? " tip-value--aug" : "";
+  return `<div class="tip-line"><span class="tip-label">${escapeHtml(label)}</span> <span class="tip-value${aug}">${escapeHtml(value)}</span></div>`;
+}
+
+/** "Requires: Level 65, 59 Str" -> numbers in white, the rest grey. */
+function tooltipRequirementHtml(line: string): string {
+  const html = escapeHtml(line).replace(/(\d+)/g, '<span class="tip-value">$1</span>');
+  return `<div class="tip-line tip-req">${html}</div>`;
+}
+
+/** Item card in the in-game tooltip layout: rarity header band, class, properties, requirements, mods. */
+function getItemTooltipHtml(item: ItemRecord, locale: Locale): string {
+  const rarity = itemRarity(item);
+  const title = itemTitle(item, locale);
+  const properties = localizedLines(item, "properties", locale).map(cleanTooltipLine);
+  const base = properties.find((line) => !line.includes(":")) || "";
+  const stats = properties.filter((line) => line.includes(":"));
+  const requirements = localizedLines(item, "requirements", locale).map(cleanTooltipLine);
+  const mods = localizedLines(item, "mods", locale).map(cleanTooltipLine);
+  const itemClass = item.menu_label || item.group_label || "";
+
+  const sections: string[] = [];
+  const head: string[] = [];
+  if (itemClass) head.push(`<div class="tip-line tip-class">${escapeHtml(itemClass)}</div>`);
+  head.push(...stats.map(tooltipPropertyHtml));
+  if (head.length) sections.push(head.join(""));
+  if (requirements.length) sections.push(requirements.map(tooltipRequirementHtml).join(""));
+  if (mods.length) sections.push(`<div class="tooltip-mods">${mods.map((line) => `<div class="tooltip-mod-line">${escapeHtml(line)}</div>`).join("")}</div>`);
+
+  return `
+    <div class="poe-tooltip-card poe-no-tooltip tooltip-rarity-${rarity}${base ? " has-base" : ""}">
+      <div class="tooltip-header">
+        <div class="tooltip-name">${escapeHtml(title)}</div>
+        ${base && base !== title ? `<div class="tooltip-base">${escapeHtml(base)}</div>` : ""}
+      </div>
+      ${sections.map((section) => `<div class="tooltip-section">${section}</div>`).join('<div class="tooltip-divider"></div>')}
+    </div>`;
 }
 
 function buildSlotCategories(item: ItemRecord): string[] {
@@ -796,7 +863,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [pobImportOpen, setPobImportOpen] = useState(false);
   const [pobCode, setPobCode] = useState("");
   const [pobImporting, setPobImporting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"skills" | "tree" | "notes">("skills");
 
   const slotSilhouetteIcon = (area: string) => {
     switch (area) {
@@ -805,7 +871,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       case "weapon": return "swords";
       case "offhand": return "security";
       case "gloves": return "front_hand";
-      case "boots": return "snowshoe";
+      case "boots": return "footprint";
       case "belt": return "fit_screen";
       case "amulet": return "diamond";
       case "ring1":
@@ -823,16 +889,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [liveStats, setLiveStats] = useState<any>(null);
   const activeStats = useMemo(() => {
     if (!liveStats) return null;
-    return activeWeaponSet === 2 ? liveStats.set2 : liveStats.set1;
+    // /api/builds/calculate already runs for activeWeaponSet and returns PoB's flat output;
+    // keep accepting a { set1, set2 } shape in case the engine starts returning both.
+    if (liveStats.set1 || liveStats.set2) return activeWeaponSet === 2 ? liveStats.set2 : liveStats.set1;
+    return liveStats;
   }, [liveStats, activeWeaponSet]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [mainSocketGroup, setMainSocketGroup] = useState<number>(1);
   const mainSocketGroupRef = useRef(mainSocketGroup);
   mainSocketGroupRef.current = mainSocketGroup;
-  const [expandedSkills, setExpandedSkills] = useState<Record<string, boolean>>({});
-  const toggleSkillExpand = (id: string) => {
-    setExpandedSkills(prev => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const [tooltip, setTooltip] = useState<{
     visible: boolean;
@@ -925,12 +990,30 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   }, [selected, name, importedBuild]);
 
   const inventoryBySlot = useMemo(() => new Map(inventory.map((row) => [row.inventoryId, row])), [inventory]);
+  const itemRecordForChoice = useMemo(() => {
+    const bySlug = new Map<string, ItemRecord>();
+    const byName = new Map<string, ItemRecord>();
+    for (const item of itemsData) {
+      if (item.slug && !bySlug.has(item.slug)) bySlug.set(item.slug, item);
+      const key = itemTitle(item, locale).toLowerCase();
+      if (key && !byName.has(key)) byName.set(key, item);
+    }
+    return (choice?: { itemSlug?: string; itemName?: string }): ItemRecord | undefined => {
+      if (!choice) return undefined;
+      if (choice.itemSlug && bySlug.has(choice.itemSlug)) return bySlug.get(choice.itemSlug);
+      return byName.get(String(choice.itemName || "").toLowerCase());
+    };
+  }, [itemsData, locale]);
   const selectedInventoryCount = inventory.filter((row) => row.itemName.trim() || row.note.trim()).length;
   const selectedSkillCount = buildSkills.filter((row) => row.skillId.trim()).length;
   const activeSlot = activeSlotId ? slotForId(activeSlotId) : null;
+  // PoE2 characters wear two rings; the third ring slot only exists for
+  // imported builds that filled it, so keep it out of the doll otherwise.
   const visibleEquipmentSlots = useMemo(
-    () => equipmentSlots.filter((slot) => !slot.weaponSet || slot.weaponSet === activeWeaponSet),
-    [activeWeaponSet]
+    () => equipmentSlots.filter((slot) =>
+      (!slot.weaponSet || slot.weaponSet === activeWeaponSet)
+      && (slot.id !== "Ring3" || Boolean(inventoryBySlot.get("Ring3")?.itemName))),
+    [activeWeaponSet, inventoryBySlot]
   );
   const skillGemOptions = useMemo(() => gemsData
     .filter((item) => item.gem_type === "skill" && item.name)
@@ -1014,6 +1097,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   }, [exportSnapshot, importedBuild, plannerData, name, author, description, inventory, buildSkills]);
 
   const canExport = Boolean(payload && (importedBuild || exportSnapshot));
+  const exportDisabledHint = selected
+    ? localizedText(copy.emptyTree, "", locale)
+    : localizedText(copy.noTree, "", locale);
 
   const runCalculation = useCallback(() => {
     if (!importedBuild?.payload) return;
@@ -1287,7 +1373,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const updatedPayload = importedBuild?.payload ? {
       ...importedBuild.payload,
       mainSocketGroup
-    } : null;
+    } : undefined;
     const project = createBuildProject({
       id: activeBuildId || undefined,
       name,
@@ -1370,19 +1456,43 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       setSavedTrees(saveTreeSnapshot(importedTree));
       window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "build-import", id: importedTree.id } }));
     }
-    setImportedBuild({ fileName, payload, importedAt: new Date().toISOString() });
-    setImportError("");
-    setActiveBuildId("");
-    setBuildTree(importedTree);
-    setName(payloadText(payload, "name") || fileName.replace(/\.build$/i, ""));
-    setAuthor(payloadText(payload, "author"));
-    setDescription(payloadText(payload, "description"));
+    const nextName = payloadText(payload, "name") || fileName.replace(/\.build$/i, "");
+    const nextAuthor = payloadText(payload, "author");
+    const nextDescription = payloadText(payload, "description");
     const nextInventory = enrichInventoryChoices(inventoryChoicesFromBuildPayload(payload, equipmentSlotIds), itemsData, locale);
+    const nextSkills = skillChoicesFromBuildPayload(payload);
+    // Save the import right away so a reload (F5) on /build/<id> brings it back instead of
+    // landing on an empty /build/new draft.
+    const project = createBuildProject({
+      name: nextName,
+      author: nextAuthor,
+      description: nextDescription,
+      treeSnapshot: importedTree,
+      inventory: nextInventory,
+      skills: nextSkills,
+      importedPayload: payload,
+      importedFileName: fileName
+    });
+    let saved = false;
+    try {
+      setSavedBuilds(saveBuildProject(project));
+      saved = true;
+    } catch (error) {
+      // localStorage full or blocked: keep the import in memory and tell the user.
+      setImportError(error instanceof Error ? `Không lưu được build vào trình duyệt: ${error.message}` : "Không lưu được build vào trình duyệt.");
+    }
+    setImportedBuild({ fileName, payload, importedAt: project.updatedAt });
+    if (saved) setImportError("");
+    setActiveBuildId(saved ? project.id : "");
+    setBuildTree(importedTree);
+    setName(saved ? project.name : nextName);
+    setAuthor(nextAuthor);
+    setDescription(nextDescription);
     setActiveWeaponSet(preferredWeaponSet(nextInventory));
     setInventory(nextInventory);
-    setBuildSkills(skillChoicesFromBuildPayload(payload));
+    setBuildSkills(nextSkills);
     setTreeChoicesOpen(false);
-    navigateTo("/build/new");
+    navigateTo(saved ? `/build/${encodeURIComponent(project.id)}` : "/build/new");
   };
 
   const importBuildFile = async (file: File | null) => {
@@ -1651,95 +1761,95 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           )}
         </section>
       ) : (
-      <section className="build-workbench">
-        {/* Sleek Top Control Bar */}
-        <header className="build-top-bar">
-          <div className="build-top-left">
+      <section className="build-workbench nj-page">
+        {/* Hero header: name, class, actions (poe.ninja character header) */}
+        <header className="nj-hero">
+          <div className="nj-hero-main">
             <button className="build-back-btn" type="button" onClick={openBuildLibrary}>
               <span className="material-symbols-rounded" aria-hidden="true">arrow_back</span>
               {localizedText(copy.backToBuilds, "", locale)}
             </button>
-            <div className="build-name-wrapper">
-              <input
-                className="build-name-input"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                placeholder="Tên Build..."
-                title="Tên Build"
-              />
-              <span className="build-class-pill">
-                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "14px" }}>shield_person</span>
-                {buildTree?.className || "Class"}
-                {buildTree?.ascendancyName ? ` • ${buildTree.ascendancyName}` : ""}
-              </span>
-            </div>
+            <p className="nj-hero-eyebrow">Build Planner · POE2 Việt hóa</p>
+            <input
+              className="build-name-input nj-hero-title"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Tên Build..."
+              title={localizedText(copy.buildName, "", locale)}
+            />
+            <p className="nj-hero-sub">
+              {buildTree ? (
+                <>
+                  {buildTree.className}
+                  {buildTree.ascendancyName ? ` ${buildTree.ascendancyName}` : ""}
+                  {" · "}
+                  {formatNumber(passiveCount(buildTree), locale)} {locale === "vi" ? "điểm thụ động" : "passives"}
+                </>
+              ) : (
+                <span className="is-empty">{locale === "vi" ? "Chưa chọn class / cây thụ động" : "No class / passive tree yet"}</span>
+              )}
+            </p>
           </div>
 
-          <div className="build-top-actions">
-            {activeStats && activeStats.CombinedDPS !== undefined && (
-              <div style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "5px",
-                padding: "0 10px",
-                height: "34px",
-                background: "rgba(239, 68, 68, 0.1)",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                borderRadius: "7px",
-                color: "#ff6b6b",
-                fontSize: "12px",
-                fontWeight: "900",
-                fontFamily: "var(--font-mono, monospace)"
-              }}>
-                <span className="material-symbols-rounded" style={{ fontSize: "16px" }}>local_fire_department</span>
-                <span>
-                  {(() => {
-                    const hasSkillDps = activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1] !== undefined;
-                    const skillDpsVal = hasSkillDps ? activeStats.skillsDps[mainSocketGroup - 1] : 0;
-                    const activeDps = (skillDpsVal > 0) ? skillDpsVal : activeStats.CombinedDPS;
-                    return Math.round(activeDps).toLocaleString("en-US");
-                  })()} DPS
-                </span>
+          <div className="nj-hero-side">
+            <div className="nj-meta">
+              <div>
+                <span>{locale === "vi" ? "Tác giả" : "Author"}</span>
+                <strong>{author.trim() || "—"}</strong>
               </div>
-            )}
-            <button className={`build-btn build-btn--save ${hasBuildChanges ? "is-changed" : ""}`} type="button" onClick={() => saveCurrentBuild({ showDialog: true })}>
-              <span className="material-symbols-rounded" aria-hidden="true">save</span>
-              {localizedText(copy.saveBuild, "", locale)}
-            </button>
-            <button className="build-btn build-btn--import" type="button" onClick={openPobImport}>
-              <span className="material-symbols-rounded" aria-hidden="true">data_object</span>
-              {localizedText(copy.importPob, "", locale)}
-            </button>
-            <button className="build-btn build-btn--export" type="button" onClick={exportBuild} disabled={!canExport}>
-              <span className="material-symbols-rounded" aria-hidden="true">download</span>
-              .build
-            </button>
-            {activeBuildId ? (
-              <button className="build-btn build-btn--delete" type="button" onClick={() => removeSavedBuild(activeBuildId)} title={localizedText(copy.deleteBuild, "", locale)}>
-                <span className="material-symbols-rounded" aria-hidden="true">delete</span>
-              </button>
-            ) : null}
-            <button className="build-help-button" type="button" onClick={() => setShowBuildHelp(true)} aria-label={localizedText(copy.howTitle, "", locale)} title={localizedText(copy.howTitle, "", locale)}>
-              <span className="material-symbols-rounded" aria-hidden="true">help</span>
-            </button>
+              <div>
+                <span>DPS</span>
+                <strong>
+                  {activeStats && activeStats.CombinedDPS !== undefined
+                    ? Math.round(((activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1]) || activeStats.CombinedDPS)).toLocaleString("en-US")
+                    : (getBaseDps() ? Math.round(getBaseDps()).toLocaleString("en-US") : "—")}
+                </strong>
+              </div>
+              <div>
+                <span>{locale === "vi" ? "Trạng thái" : "Status"}</span>
+                <strong className={hasBuildChanges ? "is-changed" : "is-saved"}>
+                  {hasBuildChanges ? (locale === "vi" ? "Chưa lưu" : "Unsaved") : (activeBuildId ? (locale === "vi" ? "Đã lưu" : "Saved") : (locale === "vi" ? "Bản nháp" : "Draft"))}
+                </strong>
+              </div>
+            </div>
+            <div className="nj-hero-actions">
+              <span className="nj-meta-label">{locale === "vi" ? "Thao tác" : "Actions"}</span>
+              <div className="build-top-actions build-project-actions">
+                <button className={`build-btn build-btn--save ${hasBuildChanges ? "is-changed" : ""}`} type="button" onClick={() => saveCurrentBuild({ showDialog: true })}>
+                  <span className="material-symbols-rounded" aria-hidden="true">save</span>
+                  {localizedText(copy.saveBuild, "", locale)}
+                </button>
+                <button className="build-btn build-btn--import" type="button" onClick={openPobImport}>
+                  <span className="material-symbols-rounded" aria-hidden="true">data_object</span>
+                  {localizedText(copy.importPob, "", locale)}
+                </button>
+                <button className="build-btn build-btn--export" type="button" onClick={exportBuild} disabled={!canExport} title={!canExport ? exportDisabledHint : localizedText(copy.export, "", locale)}>
+                  <span className="material-symbols-rounded" aria-hidden="true">download</span>
+                  .build
+                </button>
+                {activeBuildId ? (
+                  <button className="build-btn build-btn--delete" type="button" onClick={() => removeSavedBuild(activeBuildId)} title={localizedText(copy.deleteBuild, "", locale)}>
+                    <span className="material-symbols-rounded" aria-hidden="true">delete</span>
+                  </button>
+                ) : null}
+                <button className="build-help-button build-help-button--panel" type="button" onClick={() => setShowBuildHelp(true)} aria-label={localizedText(copy.howTitle, "", locale)} title={localizedText(copy.howTitle, "", locale)}>
+                  <span className="material-symbols-rounded" aria-hidden="true">help</span>
+                </button>
+              </div>
+            </div>
           </div>
         </header>
 
         {loadError ? <div className="error-panel">{uiText("loadFailed", locale)}: {loadError}</div> : null}
 
-        {/* 2-Column Responsive Body */}
-        <div className="build-workbench-body">
-          {/* Left Column: Equipment Frame & Character Stats HUD */}
-          <div className="build-left-col">
-            <section className="build-card build-equipment-card">
-              <div className="build-section-head">
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>inventory_2</span>
-                  <h2>{localizedText(copy.equipment, "", locale)}</h2>
-                </div>
-                <strong className="build-selected-count">{formatNumber(selectedInventoryCount, locale)} {localizedText(copy.selected, "", locale)}</strong>
-              </div>
-
+        {/* Row 1: Equipment | Stats */}
+        <div className="nj-row nj-row--top">
+          <section className="nj-panel nj-equipment">
+            <header className="nj-panel-head">
+              <h2>{localizedText(copy.equipment, "", locale)}</h2>
+              <span className="nj-panel-aside">{formatNumber(selectedInventoryCount, locale)} {localizedText(copy.selected, "", locale)}</span>
+            </header>
+            <div className="nj-panel-body">
               <div className="build-equipment-frame" aria-label={localizedText(copy.equipment, "", locale)}>
                 <div className="build-weapon-set-switch" style={{ gridArea: "setswitch" }} role="group" aria-label="Weapon set">
                   {[1, 2].map((set) => (
@@ -1757,11 +1867,18 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 {visibleEquipmentSlots.map((slot) => {
                   const choice = inventoryBySlot.get(slot.id);
                   const hasItem = Boolean(choice?.itemName);
+                  const record = hasItem ? itemRecordForChoice(choice) : undefined;
+                  const rarity = record ? itemRarity(record) : (choice?.isUnique ? "unique" : "normal");
                   return (
                     <button
-                      className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? "has-item" : ""} ${choice?.isUnique ? "is-unique" : ""}`}
+                      className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""}`}
                       type="button"
                       onClick={() => openPicker(slot.id)}
+                      onMouseEnter={() => {
+                        if (record) setTooltip({ x: 0, y: 0, content: getItemTooltipHtml(record, locale), visible: true });
+                      }}
+                      onMouseMove={record ? handleMouseMove : undefined}
+                      onMouseLeave={record ? handleMouseLeave : undefined}
                       style={{ gridArea: slot.area }}
                       key={slot.id}
                       aria-label={`${localizedText(copy.chooseItem, "", locale)}: ${slot.label}`}
@@ -1780,570 +1897,312 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   );
                 })}
               </div>
-            </section>
-
-            {/* Character Stats HUD */}
-            <section className="build-card build-stats-card">
-              <div className="build-section-head" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>analytics</span>
-                  <h2>{locale === "vi" ? "Chỉ số nhân vật" : "Character Stats"}</h2>
-                </div>
-                {isCalculating && (
-                  <span style={{ fontSize: "11px", color: "var(--gold)", fontStyle: "italic" }}>
-                    {locale === "vi" ? "Đang tính..." : "Calculating..."}
-                  </span>
-                )}
-              </div>
-
-              {(() => {
-                const stats = importedBuild?.payload?.stats || [];
-                const lifeVal = stats.find((s: any) => s.stat === "Life");
-                const esVal = stats.find((s: any) => s.stat === "EnergyShield");
-                const manaVal = stats.find((s: any) => s.stat === "Mana");
-                const fireVal = stats.find((s: any) => s.stat === "FireResist");
-                const coldVal = stats.find((s: any) => s.stat === "ColdResist");
-                const lightningVal = stats.find((s: any) => s.stat === "LightningResist");
-                const chaosVal = stats.find((s: any) => s.stat === "ChaosResist");
-                const evadeVal = stats.find((s: any) => s.stat === "MeleeEvadeChance");
-                const physVal = stats.find((s: any) => s.stat === "PhysicalDamageReduction");
-                const speedVal = stats.find((s: any) => s.stat === "EffectiveMovementSpeedMod");
-
-                const formatVal = (statKey: string, valObj: any, round = true) => {
-                  if (activeStats && activeStats[statKey] !== undefined) {
-                    const val = activeStats[statKey];
-                    return round ? Math.round(val).toLocaleString("en-US") : (Math.round(val * 100) / 100).toString();
-                  }
-                  if (!valObj || typeof valObj.value !== "number") return "-";
-                  return round ? Math.round(valObj.value).toLocaleString("en-US") : (Math.round(valObj.value * 100) / 100).toString();
-                };
-
-                const details = activeStats && activeStats.skillsDetails && activeStats.skillsDetails[mainSocketGroup - 1];
-
-                return (
-                  <div className="build-stats-hud">
-                    {/* Hero DPS Box */}
-                    <div className="build-dps-hero">
-                      <div className="build-dps-hero-head">
-                        <span className="build-dps-hero-title">Combined DPS</span>
-                        {details?.name && (
-                          <span style={{ fontSize: "11px", fontWeight: "bold", color: "rgba(255,255,255,0.7)" }}>
-                            {details.name}
-                          </span>
-                        )}
-                      </div>
-                      <div className="build-dps-hero-val">
-                        {activeStats && activeStats.CombinedDPS !== undefined ? (
-                          (() => {
-                            const hasSkillDps = activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1] !== undefined;
-                            const skillDpsVal = hasSkillDps ? activeStats.skillsDps[mainSocketGroup - 1] : 0;
-                            const activeDps = (skillDpsVal > 0) ? skillDpsVal : activeStats.CombinedDPS;
-                            return Math.round(activeDps).toLocaleString("en-US");
-                          })()
-                        ) : (
-                          getBaseDps() ? Math.round(getBaseDps()).toLocaleString("en-US") : "-"
-                        )}
-                      </div>
-                      {details && (
-                        <div className="build-dps-substats">
-                          {details.Speed > 0 && <span><strong>{(Math.round(details.Speed * 100) / 100).toFixed(2)}</strong>/s</span>}
-                          {details.HitChance < 100 && <span>Hit: <strong>{Math.round(details.HitChance)}%</strong></span>}
-                          {details.CritChance > 0 && <span>Crit: <strong>{(Math.round(details.CritChance * 100) / 100).toFixed(1)}%</strong></span>}
-                          {details.ManaCost > 0 && <span>Mana: <strong>{details.ManaCost}</strong></span>}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Vitals: Life / ES / Mana */}
-                    <div className="build-vitals-bars">
-                      <div className="build-vital-pill vital-life">
-                        <span className="build-vital-label">Life</span>
-                        <strong className="build-vital-val">{formatVal("Life", lifeVal, true)}</strong>
-                      </div>
-                      <div className="build-vital-pill vital-es">
-                        <span className="build-vital-label">ES</span>
-                        <strong className="build-vital-val">{formatVal("EnergyShield", esVal, true)}</strong>
-                      </div>
-                      <div className="build-vital-pill vital-mana">
-                        <span className="build-vital-label">Mana</span>
-                        <strong className="build-vital-val">{formatVal("Mana", manaVal, true)}</strong>
-                      </div>
-                    </div>
-
-                    {/* Resistances 4-Grid */}
-                    <div className="build-resists-grid">
-                      <div className="build-resist-box resist-fire">
-                        <span className="build-resist-name">Fire</span>
-                        <strong className="build-resist-val">{formatVal("FireResist", fireVal, true)}%</strong>
-                      </div>
-                      <div className="build-resist-box resist-cold">
-                        <span className="build-resist-name">Cold</span>
-                        <strong className="build-resist-val">{formatVal("ColdResist", coldVal, true)}%</strong>
-                      </div>
-                      <div className="build-resist-box resist-lightning">
-                        <span className="build-resist-name">Light</span>
-                        <strong className="build-resist-val">{formatVal("LightningResist", lightningVal, true)}%</strong>
-                      </div>
-                      <div className="build-resist-box resist-chaos">
-                        <span className="build-resist-name">Chaos</span>
-                        <strong className="build-resist-val">{formatVal("ChaosResist", chaosVal, true)}%</strong>
-                      </div>
-                    </div>
-
-                    {/* Extra Defenses & Speed */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px", fontSize: "11px" }}>
-                      <div style={{ padding: "6px 8px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--line)", borderRadius: "6px" }}>
-                        <span style={{ color: "var(--muted)", display: "block", fontSize: "10px" }}>Evade</span>
-                        <strong style={{ color: "#2af598" }}>
-                          {activeStats && activeStats.MeleeEvadeChance !== undefined ? (
-                            `${Math.round(activeStats.MeleeEvadeChance * 100)}%`
-                          ) : (
-                            evadeVal && typeof evadeVal.value === "number" ? (evadeVal.value * 100).toFixed(0) + "%" : "-"
-                          )}
-                        </strong>
-                      </div>
-                      <div style={{ padding: "6px 8px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--line)", borderRadius: "6px" }}>
-                        <span style={{ color: "var(--muted)", display: "block", fontSize: "10px" }}>Phys Red</span>
-                        <strong style={{ color: "#2af598" }}>
-                          {activeStats && activeStats.PhysicalDamageReduction !== undefined ? (
-                            `${Math.round(activeStats.PhysicalDamageReduction * 100)}%`
-                          ) : (
-                            physVal && typeof physVal.value === "number" ? (physVal.value * 100).toFixed(0) + "%" : "-"
-                          )}
-                        </strong>
-                      </div>
-                      <div style={{ padding: "6px 8px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--line)", borderRadius: "6px" }}>
-                        <span style={{ color: "var(--muted)", display: "block", fontSize: "10px" }}>Speed</span>
-                        <strong style={{ color: "#2af598" }}>
-                          {activeStats && activeStats.EffectiveMovementSpeedMod !== undefined ? (
-                            `+${Math.round((activeStats.EffectiveMovementSpeedMod - 1) * 100)}%`
-                          ) : (
-                            speedVal ? `+${Math.round((parseFloat(String(speedVal.value)) - 1) * 100)}%` : "-"
-                          )}
-                        </strong>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-            </section>
-          </div>
-
-          {/* Right Column: Tab Switcher & Content */}
-          <div className="build-right-col">
-            {/* Tab Segmented Control */}
-            <div className="build-tabs-bar">
-              <button
-                className={`build-tab-btn ${activeTab === "skills" ? "is-active" : ""}`}
-                type="button"
-                onClick={() => setActiveTab("skills")}
-              >
-                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "18px" }}>auto_awesome_motion</span>
-                <span>{localizedText(copy.skills, "", locale)} ({formatNumber(selectedSkillCount, locale)})</span>
-              </button>
-              <button
-                className={`build-tab-btn ${activeTab === "tree" ? "is-active" : ""}`}
-                type="button"
-                onClick={() => setActiveTab("tree")}
-              >
-                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "18px" }}>account_tree</span>
-                <span>{locale === "vi" ? "Cây Thụ Động" : "Passive Tree"} ({formatNumber(buildTree ? passiveCount(buildTree) : 0, locale)})</span>
-              </button>
-              <button
-                className={`build-tab-btn ${activeTab === "notes" ? "is-active" : ""}`}
-                type="button"
-                onClick={() => setActiveTab("notes")}
-              >
-                <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "18px" }}>notes</span>
-                <span>{locale === "vi" ? "Thông tin & Ghi chú" : "Notes & Config"}</span>
-              </button>
             </div>
+          </section>
 
-            {/* Tab 1: Skills */}
-            {activeTab === "skills" && (
-              <section className="build-card build-skills-card">
-                <div className="build-section-head">
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>auto_awesome_motion</span>
-                    <h2>{localizedText(copy.skills, "", locale)}</h2>
-                  </div>
-                  <button type="button" onClick={addBuildSkill} className="build-btn" style={{ height: "32px", padding: "0 10px", borderColor: "rgba(194,156,91,0.4)", color: "var(--gold)" }}>
-                    <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "16px" }}>add</span>
-                    {localizedText(copy.addSkill, "", locale)}
-                  </button>
+          <section className="nj-panel nj-stats">
+            <header className="nj-panel-head">
+              <h2>{locale === "vi" ? "Chỉ số" : "Stats"}</h2>
+              {isCalculating ? <span className="nj-panel-aside">{locale === "vi" ? "Đang tính..." : "Calculating..."}</span> : null}
+            </header>
+            {(() => {
+              const payloadStats = importedBuild?.payload?.stats || [];
+              const readStat = (key: string): number | undefined => {
+                if (activeStats && typeof activeStats[key] === "number") return activeStats[key];
+                const row = payloadStats.find((s) => s.stat === key);
+                if (row && typeof row.value === "number") return row.value;
+                if (row && typeof row.value === "string" && row.value.trim() !== "" && !Number.isNaN(Number(row.value))) return Number(row.value);
+                return undefined;
+              };
+              const fmtInt = (value: number | undefined) => value === undefined ? undefined : Math.round(value).toLocaleString("en-US");
+              const fmtPct = (value: number | undefined) => {
+                if (value === undefined) return undefined;
+                const pct = Math.abs(value) <= 1 ? value * 100 : value;
+                return `${Math.round(pct)}%`;
+              };
+              const fmtMod = (value: number | undefined) => {
+                if (value === undefined) return undefined;
+                const pct = Math.abs(value) < 5 ? (value - 1) * 100 : value;
+                return `${Math.round(pct) >= 0 ? "+" : ""}${Math.round(pct)}%`;
+              };
+              const fmtRate = (value: number | undefined) => value === undefined ? undefined : `${Math.round(value).toLocaleString("en-US")}/s`;
+              const fmtShort = (value: number) => {
+                if (value >= 1e6) return `${(value / 1e6).toFixed(1)}M`;
+                if (value >= 1e4) return `${Math.round(value / 1e3)}k`;
+                if (value >= 1e3) return `${(value / 1e3).toFixed(1)}k`;
+                return Math.round(value).toLocaleString("en-US");
+              };
+              const row = (label: string, value: string | undefined, node?: React.ReactNode) => (
+                <div className="nj-stat-row" key={label}>
+                  <span>{label}</span>
+                  {node ?? <strong className={value === undefined ? "is-empty" : ""}>{value ?? "-"}</strong>}
                 </div>
-                {buildSkills.length ? (
-                  <div className="build-skill-list" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {buildSkills.map((skill, index) => {
-                      const details = activeStats && activeStats.skillsDetails && activeStats.skillsDetails[index];
-                      const isExpanded = !!expandedSkills[skill.id];
-                      return (
-                        <article className="build-ninja-skill-card" key={skill.id} style={{
-                          background: "rgba(18, 22, 30, 0.75)",
-                          border: (index + 1) === mainSocketGroup ? "1px solid rgba(194, 156, 91, 0.5)" : "1px solid var(--line)",
-                          borderRadius: "8px",
-                          padding: "12px 14px",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "10px",
-                          boxShadow: (index + 1) === mainSocketGroup ? "0 0 16px rgba(194, 156, 91, 0.12)" : "none"
-                        }}>
-                          {/* Active Skill Header */}
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
-                              {skill.skillId && (
-                                <button
-                                  type="button"
-                                  onClick={() => setMainSocketGroup(index + 1)}
-                                  title={locale === "vi" ? "Chọn làm kỹ năng chính để tính DPS" : "Set as main skill for DPS calculation"}
-                                  style={{
-                                    background: "transparent",
-                                    border: "none",
-                                    cursor: "pointer",
-                                    padding: 0,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    color: (index + 1) === mainSocketGroup ? "var(--gold)" : "rgba(255,255,255,0.2)",
-                                    outline: "none",
-                                    transition: "color 0.2s"
-                                  }}
-                                >
-                                  <span className="material-symbols-rounded" style={{ fontSize: "20px" }}>
-                                    {(index + 1) === mainSocketGroup ? "stars" : "star"}
-                                  </span>
-                                </button>
-                              )}
-                              <span style={{ fontSize: "14px", fontWeight: "bold", color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                {skill.skillId ? gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty") : (locale === "vi" ? "Chưa chọn kỹ năng" : "No Skill")}
+              );
+              const triple = (parts: Array<{ cls: string; value: string | undefined }>) => (
+                <strong>
+                  {parts.map((part, index) => (
+                    <Fragment key={part.cls}>
+                      {index ? <span className="nj-stat-sep">/</span> : null}
+                      <span className={part.cls}>{part.value ?? "-"}</span>
+                    </Fragment>
+                  ))}
+                </strong>
+              );
+              const str = readStat("Str");
+              const dex = readStat("Dex");
+              const int = readStat("Int");
+              const fire = readStat("FireResist");
+              const cold = readStat("ColdResist");
+              const lightning = readStat("LightningResist");
+              const chaos = readStat("ChaosResist");
+              const lifeRegen = readStat("LifeRegenRecovery") ?? readStat("LifeRegen");
+              const manaRegen = readStat("ManaRegenRecovery") ?? readStat("ManaRegen");
+              const esRecharge = readStat("EnergyShieldRecharge");
+              const mainSkills = buildSkills
+                .map((skill, index) => ({ skill, index, dps: activeStats?.skillsDps?.[index] ?? 0, details: activeStats?.skillsDetails?.[index] }))
+                .filter((entry) => entry.skill.skillId && (entry.dps > 0 || entry.index + 1 === mainSocketGroup));
+              return (
+                <div className="nj-panel-body poe-no-tooltip">
+                  <h3 className="nj-stat-group">{locale === "vi" ? "Nhân vật" : "Character"}</h3>
+                  {row(locale === "vi" ? "Thuộc tính" : "Attributes", undefined, triple([
+                    { cls: "nj-c-str", value: fmtInt(str) },
+                    { cls: "nj-c-dex", value: fmtInt(dex) },
+                    { cls: "nj-c-int", value: fmtInt(int) }
+                  ]))}
+                  {row(locale === "vi" ? "Tốc độ di chuyển" : "Movement speed", fmtMod(readStat("EffectiveMovementSpeedMod")))}
+
+                  <h3 className="nj-stat-group">{locale === "vi" ? "Phòng thủ" : "Defensive"}</h3>
+                  {row("Life", fmtInt(readStat("Life")))}
+                  {row("Energy shield", fmtInt(readStat("EnergyShield")))}
+                  {row("Mana", fmtInt(readStat("Mana")))}
+                  {row("Spirit", fmtInt(readStat("Spirit")))}
+                  {row("Armour", fmtInt(readStat("Armour")))}
+                  {row("Evasion rating", fmtInt(readStat("Evasion")))}
+                  {row(locale === "vi" ? "Tỉ lệ né" : "Evade chance", fmtPct(readStat("MeleeEvadeChance")))}
+                  {row(locale === "vi" ? "Tỉ lệ chặn" : "Block chance", fmtPct(readStat("BlockChance")))}
+                  {row(locale === "vi" ? "Giảm sát thương vật lý" : "Physical damage reduction", fmtPct(readStat("PhysicalDamageReduction")))}
+                  {row(locale === "vi" ? "Kháng" : "Resistances", undefined, triple([
+                    { cls: "nj-c-fire", value: fire === undefined ? undefined : `${Math.round(fire)}%` },
+                    { cls: "nj-c-cold", value: cold === undefined ? undefined : `${Math.round(cold)}%` },
+                    { cls: "nj-c-lightning", value: lightning === undefined ? undefined : `${Math.round(lightning)}%` },
+                    { cls: "nj-c-chaos", value: chaos === undefined ? undefined : `${Math.round(chaos)}%` }
+                  ]))}
+                  {row(locale === "vi" ? "Máu hiệu dụng (EHP)" : "Effective Health Pool", readStat("TotalEHP") === undefined ? undefined : fmtShort(readStat("TotalEHP") as number))}
+
+                  {(lifeRegen !== undefined || manaRegen !== undefined || esRecharge !== undefined) ? (
+                    <>
+                      <h3 className="nj-stat-group">{locale === "vi" ? "Hồi phục" : "Recovery"}</h3>
+                      {lifeRegen !== undefined ? row("Life regen", fmtRate(lifeRegen)) : null}
+                      {manaRegen !== undefined ? row("Mana regen", fmtRate(manaRegen)) : null}
+                      {esRecharge !== undefined ? row("Energy shield recharge", fmtRate(esRecharge)) : null}
+                    </>
+                  ) : null}
+
+                  <h3 className="nj-stat-group">{locale === "vi" ? "Kỹ năng chính" : "Main skills"}</h3>
+                  {mainSkills.length ? mainSkills.map(({ skill, index, dps, details }) => {
+                    const icon = gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem");
+                    const parts: React.ReactNode[] = [];
+                    if (details?.Speed > 0) parts.push(<Fragment key="speed"><b>{(Math.round(details.Speed * 100) / 100).toFixed(1)}</b>/s</Fragment>);
+                    if (details?.CritChance > 0) parts.push(<Fragment key="crit"><b>{Math.round(details.CritChance)}%</b> crit</Fragment>);
+                    if (details?.HitChance !== undefined) parts.push(<Fragment key="hit"><b>{Math.round(details.HitChance)}%</b> hit</Fragment>);
+                    if (details?.ManaCost > 0) parts.push(<Fragment key="mana"><b>{details.ManaCost}</b> mana</Fragment>);
+                    const dmg = details ? [
+                      ["nj-dps-phys", (details.PhysicalMin + details.PhysicalMax) / 2],
+                      ["nj-dps-fire", (details.FireMin + details.FireMax) / 2],
+                      ["nj-dps-cold", (details.ColdMin + details.ColdMax) / 2],
+                      ["nj-dps-lightning", (details.LightningMin + details.LightningMax) / 2],
+                      ["nj-dps-chaos", (details.ChaosMin + details.ChaosMax) / 2]
+                    ].filter((entry) => Number(entry[1]) > 0) as Array<[string, number]> : [];
+                    const dmgTotal = dmg.reduce((sum, entry) => sum + entry[1], 0);
+                    return (
+                      <div className="nj-main-skill" key={skill.id}>
+                        <span className="nj-gem-icon">
+                          {icon ? <img src={icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">auto_awesome_motion</span>}
+                        </span>
+                        <span className="nj-main-skill-copy">
+                          <strong>{gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty")}</strong>
+                          {parts.length ? (
+                            <small>
+                              {parts.map((part, partIndex) => (
+                                <Fragment key={partIndex}>{partIndex ? " · " : ""}{part}</Fragment>
+                              ))}
+                            </small>
+                          ) : null}
+                        </span>
+                        <span className="nj-dps" title={`${Math.round(dps).toLocaleString("en-US")} DPS`}>
+                          <span>{dps > 0 ? fmtShort(dps) : "-"}</span>
+                          {dmgTotal > 0 ? (
+                            <i>
+                              {dmg.map(([cls, value]) => <b className={cls} style={{ width: `${(value / dmgTotal) * 100}%` }} key={cls} />)}
+                            </i>
+                          ) : null}
+                        </span>
+                      </div>
+                    );
+                  }) : (
+                    <div className="nj-stat-row"><span className="is-empty" style={{ color: "var(--nj-muted)" }}>{locale === "vi" ? "Chọn skill ở phần Skills bên dưới." : "Pick a skill in the Skills panel below."}</span></div>
+                  )}
+                </div>
+              );
+            })()}
+          </section>
+        </div>
+
+        {/* Row 2: Passive tree | Build info */}
+        <div className="nj-row nj-row--tree">
+          <section className="nj-panel nj-tree">
+            <header className="nj-panel-head">
+              <h2>{locale === "vi" ? "Cây thụ động" : "Passive tree"}</h2>
+              <span className="nj-badge">
+                <span className="material-symbols-rounded" aria-hidden="true">radio_button_checked</span>
+                {formatNumber(buildTree ? passiveCount(buildTree) : 0, locale)}
+              </span>
+            </header>
+            <div className="nj-panel-body">
+              {linkedTreeCard}
+            </div>
+          </section>
+
+          <section className="nj-panel nj-info">
+            <header className="nj-panel-head">
+              <h2>{localizedText(copy.details, "", locale)}</h2>
+            </header>
+            <div className="nj-panel-body">
+              <label className="nj-field">
+                <span>{localizedText(copy.buildName, "", locale)}</span>
+                <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Titan Slam Leveling" />
+              </label>
+              <label className="nj-field">
+                <span>{localizedText(copy.author, "", locale)}</span>
+                <input value={author} onChange={(event) => setAuthor(event.target.value)} placeholder="POE2 Viet Hoa" />
+              </label>
+              <p className="nj-info-hint">{localizedText(copy.howStepDownload, "", locale)} {localizedText(copy.howStepSave, "", locale)} <code>Documents\My Games\Path of Exile 2\BuildPlanner\</code></p>
+            </div>
+          </section>
+        </div>
+
+        {/* Row 3: Skills (gem groups) */}
+        <section className="nj-panel nj-skills">
+          <header className="nj-panel-head">
+            <h2>{localizedText(copy.skills, "", locale)}</h2>
+            <button type="button" onClick={addBuildSkill} className="nj-btn nj-btn--outline">
+              <span className="material-symbols-rounded" aria-hidden="true">add</span>
+              {localizedText(copy.addSkill, "", locale)}
+            </button>
+          </header>
+          <div className="nj-panel-body">
+            {buildSkills.length ? (
+              <div className="nj-skill-grid">
+                {buildSkills.map((skill, index) => {
+                  const isMain = (index + 1) === mainSocketGroup;
+                  const dps = activeStats?.skillsDps?.[index] ?? 0;
+                  const mainIcon = skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "";
+                  return (
+                    <article className={`nj-skill-card ${isMain ? "is-main" : ""}`} key={skill.id}>
+                      <div className="nj-gem-row nj-gem-row--main">
+                        <button
+                          type="button"
+                          className="nj-gem-pick"
+                          onClick={() => openSkillGemPicker(skill.id)}
+                          onMouseEnter={() => {
+                            if (skill.skillId) {
+                              const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
+                              if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
+                            }
+                          }}
+                          onMouseMove={handleMouseMove}
+                          onMouseLeave={handleMouseLeave}
+                        >
+                          <span className="nj-gem-icon">
+                            {mainIcon ? <img src={mainIcon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+                          </span>
+                          <span className={`nj-gem-name ${skill.skillId ? "" : "is-empty"}`}>
+                            {skill.skillId ? gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty") : (locale === "vi" ? "Chọn skill gem" : "Choose skill gem")}
+                          </span>
+                        </button>
+                        <span className="nj-gem-aside">
+                          {dps > 0 ? <span className="nj-dps-mini">{Math.round(dps).toLocaleString("en-US")}</span> : null}
+                          {skill.skillId ? (
+                            <button
+                              type="button"
+                              className={`nj-icon-btn ${isMain ? "is-on" : ""}`}
+                              onClick={() => setMainSocketGroup(index + 1)}
+                              title={locale === "vi" ? "Chọn làm kỹ năng chính để tính DPS" : "Set as main skill for DPS calculation"}
+                            >
+                              <span className="material-symbols-rounded">{isMain ? "star" : "star_outline"}</span>
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            className="nj-icon-btn nj-icon-btn--danger"
+                            onClick={() => removeBuildSkill(skill.id)}
+                            title={locale === "vi" ? "Xóa nhóm kỹ năng" : "Remove socket group"}
+                          >
+                            <span className="material-symbols-rounded">close</span>
+                          </button>
+                        </span>
+                      </div>
+
+                      {skill.supportSkills.map((support) => {
+                        const supportIcon = support.skillId ? gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem") : "";
+                        return (
+                          <div className="nj-gem-row nj-gem-row--support" key={support.id}>
+                            <button
+                              type="button"
+                              className="nj-gem-pick"
+                              onClick={() => openSupportGemPicker(skill.id, support.id)}
+                              onMouseEnter={() => {
+                                if (support.skillId) {
+                                  const html = getGemTooltipHtml(support.skillId, supportGemOptions, "SupportGem", locale, support.note);
+                                  if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
+                                }
+                              }}
+                              onMouseMove={handleMouseMove}
+                              onMouseLeave={handleMouseLeave}
+                            >
+                              <span className="nj-gem-icon">
+                                {supportIcon ? <img src={supportIcon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
                               </span>
-                            </div>
-
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                              {activeStats && Array.isArray(activeStats.skillsDps) && activeStats.skillsDps[index] > 0 && (
-                                <span style={{
-                                  background: "rgba(42, 245, 152, 0.1)",
-                                  border: "1px solid rgba(42, 245, 152, 0.3)",
-                                  borderRadius: "5px",
-                                  padding: "2px 8px",
-                                  color: "#2af598",
-                                  fontSize: "11px",
-                                  fontWeight: "bold",
-                                  fontFamily: "var(--font-mono, monospace)",
-                                  whiteSpace: "nowrap"
-                                }}>
-                                  {Math.round(activeStats.skillsDps[index]).toLocaleString("en-US")} DPS
-                                </span>
-                              )}
+                              <span className={`nj-gem-name ${support.skillId ? "" : "is-empty"}`}>
+                                {support.skillId ? gemChoiceLabel(support.skillId, supportGemOptions, "SupportGem", locale, "Empty") : (locale === "vi" ? "Chọn support gem" : "Choose support gem")}
+                              </span>
+                            </button>
+                            <span className="nj-gem-aside">
                               <button
                                 type="button"
-                                onClick={() => removeBuildSkill(skill.id)}
-                                style={{
-                                  background: "transparent",
-                                  border: "none",
-                                  cursor: "pointer",
-                                  color: "rgba(255, 82, 82, 0.6)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  padding: "2px",
-                                  outline: "none"
-                                }}
-                                title={locale === "vi" ? "Xóa nhóm kỹ năng" : "Remove socket group"}
+                                className="nj-icon-btn nj-icon-btn--danger"
+                                onClick={() => removeSupportSkill(skill.id, support.id)}
+                                title={localizedText(copy.removeSupport, "", locale)}
                               >
-                                <span className="material-symbols-rounded" style={{ fontSize: "18px" }}>delete</span>
+                                <span className="material-symbols-rounded">close</span>
                               </button>
-                            </div>
+                            </span>
                           </div>
+                        );
+                      })}
 
-                          {/* PoE2 Style Horizontal Socket Link Chain */}
-                          <div style={{
-                            display: "flex",
-                            alignItems: "center",
-                            background: "rgba(0, 0, 0, 0.3)",
-                            border: "1px solid rgba(255, 255, 255, 0.04)",
-                            padding: "10px 14px",
-                            borderRadius: "6px",
-                            justifyContent: "flex-start",
-                            gap: "0",
-                            overflowX: "auto"
-                          }}>
-                            {/* Active Skill Socket */}
-                            <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
-                              <button
-                                type="button"
-                                onClick={() => openSkillGemPicker(skill.id)}
-                                onMouseEnter={() => {
-                                  if (skill.skillId) {
-                                    const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
-                                    if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
-                                  }
-                                }}
-                                onMouseMove={(e) => { handleMouseMove(e); }}
-                                onMouseLeave={() => { handleMouseLeave(); }}
-                                style={{
-                                  width: "50px",
-                                  height: "50px",
-                                  borderRadius: "50%",
-                                  background: "radial-gradient(circle, #201a12 30%, #0a0907 100%)",
-                                  border: "2px solid var(--gold)",
-                                  boxShadow: "0 0 10px rgba(194, 156, 91, 0.35), inset 0 2px 4px rgba(0,0,0,0.8)",
-                                  display: "grid",
-                                  placeItems: "center",
-                                  cursor: "pointer",
-                                  padding: 0,
-                                  outline: "none",
-                                  flexShrink: 0
-                                }}
-                              >
-                                {skill.skillId && gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") ? (
-                                  <img src={gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem")} alt="" style={{ width: "30px", height: "30px", objectFit: "contain" }} />
-                                ) : (
-                                  <span className="material-symbols-rounded" style={{ fontSize: "18px", color: "var(--muted)" }}>add</span>
-                                )}
-                              </button>
-                            </div>
-
-                            {/* Support Sockets and Links */}
-                            {skill.supportSkills.map((support) => (
-                              <Fragment key={support.id}>
-                                <div style={{
-                                  width: "6px",
-                                  height: "5px",
-                                  background: "linear-gradient(90deg, var(--gold), #786446)",
-                                  border: "1px solid #000",
-                                  zIndex: 1,
-                                  flexShrink: 0
-                                }} />
-                                <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => openSupportGemPicker(skill.id, support.id)}
-                                    onMouseEnter={() => {
-                                      if (support.skillId) {
-                                        const html = getGemTooltipHtml(support.skillId, supportGemOptions, "SupportGem", locale, support.note);
-                                        if (html) setTooltip({ x: 0, y: 0, content: html, visible: true });
-                                      }
-                                    }}
-                                    onMouseMove={(e) => { handleMouseMove(e); }}
-                                    onMouseLeave={() => { handleMouseLeave(); }}
-                                    style={{
-                                      width: "42px",
-                                      height: "42px",
-                                      borderRadius: "50%",
-                                      background: "radial-gradient(circle, #14171e 30%, #07080b 100%)",
-                                      border: "1.5px solid rgba(255, 255, 255, 0.35)",
-                                      boxShadow: "0 0 6px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.8)",
-                                      display: "grid",
-                                      placeItems: "center",
-                                      cursor: "pointer",
-                                      padding: 0,
-                                      outline: "none",
-                                      flexShrink: 0
-                                    }}
-                                  >
-                                    {support.skillId && gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem") ? (
-                                      <img src={gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem")} alt="" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
-                                    ) : (
-                                      <span className="material-symbols-rounded" style={{ fontSize: "16px", color: "var(--muted)" }}>add</span>
-                                    )}
-                                  </button>
-                                </div>
-                              </Fragment>
-                            ))}
-
-                            {/* Add Support Socket */}
-                            {skill.supportSkills.length < 5 && (
-                              <Fragment>
-                                <div style={{
-                                  width: "6px",
-                                  height: "5px",
-                                  background: "rgba(255, 255, 255, 0.08)",
-                                  border: "1px dashed rgba(255, 255, 255, 0.2)",
-                                  zIndex: 1,
-                                  flexShrink: 0
-                                }} />
-                                <div style={{ position: "relative", zIndex: 2, flexShrink: 0 }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => addSupportSkill(skill.id)}
-                                    style={{
-                                      width: "42px",
-                                      height: "42px",
-                                      borderRadius: "50%",
-                                      background: "transparent",
-                                      border: "1.5px dashed rgba(255, 255, 255, 0.25)",
-                                      display: "grid",
-                                      placeItems: "center",
-                                      cursor: "pointer",
-                                      color: "var(--muted)",
-                                      padding: 0,
-                                      outline: "none",
-                                      flexShrink: 0
-                                    }}
-                                    title={locale === "vi" ? "Thêm Hỗ trợ" : "Add Support"}
-                                  >
-                                    <span className="material-symbols-rounded" style={{ fontSize: "16px" }}>add</span>
-                                  </button>
-                                </div>
-                              </Fragment>
-                            )}
-                          </div>
-
-                          {/* PoE2 Style Tooltip details */}
-                          {details && details.name && (
-                            <div className="poe-tooltip-card tooltip-rarity-gem" style={{
-                              background: "#0c0d12",
-                              border: "1px solid var(--gold)",
-                              borderRadius: "4px",
-                              padding: "12px",
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "6px",
-                              marginTop: "8px",
-                              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.6)"
-                            }}>
-                              {/* Title & Tags */}
-                              <div style={{ borderBottom: "1px solid #33271a", paddingBottom: "6px" }}>
-                                <h3 style={{ fontSize: "13px", fontWeight: "bold", color: "var(--gold)", margin: 0 }}>
-                                  {details.name}
-                                </h3>
-                                {skill.skillId && (() => {
-                                  const activeGemRec = gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem");
-                                  return activeGemRec ? (
-                                    <div className="tooltip-tags" style={{ fontSize: "10px", color: "var(--muted)", marginTop: "2px" }}>
-                                      {localizedLines(activeGemRec, "properties", locale)
-                                        .filter(l => !l.includes(":"))
-                                        .join(", ")}
-                                    </div>
-                                  ) : null;
-                                })()}
-                              </div>
-
-                              {/* Core properties like Cast Time, Cost */}
-                              <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "11px", color: "#e0e0e0", borderBottom: "1px solid #33271a", paddingBottom: "6px" }}>
-                                {details.Speed > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Thời gian thi triển: " : "Cast Time: "}
-                                    <strong>{(Math.round((1 / details.Speed) * 100) / 100).toFixed(2)} giây</strong>
-                                  </div>
-                                )}
-                                {details.LifeCost > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Tiêu hao: " : "Cost: "}
-                                    <strong style={{ color: "#ff4d4d" }}>{details.LifeCost} Sinh mệnh</strong>
-                                  </div>
-                                )}
-                                {details.ManaCost > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Tiêu hao: " : "Cost: "}
-                                    <strong style={{ color: "#33ccff" }}>{details.ManaCost} Năng lượng</strong>
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Damage breakdown */}
-                              <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "11px" }}>
-                                {details.PhysicalMax > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Gây " : "Deals "}
-                                    <strong>{Math.round(details.PhysicalMin)} - {Math.round(details.PhysicalMax)}</strong>
-                                    {locale === "vi" ? " Sát thương Vật lý" : " Physical Damage"}
-                                  </div>
-                                )}
-                                {details.FireMax > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Gây " : "Deals "}
-                                    <strong>{Math.round(details.FireMin)} - {Math.round(details.FireMax)}</strong>
-                                    {locale === "vi" ? " Sát thương Lửa" : " Fire Damage"}
-                                  </div>
-                                )}
-                                {details.ColdMax > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Gây " : "Deals "}
-                                    <strong>{Math.round(details.ColdMin)} - {Math.round(details.ColdMax)}</strong>
-                                    {locale === "vi" ? " Sát thương Băng" : " Cold Damage"}
-                                  </div>
-                                )}
-                                {details.LightningMax > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Gây " : "Deals "}
-                                    <strong>{Math.round(details.LightningMin)} - {Math.round(details.LightningMax)}</strong>
-                                    {locale === "vi" ? " Sát thương Sét" : " Lightning Damage"}
-                                  </div>
-                                )}
-                                {details.ChaosMax > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Gây " : "Deals "}
-                                    <strong>{Math.round(details.ChaosMin)} - {Math.round(details.ChaosMax)}</strong>
-                                    {locale === "vi" ? " Sát thương Hỗn loạn" : " Chaos Damage"}
-                                  </div>
-                                )}
-
-                                {details.HitChance < 100 && (
-                                  <div>
-                                    {locale === "vi" ? "Tỉ lệ đánh trúng: " : "Chance to Hit: "}
-                                    <strong>{Math.round(details.HitChance)}%</strong>
-                                  </div>
-                                )}
-                                {details.CritChance > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Tỉ lệ Chí mạng: " : "Critical Strike Chance: "}
-                                    <strong>{(Math.round(details.CritChance * 100) / 100).toFixed(2)}%</strong>
-                                  </div>
-                                )}
-                                {details.CritMultiplier > 0 && (
-                                  <div>
-                                    {locale === "vi" ? "Tăng nhân sát thương Chí mạng: " : "Multiplier for Critical Strikes: "}
-                                    <strong>+{Math.round((details.CritMultiplier - 1) * 100)}%</strong>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </article>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="build-empty" style={{ padding: "24px" }}>
-                    <span className="material-symbols-rounded" style={{ fontSize: "36px", color: "var(--gold)" }}>auto_awesome_motion</span>
-                    <p>{localizedText(copy.noSkills, "", locale)}</p>
-                    <button type="button" onClick={addBuildSkill} className="build-btn" style={{ borderColor: "var(--gold)", color: "var(--gold)" }}>
-                      <span className="material-symbols-rounded">add</span>
-                      {localizedText(copy.addSkill, "", locale)}
-                    </button>
-                  </div>
-                )}
-              </section>
-            )}
-
-            {/* Tab 2: Passive Tree */}
-            {activeTab === "tree" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                {linkedTreeCard}
+                      {skill.supportSkills.length < 5 ? (
+                        <button type="button" className="nj-gem-row--add" onClick={() => addSupportSkill(skill.id)}>
+                          <span className="nj-gem-icon"><span className="material-symbols-rounded" aria-hidden="true">add</span></span>
+                          <span>{localizedText(copy.addSupport, "", locale)}</span>
+                        </button>
+                      ) : null}
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="build-empty" style={{ padding: "24px" }}>
+                <span className="material-symbols-rounded" style={{ fontSize: "36px" }}>auto_awesome_motion</span>
+                <p>{localizedText(copy.noSkills, "", locale)}</p>
+                <button type="button" onClick={addBuildSkill} className="build-btn build-btn--primary">
+                  <span className="material-symbols-rounded">add</span>
+                  {localizedText(copy.addSkill, "", locale)}
+                </button>
               </div>
             )}
-
-            {/* Tab 3: Notes & Info */}
-            {activeTab === "notes" && (
-              <section className="build-card">
-                <div className="build-section-head">
-                  <span className="material-symbols-rounded" aria-hidden="true" style={{ color: "var(--gold)" }}>edit_note</span>
-                  <h2>{localizedText(copy.details, "", locale)}</h2>
-                </div>
-                <div className="build-form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-                  <label>
-                    <span style={{ fontSize: "12px", fontWeight: "bold", color: "var(--muted)" }}>{localizedText(copy.buildName, "", locale)}</span>
-                    <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Titan Slam Leveling" style={{ height: "38px", padding: "0 10px", borderRadius: "6px", background: "var(--surface-2)", border: "1px solid var(--line)", color: "var(--ink)", width: "100%" }} />
-                  </label>
-                  <label>
-                    <span style={{ fontSize: "12px", fontWeight: "bold", color: "var(--muted)" }}>{localizedText(copy.author, "", locale)}</span>
-                    <input value={author} onChange={(event) => setAuthor(event.target.value)} placeholder="POE2 Viet Hoa" style={{ height: "38px", padding: "0 10px", borderRadius: "6px", background: "var(--surface-2)", border: "1px solid var(--line)", color: "var(--ink)", width: "100%" }} />
-                  </label>
-                </div>
-              </section>
-            )}
           </div>
-        </div>
+        </section>
       </section>
       )}
 
@@ -2462,7 +2321,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               {gemPickerItems.length ? gemPickerItems.map((item) => {
                 const iconUrl = displayImageUrl(item.icon_url);
                 return (
-                  <button className="build-picker-result build-gem-result" type="button" onClick={() => selectGem(item)} key={`${item.menu_key}:${item.slug ?? item.name}`}>
+                  <button className="build-picker-result build-gem-result build-gem-choice" type="button" onClick={() => selectGem(item)} key={`${item.menu_key}:${item.slug ?? item.name}`}>
                     <span className="build-picker-icon build-gem-picker-icon">
                       {iconUrl ? <img src={iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">auto_awesome_motion</span>}
                     </span>
@@ -2510,18 +2369,13 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             <div className="build-picker-list">
               {pickerItems.length ? pickerItems.map((item) => {
                 const unique = isUniqueItem(item);
-                const lines = itemSummaryLines(item, locale);
                 const iconUrl = displayImageUrl(item.icon_url);
                 return (
-                  <button className={`build-picker-result ${unique ? "is-unique" : ""}`} type="button" onClick={() => selectItem(item)} key={`${item.menu_key}:${item.slug ?? item.name}`}>
+                  <button className={`build-picker-result build-picker-result--card ${unique ? "is-unique" : ""}`} type="button" onClick={() => selectItem(item)} key={`${item.menu_key}:${item.slug ?? item.name}`}>
                     <span className="build-picker-icon">
                       {iconUrl ? <img src={iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">inventory_2</span>}
                     </span>
-                    <span className="build-picker-copy">
-                      <strong>{itemTitle(item, locale)}</strong>
-                      <small>{item.menu_label}{itemBaseName(item, locale) ? ` - ${itemBaseName(item, locale)}` : ""}</small>
-                      {lines.length ? <span>{lines.map((line) => <em key={line}>{line}</em>)}</span> : null}
-                    </span>
+                    <span className="build-picker-tooltip" dangerouslySetInnerHTML={{ __html: getItemTooltipHtml(item, locale) }} />
                   </button>
                 );
               }) : <p className="build-picker-empty">{localizedText(copy.noItems, "", locale)}</p>}
@@ -2578,13 +2432,13 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       ) : null}
 
       {tooltip.visible && (
-        <div style={{
+        <div className="poe-tooltip-float poe-no-tooltip" style={{
           position: "fixed",
           left: tooltip.x,
           top: tooltip.y,
           pointerEvents: "none",
           zIndex: 9999,
-          maxWidth: "320px",
+          maxWidth: "400px",
           transform: "translate(-50%, -105%)"
         }} dangerouslySetInnerHTML={{ __html: tooltip.content }} />
       )}
