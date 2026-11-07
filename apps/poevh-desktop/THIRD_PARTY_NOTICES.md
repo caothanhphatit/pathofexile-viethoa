@@ -16,3 +16,12 @@ Keussel / Velvetyne Type Foundry. Copyright (c) 2021, Keussel
 Version 1.1, with Reserved Font Name "Basteleur". The unmodified font files are
 used only for display typography. License text:
 https://openfontlicense.org/open-font-license-official-text/
+
+## Be Vietnam Pro
+
+The dashboard embeds Be Vietnam Pro (Regular, Medium, SemiBold, Bold).
+Copyright The Be Vietnam Pro Project Authors
+(https://github.com/bettergui/BeVietnamPro). Be Vietnam Pro is licensed
+under the SIL Open Font License, Version 1.1. The unmodified font files are used
+for the dashboard's interface text. License text:
+https://openfontlicense.org/open-font-license-official-text/

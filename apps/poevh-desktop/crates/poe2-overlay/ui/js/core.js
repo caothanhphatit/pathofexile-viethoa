@@ -25,6 +25,118 @@ function navTab(tabId, btn) {
   }
 }
 
+// ── Risk level filter ─────────────────────────────────────────────────────
+// How likely a feature is to get the account flagged, by what it does to the game:
+//   1 low  – only reads logs, the clipboard or web data; never touches the game process
+//   2 mid  – patches game files, reads game memory or attaches to game windows,
+//            but never acts for the player
+//   3 high – presses keys, moves, picks up or uses flasks on the player's behalf
+// Menus above the level the user picked are hidden. The choice is stored locally.
+const RISK_BY_TAB = {
+  'tab-home': 1,
+  'tab-trade': 1,
+  'tab-expedition': 1,
+  'tab-leveling': 1,
+  'tab-physical-controllers': 1,
+  'tab-smoother': 2,
+  'tab-tracker': 2,
+  'tab-keybinds': 2,
+  'tab-client-mgr': 2,
+  'tab-movement': 3,
+  'tab-combat': 3,
+  'tab-flasks': 3,
+  'tab-timed': 3,
+  'tab-pickup': 3,
+  'tab-stash': 3,
+  'tab-party': 3,
+  'tab-waystones': 3,
+  'tab-shared': 3
+};
+const RISK_LABEL = { 1: 'Rủi ro thấp', 2: 'Rủi ro vừa', 3: 'Rủi ro cao' };
+const RISK_STORAGE_KEY = 'poevh.riskLevel';
+const DEFAULT_RISK_LEVEL = 1;
+
+function navItemTabId(btn) {
+  const match = /navTab\('([^']+)'/.exec(btn.getAttribute('onclick') || '');
+  return match ? match[1] : '';
+}
+
+function readRiskLevel() {
+  try {
+    const stored = Number(localStorage.getItem(RISK_STORAGE_KEY));
+    if (stored >= 1 && stored <= 3) return stored;
+  } catch (_) { /* storage blocked: fall back to the default */ }
+  return DEFAULT_RISK_LEVEL;
+}
+
+function decorateRiskLevels() {
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    const risk = RISK_BY_TAB[navItemTabId(btn)];
+    if (!risk || btn.querySelector('.risk-dot')) return;
+    btn.dataset.risk = String(risk);
+    const dot = document.createElement('span');
+    dot.className = 'risk-dot';
+    dot.dataset.risk = String(risk);
+    dot.title = RISK_LABEL[risk];
+    btn.appendChild(dot);
+  });
+  Object.entries(RISK_BY_TAB).forEach(([tabId, risk]) => {
+    const heading = document.querySelector(`#${tabId} .page-heading`);
+    if (!heading || heading.querySelector('.risk-badge')) return;
+    const badge = document.createElement('span');
+    badge.className = 'risk-badge';
+    badge.dataset.risk = String(risk);
+    badge.textContent = RISK_LABEL[risk];
+    heading.appendChild(badge);
+  });
+}
+
+function setRiskLevel(value) {
+  const level = Math.min(Math.max(Number(value) || DEFAULT_RISK_LEVEL, 1), 3);
+  try { localStorage.setItem(RISK_STORAGE_KEY, String(level)); } catch (_) { /* not persisted */ }
+  applyRiskLevel(level);
+}
+
+function applyRiskLevel(level) {
+  const picker = document.getElementById('riskPicker');
+  const select = document.getElementById('riskLevelSelect');
+  if (picker) picker.dataset.level = String(level);
+  if (select && select.value !== String(level)) select.value = String(level);
+
+  let hidden = 0;
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    const risk = Number(btn.dataset.risk || 1);
+    const visible = risk <= level;
+    btn.hidden = !visible;
+    if (!visible) hidden += 1;
+  });
+  // Drop a whole group (header included) when none of its entries is allowed.
+  document.querySelectorAll('.nav-accordion').forEach(group => {
+    const items = group.querySelectorAll('.nav-item');
+    group.hidden = items.length > 0 && [...items].every(btn => btn.hidden);
+  });
+
+  const note = document.getElementById('riskHiddenNote');
+  if (note) {
+    note.hidden = hidden === 0;
+    note.textContent = hidden
+      ? `${hidden} mục đang ẩn vì vượt mức rủi ro đã chọn. Đổi "Mức rủi ro" ở góc trên để hiện.`
+      : '';
+  }
+
+  // Leaving the user on a page they just chose to hide would be confusing.
+  const active = document.querySelector('.nav-item.active');
+  if (active && active.hidden) {
+    const home = document.querySelector('.nav-item[data-risk="1"]');
+    if (home) navTab(navItemTabId(home), home);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  decorateRiskLevels();
+  applyRiskLevel(readRiskLevel());
+});
+
 // ── Catalog Filter ────────────────────────────────────────────────────────
 function filterCatalog(query) {
   const q = query.toLowerCase().trim();

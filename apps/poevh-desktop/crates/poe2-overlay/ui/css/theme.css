@@ -1,40 +1,105 @@
 /* ==========================================================================
    POEVH Design System — Theme & Base Tokens
+   Dark "hideout" palette: charcoal surfaces, a PoE gold accent, and status
+   colours that read clearly on dark. Interface text is Be Vietnam Pro (bundled,
+   full Vietnamese coverage) so the app looks the same with or without network.
    ========================================================================== */
 
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/be-vietnam-pro-400.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/fonts/be-vietnam-pro-500.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/fonts/be-vietnam-pro-600.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/fonts/be-vietnam-pro-700.ttf") format("truetype");
+}
+
 :root {
-  color-scheme: light;
-  --bg0: #f5f1e7;
-  --bg1: #ece6d8;
-  --bg2: #f0ebdf;
-  --bg3: #e4ddcd;
-  --bg-card: #fffdf7;
-  --bg-card-hover: #fffefb;
-  --bg-input: #fffefb;
-  --border: #d6cdbc;
-  --border-hover: #b4a78f;
-  --border-active: #586847;
-  --border-subtle: #e8e0d2;
-  --accent: #526342;
-  --accent-hover: #3c4d30;
-  --accent-light: #e1e6d6;
-  --green: #42623e;
-  --green-hover: #354f32;
-  --green-bg: #e4ebdc;
-  --green-border: #bccdad;
-  --red: #a04632;
-  --red-hover: #873822;
-  --red-bg: #f6e8df;
-  --red-border: #debaa9;
-  --cyan: #365e6a;
-  --blue-bg: #e4eced;
-  --amber: #795b24;
-  --purple: #66563f;
-  --text: #332e26;
-  --sub: #635b4f;
-  --dim: #736a5d;
-  --font-body: "Trebuchet MS", "Segoe UI", sans-serif;
-  --font-display: "Cambria", "Palatino Linotype", Georgia, serif;
+  color-scheme: dark;
+
+  /* Surfaces, darkest to lightest */
+  --bg0: #0d0f13;          /* app background */
+  --bg1: #11141a;          /* sidebar / topbar */
+  --bg2: #191d25;          /* inset blocks inside cards */
+  --bg3: #222731;
+  --bg-card: #151920;
+  --bg-card-hover: #1a1f28;
+  --bg-input: #0f1217;
+  --bg-hover: #1f2430;
+
+  --border: #262c37;
+  --border-hover: #3a4352;
+  --border-active: #d6a64f;
+  --border-subtle: #1e232c;
+
+  /* Accent: PoE gold */
+  --accent: #d6a64f;
+  --accent-hover: #e6bb6a;
+  --accent-light: rgba(214, 166, 79, .14);
+  --accent-ink: #17130a;   /* text on an accent fill */
+  --gold: #d6a64f;
+  --gold-bright: #f0cf86;
+
+  /* Status */
+  --green: #3ccf86;
+  --green-hover: #5ad99a;
+  --green-bg: rgba(60, 207, 134, .12);
+  --green-border: rgba(60, 207, 134, .38);
+  --red: #f06a5f;
+  --red-hover: #ff8379;
+  --red-bg: rgba(240, 106, 95, .12);
+  --red-border: rgba(240, 106, 95, .4);
+  --cyan: #5bbbe0;
+  --blue-bg: rgba(91, 187, 224, .12);
+  --amber: #f3b43f;
+  --amber-bg: rgba(243, 180, 63, .12);
+  --amber-border: rgba(243, 180, 63, .4);
+  --purple: #a78bfa;
+
+  /* Risk levels (sidebar filter, badges) */
+  --risk-low: var(--green);
+  --risk-low-bg: var(--green-bg);
+  --risk-mid: var(--amber);
+  --risk-mid-bg: var(--amber-bg);
+  --risk-high: var(--red);
+  --risk-high-bg: var(--red-bg);
+
+  /* Text */
+  --text: #e8ebf1;
+  --sub: #a4adbb;
+  --dim: #6f7888;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow: 0 1px 0 rgba(255, 255, 255, .03) inset, 0 10px 30px rgba(0, 0, 0, .25);
+
+  --font-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", Consolas, "Courier New", monospace;
 }
 
 * {
@@ -45,9 +110,11 @@
 }
 
 body {
-  background: var(--bg0);
+  background:
+    radial-gradient(1200px 500px at 85% -10%, rgba(214, 166, 79, .06), transparent 60%),
+    var(--bg0);
   color: var(--text);
-  font: 14px/1.5 var(--font-body);
+  font: 14px/1.55 var(--font-body);
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -76,19 +143,23 @@ button, input, select {
 }
 
 ::selection {
-  background: var(--accent-light);
+  background: rgba(214, 166, 79, .35);
   color: var(--text);
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c7bda9;
-  border: 2px solid var(--bg0);
-  border-radius: 6px;
+  background: #2c3340;
+  border: 3px solid var(--bg0);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a4352;
 }
 
 ::-webkit-scrollbar-track {

@@ -112,6 +112,10 @@ const TRADE_OVERLAY_CSS: &str = include_str!("../ui/css/trade-overlay.css");
 const TRADE_OVERLAY_JS: &str = include_str!("../ui/js/trade-overlay.js");
 const BASTELEUR_BOLD_WOFF: &[u8] = include_bytes!("../ui/fonts/basteleur-bold.woff");
 const BASTELEUR_MOONLIGHT_WOFF: &[u8] = include_bytes!("../ui/fonts/basteleur-moonlight.woff");
+const BE_VIETNAM_PRO_400_TTF: &[u8] = include_bytes!("../ui/fonts/be-vietnam-pro-400.ttf");
+const BE_VIETNAM_PRO_500_TTF: &[u8] = include_bytes!("../ui/fonts/be-vietnam-pro-500.ttf");
+const BE_VIETNAM_PRO_600_TTF: &[u8] = include_bytes!("../ui/fonts/be-vietnam-pro-600.ttf");
+const BE_VIETNAM_PRO_700_TTF: &[u8] = include_bytes!("../ui/fonts/be-vietnam-pro-700.ttf");
 const EXPEDITION_JS: &str = include_str!("../ui/js/expedition.js");
 const EXPEDITION_OVERLAY_HTML: &str = include_str!("../ui/expedition-overlay.html");
 const EXPEDITION_OVERLAY_CSS: &str = include_str!("../ui/css/expedition-overlay.css");
@@ -282,6 +286,54 @@ pub fn build_app(runtime: SharedRuntime) -> Router {
                         "application/javascript; charset=utf-8",
                     )],
                     TRADE_OVERLAY_JS,
+                )
+            }),
+        )
+        .route(
+            "/static/fonts/be-vietnam-pro-400.ttf",
+            get(|| async {
+                (
+                    [
+                        (header::CONTENT_TYPE, "font/ttf"),
+                        (header::CACHE_CONTROL, "public, max-age=31536000, immutable"),
+                    ],
+                    BE_VIETNAM_PRO_400_TTF,
+                )
+            }),
+        )
+        .route(
+            "/static/fonts/be-vietnam-pro-500.ttf",
+            get(|| async {
+                (
+                    [
+                        (header::CONTENT_TYPE, "font/ttf"),
+                        (header::CACHE_CONTROL, "public, max-age=31536000, immutable"),
+                    ],
+                    BE_VIETNAM_PRO_500_TTF,
+                )
+            }),
+        )
+        .route(
+            "/static/fonts/be-vietnam-pro-600.ttf",
+            get(|| async {
+                (
+                    [
+                        (header::CONTENT_TYPE, "font/ttf"),
+                        (header::CACHE_CONTROL, "public, max-age=31536000, immutable"),
+                    ],
+                    BE_VIETNAM_PRO_600_TTF,
+                )
+            }),
+        )
+        .route(
+            "/static/fonts/be-vietnam-pro-700.ttf",
+            get(|| async {
+                (
+                    [
+                        (header::CONTENT_TYPE, "font/ttf"),
+                        (header::CACHE_CONTROL, "public, max-age=31536000, immutable"),
+                    ],
+                    BE_VIETNAM_PRO_700_TTF,
                 )
             }),
         )

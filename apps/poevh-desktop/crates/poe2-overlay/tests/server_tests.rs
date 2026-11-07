@@ -10,6 +10,52 @@ use std::sync::Arc;
 use tower::ServiceExt;
 
 #[tokio::test]
+async fn dashboard_ships_its_font_and_risk_level_picker() {
+    let app = build_app(Arc::new(Mutex::new(BotRuntime::default_mock())));
+
+    for weight in [400, 500, 600, 700] {
+        let font = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .uri(format!("/static/fonts/be-vietnam-pro-{weight}.ttf"))
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(font.status(), StatusCode::OK, "font weight {weight}");
+        assert_eq!(font.headers()["content-type"], "font/ttf");
+        let bytes = font.into_body().collect().await.unwrap().to_bytes();
+        assert!(bytes.len() > 50_000, "font weight {weight} is the real file");
+    }
+
+    let dashboard = app
+        .clone()
+        .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+    let html = String::from_utf8(dashboard.into_body().collect().await.unwrap().to_bytes().to_vec()).unwrap();
+    assert!(html.contains("id=\"riskLevelSelect\""));
+    for level in ["value=\"1\"", "value=\"2\"", "value=\"3\""] {
+        assert!(html.contains(level), "risk option {level}");
+    }
+
+    let core = app
+        .oneshot(Request::builder().uri("/static/core.js").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+    let core = String::from_utf8(core.into_body().collect().await.unwrap().to_bytes().to_vec()).unwrap();
+    // Every navigable page must have a risk level, or the filter would hide it silently.
+    for tab in html.match_indices("navTab('").map(|(i, _)| {
+        let rest = &html[i + "navTab('".len()..];
+        rest[..rest.find('\'').unwrap()].to_string()
+    }) {
+        assert!(core.contains(&format!("'{tab}':")), "{tab} has no risk level in RISK_BY_TAB");
+    }
+}
+
+#[tokio::test]
 async fn follow_controls_are_hydrated_from_the_runtime_snapshot() {
     let app = build_app(Arc::new(Mutex::new(BotRuntime::default_mock())));
 

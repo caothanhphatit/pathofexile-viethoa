@@ -27,6 +27,18 @@
     <button class="btn btn-neutral btn-sm" onclick="cmdReset()" title="Làm mới trạng thái">
       <svg style="width:13px;height:13px;margin-right:4px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>Làm mới
     </button>
+
+    <span class="topbar-spacer"></span>
+
+    <div class="risk-picker" id="riskPicker" data-level="1" title="Chọn mức rủi ro bị khoá tài khoản mà bạn chấp nhận. Menu vượt mức sẽ bị ẩn.">
+      <label for="riskLevelSelect">Mức rủi ro</label>
+      <span class="risk-picker-dot" aria-hidden="true"></span>
+      <select id="riskLevelSelect" onchange="setRiskLevel(this.value)">
+        <option value="1">Chỉ rủi ro thấp</option>
+        <option value="2">Đến rủi ro vừa</option>
+        <option value="3">Hiện tất cả (gồm rủi ro cao)</option>
+      </select>
+    </div>
   </header>
 
   <!-- App Body -->
@@ -39,6 +51,9 @@
       <div class="nav-accordion">
         <button aria-current="page" class="nav-item active" onclick="navTab('tab-home', this)">
           <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 3l9 8M5 10v11h5v-6h4v6h5V10"/></svg></span> <span>Tổng Quan</span>
+        </button>
+        <button class="nav-item" onclick="navTab('tab-tracker', this)">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v17h17M7 14l4-4 4 2 5-7"/></svg></span> <span>Thống kê tiền tệ</span>
         </button>
       </div>
 
@@ -83,9 +98,6 @@
           <button class="nav-item" onclick="navTab('tab-party', this)">
             <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-3a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v3M17 4a4 4 0 0 1 0 8M21 21v-3a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg></span> <span>Mời vào nhóm</span>
           </button>
-          <button class="nav-item" onclick="navTab('tab-tracker', this)">
-            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v17h17M7 14l4-4 4 2 5-7"/></svg></span> <span>Thống kê tiền tệ</span>
-          </button>
           <button class="nav-item" onclick="navTab('tab-waystones', this)">
             <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6ZM9 3v15M15 6v15"/></svg></span> <span>Chuẩn bị map</span>
           </button>
@@ -101,9 +113,9 @@
           <span>CÔNG CỤ</span><span class="chevron">▼</span>
         </button>
         <div class="nav-accordion-content">
-          <button class="nav-item" onclick="navTab('tab-trade', this)"><span class="nav-icon" aria-hidden="true">$</span> <span>Price-check</span></button>
-          <button class="nav-item" onclick="navTab('tab-expedition', this)"><span class="nav-icon" aria-hidden="true">◈</span> <span>Expedition check</span></button>
-          <button class="nav-item" onclick="navTab('tab-leveling', this)"><span class="nav-icon" aria-hidden="true">🗺</span> <span>Leveling & Quest</span></button>
+          <button class="nav-item" onclick="navTab('tab-trade', this)"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8ZM7.5 7.5h.01"/></svg></span> <span>Price-check</span></button>
+          <button class="nav-item" onclick="navTab('tab-expedition', this)"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm3.5-12.5-2 5-5 2 2-5 5-2Z"/></svg></span> <span>Expedition check</span></button>
+          <button class="nav-item" onclick="navTab('tab-leveling', this)"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></svg></span> <span>Leveling & Quest</span></button>
         </div>
       </div>
 
@@ -126,6 +138,13 @@
         </div>
       </div>
 
+      <p class="sidebar-risk-note" id="riskHiddenNote" hidden></p>
+
+      <div class="sidebar-legend" aria-label="Chú thích mức rủi ro">
+        <span title="Chỉ đọc log, clipboard hoặc dữ liệu web; không đụng vào tiến trình game"><i class="risk-dot" data-risk="1"></i>Thấp: không đụng vào game</span>
+        <span title="Sửa file game, đọc bộ nhớ hoặc gắn vào cửa sổ game, nhưng không tự thao tác"><i class="risk-dot" data-risk="2"></i>Vừa: sửa file / đọc bộ nhớ</span>
+        <span title="Tự bấm phím, di chuyển, nhặt đồ hoặc dùng bình thay bạn"><i class="risk-dot" data-risk="3"></i>Cao: tự thao tác thay bạn</span>
+      </div>
     </nav>
 
     <!-- Center Workspace -->
@@ -796,14 +815,14 @@
           <div class="grid-2">
             <div class="toggle-row" style="background:var(--bg2);padding:12px 14px;border-radius:6px;border:1px solid var(--border)">
               <div>
-                <span class="toggle-label" style="color:var(--text)">🗺️ Mở Sáng Mini-Map (Maps Revealed) <span class="app-badge" style="background:#e8f1df;color:#395329;border-color:#a8bd97;font-size:10px;margin-left:4px">GGPK asset</span></span>
+                <span class="toggle-label" style="color:var(--text)">🗺️ Mở Sáng Mini-Map (Maps Revealed) <span class="app-badge" style="background:var(--green-bg);color:var(--green);border-color:var(--green-border);font-size:10px;margin-left:4px">GGPK asset</span></span>
                 <small class="toggle-desc">Sửa đúng hai shader Mini-map trong Content.ggpk và lưu backup từng asset.</small>
               </div>
               <label class="toggle"><input type="checkbox" id="ps2-maps-revealed"><span class="slider"></span></label>
             </div>
             <div class="toggle-row" style="background:var(--bg2);padding:12px 14px;border-radius:6px;border:1px solid var(--border)">
               <div>
-                <span class="toggle-label" style="color:var(--text)">🌌 Mở Sáng Bản Đồ Atlas (Atlas Revealed) <span class="app-badge" style="background:#e8f1df;color:#395329;border-color:#a8bd97;font-size:10px;margin-left:4px">GGPK asset</span></span>
+                <span class="toggle-label" style="color:var(--text)">🌌 Mở Sáng Bản Đồ Atlas (Atlas Revealed) <span class="app-badge" style="background:var(--green-bg);color:var(--green);border-color:var(--green-border);font-size:10px;margin-left:4px">GGPK asset</span></span>
                 <small class="toggle-desc">Xóa node/link fog-of-war trong graph Atlas; tự từ chối nếu asset của build hiện tại không khớp.</small>
               </div>
               <label class="toggle"><input type="checkbox" id="ps2-atlas-revealed"><span class="slider"></span></label>
@@ -842,7 +861,7 @@
             </div>
 
             <!-- Nhóm 2: Mod Cảnh Báo -->
-            <div style="background:#fdf6e2;border:1px solid #e0c878;padding:12px;border-radius:6px">
+            <div style="background:var(--amber-bg);border:1px solid var(--amber-border);padding:12px;border-radius:8px">
               <div style="font-weight:700;color:var(--amber);font-size:12.5px;margin-bottom:6px">🟡 Mod Cảnh Báo (Warning Mods — Cân Nhắc)</div>
               <div class="grid-2" style="gap:6px">
                 <div style="font-size:12px"><span style="color:var(--amber)">•</span> Lời Nguyền Xiềng Xích Khi Đánh Trúng (Temporal Chains)</div>
@@ -1398,7 +1417,7 @@
               <span class="card-title" style="color:var(--accent)">🖱️ Gán Phím Chuột & Nút Hông (Mouse Remapping)</span>
               <div style="font-size:12px;color:var(--sub);margin-top:2px">Tùy biến Chuột Phải, Chuột Giữa và 2 Nút Hông (Mouse 4 & Mouse 5) theo phong cách cá nhân</div>
             </div>
-            <span class="app-badge" style="background:var(--accent);color:#fff;font-size:12px">Đang hoạt động</span>
+            <span class="app-badge" style="background:var(--accent);color:var(--accent-ink);font-size:12px">Đang hoạt động</span>
           </div>
 
           <div class="grid-2" style="margin-top:10px;gap:12px">
@@ -1559,7 +1578,7 @@
     </div>
     <div style="display:flex;justify-content:flex-end;gap:10px;">
       <button type="button" class="btn btn-neutral" id="conflict-cancel-btn" style="min-width:90px;">Hủy bỏ</button>
-      <button type="button" class="btn btn-primary" id="conflict-confirm-btn" style="min-width:160px;background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;">Xóa bind cũ & Áp dụng</button>
+      <button type="button" class="btn btn-primary" id="conflict-confirm-btn" style="min-width:160px;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;">Xóa bind cũ & Áp dụng</button>
     </div>
   </dialog>
   <!-- Core & Feature JavaScript Modules -->
