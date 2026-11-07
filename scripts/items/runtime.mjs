@@ -61,9 +61,12 @@ const rowToSourceJson = (row = {}) => ({
 const broadMenuKeys = new Set(["items", "unique", "gem"]);
 
 const itemSpecificityScore = (item, index) => {
+  // A copy with real item art wins over an art-less copy of the same unique listed on
+  // another page (poe2db shows belt uniques on the Charms page without their icon).
+  const artScore = /\/2DItems\//i.test(item.icon_url || "") ? 10000 : 0;
   const menuScore = broadMenuKeys.has(item.menu_key) ? 0 : 1000;
   const contentScore = (item.properties?.length || 0) + (item.requirements?.length || 0) + (item.mods?.length || 0);
-  return menuScore + contentScore + index / 100000;
+  return artScore + menuScore + contentScore + index / 100000;
 };
 
 const actualItemIconPattern = /\/2DItems\//i;

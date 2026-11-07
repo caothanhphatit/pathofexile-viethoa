@@ -17,6 +17,7 @@ import {
 
 const execFileAsync = promisify(execFile);
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const fixturePobPath = "tests/fixtures/PathOfBuilding-PoE2";
 
 const fixtureSpec = [
   { name: "Id", type: "String", list: false },
@@ -51,7 +52,7 @@ test("native DAT64 parser reads primitive strings, ints, bools, and string lists
 
 test("PoB spec converter emits Rust-readable table and column metadata", async () => {
   const converted = await convertPobSpecLua({
-    pobPath: "scratch/PathOfBuilding-PoE2",
+    pobPath: fixturePobPath,
     tableFilter: ["baseitemtypes", "skillgems", "mods"]
   });
 
@@ -66,7 +67,7 @@ test("converted spec writer creates JSON output for Rust native parser", async (
   const outputDir = await mkdtemp(path.join(os.tmpdir(), "poe2-native-spec-"));
   try {
     const converted = await convertPobSpecLua({
-      pobPath: "scratch/PathOfBuilding-PoE2",
+      pobPath: fixturePobPath,
       tableFilter: ["baseitemtypes"]
     });
     const result = await writeConvertedSpec(converted, { outputDir });
@@ -82,7 +83,7 @@ test("converted spec writer creates JSON output for Rust native parser", async (
 
 test("phase2 native summary reports parser, spec conversion, Rust crate, and cargo availability", async () => {
   const summary = await phase2NativeSummary({
-    pobPath: "scratch/PathOfBuilding-PoE2",
+    pobPath: fixturePobPath,
     tableFilter: ["baseitemtypes", "skillgems"]
   });
 
@@ -98,7 +99,7 @@ test("native CLI prints output summary and writes converted spec", async () => {
   try {
     const { stdout } = await execFileAsync(process.execPath, [
       "scripts/extract-game-native.mjs",
-      "--pob-path=scratch/PathOfBuilding-PoE2",
+      `--pob-path=${fixturePobPath}`,
       "--tables=baseitemtypes,skillgems",
       `--output-dir=${outputDir}`
     ], { cwd: repoRoot });

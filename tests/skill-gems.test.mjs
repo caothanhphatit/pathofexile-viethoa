@@ -146,8 +146,9 @@ test("exported skill gem SOT includes active and support gems", () => {
   assert.ok(support.length >= 500, "expected support gems in skill-gems-data.js");
   assert.ok(active.some((gem) => gem.name === "Boneshatter" && gem.gem_type === "skill"));
   assert.ok(support.some((gem) => gem.name === "Aftershock I" && gem.official_id === "Metadata/Items/Gems/SupportGemAftershock"));
-  assert.ok(support.some((gem) => gem.name === "Adhesive Grenades II" && gem.official_id === "Metadata/Items/Gems/SupportGemAdhesiveGrenadesTwo"));
-  assert.ok(support.every((gem) => gem.official_id?.startsWith("Metadata/Items/Gems/SupportGem")), "support gems should export official build planner ids");
+  assert.ok(support.some((gem) => gem.name === "Adhesive Grenades II" && gem.official_id === "Metadata/Items/Gem/SupportGemAdhereTwo"));
+  // Ids come from the game (BaseItemTypes.Id), which uses both Metadata/Items/Gem/ and Metadata/Items/Gems/.
+  assert.ok(support.every((gem) => /^Metadata\/Items\/Gems?\/Support/.test(gem.official_id || "")), "support gems should export official build planner ids");
   assert.ok(support.every((gem) => gem.i18n?.name?.vi && Array.isArray(gem.i18n?.tags)));
 });
 

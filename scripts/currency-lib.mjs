@@ -374,6 +374,14 @@ const translateLine = (line = "") => {
       ([, target]) => `Biến đổi ${translateTarget(translateFragment(target))} theo kết quả khó đoán, có thể phá hủy nó.`
     ],
     [
+      /^Improves the quality of (.+?), exceeding maximum quality by up to (.+?) with a chance of Corrupting it$/i,
+      ([, target, amount]) => `Tăng chất lượng cho ${translateTarget(target)}, vượt chất lượng tối đa thêm tới ${amount}, có khả năng làm Corrupt item.`
+    ],
+    [
+      /^Modifies (.+?) unpredictably and Corrupts it$/i,
+      ([, target]) => `Biến đổi ${translateTarget(translateFragment(target))} theo kết quả khó đoán và làm Corrupt item đó.`
+    ],
+    [
       /^Improves the quality of (.+)$/i,
       ([, target]) => `Tăng chất lượng cho ${translateTarget(target)}.`
     ],

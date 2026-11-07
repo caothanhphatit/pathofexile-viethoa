@@ -357,6 +357,30 @@ export const translateItemLine = (line = "") => {
 
   const patternTranslations = [
     [
+      /^Destroys an Equipment item, returning any non Socket-Bound Augments socketed in it$/i,
+      () => "Phá hủy Equipment item và hoàn trả mọi Augment không Socket-Bound đang socket trong đó."
+    ],
+    [
+      /^Helmets: A random Skill that requires Glory generates (.+?) of its maximum Glory when your Marks Activate$/i,
+      ([, amount]) => `Helmets: một Skill ngẫu nhiên cần Glory tạo ${amount} Glory tối đa khi Mark của bạn Activate.`
+    ],
+    [
+      /^Creates an object in your hideout. When placed in a personal hideout, it keeps track of how many Maps, Fragments and Scarabs have been placed into it.?$/i,
+      () => "Tạo một vật thể trong hideout. Khi đặt ở hideout cá nhân, vật thể này đếm số Map, Fragment và Scarab đã được đặt vào."
+    ],
+    [
+      /^Creates an object in your hideout. Tracks how long it takes to complete maps, and allows you to keep a record of the times you.re most proud of.?$/i,
+      () => "Tạo một vật thể trong hideout. Ghi lại thời gian hoàn thành map và lưu những lần chạy bạn tự hào nhất."
+    ],
+    [
+      /^Opens an unopened Strongbox allowing it to be opened an additional time$/i,
+      () => "Mở một Strongbox chưa mở và cho phép mở Strongbox đó thêm một lần."
+    ],
+    [
+      /^Adds a Viridian Wildwood to a Map and all Maps connected to it$/i,
+      () => "Thêm Viridian Wildwood vào một Map và mọi Map nối với Map đó."
+    ],
+    [
       /^This item gains bonuses from Socketed (Items|Soul Cores) as though it was(?: also)? (?:a )?(.+)$/i,
       ([, source, target]) => `Item này nhận bonus từ Socketed ${source} như ${normalizeItemText(target)}.`
     ],

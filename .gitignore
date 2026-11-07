@@ -17,6 +17,8 @@ pnpm-debug.log*
 /apps/poevh-desktop/target/
 /apps/poevh-desktop/tools/**/bin/
 /apps/poevh-desktop/tools/**/obj/
+/tools/pob-luahost/bin/
+/tools/pob-luahost/obj/
 /apps/poevh-desktop/tools/**/publish*/
 /apps/poevh-desktop/**/__pycache__/
 /apps/poevh-desktop/**/*.pyc
@@ -35,3 +37,9 @@ Thumbs.db
 
 # local POB clone + scratch fixtures (dev only, never commit)
 /scratch/
+
+# game data cross-check reports
+data/game-extract/check/
+
+# GGPK extraction output (regenerated from the installed game)
+data/game-extract/ggpk/

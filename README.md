@@ -50,6 +50,47 @@ npm run server
 
 Do not commit real database URLs, OAuth secrets, admin tokens, or local `.env` files.
 
+### Checking the crawled data against the game files
+
+`npm run check:game-data` reads BaseItemTypes, ItemClasses, UniqueStashLayout and Words
+straight out of the installed game's `Content.ggpk` (via the GGPK helper in
+`apps/poevh-desktop/tools/poevh-ggpk-patcher`) and compares the names with
+`public/data/items-data.js` and `public/data/skill-gems-data.js`. It prints what the
+game has that the web data lacks (run the crawlers again) and what the web data has
+that the game no longer does (renamed or removed), and writes the full lists to
+`data/game-extract/check/latest.json`. Pass `--game=<install dir>` when the game is
+not in the default location, and `--strict` to fail the command when the web data is
+behind the game.
+
+Some gems and uniques exist in the game but are left off poe2db's list pages.
+`npm run fill:missing` reads the latest check report and pulls each of those from its
+own poe2db detail page into the data files (rows are tagged `source: "poe2db-detail"`).
+It skips gems poe2db marks `[DNT-UNUSED]`, name templates like `Companion: {0}`, and
+dev entries. Run it after the crawlers and exports, since those rewrite the files:
+
+```bash
+npm run crawl:skill-gems && node scripts/merge-support-gems-data.mjs
+npm run crawl:items && npm run translate:content && npm run export:items
+npm run check:game-data
+npm run fill:missing
+```
+
+### Extracting data straight from the game (GGPK)
+
+The long-term plan is for the game files to be the source of truth and poe2db only a
+fallback (unique mod lists, pre-rendered text). `scripts/ggpk/reader.mjs` is the shared
+reader: it pulls `data/balance/*.datc64` tables out of `Content.ggpk` through the GGPK
+helper and decodes them with the poe-tool-dev schema, expanding arrays and tolerating
+columns a new patch appended before the schema caught up (`trailingBytes`).
+
+- `npm run extract:game-base-items` writes every equipment base (id, class, size,
+  defences, weapon stats with elemental conversion applied, requirements, tags, implicit
+  mod ids, icon) to `data/game-extract/ggpk/base-items.json` and compares each shared
+  base with `items-data.js`.
+
+Output under `data/game-extract/ggpk/` is regenerated from the install and is not
+committed.
+
 ## Production Routing
 
 The static pages use clean URLs such as `/dictionary`, `/skill-gems`, `/currency`, and `/leveling`.

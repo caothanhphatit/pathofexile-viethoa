@@ -2653,7 +2653,8 @@ export const parseSkillGemsPage = (html, sourcePageUrl = "https://poe2db.tw/us/S
   const gems = [];
   const slugCounts = new Map();
 
-  $("#SkillGemsGem tbody tr").each((_, row) => {
+  // poe2db renamed the table container from #SkillGemsGem to #SkillGems (now split into per-class tables).
+  $("#SkillGemsGem tbody tr, #SkillGems tbody tr").each((_, row) => {
     const cells = $(row).children("td");
     const iconCell = cells.eq(0);
     const dataCell = cells.eq(1);

@@ -5,16 +5,17 @@ type GlobalName =
   | "POE2_DICTIONARY_TERMS"
   | "POE2_BUILD_PLANNER_DATA"
   | "POE2_PASSIVE_TREE"
-  | "POE2_PASSIVE_TREE_CHANGES"
   | "POE2_CRAFT"
   | "POE2_CRAFT_INDEX"
   | "levelingRouteZones";
 
 const pendingScripts = new Map<string, Promise<unknown>>();
 const passiveTreeDataVersion = "20260528-pruned-nodes";
-const itemsDataVersion = "20260702-forgotten-warden";
-const skillGemsDataVersion = "20260529-gem-sot-official";
-const dictionaryDataVersion = "20260529-gem-sot";
+// Bump these whenever the matching public/data/*.js export is regenerated, or browsers
+// keep serving the cached copy.
+const itemsDataVersion = "20261107-recrawl";
+const skillGemsDataVersion = "20261107-ggpk-ids";
+const dictionaryDataVersion = "20261107-recrawl";
 
 export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promise<T> {
   const current = window[globalName as keyof Window] as T | undefined;
@@ -28,14 +29,22 @@ export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promis
     const existing = document.querySelector<HTMLScriptElement>(`script[data-spa-global="${globalName}"]`);
     const script = existing ?? document.createElement("script");
 
+    // A failed load must not stick: forget the promise and drop the script tag so the
+    // next call (a retry, or another page using the same data) requests the file again
+    // instead of getting the cached rejection until a full reload.
+    const fail = (error: Error) => {
+      pendingScripts.delete(key);
+      script.remove();
+      reject(error);
+    };
     const done = () => {
       const value = window[globalName as keyof Window] as T | undefined;
       if (value) resolve(value);
-      else reject(new Error(`Global ${globalName} was not defined by ${src}`));
+      else fail(new Error(`Global ${globalName} was not defined by ${src}`));
     };
 
     script.addEventListener("load", done, { once: true });
-    script.addEventListener("error", () => reject(new Error(`Failed to load ${src}`)), { once: true });
+    script.addEventListener("error", () => fail(new Error(`Failed to load ${src}`)), { once: true });
 
     if (!existing) {
       script.src = src;
@@ -55,7 +64,6 @@ export const loadItemsData = () => loadScriptGlobal<any>(`/data/items-data.js?v=
 export const loadDictionaryData = () => loadScriptGlobal<any>(`/data/dictionary-data.js?v=${dictionaryDataVersion}`, "POE2_DICTIONARY_TERMS");
 export const loadBuildPlannerData = () => loadScriptGlobal<any>("/data/build-planner-data.js", "POE2_BUILD_PLANNER_DATA");
 export const loadPassiveTreeData = () => loadScriptGlobal<any>(`/data/passive-tree-data.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE");
-export const loadPassiveTreeChanges = () => loadScriptGlobal<any>(`/data/passive-tree-changes.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE_CHANGES");
 export const loadLevelingData = () => loadScriptGlobal<any[]>("/data/leveling-data.js", "levelingRouteZones");
 export const loadCraftData = () => loadScriptGlobal<any>("/data/craft-data.js?v=20260610", "POE2_CRAFT");
 export const loadCraftIndex = () => loadScriptGlobal<any>("/data/craft-index.js?v=20260610", "POE2_CRAFT_INDEX");

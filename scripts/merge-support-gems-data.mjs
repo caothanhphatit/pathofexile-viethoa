@@ -112,7 +112,9 @@ export function parseSupportGemsPage(html, sourceUrl = SOURCE_URL) {
   const $ = load(html);
   const rows = new Map();
 
-  $("table").slice(0, 3).find("tbody tr").each((_, row) => {
+  // poe2db groups support gems into several tables under #SupportGems; older markup had them in the first three tables.
+  const supportTables = $("#SupportGems table").length ? $("#SupportGems table") : $("table").slice(0, 3);
+  supportTables.find("tbody tr").each((_, row) => {
     const tags = $(row).find("a.KeywordPopups").map((__, tag) => $(tag).text().trim()).get().filter(Boolean);
     $(row).find("a.gem_red, a.gem_green, a.gem_blue").each((__, link) => {
       const name = $(link).text().replace(/\s+/g, " ").trim();
@@ -136,6 +138,35 @@ export function parseSupportGemsPage(html, sourceUrl = SOURCE_URL) {
       gem.source_hash = hashJson(gem);
       rows.set(slug, gem);
     });
+  });
+
+  // The "support GemTags" tab lists every support gem as a card, including higher tiers
+  // (e.g. Aftershock III) that the main tables leave out. Add the ones not seen above.
+  $("#GemTags .d-flex").each((_, card) => {
+    // Each card has an icon link (no text) before the name link; take the one with a name.
+    const link = $(card).find("a.gem_red, a.gem_green, a.gem_blue").filter((__, a) => $(a).text().trim() !== "").first();
+    const name = link.text().replace(/\s+/g, " ").trim();
+    if (!name) return;
+    const href = link.attr("href") || "";
+    const slug = slugFromHref(href, name);
+    if (rows.has(slug)) return;
+    const hover = link.attr("data-hover") || "";
+    const icon = $(card).find("img").first().attr("src") || "";
+    const tags = [...new Set($(card).find("a.GemTags").map((__, tag) => $(tag).text().trim()).get().filter(Boolean))];
+    const gem = {
+      slug,
+      name,
+      gem_type: "support",
+      tier: null,
+      color: colorByClass(link.attr("class") || ""),
+      source_url: toAbsoluteUrl(href, sourceUrl),
+      icon_url: toAbsoluteUrl(icon, sourceUrl),
+      icon_alt: name,
+      hover_url: toAbsoluteUrl(hover, sourceUrl),
+      tags
+    };
+    gem.source_hash = hashJson(gem);
+    rows.set(slug, gem);
   });
 
   return [...rows.values()].sort((a, b) => a.name.localeCompare(b.name));
@@ -230,7 +261,7 @@ export const mergeSupportGemsIntoSkillData = async () => {
   return { exportPath: EXPORT_PATH, active: active.length, support: supports.length, total: gems.length };
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   mergeSupportGemsIntoSkillData().then((result) => {
     console.log(JSON.stringify(result, null, 2));
   }).catch((error) => {

@@ -4428,6 +4428,23 @@ window.POE2_DICTIONARY_TERMS = {
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_KeywordPopups_hover/1631e91b58536305c92c1ad58a07052d8283adee77b0d2d8b625410b32293446"
     },
     {
+      "term": "Repeatable",
+      "keyword": "Repeat",
+      "category": "combat",
+      "meaning": "Lặp lại (Repeatable) là nhãn cho các kỹ năng có thể Repeat: một số hiệu ứng khiến kỹ năng thực hiện phần bắn đạn hoặc hiệu ứng nhiều lần liên tiếp chỉ từ một lần dùng. Kỹ năng Triggered, Instant và Channelling không thể Repeat. Mỗi lần Repeat làm kỹ năng chậm thêm 5%.",
+      "keep": "Giữ nguyên \"Repeatable\" bằng tiếng Anh để khớp tooltip, filter và UI trong game.",
+      "variants": [
+        "Repeat",
+        "Repeating Skills"
+      ],
+      "examples": [
+        "Repeatable"
+      ],
+      "description_en": "Some effects can cause Repeatable Skills to Repeat, causing you to perform the part of the skill where it fires off projectiles or other effects multiple times in quick succession from a single use of the skill. Triggered skills, Instant skills, and Channelling skills cannot Repeat. Skills take 5% longer to perform for each time they Repeat.",
+      "source_url": "https://poe2db.tw/us/Skill_Gems",
+      "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_KeywordPopups_hover/40ab6220f0f0854381f20e826b5e26567258d274cfd039692c1c938c2eff8d7d"
+    },
+    {
       "term": "Reservation",
       "keyword": "Reservation",
       "category": "resource",
