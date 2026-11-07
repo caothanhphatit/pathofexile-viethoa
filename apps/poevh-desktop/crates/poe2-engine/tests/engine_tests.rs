@@ -1,5 +1,28 @@
 use poe2_engine::{BotRuntime, FollowEngine};
 use poe2_types::*;
+use poe2_world::MockWorldAdapter;
+
+#[test]
+fn placeholder_main_profile_adopts_the_observed_character_name() {
+    let mut adapter = MockWorldAdapter::new();
+    adapter.set_leader_name("ActualCarry");
+    let mut runtime = BotRuntime::new(Box::new(adapter));
+
+    runtime.advance();
+
+    assert_eq!(
+        runtime
+            .to_api_snapshot()
+            .settings
+            .multi_client
+            .clients
+            .iter()
+            .find(|profile| profile.id == 1)
+            .unwrap()
+            .char1_name,
+        "ActualCarry"
+    );
+}
 
 fn discovered_process(pid: u32, started_at: &str) -> GameProcess {
     GameProcess {
@@ -14,6 +37,36 @@ fn discovered_process(pid: u32, started_at: &str) -> GameProcess {
         cpu_percent: None,
         cpu_ticks: 0,
     }
+}
+
+#[test]
+fn unknown_or_unimplemented_settings_fail_closed_without_mutating_state() {
+    let mut runtime = BotRuntime::default_mock();
+    let before = runtime.to_api_snapshot().settings;
+
+    assert!(matches!(
+        runtime.cmd_toggle("not_a_real_toggle", true),
+        Err(InstanceUpdateError::Invalid(_))
+    ));
+    assert!(matches!(
+        runtime.cmd_toggle("sync_dodge", true),
+        Err(InstanceUpdateError::Unsupported(_))
+    ));
+    assert!(matches!(
+        runtime.cmd_set_param("not_a_real_number", 1.0),
+        Err(InstanceUpdateError::Invalid(_))
+    ));
+    assert!(runtime.cmd_set_param("tick_ms", f32::NAN).is_err());
+    assert!(runtime.cmd_set_param("tick_ms", 0.0).is_err());
+    assert!(runtime.cmd_set_param("life_hp_pct", 101.0).is_err());
+    assert!(runtime.cmd_set_param("pickup_currency_tier", -1.0).is_err());
+    assert!(runtime.cmd_set_param("stop_dist", -0.1).is_err());
+
+    let after = runtime.to_api_snapshot().settings;
+    assert_eq!(
+        serde_json::to_value(before).unwrap(),
+        serde_json::to_value(after).unwrap()
+    );
 }
 
 #[test]
@@ -499,6 +552,27 @@ fn runtime_instance_is_ephemeral_but_account_profile_is_persistent() {
         "bound"
     );
 
+    // 1st and 2nd miss: process is preserved as last-known-good
+    runtime.update_instance_inventory(Ok(Vec::new()));
+    assert_eq!(
+        runtime
+            .to_api_snapshot()
+            .instance_services
+            .runtime_instances[0]
+            .status,
+        "bound"
+    );
+    runtime.update_instance_inventory(Ok(Vec::new()));
+    assert_eq!(
+        runtime
+            .to_api_snapshot()
+            .instance_services
+            .runtime_instances[0]
+            .status,
+        "bound"
+    );
+
+    // 3rd consecutive miss: process is confirmed dead and unbound
     runtime.update_instance_inventory(Ok(Vec::new()));
     let snapshot = runtime.to_api_snapshot();
     assert!(snapshot.instance_services.runtime_instances.is_empty());
@@ -532,11 +606,19 @@ fn toggling_bound_client_bot_never_disables_profile_or_unbinds_process() {
         .enabled;
     assert!(enabled_before);
 
-    assert!(runtime.cmd_toggle_client_bot(2));
-    let running = runtime.to_api_snapshot();
-    assert!(running.running);
+    // Initial state: automation_enabled is true
+    assert!(runtime.is_instance_automation_enabled(2));
+    let initial_global_running = runtime.to_api_snapshot().running;
+
+    // Toggle 1: pause client 2
+    assert!(!runtime.cmd_toggle_client_bot(2));
+    assert!(!runtime.is_instance_automation_enabled(2));
+    // Global running remains untouched
+    assert_eq!(runtime.to_api_snapshot().running, initial_global_running);
+    // Profile persistent enabled flag remains untouched
     assert!(
-        running
+        runtime
+            .to_api_snapshot()
             .settings
             .multi_client
             .clients
@@ -546,25 +628,148 @@ fn toggling_bound_client_bot_never_disables_profile_or_unbinds_process() {
             .enabled
     );
     assert_eq!(
-        running.instance_services.runtime_instances[0].status,
+        runtime
+            .to_api_snapshot()
+            .instance_services
+            .runtime_instances[0]
+            .status,
+        "bound"
+    );
+    assert!(
+        !runtime
+            .to_api_snapshot()
+            .instance_services
+            .runtime_instances[0]
+            .automation_enabled
+    );
+
+    // Toggle 2: resume client 2
+    assert!(runtime.cmd_toggle_client_bot(2));
+    assert!(runtime.is_instance_automation_enabled(2));
+    assert_eq!(runtime.to_api_snapshot().running, initial_global_running);
+    assert!(
+        runtime
+            .to_api_snapshot()
+            .instance_services
+            .runtime_instances[0]
+            .automation_enabled
+    );
+}
+
+#[test]
+fn transient_scan_error_preserves_last_known_good_inventory() {
+    let mut runtime = BotRuntime::default_mock();
+    let process = discovered_process(9003, "0003");
+    runtime.update_instance_inventory(Ok(vec![process.clone()]));
+    runtime
+        .ensure_runtime_instance(1, Some(true), Some(false), Some(60))
+        .unwrap();
+    runtime
+        .cmd_bind_instance(1, process.identity.clone())
+        .unwrap();
+
+    assert_eq!(
+        runtime
+            .to_api_snapshot()
+            .instance_services
+            .runtime_instances[0]
+            .status,
         "bound"
     );
 
-    assert!(!runtime.cmd_toggle_client_bot(2));
-    let paused = runtime.to_api_snapshot();
-    assert!(!paused.running);
-    assert!(
-        paused
-            .settings
-            .multi_client
-            .clients
-            .iter()
-            .find(|profile| profile.id == 2)
-            .unwrap()
-            .enabled
-    );
+    // Transient scan error occurs (e.g. WMI timeout or access denied)
+    runtime.update_instance_inventory(Err("Transient scan timeout".into()));
+    assert!(runtime.has_scan_error());
+
+    // Status remains bound and controllers are NOT unbound
+    let snapshot = runtime.to_api_snapshot();
     assert_eq!(
-        paused.instance_services.runtime_instances[0].status,
+        snapshot.instance_services.runtime_instances[0].status,
         "bound"
     );
+    assert_eq!(
+        snapshot.instance_services.runtime_instances[0]
+            .binding
+            .as_ref()
+            .map(|b| b.pid),
+        Some(9003)
+    );
+}
+
+#[test]
+fn follower_profile_matching_handles_whitespace_and_guild_tags() {
+    let mut multi_client = MultiClientConfig::default();
+    multi_client.clients[1].char1_name = " Aurabot ".into(); // has whitespace
+    multi_client.clients[1].char2_name = " Culler ".into();
+
+    let mut state = WorldState {
+        running: true,
+        settings: BotSettings {
+            follow: true,
+            multi_client,
+            ..Default::default()
+        },
+        config: FollowConfig {
+            stop_distance: 5.0,
+            catch_up_distance: 15.0,
+            warp_distance: 50.0,
+            ..Default::default()
+        },
+        leader: Actor::new("Leader", 0.0, 0.0),
+        followers: vec![
+            Actor::new("<VIET> Aurabot", 10.0, 0.0), // has guild tag
+            Actor::new("Culler", 10.0, 0.0),
+        ],
+        ..Default::default()
+    };
+
+    FollowEngine::step(&mut state);
+    assert_eq!(state.followers[0].action, FollowerAction::FollowRoute);
+    assert_eq!(state.followers[1].action, FollowerAction::FollowRoute);
+}
+
+#[test]
+fn paused_runtime_instance_cannot_reserve_loot_or_emit_movement() {
+    let mut multi_client = MultiClientConfig::default();
+    multi_client.clients[1].char1_name = "PausedFollower".into();
+
+    let mut instance_automation = std::collections::BTreeMap::new();
+    instance_automation.insert(2, false);
+    let mut state = WorldState {
+        running: true,
+        instance_automation,
+        settings: BotSettings {
+            follow: true,
+            loot: true,
+            pickup: AutoPickupConfig {
+                enabled: true,
+                pickup_radius: 30.0,
+                currency_regular: true,
+                ..Default::default()
+            },
+            multi_client,
+            ..Default::default()
+        },
+        leader: Actor::new("Leader", 0.0, 0.0),
+        followers: vec![Actor::new("PausedFollower", 10.0, 0.0)],
+        loot: vec![WorldItem {
+            source_id: 99,
+            name: "Orb of Augmentation".into(),
+            pos: Vec2::new(10.0, 0.0),
+            value: 0,
+            rarity: None,
+            identified: None,
+            pickup: PickupStatus::default(),
+            picked_by: None,
+        }],
+        ..Default::default()
+    };
+
+    FollowEngine::step(&mut state);
+
+    assert_eq!(state.followers[0].action, FollowerAction::Hold);
+    assert!(matches!(
+        state.loot[0].pickup,
+        PickupStatus::Available { attempts: 0 }
+    ));
 }

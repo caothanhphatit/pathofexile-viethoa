@@ -51,6 +51,10 @@ fn binding_checks_platform_path_disabled_and_stale_identity() {
     config.clients[1].flavor = ClientFlavor::Standalone;
     config.clients[1].exe_path = r"D:\Other\PathOfExile.exe".into();
     assert!(registry.bind(&config, 2, a.identity.clone()).is_err());
+    // Forward slash in configured path matches backslash in actual OS path
+    config.clients[1].exe_path = "D:/Game/PathOfExile.exe".into();
+    assert!(registry.bind(&config, 2, a.identity.clone()).is_ok());
+    registry.unbind(2);
     config.clients[1].exe_path.clear();
     config.clients[1].enabled = false;
     assert!(registry.bind(&config, 2, a.identity.clone()).is_err());
@@ -142,4 +146,33 @@ fn launch_guard_and_bound_profile_edits_preserve_identity_rules() {
         )
         .unwrap();
     assert!(runtime.bound_identity(2).is_err());
+}
+
+#[test]
+fn party_invites_are_explicit_one_shot_requests_for_bound_followers_only() {
+    use poe2_engine::BotRuntime;
+
+    let mut runtime = BotRuntime::default_mock();
+    runtime.cmd_toggle("party_enabled", true).unwrap();
+    let main = process(301, "main");
+    let follower = process(302, "follower");
+    runtime.update_instance_inventory(Ok(vec![main.clone(), follower.clone()]));
+    runtime.cmd_bind_instance(1, main.identity).unwrap();
+    runtime.cmd_bind_instance(2, follower.identity).unwrap();
+    runtime.auto_bind_unbound_instances();
+
+    assert!(runtime.cmd_request_party_invite(1).is_err());
+    // The shipped account defaults are role placeholders, not game character names.
+    assert!(runtime.cmd_request_party_invite(2).is_err());
+    runtime
+        .set_detected_primary_character(2, "MIRACLE_MINION")
+        .unwrap();
+    runtime.cmd_request_party_invite(2).unwrap();
+    runtime.cmd_request_party_invite(2).unwrap();
+    assert_eq!(runtime.take_party_invite_requests(), vec![2]);
+    assert!(runtime.take_party_invite_requests().is_empty());
+
+    runtime.cmd_request_party_invite(2).unwrap();
+    runtime.cmd_toggle("party_enabled", false).unwrap();
+    assert!(runtime.take_party_invite_requests().is_empty());
 }

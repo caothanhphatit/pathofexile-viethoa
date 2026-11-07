@@ -37,24 +37,83 @@ function filterCatalog(query) {
 }
 
 // ── API Commands ──────────────────────────────────────────────────────────
-async function apiPost(body) {
+function newClientRequestId() {
   try {
-    const token = window.__API_TOKEN__ || '';
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  } catch (_) { /* use the fallback below */ }
+  return `ui-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function clientRequestHeaders(requestId, extra = {}) {
+  return {
+    ...extra,
+    'X-Api-Token': window.__API_TOKEN__ || '',
+    'X-Request-Id': requestId
+  };
+}
+
+function commandLogContext(body) {
+  const value = body?.value;
+  return {
+    command: body?.command || 'unknown',
+    instance_id: body?.instance_id ?? null,
+    account_profile_id: body?.account_profile_id ?? null,
+    key: body?.key ?? null,
+    value_type: Array.isArray(value) ? 'array' : (value === null ? 'null' : typeof value)
+  };
+}
+
+function reportClientLog(level, message, details = {}) {
+  const requestId = details.request_id || newClientRequestId();
+  const body = {
+    level,
+    message: String(message || 'Unknown client error').slice(0, 4096),
+    source: String(details.source || 'dashboard').slice(0, 512),
+    line: Number.isInteger(details.line) ? details.line : undefined,
+    column: Number.isInteger(details.column) ? details.column : undefined,
+    stack: String(details.stack || '').slice(0, 6000),
+    client_request_id: requestId
+  };
+  // Browser diagnostics must never prevent the original UI action from
+  // completing. `keepalive` also lets an error report leave during unload.
+  try {
+    fetch('/api/client-log', {
+      method: 'POST',
+      keepalive: true,
+      headers: clientRequestHeaders(requestId, { 'Content-Type': 'application/json' }),
+      body: JSON.stringify(body)
+    }).catch(() => {});
+  } catch (_) { /* diagnostics are best effort */ }
+  return requestId;
+}
+
+async function apiPost(body) {
+  const requestId = newClientRequestId();
+  try {
     const res = await fetch('/api/command', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Api-Token': token
-      },
+      headers: clientRequestHeaders(requestId, { 'Content-Type': 'application/json' }),
       body: JSON.stringify(body)
     });
     const snap = await res.json();
-    if (!res.ok) throw new Error(snap.error || ('HTTP ' + res.status));
+    const serverRequestId = res.headers.get('X-Request-Id') || snap.request_id || requestId;
+    if (!res.ok) {
+      const error = new Error(snap.error || ('HTTP ' + res.status));
+      error.requestId = serverRequestId;
+      throw error;
+    }
     renderState(snap);
     return snap;
   } catch (e) {
+    const traceId = e.requestId || requestId;
+    console.error('[POEVH] command failed', { request_id: traceId, ...commandLogContext(body), error: e });
+    reportClientLog('error', `API command failed: ${e?.message || e}`, {
+      request_id: traceId,
+      source: '/api/command',
+      stack: e?.stack
+    });
     const el = document.getElementById('instance-command-status');
-    if (el) el.textContent = 'Không lưu được: ' + e.message;
+    if (el) el.textContent = `Không lưu được: ${e?.message || 'lỗi không xác định'} [Mã: ${traceId}]`;
     return null;
   }
 }
@@ -81,17 +140,37 @@ function formatTime(secs) {
 }
 
 // ── Polling & State Dispatcher ─────────────────────────────────────────────
+// Set while the status line shows a poll failure, so a successful poll can
+// clear its own message without wiping an unrelated command error.
+let pollErrorShown = false;
+
 async function pollState() {
+  const requestId = newClientRequestId();
   try {
-    const token = window.__API_TOKEN__ || '';
     const res = await fetch('/api/state', {
-      headers: { 'X-Api-Token': token }
+      headers: clientRequestHeaders(requestId)
     });
-    if (res.ok) {
-      const snap = await res.json();
-      renderState(snap);
+    const snap = await res.json();
+    if (!res.ok) {
+      const error = new Error(snap.error || ('HTTP ' + res.status));
+      error.requestId = res.headers.get('X-Request-Id') || requestId;
+      throw error;
     }
-  } catch (e) {}
+    if (pollErrorShown) {
+      const el = document.getElementById('instance-command-status');
+      if (el) el.textContent = '';
+      pollErrorShown = false;
+    }
+    renderState(snap);
+  } catch (e) {
+    const el = document.getElementById('instance-command-status');
+    const traceId = e.requestId || requestId;
+    console.warn('[POEVH] state poll failed', { request_id: traceId, error: e });
+    if (el) {
+      el.textContent = `Không đọc được trạng thái: ${e?.message || 'lỗi kết nối'} [Mã: ${traceId}]`;
+      pollErrorShown = true;
+    }
+  }
 }
 
 function renderState(s) {
@@ -131,6 +210,7 @@ function renderState(s) {
     setChecked('tog-prio-catch', s.config?.prioritize_catchup);
     setChecked('tog-party', s.settings.party?.enabled);
     setChecked('tog-combat', s.settings.party_combat?.enabled);
+    setChecked('tog-waystones', s.settings.waystones?.enabled);
   }
   if (s.config) {
     setRange('follow-stop-distance', s.config.stop_distance, 'val-stop-dist', ' bước');
@@ -177,32 +257,42 @@ function renderState(s) {
       bg_fps: profile.bg_fps ?? legacy?.bg_fps ?? 60,
     };
   });
-  window.poeevhMainInstanceId = s.settings?.multi_client?.main_instance_id ?? 1;
+  const statuses = (s.instance_services && (s.instance_services.runtime_instances || s.instance_services.instances)) || [];
+  const mainInstanceId = s.settings?.multi_client?.main_instance_id
+    ?? statuses?.find?.(item => item.is_main)?.instance_id
+    ?? profiles[0]?.id
+    ?? 1;
+  window.poeevhMainInstanceId = mainInstanceId;
+  window.poeevhPartyEnabled = Boolean(s.settings?.party?.enabled);
   if (typeof renderInstanceProfiles === 'function') {
     renderInstanceProfiles(profiles);
   }
   if (typeof renderInstanceProcesses === 'function') {
-    renderInstanceProcesses(s.settings?.multi_client?.main_instance_id ?? 1);
+    renderInstanceProcesses(mainInstanceId);
   }
-
-  const statuses = (s.instance_services && (s.instance_services.runtime_instances || s.instance_services.instances)) || [];
   const byId = new Map(profiles.map(profile => [profile.id, profile]));
   if (typeof renderRuntimeHud === 'function') {
-    renderRuntimeHud(profiles, statuses, s.running, s.instance_services?.controllers || {});
+    renderRuntimeHud(profiles, statuses, s.running, s.instance_services?.controllers || {}, window.poeevhPartyEnabled);
   }
   if (typeof updateClientUIState === 'function') {
-    for (const id of [1, 2, 3]) {
+    for (const id of profiles.map(profile => profile.id)) {
       const status = statuses.find(item => item.instance_id === id);
-      updateClientUIState(id, byId.get(id), status, s.running);
+      const instanceRunning = Boolean(s.running) && (status?.automation_enabled ?? true);
+      updateClientUIState(id, byId.get(id), status, instanceRunning);
     }
   }
 
-  const c1Profile = byId.get(1);
-  const c2Profile = byId.get(2);
-  const c3Profile = byId.get(3);
-  const c1Bound = statuses.find(item => item.instance_id === 1)?.status === 'bound';
-  const c2Bound = statuses.find(item => item.instance_id === 2)?.status === 'bound';
-  const c3Bound = statuses.find(item => item.instance_id === 3)?.status === 'bound';
+  const orderedProfileIds = [
+    mainInstanceId,
+    ...profiles.map(profile => profile.id).filter(id => id !== mainInstanceId),
+  ];
+  const [client1Id, client2Id, client3Id] = orderedProfileIds;
+  const c1Profile = byId.get(client1Id);
+  const c2Profile = byId.get(client2Id);
+  const c3Profile = byId.get(client3Id);
+  const c1Bound = statuses.find(item => item.instance_id === client1Id)?.status === 'bound';
+  const c2Bound = statuses.find(item => item.instance_id === client2Id)?.status === 'bound';
+  const c3Bound = statuses.find(item => item.instance_id === client3Id)?.status === 'bound';
   const c1Active = c1Profile?.enabled ?? false;
   const c2Active = c2Profile?.enabled ?? false;
   const c3Active = c3Profile?.enabled ?? false;
@@ -362,6 +452,26 @@ function renderState(s) {
     }
   }
 }
+
+// Keep JavaScript faults in the same session log as backend command failures.
+// This covers event-handler exceptions and promises that a feature module
+// forgot to catch, while avoiding any raw form contents or API token.
+window.addEventListener('error', (event) => {
+  reportClientLog('error', event.message || 'Unhandled browser error', {
+    source: event.filename || 'dashboard',
+    line: event.lineno,
+    column: event.colno,
+    stack: event.error?.stack || ''
+  });
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  const reason = event.reason;
+  reportClientLog('error', reason?.message || String(reason || 'Unhandled promise rejection'), {
+    source: 'dashboard',
+    stack: reason?.stack || ''
+  });
+});
 
 // Initialize on DOM load
 window.addEventListener('DOMContentLoaded', () => {

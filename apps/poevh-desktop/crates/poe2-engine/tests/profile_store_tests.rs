@@ -143,9 +143,9 @@ fn runtime_feature_mutations_survive_restart() {
         runtime
             .enable_profile_store(ProfileStore::new(path.clone()))
             .unwrap();
-        runtime.cmd_toggle("follow", false);
-        runtime.cmd_toggle("flask_life", false);
-        runtime.cmd_set_param("tick_ms", 375.0);
+        runtime.cmd_toggle("follow", false).unwrap();
+        runtime.cmd_toggle("flask_life", false).unwrap();
+        runtime.cmd_set_param("tick_ms", 375.0).unwrap();
         runtime.cmd_update_expedition(ExpeditionConfig {
             enabled: true,
             league: "MyLeague".into(),
@@ -174,7 +174,7 @@ fn runtime_toggle_persists_keyboard_bridge_across_restart() {
     runtime
         .enable_profile_store(ProfileStore::new(path.clone()))
         .unwrap();
-    runtime.cmd_toggle("kbm", false);
+    runtime.cmd_toggle("kbm", false).unwrap();
     assert!(!runtime.to_api_snapshot().settings.kbm_bridge);
 
     let mut restored = BotRuntime::default_mock();

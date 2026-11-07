@@ -7,10 +7,11 @@ use parking_lot::Mutex;
 use poe2_engine::BotRuntime;
 use poe2_input::{ActionMapper, FlaskController, KbmBridge, VirtualGamepadManager};
 use poe2_overlay::start_server;
-use poe2_types::{Actor, FollowerAction, MultiClientConfig};
+use poe2_types::{Actor, FollowerAction, InstanceStatus, MultiClientConfig};
 use std::collections::{HashMap, HashSet};
 use std::sync::{
     atomic::{AtomicBool, Ordering},
+    mpsc::{sync_channel, SyncSender, TrySendError},
     Arc,
 };
 use std::time::{Duration, Instant};
@@ -18,6 +19,104 @@ use tracing::{info, warn};
 use vigem_client::XButtons;
 
 const MAX_PARTY_FOLLOWERS: usize = 5;
+const MAX_TRANSIENT_PAD_JOBS: usize = 32;
+const MAX_TRANSIENT_PAD_JOB_AGE: Duration = Duration::from_secs(1);
+
+// Controller acceptance route decompiled from the locally installed
+// MultiPilot Auto Party flow (Start -> Current Party -> invite -> accept).
+// Each tuple is (button, hold_ms, settle_ms).
+const PARTY_INVITE_ACCEPT_STEPS: [(u16, u64, u64); 4] = [
+    (XButtons::START, 100, 500),
+    (XButtons::LEFT, 80, 350),
+    (XButtons::LEFT, 80, 550),
+    (XButtons::A, 80, 500),
+];
+
+#[derive(Debug)]
+enum TransientPadAction {
+    BroadcastA,
+    Press {
+        target: String,
+        button: u16,
+        hold: Duration,
+    },
+    Move {
+        target: String,
+        dx: f32,
+        dy: f32,
+        hold: Duration,
+    },
+}
+
+#[derive(Debug)]
+struct TransientPadJob {
+    queued_at: Instant,
+    action: TransientPadAction,
+}
+
+fn queue_transient_pad_job(sender: &SyncSender<TransientPadJob>, action: TransientPadAction) {
+    let job = TransientPadJob {
+        queued_at: Instant::now(),
+        action,
+    };
+    match sender.try_send(job) {
+        Ok(()) => {}
+        Err(TrySendError::Full(job)) => {
+            warn!(action = ?job.action, "Transient controller queue is full; dropping command")
+        }
+        Err(TrySendError::Disconnected(job)) => {
+            warn!(action = ?job.action, "Transient controller worker stopped; dropping command")
+        }
+    }
+}
+
+fn execute_transient_pad_job(
+    manager: &Arc<Mutex<VirtualGamepadManager>>,
+    job: TransientPadJob,
+) -> Result<()> {
+    if job.queued_at.elapsed() > MAX_TRANSIENT_PAD_JOB_AGE {
+        warn!(action = ?job.action, "Discarding stale transient controller command");
+        return Ok(());
+    }
+    match job.action {
+        TransientPadAction::BroadcastA => {
+            manager.lock().broadcast_button_a()?;
+            std::thread::sleep(Duration::from_millis(150));
+            manager.lock().broadcast_release()?;
+        }
+        TransientPadAction::Press {
+            target,
+            button,
+            hold,
+        } => {
+            manager
+                .lock()
+                .press_button(&target, XButtons { raw: button })?;
+            std::thread::sleep(hold);
+            if let Err(error) = manager
+                .lock()
+                .release_buttons(&target, XButtons { raw: button })
+            {
+                let _ = manager.lock().release_all(&target);
+                return Err(error);
+            }
+        }
+        TransientPadAction::Move {
+            target,
+            dx,
+            dy,
+            hold,
+        } => {
+            manager.lock().set_movement(&target, dx, dy, true)?;
+            std::thread::sleep(hold);
+            if let Err(error) = manager.lock().release_movement(&target) {
+                let _ = manager.lock().release_all(&target);
+                return Err(error);
+            }
+        }
+    }
+    Ok(())
+}
 
 fn pulse_controller_button(
     manager: &Arc<Mutex<VirtualGamepadManager>>,
@@ -39,6 +138,36 @@ fn pulse_controller_button(
     Ok(())
 }
 
+fn accept_party_invite(manager: &Arc<Mutex<VirtualGamepadManager>>, target: &str) -> Result<()> {
+    for (step, (button, hold_ms, settle_ms)) in
+        PARTY_INVITE_ACCEPT_STEPS.iter().copied().enumerate()
+    {
+        info!(
+            target,
+            step = step + 1,
+            button,
+            hold_ms,
+            settle_ms,
+            "executing party invitation controller navigation"
+        );
+        pulse_controller_button(manager, target, button, hold_ms)?;
+        std::thread::sleep(Duration::from_millis(settle_ms));
+    }
+    Ok(())
+}
+
+fn client_is_in_world(pid: u32, started_at: &str) -> bool {
+    poe2_world::connector::get_client_location_verified(pid, Some(started_at)).is_some_and(
+        |location| {
+            !location.area.trim().is_empty()
+                && location.instance_id.is_some()
+                && location
+                    .observed_at
+                    .is_some_and(|observed_at| observed_at.elapsed() <= Duration::from_secs(900))
+        },
+    )
+}
+
 struct PartyOperationGuard(Arc<AtomicBool>);
 
 impl PartyOperationGuard {
@@ -58,23 +187,23 @@ impl Drop for PartyOperationGuard {
 #[derive(Debug, Clone)]
 enum PartyPhase {
     Waiting,
-    AcceptReady {
-        code: u64,
+    InviteReady {
         attempts: u8,
         next_attempt: Instant,
     },
-    AwaitingInviteClear {
-        code: u64,
+    AwaitingPartyJoin {
         attempts: u8,
         deadline: Instant,
     },
     WarpReady {
         attempts: u8,
         next_attempt: Instant,
+        close_party_menu: bool,
     },
     AwaitingWarp {
         attempts: u8,
         target_instance: u64,
+        command_started_at: Instant,
         deadline: Instant,
     },
     Complete {
@@ -83,64 +212,90 @@ enum PartyPhase {
     Failed,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum PartySignalOutcome {
-    Ignored,
-    InviteArmed,
-    InviteCleared,
-}
-
-fn apply_party_signal(
-    phase: &mut PartyPhase,
-    security_code: u64,
-    now: Instant,
-) -> PartySignalOutcome {
-    if security_code != 0 {
-        if matches!(phase, PartyPhase::Complete { .. }) {
-            return PartySignalOutcome::Ignored;
-        }
-        *phase = PartyPhase::AcceptReady {
-            code: security_code,
-            attempts: 0,
-            next_attempt: now,
-        };
-        PartySignalOutcome::InviteArmed
-    } else if let PartyPhase::AwaitingInviteClear { attempts, .. } = phase {
-        *phase = PartyPhase::WarpReady {
-            attempts: *attempts,
-            next_attempt: now,
-        };
-        PartySignalOutcome::InviteCleared
-    } else {
-        PartySignalOutcome::Ignored
-    }
-}
-
 fn leader_transition_requires_warp(
     completed_leader_instance: Option<u64>,
     leader_instance: Option<u64>,
     follower_instance: Option<u64>,
 ) -> Option<(u64, u64)> {
     let target = leader_instance?;
-    let current = follower_instance?;
-    (Some(target) != completed_leader_instance && target != current).then_some((current, target))
+    if Some(target) == completed_leader_instance {
+        return None;
+    }
+    let current = follower_instance.unwrap_or(0);
+    (target != current).then_some((current, target))
 }
 
 fn run_warp_to_leader(manager: &Arc<Mutex<VirtualGamepadManager>>, target: &str) -> Result<()> {
-    // Current Party route observed in the reference app's shipped guide:
-    // Start -> D-pad Left -> first party member -> Warp -> confirm -> cleanup.
+    // 1. Reset any open menus to clean state (press B twice)
+    pulse_controller_button(manager, target, XButtons::B, 80)?;
+    std::thread::sleep(Duration::from_millis(80));
+    pulse_controller_button(manager, target, XButtons::B, 80)?;
+    std::thread::sleep(Duration::from_millis(150));
+
+    // 2. Open pause menu: Start -> D-pad Left into party menu
     pulse_controller_button(manager, target, XButtons::START, 120)?;
-    std::thread::sleep(Duration::from_millis(120));
-    pulse_controller_button(manager, target, XButtons::LEFT, 80)?;
+    std::thread::sleep(Duration::from_millis(150));
+    pulse_controller_button(manager, target, XButtons::LEFT, 100)?;
+    std::thread::sleep(Duration::from_millis(80));
+
+    // 3. Ensure cursor is at the top of the party list (Party Leader)
+    pulse_controller_button(manager, target, XButtons::UP, 80)?;
     std::thread::sleep(Duration::from_millis(50));
+    pulse_controller_button(manager, target, XButtons::UP, 80)?;
+    std::thread::sleep(Duration::from_millis(80));
+
+    // 4. Select leader -> warp option -> confirm
     pulse_controller_button(manager, target, XButtons::A, 100)?;
-    std::thread::sleep(Duration::from_millis(100));
+    std::thread::sleep(Duration::from_millis(120));
     pulse_controller_button(manager, target, XButtons::A, 100)?;
     std::thread::sleep(Duration::from_millis(200));
     pulse_controller_button(manager, target, XButtons::A, 100)?;
-    std::thread::sleep(Duration::from_millis(400));
+    std::thread::sleep(Duration::from_millis(300));
+
+    // 5. Clean up open overlay
     pulse_controller_button(manager, target, XButtons::B, 100)?;
     Ok(())
+}
+
+/// A follower counts as a verified party member when either its own Client.txt
+/// or the leader's Client.txt logged "<name> has joined the party." for one of
+/// its configured characters during the current process generations. The
+/// leader's log is the authoritative source: the joining client does not
+/// always echo its own join line, while every other member's client does.
+fn instance_has_verified_party_member(
+    runtime: &BotRuntime,
+    instance_id: u32,
+    leader: &poe2_types::ProcessIdentity,
+) -> bool {
+    let Some(identity) = runtime.bound_identity(instance_id).ok() else {
+        return false;
+    };
+    runtime.client_profile(instance_id).is_some_and(|profile| {
+        [&profile.char1_name, &profile.char2_name]
+            .into_iter()
+            .filter(|name| !name.trim().is_empty())
+            .any(|name| {
+                poe2_world::connector::is_verified_party_member_for_client(
+                    leader.pid,
+                    &leader.started_at,
+                    name,
+                ) || poe2_world::connector::is_verified_party_member_for_client(
+                    identity.pid,
+                    &identity.started_at,
+                    name,
+                )
+            })
+    })
+}
+
+fn is_target_automation_enabled(target: &str, runtime_instances: &[InstanceStatus]) -> bool {
+    for inst in runtime_instances {
+        let (first, second) = VirtualGamepadManager::targets_for_instance(inst.instance_id);
+        if target == first || target == second {
+            return inst.automation_enabled;
+        }
+    }
+    true
 }
 
 #[cfg(windows)]
@@ -418,14 +573,41 @@ async fn run() -> Result<()> {
         let controller_operation = Arc::clone(&controller_operation);
         std::thread::spawn(move || {
             let mut tuned_processes = std::collections::HashSet::new();
+            // PIDs whose identity was published to the Client.txt connector on
+            // a previous pass, so an unbind can be told apart from a new bind.
+            let mut published_bindings = HashMap::<u32, String>::new();
             loop {
                 let processes =
                     poe2_world::instances::discover_game_processes().map_err(|e| e.to_string());
-                let (active_controller_ids, controller_modes, tuning_requests, live_identities) = {
+                let (
+                    active_controller_ids,
+                    controller_modes,
+                    tuning_requests,
+                    live_identities,
+                    has_scan_error,
+                ) = {
                     let mut r = rt.lock();
                     r.update_instance_inventory(processes);
                     r.auto_bind_unbound_instances();
                     r.sync_memory_target_to_main();
+                    // The engine registry is pure state; this loop owns the
+                    // side effect of scoping Client.txt evidence to the exact
+                    // bound process generations.
+                    let current_bindings = r
+                        .bound_identities()
+                        .into_iter()
+                        .map(|identity| (identity.pid, identity.started_at))
+                        .collect::<HashMap<_, _>>();
+                    for (pid, _) in published_bindings
+                        .iter()
+                        .filter(|(pid, started_at)| current_bindings.get(pid) != Some(started_at))
+                    {
+                        poe2_world::connector::invalidate_client_location(*pid);
+                    }
+                    for (pid, started_at) in &current_bindings {
+                        poe2_world::connector::associate_client_identity(*pid, started_at);
+                    }
+                    published_bindings = current_bindings;
                     let statuses = r.runtime_instances();
                     let active_controller_ids: std::collections::HashSet<u32> = statuses
                         .iter()
@@ -467,11 +649,13 @@ async fn run() -> Result<()> {
                                 .map(|process| process.identity.clone())
                         })
                         .collect::<HashSet<_>>();
+                    let has_scan_error = r.has_scan_error();
                     (
                         active_controller_ids,
                         controller_modes,
                         tuning_requests,
                         live_identities,
+                        has_scan_error,
                     )
                 };
 
@@ -486,16 +670,19 @@ async fn run() -> Result<()> {
                             if let Err(error) = manager.ensure_instance_controllers(instance_id) {
                                 warn!(instance_id, %error, "failed to ensure instance controllers");
                             }
-                        } else if !needs_controllers {
+                        } else if !needs_controllers && !has_scan_error {
                             manager.remove_instance_controllers(instance_id);
                         }
                     }
                     // Controllers exist only for live bound instances. This also
                     // cleans up a pre-launch pair if the game launch fails.
-                    let controller_instances = manager.controller_instance_ids();
-                    for instance_id in controller_instances {
-                        if !active_controller_ids.contains(&instance_id) {
-                            manager.remove_instance_controllers(instance_id);
+                    // Never unplug on transient scan errors.
+                    if !has_scan_error {
+                        let controller_instances = manager.controller_instance_ids();
+                        for instance_id in controller_instances {
+                            if !active_controller_ids.contains(&instance_id) {
+                                manager.remove_instance_controllers(instance_id);
+                            }
                         }
                     }
                 }
@@ -503,11 +690,13 @@ async fn run() -> Result<()> {
                 for (identity, pid, black_screen) in tuning_requests {
                     let tuning_key = (identity, black_screen, black_screen);
                     if tuned_processes.insert(tuning_key) {
-                        let _ = poe2_world::smoother::apply_process_tuning(
+                        if let Err(error) = poe2_world::smoother::apply_process_tuning(
                             pid,
                             black_screen,
                             black_screen,
-                        );
+                        ) {
+                            warn!(pid, %error, "process tuning failed");
+                        }
                     }
                 }
                 tuned_processes.retain(|(identity, _, _)| live_identities.contains(identity));
@@ -516,9 +705,10 @@ async fn run() -> Result<()> {
         });
     }
 
-    // Manual invite -> verified accept -> verified warp. Client.txt events are
-    // tagged by exact PID. We report success only after the invitation clears
-    // and both clients expose the same Client-Safe Instance ID.
+    // Auto Party mirrors MultiPilot: send a fresh invite from the exact leader
+    // window, accept it on the exact receiver controller, then verify roster
+    // membership before attempting a warp. Incoming Client.txt invites remain
+    // supported as an alternate way to arm the receiver.
     {
         let rt = Arc::clone(&runtime);
         let gm = Arc::clone(&gamepad_mgr);
@@ -531,18 +721,26 @@ async fn run() -> Result<()> {
                 let party_enabled = rt.lock().to_api_snapshot().settings.party.enabled;
                 if !party_enabled {
                     sessions.clear();
+                    poe2_world::connector::clear_verified_party_members();
                     let _ = poe2_world::connector::take_party_invites();
+                    let _ = rt.lock().take_party_invite_requests();
                     std::thread::sleep(Duration::from_secs(1));
                     continue;
                 }
 
-                let (leader, secondaries) = {
+                let invite_requests = rt.lock().take_party_invite_requests();
+
+                let (leader, leader_name, secondaries) = {
                     let r = rt.lock();
                     let statuses = r.runtime_instances();
-                    let leader = statuses
+                    let leader_status = statuses
                         .iter()
-                        .find(|status| status.is_main && status.status == "bound")
-                        .and_then(|status| status.binding.clone());
+                        .find(|status| status.is_main && status.status == "bound");
+                    let leader = leader_status.and_then(|status| status.binding.clone());
+                    let leader_name = leader_status
+                        .and_then(|status| r.client_profile(status.instance_id))
+                        .map(|profile| profile.char1_name.trim().to_owned())
+                        .filter(|name| !name.is_empty());
                     let secondaries = statuses
                         .into_iter()
                         .filter(|status| {
@@ -556,9 +754,13 @@ async fn run() -> Result<()> {
                                 .map(|identity| (status.instance_id, identity))
                         })
                         .collect::<Vec<_>>();
-                    (leader, secondaries)
+                    (leader, leader_name, secondaries)
                 };
 
+                // Party evidence is scoped per PID and process generation by
+                // the connector itself (a restarted client gets an empty
+                // roster when its identity is re-associated), so a restart of
+                // one follower must not erase what other clients verified.
                 sessions.retain(|started_at, _| {
                     secondaries
                         .iter()
@@ -570,6 +772,34 @@ async fn run() -> Result<()> {
                         .or_insert(PartyPhase::Waiting);
                 }
 
+                // Only a click on a runtime client's Invite Party button can
+                // arm sending/acceptance. A process becoming bound is not an
+                // in-game readiness signal and must never generate inputs.
+                for requested_id in invite_requests {
+                    if let Some((_, identity)) = secondaries
+                        .iter()
+                        .find(|(instance_id, _)| *instance_id == requested_id)
+                    {
+                        sessions.insert(
+                            identity.started_at.clone(),
+                            PartyPhase::InviteReady {
+                                attempts: 0,
+                                next_attempt: Instant::now(),
+                            },
+                        );
+                        info!(
+                            instance_id = requested_id,
+                            pid = identity.pid,
+                            "explicit party invite requested from overview"
+                        );
+                    } else {
+                        warn!(
+                            instance_id = requested_id,
+                            "party invite request ignored: no bound follower client"
+                        );
+                    }
+                }
+
                 let requested_revision = poe2_world::connector::party_recovery_revision();
                 if requested_revision != recovery_revision {
                     recovery_revision = requested_revision;
@@ -579,6 +809,7 @@ async fn run() -> Result<()> {
                             PartyPhase::WarpReady {
                                 attempts: 0,
                                 next_attempt: Instant::now(),
+                                close_party_menu: false,
                             },
                         );
                     }
@@ -589,35 +820,33 @@ async fn run() -> Result<()> {
                     );
                 }
 
-                for signal in poe2_world::connector::take_party_invites() {
-                    let Some((_, identity)) = secondaries
-                        .iter()
-                        .find(|(_, identity)| identity.pid == signal.pid)
-                    else {
-                        continue;
-                    };
-                    let phase = sessions
-                        .entry(identity.started_at.clone())
-                        .or_insert(PartyPhase::Waiting);
-                    match apply_party_signal(phase, signal.security_code, Instant::now()) {
-                        PartySignalOutcome::InviteArmed => {
-                            info!(
-                                pid = signal.pid,
-                                "party invitation armed for automatic acceptance"
-                            );
-                        }
-                        PartySignalOutcome::InviteCleared => {
-                            info!(
-                                pid = signal.pid,
-                                "party invitation cleared; preparing verified warp"
-                            );
-                        }
-                        PartySignalOutcome::Ignored => {}
-                    }
-                }
+                // Client.txt invite events are still collected for diagnostics,
+                // but never initiate input; the explicit overview action is
+                // the sole trigger for this workflow.
+                let _ = poe2_world::connector::take_party_invites();
 
                 let Some(leader) = leader else {
+                    let waiting = sessions
+                        .iter()
+                        .filter(|(_, phase)| matches!(phase, PartyPhase::InviteReady { .. }))
+                        .map(|(started_at, _)| started_at.clone())
+                        .collect::<Vec<_>>();
+                    for started_at in waiting {
+                        sessions.insert(started_at, PartyPhase::Failed);
+                    }
                     std::thread::sleep(Duration::from_millis(250));
+                    continue;
+                };
+                let Some(leader_name) = leader_name.as_deref() else {
+                    let waiting = sessions
+                        .iter()
+                        .filter(|(_, phase)| matches!(phase, PartyPhase::InviteReady { .. }))
+                        .map(|(started_at, _)| started_at.clone())
+                        .collect::<Vec<_>>();
+                    for started_at in waiting {
+                        sessions.insert(started_at, PartyPhase::Failed);
+                    }
+                    std::thread::sleep(Duration::from_millis(500));
                     continue;
                 };
 
@@ -628,17 +857,37 @@ async fn run() -> Result<()> {
                         .unwrap_or(PartyPhase::Waiting);
                     let (first, second) = VirtualGamepadManager::targets_for_instance(*instance_id);
                     match phase {
-                        PartyPhase::AcceptReady {
-                            code,
+                        PartyPhase::InviteReady {
                             attempts,
                             next_attempt,
                         } => {
                             if Instant::now() < next_attempt {
                                 continue;
                             }
-                            if attempts >= 3 {
+                            // A bound PID is not proof that a character has entered
+                            // the world. Fail closed before sending chat or controller
+                            // input; retry is user-driven via the overview button.
+                            if !client_is_in_world(leader.pid, &leader.started_at)
+                                || !client_is_in_world(identity.pid, &identity.started_at)
+                            {
                                 sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
-                                warn!(instance_id, pid = identity.pid, "party acceptance failed after 3 attempts; waiting for a new invite");
+                                warn!(leader_pid = leader.pid, receiver_pid = identity.pid, instance_id,
+                                    "party invite refused: leader and receiver must both have fresh in-world Client.txt state");
+                                continue;
+                            }
+                            let target_name = rt
+                                .lock()
+                                .client_profile(*instance_id)
+                                .map(|profile| profile.char1_name.trim().to_owned())
+                                .filter(|name| !name.is_empty());
+                            let Some(target_name) = target_name else {
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(instance_id, pid = identity.pid, "party invite refused: configure the receiver's actual in-game character name first");
+                                continue;
+                            };
+                            if target_name.eq_ignore_ascii_case(leader_name) {
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(instance_id, pid = identity.pid, %target_name, "auto party refused to invite the leader character to itself");
                                 continue;
                             }
                             let Some(_guard) = PartyOperationGuard::try_acquire(&operation_active)
@@ -646,19 +895,25 @@ async fn run() -> Result<()> {
                                 continue;
                             };
                             let _controller_guard = controller_operation.lock();
+                            let attempt = attempts + 1;
+                            let invite_result = poe2_world::instances::operate_window(
+                                &leader, "focus",
+                            )
+                            .and_then(|()| {
+                                poe2_world::instances::send_party_invite(&leader, &target_name)
+                            });
+                            if let Err(error) = invite_result {
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(leader_pid = leader.pid, receiver_pid = identity.pid, instance_id, attempt, %target_name, %error, "party invite command failed; stopped without retry");
+                                continue;
+                            }
+                            info!(leader_pid = leader.pid, receiver_pid = identity.pid, instance_id, attempt, %target_name, "fresh /invite command sent from main client");
+
                             if let Err(error) =
                                 poe2_world::instances::operate_window(identity, "focus")
                             {
-                                let next_attempt_count = attempts + 1;
-                                sessions.insert(
-                                    identity.started_at.clone(),
-                                    PartyPhase::AcceptReady {
-                                        code,
-                                        attempts: next_attempt_count,
-                                        next_attempt: Instant::now() + Duration::from_millis(500),
-                                    },
-                                );
-                                warn!(instance_id, pid = identity.pid, attempt = next_attempt_count, %error, "party accept could not focus secondary client; bounded retry scheduled");
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(instance_id, pid = identity.pid, attempt, %error, "invite sent but receiver focus failed; stopped without retry");
                                 continue;
                             }
                             std::thread::sleep(Duration::from_millis(180));
@@ -667,73 +922,152 @@ async fn run() -> Result<()> {
                                 let _ = manager.release_all(&first);
                                 let _ = manager.release_all(&second);
                             }
-                            let next_attempt = attempts + 1;
-                            match pulse_controller_button(&gm, &first, XButtons::A, 450) {
+                            match accept_party_invite(&gm, &first) {
                                 Ok(()) => {
                                     sessions.insert(
                                         identity.started_at.clone(),
-                                        PartyPhase::AwaitingInviteClear {
-                                            code,
-                                            attempts: next_attempt,
-                                            deadline: Instant::now() + Duration::from_secs(2),
+                                        PartyPhase::AwaitingPartyJoin {
+                                            attempts: attempt,
+                                            deadline: Instant::now() + Duration::from_secs(5),
                                         },
                                     );
-                                    info!(instance_id, pid = identity.pid, target = %first, attempt = next_attempt, "party accept input delivered; awaiting invitation-clear confirmation");
+                                    info!(instance_id, pid = identity.pid, target = %first, attempt, steps = PARTY_INVITE_ACCEPT_STEPS.len(), "receiver accept sequence delivered; waiting for Client.txt party roster confirmation");
                                 }
                                 Err(error) => {
-                                    sessions.insert(
-                                        identity.started_at.clone(),
-                                        PartyPhase::AcceptReady {
-                                            code,
-                                            attempts: next_attempt,
-                                            next_attempt: Instant::now()
-                                                + Duration::from_millis(500),
-                                        },
-                                    );
-                                    warn!(instance_id, pid = identity.pid, target = %first, %error, "party accept input delivery failed");
+                                    sessions
+                                        .insert(identity.started_at.clone(), PartyPhase::Failed);
+                                    warn!(instance_id, pid = identity.pid, target = %first, attempt, %error, "receiver accept input failed; stopped without retry");
                                 }
                             }
                         }
-                        PartyPhase::AwaitingInviteClear {
-                            code,
-                            attempts,
-                            deadline,
-                        } => {
-                            if Instant::now() >= deadline {
+                        PartyPhase::AwaitingPartyJoin { attempts, deadline } => {
+                            let joined = {
+                                let r = rt.lock();
+                                instance_has_verified_party_member(&r, *instance_id, &leader)
+                            };
+                            if joined {
                                 sessions.insert(
                                     identity.started_at.clone(),
-                                    PartyPhase::AcceptReady {
-                                        code,
-                                        attempts,
+                                    PartyPhase::WarpReady {
+                                        attempts: 0,
                                         next_attempt: Instant::now(),
+                                        close_party_menu: false,
                                     },
                                 );
+                                info!(instance_id, pid = identity.pid, attempts, "party roster confirms receiver joined; preparing warp to leader");
+                            } else if Instant::now() >= deadline {
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(instance_id, pid = identity.pid, attempts, "no party-join confirmation before timeout; stopped after one invite/accept attempt; click Mời party to retry manually");
                             }
                         }
                         PartyPhase::WarpReady {
                             attempts,
                             next_attempt,
+                            close_party_menu,
                         } => {
                             if Instant::now() < next_attempt {
                                 continue;
                             }
+                            if close_party_menu {
+                                let Some(_guard) =
+                                    PartyOperationGuard::try_acquire(&operation_active)
+                                else {
+                                    continue;
+                                };
+                                let _controller_guard = controller_operation.lock();
+                                if let Err(error) =
+                                    poe2_world::instances::operate_window(identity, "focus")
+                                {
+                                    sessions.insert(
+                                        identity.started_at.clone(),
+                                        PartyPhase::WarpReady {
+                                            attempts,
+                                            next_attempt: Instant::now()
+                                                + Duration::from_millis(500),
+                                            close_party_menu: true,
+                                        },
+                                    );
+                                    warn!(instance_id, pid = identity.pid, %error, "party accepted but could not refocus receiver to close its menu; retry scheduled");
+                                    continue;
+                                }
+                                std::thread::sleep(Duration::from_millis(180));
+                                match pulse_controller_button(&gm, &first, XButtons::B, 60) {
+                                    Ok(()) => {
+                                        sessions.insert(
+                                            identity.started_at.clone(),
+                                            PartyPhase::WarpReady {
+                                                attempts,
+                                                next_attempt: Instant::now(),
+                                                close_party_menu: false,
+                                            },
+                                        );
+                                        info!(instance_id, pid = identity.pid, target = %first, "closed Current Party menu after invite was cleared");
+                                    }
+                                    Err(error) => {
+                                        sessions.insert(
+                                            identity.started_at.clone(),
+                                            PartyPhase::WarpReady {
+                                                attempts,
+                                                next_attempt: Instant::now()
+                                                    + Duration::from_millis(500),
+                                                close_party_menu: true,
+                                            },
+                                        );
+                                        warn!(instance_id, pid = identity.pid, target = %first, %error, "failed to close Current Party menu after accepting invite; retry scheduled");
+                                    }
+                                }
+                                continue;
+                            }
+                            let is_verified_party = {
+                                let r = rt.lock();
+                                instance_has_verified_party_member(&r, *instance_id, &leader)
+                            };
+                            if !is_verified_party {
+                                // Membership evidence is gone (party left,
+                                // disbanded, or the client restarted). Waiting
+                                // here would stall silently; fail so the
+                                // overview button can start a fresh invite.
+                                sessions.insert(identity.started_at.clone(), PartyPhase::Failed);
+                                warn!(instance_id, pid = identity.pid, "warp skipped: follower is no longer a verified party member; click Mời party to re-invite");
+                                continue;
+                            }
                             let leader_location =
-                                poe2_world::connector::get_client_location(leader.pid);
+                                poe2_world::connector::get_client_location_verified(
+                                    leader.pid,
+                                    Some(&leader.started_at),
+                                );
                             let follower_location =
-                                poe2_world::connector::get_client_location(identity.pid);
-                            if leader_location.instance_id.is_some()
-                                && leader_location.instance_id == follower_location.instance_id
+                                poe2_world::connector::get_client_location_verified(
+                                    identity.pid,
+                                    Some(&identity.started_at),
+                                );
+                            if leader_location
+                                .as_ref()
+                                .and_then(|location| location.instance_id)
+                                .is_some()
+                                && leader_location
+                                    .as_ref()
+                                    .and_then(|location| location.instance_id)
+                                    == follower_location
+                                        .as_ref()
+                                        .and_then(|location| location.instance_id)
                             {
+                                let completed_instance = leader_location
+                                    .as_ref()
+                                    .and_then(|location| location.instance_id);
                                 sessions.insert(
                                     identity.started_at.clone(),
                                     PartyPhase::Complete {
-                                        leader_instance: leader_location.instance_id,
+                                        leader_instance: completed_instance,
                                     },
                                 );
-                                info!(instance_id, pid = identity.pid, instance = ?leader_location.instance_id, "party onboarding verified complete; follower already with leader");
+                                info!(instance_id, pid = identity.pid, instance = ?completed_instance, "party onboarding verified complete; follower already with leader");
                                 continue;
                             }
-                            let Some(target_instance) = leader_location.instance_id else {
+                            let Some(target_instance) = leader_location
+                                .as_ref()
+                                .and_then(|location| location.instance_id)
+                            else {
                                 continue;
                             };
                             if attempts >= 3 {
@@ -759,12 +1093,14 @@ async fn run() -> Result<()> {
                                     PartyPhase::WarpReady {
                                         attempts: next_attempt_count,
                                         next_attempt: Instant::now() + Duration::from_millis(500),
+                                        close_party_menu: false,
                                     },
                                 );
                                 warn!(instance_id, pid = identity.pid, attempt = next_attempt_count, %error, "party warp could not focus secondary client; bounded retry scheduled");
                                 continue;
                             }
                             std::thread::sleep(Duration::from_millis(180));
+                            let command_started_at = Instant::now();
                             match run_warp_to_leader(&gm, &first) {
                                 Ok(()) => {
                                     let next_attempt = attempts + 1;
@@ -773,6 +1109,7 @@ async fn run() -> Result<()> {
                                         PartyPhase::AwaitingWarp {
                                             attempts: next_attempt,
                                             target_instance,
+                                            command_started_at,
                                             deadline: Instant::now() + Duration::from_secs(8),
                                         },
                                     );
@@ -786,6 +1123,7 @@ async fn run() -> Result<()> {
                                             attempts: attempts + 1,
                                             next_attempt: Instant::now()
                                                 + Duration::from_millis(500),
+                                            close_party_menu: false,
                                         },
                                     );
                                     warn!(instance_id, pid = identity.pid, target = %first, %error, "party warp input delivery failed");
@@ -795,10 +1133,20 @@ async fn run() -> Result<()> {
                         PartyPhase::AwaitingWarp {
                             attempts,
                             target_instance,
+                            command_started_at,
                             deadline,
                         } => {
-                            let location = poe2_world::connector::get_client_location(identity.pid);
-                            if location.instance_id == Some(target_instance) {
+                            let location = poe2_world::connector::get_client_location_verified(
+                                identity.pid,
+                                Some(&identity.started_at),
+                            );
+                            let fresh_confirmation = location.as_ref().is_some_and(|location| {
+                                location.instance_id == Some(target_instance)
+                                    && location
+                                        .observed_at
+                                        .is_some_and(|observed| observed >= command_started_at)
+                            });
+                            if fresh_confirmation {
                                 sessions.insert(
                                     identity.started_at.clone(),
                                     PartyPhase::Complete {
@@ -817,6 +1165,7 @@ async fn run() -> Result<()> {
                                     PartyPhase::WarpReady {
                                         attempts,
                                         next_attempt: Instant::now(),
+                                        close_party_menu: false,
                                     },
                                 );
                                 warn!(
@@ -829,19 +1178,26 @@ async fn run() -> Result<()> {
                         }
                         PartyPhase::Complete { leader_instance } => {
                             let leader_location =
-                                poe2_world::connector::get_client_location(leader.pid);
+                                poe2_world::connector::get_client_location_verified(
+                                    leader.pid,
+                                    Some(&leader.started_at),
+                                );
                             let follower_location =
-                                poe2_world::connector::get_client_location(identity.pid);
+                                poe2_world::connector::get_client_location_verified(
+                                    identity.pid,
+                                    Some(&identity.started_at),
+                                );
                             if let Some((current, target)) = leader_transition_requires_warp(
                                 leader_instance,
-                                leader_location.instance_id,
-                                follower_location.instance_id,
+                                leader_location.and_then(|location| location.instance_id),
+                                follower_location.and_then(|location| location.instance_id),
                             ) {
                                 sessions.insert(
                                     identity.started_at.clone(),
                                     PartyPhase::WarpReady {
                                         attempts: 0,
                                         next_attempt: Instant::now() + Duration::from_millis(800),
+                                        close_party_menu: false,
                                     },
                                 );
                                 info!(
@@ -896,6 +1252,24 @@ async fn run() -> Result<()> {
         let gm = Arc::clone(&gamepad_mgr);
         let party_op = Arc::clone(&party_operation_active);
         let controller_operation = Arc::clone(&controller_operation);
+        let (pad_job_tx, pad_job_rx) = sync_channel(MAX_TRANSIENT_PAD_JOBS);
+        {
+            let worker_gm = Arc::clone(&gm);
+            let worker_operation = Arc::clone(&controller_operation);
+            std::thread::spawn(move || {
+                info!(
+                    capacity = MAX_TRANSIENT_PAD_JOBS,
+                    "Transient controller worker started"
+                );
+                while let Ok(job) = pad_job_rx.recv() {
+                    let _operation_guard = worker_operation.lock();
+                    if let Err(error) = execute_transient_pad_job(&worker_gm, job) {
+                        warn!(%error, "Transient controller command failed");
+                    }
+                }
+                warn!("Transient controller worker stopped");
+            });
+        }
         std::thread::spawn(move || {
             info!("Main decision & input tick loop started");
             let mut active_follow_targets = HashMap::<String, String>::new();
@@ -936,73 +1310,60 @@ async fn run() -> Result<()> {
                     continue;
                 };
 
-                // 3. Process pad commands - spawn each as own thread (non-blocking)
+                // 3. Dispatch transient commands to one bounded worker.  Spawning
+                // one sleeping thread per click used to create a delayed command
+                // backlog and could replay stale input after a scene transition.
                 let pad_cmds = {
                     let mut r = rt.lock();
                     r.drain_pad_commands()
                 };
 
                 for cmd in pad_cmds {
-                    let gm_clone = Arc::clone(&gm);
-                    let operation = Arc::clone(&controller_operation);
                     if cmd.target == "FOCUS" {
                         let slot = cmd.button.parse::<u8>().unwrap_or(0);
                         poe2_input::KbmBridge::set_focus_slot(slot);
                     } else if cmd.target == "MACRO" && cmd.button == "STASH_SWEEP" {
                         poe2_input::stash_macro::execute_stash_sweep();
                     } else if cmd.button == "BROADCAST_A" {
-                        std::thread::spawn(move || {
-                            let _operation_guard = operation.lock();
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.broadcast_button_a();
-                            drop(mgr);
-                            std::thread::sleep(Duration::from_millis(150));
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.broadcast_release();
-                        });
+                        queue_transient_pad_job(&pad_job_tx, TransientPadAction::BroadcastA);
                     } else if cmd.button == "A" || cmd.button == "START" {
-                        let target = cmd.target.clone();
                         let raw_btn = if cmd.button == "A" {
                             XButtons::A
                         } else {
                             XButtons::START
                         };
-                        std::thread::spawn(move || {
-                            let _operation_guard = operation.lock();
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.press_button(&target, XButtons { raw: raw_btn });
-                            drop(mgr);
-                            std::thread::sleep(Duration::from_millis(300));
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.release_all(&target);
-                        });
+                        queue_transient_pad_job(
+                            &pad_job_tx,
+                            TransientPadAction::Press {
+                                target: cmd.target,
+                                button: raw_btn,
+                                hold: Duration::from_millis(300),
+                            },
+                        );
                     } else if cmd.button == "LEFT" || cmd.button == "RIGHT" {
-                        let target = cmd.target.clone();
                         let raw_btn = if cmd.button == "LEFT" {
                             XButtons::LEFT
                         } else {
                             XButtons::RIGHT
                         };
-                        std::thread::spawn(move || {
-                            let _operation_guard = operation.lock();
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.press_button(&target, XButtons { raw: raw_btn });
-                            drop(mgr);
-                            std::thread::sleep(Duration::from_millis(80));
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.release_buttons(&target, XButtons { raw: raw_btn });
-                        });
+                        queue_transient_pad_job(
+                            &pad_job_tx,
+                            TransientPadAction::Press {
+                                target: cmd.target,
+                                button: raw_btn,
+                                hold: Duration::from_millis(80),
+                            },
+                        );
                     } else if cmd.dx != 0.0 || cmd.dy != 0.0 {
-                        let target = cmd.target.clone();
-                        std::thread::spawn(move || {
-                            let _operation_guard = operation.lock();
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.set_movement(&target, cmd.dx, cmd.dy, true);
-                            drop(mgr);
-                            std::thread::sleep(Duration::from_millis(250));
-                            let mut mgr = gm_clone.lock();
-                            let _ = mgr.release_movement(&target);
-                        });
+                        queue_transient_pad_job(
+                            &pad_job_tx,
+                            TransientPadAction::Move {
+                                target: cmd.target,
+                                dx: cmd.dx,
+                                dy: cmd.dy,
+                                hold: Duration::from_millis(250),
+                            },
+                        );
                     }
                 }
 
@@ -1042,6 +1403,13 @@ async fn run() -> Result<()> {
                             let Some(target) = active_follow_targets.get(&follower.name) else {
                                 continue;
                             };
+                            if !is_target_automation_enabled(
+                                target,
+                                &snapshot.instance_services.runtime_instances,
+                            ) {
+                                let _ = mgr.release_all(target);
+                                continue;
+                            }
                             let result = ActionMapper::apply_action_to_target(
                                 follower,
                                 target,
@@ -1069,11 +1437,21 @@ async fn run() -> Result<()> {
                         // Emit flask pulses after movement so they cannot be
                         // overwritten by the mapper in the same engine tick.
                         // The WASD leader has no virtual pad. Recovery input is
-                        // generated only for mapped follower controllers.
+                        // generated only for mapped follower controllers with automation enabled.
+                        let enabled_follow_targets = active_follow_targets
+                            .iter()
+                            .filter(|(_, target)| {
+                                is_target_automation_enabled(
+                                    target,
+                                    &snapshot.instance_services.runtime_instances,
+                                )
+                            })
+                            .map(|(k, v)| (k.clone(), v.clone()))
+                            .collect::<HashMap<_, _>>();
                         extra_events.extend(flask_ctrl.evaluate_mapped_party(
                             &snapshot.leader,
                             &snapshot.followers,
-                            (None, &active_follow_targets),
+                            (None, &enabled_follow_targets),
                             &snapshot.settings.flask,
                             snapshot.tick,
                             &mut mgr,
@@ -1103,6 +1481,7 @@ async fn run() -> Result<()> {
 
                 // 6. Dynamic tick - reads fresh value every loop
                 let sleep_ms = snapshot.config.tick_ms.clamp(10, 1000);
+                drop(_controller_cycle);
                 std::thread::sleep(Duration::from_millis(sleep_ms));
             }
         });
@@ -1183,43 +1562,23 @@ mod tests {
     }
 
     #[test]
-    fn party_signal_requires_nonzero_invite_before_zero_can_advance() {
-        let now = Instant::now();
-        let mut phase = PartyPhase::Waiting;
+    fn party_accept_route_opens_menu_selects_invite_and_confirms() {
         assert_eq!(
-            apply_party_signal(&mut phase, 0, now),
-            PartySignalOutcome::Ignored
+            PARTY_INVITE_ACCEPT_STEPS,
+            [
+                (XButtons::START, 100, 500),
+                (XButtons::LEFT, 80, 350),
+                (XButtons::LEFT, 80, 550),
+                (XButtons::A, 80, 500),
+            ]
         );
-        assert!(matches!(phase, PartyPhase::Waiting));
-
-        assert_eq!(
-            apply_party_signal(&mut phase, 1234, now),
-            PartySignalOutcome::InviteArmed
-        );
-        assert!(matches!(phase, PartyPhase::AcceptReady { code: 1234, .. }));
-
-        phase = PartyPhase::AwaitingInviteClear {
-            code: 1234,
-            attempts: 1,
-            deadline: now,
-        };
-        assert_eq!(
-            apply_party_signal(&mut phase, 0, now),
-            PartySignalOutcome::InviteCleared
-        );
-        assert!(matches!(phase, PartyPhase::WarpReady { attempts: 1, .. }));
     }
 
     #[test]
-    fn completed_party_ignores_invites_and_tracks_real_leader_transition() {
-        let now = Instant::now();
-        let mut phase = PartyPhase::Complete {
+    fn completed_party_tracks_real_leader_transition() {
+        let phase = PartyPhase::Complete {
             leader_instance: Some(100),
         };
-        assert_eq!(
-            apply_party_signal(&mut phase, 4321, now),
-            PartySignalOutcome::Ignored
-        );
         assert!(matches!(phase, PartyPhase::Complete { .. }));
         assert_eq!(
             leader_transition_requires_warp(Some(100), Some(100), Some(90)),
@@ -1232,6 +1591,10 @@ mod tests {
         assert_eq!(
             leader_transition_requires_warp(Some(100), Some(200), Some(200)),
             None
+        );
+        assert_eq!(
+            leader_transition_requires_warp(Some(100), Some(200), None),
+            Some((0, 200))
         );
     }
 }

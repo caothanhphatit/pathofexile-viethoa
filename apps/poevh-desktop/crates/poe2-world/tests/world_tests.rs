@@ -129,6 +129,9 @@ fn test_poe_smoother_policy_and_backup() {
     apply_poe_smoother_policy(&test_ini, &cfg).expect("apply policy");
 
     let updated = fs::read_to_string(&test_ini).expect("read test ini");
+    assert!(updated.contains("background_framerate_limit=10"));
+    assert!(updated.contains("background_framerate_limit_enabled=true"));
+    assert!(updated.contains("framerate_limit=60"));
     assert!(updated.contains("shadow_type=Off"));
     assert!(updated.contains("texture_quality=TextureQualityLow"));
     assert!(updated.contains("screenspace_effects=0"));
@@ -136,4 +139,46 @@ fn test_poe_smoother_policy_and_backup() {
 
     let _ = fs::remove_file(&test_ini);
     let _ = fs::remove_file(&test_bak);
+}
+
+#[test]
+fn test_poe_smoother_policy_adds_missing_keys_under_their_own_section() {
+    use poe2_types::PoeSmootherConfig;
+    use poe2_world::smoother::apply_poe_smoother_policy;
+
+    let test_ini = std::env::temp_dir().join("poe2_test_smoother_sections.ini");
+    fs::write(
+        &test_ini,
+        "[DISPLAY]\r\nresolution_width=1920\r\n\r\n[AUDIO]\r\nmaster_volume=100\r\n",
+    )
+    .expect("write test ini");
+
+    let cfg = PoeSmootherConfig {
+        disable_sounds: true,
+        background_fps: 10,
+        foreground_fps: 60,
+        ..Default::default()
+    };
+    apply_poe_smoother_policy(&test_ini, &cfg).expect("apply policy");
+
+    let updated = fs::read_to_string(&test_ini).expect("read test ini");
+    let section_of = |key: &str| {
+        updated
+            .lines()
+            .take_while(|line| !line.starts_with(&format!("{key}=")))
+            .filter(|line| line.starts_with('['))
+            .last()
+            .map(str::to_owned)
+    };
+    assert_eq!(section_of("framerate_limit").as_deref(), Some("[DISPLAY]"));
+    assert_eq!(
+        section_of("sound_effects_volume2").as_deref(),
+        Some("[AUDIO]")
+    );
+    assert_eq!(
+        section_of("ambient_sound_volume2").as_deref(),
+        Some("[AUDIO]")
+    );
+
+    let _ = fs::remove_file(&test_ini);
 }

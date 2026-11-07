@@ -98,6 +98,8 @@ async fn actual_windows_process_can_be_scanned_bound_and_unbound_via_real_api() 
     );
     fixture.child.kill().unwrap();
     fixture.child.wait().unwrap();
+    let _ = post(app.clone(), json!({"command":"scan_instances"})).await;
+    let _ = post(app.clone(), json!({"command":"scan_instances"})).await;
     let (_, state) = post(app.clone(), json!({"command":"scan_instances"})).await;
     assert_eq!(
         state["instance_services"]["instances"][1]["status"],

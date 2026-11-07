@@ -382,6 +382,10 @@ impl Default for PartyCombatConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WaystoneCraftConfig {
+    /// Master switch for the crafting routine. Older settings files predate
+    /// this field, so it defaults to off rather than silently enabling input.
+    #[serde(default)]
+    pub enabled: bool,
     pub auto_id: bool,         // Auto ID with Scroll
     pub auto_alch: bool,       // Auto Alchemy white/magic
     pub finish_exalted: bool,  // Exalted to 6 mods
@@ -391,6 +395,7 @@ pub struct WaystoneCraftConfig {
 impl Default for WaystoneCraftConfig {
     fn default() -> Self {
         Self {
+            enabled: false,
             auto_id: true,
             auto_alch: true,
             finish_exalted: false,
@@ -726,6 +731,24 @@ pub struct ClientAccountProfile {
     pub black_screen: bool,
     pub bg_fps: u32,
     pub enabled: bool,
+}
+
+/// Names shipped by the migration/default profile are role labels, not
+/// character identities read from the game. They must not activate identity
+/// guards or party automation until a real character name is observed/configured.
+pub fn is_placeholder_character_name(name: &str) -> bool {
+    [
+        "leader",
+        "aurabot",
+        "culler",
+        "looter1",
+        "cursebot",
+        "looter2",
+        "character 1",
+        "character 2",
+    ]
+    .iter()
+    .any(|placeholder| name.trim().eq_ignore_ascii_case(placeholder))
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1340,6 +1363,11 @@ pub struct WorldState {
     pub telemetry: Vec<ClientTelemetry>,
     #[serde(default)]
     pub focus_slot: u8,
+    /// Ephemeral automation gates owned by the runtime. Profile `enabled`
+    /// controls whether a process may bind; this map controls whether the
+    /// already-bound instance may produce decisions/input during this session.
+    #[serde(default)]
+    pub instance_automation: std::collections::BTreeMap<u32, bool>,
 }
 
 impl Default for WorldState {
@@ -1348,6 +1376,7 @@ impl Default for WorldState {
             tick: 0,
             running: false,
             focus_slot: 0,
+            instance_automation: std::collections::BTreeMap::new(),
             leader: Actor::new("Leader", 450.0, 255.0),
             followers: vec![
                 Actor::new("Culler", 380.0, 260.0),

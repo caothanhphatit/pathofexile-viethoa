@@ -75,6 +75,12 @@ impl MockWorldAdapter {
     pub fn new() -> Self {
         Self::default()
     }
+
+    /// Test/diagnostic hook for simulating the identity returned by a live
+    /// memory reader without exposing the mock's internal state.
+    pub fn set_leader_name(&mut self, name: impl Into<String>) {
+        self.state.leader.name = name.into();
+    }
 }
 
 impl WorldAdapter for MockWorldAdapter {

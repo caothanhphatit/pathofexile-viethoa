@@ -168,6 +168,7 @@ impl WorldAdapter for MemoryWorldAdapter {
                 .map(|profile| profile.char1_name.trim().to_owned())
                 .unwrap_or_default();
             if !expected_leader.is_empty()
+                && !poe2_types::is_placeholder_character_name(&expected_leader)
                 && !raw.local_player.name.eq_ignore_ascii_case(&expected_leader)
             {
                 let mismatch = format!(

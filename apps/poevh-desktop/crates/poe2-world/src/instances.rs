@@ -43,6 +43,35 @@ pub fn operate_window(identity: &ProcessIdentity, action: &str) -> Result<()> {
     }
 }
 
+/// Send one `/invite <character>` command to the exact, foreground game process.
+/// The target process identity and owning HWND are checked before every input
+/// batch so focus changes never redirect the command to another application.
+pub fn send_party_invite(identity: &ProcessIdentity, character: &str) -> Result<()> {
+    validate_party_invite_name(character)?;
+    #[cfg(windows)]
+    {
+        native::send_party_invite(identity, character)
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = identity;
+        let _ = character;
+        bail!("Party invites require Windows")
+    }
+}
+
+fn validate_party_invite_name(character: &str) -> Result<()> {
+    if character.is_empty()
+        || character.encode_utf16().count() > 64
+        || character
+            .chars()
+            .any(|c| c.is_control() || matches!(c, '/' | '\\'))
+    {
+        bail!("Invalid party invite character name");
+    }
+    Ok(())
+}
+
 #[cfg(windows)]
 mod native {
     use super::*;
@@ -62,9 +91,14 @@ mod native {
                     PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
                 },
             },
+            UI::Input::KeyboardAndMouse::{
+                SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYBD_EVENT_FLAGS,
+                KEYEVENTF_KEYUP, KEYEVENTF_UNICODE, VIRTUAL_KEY, VK_RETURN,
+            },
             UI::WindowsAndMessaging::{
-                BringWindowToTop, EnumWindows, GetWindowTextW, GetWindowThreadProcessId, IsIconic,
-                IsWindowVisible, SetForegroundWindow, ShowWindowAsync, SW_MINIMIZE, SW_RESTORE,
+                BringWindowToTop, EnumWindows, GetForegroundWindow, GetWindowTextW,
+                GetWindowThreadProcessId, IsIconic, IsWindowVisible, SetForegroundWindow,
+                ShowWindowAsync, SW_MINIMIZE, SW_RESTORE,
             },
         },
     };
@@ -305,5 +339,135 @@ mod native {
             }
         }
         Ok(())
+    }
+
+    fn send_inputs(
+        identity: &ProcessIdentity,
+        process: HANDLE,
+        hwnd: HWND,
+        inputs: &[INPUT],
+    ) -> Result<()> {
+        if inspect_handle(identity.pid, process)?.identity != *identity {
+            bail!("Party invite input aborted: sender process identity changed");
+        }
+        let mut foreground_pid = 0;
+        let foreground = unsafe { GetForegroundWindow() };
+        unsafe {
+            GetWindowThreadProcessId(foreground, Some(&mut foreground_pid));
+        }
+        if foreground != hwnd || foreground_pid != identity.pid {
+            bail!("Party invite input aborted: selected game lost foreground focus");
+        }
+        let sent = unsafe { SendInput(inputs, std::mem::size_of::<INPUT>() as i32) };
+        if sent != inputs.len() as u32 {
+            // Best-effort release for any Unicode key-downs in a partial batch.
+            let releases: Vec<_> = inputs
+                .iter()
+                .filter(|input| input.r#type == INPUT_KEYBOARD)
+                .map(|input| {
+                    let mut release = *input;
+                    unsafe {
+                        release.Anonymous.ki.dwFlags |= KEYEVENTF_KEYUP;
+                    }
+                    release
+                })
+                .collect();
+            if !releases.is_empty() {
+                unsafe {
+                    SendInput(&releases, std::mem::size_of::<INPUT>() as i32);
+                }
+            }
+            bail!("Party invite keyboard input was only partially delivered");
+        }
+        Ok(())
+    }
+
+    pub fn send_party_invite(identity: &ProcessIdentity, character: &str) -> Result<()> {
+        // Keep the process handle open while confirming this is still the same
+        // game generation; never fall back to title-based window selection.
+        let process = OwnedHandle(unsafe {
+            OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, identity.pid)?
+        });
+        if inspect_handle(identity.pid, process.0)?.identity != *identity {
+            bail!("Party invite cancelled: game process identity changed");
+        }
+        let window = windows()?
+            .into_iter()
+            .find(|(pid, _)| *pid == identity.pid)
+            .map(|(_, window)| window)
+            .ok_or_else(|| anyhow::anyhow!("No visible window belongs to the invite sender"))?;
+        let hwnd = HWND(window.handle.parse::<usize>()? as *mut std::ffi::c_void);
+        let mut owner_pid = 0;
+        unsafe {
+            GetWindowThreadProcessId(hwnd, Some(&mut owner_pid));
+        }
+        if owner_pid != identity.pid {
+            bail!("Party invite cancelled: sender window owner changed");
+        }
+
+        std::thread::sleep(std::time::Duration::from_millis(120));
+        let enter = [
+            keyboard_input(VK_RETURN, KEYBD_EVENT_FLAGS(0)),
+            keyboard_input(VK_RETURN, KEYEVENTF_KEYUP),
+        ];
+        send_inputs(identity, process.0, hwnd, &enter)?;
+        std::thread::sleep(std::time::Duration::from_millis(80));
+
+        let command = format!("/invite {character}");
+        let mut inputs = Vec::with_capacity(command.encode_utf16().count() * 2);
+        for unit in command.encode_utf16() {
+            inputs.push(unicode_input(unit, KEYEVENTF_UNICODE));
+            inputs.push(unicode_input(unit, KEYEVENTF_UNICODE | KEYEVENTF_KEYUP));
+        }
+        send_inputs(identity, process.0, hwnd, &inputs)?;
+        let enter = [
+            keyboard_input(VK_RETURN, KEYBD_EVENT_FLAGS(0)),
+            keyboard_input(VK_RETURN, KEYEVENTF_KEYUP),
+        ];
+        send_inputs(identity, process.0, hwnd, &enter)?;
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        Ok(())
+    }
+
+    fn keyboard_input(key: VIRTUAL_KEY, flags: KEYBD_EVENT_FLAGS) -> INPUT {
+        INPUT {
+            r#type: INPUT_KEYBOARD,
+            Anonymous: INPUT_0 {
+                ki: KEYBDINPUT {
+                    wVk: key,
+                    dwFlags: flags,
+                    ..Default::default()
+                },
+            },
+        }
+    }
+
+    fn unicode_input(unit: u16, flags: KEYBD_EVENT_FLAGS) -> INPUT {
+        INPUT {
+            r#type: INPUT_KEYBOARD,
+            Anonymous: INPUT_0 {
+                ki: KEYBDINPUT {
+                    wScan: unit,
+                    dwFlags: flags,
+                    ..Default::default()
+                },
+            },
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_party_invite_name;
+
+    #[test]
+    fn party_invite_name_validation_rejects_command_injection_and_bad_lengths() {
+        assert!(validate_party_invite_name("MIRACLE_MINION").is_ok());
+        assert!(validate_party_invite_name("玩家·二").is_ok());
+        assert!(validate_party_invite_name("").is_err());
+        assert!(validate_party_invite_name("name\n/invite Other").is_err());
+        assert!(validate_party_invite_name("name/other").is_err());
+        assert!(validate_party_invite_name("name\\other").is_err());
+        assert!(validate_party_invite_name(&"x".repeat(65)).is_err());
     }
 }

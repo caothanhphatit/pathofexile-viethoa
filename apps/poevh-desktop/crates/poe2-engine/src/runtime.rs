@@ -24,6 +24,7 @@ pub struct BotRuntime {
     pub last_state: WorldState,
     events: VecDeque<BotEvent>,
     pending_pad_commands: Vec<PadCommand>,
+    pending_party_invite_requests: VecDeque<u32>,
     pre_launch_hook: Option<PreLaunchHook>,
     /// Persistent account profiles and process-lifetime runtime records. The
     /// legacy `multi_client.clients` vector remains as a compatibility view
@@ -44,6 +45,7 @@ impl BotRuntime {
             last_state,
             events: VecDeque::with_capacity(EVENT_RING_SIZE + 1),
             pending_pad_commands: Vec::new(),
+            pending_party_invite_requests: VecDeque::new(),
             pre_launch_hook: None,
             runtime_config: RuntimeConfig {
                 accounts: runtime_accounts,
@@ -74,6 +76,47 @@ impl BotRuntime {
         self.instances
             .binding(self.last_state.settings.multi_client.main_instance_id)
             .map(|identity| identity.pid)
+    }
+
+    /// Queue a one-shot invite request from the overview. Binding or enabling
+    /// the feature never starts invite automation by itself.
+    pub fn cmd_request_party_invite(&mut self, id: u32) -> Result<(), InstanceUpdateError> {
+        use InstanceUpdateError::{Conflict, NotFound};
+
+        if !self.last_state.settings.party.enabled {
+            return Err(Conflict("Enable Party before requesting an invite"));
+        }
+        let status = self
+            .runtime_instances()
+            .into_iter()
+            .find(|status| status.instance_id == id)
+            .ok_or(NotFound)?;
+        if status.is_main {
+            return Err(Conflict("The main instance cannot receive a party invite"));
+        }
+        if status.status != "bound" {
+            return Err(Conflict("Bind a running game before requesting an invite"));
+        }
+        if !self.instance_needs_virtual_controllers(id) {
+            return Err(Conflict("This instance is not configured as a follower"));
+        }
+        let target_name = self
+            .client_profile(id)
+            .map(|profile| profile.char1_name.trim().to_owned())
+            .ok_or(NotFound)?;
+        if poe2_types::is_placeholder_character_name(&target_name) {
+            return Err(Conflict(
+                "Set the follower's actual in-game character name before inviting",
+            ));
+        }
+        if !self.pending_party_invite_requests.contains(&id) {
+            self.pending_party_invite_requests.push_back(id);
+        }
+        Ok(())
+    }
+
+    pub fn take_party_invite_requests(&mut self) -> Vec<u32> {
+        self.pending_party_invite_requests.drain(..).collect()
     }
 
     pub fn sync_memory_target_to_main(&mut self) {
@@ -241,6 +284,7 @@ impl BotRuntime {
                     15
                 },
             ),
+            automation_enabled: true,
         };
         if instance.is_main {
             for current in &mut self.runtime_config.instances {
@@ -298,6 +342,7 @@ impl BotRuntime {
                 status.is_main = runtime.is_main;
                 status.black_screen = runtime.black_screen;
                 status.bg_fps = runtime.bg_fps;
+                status.automation_enabled = runtime.automation_enabled;
                 if self.launching_instances.contains(&runtime.id) && status.process.is_none() {
                     status.status = "launching".into();
                 }
@@ -344,6 +389,7 @@ impl BotRuntime {
                 is_main: main,
                 black_screen: status.black_screen,
                 bg_fps: status.bg_fps,
+                automation_enabled: true,
             });
             if main {
                 for instance in &mut self.runtime_config.instances {
@@ -538,7 +584,7 @@ impl BotRuntime {
         }
         self.launching_instances.insert(id);
         self.cmd_run(false);
-        self.cmd_toggle("kbm", false);
+        let _ = self.cmd_toggle("kbm", false);
         self.pending_pad_commands.clear();
         self.set_login_status(id, "waiting_for_login_screen");
         Ok(profile)
@@ -557,6 +603,13 @@ impl BotRuntime {
             .bind(&self.last_state.settings.multi_client, id, identity)?;
         self.sync_memory_target_to_main();
         Ok(())
+    }
+
+    /// Identities currently bound to any profile. Callers that mirror
+    /// bindings into external state (Client.txt scoping) poll this after each
+    /// inventory pass.
+    pub fn bound_identities(&self) -> Vec<ProcessIdentity> {
+        self.instances.bound_identities()
     }
 
     pub fn cmd_unbind_instance(&mut self, id: u32) -> Result<(), InstanceUpdateError> {
@@ -692,11 +745,59 @@ impl BotRuntime {
     /// Advance one tick (called by the tick-loop thread).
     pub fn advance(&mut self) {
         let mut state = self.adapter.snapshot();
+        self.adopt_detected_main_character(&mut state);
         state.focus_slot = self.last_state.focus_slot;
+        state.instance_automation = self
+            .runtime_config
+            .instances
+            .iter()
+            .map(|instance| (instance.id, instance.automation_enabled))
+            .collect();
         let events = FollowEngine::step(&mut state);
         self.adapter.apply_state(state.clone());
         self.last_state = state;
         self.push_events(events);
+    }
+
+    /// The default profile contains role labels for backwards compatibility.
+    /// Once the memory reader has proved the identity of the exact bound main
+    /// process, persist that observed character name so subsequent ticks can
+    /// enforce the identity guard.
+    fn adopt_detected_main_character(&mut self, state: &mut WorldState) {
+        let observed = state.leader.name.trim();
+        if observed.is_empty() || poe2_types::is_placeholder_character_name(observed) {
+            return;
+        }
+
+        let main_id = self.last_state.settings.multi_client.main_instance_id;
+        let Some(profile) = self
+            .last_state
+            .settings
+            .multi_client
+            .clients
+            .iter()
+            .find(|profile| profile.id == main_id)
+        else {
+            return;
+        };
+        if !poe2_types::is_placeholder_character_name(&profile.char1_name)
+            && !profile.char1_name.trim().is_empty()
+        {
+            return;
+        }
+
+        let mut config = self.last_state.settings.multi_client.clone();
+        let Some(profile) = config
+            .clients
+            .iter_mut()
+            .find(|profile| profile.id == main_id)
+        else {
+            return;
+        };
+        profile.char1_name = observed.to_owned();
+        if self.commit_profiles(config.clone()).is_ok() {
+            state.settings.multi_client = config;
+        }
     }
 
     /// Advance and return a snapshot for tests and explicit callers. The main
@@ -820,9 +921,11 @@ impl BotRuntime {
         self.push_event("MAIN", "ROUTE_STEP", "api command", false);
     }
 
-    pub fn cmd_toggle(&mut self, key: &str, value: bool) {
+    pub fn cmd_toggle(&mut self, key: &str, value: bool) -> Result<(), InstanceUpdateError> {
         if key == "kbm" && value && poe2_world::login::is_active() {
-            return;
+            return Err(InstanceUpdateError::Conflict(
+                "Keyboard bridge cannot start while login automation is active",
+            ));
         }
         let mut state = self.adapter.snapshot();
         match key {
@@ -839,6 +942,11 @@ impl BotRuntime {
             // Smart Follow
             "follow_prioritize" => state.config.prioritize_catchup = value,
             "follow_classic_roll" => state.config.classic_roll_sprint = value,
+            "follow_mirror_attack" if value => {
+                return Err(InstanceUpdateError::Unsupported(
+                    "Mirror attack direction has no verified actuator",
+                ))
+            }
             "follow_mirror_attack" => state.config.mirror_attack_dir = false,
             "auto_revive" => state.settings.auto_revive = value,
 
@@ -870,32 +978,60 @@ impl BotRuntime {
             "stash_enabled" => state.settings.stash.enabled = value,
 
             // Auto Party
-            "party_enabled" => state.settings.party.enabled = value,
+            "party_enabled" => {
+                state.settings.party.enabled = value;
+                if !value {
+                    self.pending_party_invite_requests.clear();
+                }
+            }
 
             // Party Combat
             "party_combat_enabled" => state.settings.party_combat.enabled = value,
 
             // Waystones Crafting
+            "waystones_enabled" => state.settings.waystones.enabled = value,
             "waystones_id" => state.settings.waystones.auto_id = value,
             "waystones_alch" => state.settings.waystones.auto_alch = value,
             "waystones_exalt" => state.settings.waystones.finish_exalted = value,
             "waystones_stash" => state.settings.waystones.auto_stash_maps = value,
 
             // Shared Controls
+            "sync_dodge" if value => {
+                return Err(InstanceUpdateError::Unsupported(
+                    "Synchronized dodge has no verified actuator",
+                ))
+            }
             "sync_dodge" => state.settings.shared_ctrl.sync_dodge = false,
+            "share_attack_dir" if value => {
+                return Err(InstanceUpdateError::Unsupported(
+                    "Shared attack direction has no verified actuator",
+                ))
+            }
             "share_attack_dir" => state.settings.shared_ctrl.share_attack_dir = false,
             "approach_delay" => state.settings.shared_ctrl.approach_delay = value,
 
             // Timed Actions
             "timed_1" => {
-                if let Some(a) = state.settings.timed_actions.get_mut(0) {
-                    a.enabled = value;
-                }
+                let action =
+                    state
+                        .settings
+                        .timed_actions
+                        .get_mut(0)
+                        .ok_or(InstanceUpdateError::Invalid(
+                            "Timed action #1 is not configured",
+                        ))?;
+                action.enabled = value;
             }
             "timed_2" => {
-                if let Some(a) = state.settings.timed_actions.get_mut(1) {
-                    a.enabled = value;
-                }
+                let action =
+                    state
+                        .settings
+                        .timed_actions
+                        .get_mut(1)
+                        .ok_or(InstanceUpdateError::Invalid(
+                            "Timed action #2 is not configured",
+                        ))?;
+                action.enabled = value;
             }
             // Graphics preferences are updated by instance ID only (no INI writes).
 
@@ -909,15 +1045,14 @@ impl BotRuntime {
                     "client2_enabled" => 2,
                     _ => 3,
                 };
-                if let Some(c) = state
+                let client = state
                     .settings
                     .multi_client
                     .clients
                     .iter_mut()
                     .find(|c| c.id == id)
-                {
-                    c.enabled = value;
-                }
+                    .ok_or(InstanceUpdateError::NotFound)?;
+                client.enabled = value;
             }
 
             // Mouse & Key Mappings
@@ -925,7 +1060,11 @@ impl BotRuntime {
             "mouse_right_broadcast" => state.settings.mouse_bindings.right_click_broadcast = value,
             "mouse_key_a_as_right" => state.settings.mouse_bindings.key_a_as_right_click = value,
 
-            _ => return,
+            _ => {
+                return Err(InstanceUpdateError::Invalid(
+                    "Unknown or retired toggle key",
+                ))
+            }
         }
         self.adapter.apply_state(state.clone());
         self.persist_runtime_settings(&state);
@@ -936,15 +1075,20 @@ impl BotRuntime {
             if value { "ON" } else { "OFF" }
         );
         self.push_event("SYSTEM", &label, "api command", false);
+        Ok(())
     }
 
-    pub fn cmd_set_mouse_action(&mut self, button: &str, action: &str) {
+    pub fn cmd_set_mouse_action_checked(
+        &mut self,
+        button: &str,
+        action: &str,
+    ) -> Result<(), InstanceUpdateError> {
         let mut state = self.adapter.snapshot();
         match button {
             "mouse_4" => state.settings.mouse_bindings.mouse_4_action = action.to_owned(),
             "mouse_5" => state.settings.mouse_bindings.mouse_5_action = action.to_owned(),
             "middle" => state.settings.mouse_bindings.middle_click_action = action.to_owned(),
-            _ => return,
+            _ => return Err(InstanceUpdateError::Invalid("Unknown mouse button")),
         }
         self.adapter.apply_state(state.clone());
         self.persist_runtime_settings(&state);
@@ -955,9 +1099,41 @@ impl BotRuntime {
             &format!("{button} -> {action}"),
             false,
         );
+        Ok(())
     }
 
-    pub fn cmd_set_controller_key(&mut self, button: &str, key: &str) {
+    pub fn cmd_set_mouse_action(&mut self, button: &str, action: &str) {
+        let _ = self.cmd_set_mouse_action_checked(button, action);
+    }
+
+    pub fn cmd_set_controller_key_checked(
+        &mut self,
+        button: &str,
+        key: &str,
+    ) -> Result<(), InstanceUpdateError> {
+        if !matches!(
+            button,
+            "move_up"
+                | "move_down"
+                | "move_left"
+                | "move_right"
+                | "button_a"
+                | "button_b"
+                | "button_x"
+                | "button_y"
+                | "button_lb"
+                | "button_rb"
+                | "button_lt"
+                | "button_rt"
+                | "dpad_left"
+                | "dpad_right"
+                | "dpad_up"
+                | "dpad_down"
+                | "button_start"
+                | "button_back"
+        ) {
+            return Err(InstanceUpdateError::Invalid("Unknown controller button"));
+        }
         let mut state = self.adapter.snapshot();
         let key_trimmed = key.trim();
         // If assigning a non-empty key, clear any other button that had this key to avoid duplicate hotkeys
@@ -1007,7 +1183,7 @@ impl BotRuntime {
             "dpad_down" => state.settings.controller_mapping.dpad_down = key.to_owned(),
             "button_start" => state.settings.controller_mapping.button_start = key.to_owned(),
             "button_back" => state.settings.controller_mapping.button_back = key.to_owned(),
-            _ => return,
+            _ => unreachable!("controller button was validated above"),
         }
         self.adapter.apply_state(state.clone());
         self.persist_runtime_settings(&state);
@@ -1018,6 +1194,11 @@ impl BotRuntime {
             &format!("{button} -> {key}"),
             false,
         );
+        Ok(())
+    }
+
+    pub fn cmd_set_controller_key(&mut self, button: &str, key: &str) {
+        let _ = self.cmd_set_controller_key_checked(button, key);
     }
 
     pub fn cmd_update_poe_smoother(&mut self, config: poe2_types::PoeSmootherConfig) {
@@ -1083,9 +1264,11 @@ impl BotRuntime {
         );
     }
 
-    pub fn cmd_toggle_client_bot(&mut self, id: u32) -> bool {
-        let mut state = self.adapter.snapshot();
-        let profile_exists = state
+    /// Toggle a runtime client's automation state and preserve the reason for
+    /// rejected requests for the HTTP boundary.
+    pub fn cmd_toggle_client_bot_checked(&mut self, id: u32) -> Result<bool, InstanceUpdateError> {
+        let profile_exists = self
+            .last_state
             .settings
             .multi_client
             .clients
@@ -1098,29 +1281,62 @@ impl BotRuntime {
                 &format!("Client #{id}: profile không tồn tại hoặc đang bị tắt"),
                 true,
             );
-            return false;
+            return Err(InstanceUpdateError::Conflict(
+                "Instance profile does not exist or is disabled",
+            ));
         }
 
-        // `ClientAccountProfile.enabled` controls whether a profile may bind a
-        // process. It is not a play/pause flag. Mutating it here made the
-        // inventory thread classify a still-running client as disabled and
-        // immediately unplug its two ViGEm controllers, which disconnects a
-        // couch-coop character from the game.
-        let new_enabled = !state.running;
-        state.running = new_enabled;
-        self.adapter.apply_state(state.clone());
-        self.last_state = state;
-        self.push_event(
-            "INSTANCE",
-            if new_enabled {
-                "BOT_STARTED"
-            } else {
-                "BOT_PAUSED"
-            },
-            &format!("Client #{id}"),
-            true,
-        );
-        new_enabled
+        let instance = self
+            .runtime_config
+            .instances
+            .iter_mut()
+            .find(|inst| inst.id == id);
+        if let Some(inst) = instance {
+            inst.automation_enabled = !inst.automation_enabled;
+            let enabled = inst.automation_enabled;
+            self.push_event(
+                "INSTANCE",
+                if enabled { "BOT_STARTED" } else { "BOT_PAUSED" },
+                &format!("Client #{id}"),
+                true,
+            );
+            return Ok(enabled);
+        }
+
+        self.ensure_runtime_instance(id, None, None, None)?;
+        if let Some(inst) = self
+            .runtime_config
+            .instances
+            .iter_mut()
+            .find(|inst| inst.id == id)
+        {
+            inst.automation_enabled = false;
+            self.push_event("INSTANCE", "BOT_PAUSED", &format!("Client #{id}"), true);
+            return Ok(false);
+        }
+        Err(InstanceUpdateError::Unavailable(
+            "Runtime instance could not be initialized".into(),
+        ))
+    }
+
+    /// Compatibility helper for existing native callers and tests that only
+    /// need the resulting enabled state. HTTP callers should use the checked
+    /// variant so rejected IDs are returned as errors.
+    pub fn cmd_toggle_client_bot(&mut self, id: u32) -> bool {
+        self.cmd_toggle_client_bot_checked(id).unwrap_or(false)
+    }
+
+    pub fn is_instance_automation_enabled(&self, id: u32) -> bool {
+        self.runtime_config
+            .instances
+            .iter()
+            .find(|inst| inst.id == id)
+            .map(|inst| inst.automation_enabled)
+            .unwrap_or(true)
+    }
+
+    pub fn has_scan_error(&self) -> bool {
+        self.instances.scan_error.is_some()
     }
 
     /// Persist the primary character observed from the exact PID bound to a
@@ -1250,25 +1466,82 @@ impl BotRuntime {
         );
     }
 
-    pub fn cmd_set_param(&mut self, key: &str, value: f32) {
+    pub fn cmd_set_param(&mut self, key: &str, value: f32) -> Result<(), InstanceUpdateError> {
+        if !value.is_finite() {
+            return Err(InstanceUpdateError::Invalid(
+                "Numeric setting must be finite",
+            ));
+        }
         let mut state = self.adapter.snapshot();
         match key {
-            "stop_dist" => state.config.stop_distance = value,
-            "sprint_dist" => state.config.catch_up_distance = value,
-            "warp_dist" => state.config.warp_distance = value,
-            "tick_ms" => state.config.tick_ms = value as u64,
-            "pickup_radius" => state.settings.pickup.pickup_radius = value,
-            "pickup_currency_tier" => state.settings.pickup.currency_tier = value as u8,
-            "life_hp_pct" => state.settings.flask.life_hp_pct = value as u8,
-            "mana_mp_pct" => state.settings.flask.mana_mp_pct = value as u8,
-            "life_cd_ms" => state.settings.flask.life_cooldown_ms = value as u64,
-            "mana_cd_ms" => state.settings.flask.mana_cooldown_ms = value as u64,
+            "stop_dist" if (0.0..=10_000.0).contains(&value) => state.config.stop_distance = value,
+            "sprint_dist" if (0.0..=10_000.0).contains(&value) => {
+                state.config.catch_up_distance = value
+            }
+            "warp_dist" if (0.0..=10_000.0).contains(&value) => state.config.warp_distance = value,
+            "tick_ms" if is_integer_in_range(value, 10.0, 1_000.0) => {
+                state.config.tick_ms = value as u64
+            }
+            "pickup_radius" if (0.0..=500.0).contains(&value) => {
+                state.settings.pickup.pickup_radius = value
+            }
+            "pickup_currency_tier" if is_integer_in_range(value, 0.0, 3.0) => {
+                state.settings.pickup.currency_tier = value as u8
+            }
+            "life_hp_pct" if is_integer_in_range(value, 0.0, 100.0) => {
+                state.settings.flask.life_hp_pct = value as u8
+            }
+            "mana_mp_pct" if is_integer_in_range(value, 0.0, 100.0) => {
+                state.settings.flask.mana_mp_pct = value as u8
+            }
+            "life_cd_ms" if is_integer_in_range(value, 0.0, 600_000.0) => {
+                state.settings.flask.life_cooldown_ms = value as u64
+            }
+            "mana_cd_ms" if is_integer_in_range(value, 0.0, 600_000.0) => {
+                state.settings.flask.mana_cooldown_ms = value as u64
+            }
 
-            _ => return,
+            "stop_dist" | "sprint_dist" | "warp_dist" => {
+                return Err(InstanceUpdateError::Invalid(
+                    "Distance must be between 0 and 10000",
+                ))
+            }
+            "tick_ms" => {
+                return Err(InstanceUpdateError::Invalid(
+                    "tick_ms must be an integer between 10 and 1000",
+                ))
+            }
+            "pickup_radius" => {
+                return Err(InstanceUpdateError::Invalid(
+                    "pickup_radius must be between 0 and 500",
+                ))
+            }
+            "pickup_currency_tier" => {
+                return Err(InstanceUpdateError::Invalid(
+                    "pickup_currency_tier must be an integer between 0 and 3",
+                ))
+            }
+            "life_hp_pct" | "mana_mp_pct" => {
+                return Err(InstanceUpdateError::Invalid(
+                    "Flask percentage must be an integer between 0 and 100",
+                ))
+            }
+            "life_cd_ms" | "mana_cd_ms" => {
+                return Err(InstanceUpdateError::Invalid(
+                    "Flask cooldown must be an integer between 0 and 600000",
+                ))
+            }
+
+            _ => {
+                return Err(InstanceUpdateError::Invalid(
+                    "Unknown or retired numeric setting",
+                ))
+            }
         }
         self.adapter.apply_state(state.clone());
         self.persist_runtime_settings(&state);
         self.last_state = state;
+        Ok(())
     }
 
     pub fn cmd_reset_tracker(&mut self) {
@@ -1415,6 +1688,10 @@ impl BotRuntime {
             events: self.events.iter().cloned().collect(),
         }
     }
+}
+
+fn is_integer_in_range(value: f32, min: f32, max: f32) -> bool {
+    value.fract() == 0.0 && (min..=max).contains(&value)
 }
 
 // ─── API shape ────────────────────────────────────────────────────────────────

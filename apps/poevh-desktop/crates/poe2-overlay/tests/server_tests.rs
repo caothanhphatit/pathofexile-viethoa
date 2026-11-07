@@ -179,6 +179,67 @@ async fn instance_mutations_require_auth_and_do_not_change_state_when_rejected()
     );
 }
 
+#[tokio::test]
+async fn api_failures_return_a_traceable_request_id() {
+    use serde_json::json;
+
+    let app = build_app(Arc::new(Mutex::new(BotRuntime::default_mock())));
+    let request_id = "ui-test-request-42";
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/api/command")
+                .header("x-api-token", get_api_token())
+                .header("x-request-id", request_id)
+                .header("content-type", "application/json")
+                .body(Body::from(json!({"command":"not-a-command"}).to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    assert_eq!(response.headers()["x-request-id"], request_id);
+    let body = response.into_body().collect().await.unwrap().to_bytes();
+    let body: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(body["request_id"], request_id);
+}
+
+#[tokio::test]
+async fn browser_diagnostic_endpoint_requires_auth_and_accepts_bounded_payload() {
+    let app = build_app(Arc::new(Mutex::new(BotRuntime::default_mock())));
+    let response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/api/client-log")
+                .header("content-type", "application/json")
+                .body(Body::from(r#"{"level":"error","message":"no token"}"#))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/api/client-log")
+                .header("x-api-token", get_api_token())
+                .header("content-type", "application/json")
+                .body(Body::from(
+                    r#"{"level":"error","message":"render failed","source":"core.js","line":12,"column":4,"stack":"Error: render failed","client_request_id":"ui-42"}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NO_CONTENT);
+    assert!(response.headers().get("x-request-id").is_some());
+}
+
 async fn instance_command(
     app: axum::Router,
     payload: serde_json::Value,
@@ -320,6 +381,39 @@ async fn obsolete_platform_graphics_commands_are_explicitly_rejected() {
             StatusCode::BAD_REQUEST
         );
     }
+}
+
+#[tokio::test]
+async fn unknown_and_unimplemented_runtime_settings_are_not_reported_as_success() {
+    use serde_json::json;
+    let app = build_app(Arc::new(Mutex::new(BotRuntime::default_mock())));
+    assert_eq!(
+        instance_command(
+            app.clone(),
+            json!({"command":"toggle","key":"not_a_real_toggle","value":true})
+        )
+        .await
+        .0,
+        StatusCode::BAD_REQUEST
+    );
+    assert_eq!(
+        instance_command(
+            app.clone(),
+            json!({"command":"toggle","key":"sync_dodge","value":true})
+        )
+        .await
+        .0,
+        StatusCode::NOT_IMPLEMENTED
+    );
+    assert_eq!(
+        instance_command(
+            app,
+            json!({"command":"set_param","key":"not_a_real_number","value":1})
+        )
+        .await
+        .0,
+        StatusCode::BAD_REQUEST
+    );
 }
 
 #[tokio::test]

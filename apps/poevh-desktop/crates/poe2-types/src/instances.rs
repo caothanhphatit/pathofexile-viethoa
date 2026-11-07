@@ -29,6 +29,10 @@ pub struct GameProcess {
     pub cpu_ticks: u64,
 }
 
+const fn default_true() -> bool {
+    true
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InstanceStatus {
     pub instance_id: u32,
@@ -42,6 +46,8 @@ pub struct InstanceStatus {
     pub black_screen: bool,
     #[serde(default)]
     pub bg_fps: u32,
+    #[serde(default = "default_true")]
+    pub automation_enabled: bool,
     pub status: String,
     pub binding: Option<ProcessIdentity>,
     pub process: Option<GameProcess>,

@@ -12,8 +12,14 @@ use parking_lot::Mutex;
 use poe2_engine::BotRuntime;
 use serde::Deserialize;
 use serde_json::{json, Value};
-use std::sync::{Arc, OnceLock};
-use tracing::info;
+use std::{
+    sync::{
+        atomic::{AtomicU64, Ordering},
+        Arc, OnceLock,
+    },
+    time::Instant,
+};
+use tracing::{debug, info, warn};
 
 pub type SharedRuntime = Arc<Mutex<BotRuntime>>;
 
@@ -31,7 +37,53 @@ impl Drop for LaunchReservation {
 }
 
 static API_TOKEN: OnceLock<String> = OnceLock::new();
+static REQUEST_COUNTER: AtomicU64 = AtomicU64::new(1);
 const AUTO_LOGIN_AVAILABLE: bool = false;
+
+// A request id is kept in a Tokio task-local so every validation branch can
+// attach the same id to its diagnostic without threading it through dozens of
+// command handlers. It is also returned as X-Request-Id for UI-side reports.
+tokio::task_local! {
+    static REQUEST_ID: String;
+}
+
+fn new_request_id() -> String {
+    format!(
+        "p{}-r{}",
+        std::process::id(),
+        REQUEST_COUNTER.fetch_add(1, Ordering::Relaxed)
+    )
+}
+
+fn request_id_from_headers(headers: &HeaderMap) -> String {
+    headers
+        .get("x-request-id")
+        .and_then(|value| value.to_str().ok())
+        .filter(|value| {
+            !value.is_empty()
+                && value.len() <= 128
+                && value
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_' | b'.'))
+        })
+        .map(str::to_owned)
+        .unwrap_or_else(new_request_id)
+}
+
+fn current_request_id() -> Option<String> {
+    REQUEST_ID.try_with(|request_id| request_id.clone()).ok()
+}
+
+fn json_shape(value: &Value) -> String {
+    match value {
+        Value::Null => "null".to_string(),
+        Value::Bool(_) => "bool".to_string(),
+        Value::Number(number) => format!("number:{number}"),
+        Value::String(value) => format!("string:len={}", value.len()),
+        Value::Array(values) => format!("array:len={}", values.len()),
+        Value::Object(values) => format!("object:keys={}", values.len()),
+    }
+}
 
 pub fn get_api_token() -> &'static str {
     API_TOKEN.get_or_init(|| {
@@ -349,6 +401,7 @@ pub fn build_app(runtime: SharedRuntime) -> Router {
         .route("/api/expedition/latest", get(get_expedition_latest))
         .route("/api/expedition/dismiss", post(post_expedition_dismiss))
         .route("/api/command", post(post_command))
+        .route("/api/client-log", post(post_client_log))
         .route("/api/credentials", post(post_credentials))
         .route("/api/login-calibration", post(post_login_calibration))
         .route("/api/standalone-login", post(post_standalone_login))
@@ -362,9 +415,13 @@ pub fn build_app(runtime: SharedRuntime) -> Router {
 }
 
 async fn local_request_guard(request: Request, next: Next) -> Response {
+    let request_id = request_id_from_headers(request.headers());
+    let method = request.method().clone();
+    let path = request.uri().path().to_string();
+    let started = Instant::now();
     let headers = request.headers();
     let valid_host = |host: &str| matches!(host, "127.0.0.1:8766" | "localhost:8766");
-    if headers
+    let invalid_origin = headers
         .get(header::HOST)
         .is_some_and(|h| h.to_str().map(|h| !valid_host(h)).unwrap_or(true))
         || headers.get(header::ORIGIN).is_some_and(|h| {
@@ -375,23 +432,63 @@ async fn local_request_guard(request: Request, next: Next) -> Response {
         })
         || headers
             .get("sec-fetch-site")
-            .is_some_and(|h| h == "cross-site")
-    {
-        return (StatusCode::FORBIDDEN, "Local origin required").into_response();
-    }
-    // Authenticate BEFORE deserializing request bodies (including malformed secrets).
-    let req_path = request.uri().path();
-    let is_safe_leveling_get = request.method() == axum::http::Method::GET
-        && (req_path == "/api/leveling/current-zone" || req_path == "/api/leveling/visibility");
+            .is_some_and(|h| h == "cross-site");
 
-    if req_path.starts_with("/api/") && !is_safe_leveling_get && !is_authorized(headers) {
-        return (
-            StatusCode::UNAUTHORIZED,
-            Json(json!({"error":"Missing or invalid API token"})),
-        )
-            .into_response();
+    let mut response = if invalid_origin {
+        (StatusCode::FORBIDDEN, "Local origin required").into_response()
+    } else {
+        // Authenticate BEFORE deserializing request bodies (including malformed secrets).
+        let is_safe_leveling_get = method == axum::http::Method::GET
+            && (path == "/api/leveling/current-zone" || path == "/api/leveling/visibility");
+        if path.starts_with("/api/") && !is_safe_leveling_get && !is_authorized(headers) {
+            (
+                StatusCode::UNAUTHORIZED,
+                Json(json!({"error":"Missing or invalid API token"})),
+            )
+                .into_response()
+        } else {
+            REQUEST_ID
+                .scope(request_id.clone(), next.run(request))
+                .await
+        }
+    };
+    let status = response.status();
+    if status.is_client_error() || status.is_server_error() {
+        warn!(
+            target: "poevh_overlay::http",
+            request_id = %request_id,
+            method = %method,
+            path = %path,
+            status = status.as_u16(),
+            duration_ms = started.elapsed().as_millis() as u64,
+            "HTTP request failed"
+        );
+    } else if path == "/api/command"
+        || (path.starts_with("/api/") && method != axum::http::Method::GET)
+    {
+        info!(
+            target: "poevh_overlay::http",
+            request_id = %request_id,
+            method = %method,
+            path = %path,
+            status = status.as_u16(),
+            duration_ms = started.elapsed().as_millis() as u64,
+            "HTTP request completed"
+        );
+    } else {
+        debug!(
+            target: "poevh_overlay::http",
+            request_id = %request_id,
+            method = %method,
+            path = %path,
+            status = status.as_u16(),
+            duration_ms = started.elapsed().as_millis() as u64,
+            "HTTP request completed"
+        );
     }
-    let mut response = next.run(request).await;
+    if let Ok(value) = axum::http::HeaderValue::from_str(&request_id) {
+        response.headers_mut().insert("x-request-id", value);
+    }
     response
         .headers_mut()
         .insert(header::CACHE_CONTROL, "no-store".parse().unwrap());
@@ -843,16 +940,115 @@ struct CommandPayload {
     dy: Option<f32>,
 }
 
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ClientLogPayload {
+    level: String,
+    message: String,
+    #[serde(default)]
+    source: String,
+    #[serde(default)]
+    line: Option<u32>,
+    #[serde(default)]
+    column: Option<u32>,
+    #[serde(default)]
+    stack: String,
+    #[serde(default)]
+    client_request_id: String,
+}
+
+async fn post_client_log(Json(payload): Json<ClientLogPayload>) -> impl IntoResponse {
+    let level = match payload.level.as_str() {
+        "error" => tracing::Level::ERROR,
+        "warn" => tracing::Level::WARN,
+        "info" => tracing::Level::INFO,
+        _ => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(json!({"error":"Invalid log level"})),
+            )
+                .into_response()
+        }
+    };
+    if payload.message.trim().is_empty() || payload.message.len() > 4096 {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"error":"Invalid client log message"})),
+        )
+            .into_response();
+    }
+    let request_id = current_request_id().unwrap_or_else(new_request_id);
+    let source = payload.source.chars().take(512).collect::<String>();
+    let stack = payload.stack.chars().take(6000).collect::<String>();
+    // Client logs intentionally exclude raw form values and API tokens. The
+    // source location, stack and request id are enough to correlate a UI fault
+    // with the corresponding backend request in the session log.
+    match level {
+        tracing::Level::ERROR => tracing::error!(
+            target: "poevh_overlay::client",
+            request_id = %request_id,
+            client_request_id = %payload.client_request_id,
+            source = %source,
+            line = ?payload.line,
+            column = ?payload.column,
+            message = %payload.message,
+            stack = %stack,
+            "browser error"
+        ),
+        tracing::Level::WARN => tracing::warn!(
+            target: "poevh_overlay::client",
+            request_id = %request_id,
+            client_request_id = %payload.client_request_id,
+            source = %source,
+            line = ?payload.line,
+            column = ?payload.column,
+            message = %payload.message,
+            stack = %stack,
+            "browser warning"
+        ),
+        _ => tracing::info!(
+            target: "poevh_overlay::client",
+            request_id = %request_id,
+            client_request_id = %payload.client_request_id,
+            source = %source,
+            line = ?payload.line,
+            column = ?payload.column,
+            message = %payload.message,
+            stack = %stack,
+            "browser log"
+        ),
+    }
+    // 204 carries no body; the request id is returned in X-Request-Id by the
+    // request guard.
+    StatusCode::NO_CONTENT.into_response()
+}
+
+fn api_error(status: StatusCode, message: impl Into<String>) -> Response {
+    let message = message.into();
+    let request_id = current_request_id();
+    warn!(
+        target: "poevh_overlay::command",
+        request_id = request_id.as_deref().unwrap_or("unknown"),
+        status = status.as_u16(),
+        error = %message,
+        "command rejected"
+    );
+    let mut body = json!({"error": message});
+    if let Some(request_id) = request_id {
+        body["request_id"] = json!(request_id);
+    }
+    (status, Json(body)).into_response()
+}
+
 fn instance_error(error: poe2_types::InstanceUpdateError) -> Response {
     use poe2_types::InstanceUpdateError::*;
-    let (status, message) = match error {
-        NotFound => (StatusCode::NOT_FOUND, "Instance ID not found".to_string()),
-        Invalid(message) => (StatusCode::BAD_REQUEST, message.into()),
-        Conflict(message) => (StatusCode::CONFLICT, message.into()),
-        Unsupported(message) => (StatusCode::NOT_IMPLEMENTED, message.into()),
-        Unavailable(message) => (StatusCode::SERVICE_UNAVAILABLE, message),
-    };
-    (status, Json(json!({"error":message}))).into_response()
+    match error {
+        NotFound => api_error(StatusCode::NOT_FOUND, "Instance ID not found"),
+        Invalid(message) => api_error(StatusCode::BAD_REQUEST, message),
+        Conflict(message) => api_error(StatusCode::CONFLICT, message),
+        Unsupported(message) => api_error(StatusCode::NOT_IMPLEMENTED, message),
+        Unavailable(message) => api_error(StatusCode::SERVICE_UNAVAILABLE, message),
+    }
 }
 
 async fn post_command(
@@ -867,6 +1063,19 @@ async fn post_command(
         )
             .into_response();
     }
+    let request_id = current_request_id().unwrap_or_else(new_request_id);
+    info!(
+        target: "poevh_overlay::command",
+        request_id = %request_id,
+        command = %payload.command,
+        instance_id = ?payload.instance_id,
+        account_profile_id = ?payload.account_profile_id,
+        key = ?payload.key,
+        target = ?payload.target,
+        button = ?payload.button,
+        value = %json_shape(&payload.value),
+        "command received"
+    );
     if poe2_world::login::is_active() {
         return instance_error(poe2_types::InstanceUpdateError::Conflict(
             "Login in progress; other commands are paused",
@@ -879,8 +1088,10 @@ async fn post_command(
             .as_deref()
             .is_some_and(|key| key.starts_with("smoother_"))
     {
-        return (StatusCode::BAD_REQUEST, Json(json!({"error":
-            "Platform/global graphics commands retired. Use update_instance for preferences; graphics are not applied."}))).into_response();
+        return api_error(
+            StatusCode::BAD_REQUEST,
+            "Platform/global graphics commands retired. Use update_instance for preferences; graphics are not applied.",
+        );
     }
     use poe2_types::InstanceUpdateError as IE;
     if matches!(payload.command.as_str(), "toggle" | "set_param")
@@ -1041,11 +1252,10 @@ async fn post_command(
             match serde_json::from_value::<poe2_types::ExpeditionConfig>(payload.value.clone()) {
                 Ok(config) => config,
                 Err(e) => {
-                    return (
+                    return api_error(
                         StatusCode::BAD_REQUEST,
-                        Json(json!({"error": format!("Invalid Expedition config: {e}")})),
+                        format!("Invalid Expedition config: {e}"),
                     )
-                        .into_response()
                 }
             };
         let mut rt = runtime.lock();
@@ -1254,11 +1464,13 @@ async fn post_command(
         };
         let mut details = Vec::new();
         if let Some(ref identity) = binding {
-            let _ = poe2_world::smoother::apply_process_tuning(
+            if let Err(error) = poe2_world::smoother::apply_process_tuning(
                 identity.pid,
                 profile.black_screen,
                 profile.black_screen,
-            );
+            ) {
+                return instance_error(IE::Unavailable(error.to_string()));
+            }
             details.push(format!(
                 "PID {}: Priority & EcoQoS = {}",
                 identity.pid,
@@ -1274,7 +1486,12 @@ async fn post_command(
             } else {
                 "uncloak"
             };
-            let _ = poe2_world::instances::operate_window(identity, action);
+            if let Err(error) = poe2_world::instances::operate_window(identity, action) {
+                return instance_error(IE::Unavailable(format!(
+                    "Window operation failed for PID {}: {error}",
+                    identity.pid
+                )));
+            }
             details.push(format!(
                 "Cửa sổ: {}",
                 if profile.black_screen {
@@ -1386,6 +1603,109 @@ async fn post_command(
             Err(e) => instance_error(IE::Unavailable(e.to_string())),
         };
     }
+    if payload.command == "apply_poe_smoother" {
+        // Persist desired state under the runtime lock, then release it before any
+        // file-system or Win32 work.  The tick loop must never wait on DWM/process
+        // APIs just because the dashboard applied graphics settings.
+        let (cfg, statuses) = {
+            let mut rt = runtime.lock();
+            let cfg = match serde_json::from_value::<poe2_types::PoeSmootherConfig>(
+                payload.value.clone(),
+            ) {
+                Ok(cfg) => {
+                    rt.cmd_update_poe_smoother(cfg.clone());
+                    cfg
+                }
+                Err(_) => {
+                    return instance_error(IE::Invalid("Invalid PoeSmoother configuration"));
+                }
+            };
+            (cfg, rt.instance_statuses())
+        };
+
+        let worker_cfg = cfg.clone();
+        let apply_result = tokio::task::spawn_blocking(move || -> anyhow::Result<()> {
+            if let Some(path) = poe2_world::smoother::find_default_config_path() {
+                poe2_world::smoother::backup_config(&path)?;
+                poe2_world::smoother::apply_poe_smoother_policy(&path, &worker_cfg)?;
+            }
+            // Apply to every follower even when one of them fails, then report
+            // the failures together; a single inaccessible PID must not leave
+            // the remaining clients untuned.
+            let mut failures = Vec::new();
+            for status in statuses {
+                if status.is_main || status.status != "bound" {
+                    continue;
+                }
+                let Some(process) = status.process else {
+                    continue;
+                };
+                let pid = process.identity.pid;
+                if let Err(error) = poe2_world::smoother::apply_process_tuning(
+                    pid,
+                    worker_cfg.black_screen || worker_cfg.high_performance,
+                    worker_cfg.black_screen || worker_cfg.high_performance,
+                ) {
+                    failures.push(format!("PID {pid}: {error}"));
+                }
+                if let Some(window) = process.window {
+                    let cloak_result = window
+                        .handle
+                        .parse::<usize>()
+                        .map_err(|error| anyhow::anyhow!("invalid HWND {}: {error}", window.handle))
+                        .and_then(|hwnd| {
+                            poe2_world::smoother::apply_window_cloaking(
+                                hwnd,
+                                worker_cfg.black_screen,
+                            )
+                        });
+                    if let Err(error) = cloak_result {
+                        failures.push(format!("PID {pid} window: {error}"));
+                    }
+                }
+            }
+            if failures.is_empty() {
+                Ok(())
+            } else {
+                Err(anyhow::anyhow!(
+                    "config applied, but process tuning failed for: {}",
+                    failures.join("; ")
+                ))
+            }
+        })
+        .await;
+
+        let mut rt = runtime.lock();
+        match apply_result {
+            Ok(Ok(())) => rt.push_event(
+                "SYSTEM",
+                "APPLY_POE_SMOOTHER",
+                "PoeSmoother 2 settings applied to game",
+                true,
+            ),
+            Ok(Err(error)) => {
+                rt.push_event(
+                    "SYSTEM",
+                    "APPLY_POE_SMOOTHER_FAILED",
+                    &error.to_string(),
+                    true,
+                );
+                return instance_error(IE::Unavailable(error.to_string()));
+            }
+            Err(error) => {
+                rt.push_event(
+                    "SYSTEM",
+                    "APPLY_POE_SMOOTHER_FAILED",
+                    &format!("smoother worker stopped: {error}"),
+                    true,
+                );
+                return instance_error(IE::Unavailable(format!(
+                    "smoother worker stopped: {error}"
+                )));
+            }
+        }
+        return (StatusCode::OK, Json(rt.to_api_snapshot())).into_response();
+    }
     let mut rt = runtime.lock();
     if poe2_world::login::is_active() {
         return instance_error(IE::Conflict("Login in progress; other commands are paused"));
@@ -1414,21 +1734,11 @@ async fn post_command(
         }
         "update_instance" => {
             let Some(id) = payload.instance_id else {
-                return (
-                    StatusCode::BAD_REQUEST,
-                    Json(json!({"error":"instance_id is required"})),
-                )
-                    .into_response();
+                return api_error(StatusCode::BAD_REQUEST, "instance_id is required");
             };
             let patch = match serde_json::from_value::<poe2_types::InstancePatch>(payload.value) {
                 Ok(patch) => patch,
-                Err(_) => {
-                    return (
-                        StatusCode::BAD_REQUEST,
-                        Json(json!({"error":"Invalid instance patch"})),
-                    )
-                        .into_response()
-                }
+                Err(_) => return api_error(StatusCode::BAD_REQUEST, "Invalid instance patch"),
             };
             if let Err(error) = rt.cmd_update_instance(id, patch) {
                 return instance_error(error);
@@ -1446,7 +1756,11 @@ async fn post_command(
         "toggle" => {
             if let Some(key) = &payload.key {
                 let v = payload.value.as_bool().unwrap_or(false);
-                rt.cmd_toggle(key, v);
+                if let Err(error) = rt.cmd_toggle(key, v) {
+                    return instance_error(error);
+                }
+            } else {
+                return instance_error(IE::Invalid("toggle key is required"));
             }
         }
         "join_p2" => {
@@ -1465,88 +1779,80 @@ async fn post_command(
         }
         "set_param" => {
             if let (Some(key), Some(v)) = (&payload.key, payload.value.as_f64()) {
-                rt.cmd_set_param(key, v as f32);
+                if let Err(error) = rt.cmd_set_param(key, v as f32) {
+                    return instance_error(error);
+                }
+            } else {
+                return instance_error(IE::Invalid("numeric key and value are required"));
             }
         }
         "set_mouse_action" => {
             if let (Some(button), Some(action)) = (&payload.key, payload.value.as_str()) {
-                rt.cmd_set_mouse_action(button, action);
+                if let Err(error) = rt.cmd_set_mouse_action_checked(button, action) {
+                    return instance_error(error);
+                }
+            } else {
+                return instance_error(IE::Invalid("mouse button and action are required"));
             }
         }
         "set_controller_key" => {
             if let (Some(button), Some(key)) = (&payload.key, payload.value.as_str()) {
-                rt.cmd_set_controller_key(button, key);
+                if let Err(error) = rt.cmd_set_controller_key_checked(button, key) {
+                    return instance_error(error);
+                }
+            } else {
+                return instance_error(IE::Invalid("controller button and key are required"));
             }
         }
         "update_poe_smoother" => {
-            if let Ok(cfg) =
-                serde_json::from_value::<poe2_types::PoeSmootherConfig>(payload.value.clone())
-            {
-                rt.cmd_update_poe_smoother(cfg);
-            }
-        }
-        "apply_poe_smoother" => {
-            let cfg = if let Ok(cfg) =
-                serde_json::from_value::<poe2_types::PoeSmootherConfig>(payload.value.clone())
-            {
-                rt.cmd_update_poe_smoother(cfg.clone());
-                cfg
-            } else {
-                rt.to_api_snapshot().settings.poe_smoother
-            };
-
-            if let Some(path) = poe2_world::smoother::find_default_config_path() {
-                let _ = poe2_world::smoother::backup_config(&path);
-                let _ = poe2_world::smoother::apply_poe_smoother_policy(&path, &cfg);
-            }
-            let statuses = rt.instance_statuses();
-            for s in statuses {
-                if s.instance_id > 1 && s.status == "bound" {
-                    if let Some(ref proc) = s.process {
-                        let _ = poe2_world::smoother::apply_process_tuning(
-                            proc.identity.pid,
-                            cfg.black_screen || cfg.high_performance,
-                            cfg.black_screen || cfg.high_performance,
-                        );
-                        if let Some(ref win) = proc.window {
-                            if let Ok(hwnd_val) = win.handle.parse::<usize>() {
-                                let _ = poe2_world::smoother::apply_window_cloaking(
-                                    hwnd_val,
-                                    cfg.black_screen,
-                                );
-                            }
-                        }
-                    }
+            let cfg = match serde_json::from_value::<poe2_types::PoeSmootherConfig>(
+                payload.value.clone(),
+            ) {
+                Ok(cfg) => cfg,
+                Err(_) => {
+                    return instance_error(IE::Invalid("Invalid PoeSmoother configuration"));
                 }
-            }
-            rt.push_event(
-                "SYSTEM",
-                "APPLY_POE_SMOOTHER",
-                "PoeSmoother 2 settings applied to game",
-                true,
-            );
+            };
+            rt.cmd_update_poe_smoother(cfg);
         }
         "update_waystone_colors" => {
-            if let Ok(cfg) =
-                serde_json::from_value::<poe2_types::WaystoneColorConfig>(payload.value.clone())
-            {
-                rt.cmd_update_waystone_colors(cfg);
-            }
+            let cfg = match serde_json::from_value::<poe2_types::WaystoneColorConfig>(
+                payload.value.clone(),
+            ) {
+                Ok(cfg) => cfg,
+                Err(_) => {
+                    return instance_error(IE::Invalid("Invalid Waystone color configuration"));
+                }
+            };
+            rt.cmd_update_waystone_colors(cfg);
         }
         "set_smoother_zoom" => {
-            if let Some(scale) = payload.value.as_f64() {
-                rt.cmd_set_smoother_zoom(scale as f32);
+            let Some(scale) = payload.value.as_f64() else {
+                return instance_error(IE::Invalid("zoom scale is required"));
+            };
+            if !scale.is_finite() || !(1.0..=3.0).contains(&scale) {
+                return instance_error(IE::Invalid("zoom scale must be between 1 and 3"));
             }
+            rt.cmd_set_smoother_zoom(scale as f32);
         }
         "toggle_client_bot" => {
             let Some(id) = payload.instance_id else {
                 return instance_error(IE::Invalid("instance_id is required"));
             };
-            let needs_virtual_controllers = rt.instance_needs_virtual_controllers(id);
-            if let Some(ref hook) = rt.pre_launch_hook() {
-                let _ = hook(id, needs_virtual_controllers);
+            // Controller ownership belongs to launch/inventory reconciliation.
+            // A pause/resume command must be a pure runtime-state transition;
+            // reconnecting pads here can reorder XInput slots and eject players.
+            if let Err(error) = rt.cmd_toggle_client_bot_checked(id) {
+                return instance_error(error);
             }
-            rt.cmd_toggle_client_bot(id);
+        }
+        "request_party_invite" => {
+            let Some(id) = payload.instance_id else {
+                return instance_error(IE::Invalid("instance_id is required"));
+            };
+            if let Err(error) = rt.cmd_request_party_invite(id) {
+                return instance_error(error);
+            }
         }
         "reset_tracker" => {
             rt.cmd_reset_tracker();
@@ -1565,13 +1871,7 @@ async fn post_command(
         "spawn_loot" => rt.cmd_spawn_loot(),
         "spawn_threat" => rt.cmd_spawn_threat(),
         "reset" => rt.cmd_reset(),
-        unknown => {
-            return (
-                StatusCode::BAD_REQUEST,
-                Json(json!({ "error": format!("unknown command: {unknown}") })),
-            )
-                .into_response();
-        }
+        _unknown => return instance_error(IE::Invalid("unknown command")),
     }
     let snap = rt.to_api_snapshot();
     (StatusCode::OK, Json(snap)).into_response()

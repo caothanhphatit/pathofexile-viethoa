@@ -2,13 +2,24 @@
 use poe2_types::*;
 use std::{collections::HashMap, time::Instant};
 
+fn normalize_path_str(p: &str) -> String {
+    p.trim()
+        .replace('/', "\\")
+        .trim_end_matches('\\')
+        .to_string()
+}
+
 fn executable_matches(configured: &str, actual: &str) -> bool {
     let configured = configured.trim();
     if configured.is_empty() {
         return true;
     }
-    let configured_path = std::path::Path::new(configured);
-    let actual_path = std::path::Path::new(actual);
+    let configured_norm = normalize_path_str(configured);
+    let actual_norm = normalize_path_str(actual);
+
+    let configured_path = std::path::Path::new(&configured_norm);
+    let actual_path = std::path::Path::new(&actual_norm);
+
     // Profiles created by older builds sometimes stored the game directory
     // (without an .exe) instead of the executable itself. Treat that form as
     // a directory even when the path is temporarily unavailable on disk.
@@ -16,15 +27,11 @@ fn executable_matches(configured: &str, actual: &str) -> bool {
         return actual_path
             .parent()
             .map(|parent| {
-                parent
-                    .to_string_lossy()
-                    .eq_ignore_ascii_case(&configured_path.to_string_lossy())
+                normalize_path_str(&parent.to_string_lossy()).eq_ignore_ascii_case(&configured_norm)
             })
             .unwrap_or(false);
     }
-    configured_path
-        .to_string_lossy()
-        .eq_ignore_ascii_case(&actual_path.to_string_lossy())
+    configured_norm.eq_ignore_ascii_case(&actual_norm)
 }
 
 #[derive(Default)]
@@ -33,6 +40,7 @@ pub struct InstanceRegistry {
     pub scan_error: Option<String>,
     bindings: HashMap<u32, ProcessIdentity>,
     samples: HashMap<ProcessIdentity, (Instant, u64)>,
+    missing_counts: HashMap<ProcessIdentity, u32>,
 }
 
 impl InstanceRegistry {
@@ -44,11 +52,41 @@ impl InstanceRegistry {
             }
             Err(e) => {
                 self.scan_error = Some(e);
-                self.processes.clear();
-                self.samples.clear();
+                // Maintain last-known-good inventory on transient scan error;
+                // do not wipe processes or bindings.
                 return;
             }
         };
+
+        // Track missing counts for processes in previous inventory
+        for prev in &self.processes {
+            let pid_reused = processes.iter().any(|p| {
+                p.identity.pid == prev.identity.pid
+                    && p.identity.started_at != prev.identity.started_at
+            });
+            if pid_reused {
+                // PID was reused by OS: old process is definitively gone immediately
+                self.missing_counts.insert(prev.identity.clone(), 3);
+            } else if !processes.iter().any(|p| p.identity == prev.identity) {
+                *self
+                    .missing_counts
+                    .entry(prev.identity.clone())
+                    .or_insert(0) += 1;
+            } else {
+                self.missing_counts.remove(&prev.identity);
+            }
+        }
+
+        // Retain processes that missed fewer than 3 consecutive scans
+        for prev in &self.processes {
+            if let Some(&misses) = self.missing_counts.get(&prev.identity) {
+                if misses < 3 && !processes.iter().any(|p| p.identity == prev.identity) {
+                    processes.push(prev.clone());
+                }
+            }
+        }
+        self.missing_counts.retain(|_, misses| *misses < 3);
+
         let cores = std::thread::available_parallelism()
             .map(|n| n.get())
             .unwrap_or(1) as f64;
@@ -113,6 +151,10 @@ impl InstanceRegistry {
     }
 
     pub fn auto_bind_unbound(&mut self, config: &MultiClientConfig) {
+        if self.scan_error.is_some() {
+            return;
+        }
+
         // Drop identities that are no longer present before assigning new
         // processes.  This keeps a closed slot from blocking the first free
         // slot after a restart.
@@ -179,6 +221,10 @@ impl InstanceRegistry {
     pub fn binding(&self, id: u32) -> Option<&ProcessIdentity> {
         self.bindings.get(&id)
     }
+    /// Every identity currently bound to a profile, in no particular order.
+    pub fn bound_identities(&self) -> Vec<ProcessIdentity> {
+        self.bindings.values().cloned().collect()
+    }
 
     pub fn statuses(&self, config: &MultiClientConfig) -> Vec<InstanceStatus> {
         config
@@ -194,10 +240,12 @@ impl InstanceRegistry {
                     "disabled"
                 } else if binding.is_none() {
                     "unbound"
-                } else if self.scan_error.is_some() {
-                    "scan_unavailable"
                 } else if process.is_none() {
-                    "exited_or_unavailable"
+                    if self.scan_error.is_some() {
+                        "scan_unavailable"
+                    } else {
+                        "exited_or_unavailable"
+                    }
                 } else {
                     "bound"
                 };
@@ -207,6 +255,7 @@ impl InstanceRegistry {
                     is_main: profile.id == config.main_instance_id,
                     black_screen: profile.black_screen,
                     bg_fps: profile.bg_fps,
+                    automation_enabled: true,
                     status: status.into(),
                     binding,
                     process,

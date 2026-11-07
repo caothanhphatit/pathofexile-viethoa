@@ -14,15 +14,27 @@ pub struct FollowEngine;
 
 fn profile_enabled_for_follower(
     settings: &MultiClientConfig,
+    instance_automation: &std::collections::BTreeMap<u32, bool>,
     follower_name: &str,
     _fallback_index: usize,
 ) -> bool {
+    let clean_follower = poe2_world::connector::strip_guild_tag(follower_name.trim());
     if let Some(profile) = settings.clients.iter().find(|profile| {
         settings.requires_virtual_controllers(profile.id)
-            && (profile.char1_name.eq_ignore_ascii_case(follower_name)
-                || profile.char2_name.eq_ignore_ascii_case(follower_name))
+            && (profile
+                .char1_name
+                .trim()
+                .eq_ignore_ascii_case(clean_follower)
+                || profile
+                    .char2_name
+                    .trim()
+                    .eq_ignore_ascii_case(clean_follower))
     }) {
-        return profile.enabled;
+        return profile.enabled
+            && instance_automation
+                .get(&profile.id)
+                .copied()
+                .unwrap_or(true);
     }
     false
 }
@@ -59,8 +71,12 @@ impl FollowEngine {
 
         // ── Per-follower decisions ────────────────────────────────────────────
         for (idx, follower) in state.followers.iter_mut().enumerate() {
-            let client_enabled =
-                profile_enabled_for_follower(&settings.multi_client, &follower.name, idx);
+            let client_enabled = profile_enabled_for_follower(
+                &settings.multi_client,
+                &state.instance_automation,
+                &follower.name,
+                idx,
+            );
 
             if !settings.follow || !client_enabled {
                 follower.action = FollowerAction::Hold;

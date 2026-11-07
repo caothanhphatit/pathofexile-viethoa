@@ -9,6 +9,8 @@ let instanceFormIds = '';
 const dirtyInstances = new Set();
 const cloakedInstances = new Set();
 let runtimeHudRenderKey = '';
+const pendingPartyInviteActions = new Set();
+let lastRuntimeHudArgs = null;
 
 function effectiveInputMode(profile) {
   if (profile?.input_mode) return profile.input_mode;
@@ -542,7 +544,8 @@ async function clientAction(id, action) {
 // Render only live processes. Profiles remain persistent preferences, while a
 // runtime card exists for the lifetime of its bound process. This avoids
 // presenting empty Client 1/2/3 slots when no game is running.
-function renderRuntimeHud(profiles, statuses, running, controllers = {}) {
+function renderRuntimeHud(profiles, statuses, running, controllers = {}, partyEnabled = false) {
+  lastRuntimeHudArgs = [profiles, statuses, running, controllers, partyEnabled];
   const host = document.getElementById('runtime-instance-hud');
   const empty = document.getElementById('runtime-instance-empty');
   if (!host) return;
@@ -553,10 +556,13 @@ function renderRuntimeHud(profiles, statuses, running, controllers = {}) {
   const live = (statuses || []).filter(s => s.status === 'bound' || s.status === 'launching');
   const renderKey = JSON.stringify({
     running: Boolean(running),
+    partyEnabled: Boolean(partyEnabled),
+    pendingInvites: [...pendingPartyInviteActions].sort((a, b) => a - b),
     live: live.map(status => {
       const profile = profileById.get(status.account_profile_id ?? status.instance_id) || {};
       return [
         status.instance_id, status.status, status.binding?.pid || 0, status.is_main,
+        status.automation_enabled ?? true,
         profile.label || '', profile.flavor || '', profile.char1_name || '',
         profile.char1_role || '', profile.char2_name || '', profile.char2_role || '',
         effectiveInputMode(profile),
@@ -635,16 +641,52 @@ function renderRuntimeHud(profiles, statuses, running, controllers = {}) {
     }
     const actions = document.createElement('div');
     actions.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:8px;margin-top:6px';
-    for (const [action, label] of [['toggle-bot', running ? '⏸ Tạm dừng bot' : '▶ Bật bot'], ['focus', 'Focus'], ['minimize', 'Thu nhỏ']]) {
+    const instanceRunning = Boolean(running) && (status.automation_enabled ?? true);
+    for (const [action, label] of [['toggle-bot', instanceRunning ? '⏸ Tạm dừng bot' : '▶ Bật bot'], ['focus', 'Focus'], ['minimize', 'Thu nhỏ']]) {
       const button = document.createElement('button');
       button.className = 'btn btn-neutral btn-sm';
       button.textContent = label;
       button.addEventListener('click', () => clientAction(id, action));
       actions.append(button);
     }
+    if (!status.is_main) {
+      const invite = document.createElement('button');
+      invite.className = 'btn btn-primary btn-sm';
+      invite.textContent = pendingPartyInviteActions.has(id) ? '⏳ Đang mời…' : '✉ Mời party';
+      invite.disabled = status.status !== 'bound'
+        || !partyEnabled
+        || !String(profile.char1_name || '').trim()
+        || pendingPartyInviteActions.has(id);
+      invite.title = !partyEnabled
+        ? 'Bật Party ở mục Kéo Vong trước'
+        : 'Gửi /invite từ Main rồi tự accept trên client này';
+      invite.addEventListener('click', () => requestPartyInvite(id));
+      actions.append(invite);
+    }
     card.append(actions);
     host.append(card);
   }
+}
+
+function refreshRuntimeHud() {
+  if (lastRuntimeHudArgs) renderRuntimeHud(...lastRuntimeHudArgs);
+}
+
+async function requestPartyInvite(instanceId) {
+  const id = Number(instanceId);
+  if (pendingPartyInviteActions.has(id)) return;
+  pendingPartyInviteActions.add(id);
+  refreshRuntimeHud();
+  const result = await apiPost({command: 'request_party_invite', instance_id: id});
+  if (!result) {
+    pendingPartyInviteActions.delete(id);
+    refreshRuntimeHud();
+    return;
+  }
+  window.setTimeout(() => {
+    pendingPartyInviteActions.delete(id);
+    refreshRuntimeHud();
+  }, 8000);
 }
 
 function controllerTargetsForInstance(instanceId) {

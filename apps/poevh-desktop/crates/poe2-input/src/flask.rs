@@ -102,7 +102,7 @@ impl FlaskController {
         let now = Instant::now();
 
         // ── Life Flask Check ──────────────────────────────────────────────────
-        if config.life_enabled && actor.hp <= config.life_hp_pct {
+        if config.life_enabled && actor.hp > 0 && actor.hp <= config.life_hp_pct {
             let cd = std::time::Duration::from_millis(config.life_cooldown_ms);
             let can_drink = match self.last_life_flask.get(target) {
                 Some(&last) => now.duration_since(last) >= cd,
@@ -133,7 +133,11 @@ impl FlaskController {
         }
 
         // ── Mana Flask Check ──────────────────────────────────────────────────
-        if config.mana_enabled && !config.build_no_mana && actor.mana <= config.mana_mp_pct {
+        if config.mana_enabled
+            && !config.build_no_mana
+            && actor.hp > 0
+            && actor.mana <= config.mana_mp_pct
+        {
             let cd = std::time::Duration::from_millis(config.mana_cooldown_ms);
             let can_drink = match self.last_mana_flask.get(target) {
                 Some(&last) => now.duration_since(last) >= cd,
@@ -167,5 +171,47 @@ impl FlaskController {
         }
 
         events
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dead_actor_does_not_drink_flasks() {
+        let mut ctrl = FlaskController::new();
+        let mut gm = VirtualGamepadManager::new();
+        let config = SmartFlaskConfig {
+            life_enabled: true,
+            life_hp_pct: 60,
+            mana_enabled: true,
+            mana_mp_pct: 40,
+            ..Default::default()
+        };
+
+        // Dead character: hp = 0
+        let dead_actor = Actor {
+            hp: 0,
+            mana: 10,
+            ..Actor::new("DeadHero", 0.0, 0.0)
+        };
+        let events = ctrl.evaluate(&dead_actor, &config, 1, &mut gm);
+        assert!(
+            events.is_empty(),
+            "dead characters should never trigger flask drinking"
+        );
+
+        // Living low HP character: hp = 30
+        let hurt_actor = Actor {
+            hp: 30,
+            mana: 10,
+            ..Actor::new("HurtHero", 0.0, 0.0)
+        };
+        let events = ctrl.evaluate(&hurt_actor, &config, 2, &mut gm);
+        assert!(
+            !events.is_empty(),
+            "living low-HP character should trigger flask"
+        );
     }
 }

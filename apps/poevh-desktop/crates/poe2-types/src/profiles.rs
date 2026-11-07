@@ -56,6 +56,8 @@ pub struct RuntimeInstance {
     pub black_screen: bool,
     #[serde(default = "default_background_fps")]
     pub bg_fps: u32,
+    #[serde(default = "default_true")]
+    pub automation_enabled: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -133,6 +135,7 @@ impl MultiClientConfig {
                 is_main: client.id == self.main_instance_id,
                 black_screen: client.black_screen,
                 bg_fps: client.bg_fps,
+                automation_enabled: true,
             })
             .collect();
         RuntimeConfig {
