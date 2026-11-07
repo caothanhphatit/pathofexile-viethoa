@@ -14,21 +14,24 @@ import {
 } from "./currency/runtime.mjs";
 import dotenv from "dotenv";
 
+import { fetchWithRetry } from "./crawl-guards.mjs";
+
 dotenv.config();
 
 const args = parseCliArgs();
 const sourceUrl = args.get("source") || DEFAULT_SOURCE_URL;
 const htmlPath = args.get("html");
 const shouldCrawlDetails = args.get("details") !== "false";
+// Writing currencies whose detail page failed would wipe their related items in the DB.
+const allowPartial = args.get("allow-partial") === "true";
 
 const fetchText = async (url) => {
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     headers: {
       "accept": "text/html,application/xhtml+xml",
       "user-agent": "poe2-vietnamese-currency-crawler/1.0"
     }
   });
-  if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
   return response.text();
 };
 
@@ -49,7 +52,7 @@ const hydrateDetails = async (currencies, { concurrency = 6 } = {}) => {
       return { ...item, related_items: related };
     } catch (err) {
       console.warn(`[Warning] Failed to fetch related items for ${item.name} (${item.source_url}):`, err.message);
-      return { ...item, related_items: [] };
+      return { ...item, related_items: [], detailFailed: true };
     }
   };
 
@@ -76,7 +79,13 @@ const main = async () => {
   }
 
   console.log(`Crawl: Found ${rawCurrencies.length} initial currency items. Starting detail hydration...`);
-  const hydratedCurrencies = await hydrateDetails(rawCurrencies);
+  const hydratedWithFailures = await hydrateDetails(rawCurrencies);
+  const failedDetails = hydratedWithFailures.filter((item) => item.detailFailed);
+  if (failedDetails.length && !allowPartial) {
+    throw new Error(`${failedDetails.length} currency detail pages failed to load (${failedDetails.slice(0, 5).map((item) => item.name).join(", ")}…). `
+      + "Nothing was written. Rerun later, or pass --allow-partial=true to save them with empty related items.");
+  }
+  const hydratedCurrencies = hydratedWithFailures.map(({ detailFailed, ...item }) => item);
   const currencies = buildBidirectionalCurrencyRelations(hydratedCurrencies);
 
   console.log(`Crawl: Hydration completed. Total items after bidirectional expansion: ${currencies.length}`);

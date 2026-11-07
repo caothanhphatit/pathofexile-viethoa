@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events";
 import { createReadStream } from "node:fs";
 import { open, stat } from "node:fs/promises";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 
 const nowIso = () => new Date().toISOString();
 
@@ -66,19 +66,25 @@ export const defaultClientLogCandidates = (env = process.env) => {
   ].filter(Boolean);
 };
 
-const isAllowedLogPath = (candidate) => {
-  if (!candidate || typeof candidate !== "string") return false;
-  const normalized = candidate.replace(/\\/g, "/");
-  if (/^\/(etc|proc|sys|dev|root\/\.ssh|var\/log)\b/i.test(normalized)) return false;
-  return true;
-};
+// The watcher streams every line it reads, so it may only ever open the game's own log
+// files. A directory is fine (Client.txt / LatestClient.txt inside it are tried below);
+// any other file name is refused.
+const LOG_FILE_NAME = /^(?:Latest|Kakao)?Client\.txt$/i;
+
+const isAllowedLogPath = (candidate) =>
+  Boolean(candidate) && typeof candidate === "string" && !candidate.includes("\0");
+
+const isAllowedLogFile = (filePath) => LOG_FILE_NAME.test(basename(filePath));
 
 const findReadableLogPath = async (candidates) => {
   for (const candidate of candidates) {
     if (!isAllowedLogPath(candidate)) continue;
     try {
       const info = await stat(candidate);
-      if (info.isFile()) return candidate;
+      if (info.isFile()) {
+        if (isAllowedLogFile(candidate)) return candidate;
+        continue;
+      }
       if (info.isDirectory()) {
         const clientPath = join(candidate, "Client.txt");
         const latestPath = join(candidate, "LatestClient.txt");
@@ -117,6 +123,8 @@ const readTail = async (filePath, maxBytes = 128 * 1024) => {
     await file.close();
   }
 };
+
+const fileIdentity = (info) => `${info.dev}:${info.ino}:${info.birthtimeMs}`;
 
 export class Poe2LogWatcher extends EventEmitter {
   constructor(options = {}) {
@@ -177,6 +185,15 @@ export class Poe2LogWatcher extends EventEmitter {
         updatedAt: nowIso(),
         error: "Client.txt not found"
       };
+      // The game may simply not have been started (or installed) yet: look again later
+      // instead of giving up until someone reconfigures the watcher.
+      this.timer = setInterval(() => {
+        if (this.polling) return;
+        this.polling = true;
+        this.start().catch((error) => this.setError(error)).finally(() => {
+          this.polling = false;
+        });
+      }, Math.max(this.pollIntervalMs, 5000));
       this.emit("status", this.status());
       return this.status();
     }
@@ -191,11 +208,27 @@ export class Poe2LogWatcher extends EventEmitter {
       updatedAt: nowIso(),
       error: null
     };
+    // A failed poll (log rotated, file briefly locked, game reinstalled) is reported but
+    // keeps the timer running, so watching resumes on its own once the file is back.
+    // Polls never overlap: a slow read just skips the ticks that land during it.
     this.timer = setInterval(() => {
-      this.poll().catch((error) => this.setError(error));
+      if (this.polling) return;
+      this.polling = true;
+      this.poll()
+        .then(() => this.clearError())
+        .catch((error) => this.setError(error))
+        .finally(() => {
+          this.polling = false;
+        });
     }, this.pollIntervalMs);
     this.emit("status", this.status());
     return this.status();
+  }
+
+  clearError() {
+    if (!this.state.error) return;
+    this.state = { ...this.state, watching: true, exists: true, updatedAt: nowIso(), error: null };
+    this.emit("status", this.status());
   }
 
   stopPolling() {
@@ -211,6 +244,7 @@ export class Poe2LogWatcher extends EventEmitter {
 
   async readInitialTail() {
     const { text, size } = await readTail(this.activePath);
+    this.fileId = fileIdentity(await stat(this.activePath));
     this.position = size;
     for (const line of text.split(/\r?\n/)) this.applyLine(line);
     this.state.bytesRead = size;
@@ -219,6 +253,11 @@ export class Poe2LogWatcher extends EventEmitter {
   async poll() {
     if (!this.activePath) return;
     const info = await stat(this.activePath);
+    // A different file at the same path (deleted and recreated, or rotated) starts over
+    // from the top, even when it has already grown past the old read position.
+    const fileId = fileIdentity(info);
+    if (this.fileId && fileId !== this.fileId) this.position = 0;
+    this.fileId = fileId;
     if (info.size < this.position) this.position = 0;
     if (info.size === this.position) return;
 
@@ -273,14 +312,15 @@ export class Poe2LogWatcher extends EventEmitter {
   }
 
   setError(error) {
+    const message = error?.message || String(error);
+    const changed = this.state.error !== message;
     this.state = {
       ...this.state,
-      watching: false,
       exists: false,
       updatedAt: nowIso(),
-      error: error?.message || String(error)
+      error: message
     };
-    this.stopPolling();
-    this.emit("status", this.status());
+    // Only announce a new error, not the same one on every retry tick.
+    if (changed) this.emit("status", this.status());
   }
 }

@@ -9,6 +9,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { fetchWithRetry } from "./crawl-guards.mjs";
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "public", "data", "craft-data.js");
 const ITEMS_DATA = path.join(ROOT, "public", "data", "items-data.js");
@@ -134,15 +136,25 @@ const extractMods = (html) => {
 };
 
 const fetchPage = async (url) => {
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 poe2viethoa-craft-crawl" } });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const res = await fetchWithRetry(url, { headers: { "User-Agent": "Mozilla/5.0 poe2viethoa-craft-crawl" } });
   return res.text();
+};
+
+const readPreviousClasses = () => {
+  try {
+    const text = fs.readFileSync(OUT, "utf8").trim();
+    const json = text.replace(/^window\.POE2_CRAFT\s*=\s*/, "").replace(/;\s*$/, "");
+    return JSON.parse(json).classes || {};
+  } catch {
+    return {};
+  }
 };
 
 const run = async () => {
   const classes = loadClasses();
   const out = {};
   let done = 0, modTotal = 0;
+  const failed = [];
   const queue = [...classes];
   const worker = async () => {
     while (queue.length) {
@@ -170,12 +182,24 @@ const run = async () => {
           console.log(`· ${c.label.padEnd(18)} (không có mod pool — bỏ qua)`);
         }
       } catch (err) {
+        failed.push(c.label);
         console.log(`✗ ${c.label.padEnd(18)} ${err.message}`);
       }
       done += 1;
     }
   };
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
+  // A class whose page failed to load keeps the mod pool from the previous export
+  // instead of disappearing from the craft simulator until the next good crawl.
+  if (failed.length) {
+    const previous = readPreviousClasses();
+    const kept = failed.filter((label) => previous[label]);
+    for (const label of kept) out[label] = previous[label];
+    console.log(`\n! ${failed.length} class lỗi khi tải; giữ dữ liệu cũ cho ${kept.length}: ${kept.join(", ") || "(không có)"}`);
+    if (!Object.keys(out).length) throw new Error("Không tải được class nào, không ghi đè craft-data.js");
+    process.exitCode = 1;
+  }
 
   const payload = {
     generated_at: STAMP,

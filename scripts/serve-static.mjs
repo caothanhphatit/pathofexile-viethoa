@@ -8,6 +8,9 @@ const rootArg = process.argv[2] || "public";
 const rootDir = path.resolve(__dirname, "..", rootArg);
 const port = Number(process.env.PORT || process.argv[3] || 8022);
 const host = process.env.HOST || "127.0.0.1";
+// The SPA calls same-origin /api/* (e.g. /api/poe2db-image for item icons). In production
+// nginx forwards it to the Node backend; locally forward it to `npm run server`.
+const apiProxy = (process.env.API_PROXY || "http://127.0.0.1:3000").replace(/\/+$/, "");
 
 const contentTypes = {
   ".css": "text/css; charset=utf-8",
@@ -69,15 +72,54 @@ const goneRoutes = new Set([
   "/ggpk_skills.html"
 ]);
 
-const normalizedRequestPath = (urlPath = "/") => decodeURIComponent(urlPath.split("?")[0] || "/").replace(/\/+$/, "") || "/";
+// A malformed escape such as "/%E0%A4%A" makes decodeURIComponent throw; inside the
+// request handler that is an unhandled rejection and takes the whole server down.
+const decodeRequestPath = (urlPath = "/") => {
+  try {
+    return decodeURIComponent(String(urlPath).split("?")[0] || "/");
+  } catch {
+    return null;
+  }
+};
+
+const normalizedRequestPath = (urlPath = "/") => {
+  const decoded = decodeRequestPath(urlPath);
+  return decoded === null ? null : decoded.replace(/\/+$/, "") || "/";
+};
 
 const safePath = (urlPath = "/") => {
-  const requested = decodeURIComponent(urlPath.split("?")[0] || "/");
+  const requested = decodeRequestPath(urlPath);
+  if (requested === null || requested.includes("\u0000")) return null;
   const normalized = requested.replace(/\/+$/, "") || "/";
   const filePath = cleanRouteFiles.get(normalized) || requested;
   const resolved = path.resolve(rootDir, `.${filePath}`);
   if (!resolved.startsWith(`${rootDir}${path.sep}`) && resolved !== rootDir) return null;
   return resolved;
+};
+
+const proxyApi = async (request, response) => {
+  try {
+    const hasBody = !["GET", "HEAD"].includes(request.method || "GET");
+    const headers = { ...request.headers };
+    delete headers.host;
+    delete headers.connection;
+    const upstream = await fetch(`${apiProxy}${request.url}`, {
+      method: request.method,
+      headers,
+      body: hasBody ? request : undefined,
+      duplex: hasBody ? "half" : undefined,
+      redirect: "manual"
+    });
+    const outHeaders = {};
+    upstream.headers.forEach((value, key) => {
+      if (!["content-encoding", "content-length", "transfer-encoding", "connection"].includes(key)) outHeaders[key] = value;
+    });
+    response.writeHead(upstream.status, outHeaders);
+    response.end(Buffer.from(await upstream.arrayBuffer()));
+  } catch (error) {
+    response.writeHead(502, { "content-type": "text/plain; charset=utf-8" });
+    response.end(`API backend not reachable at ${apiProxy} (start it with: npm run server). ${error.message}`);
+  }
 };
 
 const server = http.createServer(async (request, response) => {
@@ -87,6 +129,11 @@ const server = http.createServer(async (request, response) => {
       "content-type": "text/plain; charset=utf-8"
     });
     response.end("Gone");
+    return;
+  }
+
+  if (/^\/api(\/|$)/.test(request.url || "")) {
+    await proxyApi(request, response);
     return;
   }
 

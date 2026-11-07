@@ -11,6 +11,8 @@ const googleProfileToAuthProfile = (profile) => ({
   provider: "google",
   providerUserId: profile.sub,
   email: profile.email || "",
+  // Google returns the flag as a boolean from userinfo and as a string in some id tokens.
+  emailVerified: profile.email_verified === true || profile.email_verified === "true",
   displayName: profile.name || profile.email || profile.sub,
   avatarUrl: profile.picture || "",
   raw: profile

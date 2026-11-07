@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 
+import { isLocalRequest } from "../local-request.mjs";
+
 const base64Url = (value) => Buffer.from(value)
   .toString("base64")
   .replace(/\+/g, "-")
@@ -81,7 +83,9 @@ export const levelingAccountRoutes = async (app) => {
       throw error;
     }
 
-    const status = app.levelingLogWatcher.status();
+    // Fall back to the server's own game log only for a local backend; a remote user
+    // must not have someone else's log path and progress copied into their character.
+    const status = isLocalRequest(request) ? app.levelingLogWatcher.status() : {};
     const id = newCharacterId();
     const className = String(request.body?.className || status.characterClass || "").trim();
     const level = parseLevel(request.body?.level ?? status.characterLevel);

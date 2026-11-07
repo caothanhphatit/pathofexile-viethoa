@@ -27,9 +27,20 @@ export const buildApp = async (options = {}) => {
   const isLocalDevOrigin = (origin = "") =>
     process.env.NODE_ENV !== "production" &&
     /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(origin);
+  // The site itself (APP_URL) is always allowed. An empty ALLOWED_ORIGINS used to mean
+  // "reflect any origin", which together with credentials let any website call the API
+  // as the signed-in visitor; now it means "no other origins".
+  const appOrigin = (() => {
+    try {
+      return process.env.APP_URL ? new URL(process.env.APP_URL).origin : "";
+    } catch {
+      return "";
+    }
+  })();
+  if (appOrigin && !allowedOrigins.includes(appOrigin)) allowedOrigins.push(appOrigin);
   const allowCorsOrigin = (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (!allowedOrigins.length || allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
+    if (allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
       return callback(null, true);
     }
     return callback(null, false);

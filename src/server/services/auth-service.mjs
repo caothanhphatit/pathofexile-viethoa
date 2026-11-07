@@ -28,7 +28,14 @@ export const parseCookies = (cookieHeader = "") => {
   for (const part of String(cookieHeader || "").split(";")) {
     const [rawName, ...rawValue] = part.trim().split("=");
     if (!rawName) continue;
-    cookies[rawName] = decodeURIComponent(rawValue.join("="));
+    const value = rawValue.join("=");
+    // A malformed escape in any cookie (ours or another site's on the same domain)
+    // must not turn every authenticated request into a 500; keep it undecoded.
+    try {
+      cookies[rawName] = decodeURIComponent(value);
+    } catch {
+      cookies[rawName] = value;
+    }
   }
   return cookies;
 };
@@ -281,7 +288,9 @@ export const createAuthService = (options = {}) => {
     requireDb(db);
     const provider = profile.provider;
     const providerUserId = profile.providerUserId;
-    const email = profile.email || null;
+    // An address the provider has not verified proves nothing about who owns it, so it is
+    // neither used to attach this login to an existing account nor stored on the user.
+    const email = profile.emailVerified === false ? null : profile.email || null;
     const displayName = profile.displayName || email || providerUserId;
     const avatarUrl = profile.avatarUrl || "";
     const account = await db.query(

@@ -1,3 +1,4 @@
+import { checkRemoval } from "../crawl-guards.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -295,7 +296,11 @@ export const upsertCurrenciesPostgres = async (pool, currencies, { sourceUrl = D
       `, [jsonParam(itemPayload), runId]);
     }
 
-    if (markRemoved && slugs.length) {
+    const removalCheck = markRemoved && slugs.length
+      ? await checkRemoval(client, { table: "currency_items", keyColumn: "slug", seenKeys: slugs, label: "currency" })
+      : { allowed: false };
+    if (!removalCheck.allowed && markRemoved) summary.removalSkipped = removalCheck.wouldRemove ?? 0;
+    if (removalCheck.allowed) {
       const removed = await client.query(`
         update currency_items
         set status = 'removed',

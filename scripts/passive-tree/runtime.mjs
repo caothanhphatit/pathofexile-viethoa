@@ -1,3 +1,4 @@
+import { checkRemoval } from "../crawl-guards.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -406,7 +407,11 @@ export const upsertPassiveTreePostgres = async (pool, tree, {
     }))), tree.version, runId]);
   }
 
-  if (markRemoved) {
+  const removalCheck = markRemoved && nodeIds.length
+    ? await checkRemoval(client, { table: "passive_tree_nodes", keyColumn: "node_id", seenKeys: nodeIds, label: "passive-tree" })
+    : { allowed: markRemoved };
+  if (!removalCheck.allowed && markRemoved) summary.removalSkipped = removalCheck.wouldRemove ?? 0;
+  if (removalCheck.allowed) {
     if (nodeIds.length) {
       const removed = await client.query(`
         update passive_tree_nodes

@@ -1,3 +1,10 @@
+import { createHash, randomBytes } from "node:crypto";
+
+import { requireLocalRequest } from "../local-request.mjs";
+
+const newSharedBuildId = () => randomBytes(9).toString("base64url");
+const hashEditToken = (token) => createHash("sha256").update(String(token)).digest("hex");
+
 const requireDb = (app) => {
   if (!app.db) {
     const error = new Error("Database is not configured");
@@ -51,6 +58,9 @@ export const publicRoutes = async (app) => {
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         )
       `);
+      // Only the holder of a build's edit token may overwrite it. Rows saved before
+      // this column existed have no token and are therefore read-only.
+      await initDb.query("ALTER TABLE shared_builds ADD COLUMN IF NOT EXISTS edit_token_hash TEXT");
     } catch (err) {
       app.log.error(err, "Failed to create shared_builds table");
     }
@@ -87,18 +97,20 @@ export const publicRoutes = async (app) => {
     return reply.type(contentType).send(body);
   });
 
-  app.get("/api/leveling/log/status", async () => ({
-    ok: true,
-    data: app.levelingLogWatcher.status()
-  }));
+  app.get("/api/leveling/log/status", async (request) => {
+    requireLocalRequest(request);
+    return { ok: true, data: app.levelingLogWatcher.status() };
+  });
 
   app.post("/api/leveling/log/config", async (request) => {
+    requireLocalRequest(request);
     const filePath = request.body?.path || "";
     const status = await app.levelingLogWatcher.configure(filePath);
     return { ok: true, data: status };
   });
 
   app.get("/api/leveling/log/events", async (request, reply) => {
+    requireLocalRequest(request);
     const send = (event, data) => {
       reply.raw.write(`event: ${event}\n`);
       reply.raw.write(`data: ${JSON.stringify(data)}\n\n`);
@@ -308,15 +320,21 @@ export const publicRoutes = async (app) => {
     return { ok: true, data: rows };
   });
 
-  app.post("/api/builds", async (request, reply) => {
+  // Saving a shared build. The server picks the id and hands back a secret edit token;
+  // updating an existing build requires that token (header x-build-edit-token), so
+  // knowing a build's share link is not enough to overwrite it.
+  app.post("/api/builds", { bodyLimit: 1024 * 1024 }, async (request, reply) => {
     const db = requireDb(app);
     const project = request.body;
-    if (!project || !project.id) {
+    if (!project || typeof project !== "object" || Array.isArray(project)) {
       return reply.status(400).send({ ok: false, error: "Missing project data" });
     }
-    
+    const editToken = String(request.headers["x-build-edit-token"] || "");
+    const requestedId = typeof project.id === "string" ? project.id.trim() : "";
+    const isUpdate = Boolean(requestedId && editToken);
+    const id = isUpdate ? requestedId : newSharedBuildId();
     const strippedProject = {
-      id: project.id,
+      id,
       name: project.name,
       author: project.author,
       description: project.description,
@@ -328,13 +346,23 @@ export const publicRoutes = async (app) => {
       updatedAt: project.updatedAt
     };
 
-    await db.query(`
-      INSERT INTO shared_builds (id, project_json, updated_at)
-      VALUES ($1, $2, CURRENT_TIMESTAMP)
-      ON CONFLICT (id) DO UPDATE SET project_json = $2, updated_at = CURRENT_TIMESTAMP
-    `, [project.id, JSON.stringify(strippedProject)]);
+    if (isUpdate) {
+      const result = await db.query(`
+        UPDATE shared_builds SET project_json = $2, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $1 AND edit_token_hash IS NOT NULL AND edit_token_hash = $3
+      `, [id, JSON.stringify(strippedProject), hashEditToken(editToken)]);
+      if (!result.rowCount) {
+        return reply.status(403).send({ ok: false, error: "Edit token does not match this build" });
+      }
+      return { ok: true, data: { id } };
+    }
 
-    return { ok: true };
+    const newToken = randomBytes(24).toString("base64url");
+    await db.query(`
+      INSERT INTO shared_builds (id, project_json, edit_token_hash, updated_at)
+      VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+    `, [id, JSON.stringify(strippedProject), hashEditToken(newToken)]);
+    return reply.status(201).send({ ok: true, data: { id, editToken: newToken } });
   });
 
   app.get("/api/builds/:id", async (request, reply) => {
@@ -616,12 +644,45 @@ export const publicRoutes = async (app) => {
 `;
   };
 
-  app.post("/api/builds/calculate", async (request, reply) => {
+  // Each calculation spawns a LuaJIT process. Bound how many run at once and
+  // how long each may take so a burst of planner requests cannot pile up
+  // dozens of interpreters or hang a worker on a pathological build.
+  const POB_CORE_DIR = process.env.POB_CORE_DIR || "/root/pob-core/src";
+  // Interpreter for calculate.lua. Windows dev machines point this at the PoB-runtime
+  // host built by scripts/setup-pob-local.mjs (stock luajit cannot parse PoB's sources).
+  const POB_LUAJIT = process.env.POB_LUAJIT || "luajit";
+  const CALCULATE_TIMEOUT_MS = Number(process.env.POB_CALCULATE_TIMEOUT_MS || 20_000);
+  const CALCULATE_MAX_CONCURRENT = Number(process.env.POB_CALCULATE_MAX_CONCURRENT || 2);
+  const CALCULATE_MAX_QUEUE = Number(process.env.POB_CALCULATE_MAX_QUEUE || 8);
+  let calculationsRunning = 0;
+  const calculationQueue = [];
+  const acquireCalculationSlot = () => new Promise((resolve, reject) => {
+    if (calculationsRunning < CALCULATE_MAX_CONCURRENT) {
+      calculationsRunning += 1;
+      resolve();
+      return;
+    }
+    if (calculationQueue.length >= CALCULATE_MAX_QUEUE) {
+      reject(Object.assign(new Error("Calculation service is busy, retry shortly"), { statusCode: 503 }));
+      return;
+    }
+    calculationQueue.push(resolve);
+  });
+  const releaseCalculationSlot = () => {
+    const next = calculationQueue.shift();
+    if (next) {
+      next();
+    } else {
+      calculationsRunning -= 1;
+    }
+  };
+
+  app.post("/api/builds/calculate", { bodyLimit: 512 * 1024 }, async (request, reply) => {
     const buildData = request.body;
-    if (!buildData) {
+    if (!buildData || typeof buildData !== "object") {
       return reply.status(400).send({ ok: false, error: "Missing build data" });
     }
-    console.log("CALCULATE REQUEST PAYLOAD:", JSON.stringify({
+    app.log.info({
       className: buildData.className,
       ascendancy: buildData.ascendancy,
       level: buildData.level,
@@ -630,7 +691,7 @@ export const publicRoutes = async (app) => {
       hasConfig: !!buildData.config,
       skillsCount: buildData.skills?.length,
       inventoryCount: buildData.inventory_slots?.length
-    }));
+    }, "build calculate request");
 
     const { writeFileSync, unlinkSync } = await import("fs");
     const { join } = await import("path");
@@ -639,9 +700,16 @@ export const publicRoutes = async (app) => {
     const { createHash } = await import("crypto");
 
     const xmlContent = buildXml(buildData);
-    const hash = createHash("md5").update(xmlContent).digest("hex");
+    const hash = createHash("sha256").update(xmlContent).digest("hex");
     if (calculationCache.has(hash)) {
       return { ok: true, data: calculationCache.get(hash) };
+    }
+
+    try {
+      await acquireCalculationSlot();
+    } catch (err) {
+      reply.header("retry-after", "2");
+      return reply.status(err.statusCode || 503).send({ ok: false, error: err.message });
     }
 
     const tempFileName = `pob_temp_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.xml`;
@@ -651,11 +719,14 @@ export const publicRoutes = async (app) => {
       writeFileSync(tempFilePath, xmlContent, "utf8");
 
       const stdout = await new Promise((resolve, reject) => {
-        execFile("luajit", ["calculate.lua", tempFilePath], {
-          cwd: "/root/pob-core/src"
+        execFile(POB_LUAJIT, ["calculate.lua", tempFilePath], {
+          cwd: POB_CORE_DIR,
+          timeout: CALCULATE_TIMEOUT_MS,
+          maxBuffer: 4 * 1024 * 1024
         }, (error, stdout, stderr) => {
           if (error) {
-            reject(new Error(stderr || error.message));
+            const timedOut = error.killed || error.signal === "SIGTERM";
+            reject(new Error(timedOut ? "Calculation timed out" : (stderr || error.message)));
           } else {
             resolve(stdout);
           }
@@ -683,6 +754,7 @@ export const publicRoutes = async (app) => {
       app.log.error(err, "Failed to run PoB calculation");
       return reply.status(500).send({ ok: false, error: err.message || "Failed to calculate build stats" });
     } finally {
+      releaseCalculationSlot();
       try {
         unlinkSync(tempFilePath);
       } catch {}

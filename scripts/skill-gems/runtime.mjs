@@ -1,3 +1,4 @@
+import { checkRemoval } from "../crawl-guards.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -214,7 +215,11 @@ export const upsertSkillGemsPostgres = async (pool, gems, { sourceUrl = DEFAULT_
       `, [jsonParam(detailPayload)]);
     }
 
-    if (markRemoved && slugs.length) {
+    const removalCheck = markRemoved && slugs.length
+      ? await checkRemoval(client, { table: "skill_gems", keyColumn: "slug", seenKeys: slugs, label: "skill-gems" })
+      : { allowed: false };
+    if (!removalCheck.allowed && markRemoved) summary.removalSkipped = removalCheck.wouldRemove ?? 0;
+    if (removalCheck.allowed) {
       const removed = await client.query(`
         update skill_gems
         set status = 'removed',
