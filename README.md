@@ -91,6 +91,51 @@ columns a new patch appended before the schema caught up (`trailingBytes`).
 Output under `data/game-extract/ggpk/` is regenerated from the install and is not
 committed.
 
+## Premium
+
+Premium belongs to a web account. Paid periods are granted by an admin for now (no
+payment gateway yet) and stack end to end. Each account can create one key for client
+apps, and a key works on one device at a time.
+
+1. Create the signing key once and put it in the server `.env`:
+
+   ```bash
+   node scripts/premium-keygen.mjs
+   ```
+
+   `PREMIUM_SIGNING_KEY` stays on the server. The printed public key is what apps embed;
+   it is also served at `GET /api/premium/public-key`. Set `TRUST_PROXY=1` behind nginx so
+   rate limits and device logs see the visitor's IP.
+
+2. Grant a plan (`month`, `year`, `lifetime`, or `custom` with `days`):
+
+   ```bash
+   curl -X POST https://<site>/api/admin/premium/grant      -H "Authorization: Bearer $ADMIN_API_TOKEN" -H "content-type: application/json"      -d '{"email":"player@example.com","plan":"month"}'
+   ```
+
+   Also: `GET /api/admin/premium/user?email=…`, `POST /api/admin/premium/revoke`
+   (`subscription_id`), `POST /api/admin/premium/release-device` (frees the device at once).
+
+3. The user opens `/premium`, creates a key (shown once), and can change device once every
+   30 days.
+
+### For client apps
+
+`POST /api/premium/verify` with `{"key": "...", "device_id": "...", "device_label": "..."}`
+(20 requests per minute per IP). The first device to use a key is bound to it; other
+devices get `409 device_mismatch` until the user or an admin releases it. `device_id`
+is 16-256 printable characters chosen by the app; the server only stores a hash of it.
+
+On success the response holds `token`, a licence of the form
+`base64url(JSON payload).base64url(Ed25519 signature)` with `sub` (account), `kid` (key),
+`dev` (device hash), `plan`, `premium_until` and `exp`. Check the signature with the public
+key and call verify again before `exp`; tokens last at most 7 days and never past the
+paid period, so revoked or expired premium stops within that time.
+`verifyLicenceToken` in `src/server/services/premium-service.mjs` is a reference check.
+
+Error codes: `bad_key`, `bad_device`, `unknown_key`, `premium_expired`, `device_mismatch`,
+`signing_unavailable`.
+
 ## Production Routing
 
 The static pages use clean URLs such as `/dictionary`, `/skill-gems`, `/currency`, and `/leveling`.

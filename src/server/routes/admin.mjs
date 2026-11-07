@@ -6,7 +6,7 @@ const safeCompare = (a, b) => {
   return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
 };
 
-const requireAdmin = (request) => {
+export const requireAdmin = (request) => {
   const configured = process.env.ADMIN_API_TOKEN;
   const provided = request.headers.authorization?.replace(/^Bearer\s+/i, "");
   if (!configured || !provided || !safeCompare(configured, provided)) {

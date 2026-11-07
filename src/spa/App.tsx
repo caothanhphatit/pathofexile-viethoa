@@ -26,6 +26,7 @@ import { LevelingPage } from "./pages/LevelingPage";
 import { PassiveTreePage } from "./pages/PassiveTreePage";
 import { CraftSimPage } from "./pages/CraftSimPage";
 import { BuildPlannerPage } from "./pages/BuildPlannerPage";
+import { PremiumPage } from "./pages/PremiumPage";
 
 const facebookUrl = "https://www.facebook.com/poeviethoa";
 
@@ -103,9 +104,9 @@ export function App() {
           {navRoutes.map((item) => {
             const itemText = routeText(item, locale);
             return (
-              <a className={activeNav === item.key ? "is-active" : ""} href={item.path} key={item.key}>
+              <a className={activeNav === item.key ? "is-active" : ""} href={item.path} key={item.key} title={itemText.shortTitle}>
                 <span className="material-symbols-rounded" aria-hidden="true">{item.icon}</span>
-                {itemText.shortTitle}
+                <span className="nav-label">{itemText.shortTitle}</span>
               </a>
             );
           })}
@@ -160,6 +161,8 @@ function renderRoute(route: AppRoute, locale: Locale) {
       return <LevelingPage locale={locale} />;
     case "craftSim":
       return <CraftSimPage locale={locale} />;
+    case "premium":
+      return <PremiumPage locale={locale} />;
     default:
       return <HomePage locale={locale} />;
   }

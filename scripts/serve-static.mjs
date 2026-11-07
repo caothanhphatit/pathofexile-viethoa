@@ -54,6 +54,7 @@ const cleanRouteFiles = new Map([
   ["/build-planner", "/index.html"],
   ["/builds", "/index.html"],
   ["/leveling", "/index.html"],
+  ["/premium", "/index.html"],
   // Standalone boss pages (script-rendered): serve their real HTML directly.
   ["/boss", "/boss.html"],
   ["/boss-detail", "/boss_detail.html"],

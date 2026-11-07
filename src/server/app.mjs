@@ -8,6 +8,7 @@ import { closePool, createPool, databaseUrlFromEnv } from "../db/pool.mjs";
 import { adminRoutes } from "./routes/admin.mjs";
 import { authRoutes } from "./routes/auth.mjs";
 import { levelingAccountRoutes } from "./routes/leveling-account.mjs";
+import { premiumRoutes } from "./routes/premium.mjs";
 import { publicRoutes } from "./routes/public.mjs";
 import { translationCommentRoutes } from "./routes/translation-comments.mjs";
 import { createAuthService } from "./services/auth-service.mjs";
@@ -17,7 +18,10 @@ export const buildApp = async (options = {}) => {
   const app = Fastify({
     logger: options.logger ?? {
       level: process.env.LOG_LEVEL || "info"
-    }
+    },
+    // Behind nginx every request comes from 127.0.0.1; set TRUST_PROXY=1 there so
+    // request.ip (rate limits, premium device logs) is the visitor's address.
+    trustProxy: process.env.TRUST_PROXY === "1"
   });
 
   const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
@@ -91,6 +95,7 @@ export const buildApp = async (options = {}) => {
   await app.register(authRoutes);
   await app.register(levelingAccountRoutes);
   await app.register(translationCommentRoutes);
+  await app.register(premiumRoutes, { premiumSigner: options.premiumSigner });
   await app.register(publicRoutes);
   await app.register(adminRoutes);
 

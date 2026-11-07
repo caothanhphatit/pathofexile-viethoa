@@ -23,7 +23,8 @@ const appRoutes = [
   "/currency-detail",
   "/passive-tree",
   "/build",
-  "/leveling"
+  "/leveling",
+  "/premium"
 ];
 
 const goneRoutes = [

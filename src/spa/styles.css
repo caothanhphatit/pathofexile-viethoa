@@ -206,6 +206,29 @@ textarea:focus-visible {
   color: var(--muted);
   font-size: 13px;
   font-weight: 850;
+  white-space: nowrap;
+}
+
+/* Between the one-row and two-row layouts there is not enough room for ten labelled
+   links: they used to wrap ("Patch / note") and slide under the brand. Show icons
+   only there; the link title still names each page. */
+@media (min-width: 981px) and (max-width: 1320px) {
+  .nav-rail {
+    gap: 2px;
+  }
+
+  .nav-rail a {
+    padding: 0 9px;
+  }
+
+  .nav-rail a:not(.is-active) .nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 }
 
 .nav-rail a:hover,
@@ -5433,9 +5456,17 @@ textarea:focus-visible {
 
   .nav-rail {
     grid-column: 1 / -1;
+    grid-row: 2;
     justify-content: flex-start;
     overflow-x: auto;
     padding-bottom: 4px;
+  }
+
+  /* Keep the buttons beside the brand; auto-placement put them on a third row under
+     the nav, which made the sticky header take a third of a phone screen. */
+  .app-actions {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .stat-strip {
@@ -5700,8 +5731,9 @@ textarea:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .app-actions .segmented {
-    display: none;
+  /* The language switch fits beside the brand now that the actions share its row. */
+  .app-actions {
+    gap: 6px;
   }
 
   .app--passive .app-header {
@@ -6104,3 +6136,35 @@ textarea:focus-visible {
   font-weight: bold;
   text-align: center;
 }
+
+/* ── Premium page ─────────────────────────────────────────────────────────── */
+.premium-page { max-width: 1080px; }
+.premium-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.premium-card { display: flex; flex-direction: column; gap: 12px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.premium-card h2 { margin: 0; font-size: 17px; font-weight: 800; }
+.premium-status { grid-column: 1 / -1; }
+.premium-status.is-active { border-color: color-mix(in srgb, var(--gold) 45%, var(--line)); background: linear-gradient(135deg, color-mix(in srgb, var(--gold) 10%, var(--surface)), var(--surface) 60%); }
+.premium-status-head { display: flex; align-items: center; gap: 14px; }
+.premium-status-head > .material-symbols-rounded { font-size: 34px; color: var(--gold); }
+.premium-status-head h2 { font-size: 22px; }
+.premium-kicker { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.premium-pill { margin-left: auto; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.premium-pill.is-on { border-color: color-mix(in srgb, #22c55e 45%, transparent); background: color-mix(in srgb, #22c55e 14%, transparent); color: #22c55e; }
+.premium-facts { display: grid; gap: 8px; margin: 0; }
+.premium-facts div { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.premium-facts div:last-child { border-bottom: 0; padding-bottom: 0; }
+.premium-facts dt { color: var(--muted); font-size: 13px; }
+.premium-facts dd { margin: 0; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
+.premium-muted { margin: 0; color: var(--muted); font-size: 13px; }
+.premium-error { margin: 0 0 14px; padding: 10px 14px; border: 1px solid color-mix(in srgb, #ef4444 45%, transparent); border-radius: 8px; background: color-mix(in srgb, #ef4444 12%, transparent); color: #fca5a5; font-weight: 700; }
+.premium-keyrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.premium-keyrow code { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); font: 700 14px/1.3 "Cascadia Mono", Consolas, monospace; letter-spacing: .04em; overflow-wrap: anywhere; }
+.premium-newkey { display: grid; gap: 8px; padding: 12px; border: 1px dashed color-mix(in srgb, var(--gold) 60%, var(--line)); border-radius: 10px; background: color-mix(in srgb, var(--gold) 8%, transparent); }
+.premium-newkey small { color: var(--muted); }
+.premium-button { align-self: flex-start; display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--ink); font-weight: 800; cursor: pointer; text-decoration: none; }
+.premium-button.is-primary { border-color: var(--gold); background: var(--gold); color: #17130a; }
+.premium-button:disabled { opacity: .5; cursor: not-allowed; }
+.premium-signin { align-items: center; text-align: center; padding: 40px 22px; }
+.premium-signin > .material-symbols-rounded { font-size: 40px; color: var(--gold); }
+.premium-signin .premium-button { align-self: center; }
+@media (max-width: 760px) { .premium-grid { grid-template-columns: 1fr; } .premium-status-head { flex-wrap: wrap; } .premium-pill { margin-left: 0; } }

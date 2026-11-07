@@ -18,7 +18,8 @@ export type RouteKey =
   | "passiveTree"
   | "buildPlanner"
   | "leveling"
-  | "boss";
+  | "boss"
+  | "premium";
 
 export interface AppRoute {
   key: RouteKey;
@@ -212,6 +213,16 @@ export const routes: AppRoute[] = [
     icon: "skull",
     navOrder: 72,
     aliases: ["/boss.html"]
+  },
+  {
+    key: "premium",
+    path: "/premium",
+    title: "Premium POE2 Việt hóa",
+    shortTitle: "Premium",
+    description: "Gói premium: trạng thái, key dùng cho ứng dụng và máy đã kích hoạt.",
+    icon: "workspace_premium",
+    navOrder: 90,
+    aliases: ["/account/premium"]
   }
 ];
 
@@ -342,6 +353,13 @@ const routeCopy: Partial<Record<RouteKey, Partial<Record<Locale, Partial<RouteTe
       title: "POE2 Boss Guide",
       shortTitle: "Bosses",
       description: "List of Path of Exile 2 bosses with mechanics, strategy, and drop details."
+    }
+  },
+  premium: {
+    en: {
+      title: "POE2 Viet hoa Premium",
+      shortTitle: "Premium",
+      description: "Premium plan status, the key for client apps, and the activated device."
     }
   }
 };
