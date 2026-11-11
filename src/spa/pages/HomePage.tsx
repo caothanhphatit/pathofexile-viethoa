@@ -1,4 +1,4 @@
-import { type Locale, localizedText, uiText } from "../lib/locale";
+import { type Locale, localizedText } from "../lib/locale";
 import { routeForKey, routeText, type RouteKey } from "../lib/routes";
 
 const featureKeys: RouteKey[] = ["patchnote", "lookup", "newbie", "skillgems", "currency", "passiveTree", "buildPlanner", "leveling", "boss"];
@@ -17,6 +17,10 @@ const heroCopy = {
     vi: "Chào mừng đến với bách khoa toàn thư POE2",
     en: "A lightweight POE2 reference app built for fast daily lookup."
   },
+  lead: {
+    vi: "Patch note, từ điển thuật ngữ, skill gem, currency, passive tree, build và leveling bằng tiếng Việt.",
+    en: "Patch notes, terminology, skill gems, currency, passive tree, builds and leveling in one place."
+  },
   statsLabel: { vi: "Thống kê dữ liệu", en: "Data stats" },
   featuresLabel: { vi: "Tính năng chính", en: "Main features" }
 };
@@ -28,8 +32,8 @@ export function HomePage({ locale }: { locale: Locale }) {
         <div>
           <p className="eyebrow">{localizedText(heroCopy.eyebrow, "", locale)}</p>
           <h1>{localizedText(heroCopy.title, "", locale)}</h1>
+          <p className="hero-copy">{localizedText(heroCopy.lead, "", locale)}</p>
         </div>
-        <img src="/assets/img/logo.jpg" alt={uiText("brand", locale)} width="160" height="142" />
       </section>
       <section className="stat-strip" aria-label={localizedText(heroCopy.statsLabel, "", locale)}>
         {stats.map(([value, label]) => (

@@ -3,8 +3,8 @@
   const localeStorageKey = "poe-locale";
   const root = document.documentElement;
   const palette = {
-    dark: { bg: "#0f0d0b", fg: "#eee7db" },
-    light: { bg: "#f5f0e6", fg: "#1e1a14" }
+    dark: { bg: "#121211", fg: "#ebeae6" },
+    light: { bg: "#f6f5f2", fg: "#1c1b19" }
   };
   const normalizeLocale = (value = "") => String(value || "").toLowerCase().startsWith("en") ? "en" : "vi";
 

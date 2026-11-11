@@ -128,25 +128,25 @@ h6,
 
 /* Panels read the React app theme tokens so guide articles match the site. */
 .glass-panel {
-  border: 1px solid var(--line, rgba(60, 44, 20, .13));
-  background: var(--surface, #fffcf6);
+  border: 1px solid var(--line, rgba(28, 27, 25, .10));
+  background: var(--surface, #ffffff);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
 
 .dark .glass-panel {
-  border: 1px solid var(--line, rgba(238, 222, 196, .09));
-  background: var(--surface, #18150f);
+  border: 1px solid var(--line, rgba(235, 234, 230, .08));
+  background: var(--surface, #1a1a19);
 }
 
 .glass-panel-gold {
-  border: 1px solid color-mix(in srgb, var(--gold, #83540f) 30%, transparent);
-  background: linear-gradient(135deg, var(--gold-soft, rgba(131, 84, 15, .1)), var(--surface, #fffcf6) 60%);
+  border: 1px solid color-mix(in srgb, var(--gold, #7a5c2c) 30%, transparent);
+  background: linear-gradient(135deg, var(--gold-soft, rgba(122, 92, 44, .08)), var(--surface, #ffffff) 60%);
 }
 
 .dark .glass-panel-gold {
-  border: 1px solid color-mix(in srgb, var(--gold, #d9a656) 30%, transparent);
-  background: linear-gradient(135deg, var(--gold-soft, rgba(217, 166, 86, .13)), var(--surface, #18150f) 60%);
+  border: 1px solid color-mix(in srgb, var(--gold, #c4a77a) 30%, transparent);
+  background: linear-gradient(135deg, var(--gold-soft, rgba(196, 167, 122, .10)), var(--surface, #1a1a19) 60%);
 }
 
 ::-webkit-scrollbar {

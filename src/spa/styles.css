@@ -46,66 +46,70 @@
   src: url("/assets/fonts/be-vietnam-pro-900.ttf") format("truetype");
 }
 
-/* ── Theme: "warm charcoal and bronze" ─────────────────────────────────────
-   Neutrals carry a slight warm (amber) hue so the bronze accent belongs to them,
-   the way the PoE2 client UI does; there is one accent colour (--gold) for
-   actions, focus and the active nav. Every text/background pair below passes
-   WCAG AA (4.5:1; --subtle is for 3:1 secondary text and icons only) on
-   --bg, --surface, --surface-2 and --surface-3. Elevation in dark mode is a
-   lighter surface, not a shadow. Item rarity colours stay the game's own
-   (--poe-* in styles/poe-theme.css). */
+/* ── Theme: quiet graphite ─────────────────────────────────────────────────
+   Near-neutral greys (a hint of warmth only), flat surfaces and one muted
+   brass accent (--gold, kept under that name because many rules use it) that is
+   reserved for small things: the active nav bar, links, focus and the logo.
+   Primary buttons are ink-filled (--primary), not accent-filled. Every text and
+   background pair passes WCAG AA (4.5:1; --subtle is for 3:1 secondary text and
+   icons only) on --bg, --surface, --surface-2 and --surface-3. Item rarity
+   colours stay the game's own (--poe-* in styles/poe-theme.css). */
 :root {
   color-scheme: light;
   --font-body: "Be Vietnam Pro", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --bg: #f5f0e6;
-  --surface: #fffcf6;
-  --surface-2: #efe7d8;
-  --surface-3: #e6dcc9;
-  --ink: #1e1a14;
-  --muted: #655c50;
-  --subtle: #7a7062;
-  --line: rgba(60, 44, 20, .13);
-  --line-strong: rgba(60, 44, 20, .24);
-  --gold: #83540f;
-  --gold-strong: #6c450b;
-  --gold-ink: #fffaf0;
-  --gold-soft: rgba(131, 84, 15, .10);
-  --gold-2: #f1d6a0;
-  --success: #266a34;
-  --danger: #9f3027;
-  --warning: #784d04;
-  --info: #285689;
+  --bg: #f6f5f2;
+  --surface: #ffffff;
+  --surface-2: #efeeea;
+  --surface-3: #e5e3de;
+  --ink: #1c1b19;
+  --muted: #63605a;
+  --subtle: #76736c;
+  --line: rgba(28, 27, 25, .10);
+  --line-strong: rgba(28, 27, 25, .18);
+  --gold: #7a5c2c;
+  --gold-strong: #634a22;
+  --gold-ink: #ffffff;
+  --gold-soft: rgba(122, 92, 44, .08);
+  --gold-2: #e9dcc2;
+  --primary: var(--ink);
+  --primary-ink: var(--bg);
+  --success: #2e6b3a;
+  --danger: #9a3a31;
+  --warning: #76531a;
+  --info: #2f5784;
   --teal: var(--gold); /* legacy name for the accent; kept so older rules follow the theme */
   --cyan: var(--info);
   --red: var(--danger);
   --radius-s: 6px;
-  --radius-m: 10px;
-  --radius-l: 14px;
-  --shadow: 0 1px 2px rgba(60, 44, 20, .06), 0 10px 28px rgba(60, 44, 20, .08);
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --shadow: 0 1px 2px rgba(28, 27, 25, .05);
 }
 
 .dark {
   color-scheme: dark;
-  --bg: #0f0d0b;
-  --surface: #18150f;
-  --surface-2: #221d16;
-  --surface-3: #2c261d;
-  --ink: #eee7db;
-  --muted: #a99f8f;
-  --subtle: #857b6c;
-  --line: rgba(238, 222, 196, .09);
-  --line-strong: rgba(238, 222, 196, .18);
-  --gold: #d9a656;
-  --gold-strong: #ecc078;
-  --gold-ink: #1b1307;
-  --gold-soft: rgba(217, 166, 86, .13);
-  --gold-2: #f1d6a0;
-  --success: #7cc58a;
-  --danger: #ec8075;
-  --warning: #e7b04f;
-  --info: #82acdf;
+  --bg: #121211;
+  --surface: #1a1a19;
+  --surface-2: #222220;
+  --surface-3: #2b2b29;
+  --ink: #ebeae6;
+  --muted: #a5a39d;
+  --subtle: #84827c;
+  --line: rgba(235, 234, 230, .08);
+  --line-strong: rgba(235, 234, 230, .15);
+  --gold: #c4a77a;
+  --gold-strong: #d6bd95;
+  --gold-ink: #141310;
+  --gold-soft: rgba(196, 167, 122, .10);
+  --gold-2: #e9dcc2;
+  --primary: var(--ink);
+  --primary-ink: var(--bg);
+  --success: #86bf92;
+  --danger: #e08a80;
+  --warning: #d6b06a;
+  --info: #8fb0d6;
   --teal: var(--gold);
-  --shadow: 0 1px 0 rgba(255, 240, 210, .03) inset, 0 12px 32px rgba(0, 0, 0, .38);
+  --shadow: none;
 }
 
 * {

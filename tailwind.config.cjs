@@ -8,20 +8,20 @@ module.exports = {
   theme: {
     extend: {
       // The articles were written with Tailwind's blue-grey "slate"; remap it to the
-      // warm charcoal scale of the site theme (950 = --bg, 900 = --surface in dark).
+      // neutral graphite scale of the site theme (950 = --bg, 900 = --surface in dark).
       colors: {
         slate: {
-          50: "#faf7f1",
-          100: "#f3ede2",
-          200: "#e6dcc9",
-          300: "#d3c6af",
-          400: "#a99f8f",
-          500: "#857b6c",
-          600: "#655c50",
-          700: "#4a4237",
-          800: "#2c261d",
-          900: "#18150f",
-          950: "#0f0d0b"
+          50: "#fafaf8",
+          100: "#f3f2ef",
+          200: "#e5e3de",
+          300: "#d0cec8",
+          400: "#a5a39d",
+          500: "#84827c",
+          600: "#63605a",
+          700: "#45433f",
+          800: "#2b2b29",
+          900: "#1a1a19",
+          950: "#121211"
         }
       },
       fontFamily: {

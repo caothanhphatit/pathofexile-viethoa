@@ -48,20 +48,20 @@
   --poe-serif: var(--font-body);
   --poe-caps: var(--font-body);
 
-  --nj-bg: #0f0d0b;
-  --nj-hero: #18150f;
-  --nj-panel: #1d1913;
-  --nj-panel-head: #252019;
-  --nj-well: #15120e;
-  --nj-slot: #120f0c;
-  --nj-slot-empty: #2c261d;
-  --nj-line: #332c22;
-  --nj-line-soft: #29231b;
-  --nj-text: #e9e2d6;
-  --nj-text-strong: #f6f0e6;
-  --nj-muted: #a39a8b;
-  --nj-green: #d9a656; /* site accent (bronze); the name predates the theme */
-  --nj-green-deep: #a87a33;
+  --nj-bg: #121211;
+  --nj-hero: #1a1a19;
+  --nj-panel: #1e1e1d;
+  --nj-panel-head: #252523;
+  --nj-well: #161615;
+  --nj-slot: #131312;
+  --nj-slot-empty: #2b2b29;
+  --nj-line: #30302d;
+  --nj-line-soft: #282826;
+  --nj-text: #e7e6e2;
+  --nj-text-strong: #f4f3f0;
+  --nj-muted: #a3a19b;
+  --nj-green: #ebeae6; /* primary action colour (ink, like the site); the name predates the theme */
+  --nj-green-deep: #a5a39d;
   --nj-red: #ff5a5a;
   --nj-blue: #4aa3ff;
   --nj-shadow: 0 1px 0 rgba(0, 0, 0, .4);
@@ -81,7 +81,7 @@
   --poe-chaos: #d85ddb;
   --poe-good: #8ad46c;
   --poe-grey: #7f7f7f;
-  --poe-text-strong: #f6f0e6;
+  --poe-text-strong: #f4f3f0;
   --poe-muted: var(--nj-muted);
   --poe-gold-dim: #8a7141;
 }
@@ -138,7 +138,7 @@ body:has(.build-page) {
 
 .nj-panel-head h2 {
   margin: 0;
-  color: #cfc6b6;
+  color: #cac8c2;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0;
@@ -195,7 +195,7 @@ body:has(.build-page) {
   padding: 0 14px;
   border: 1px solid var(--nj-line);
   border-radius: 3px;
-  background: #2a241c;
+  background: #262624;
   box-shadow: none;
   color: var(--nj-text);
   font-family: var(--font-body);
@@ -223,7 +223,7 @@ body:has(.build-page) {
 .build-pob-actions button:hover,
 .build-empty .build-btn:hover,
 .nj-btn:hover {
-  border-color: #453b2e;
+  border-color: #3c3c39;
   background: #2b3542;
   color: var(--nj-text-strong);
   box-shadow: none;
@@ -241,7 +241,7 @@ body:has(.build-page) {
   cursor: not-allowed;
 }
 
-/* Primary: the site bronze accent. */
+/* Primary: ink-filled, like the site. */
 .build-btn--save,
 .build-btn--primary,
 .build-pob-actions button:last-child,
@@ -249,7 +249,7 @@ body:has(.build-page) {
 .nj-btn--primary {
   border-color: var(--nj-green);
   background: var(--nj-green);
-  color: #1b1307;
+  color: #121211;
 }
 
 .build-btn--save:hover,
@@ -257,9 +257,9 @@ body:has(.build-page) {
 .build-pob-actions button:last-child:hover,
 .build-library-toolbar button:last-child:hover,
 .nj-btn--primary:hover {
-  border-color: #ecc078;
-  background: #ecc078;
-  color: #1b1307;
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #121211;
 }
 
 .build-btn--save.is-changed {
@@ -276,7 +276,7 @@ body:has(.build-page) {
 .nj-btn--outline:hover,
 .build-btn--import:hover {
   background: rgba(34, 197, 94, .10);
-  color: #ecc078;
+  color: #ffffff;
 }
 
 .build-btn--delete,
@@ -371,7 +371,7 @@ body:has(.build-page) {
 
 .nj-hero-sub {
   margin: 0;
-  color: #cfc6b6;
+  color: #cac8c2;
   font-size: 18px;
   font-weight: 600;
 }
@@ -589,7 +589,7 @@ body:has(.build-page) {
 }
 
 .nj-stat-row > span {
-  color: #e2dacb;
+  color: #dedcd7;
 }
 
 .nj-stat-row > strong {
@@ -643,7 +643,7 @@ body:has(.build-page) {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: radial-gradient(circle, #1f2730, #110e0b);
+  background: radial-gradient(circle, #1f2730, #141413);
   box-shadow: inset 0 0 0 1px #2d3742;
   overflow: hidden;
 }
@@ -694,8 +694,8 @@ body:has(.build-page) {
 .nj-dps > span {
   padding: 2px 8px;
   border-radius: 3px;
-  background: #e9e2d6;
-  color: #110e0b;
+  background: #e7e6e2;
+  color: #141413;
   font-size: 14px;
   font-weight: 800;
   text-align: center;
@@ -707,7 +707,7 @@ body:has(.build-page) {
   height: 3px;
   overflow: hidden;
   border-radius: 2px;
-  background: #332c22;
+  background: #30302d;
 }
 
 .nj-dps > i > b {
@@ -757,7 +757,7 @@ body:has(.build-page) {
   gap: 5px;
   padding: 2px 9px;
   border-radius: 3px;
-  background: #332c22;
+  background: #30302d;
   color: var(--nj-text);
   font-size: 12px;
   font-weight: 700;
@@ -838,7 +838,7 @@ body:has(.build-page) {
 }
 
 .nj-skill-card.is-main {
-  border-color: #463c2f;
+  border-color: #3d3d3a;
   box-shadow: inset 2px 0 0 var(--nj-green);
 }
 
@@ -867,8 +867,8 @@ body:has(.build-page) {
   width: 28px;
   height: 28px;
   border-radius: 4px;
-  background: #120f0c;
-  box-shadow: inset 0 0 0 1px #332c22;
+  background: #131312;
+  box-shadow: inset 0 0 0 1px #30302d;
 }
 
 .nj-gem-row .nj-gem-icon img {
@@ -899,7 +899,7 @@ body:has(.build-page) {
 }
 
 .nj-gem-row--support .nj-gem-name {
-  color: #e2dacb;
+  color: #dedcd7;
 }
 
 .nj-gem-aside {
@@ -915,8 +915,8 @@ body:has(.build-page) {
 .nj-gem-aside .nj-dps-mini {
   padding: 1px 7px;
   border-radius: 3px;
-  background: #e9e2d6;
-  color: #110e0b;
+  background: #e7e6e2;
+  color: #141413;
   font-weight: 800;
 }
 
@@ -967,7 +967,7 @@ body:has(.build-page) {
   background: transparent;
   box-shadow: inset 0 0 0 1px dashed;
   box-shadow: none;
-  border: 1px dashed #463c2f;
+  border: 1px dashed #3d3d3a;
 }
 
 .nj-gem-row--add:hover {
@@ -1021,7 +1021,7 @@ body:has(.build-page) {
 
 .build-library-card-head > .material-symbols-rounded {
   border-radius: 3px;
-  background: #332c22;
+  background: #30302d;
   color: var(--nj-green);
 }
 
@@ -1043,7 +1043,7 @@ body:has(.build-page) {
 }
 
 .build-library-empty .material-symbols-rounded {
-  background: #332c22;
+  background: #30302d;
   color: var(--nj-muted);
 }
 
@@ -1108,13 +1108,13 @@ body:has(.build-page) {
   padding: 0;
   border: 1px solid var(--nj-line);
   border-radius: 3px;
-  background: #2a241c;
+  background: #262624;
   color: var(--nj-text);
 }
 
 .build-picker-head > button:hover,
 .build-help-head > button:hover {
-  border-color: #453b2e;
+  border-color: #3c3c39;
   color: var(--nj-text-strong);
 }
 
@@ -1182,7 +1182,7 @@ body:has(.build-page) {
 .build-gem-result:hover,
 .build-gem-choice.is-active {
   border-color: var(--nj-line);
-  background: #2a241c;
+  background: #262624;
   box-shadow: none;
 }
 
@@ -1194,8 +1194,8 @@ body:has(.build-page) {
   min-height: 0;
   border: 0;
   border-radius: 4px;
-  background: #120f0c;
-  box-shadow: inset 0 0 0 1px #332c22;
+  background: #131312;
+  box-shadow: inset 0 0 0 1px #30302d;
   color: var(--nj-muted);
 }
 
@@ -1241,7 +1241,7 @@ body:has(.build-page) {
 
 .build-empty,
 .build-warning {
-  border: 1px dashed #463c2f;
+  border: 1px dashed #3d3d3a;
   border-radius: 3px;
   background: rgba(0, 0, 0, .18);
   color: var(--nj-muted);
@@ -1282,7 +1282,7 @@ body:has(.build-page) {
 .nj-tree .build-tree-list > button {
   border: 1px solid var(--nj-line-soft);
   border-radius: 3px;
-  background: #2a241c;
+  background: #262624;
   color: var(--nj-text);
 }
 
@@ -1564,14 +1564,14 @@ body:has(.build-page) {
 
 .build-picker-result:hover,
 .build-picker-result.is-unique:hover {
-  border-color: #453b2e;
+  border-color: #3c3c39;
 }
 
 .build-picker-result--card .build-picker-icon {
   border: 0;
   border-right: 1px solid var(--nj-line-soft);
   border-radius: 0;
-  background: #120f0c;
+  background: #131312;
   box-shadow: none;
   color: var(--nj-muted);
 }
@@ -1639,7 +1639,7 @@ body:has(.build-page) {
 .nj-gem-row--add .nj-gem-icon {
   width: 28px;
   height: 28px;
-  border: 1px dashed #463c2f;
+  border: 1px dashed #3d3d3a;
   border-radius: 4px;
   background: transparent;
   box-shadow: none;

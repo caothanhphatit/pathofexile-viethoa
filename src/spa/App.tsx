@@ -29,6 +29,7 @@ import { BuildPlannerPage } from "./pages/BuildPlannerPage";
 import { PremiumPage } from "./pages/PremiumPage";
 import { InstallPage } from "./pages/InstallPage";
 import { BossDetailPage, BossListPage } from "./pages/BossPages";
+import { BrandMark } from "./components/BrandMark";
 
 const facebookUrl = "https://www.facebook.com/poeviethoa";
 
@@ -100,7 +101,7 @@ export function App() {
     <div className={isPassive ? "app app--passive" : "app"}>
       <header className="app-header">
         <a className="brand" href="/">
-          <img src="/assets/img/logo.jpg" width="42" height="38" alt="" />
+          <BrandMark size={30} />
           <span>
             <strong>{uiText("brand", locale)}</strong>
             <small>{currentRouteText.shortTitle}</small>
