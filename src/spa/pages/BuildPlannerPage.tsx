@@ -544,6 +544,16 @@ function isInternalStatLine(line: string): boolean {
   return /\[[-+]?\d+(?:\.\d+)?\]\s*\.?$/.test(line.trim());
 }
 
+// Letters the game font (Fontin, Latin-1 only) does not have. A text run that
+// contains one is drawn whole in the Vietnamese small-caps face instead of
+// mixing two fonts inside a word.
+const VIETNAMESE_LETTER = /[ĂăĐđĨĩŨũƠơƯưẠ-ỹ]/;
+
+/** Wraps every text node of tooltip HTML that holds Vietnamese in <span class="tip-vi">. */
+function markVietnameseRuns(html: string): string {
+  return html.replace(/>([^<>]+)</g, (match, text: string) => (VIETNAMESE_LETTER.test(text) ? `><span class="tip-vi">${text}</span><` : match));
+}
+
 /** Localised lines end with a stray "." in the vi data; the game never shows one. */
 function cleanTooltipLine(line: string): string {
   return line.trim().replace(/(?<![.])\.$/, "");
@@ -2493,7 +2503,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     <span className="build-picker-icon">
                       {iconUrl ? <img src={iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">inventory_2</span>}
                     </span>
-                    <span className="build-picker-tooltip" dangerouslySetInnerHTML={{ __html: getItemTooltipHtml(item, locale) }} />
+                    <span className="build-picker-tooltip" dangerouslySetInnerHTML={{ __html: markVietnameseRuns(getItemTooltipHtml(item, locale)) }} />
                   </button>
                 );
               }) : <p className="build-picker-empty">{localizedText(copy.noItems, "", locale)}</p>}
@@ -2557,7 +2567,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           pointerEvents: "none",
           zIndex: 9999,
           maxWidth: "400px"
-        }} dangerouslySetInnerHTML={{ __html: tooltip.content }} />
+        }} dangerouslySetInnerHTML={{ __html: markVietnameseRuns(tooltip.content) }} />
       )}
     </main>
   );

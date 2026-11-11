@@ -1,0 +1,227 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Build planner in the game's own look, measured from the official trade site
+   (pathofexile.com/trade2) item cards: Fontin SmallCaps, a black card, a
+   rarity-coloured header band (34px for one line, 54px for name + base),
+   rarity-tinted rules between sections, grey labels with white values,
+   #8888ff mods and #b4b4ff rune lines.
+
+   Fontin has no Vietnamese letters (53 of 58 missing), so Vietnamese text uses
+   Alegreya Sans SC, the closest small-caps face that has them: whole runs are
+   switched (.tip-vi in tooltips, the chrome by html[lang]) so a word is never
+   drawn in two fonts. Loaded after the other stylesheets.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --poe-game: "Fontin SmallCaps", "Alegreya Sans SC", "Be Vietnam Pro", serif;
+  --poe-game-vi: "Alegreya Sans SC", "Be Vietnam Pro", sans-serif;
+  --poe-chrome: var(--poe-game);
+  /* The game's beige UI text and its brighter title tone. */
+  --poe-ui-text: #a38d6d;
+  --poe-ui-title: #d2bf98;
+  --poe-label: #7f7f7f;
+  --poe-mod: #8888ff;
+  --poe-rune-mod: #b4b4ff;
+}
+
+html[lang="vi"] {
+  --poe-chrome: var(--poe-game-vi);
+}
+
+/* ── Item and gem tooltip ──────────────────────────────────────────────── */
+
+.poe-tooltip-float,
+.build-picker-tooltip,
+.poe-tooltip-card {
+  font-family: var(--poe-game);
+}
+
+.poe-tooltip-card {
+  min-width: 300px;
+  max-width: 400px;
+  padding: 0 0 7px;
+  border: 0;
+  background: rgba(0, 0, 0, .95);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .04), 0 14px 32px rgba(0, 0, 0, .85);
+  color: var(--poe-label);
+  font-size: 14.3px;
+  line-height: 1.3;
+}
+
+.poe-tooltip-card .tip-vi {
+  font-family: var(--poe-game-vi);
+  font-size: .96em;
+}
+
+/* Header colours follow the trade site's per-rarity header art. */
+.poe-tooltip-card                       { --tip-a: #3b3b3b; --tip-b: #1d1d1d; --tip-edge: #7b7b7b; --tip-name: #c8c8c8; --tip-orn: #a9a9a9; --tip-rule: #6f6f6f; }
+.poe-tooltip-card.tooltip-rarity-magic  { --tip-a: #26265a; --tip-b: #121230; --tip-edge: #4a4a96; --tip-name: #8888ff; --tip-orn: #9a9ae6; --tip-rule: #4d4d9e; }
+.poe-tooltip-card.tooltip-rarity-rare   { --tip-a: #45391a; --tip-b: #201a0b; --tip-edge: #7d6c34; --tip-name: #ffff77; --tip-orn: #d8c25a; --tip-rule: #8f7d3d; }
+.poe-tooltip-card.tooltip-rarity-unique { --tip-a: #55260d; --tip-b: #260f04; --tip-edge: #a5592a; --tip-name: #af6025; --tip-orn: #d07a3c; --tip-rule: #b5652e; }
+.poe-tooltip-card.tooltip-rarity-gem    { --tip-a: #11433f; --tip-b: #08201e; --tip-edge: #1b8a83; --tip-name: #1ba29b; --tip-orn: #3fc9bf; --tip-rule: #1b8a83; }
+
+.poe-tooltip-card .tooltip-header {
+  min-height: 34px;
+  padding: 3px 46px 2px;
+}
+
+.poe-tooltip-card.has-base .tooltip-header {
+  min-height: 54px;
+}
+
+.poe-tooltip-card .tooltip-header::before,
+.poe-tooltip-card .tooltip-header::after {
+  width: 34px;
+  height: 34px;
+}
+
+.poe-tooltip-card.has-base .tooltip-header::before,
+.poe-tooltip-card.has-base .tooltip-header::after {
+  width: 46px;
+  height: 46px;
+}
+
+.poe-tooltip-card :is(.tooltip-name, .tooltip-base) {
+  color: var(--tip-name);
+  font-family: var(--poe-game);
+  font-size: 19px;
+  line-height: 22px;
+}
+
+.poe-tooltip-card .tooltip-section {
+  padding: 5px 14px 3px;
+}
+
+.poe-tooltip-card .tooltip-divider {
+  height: 1px;
+  margin: 2px 22px;
+  background: linear-gradient(90deg, transparent, var(--tip-rule) 25%, var(--tip-rule) 75%, transparent);
+}
+
+.poe-tooltip-card :is(.tip-class, .tip-label, .tip-req, .tooltip-properties, .tooltip-requirements, .tooltip-item-level) {
+  color: var(--poe-label);
+}
+
+.poe-tooltip-card .tip-value {
+  color: #fff;
+}
+
+.poe-tooltip-card .tip-value--aug {
+  color: var(--poe-mod);
+}
+
+.poe-tooltip-card :is(.tooltip-mods, .tooltip-implicits) {
+  color: var(--poe-mod);
+}
+
+.poe-tooltip-card .tooltip-enchants {
+  color: var(--poe-rune-mod);
+}
+
+.poe-tooltip-card .tooltip-mod-line {
+  line-height: 1.32;
+}
+
+.poe-tooltip-card .tooltip-tags {
+  color: var(--poe-label);
+}
+
+/* ── Planner chrome ────────────────────────────────────────────────────── */
+
+.build-page {
+  color: var(--nj-text);
+}
+
+.build-page :is(.nj-panel-head h2, .nj-stat-group, .nj-hero-eyebrow, .nj-meta-label, .nj-meta span, .build-slot-label, .nj-panel-aside) {
+  font-family: var(--poe-chrome);
+  letter-spacing: .02em;
+  text-transform: none;
+}
+
+.build-page .nj-panel-head {
+  background: linear-gradient(180deg, #24231f, #191815);
+  border-bottom-color: #3a352b;
+}
+
+.build-page .nj-panel-head h2 {
+  color: var(--poe-ui-title);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.build-page :is(.nj-panel-aside, .nj-stat-group, .nj-meta-label, .nj-meta span) {
+  color: var(--poe-ui-text);
+}
+
+.build-page .nj-stat-group {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .06em;
+}
+
+.build-page .nj-hero-eyebrow {
+  color: var(--poe-ui-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.build-page .nj-hero {
+  border-color: #3a352b;
+  background: linear-gradient(180deg, #1d1c19, #141311);
+}
+
+.build-page .nj-hero-title {
+  font-family: var(--poe-chrome);
+  color: var(--poe-ui-title);
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+
+/* Gem and item names are English game data: always the game face. */
+.build-page .nj-gem-name {
+  font-family: var(--poe-game);
+  font-size: 14.5px;
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+
+.build-page .nj-gem-name.is-empty {
+  font-family: var(--poe-chrome);
+}
+
+/* ── Equipment cells, tinted by rarity like the inventory ──────────────── */
+
+.build-page .build-equip-slot {
+  border-color: #2e2c27;
+  background: #0f0f0e;
+}
+
+.build-page .build-equip-slot:hover,
+.build-page .build-equip-slot:focus-visible {
+  border-color: #5a5345;
+  background: #161513;
+}
+
+.build-page .build-equip-slot.has-item {
+  border-color: #4a4a48;
+  background: radial-gradient(ellipse at 50% 45%, rgba(200, 200, 200, .06), transparent 70%), #0d0d0c;
+}
+
+.build-page .build-equip-slot.has-item.is-magic {
+  border-color: #44447e;
+  background: radial-gradient(ellipse at 50% 45%, rgba(136, 136, 255, .14), transparent 70%), #0d0d12;
+}
+
+.build-page .build-equip-slot.has-item.is-rare {
+  border-color: #6f6533;
+  background: radial-gradient(ellipse at 50% 45%, rgba(255, 255, 119, .10), transparent 70%), #0f0e0a;
+}
+
+.build-page .build-equip-slot.has-item.is-unique {
+  border-color: #8a4a1e;
+  background: radial-gradient(ellipse at 50% 45%, rgba(175, 96, 37, .18), transparent 70%), #110c09;
+}
+
+.build-page .build-slot-label {
+  color: #6f6a5f;
+  font-size: 12px;
+}
