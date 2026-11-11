@@ -145,7 +145,9 @@ test("Build planner page lets users choose saved trees and item hints", async ()
   assert.doesNotMatch(page, /className="build-tree-action build-tree-view"/);
   assert.doesNotMatch(page, /className="build-tree-action build-tree-edit"/);
   assert.match(page, /build-action-dialog/);
-  assert.match(page, /build-item-picker/);
+  // Equipment comes from the build inventory (Kho đồ), not a list modal.
+  assert.doesNotMatch(page, /build-item-picker/);
+  assert.match(page, /<BuildInventoryPanel/);
   assert.match(page, /className="nj-row nj-row--top"/);
   assert.match(page, /downloadBuildFile/);
   assert.match(page, /parseBuildFileText/);
@@ -265,7 +267,7 @@ test("Build planner uses separate routes for library and detail screens", async 
   assert.doesNotMatch(page, /localizedText\(copy\.unsavedBeforeTree/);
   assert.doesNotMatch(page, /\/tree\/(?:view|edit)/);
   assert.match(routes, /path\.startsWith\("\/build\/"\)/);
-  assert.match(page, /editorOpen && activeSlot/);
+  assert.doesNotMatch(page, /editorOpen && activeSlot/, "clicking a slot selects it instead of opening a list");
   assert.match(page, /editorOpen && activeGemPicker/);
   assert.match(styles, /\.build-library-grid\s*\{[\s\S]*repeat\(auto-fill,\s*minmax\(280px,\s*1fr\)\)/);
   assert.match(styles, /\.build-library-card-actions/);
@@ -620,7 +622,7 @@ test("Build equipment picker filters slots, unique items, icons, and base lines"
   assert.match(page, /isUniqueItem/);
   assert.match(page, /uniqueItemIconPattern/);
   assert.match(page, /displayImageUrl/);
-  assert.match(page, /pickerMode === "unique"/);
+  assert.match(page, /itemFitsSlot\(item, activeSlot\)/, "inventory search only offers items that fit the selected slot");
   assert.match(page, /itemSummaryLines/);
   assert.match(page, /itemBaseName/);
   assert.match(page, /unique \? "" : base/);

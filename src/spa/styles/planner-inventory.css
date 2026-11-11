@@ -1,0 +1,396 @@
+/* Build Planner: "Kho đồ" inventory, "Nếu mặc vào" comparison, gem swap strip
+   (BuildInventoryPanel.tsx). Dark game-like cells as in the in-game inventory. */
+
+.nj-equip-layout {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(220px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .nj-equip-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.pi-panel {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 8px;
+  background: var(--nj-well);
+  outline: none;
+}
+
+.pi-panel:focus-visible,
+.pi-panel.is-drop {
+  border-color: var(--poe-unique, #af6025);
+}
+
+.pi-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pi-head h3 {
+  margin: 0;
+  color: var(--nj-text-strong);
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.pi-count {
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--nj-slot-empty);
+  color: var(--nj-muted);
+  font-size: 12px;
+}
+
+.pi-head .pi-btn {
+  margin-left: auto;
+}
+
+.pi-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border: 1px solid var(--nj-line);
+  border-radius: 6px;
+  background: var(--nj-panel-head);
+  color: var(--nj-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.pi-btn:hover { border-color: var(--nj-muted); }
+.pi-btn:disabled { opacity: .5; cursor: default; }
+.pi-btn .material-symbols-rounded { font-size: 16px; }
+.pi-btn--ghost { border-color: transparent; background: transparent; }
+.pi-btn--primary { border-color: var(--nj-green-deep); background: #2a2a27; color: var(--nj-text-strong); }
+
+.pi-filter,
+.pi-choice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--nj-panel-head);
+  color: var(--nj-text);
+  font-size: 13px;
+}
+
+.pi-filter > span,
+.pi-choice > span {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.pi-choice {
+  border: 1px solid var(--poe-unique, #af6025);
+}
+
+.pi-paste {
+  display: grid;
+  gap: 6px;
+}
+
+.pi-paste p,
+.pi-help,
+.pi-empty,
+.pi-message {
+  margin: 0;
+  color: var(--nj-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.pi-message { color: var(--nj-text); }
+
+.pi-paste textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--nj-line);
+  border-radius: 6px;
+  background: var(--nj-slot);
+  color: var(--nj-text);
+  font: 12px/1.4 ui-monospace, Consolas, monospace;
+  resize: vertical;
+}
+
+.pi-paste .pi-btn { justify-self: start; }
+
+.pi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid #2b2418;
+  background:
+    linear-gradient(rgba(0, 0, 0, .35), rgba(0, 0, 0, .35)),
+    #0f0e0c;
+}
+
+.pi-cell-wrap {
+  position: relative;
+}
+
+.pi-cell {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 3px;
+  border: 1px solid #262119;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, .05), transparent 70%), #15130f;
+  cursor: grab;
+}
+
+.pi-cell img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.pi-cell:hover,
+.pi-cell:focus-visible {
+  border-color: #6b5a3a;
+  background-color: #1e1a13;
+  outline: none;
+}
+
+.pi-cell.is-unique { box-shadow: inset 0 0 0 1px rgba(175, 96, 37, .55); }
+.pi-cell.is-rare { box-shadow: inset 0 0 0 1px rgba(255, 255, 119, .35); }
+.pi-cell.is-magic { box-shadow: inset 0 0 0 1px rgba(136, 136, 255, .45); }
+
+.pi-initial {
+  font: 700 20px var(--poe-num, serif);
+}
+
+.pi-initial.is-unique, .pi-result-name.is-unique { color: var(--poe-unique); }
+.pi-initial.is-rare, .pi-result-name.is-rare { color: var(--poe-rare); }
+.pi-initial.is-magic, .pi-result-name.is-magic { color: var(--poe-magic); }
+.pi-initial.is-normal, .pi-result-name.is-normal { color: var(--poe-normal); }
+
+.pi-remove {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  display: none;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, .7);
+  color: var(--nj-muted);
+  cursor: pointer;
+}
+
+.pi-remove .material-symbols-rounded { font-size: 14px; }
+.pi-cell-wrap:hover .pi-remove,
+.pi-remove:focus-visible { display: block; }
+
+.pi-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--nj-line);
+  border-radius: 6px;
+  background: var(--nj-slot);
+}
+
+.pi-search .material-symbols-rounded { color: var(--nj-muted); font-size: 18px; }
+
+.pi-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--nj-text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.pi-results {
+  display: grid;
+  gap: 2px;
+  max-height: 260px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.pi-results button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--nj-text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pi-results button:hover { background: var(--nj-panel-head); }
+.pi-results small { color: var(--nj-muted); }
+.pi-add { margin-left: auto; color: var(--nj-muted); font-size: 18px; }
+
+.pi-result-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+}
+
+.pi-result-icon img { max-width: 28px; max-height: 28px; }
+.pi-result-icon .pi-initial { font-size: 14px; }
+
+.pi-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border: 2px solid var(--nj-line);
+  border-top-color: var(--nj-text);
+  border-radius: 50%;
+  vertical-align: -1px;
+  animation: pi-spin .8s linear infinite;
+}
+
+@keyframes pi-spin { to { transform: rotate(360deg); } }
+
+/* Paper-doll slots: selected, drop target. */
+.build-equip-slot.is-selected {
+  outline: 2px solid var(--poe-unique, #af6025);
+  outline-offset: 1px;
+}
+
+.build-equip-slot.is-drop-target {
+  outline: 2px dashed #4ade80;
+  outline-offset: 1px;
+}
+
+/* "Nếu mặc vào" block under an item tooltip. */
+.pc-cmp {
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid #3a3226;
+  background: #0b0a08;
+  color: #d8d4c8;
+  font-size: 13px;
+  text-align: left;
+}
+
+.pc-cmp-title {
+  margin: 0 0 4px;
+  color: #e9d8a6;
+  font-weight: 700;
+}
+
+.pc-cmp-label {
+  margin: 4px 0 2px;
+  color: var(--nj-muted);
+  font-size: 12px;
+}
+
+.pc-cmp-note {
+  margin: 0;
+  color: var(--nj-muted);
+}
+
+.pc-cmp-rows {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pc-cmp-rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pc-cmp-rows .is-better, .pg-chip .is-better { color: #4ade80; }
+.pc-cmp-rows .is-worse, .pg-chip .is-worse { color: var(--nj-red); }
+
+/* Gem swap strip under a gem row. */
+.pg-strip {
+  display: grid;
+  gap: 6px;
+  margin: 2px 0 6px;
+  padding: 8px;
+  border: 1px solid var(--nj-line);
+  border-radius: 6px;
+  background: var(--nj-well);
+}
+
+.pg-strip-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--nj-text-strong);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pg-strip-head small {
+  color: var(--nj-muted);
+  font-weight: 400;
+}
+
+.pg-strip-head .pi-btn { margin-left: auto; }
+
+.pg-strip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 3px 8px 3px 4px;
+  border: 1px solid var(--nj-line);
+  border-radius: 999px;
+  background: var(--nj-panel-head);
+  color: var(--nj-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.pg-chip:hover { border-color: var(--poe-gem, #1ba29b); }
+.pg-chip img { width: 20px; height: 20px; }
+.pg-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-chip b { font-size: 11px; color: var(--nj-muted); }
+.pg-chip--more { padding-left: 8px; color: var(--nj-muted); }
+.pg-chip--more .material-symbols-rounded { font-size: 15px; }
+
+.pg-strip-help {
+  margin: 0;
+  color: var(--nj-muted);
+  font-size: 11px;
+}

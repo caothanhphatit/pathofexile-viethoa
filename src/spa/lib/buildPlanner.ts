@@ -119,6 +119,22 @@ export interface BuildPayload {
   [key: string]: unknown;
 }
 
+/** An item of the build's personal inventory (see buildInventory.ts). */
+export type StashSource = "pob" | "paste" | "search" | "unequipped";
+
+export interface BuildStashItem {
+  id: string;
+  /** PoB / game item text; what the calculator gets. Empty for an item known only by name. */
+  rawText?: string;
+  /** Display name and rarity when there is no text (items picked by name in older builds). */
+  itemName: string;
+  isUnique: boolean;
+  baseName?: string;
+  itemSlug?: string;
+  iconUrl?: string;
+  source: StashSource;
+}
+
 export interface BuildProject {
   id: string;
   name: string;
@@ -128,6 +144,8 @@ export interface BuildProject {
   activeTreeId: string;
   inventory: BuildInventoryChoice[];
   skills: BuildSkillChoice[];
+  /** Personal inventory: items for this build that are not worn. */
+  stash: BuildStashItem[];
   importedPayload?: BuildPayload;
   importedFileName?: string;
   createdAt: string;
@@ -369,6 +387,30 @@ const normalizeSkillChoices = (rows: unknown): BuildSkillChoice[] => {
   }));
 };
 
+const STASH_SOURCES: StashSource[] = ["pob", "paste", "search", "unequipped"];
+
+export function normalizeStash(rows: unknown): BuildStashItem[] {
+  if (!Array.isArray(rows)) return [];
+  return rows.filter((row): row is Record<string, unknown> => Boolean(row) && typeof row === "object")
+    .map((row): BuildStashItem | null => {
+      const rawText = typeof row.rawText === "string" && row.rawText ? row.rawText : undefined;
+      const itemName = typeof row.itemName === "string" ? row.itemName : "";
+      if (!rawText && !itemName) return null;
+      return {
+        id: typeof row.id === "string" && row.id ? row.id : `stash-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+        rawText,
+        itemName,
+        isUnique: Boolean(row.isUnique),
+        baseName: typeof row.baseName === "string" ? row.baseName : undefined,
+        itemSlug: typeof row.itemSlug === "string" ? row.itemSlug : undefined,
+        iconUrl: typeof row.iconUrl === "string" ? row.iconUrl : undefined,
+        source: STASH_SOURCES.includes(row.source as StashSource) ? row.source as StashSource : "paste"
+      };
+    })
+    .filter((row): row is BuildStashItem => Boolean(row))
+    .slice(0, 300);
+}
+
 export function normalizeBuildProject(value: unknown): BuildProject | null {
   if (!isPlainObject(value) || typeof value.id !== "string") return null;
   const normalizedTrees = normalizeTreeSnapshots([
@@ -390,6 +432,7 @@ export function normalizeBuildProject(value: unknown): BuildProject | null {
     activeTreeId,
     inventory: normalizeInventoryChoices(value.inventory),
     skills: normalizeSkillChoices(value.skills),
+    stash: normalizeStash(value.stash),
     importedPayload,
     importedFileName: typeof value.importedFileName === "string" ? value.importedFileName : undefined,
     createdAt: typeof value.createdAt === "string" ? value.createdAt : nowIso(),
@@ -418,6 +461,7 @@ export function createBuildProject({
   activeTreeId = "",
   inventory = [],
   skills = [],
+  stash = [],
   importedPayload,
   importedFileName,
   createdAt
@@ -431,6 +475,7 @@ export function createBuildProject({
   activeTreeId?: string;
   inventory?: BuildInventoryChoice[];
   skills?: BuildSkillChoice[];
+  stash?: BuildStashItem[];
   importedPayload?: BuildPayload;
   importedFileName?: string;
   createdAt?: string;
@@ -450,6 +495,7 @@ export function createBuildProject({
     activeTreeId: treeId,
     inventory: normalizeInventoryChoices(inventory),
     skills: normalizeSkillChoices(skills),
+    stash: normalizeStash(stash),
     importedPayload,
     importedFileName,
     createdAt: createdAt || timestamp,

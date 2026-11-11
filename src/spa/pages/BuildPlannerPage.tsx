@@ -43,11 +43,37 @@ import {
   type BuildTreeSnapshot,
   type PobGem,
   type PobImportData,
-  type PobConfigInput
+  type PobConfigInput,
+  type BuildStashItem
 } from "../lib/buildPlanner";
 import { pobItemTextFromRecord } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
+import {
+  BuildInventoryPanel,
+  CompareBlock,
+  GemSwapStrip,
+  SLOT_DRAG_TYPE,
+  STASH_DRAG_TYPE,
+  type CatalogEntry,
+  type CompareSpec,
+  type GemOptionView,
+  type StashItemView
+} from "../components/BuildInventoryPanel";
+import {
+  equipStashItem,
+  equipTargets,
+  itemCategoriesFromText,
+  removeStashItem,
+  slotIdsForCategories,
+  splitItemTexts,
+  stashFromPobImport,
+  stashItemFromText,
+  stashItemSummary,
+  unequipSlot
+} from "../lib/buildInventory";
+import { CalcQueue, calcKey } from "../lib/calcQueue";
+import { gemCandidates } from "../lib/gemSuggest";
 
 type SnapshotOption = {
   key: string;
@@ -434,6 +460,11 @@ function gemLookupValues(item: ItemRecord, prefix: "SkillGem" | "SupportGem"): s
 }
 
 function pobGemRecord(gem: PobGem, options: ItemRecord[], prefix: "SkillGem" | "SupportGem"): ItemRecord | undefined {
+  // PoB's gemId is the game id: an exact hit beats name matching ("Zenith II" is not "Zenith I").
+  if (gem.gemId) {
+    const exact = options.find((item) => item.official_id === gem.gemId);
+    if (exact) return exact;
+  }
   const rawIds = [gem.skillId, gem.skillId.split("/").pop() ?? ""].map(String).filter(Boolean);
   const rawIdMatch = options.find((item) => {
     const aliases = officialGemAliases(item, prefix);
@@ -810,8 +841,10 @@ function buildDraftSignature(input: {
   skills: BuildSkillChoice[];
   importedPayload?: BuildPayload | null;
   importedFileName?: string;
+  stash?: BuildStashItem[];
 }): string {
   return JSON.stringify({
+    stash: (input.stash ?? []).map((row) => row.id),
     name: input.name.trim(),
     author: input.author.trim(),
     description: input.description.trim(),
@@ -833,7 +866,8 @@ function buildProjectSignature(project: BuildProject | null): string {
     inventory: inventoryWithEmptySlots(project.inventory),
     skills: project.skills ?? [],
     importedPayload: project.importedPayload ?? null,
-    importedFileName: project.importedFileName || ""
+    importedFileName: project.importedFileName || "",
+    stash: project.stash ?? []
   });
 }
 
@@ -962,10 +996,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [description, setDescription] = useState("");
   const [inventory, setInventory] = useState<BuildInventoryChoice[]>(() => emptyEquipmentChoices());
   const [buildSkills, setBuildSkills] = useState<BuildSkillChoice[]>([]);
+  // Personal inventory ("Kho đồ"): items for this build that are not worn.
+  const [stash, setStash] = useState<BuildStashItem[]>([]);
+  // An inventory item waiting for the player to pick one of several slots.
+  const [slotChoice, setSlotChoice] = useState<{ itemId: string; slots: string[] } | null>(null);
+  const [dropSlotId, setDropSlotId] = useState<string | null>(null);
+  // Gem whose alternatives are shown under it ("main" = the group's own skill gem).
+  const [gemStrip, setGemStrip] = useState<{ skillId: string; supportId: string | "main"; limit?: number } | null>(null);
   const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
   const [activeWeaponSet, setActiveWeaponSet] = useState<1 | 2>(1);
-  const [pickerMode, setPickerMode] = useState<"base" | "unique">("base");
-  const [pickerQuery, setPickerQuery] = useState("");
   const [activeGemPicker, setActiveGemPicker] = useState<GemPickerTarget | null>(null);
   const [gemPickerQuery, setGemPickerQuery] = useState("");
   const [showBuildHelp, setShowBuildHelp] = useState(false);
@@ -1028,6 +1067,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     x: number;
     y: number;
     content: string;
+    /** "Nếu mặc vào" block under an inventory item's card. */
+    compare?: CompareSpec;
   }>({ visible: false, x: 0, y: 0, content: "" });
 
   // Place the tooltip above the cursor, or below it when there is no room above, and
@@ -1036,15 +1077,23 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   useLayoutEffect(() => {
     const el = tooltipRef.current;
     if (!el || !tooltip.visible) return;
-    const margin = 8;
-    const gap = 14;
-    const { width, height } = el.getBoundingClientRect();
-    const left = Math.min(Math.max(tooltip.x - width / 2, margin), window.innerWidth - width - margin);
-    let top = tooltip.y - height - gap;
-    if (top < margin) top = tooltip.y + gap + 6;
-    if (top + height > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - height - margin);
-    el.style.left = `${Math.max(margin, left)}px`;
-    el.style.top = `${top}px`;
+    const place = () => {
+      const margin = 8;
+      const gap = 14;
+      const { width, height } = el.getBoundingClientRect();
+      const left = Math.min(Math.max(tooltip.x - width / 2, margin), window.innerWidth - width - margin);
+      let top = tooltip.y - height - gap;
+      if (top < margin) top = tooltip.y + gap + 6;
+      if (top + height > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - height - margin);
+      el.style.left = `${Math.max(margin, left)}px`;
+      el.style.top = `${top}px`;
+    };
+    place();
+    // The "Nếu mặc vào" block grows when its numbers arrive: keep the card on screen.
+    if (typeof ResizeObserver !== "function") return;
+    const observer = new ResizeObserver(place);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [tooltip]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -1159,16 +1208,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const skillGemOptions = useMemo(() => gemPickerOptions(gemsData, "skill"), [gemsData, locale]);
   const supportGemOptions = useMemo(() => gemPickerOptions(gemsData, "support"), [gemsData, locale]);
 
-  const pickerItems = useMemo(() => {
-    if (!activeSlot) return [];
-    return itemsData
-      .filter((item) => itemFitsSlot(item, activeSlot))
-      .filter((item) => isUniqueItem(item) === (pickerMode === "unique"))
-      .filter((item) => matchesQuery({ title: itemTitle(item, locale), menu: item.menu_label, base: itemBaseName(item, locale), lines: itemSummaryLines(item, locale, 8) }, pickerQuery, ["title", "menu", "base", "lines"]))
-      .sort((a, b) => itemTitle(a, locale).localeCompare(itemTitle(b, locale)))
-      .slice(0, 80);
-  }, [activeSlot, itemsData, locale, pickerMode, pickerQuery]);
-
   const gemPickerItems = useMemo(() => {
     const kind = activeGemPicker?.kind ?? "skill";
     const prefix = kind === "support" ? "SupportGem" : "SkillGem";
@@ -1255,25 +1294,56 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const effectiveConfigInputs = configInputs ?? importedConfigInputs;
 
   const calcRequestRef = useRef(0);
-  const currentCalculationBody = useCallback(() => calcPayload ? calculationRequestBody({
+  // The calculation request for the build as it is, or with another inventory / skills /
+  // main skill ("what if" comparisons use the same body, so their numbers are comparable).
+  const calculationBodyFor = useCallback((overrides: { inventory?: BuildInventoryChoice[]; skills?: BuildSkillChoice[]; mainSocketGroup?: number } = {}) => calcPayload ? calculationRequestBody({
       payload: calcPayload,
       passives: buildTree?.allocatedIds || [],
-      inventory,
-      skills: buildSkills,
+      inventory: overrides.inventory ?? inventory,
+      skills: overrides.skills ?? buildSkills,
       activeWeaponSet,
-      mainSocketGroup: mainSocketGroupRef.current,
+      mainSocketGroup: overrides.mainSocketGroup ?? mainSocketGroupRef.current,
       configInputs: configInputs ?? undefined,
       itemText: (choice) => {
         const record = itemRecordForChoice(choice);
         return record ? pobItemTextFromRecord({ name: itemTitle(record, "en"), rarity: record.rarity, baseName: record.properties?.[0], mods: record.mods }) : undefined;
       }
     }) : null, [calcPayload, inventory, buildSkills, buildTree, activeWeaponSet, configInputs, itemRecordForChoice]);
+  const currentCalculationBody = useCallback(() => calculationBodyFor(), [calculationBodyFor]);
+
+  // "What if" calculations (equip this item, use that gem): one at a time, cached by body.
+  const compareQueue = useMemo(() => new CalcQueue<Record<string, unknown>>(async (body) => {
+    const response = await fetch("/api/builds/calculate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const json = await response.json().catch(() => null);
+    if (!response.ok || !json?.ok || !json.data) throw new Error(json?.error || `HTTP ${response.status}`);
+    return json.data;
+  }), []);
+  const mainCalcKeyRef = useRef("");
+  // The build changed: queued comparisons are for the old build.
+  useEffect(() => {
+    compareQueue.dropPending();
+  }, [compareQueue, currentCalculationBody]);
+  /** Queues a body unless it is already known, queued, or is the main calculation in flight. */
+  const requestCalc = useCallback((body: Record<string, unknown>, priority: number) => {
+    const key = calcKey(body);
+    if (compareQueue.get(key) || key === mainCalcKeyRef.current) {
+      compareQueue.prioritize(key, priority);
+      return key;
+    }
+    return compareQueue.request(body, priority);
+  }, [compareQueue]);
 
   const runCalculation = useCallback(() => {
     const body = currentCalculationBody();
     if (!body) return;
     setIsCalculating(true);
     const requestId = ++calcRequestRef.current;
+    const bodyKey = calcKey(body);
+    mainCalcKeyRef.current = bodyKey;
 
     fetch("/api/builds/calculate", {
       method: "POST",
@@ -1285,6 +1355,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         // A newer request already went out: drop this answer.
         if (requestId !== calcRequestRef.current) return;
         if (res.ok && res.data) {
+          compareQueue.seed(bodyKey, res.data);
           if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
           setLiveStats(res.data);
         }
@@ -1294,7 +1365,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         console.error("Failed to calculate live stats", err);
         if (requestId === calcRequestRef.current) setIsCalculating(false);
       });
-  }, [currentCalculationBody]);
+  }, [currentCalculationBody, compareQueue]);
 
   // Typing a gem level or ticking several conditions in a row sends one request.
   useEffect(() => {
@@ -1354,8 +1425,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     inventory,
     skills: buildSkills,
     importedPayload: importedBuild?.payload ?? null,
-    importedFileName: importedBuild?.fileName || ""
-  }), [name, author, description, buildTree, inventory, buildSkills, importedBuild]);
+    importedFileName: importedBuild?.fileName || "",
+    stash
+  }), [name, author, description, buildTree, inventory, buildSkills, importedBuild, stash]);
   const savedBuildSignature = useMemo(() => buildProjectSignature(activeBuildProject), [activeBuildProject]);
   const hasBuildChanges = activeBuildProject
     ? currentBuildSignature !== savedBuildSignature
@@ -1389,14 +1461,177 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     });
   };
 
+  // Clicking a slot selects it: the inventory then shows only what fits there.
   const openPicker = (slotId: string) => {
-    const choice = inventoryBySlot.get(slotId);
     setActiveGemPicker(null);
     setTreeChoicesOpen(false);
-    setPickerMode(choice?.isUnique ? "unique" : "base");
-    setPickerQuery("");
-    setActiveSlotId(slotId);
+    setSlotChoice(null);
+    setActiveSlotId((current) => (current === slotId ? null : slotId));
   };
+
+  const itemByName = useMemo(() => {
+    const map = new Map<string, ItemRecord>();
+    for (const item of itemsData) {
+      const key = itemTitle(item, "en").toLowerCase();
+      if (key && !map.has(key)) map.set(key, item);
+    }
+    return map;
+  }, [itemsData]);
+  const stashRecord = useCallback((item: BuildStashItem): ItemRecord | undefined => {
+    if (item.itemSlug) {
+      const bySlug = itemsData.find((row) => row.slug === item.itemSlug);
+      if (bySlug) return bySlug;
+    }
+    const summary = stashItemSummary(item);
+    return itemByName.get(summary.name.toLowerCase()) ?? itemByName.get(summary.baseName.toLowerCase());
+  }, [itemsData, itemByName]);
+  /** Slot categories of an inventory item: the site's item data first, else the item text. */
+  const stashCategories = useCallback((item: BuildStashItem): string[] => {
+    const record = stashRecord(item);
+    const fromData = record ? buildSlotCategories(record) : [];
+    if (fromData.length) return fromData;
+    const summary = stashItemSummary(item);
+    return itemCategoriesFromText(item.rawText || "", summary.baseName);
+  }, [stashRecord]);
+  const withStashIcon = useCallback((item: BuildStashItem): BuildStashItem => {
+    if (item.iconUrl) return item;
+    const record = stashRecord(item);
+    return record ? { ...item, iconUrl: displayImageUrl(record.icon_url), itemSlug: item.itemSlug || record.slug } : item;
+  }, [stashRecord]);
+  const slotLabel = (slotId: string) => {
+    const slot = equipmentSlots.find((row) => row.id === slotId);
+    if (!slot) return slotId;
+    const vi: Record<string, string> = {
+      Weapon1: "Vũ khí I", Weapon2: "Tay phụ I", Weapon3: "Vũ khí II", Weapon4: "Tay phụ II", Helm1: "Mũ", BodyArmour1: "Giáp",
+      Gloves1: "Găng", Boots1: "Giày", Amulet1: "Dây chuyền", Ring1: "Nhẫn trái", Ring2: "Nhẫn phải", Ring3: "Nhẫn 3", Belt1: "Đai",
+      LifeFlask1: "Bình máu", ManaFlask1: "Bình mana", Charm1: "Bùa 1", Charm2: "Bùa 2", Charm3: "Bùa 3", Trinket1: "Cổ vật"
+    };
+    return locale === "vi" ? vi[slotId] ?? slot.label : slot.label;
+  };
+  const availableSlotIds = useMemo(() => equipmentSlots
+    .filter((slot) => slot.id !== "Ring3" || Boolean(inventoryBySlot.get("Ring3")?.itemName))
+    .map((slot) => slot.id), [inventoryBySlot]);
+
+  const equipItem = (itemId: string, slotId: string) => {
+    const next = equipStashItem({ inventory, stash }, itemId, slotId);
+    setInventory(enrichInventoryChoices(next.inventory, itemsData, locale));
+    setStash(next.stash);
+    setSlotChoice(null);
+    setTooltip((prev) => ({ ...prev, visible: false }));
+  };
+  const unequipItem = (slotId: string) => {
+    const next = unequipSlot({ inventory, stash }, slotId);
+    setInventory(next.inventory);
+    setStash(next.stash.map(withStashIcon));
+    setTooltip((prev) => ({ ...prev, visible: false }));
+  };
+  const equipTargetsFor = (item: BuildStashItem) => equipTargets(stashCategories(item), {
+    activeWeaponSet,
+    selectedSlot: activeSlotId,
+    inventory,
+    availableSlots: availableSlotIds
+  });
+  const clickStashItem = (itemId: string) => {
+    const item = stash.find((row) => row.id === itemId);
+    if (!item) return;
+    const targets = equipTargetsFor(item);
+    if (!targets.length) {
+      showInfoDialog(
+        locale === "vi" ? "Không mặc được món này" : "This item cannot be equipped",
+        locale === "vi" ? "Món này không có ô nào trên hình nhân vật (ví dụ jewel gắn trên cây thụ động), hoặc nó chỉ vừa bộ vũ khí còn lại." : "No paper-doll slot fits it."
+      );
+      return;
+    }
+    if (targets.length === 1) equipItem(itemId, targets[0]);
+    else setSlotChoice({ itemId, slots: targets });
+  };
+  const addStashItems = (items: BuildStashItem[]) => {
+    if (!items.length) return;
+    setStash((rows) => [...items.map(withStashIcon), ...rows]);
+  };
+  const pasteStashText = (text: string): number | string => {
+    const items = splitItemTexts(text).map((block) => stashItemFromText(block, "paste")).filter((row): row is BuildStashItem => Boolean(row));
+    if (!items.length) {
+      return locale === "vi"
+        ? "Không đọc được món đồ nào. Trong game rê chuột lên món đồ rồi bấm Ctrl+C, đoạn chép được phải có dòng \"Rarity:\"."
+        : "No item found. Copy an item in game with Ctrl+C.";
+    }
+    addStashItems(items);
+    return items.length;
+  };
+  const catalogSearch = (query: string): CatalogEntry[] => itemsData
+    .filter((item) => hasActualIcon(item) && (activeSlot ? itemFitsSlot(item, activeSlot) : buildSlotCategories(item).length > 0))
+    .filter((item) => matchesQuery({ title: itemTitle(item, locale), base: itemBaseName(item, locale) }, query, ["title", "base"]))
+    .sort((a, b) => gemNameRank(itemTitle(a, locale), query.trim().toLowerCase()) - gemNameRank(itemTitle(b, locale), query.trim().toLowerCase()))
+    .slice(0, 12)
+    .map((item) => ({
+      key: item.slug || itemTitle(item, "en"),
+      name: itemTitle(item, locale),
+      baseName: itemBaseName(item, locale),
+      rarity: itemRarity(item),
+      iconUrl: displayImageUrl(item.icon_url)
+    }));
+  const addCatalogItem = (entry: CatalogEntry) => {
+    const record = itemsData.find((item) => (item.slug || itemTitle(item, "en")) === entry.key);
+    if (!record) return;
+    const unique = isUniqueItem(record);
+    const item = stashItemFromText(pobItemTextFromRecord({ name: itemTitle(record, "en"), rarity: record.rarity, baseName: record.properties?.[0], mods: record.mods }), "search", {
+      itemSlug: record.slug,
+      iconUrl: displayImageUrl(record.icon_url)
+    }) ?? {
+      id: `stash-${Date.now().toString(36)}`, itemName: itemTitle(record, "en"), isUnique: unique, itemSlug: record.slug, iconUrl: displayImageUrl(record.icon_url), source: "search" as const
+    };
+    // A slot is selected and the item fits it: the player wants it there.
+    if (activeSlot && itemFitsSlot(record, activeSlot)) {
+      const next = equipStashItem({ inventory, stash: [item, ...stash] }, item.id, activeSlot.id);
+      setInventory(enrichInventoryChoices(next.inventory, itemsData, locale));
+      setStash(next.stash.map(withStashIcon));
+      return;
+    }
+    addStashItems([item]);
+  };
+  const stashViews = useMemo<StashItemView[]>(() => stash.map((item) => {
+    const summary = stashItemSummary(item);
+    const record = stashRecord(item);
+    return {
+      item,
+      name: summary.name,
+      baseName: summary.baseName,
+      rarity: summary.rarity || "normal",
+      iconUrl: item.iconUrl || (record ? displayImageUrl(record.icon_url) : undefined),
+      fits: activeSlotId ? slotIdsForCategories(stashCategories(item)).includes(activeSlotId) : true
+    };
+  }), [stash, stashRecord, stashCategories, activeSlotId]);
+
+  /** "Nếu mặc vào": the build with this item in each slot it could go to, against the build as it is. */
+  const stashCompareSpec = (item: BuildStashItem, priority: number): CompareSpec | undefined => {
+    const base = currentCalculationBody();
+    if (!base) return undefined;
+    const vi = locale === "vi";
+    const targets = equipTargetsFor(item);
+    if (!targets.length) return { title: vi ? "Nếu mặc vào" : "If equipped", baseKey: "", entries: [], note: vi ? "Không có ô nào trên hình nhân vật vừa món này." : "No slot fits this item." };
+    const baseKey = requestCalc(base, priority);
+    const entries = targets.slice(0, 3).map((slotId) => {
+      const body = calculationBodyFor({ inventory: equipStashItem({ inventory, stash }, item.id, slotId).inventory });
+      const current = inventoryBySlot.get(slotId);
+      const replacing = current?.itemName ? ` (${vi ? "thay" : "replacing"} ${current.rareName || current.itemName})` : "";
+      return { label: targets.length > 1 || replacing ? `${slotLabel(slotId)}${replacing}` : undefined, key: body ? requestCalc(body, priority) : "" };
+    });
+    return { title: vi ? "Nếu mặc vào" : "If equipped", baseKey, entries };
+  };
+  const enterStashItem = (itemId: string, event: React.MouseEvent) => {
+    const item = stash.find((row) => row.id === itemId);
+    if (!item) return;
+    const record = stashRecord(item);
+    const content = item.rawText ? getImportedItemTooltipHtml(item.rawText, record, locale) : record ? getItemTooltipHtml(record, locale) : `<div class="poe-tooltip-card"><div class="tooltip-header"><div class="tooltip-name">${escapeHtml(item.itemName)}</div></div></div>`;
+    setTooltip({ x: event.clientX, y: event.clientY, content, visible: true, compare: stashCompareSpec(item, 10) });
+  };
+  // Selecting a slot also starts comparing the few items that fit it.
+  useEffect(() => {
+    if (!activeSlotId || !calcPayload) return;
+    for (const view of stashViews.filter((row) => row.fits).slice(0, 6)) stashCompareSpec(view.item, 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSlotId, stashViews, currentCalculationBody]);
 
   const addBuildSkill = () => {
     const skill = newBuildSkillChoice();
@@ -1417,7 +1652,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const support = newSupportSkillChoice();
     setBuildSkills((rows) => rows.map((row) => row.id === skillId ? { ...row, supportSkills: [...row.supportSkills, support] } : row));
     setGemPickerQuery("");
-    setActiveGemPicker({ kind: "support", skillId, supportId: support.id });
+    setActiveGemPicker(null);
+    setGemStrip({ skillId, supportId: support.id });
   };
 
   const updateSupportSkill = (skillId: string, supportId: string, patch: Partial<BuildSupportSkillChoice>) => {
@@ -1458,6 +1694,99 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       : "Granted by an item or a passive, not a gem you socketed.";
     return <span className="pc-tag" title={hint}>{label}</span>;
   };
+
+  const toggleGemStrip = (skillId: string, supportId: string | "main") => {
+    setActiveGemPicker(null);
+    setGemStrip((current) => (current && current.skillId === skillId && current.supportId === supportId ? null : { skillId, supportId }));
+  };
+
+  /** Gems to try in place of the clicked one, each with the request that tells its DPS. */
+  const gemStripModel = useMemo(() => {
+    if (!gemStrip || !calcPayload) return null;
+    const groupIndex = buildSkills.findIndex((row) => row.id === gemStrip.skillId);
+    const group = buildSkills[groupIndex];
+    if (!group) return null;
+    const isMain = gemStrip.supportId === "main";
+    const support = isMain ? undefined : group.supportSkills.find((row) => row.id === gemStrip.supportId);
+    if (!isMain && !support) return null;
+    const skillRecord = gemChoiceItem(group.skillId, skillGemOptions, "SkillGem");
+    const groupNames = [
+      skillRecord?.name,
+      ...group.supportSkills.map((row) => gemChoiceItem(row.skillId, row.active ? skillGemOptions : supportGemOptions, row.active ? "SkillGem" : "SupportGem")?.name)
+    ].filter((name): name is string => Boolean(name));
+    const pool = isMain || support?.active ? skillGemOptions : supportGemOptions;
+    const prefix = isMain || support?.active ? "SkillGem" : "SupportGem";
+    const swapsSkill = isMain || Boolean(support?.active);
+    // Skills: look like the gem being replaced. Supports: fit the skill that does the damage
+    // (in a Cast on X group that is the spell socketed in it, picked by mainActiveSkill).
+    const activeGems = group.supportSkills.filter((row) => row.active);
+    const damageGem = (group.mainActiveSkill ?? 1) > 1 ? activeGems[(group.mainActiveSkill ?? 1) - 2] : undefined;
+    const tagSource = isMain
+      ? skillRecord
+      : support?.active
+        ? gemChoiceItem(support.skillId, skillGemOptions, "SkillGem")
+        : (damageGem ? gemChoiceItem(damageGem.skillId, skillGemOptions, "SkillGem") : undefined) ?? skillRecord;
+    const candidates = gemCandidates(tagSource?.tags, pool, { exclude: groupNames, limit: gemStrip.limit ?? (swapsSkill ? 8 : 10), triggered: Boolean(damageGem) });
+    // DPS of this group: calculate it as the main skill, with and without the change.
+    const mainSocketGroup = groupIndex + 1;
+    const skillsWith = (gemId: string) => buildSkills.map((row) => {
+      if (row.id !== group.id) return row;
+      if (isMain) return { ...withoutPobGemDetails(row), skillId: gemId };
+      return { ...row, supportSkills: row.supportSkills.map((item) => (item.id === support!.id ? { ...withoutPobGemDetails(item), skillId: gemId, disabled: false } : item)) };
+    });
+    const baseBody = calculationBodyFor({ mainSocketGroup });
+    if (!baseBody) return null;
+    const options = candidates.map((record): GemOptionView & { body: Record<string, unknown> } => {
+      const id = officialGemId(record, prefix);
+      const body = calculationBodyFor({ skills: skillsWith(id), mainSocketGroup })!;
+      return { id, name: itemTitle(record, locale), iconUrl: displayImageUrl(record.icon_url), key: calcKey(body), body };
+    });
+    const currentName = isMain
+      ? skillRecord?.name ?? ""
+      : gemChoiceItem(support!.skillId, pool, prefix)?.name ?? (locale === "vi" ? "ô trống" : "empty slot");
+    const title = locale === "vi"
+      ? (swapsSkill ? `Thử kỹ năng khác thay ${currentName}` : `Gợi ý support thay ${currentName}`)
+      : (swapsSkill ? `Other skills instead of ${currentName}` : `Supports to try instead of ${currentName}`);
+    return { title, baseBody, baseKey: calcKey(baseBody), options, isMain, skillId: group.id, supportId: support?.id };
+  }, [gemStrip, calcPayload, buildSkills, skillGemOptions, supportGemOptions, calculationBodyFor, locale]);
+
+  // Fill the strip in progressively: the base first, then each candidate, one at a time.
+  useEffect(() => {
+    if (!gemStripModel) return;
+    requestCalc(gemStripModel.baseBody, 3);
+    for (const option of gemStripModel.options) requestCalc(option.body, 2);
+  }, [gemStripModel, requestCalc]);
+
+  const pickStripGem = (gemId: string) => {
+    if (!gemStripModel) return;
+    const { skillId, supportId, isMain } = gemStripModel;
+    setBuildSkills((rows) => rows.map((row) => {
+      if (row.id !== skillId) return row;
+      if (isMain) return row.skillId === gemId ? row : { ...withoutPobGemDetails(row), skillId: gemId };
+      return { ...row, supportSkills: row.supportSkills.map((item) => (item.id === supportId && item.skillId !== gemId ? { ...withoutPobGemDetails(item), skillId: gemId, disabled: false } : item)) };
+    }));
+    setGemStrip(null);
+  };
+
+  const gemStripFor = (skillId: string, supportId: string | "main") => (
+    gemStripModel && gemStrip && gemStrip.skillId === skillId && gemStrip.supportId === supportId ? (
+      <GemSwapStrip
+        queue={compareQueue}
+        baseKey={gemStripModel.baseKey}
+        options={gemStripModel.options}
+        locale={locale}
+        title={gemStripModel.title}
+        onPick={pickStripGem}
+        onMore={gemStripModel.options.length >= (gemStrip.limit ?? 8) ? () => setGemStrip((current) => current && { ...current, limit: (current.limit ?? 10) + 10 }) : undefined}
+        onBrowse={() => {
+          setGemStrip(null);
+          if (supportId === "main") openSkillGemPicker(skillId);
+          else openSupportGemPicker(skillId, supportId);
+        }}
+        onClose={() => setGemStrip(null)}
+      />
+    ) : null
+  );
 
   const openSkillGemPicker = (skillId: string) => {
     setActiveSlotId(null);
@@ -1501,6 +1830,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setActiveWeaponSet(1);
     setInventory(emptyEquipmentChoices());
     setBuildSkills([]);
+    setStash([]);
     setLiveStats(null);
     setMainSocketGroup(1);
   };
@@ -1527,6 +1857,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setActiveWeaponSet((project.importedPayload && payloadWeaponSet(project.importedPayload)) || preferredWeaponSet(nextInventory));
     setInventory(nextInventory);
     setBuildSkills(project.skills ?? []);
+    setStash(project.stash ?? []);
     setImportedBuild(project.importedPayload ? {
       fileName: project.importedFileName || `${project.name}.build`,
       payload: project.importedPayload,
@@ -1560,6 +1891,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       treeSnapshot: buildTree,
       inventory,
       skills: buildSkills,
+      stash,
       importedPayload: updatedPayload,
       importedFileName: importedBuild?.fileName,
       createdAt: activeBuildProject?.createdAt
@@ -1574,6 +1906,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setActiveWeaponSet(preferredWeaponSet(nextInventory));
     setInventory(nextInventory);
     setBuildSkills(project.skills ?? []);
+    setStash(project.stash ?? []);
     if (navigateAfterSave && (buildRoute.isNew || !buildRoute.projectId)) navigateTo(`/build/${encodeURIComponent(project.id)}`);
     if (showDialog) showInfoDialog(localizedText(copy.savedBuildTitle, "", locale));
     return project;
@@ -1627,8 +1960,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     payload: BuildPayload,
     fileName: string,
     data: BuildPlannerData | null = plannerData,
-    treeOverride?: BuildTreeSnapshot | null
+    treeOverride?: BuildTreeSnapshot | null,
+    importedStash: BuildStashItem[] = []
   ) => {
+    const nextStash = importedStash.map(withStashIcon);
     const importedTree = treeOverride === undefined ? treeSnapshotFromImportedBuild(payload, fileName, data) : treeOverride;
     if (importedTree) {
       setSavedTrees(saveTreeSnapshot(importedTree));
@@ -1648,6 +1983,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       treeSnapshot: importedTree,
       inventory: nextInventory,
       skills: nextSkills,
+      stash: nextStash,
       importedPayload: payload,
       importedFileName: fileName
     });
@@ -1669,6 +2005,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setActiveWeaponSet(payloadWeaponSet(payload) ?? preferredWeaponSet(nextInventory));
     setInventory(nextInventory);
     setBuildSkills(nextSkills);
+    setStash(nextStash);
     setTreeChoicesOpen(false);
     navigateTo(saved ? `/build/${encodeURIComponent(project.id)}` : "/build/new");
   };
@@ -1723,7 +2060,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         isSupportGem: isPobSupportGem
       });
       const importedTree = treeSnapshotFromPobImport(pobData, data);
-      applyImportedBuild(payload, buildFileName(pobBuildName(pobData)), data, importedTree);
+      applyImportedBuild(payload, buildFileName(pobBuildName(pobData)), data, importedTree, stashFromPobImport(pobData));
       setPobImportOpen(false);
       setPobCode("");
       showInfoDialog(localizedText(copy.importedBuildTitle, "", locale));
@@ -1732,20 +2069,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     } finally {
       setPobImporting(false);
     }
-  };
-
-  const selectItem = (item: ItemRecord) => {
-    if (!activeSlot) return;
-    const unique = isUniqueItem(item);
-    updateSlot(activeSlot.id, {
-      itemName: itemTitle(item, locale),
-      note: "",
-      isUnique: unique,
-      itemSlug: item.slug ?? "",
-      iconUrl: displayImageUrl(item.icon_url),
-      baseName: itemBaseName(item, locale)
-    });
-    setActiveSlotId(null);
   };
 
   // The build as a PoB code: the same XML the calculator runs, so PoB shows the same numbers.
@@ -2062,6 +2385,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <span className="nj-panel-aside">{formatNumber(selectedInventoryCount, locale)} {localizedText(copy.selected, "", locale)}</span>
             </header>
             <div className="nj-panel-body">
+              <div className="nj-equip-layout">
               <div className="build-equipment-frame" aria-label={localizedText(copy.equipment, "", locale)}>
                 <div className="build-weapon-set-switch" style={{ gridArea: "setswitch" }} role="group" aria-label="Weapon set">
                   {[1, 2].map((set) => (
@@ -2087,9 +2411,36 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   const hasTooltip = Boolean(record || importedText);
                   return (
                     <button
-                      className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""}`}
+                      className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""} ${activeSlotId === slot.id ? "is-selected" : ""} ${dropSlotId === slot.id ? "is-drop-target" : ""}`}
                       type="button"
                       onClick={() => openPicker(slot.id)}
+                      aria-pressed={activeSlotId === slot.id}
+                      draggable={hasItem}
+                      onDragStart={(event) => {
+                        event.dataTransfer.setData(SLOT_DRAG_TYPE, slot.id);
+                        handleMouseLeave();
+                      }}
+                      onDragOver={(event) => {
+                        if ([...event.dataTransfer.types].includes(STASH_DRAG_TYPE)) {
+                          event.preventDefault();
+                          setDropSlotId(slot.id);
+                        }
+                      }}
+                      onDragLeave={() => setDropSlotId(null)}
+                      onDrop={(event) => {
+                        setDropSlotId(null);
+                        const itemId = event.dataTransfer.getData(STASH_DRAG_TYPE);
+                        const item = stash.find((row) => row.id === itemId);
+                        if (!item) return;
+                        event.preventDefault();
+                        if (slotIdsForCategories(stashCategories(item)).includes(slot.id)) equipItem(itemId, slot.id);
+                        else showInfoDialog(locale === "vi" ? "Không vừa ô này" : "Does not fit", locale === "vi" ? `Món này không mặc vào ô ${slotLabel(slot.id)} được.` : "");
+                      }}
+                      onContextMenu={(event) => {
+                        if (!hasItem) return;
+                        event.preventDefault();
+                        unequipItem(slot.id);
+                      }}
                       onMouseEnter={(event) => {
                         const content = importedText
                           ? getImportedItemTooltipHtml(importedText, record, locale)
@@ -2100,7 +2451,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       onMouseLeave={hasTooltip ? handleMouseLeave : undefined}
                       style={{ gridArea: slot.area }}
                       key={slot.id}
-                      aria-label={`${localizedText(copy.chooseItem, "", locale)}: ${slot.label}`}
+                      aria-label={`${slotLabel(slot.id)}${choice?.itemName ? `: ${choice.rareName || choice.itemName}` : ""}`}
+                      title={locale === "vi" ? "Bấm để chọn ô (kho đồ lọc theo ô này). Kéo đồ từ kho thả vào để mặc. Chuột phải để tháo." : "Click to select; drop an item to equip; right-click to unequip."}
                     >
                       {hasItem ? (
                         choice?.iconUrl ? <img src={choice.iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded build-slot-fallback" aria-hidden="true">inventory_2</span>
@@ -2115,6 +2467,30 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     </button>
                   );
                 })}
+              </div>
+              <BuildInventoryPanel
+                locale={locale}
+                items={stashViews}
+                selectedSlotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined}
+                selectedSlotFilled={Boolean(activeSlotId && inventoryBySlot.get(activeSlotId)?.itemName)}
+                onClearSlot={() => setActiveSlotId(null)}
+                onUnequipSelected={() => activeSlotId && unequipItem(activeSlotId)}
+                onItemClick={clickStashItem}
+                onItemEnter={enterStashItem}
+                onItemMove={handleMouseMove}
+                onItemLeave={handleMouseLeave}
+                onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
+                onDropSlot={unequipItem}
+                onPasteText={pasteStashText}
+                search={catalogSearch}
+                onAddCatalog={addCatalogItem}
+                slotChoice={slotChoice ? {
+                  itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
+                  slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
+                } : null}
+                onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
+                onCancelChoice={() => setSlotChoice(null)}
+              />
               </div>
             </div>
           </section>
@@ -2322,7 +2698,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         <button
                           type="button"
                           className="nj-gem-pick"
-                          onClick={() => openSkillGemPicker(skill.id)}
+                          onClick={() => (skill.skillId ? toggleGemStrip(skill.id, "main") : openSkillGemPicker(skill.id))}
                           onMouseEnter={(event) => {
                             if (skill.skillId) {
                               const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
@@ -2375,6 +2751,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         </span>
                       </div>
 
+                      {gemStripFor(skill.id, "main")}
+
                       {skill.supportSkills.map((support) => {
                         // A second active gem (e.g. the spell in Cast on Critical) is a skill gem, not a support.
                         const supportOptions = support.active ? skillGemOptions : supportGemOptions;
@@ -2385,7 +2763,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                             <button
                               type="button"
                               className="nj-gem-pick"
-                              onClick={() => openSupportGemPicker(skill.id, support.id)}
+                              onClick={() => toggleGemStrip(skill.id, support.id)}
                               onMouseEnter={(event) => {
                                 if (support.skillId) {
                                   const html = getGemTooltipHtml(support.skillId, supportOptions, supportPrefix, locale, support.note);
@@ -2428,6 +2806,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                           </div>
                         );
                       })}
+
+                      {gemStrip && gemStrip.skillId === skill.id && gemStrip.supportId !== "main" ? gemStripFor(skill.id, gemStrip.supportId) : null}
 
                       {skill.supportSkills.length < 5 ? (
                         <button type="button" className="nj-gem-row--add" onClick={() => addSupportSkill(skill.id)}>
@@ -2611,53 +2991,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         </div>
       ) : null}
 
-      {editorOpen && activeSlot ? (
-        <div className="build-picker-backdrop" role="presentation" onMouseDown={(event) => {
-          if (event.target === event.currentTarget) setActiveSlotId(null);
-        }}>
-          <section className="build-item-picker" role="dialog" aria-modal="true" aria-label={`${localizedText(copy.chooseItem, "", locale)}: ${activeSlot.label}`}>
-            <div className="build-picker-head">
-              <div>
-                <p className="eyebrow">{activeSlot.label}</p>
-                <h2>{localizedText(copy.chooseItem, "", locale)}</h2>
-              </div>
-              <button type="button" onClick={() => setActiveSlotId(null)} aria-label="Close">
-                <span className="material-symbols-rounded" aria-hidden="true">close</span>
-              </button>
-            </div>
-            <div className="build-picker-controls">
-              <label className="build-picker-search">
-                <span className="material-symbols-rounded" aria-hidden="true">search</span>
-                <input value={pickerQuery} onChange={(event) => setPickerQuery(event.target.value)} placeholder={localizedText(copy.searchItem, "", locale)} autoFocus />
-              </label>
-              <div className="build-picker-mode" role="group" aria-label="Item type">
-                <button className={pickerMode === "base" ? "is-active" : ""} type="button" onClick={() => setPickerMode("base")}>{localizedText(copy.base, "", locale)}</button>
-                <button className={pickerMode === "unique" ? "is-active" : ""} type="button" onClick={() => setPickerMode("unique")}>{localizedText(copy.unique, "", locale)}</button>
-              </div>
-              {inventoryBySlot.get(activeSlot.id)?.itemName ? (
-                <button className="build-picker-clear" type="button" onClick={() => clearSlot(activeSlot.id)}>
-                  <span className="material-symbols-rounded" aria-hidden="true">backspace</span>
-                  {localizedText(copy.clearSlot, "", locale)}
-                </button>
-              ) : null}
-            </div>
-            <div className="build-picker-list">
-              {pickerItems.length ? pickerItems.map((item) => {
-                const unique = isUniqueItem(item);
-                const iconUrl = displayImageUrl(item.icon_url);
-                return (
-                  <button className={`build-picker-result build-picker-result--card ${unique ? "is-unique" : ""}`} type="button" onClick={() => selectItem(item)} key={`${item.menu_key}:${item.slug ?? item.name}`}>
-                    <span className="build-picker-icon">
-                      {iconUrl ? <img src={iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">inventory_2</span>}
-                    </span>
-                    <span className="build-picker-tooltip" dangerouslySetInnerHTML={{ __html: markVietnameseRuns(getItemTooltipHtml(item, locale)) }} />
-                  </button>
-                );
-              }) : <p className="build-picker-empty">{localizedText(copy.noItems, "", locale)}</p>}
-            </div>
-          </section>
-        </div>
-      ) : null}
 
       {editorOpen && showBuildHelp ? (
         <div className="build-help-backdrop" role="presentation" onMouseDown={(event) => {
@@ -2714,7 +3047,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           pointerEvents: "none",
           zIndex: 9999,
           maxWidth: "400px"
-        }} dangerouslySetInnerHTML={{ __html: markVietnameseRuns(tooltip.content) }} />
+        }}>
+          <div dangerouslySetInnerHTML={{ __html: markVietnameseRuns(tooltip.content) }} />
+          {tooltip.compare ? <CompareBlock queue={compareQueue} spec={tooltip.compare} locale={locale} /> : null}
+        </div>
       )}
     </main>
   );

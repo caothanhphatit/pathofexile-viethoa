@@ -60,19 +60,30 @@ export class NodeDOMParser {
   }
 }
 
-let cached;
-/** The planner library as a CommonJS module object. */
-export async function loadPlannerLib() {
-  if (cached) return cached;
-  const source = await readFile(join(repoRoot, "src/spa/lib/buildPlanner.ts"), "utf8");
+const spaModules = new Map();
+/**
+ * Any src/spa/lib/*.ts file as a CommonJS module object; its "./x" imports load
+ * the same way (and share one instance each).
+ */
+export function loadSpaLib(name) {
+  if (!spaModules.has(name)) spaModules.set(name, loadSpaModule(name));
+  return spaModules.get(name);
+}
+
+async function loadSpaModule(name) {
+  const source = await readFile(join(repoRoot, "src/spa/lib", `${name}.ts`), "utf8");
   const js = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021 }
   }).outputText;
+  const deps = new Map();
+  for (const match of js.matchAll(/require\("\.\/([\w-]+)"\)/g)) {
+    deps.set(`./${match[1]}`, await loadSpaLib(match[1]));
+  }
   const module = { exports: {} };
   const context = vm.createContext({
     module,
     exports: module.exports,
-    require,
+    require: (id) => (deps.has(id) ? deps.get(id) : require(id)),
     console,
     DOMParser: NodeDOMParser,
     XMLSerializer: class { serializeToString(element) { return element.outerHTML; } },
@@ -85,12 +96,16 @@ export async function loadPlannerLib() {
     Response,
     atob,
     URL,
-    setTimeout
+    setTimeout,
+    Promise,
+    Math
   });
   vm.runInContext(js, context);
-  cached = module.exports;
-  return cached;
+  return module.exports;
 }
+
+/** The planner library (src/spa/lib/buildPlanner.ts). */
+export const loadPlannerLib = () => loadSpaLib("buildPlanner");
 
 /** public/data/build-planner-data.js, as the page loads it (ascendancy and passive ids). */
 export function loadPlannerData() {
