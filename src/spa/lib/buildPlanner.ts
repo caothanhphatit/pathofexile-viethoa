@@ -1047,6 +1047,129 @@ export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: stri
   return [...gearChoices, ...jewelChoices];
 }
 
+// ── Imported item text (PoB / in-game copy) ─────────────────────────────────
+
+export type PobModKind = "implicit" | "explicit" | "rune" | "enchant";
+
+export interface PobModLine {
+  text: string;
+  kind: PobModKind;
+  /** crafted, fractured, desecrated, mutated, … from the line's {tags}. */
+  flags: string[];
+}
+
+export interface PobItemDetails {
+  rarity: "normal" | "magic" | "rare" | "unique" | "";
+  name: string;
+  baseName: string;
+  itemLevel?: number;
+  quality?: number;
+  levelReq?: number;
+  corrupted: boolean;
+  mods: PobModLine[];
+}
+
+// Header and property lines in an item block that are not modifiers.
+const POB_ITEM_META = /^(Rarity|Item Class|Unique ID|Item Level|Quality|Sockets|Rune|LevelReq|Requires|Implicits|Prefix|Suffix|Crafted|Selected Variant|Variant|Has Alt Variant\w*|League|Source|Limited to|Radius|Talisman Tier|Catalyst|CatalystQuality|Armour|Evasion|Energy Shield|Ward|ArmourBasePercentile|EvasionBasePercentile|EnergyShieldBasePercentile|Spirit|Physical Damage|Elemental Damage|Chaos Damage|Critical Hit Chance|Critical Strike Chance|Attacks per Second|Reload Time|Block chance|Charm Slots|Requirements|Level|Str|Dex|Int):/i;
+const POB_ITEM_FLAG_LINE = /^(Corrupted|Mirrored|Split|Unidentified|Sanctified|Synthesised Item|Fractured Item|Desecrated Item)$/i;
+const POB_KNOWN_FLAGS = new Set(["crafted", "custom", "disabled", "enchant", "fractured", "implicit", "desecrated", "mutated", "rune", "unscalable", "prefix", "suffix"]);
+
+/** Replaces every "(min-max)" in a mod line with the value at `range` (PoB's own rule). */
+export function applyPobRange(line: string, range: number[] | number = 0.5): string {
+  let index = 0;
+  return line.replace(/([+-]?)\((-?\d+(?:\.\d+)?)-(-?\d+(?:\.\d+)?)\)/g, (_all, sign: string, minText: string, maxText: string) => {
+    const at = Array.isArray(range) ? (range[index] ?? 0.5) : range;
+    index += 1;
+    const min = Number(minText);
+    const max = Number(maxText);
+    let value = min + at * (max - min);
+    // Whole-number stats stay whole; fractional ones keep up to two decimals.
+    value = Number.isInteger(min) && Number.isInteger(max) ? Math.round(value) : Math.round(value * 100) / 100;
+    if (sign === "-") value = -value;
+    return sign === "+" && value > 0 ? `+${value}` : String(value);
+  });
+}
+
+/**
+ * Reads the item text PoB exports (also what the game copies with Ctrl+C) into
+ * its name, base and modifier lines, ready to show in a tooltip. Tags such as
+ * {crafted}, {range:0.4} and {variant:1,2} are applied and removed; lines of
+ * variants that are not selected are dropped.
+ */
+export function parsePobItemDetails(rawText: string): PobItemDetails {
+  const lines = String(rawText || "").replace(/\r\n/g, "\n").split("\n").map((line) => line.trim());
+  const out: PobItemDetails = { rarity: "", name: "", baseName: "", corrupted: false, mods: [] };
+  const rarityIndex = lines.findIndex((line) => /^Rarity:/i.test(line));
+  if (rarityIndex < 0) {
+    out.name = lines.find(Boolean) || "";
+    return out;
+  }
+  const rarity = lines[rarityIndex].replace(/^Rarity:\s*/i, "").trim().toLowerCase();
+  out.rarity = (["normal", "magic", "rare", "unique"].includes(rarity) ? rarity : "") as PobItemDetails["rarity"];
+  out.name = lines[rarityIndex + 1] || "";
+  // Rare and unique items have a name line followed by the base line.
+  const hasBaseLine = out.rarity === "rare" || out.rarity === "unique";
+  const nextLine = lines[rarityIndex + 2] || "";
+  out.baseName = hasBaseLine && nextLine && !POB_ITEM_META.test(nextLine) && !/^-+$/.test(nextLine) ? nextLine : out.name;
+  const bodyStart = rarityIndex + (out.baseName !== out.name ? 3 : 2);
+
+  const selectedVariant = lines.map((line) => line.match(/^Selected Variant:\s*(\d+)/i)).find(Boolean)?.[1];
+  let implicitsLeft = 0;
+  for (let index = bodyStart; index < lines.length; index += 1) {
+    let line = lines[index];
+    if (!line || /^-+$/.test(line)) continue;
+    const meta = line.match(/^([A-Za-z ]+):\s*(.*)$/);
+    if (meta && POB_ITEM_META.test(line)) {
+      const key = meta[1].toLowerCase();
+      const value = meta[2];
+      if (key === "item level") out.itemLevel = Number.parseInt(value, 10) || undefined;
+      else if (key === "quality") out.quality = Number.parseInt(value.replace(/^\+/, ""), 10) || undefined;
+      else if (key === "levelreq") out.levelReq = Number.parseInt(value, 10) || undefined;
+      else if (key === "implicits") implicitsLeft = Number.parseInt(value, 10) || 0;
+      continue;
+    }
+    if (POB_ITEM_FLAG_LINE.test(line)) {
+      if (/^corrupted$/i.test(line)) out.corrupted = true;
+      continue;
+    }
+
+    const flags: string[] = [];
+    let range: number[] | number = 0.5;
+    let skip = false;
+    // Leading {tag} / {key:value} groups.
+    for (let match = line.match(/^\{([^}]*)\}/); match; match = line.match(/^\{([^}]*)\}/)) {
+      line = line.slice(match[0].length).trimStart();
+      const [rawKey, rawValue = ""] = match[1].split(/:(.*)/s);
+      const key = rawKey.trim().toLowerCase();
+      if (key === "range") {
+        const values = rawValue.split(",").map(Number).filter((value) => Number.isFinite(value));
+        range = values.length > 1 ? values : (values[0] ?? 0.5);
+      } else if (key === "variant") {
+        if (selectedVariant && !rawValue.split(",").map((value) => value.trim()).includes(selectedVariant)) skip = true;
+      } else if (POB_KNOWN_FLAGS.has(key)) {
+        flags.push(key);
+      }
+    }
+    if (skip || !line) continue;
+    line = applyPobRange(line, range).replace(/\s+\((?:crafted|implicit|enchant|rune|fractured|desecrated)\)$/i, "");
+
+    let kind: PobModKind = "explicit";
+    if (implicitsLeft > 0) {
+      implicitsLeft -= 1;
+      kind = flags.includes("enchant") ? "enchant" : flags.includes("rune") ? "rune" : "implicit";
+    } else if (flags.includes("rune")) {
+      kind = "rune";
+    } else if (flags.includes("enchant")) {
+      kind = "enchant";
+    } else if (flags.includes("implicit")) {
+      kind = "implicit";
+    }
+    if (flags.includes("disabled")) continue;
+    out.mods.push({ text: line, kind, flags: flags.filter((flag) => !["implicit", "rune", "enchant", "prefix", "suffix", "custom", "unscalable"].includes(flag)) });
+  }
+  return out;
+}
+
 export function stripBuildMarkup(value: string): string {
   return String(value || "")
     .replace(/\r\n/g, "\n")

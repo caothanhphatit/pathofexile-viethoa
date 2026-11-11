@@ -19,6 +19,7 @@ import {
   isPobExportCode,
   parseBuildFileText,
   parsePobExportCode,
+  parsePobItemDetails,
   passiveCount,
   passiveIdsFromPobImport,
   pobBuildClassNames,
@@ -595,6 +596,57 @@ function getItemTooltipHtml(item: ItemRecord, locale: Locale): string {
       <div class="tooltip-header">
         <div class="tooltip-name">${escapeHtml(title)}</div>
         ${base && base !== title ? `<div class="tooltip-base">${escapeHtml(base)}</div>` : ""}
+      </div>
+      ${sections.map((section) => `<div class="tooltip-section">${section}</div>`).join('<div class="tooltip-divider"></div>')}
+    </div>`;
+}
+
+// Tooltip for an item that came from a PoB code or a .build file: name, rolls,
+// item level and corruption come from the item's own text; the database record
+// of its base only adds the item class, base properties and requirements.
+function getImportedItemTooltipHtml(rawText: string, record: ItemRecord | undefined, locale: Locale): string {
+  const item = parsePobItemDetails(rawText);
+  const rarity = item.rarity || (record ? itemRarity(record) : "normal");
+  const baseProperties = record && rarity !== "unique"
+    ? localizedLines(record, "properties", locale).map(cleanTooltipLine).filter((line) => line.includes(":"))
+    : [];
+  const requirements = record ? localizedLines(record, "requirements", locale).map(cleanTooltipLine) : [];
+  const itemClass = record?.menu_label || record?.group_label || "";
+  const isVi = locale === "vi";
+
+  const head: string[] = [];
+  if (itemClass) head.push(`<div class="tip-line tip-class">${escapeHtml(itemClass)}</div>`);
+  if (item.quality) head.push(tooltipPropertyHtml(`${isVi ? "Chất lượng" : "Quality"}: +${item.quality}%`));
+  head.push(...baseProperties.map(tooltipPropertyHtml));
+
+  const meta: string[] = [];
+  if (item.itemLevel) meta.push(`<div class="tooltip-item-level">${isVi ? "Cấp vật phẩm" : "Item Level"}: ${item.itemLevel}</div>`);
+  if (item.levelReq && !requirements.length) meta.push(tooltipRequirementHtml(`${isVi ? "Yêu cầu cấp" : "Requires Level"} ${item.levelReq}`));
+  else meta.push(...requirements.map(tooltipRequirementHtml));
+
+  const modHtml = (kind: string) => item.mods
+    .filter((mod) => mod.kind === kind)
+    .map((mod) => `<div class="tooltip-mod-line${mod.flags.map((flag) => ` is-${flag}`).join("")}">${escapeHtml(mod.text)}</div>`)
+    .join("");
+  const enchants = modHtml("enchant") + modHtml("rune");
+  const implicits = modHtml("implicit");
+  const explicits = modHtml("explicit");
+
+  const sections: string[] = [];
+  if (head.length) sections.push(head.join(""));
+  if (meta.length) sections.push(meta.join(""));
+  if (enchants) sections.push(`<div class="tooltip-enchants">${enchants}</div>`);
+  if (implicits) sections.push(`<div class="tooltip-implicits">${implicits}</div>`);
+  if (explicits) sections.push(`<div class="tooltip-mods">${explicits}</div>`);
+  if (item.corrupted) sections.push(`<div class="tooltip-corrupted">${isVi ? "Đã corrupt" : "Corrupted"}</div>`);
+
+  const title = item.name || (record ? itemTitle(record, locale) : "");
+  const base = item.baseName && item.baseName !== title ? item.baseName : "";
+  return `
+    <div class="poe-tooltip-card poe-no-tooltip tooltip-rarity-${rarity}${base ? " has-base" : ""}">
+      <div class="tooltip-header">
+        <div class="tooltip-name">${escapeHtml(title)}</div>
+        ${base ? `<div class="tooltip-base">${escapeHtml(base)}</div>` : ""}
       </div>
       ${sections.map((section) => `<div class="tooltip-section">${section}</div>`).join('<div class="tooltip-divider"></div>')}
     </div>`;
@@ -1927,17 +1979,24 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   const choice = inventoryBySlot.get(slot.id);
                   const hasItem = Boolean(choice?.itemName);
                   const record = hasItem ? itemRecordForChoice(choice) : undefined;
-                  const rarity = record ? itemRarity(record) : (choice?.isUnique ? "unique" : "normal");
+                  // Imported items carry their own rolls; the record is only the base.
+                  const importedText = hasItem ? choice?.rawText || "" : "";
+                  const importedRarity = importedText ? parsePobItemDetails(importedText).rarity : "";
+                  const rarity = importedRarity || (record ? itemRarity(record) : (choice?.isUnique ? "unique" : "normal"));
+                  const hasTooltip = Boolean(record || importedText);
                   return (
                     <button
                       className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""}`}
                       type="button"
                       onClick={() => openPicker(slot.id)}
                       onMouseEnter={(event) => {
-                        if (record) setTooltip({ x: event.clientX, y: event.clientY, content: getItemTooltipHtml(record, locale), visible: true });
+                        const content = importedText
+                          ? getImportedItemTooltipHtml(importedText, record, locale)
+                          : record ? getItemTooltipHtml(record, locale) : "";
+                        if (content) setTooltip({ x: event.clientX, y: event.clientY, content, visible: true });
                       }}
-                      onMouseMove={record ? handleMouseMove : undefined}
-                      onMouseLeave={record ? handleMouseLeave : undefined}
+                      onMouseMove={hasTooltip ? handleMouseMove : undefined}
+                      onMouseLeave={hasTooltip ? handleMouseLeave : undefined}
                       style={{ gridArea: slot.area }}
                       key={slot.id}
                       aria-label={`${localizedText(copy.chooseItem, "", locale)}: ${slot.label}`}

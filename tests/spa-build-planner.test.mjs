@@ -760,3 +760,59 @@ test("Item hint rows use official build planner inventory fields", async () => {
   assert.match(planner, /<silver>\{/);
   assert.match(planner, /<grey>\{/);
 });
+
+test("imported PoB item text keeps name, rolls, implicits and flags for the tooltip", async () => {
+  const { parsePobItemDetails, applyPobRange } = await loadBuildPlannerModule();
+  const text = [
+    "Rarity: RARE",
+    "Doom Grasp",
+    "Ornate Gauntlets",
+    "Unique ID: abc123",
+    "Item Level: 79",
+    "Quality: 20",
+    "Sockets: S S",
+    "Rune: Iron Rune",
+    "LevelReq: 65",
+    "Selected Variant: 2",
+    "Implicits: 1",
+    "{tags:defences}+15% increased Armour",
+    "{rune}+20 to Armour",
+    "{range:0.5}+(80-100) to maximum Life",
+    "{crafted}{range:1}Adds (3-5) to (8-10) Fire Damage to Attacks",
+    "{variant:1}Old variant only line",
+    "{variant:2}{fractured}+12% to Cold Resistance",
+    "{disabled}Hidden line",
+    "Corrupted"
+  ].join("\n");
+
+  const item = plain(parsePobItemDetails(text));
+  assert.equal(item.rarity, "rare");
+  assert.equal(item.name, "Doom Grasp");
+  assert.equal(item.baseName, "Ornate Gauntlets");
+  assert.equal(item.itemLevel, 79);
+  assert.equal(item.quality, 20);
+  assert.equal(item.levelReq, 65);
+  assert.equal(item.corrupted, true);
+  assert.deepEqual(item.mods, [
+    { text: "+15% increased Armour", kind: "implicit", flags: [] },
+    { text: "+20 to Armour", kind: "rune", flags: [] },
+    { text: "+90 to maximum Life", kind: "explicit", flags: [] },
+    { text: "Adds 5 to 10 Fire Damage to Attacks", kind: "explicit", flags: ["crafted"] },
+    { text: "+12% to Cold Resistance", kind: "explicit", flags: ["fractured"] }
+  ]);
+
+  // Normal and magic items have no separate name line.
+  const magic = plain(parsePobItemDetails("Rarity: MAGIC\nVaal Mask of the Fox\nItem Level: 40\n+20 to Dexterity"));
+  assert.equal(magic.name, "Vaal Mask of the Fox");
+  assert.equal(magic.baseName, "Vaal Mask of the Fox");
+  assert.deepEqual(magic.mods.map((mod) => mod.text), ["+20 to Dexterity"]);
+
+  assert.equal(applyPobRange("(10-20)% increased Speed", [0.25]), "13% increased Speed");
+  assert.equal(applyPobRange("+(0.5-1.5)% to Critical Hit Chance"), "+1% to Critical Hit Chance");
+});
+
+test("equipment slots show imported item rolls instead of the bare base", async () => {
+  const page = await readRepoFile("src/spa/pages/BuildPlannerPage.tsx");
+  assert.match(page, /getImportedItemTooltipHtml\(importedText, record, locale\)/);
+  assert.match(page, /parsePobItemDetails\(rawText\)/);
+});

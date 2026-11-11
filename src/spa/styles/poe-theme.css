@@ -1648,3 +1648,13 @@ body:has(.build-page) {
 .nj-gem-row--add .nj-gem-icon .material-symbols-rounded {
   font-size: 16px;
 }
+
+/* Imported item rolls: implicit/enchant/rune lines and per-line flags, in the
+   game's own colours. */
+.tooltip-enchants { padding: 4px 14px; color: #b4b4ff; }
+.tooltip-mod-line.is-crafted { color: #b8daf2; }
+.tooltip-mod-line.is-fractured { color: #a29162; }
+.tooltip-mod-line.is-desecrated { color: #d6a3ff; }
+.tooltip-mod-line.is-mutated { color: #d7a6c8; }
+.tooltip-item-level { color: var(--poe-grey); font-size: 13px; }
+.tooltip-corrupted { padding: 4px 14px; color: #d20000; font-weight: 700; }
