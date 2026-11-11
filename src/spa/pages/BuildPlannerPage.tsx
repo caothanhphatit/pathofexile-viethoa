@@ -444,8 +444,30 @@ function fallbackGemName(id: string, fallback = "Chọn gem"): string {
   return clean || fallback;
 }
 
+// Saved builds and PoB imports name gems in several ways: the full game id, its
+// last path segment ("SkillGemFrenzy" / "Frenzy"), or the display name or slug
+// ("Hollow Palm", "hollow-palm"). Try them from the most to the least exact.
+// (Ported from a hotfix that had been applied by hand on the server, 2026-09-01.)
 function gemChoiceItem(id: string, options: ItemRecord[], prefix: "SkillGem" | "SupportGem"): ItemRecord | undefined {
-  return options.find((item) => officialGemAliases(item, prefix).includes(id));
+  if (!id) return undefined;
+
+  const direct = options.find((item) => officialGemAliases(item, prefix).includes(id));
+  if (direct) return direct;
+
+  const stripKind = (value: string) => value.replace(/^(?:SkillGem|SupportGem)/, "");
+  const tail = id.split("/").pop() || id;
+  const tailMatch = options.find((item) => {
+    const tails = officialGemAliases(item, prefix).map((alias) => alias.split("/").pop() || "");
+    return tails.includes(tail) || tails.map(stripKind).includes(stripKind(tail));
+  });
+  if (tailMatch) return tailMatch;
+
+  const normalized = normalizeGemLookupText(id);
+  const compact = compactGemLookupText(id);
+  return options.find((item) => {
+    const values = new Set(gemLookupValues(item, prefix));
+    return values.has(normalized) || values.has(compact);
+  });
 }
 
 function getGemTooltipHtml(id: string, options: ItemRecord[], prefix: "SkillGem" | "SupportGem", locale: Locale, note?: string): string {
