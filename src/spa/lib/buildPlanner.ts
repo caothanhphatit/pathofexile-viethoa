@@ -40,21 +40,66 @@ export interface BuildInventoryChoice {
   rawText?: string;
 }
 
-export interface BuildSupportSkillChoice {
+/**
+ * Gem details kept from a PoB import so the calculator sees the same gem PoB saw.
+ * Picking another gem in the planner clears the pob* fields (they describe the old gem).
+ */
+export interface BuildGemDetails {
+  gemLevel?: number;
+  gemQuality?: number;
+  /** PoB's own ids: gemId picks the gem, variantId the version (Clarity I vs II). */
+  pobGemId?: string;
+  pobSkillId?: string;
+  pobVariantId?: string;
+  nameSpec?: string;
+  /** Other PoB gem settings (corruptLevel, skillPart, minion...), see POB_GEM_EXTRA_ATTRIBUTES. */
+  pobAttrs?: Record<string, string>;
+}
+
+/** PoB <Gem> attributes that change the numbers and are kept as-is from an import. */
+export const POB_GEM_EXTRA_ATTRIBUTES = [
+  "corrupted", "corruptLevel", "count", "enableGlobal1", "enableGlobal2",
+  "skillPart", "skillPartCalcs", "skillStageCount", "skillStageCountCalcs",
+  "skillMineCount", "skillMineCountCalcs", "skillMinion", "skillMinionCalcs",
+  "skillMinionItemSet", "skillMinionItemSetCalcs", "skillMinionSkill", "skillMinionSkillCalcs",
+  "statSetIndex", "statSetIndexCalcs"
+];
+
+export interface BuildSupportSkillChoice extends BuildGemDetails {
   id: string;
   skillId: string;
   note: string;
   levelStart: string;
   levelEnd: string;
+  /** Gem switched off in PoB: kept so the group stays the same, ignored by the calculator. */
+  disabled?: boolean;
+  /** A second active gem in the group (e.g. the spell socketed in Cast on Critical). */
+  active?: boolean;
 }
 
-export interface BuildSkillChoice {
+export interface BuildSkillChoice extends BuildGemDetails {
   id: string;
   skillId: string;
   note: string;
   levelStart: string;
   levelEnd: string;
   supportSkills: BuildSupportSkillChoice[];
+  /** Whole socket group switched off in PoB. */
+  disabled?: boolean;
+  /** The group's own active gem is switched off. */
+  gemDisabled?: boolean;
+  /** Skill granted by an item ("Weapon 1") rather than a gem the player socketed. */
+  itemSlot?: string;
+  itemSource?: string;
+  /** Which active gem of the group PoB calculates (1 = the first). */
+  mainActiveSkill?: number;
+}
+
+/** One Input of PoB's Configuration tab (enemy is shocked, nearby enemies, ...). */
+export interface PobConfigInput {
+  name: string;
+  kind: "boolean" | "number" | "string";
+  value: boolean | number | string;
 }
 
 /** Raw stat row as exported in a `.build` / PoB payload. */
@@ -107,12 +152,18 @@ export interface PobGem {
   enabled: boolean;
   skillEnabled: boolean;
   skillId: string;
+  gemId?: string;
+  variantId?: string;
+  /** POB_GEM_EXTRA_ATTRIBUTES present on the <Gem>. */
+  extra?: Record<string, string>;
 }
 
 export interface PobSkillGroup {
   enabled: boolean;
   slot: string;
   gems: PobGem[];
+  source?: string;
+  mainActiveSkill?: number;
 }
 
 export interface PobTreeSpec {
@@ -138,6 +189,9 @@ export interface PobImportData {
       strNodes?: string;
     };
     config?: string;
+    configInputs?: PobConfigInput[];
+    /** PoB had weapon set II active (ItemSet useSecondWeaponSet). */
+    useSecondWeaponSet?: boolean;
   };
   treeSpec: PobTreeSpec | null;
   skillGroups: PobSkillGroup[];
@@ -287,7 +341,10 @@ const normalizeSupportSkillChoices = (rows: unknown): BuildSupportSkillChoice[] 
     skillId: row.skillId || "",
     note: row.note || "",
     levelStart: row.levelStart || "",
-    levelEnd: row.levelEnd || ""
+    levelEnd: row.levelEnd || "",
+    ...gemDetailsFromPayload(row),
+    ...(row.disabled ? { disabled: true } : {}),
+    ...(row.active ? { active: true } : {})
   }));
 };
 
@@ -302,7 +359,13 @@ const normalizeSkillChoices = (rows: unknown): BuildSkillChoice[] => {
     note: row.note || "",
     levelStart: row.levelStart || "",
     levelEnd: row.levelEnd || "",
-    supportSkills: normalizeSupportSkillChoices(row.supportSkills)
+    supportSkills: normalizeSupportSkillChoices(row.supportSkills),
+    ...gemDetailsFromPayload(row),
+    ...(row.disabled ? { disabled: true } : {}),
+    ...(row.gemDisabled ? { gemDisabled: true } : {}),
+    ...(row.itemSlot ? { itemSlot: row.itemSlot } : {}),
+    ...(row.itemSource ? { itemSource: row.itemSource } : {}),
+    ...((row.mainActiveSkill ?? 1) > 1 ? { mainActiveSkill: row.mainActiveSkill } : {})
   }));
 };
 
@@ -520,8 +583,23 @@ function normalizedPobCode(value: string): string {
   return String(value || "").trim().replace(/\s+/g, "");
 }
 
+/** PoB export code (zlib + URL-safe Base64, as Path of Building writes it) for a PathOfBuilding2 XML. */
+export async function encodePobXmlText(xml: string): Promise<string> {
+  if (typeof globalThis.CompressionStream !== "function") {
+    throw new Error("Trình duyệt này chưa hỗ trợ nén PoB code. Hãy dùng Chrome/Edge/Firefox bản mới.");
+  }
+  const stream = new Blob([new TextEncoder().encode(xml)]).stream().pipeThrough(new CompressionStream("deflate"));
+  const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+  }
+  return globalThis.btoa(binary).replace(/\+/g, "-").replace(/\//g, "_");
+}
+
 export function isPobExportCode(value: string): boolean {
-  return /^eN[A-Za-z0-9+/=_-]{50,}$/.test(normalizedPobCode(value));
+  // zlib header 0x78 then 0x01 / 0x5E / 0x9C / 0xDA: PoB writes "eN", browsers "eJ".
+  return /^e[AFJN][A-Za-z0-9+/=_-]{50,}$/.test(normalizedPobCode(value));
 }
 
 function base64ToBytes(value: string): Uint8Array {
@@ -575,6 +653,31 @@ export function parsePobXmlText(xml: string): PobImportData {
   return parsePobXmlDocument(doc);
 }
 
+/** Inputs of the active ConfigSet (or of <Config> itself in older codes). Placeholders are PoB defaults and are skipped. */
+function pobGemExtraAttributes(gem: Element): Record<string, string> | undefined {
+  const extra: Record<string, string> = {};
+  for (const key of POB_GEM_EXTRA_ATTRIBUTES) {
+    const value = gem.getAttribute(key);
+    if (value !== null && value !== "") extra[key] = value;
+  }
+  return Object.keys(extra).length ? extra : undefined;
+}
+
+function pobConfigInputs(configEl: Element): PobConfigInput[] {
+  const sets = [...configEl.querySelectorAll("ConfigSet")];
+  const activeId = xmlAttribute(configEl, "activeConfigSet", "1");
+  const container = sets.length ? (sets.find((row) => xmlAttribute(row, "id") === activeId) ?? sets[0]) : configEl;
+  const inputs: PobConfigInput[] = [];
+  for (const input of [...container.querySelectorAll("Input")]) {
+    const name = xmlAttribute(input, "name");
+    if (!name) continue;
+    if (input.hasAttribute("boolean")) inputs.push({ name, kind: "boolean", value: xmlAttribute(input, "boolean") === "true" });
+    else if (input.hasAttribute("number")) inputs.push({ name, kind: "number", value: Number(xmlAttribute(input, "number")) || 0 });
+    else if (input.hasAttribute("string")) inputs.push({ name, kind: "string", value: xmlAttribute(input, "string") });
+  }
+  return inputs;
+}
+
 export function parsePobXmlDocument(doc: Document): PobImportData {
   const rootTag = doc.documentElement?.tagName || "";
   if (rootTag !== "PathOfBuilding" && rootTag !== "PathOfBuilding2") {
@@ -615,19 +718,22 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
 
   const configEl = doc.documentElement.querySelector("Config");
   let config: string | undefined = undefined;
+  let configInputs: PobConfigInput[] | undefined = undefined;
   if (configEl) {
     config = configEl.outerHTML || new XMLSerializer().serializeToString(configEl);
+    configInputs = pobConfigInputs(configEl);
   }
 
   const buildElement = doc.documentElement.querySelector("Build");
-  const build = {
+  const build: PobImportData["build"] = {
     className: xmlAttribute(buildElement, "className"),
     ascendClassName: xmlAttribute(buildElement, "ascendClassName"),
     level: parseWholeNumber(xmlAttribute(buildElement, "level", "1"), 1),
     mainSkill: xmlAttribute(buildElement, "mainSkill"),
     mainSocketGroup: xmlAttribute(buildElement, "mainSocketGroup") || undefined,
     attribute_overrides,
-    config
+    config,
+    configInputs
   };
 
   const skillsElement = doc.documentElement.querySelector("Skills");
@@ -647,15 +753,19 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
         quality: parseWholeNumber(xmlAttribute(gem, "quality", "0"), 0),
         enabled: xmlAttribute(gem, "enabled", "true") !== "false",
         skillEnabled: xmlAttribute(gem, "skillEnabled", "true") !== "false",
-        skillId: xmlAttribute(gem, "skillId")
+        skillId: xmlAttribute(gem, "skillId"),
+        gemId: xmlAttribute(gem, "gemId") || undefined,
+        variantId: xmlAttribute(gem, "variantId") || undefined,
+        extra: pobGemExtraAttributes(gem)
       }));
-      if (gems.length) {
-        skillGroups.push({
-          enabled: xmlAttribute(skill, "enabled", "true") !== "false",
-          slot: xmlAttribute(skill, "slot"),
-          gems
-        });
-      }
+      // Empty groups are kept: PoB's mainSocketGroup counts them.
+      skillGroups.push({
+        enabled: xmlAttribute(skill, "enabled", "true") !== "false",
+        slot: xmlAttribute(skill, "slot"),
+        source: xmlAttribute(skill, "source") || undefined,
+        mainActiveSkill: parseWholeNumber(xmlAttribute(skill, "mainActiveSkill", "1"), 1) || 1,
+        gems
+      });
     }
   }
 
@@ -667,6 +777,7 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
     const activeItemSetId = xmlAttribute(itemsElement, "activeItemSet", "1");
     const itemSets = [...itemsElement.querySelectorAll("ItemSet")];
     const activeItemSet = itemSets.find((row) => xmlAttribute(row, "id") === activeItemSetId) ?? itemSets[0] ?? null;
+    if ((xmlAttribute(activeItemSet, "useSecondWeaponSet") || xmlAttribute(itemsElement, "useSecondWeaponSet")) === "true") build.useSecondWeaponSet = true;
     if (activeItemSet) {
       for (const slot of [...activeItemSet.querySelectorAll("Slot")]) {
         const itemId = xmlAttribute(slot, "itemId");
@@ -788,54 +899,89 @@ function fallbackPobGemId(gem: PobGem, prefix: "SkillGem" | "SupportGem"): strin
   // The game uses both Metadata/Items/Gem/ and Metadata/Items/Gems/ ids; keep either as-is.
   if (/^Metadata\/Items\/Gems?\//.test(rawId)) return rawId;
   if (rawId.startsWith(prefix)) return `Metadata/Items/Gems/${rawId}`;
+  if (gem.gemId) return gem.gemId;
   const compactName = cleanText(gem.nameSpec).replace(/[^A-Za-z0-9]+/g, "");
-  return compactName ? `Metadata/Items/Gems/${prefix}${compactName}` : "";
+  if (compactName) return `Metadata/Items/Gems/${prefix}${compactName}`;
+  // Skills granted by the tree or an item ("ThornsPlayer") have no gem at all.
+  return rawId;
 }
 
 function defaultPobSupportGemTest(gem: PobGem): boolean {
+  if (gem.gemId) return /SupportGem/i.test(gem.gemId);
   if (/SupportGem/i.test(gem.skillId)) return true;
   if (/^support/i.test(gem.skillId)) return true;
   return /\bsupport\b/i.test(gem.nameSpec);
 }
 
-export function skillChoicesFromPobImport(data: PobImportData, options: PobSkillChoiceOptions = {}): BuildSkillChoice[] {
-  const rows: BuildSkillChoice[] = [];
+function pobGemDetails(gem: PobGem): BuildGemDetails {
+  const details: BuildGemDetails = {};
+  if (gem.level > 0) details.gemLevel = gem.level;
+  if (gem.quality > 0) details.gemQuality = gem.quality;
+  if (gem.gemId) details.pobGemId = gem.gemId;
+  if (gem.skillId) details.pobSkillId = gem.skillId;
+  if (gem.variantId) details.pobVariantId = gem.variantId;
+  if (gem.nameSpec) details.nameSpec = gem.nameSpec;
+  if (gem.extra && Object.keys(gem.extra).length) details.pobAttrs = { ...gem.extra };
+  return details;
+}
+
+/**
+ * One planner skill per PoB socket group, in PoB's order, disabled groups included,
+ * so PoB's mainSocketGroup index still points at the same group.
+ * Returns the choices and, for each PoB group, the index of its choice (-1 when the
+ * group had no gem and was dropped).
+ */
+export function pobSkillGroupChoices(data: PobImportData, options: PobSkillChoiceOptions = {}): { choices: BuildSkillChoice[]; groupIndex: number[] } {
+  const choices: BuildSkillChoice[] = [];
+  const groupIndex: number[] = [];
   const isSupportGem = options.isSupportGem ?? defaultPobSupportGemTest;
   for (const group of data.skillGroups) {
-    if (!group.enabled) continue;
-    const gems = group.gems.filter((gem) => gem.enabled && (gem.nameSpec || gem.skillId));
-    if (!gems.length) continue;
-
-    let activeGems = gems.filter((gem) => !isSupportGem(gem));
-    let supportGems = gems.filter((gem) => isSupportGem(gem));
-    if (!activeGems.length) {
-      activeGems = [gems[0]];
-      supportGems = gems.slice(1);
+    const gems = group.gems.filter((gem) => gem.nameSpec || gem.skillId || gem.gemId);
+    const mainGem = gems.find((gem) => !isSupportGem(gem)) ?? gems[0];
+    const skillId = mainGem ? options.resolveSkillId?.(mainGem) || fallbackPobGemId(mainGem, "SkillGem") : "";
+    if (!mainGem || !skillId) {
+      groupIndex.push(-1);
+      continue;
     }
-
-    for (const gem of activeGems) {
-      const skillId = options.resolveSkillId?.(gem) || fallbackPobGemId(gem, "SkillGem");
-      if (!skillId) continue;
-      rows.push({
-        id: choiceId("skill"),
-        skillId,
+    const supportSkills = gems.filter((gem) => gem !== mainGem).map((gem): BuildSupportSkillChoice | null => {
+      const active = !isSupportGem(gem);
+      const supportId = active
+        ? options.resolveSkillId?.(gem) || fallbackPobGemId(gem, "SkillGem")
+        : options.resolveSupportId?.(gem) || fallbackPobGemId(gem, "SupportGem");
+      if (!supportId) return null;
+      return {
+        id: choiceId("support"),
+        skillId: supportId,
         note: "",
         levelStart: "",
         levelEnd: "",
-        supportSkills: supportGems.map((support) => {
-          const supportId = options.resolveSupportId?.(support) || fallbackPobGemId(support, "SupportGem");
-          return supportId ? {
-            id: choiceId("support"),
-            skillId: supportId,
-            note: "",
-            levelStart: "",
-            levelEnd: ""
-          } : null;
-        }).filter((support): support is BuildSupportSkillChoice => Boolean(support))
-      });
-    }
+        ...pobGemDetails(gem),
+        ...(gem.enabled ? {} : { disabled: true }),
+        ...(active ? { active: true } : {})
+      };
+    }).filter((support): support is BuildSupportSkillChoice => Boolean(support));
+    const choice: BuildSkillChoice = {
+      id: choiceId("skill"),
+      skillId,
+      note: "",
+      levelStart: "",
+      levelEnd: "",
+      supportSkills,
+      ...pobGemDetails(mainGem)
+    };
+    if (!group.enabled) choice.disabled = true;
+    if (!mainGem.enabled) choice.gemDisabled = true;
+    if (group.slot) choice.itemSlot = group.slot;
+    if (group.source) choice.itemSource = group.source;
+    if (group.mainActiveSkill && group.mainActiveSkill > 1) choice.mainActiveSkill = group.mainActiveSkill;
+    groupIndex.push(choices.length);
+    choices.push(choice);
   }
-  return rows;
+  return { choices, groupIndex };
+}
+
+export function skillChoicesFromPobImport(data: PobImportData, options: PobSkillChoiceOptions = {}): BuildSkillChoice[] {
+  return pobSkillGroupChoices(data, options).choices;
 }
 
 function pobItemLines(text: string): string[] {
@@ -879,6 +1025,7 @@ function pobInventorySlotId(slotName: string, lines: string[], used: Set<string>
     [/^amulet$/i, ["Amulet1"]],
     [/^(ring1|leftring)$/i, ["Ring1"]],
     [/^(ring2|rightring)$/i, ["Ring2"]],
+    [/^ring3$/i, ["Ring3"]],
     [/^ring$/i, ["Ring1", "Ring2"]],
     [/^belt$/i, ["Belt1"]],
     [/^(lifeflask|flask1)$/i, ["LifeFlask1"]],
@@ -919,6 +1066,30 @@ function pobInventorySlotId(slotName: string, lines: string[], used: Set<string>
   return "";
 }
 
+/**
+ * PoB slots that have no place on the planner's paper doll (augment slots "Arm 1" /
+ * "Leg 2", jewels socketed in gear "Gloves Jewel Socket 1"). The item is kept under
+ * "PobSlot:<PoB slot name>" so the calculator still wears it.
+ */
+export const POB_EXTRA_SLOT_PREFIX = "PobSlot:";
+export function isPobExtraSlotName(slotName: string): boolean {
+  return /^(arm|leg)\s*\d+$/i.test(cleanText(slotName)) || /\bjewel socket\b/i.test(slotName);
+}
+
+/** Inventory rows kept besides the doll slots: passive-tree jewels and PoB extra slots. */
+export function isExtraInventoryId(inventoryId: string): boolean {
+  return inventoryId.startsWith("PassiveJewel:") || inventoryId.startsWith(POB_EXTRA_SLOT_PREFIX);
+}
+
+/** One row per doll slot (empty ones created), then the extra rows (jewels, PoB extra slots). */
+export function inventoryForSlots(rows: BuildInventoryChoice[], slotIds: string[], emptyChoice: (slotId: string) => BuildInventoryChoice): BuildInventoryChoice[] {
+  const bySlot = new Map(rows.map((row) => [row.inventoryId, row]));
+  return [
+    ...slotIds.map((slotId) => bySlot.get(slotId) ?? emptyChoice(slotId)),
+    ...rows.filter((row) => isExtraInventoryId(row.inventoryId))
+  ];
+}
+
 function pobIsJewel(lines: string[], slot: string): boolean {
   const normalizedSlot = (slot || "").toLowerCase();
   if (normalizedSlot === "jewel" || normalizedSlot.includes("jewel")) return true;
@@ -940,10 +1111,14 @@ export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: stri
   const bySlot = new Map<string, BuildInventoryChoice>();
 
   let jewelIndex = 1;
+  // PoB keeps every item the player ever pasted; only the ones the active item set
+  // wears (or a passive socket holds) are part of the build.
+  const hasSlottedItems = data.items.some((item) => item.slot);
 
   for (const item of data.items) {
     const lines = pobItemLines(item.text);
     if (!lines.length) continue;
+    if (hasSlottedItems && !item.slot) continue;
     const rarity = pobItemRarity(lines);
     const title = pobItemTitle(lines);
     const baseName = pobItemBaseName(lines, title, rarity);
@@ -967,6 +1142,28 @@ export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: stri
       return !/^(Rarity:|Slot:|Item Level:|Quality:|Sockets:|Requirements:|Level:|Str:|Dex:|Int:|Implicits:|Explicits:|Crafted:|Corrupted|Mirrored|--------|Unique ID:|Radius:|Item Class:)/i.test(clean);
     }).map((line) => line.trim());
     const noteText = mods.join("\n");
+
+    if (item.slot && isPobExtraSlotName(item.slot)) {
+      const slotId = `${POB_EXTRA_SLOT_PREFIX}${cleanText(item.slot)}`;
+      const isUnique = rarity === "unique";
+      bySlot.set(slotId, {
+        id: choiceId("pob-item"),
+        inventoryId: slotId,
+        itemName: isUnique ? title : baseName || title,
+        note: noteText,
+        isUnique,
+        levelStart: "",
+        levelEnd: "",
+        baseName,
+        itemLevel,
+        quality,
+        corrupted,
+        implicitCount,
+        rawText: item.text
+      });
+      used.add(slotId);
+      continue;
+    }
 
     const isJewel = pobIsJewel(lines, item.slot);
     if (isJewel) {
@@ -1042,7 +1239,7 @@ export function inventoryChoicesFromPobImport(data: PobImportData, slotIds: stri
     levelEnd: ""
   });
 
-  const jewelChoices = [...bySlot.values()].filter((choice) => choice.inventoryId.startsWith("PassiveJewel:"));
+  const jewelChoices = [...bySlot.values()].filter((choice) => isExtraInventoryId(choice.inventoryId));
 
   return [...gearChoices, ...jewelChoices];
 }
@@ -1246,13 +1443,17 @@ export function supportSkillChoiceFromBuildSupport(value: unknown): BuildSupport
   const skillId = buildReferenceId(value);
   if (!skillId) return null;
   const levelFields = isPlainObject(value) ? levelIntervalToFields(value.level_interval) : { levelStart: "", levelEnd: "" };
-  return {
+  const choice: BuildSupportSkillChoice = {
     id: choiceId("support"),
     skillId,
     note: isPlainObject(value) && typeof value.additional_text === "string" ? value.additional_text : "",
     levelStart: levelFields.levelStart,
-    levelEnd: levelFields.levelEnd
+    levelEnd: levelFields.levelEnd,
+    ...gemDetailsFromPayload(value)
   };
+  if (isPlainObject(value) && value.disabled === true) choice.disabled = true;
+  if (isPlainObject(value) && value.active === true) choice.active = true;
+  return choice;
 }
 
 export function skillChoiceFromBuildSkill(value: unknown): BuildSkillChoice | null {
@@ -1260,14 +1461,24 @@ export function skillChoiceFromBuildSkill(value: unknown): BuildSkillChoice | nu
   if (!skillId) return null;
   const levelFields = isPlainObject(value) ? levelIntervalToFields(value.level_interval) : { levelStart: "", levelEnd: "" };
   const supportRows = isPlainObject(value) && Array.isArray(value.support_skills) ? value.support_skills : [];
-  return {
+  const choice: BuildSkillChoice = {
     id: choiceId("skill"),
     skillId,
     note: isPlainObject(value) && typeof value.additional_text === "string" ? value.additional_text : "",
     levelStart: levelFields.levelStart,
     levelEnd: levelFields.levelEnd,
-    supportSkills: supportRows.map(supportSkillChoiceFromBuildSupport).filter((row): row is BuildSupportSkillChoice => Boolean(row))
+    supportSkills: supportRows.map(supportSkillChoiceFromBuildSupport).filter((row): row is BuildSupportSkillChoice => Boolean(row)),
+    ...gemDetailsFromPayload(value)
   };
+  if (isPlainObject(value)) {
+    if (value.disabled === true) choice.disabled = true;
+    if (value.gem_disabled === true) choice.gemDisabled = true;
+    if (typeof value.item_slot === "string" && value.item_slot) choice.itemSlot = value.item_slot;
+    if (typeof value.item_source === "string" && value.item_source) choice.itemSource = value.item_source;
+    const mainActive = Number(value.main_active_skill);
+    if (Number.isInteger(mainActive) && mainActive > 1) choice.mainActiveSkill = mainActive;
+  }
+  return choice;
 }
 
 export function skillChoicesFromBuildPayload(payload: BuildPayload): BuildSkillChoice[] {
@@ -1280,7 +1491,7 @@ export function inventoryChoicesFromBuildPayload(payload: BuildPayload, slotIds:
   const bySlot = new Map<string, BuildInventoryChoice>();
   for (const row of importedSlots) {
     const choice = inventoryChoiceFromBuildSlot(row);
-    if (choice && (slotIds.includes(choice.inventoryId) || choice.inventoryId.startsWith("PassiveJewel:")) && !bySlot.has(choice.inventoryId)) {
+    if (choice && (slotIds.includes(choice.inventoryId) || isExtraInventoryId(choice.inventoryId)) && !bySlot.has(choice.inventoryId)) {
       bySlot.set(choice.inventoryId, choice);
     }
   }
@@ -1294,8 +1505,59 @@ export function inventoryChoicesFromBuildPayload(payload: BuildPayload, slotIds:
     levelStart: "",
     levelEnd: ""
   });
-  const jewelChoices = [...bySlot.values()].filter((choice) => choice.inventoryId.startsWith("PassiveJewel:"));
+  const jewelChoices = [...bySlot.values()].filter((choice) => isExtraInventoryId(choice.inventoryId));
   return [...gearChoices, ...jewelChoices];
+}
+
+const GEM_DETAIL_KEYS: Array<[keyof BuildGemDetails, string]> = [
+  ["gemLevel", "gem_level"],
+  ["gemQuality", "gem_quality"],
+  ["pobGemId", "pob_gem_id"],
+  ["pobSkillId", "pob_skill_id"],
+  ["pobVariantId", "pob_variant_id"],
+  ["nameSpec", "name_spec"]
+];
+
+function gemDetailsToPayload(choice: BuildGemDetails, row: Record<string, unknown>): void {
+  for (const [key, payloadKey] of GEM_DETAIL_KEYS) {
+    const value = choice[key];
+    if (value !== undefined && value !== "") row[payloadKey] = value;
+  }
+  if (choice.pobAttrs && Object.keys(choice.pobAttrs).length) row.pob_attrs = { ...choice.pobAttrs };
+}
+
+/** Reads gem details from a payload row (snake_case) or a saved choice (camelCase). */
+function gemDetailsFromPayload(value: unknown): BuildGemDetails {
+  const details: BuildGemDetails = {};
+  if (!isPlainObject(value)) return details;
+  for (const [key, payloadKey] of GEM_DETAIL_KEYS) {
+    const raw = value[payloadKey] ?? value[key];
+    if (key === "gemLevel" || key === "gemQuality") {
+      if (raw !== "" && raw !== null && raw !== undefined && Number.isFinite(Number(raw))) details[key] = Number(raw);
+    } else if (typeof raw === "string" && raw) {
+      (details as Record<string, unknown>)[key] = raw;
+    }
+  }
+  const attrs = value.pob_attrs ?? value.pobAttrs;
+  if (isPlainObject(attrs)) {
+    const kept: Record<string, string> = {};
+    for (const key of POB_GEM_EXTRA_ATTRIBUTES) if (typeof attrs[key] === "string") kept[key] = attrs[key] as string;
+    if (Object.keys(kept).length) details.pobAttrs = kept;
+  }
+  return details;
+}
+
+const hasGemDetails = (choice: BuildGemDetails) => GEM_DETAIL_KEYS.some(([key]) => choice[key] !== undefined && choice[key] !== "") || Boolean(choice.pobAttrs);
+
+/** Drops the PoB gem details; used when the player picks another gem in the planner. */
+export function withoutPobGemDetails<T extends BuildGemDetails>(choice: T): T {
+  const next = { ...choice };
+  delete next.pobGemId;
+  delete next.pobSkillId;
+  delete next.pobVariantId;
+  delete next.nameSpec;
+  delete next.pobAttrs;
+  return next;
 }
 
 export function buildSupportSkill(choice: BuildSupportSkillChoice): string | Record<string, unknown> | null {
@@ -1303,10 +1565,13 @@ export function buildSupportSkill(choice: BuildSupportSkillChoice): string | Rec
   const note = choice.note.trim();
   const levelInterval = buildLevelInterval(choice.levelStart, choice.levelEnd);
   if (!skillId) return null;
-  if (!note && levelInterval === undefined) return skillId;
+  if (!note && levelInterval === undefined && !hasGemDetails(choice) && !choice.disabled && !choice.active) return skillId;
   const row: Record<string, unknown> = { id: skillId };
   if (levelInterval !== undefined) row.level_interval = levelInterval;
   if (note) row.additional_text = note;
+  gemDetailsToPayload(choice, row);
+  if (choice.disabled) row.disabled = true;
+  if (choice.active) row.active = true;
   return row;
 }
 
@@ -1316,11 +1581,18 @@ export function buildSkill(choice: BuildSkillChoice): string | Record<string, un
   const levelInterval = buildLevelInterval(choice.levelStart, choice.levelEnd);
   const supportSkills = choice.supportSkills.map(buildSupportSkill).filter((row): row is string | Record<string, unknown> => Boolean(row));
   if (!skillId) return null;
-  if (!note && levelInterval === undefined && !supportSkills.length) return skillId;
+  const hasGroupDetails = choice.disabled || choice.gemDisabled || choice.itemSlot || choice.itemSource || (choice.mainActiveSkill ?? 1) > 1;
+  if (!note && levelInterval === undefined && !supportSkills.length && !hasGemDetails(choice) && !hasGroupDetails) return skillId;
   const row: Record<string, unknown> = { id: skillId };
   if (levelInterval !== undefined) row.level_interval = levelInterval;
   if (note) row.additional_text = note;
   if (supportSkills.length) row.support_skills = supportSkills;
+  gemDetailsToPayload(choice, row);
+  if (choice.disabled) row.disabled = true;
+  if (choice.gemDisabled) row.gem_disabled = true;
+  if (choice.itemSlot) row.item_slot = choice.itemSlot;
+  if (choice.itemSource) row.item_source = choice.itemSource;
+  if ((choice.mainActiveSkill ?? 1) > 1) row.main_active_skill = choice.mainActiveSkill;
   return row;
 }
 
@@ -1402,10 +1674,18 @@ export function buildPayloadFromPobImport(data: PobImportData, options: PobBuild
   const passives = passiveIdsFromPobImport(data);
   if (passives.length) build.passives = passives;
 
-  const skills = skillChoicesFromPobImport(data, options)
+  const { choices: skillChoices, groupIndex } = pobSkillGroupChoices(data, options);
+  const skills = skillChoices
     .map(buildSkill)
     .filter((row): row is string | Record<string, unknown> => Boolean(row));
   if (skills.length) build.skills = skills;
+
+  const weaponSetPassives: Record<string, string[]> = {};
+  if (data.treeSpec?.weaponSet1Nodes) weaponSetPassives["1"] = passiveIdsFromPobNodeList(data.treeSpec.weaponSet1Nodes);
+  if (data.treeSpec?.weaponSet2Nodes) weaponSetPassives["2"] = passiveIdsFromPobNodeList(data.treeSpec.weaponSet2Nodes);
+  if (Object.keys(weaponSetPassives).length) build.weapon_set_passives = weaponSetPassives;
+  if (data.build.configInputs?.length) build.config_inputs = data.build.configInputs;
+  if (data.build.useSecondWeaponSet) build.active_weapon_set = 2;
 
   const slotIds = options.inventorySlotIds && options.inventorySlotIds.length ? options.inventorySlotIds : DEFAULT_INVENTORY_SLOTS;
   const inventorySlots = inventoryChoicesFromPobImport(data, slotIds)
@@ -1423,10 +1703,84 @@ export function buildPayloadFromPobImport(data: PobImportData, options: PobBuild
     build.config = data.build.config;
   }
   if (data.build.mainSocketGroup) {
-    build.mainSocketGroup = data.build.mainSocketGroup;
+    // PoB counts its own socket groups; point at the same group among the planner skills.
+    const pobIndex = parseWholeNumber(data.build.mainSocketGroup, 1) - 1;
+    const choiceIndex = groupIndex[pobIndex] ?? -1;
+    build.mainSocketGroup = choiceIndex >= 0 ? choiceIndex + 1 : 1;
   }
 
   return normalizeImportedBuildPayload(build);
+}
+
+export interface CalculationRequestInput {
+  /** The imported (or saved) build payload: class, level, config, weapon-set passives... */
+  payload: BuildPayload;
+  passives: string[];
+  inventory: BuildInventoryChoice[];
+  skills: BuildSkillChoice[];
+  activeWeaponSet: 1 | 2;
+  mainSocketGroup: number;
+  /** Config the player changed in the planner; replaces the imported one. */
+  configInputs?: PobConfigInput[];
+  /** PoB item text for a slot without imported text (an item picked from the site list). */
+  itemText?: (choice: BuildInventoryChoice) => string | undefined;
+}
+
+const calculationGem = (choice: BuildSkillChoice | BuildSupportSkillChoice, enabled: boolean) => {
+  const row: Record<string, unknown> = {
+    skill_id: choice.skillId,
+    level: choice.gemLevel ?? 20,
+    quality: choice.gemQuality ?? 0,
+    enabled
+  };
+  if (choice.pobGemId) row.pob_gem_id = choice.pobGemId;
+  if (choice.pobSkillId) row.pob_skill_id = choice.pobSkillId;
+  if (choice.pobVariantId) row.pob_variant_id = choice.pobVariantId;
+  if (choice.nameSpec) row.name_spec = choice.nameSpec;
+  if (choice.pobAttrs) row.pob_attrs = choice.pobAttrs;
+  return row;
+};
+
+/** Body of POST /api/builds/calculate (see src/server/pob-build-xml.mjs). */
+export function calculationRequestBody(input: CalculationRequestInput): Record<string, unknown> {
+  const { payload } = input;
+  const text = (key: string) => (typeof payload[key] === "string" ? String(payload[key]) : "");
+  const configInputs = input.configInputs ?? (Array.isArray(payload.config_inputs) ? payload.config_inputs as PobConfigInput[] : undefined);
+  return {
+    className: text("className") || "Witch",
+    ascendancy: text("ascendancy") || "None",
+    level: parseWholeNumber(payload.level, 90) || 90,
+    passives: input.passives.map((id) => parseWholeNumber(id, 0)).filter(Boolean),
+    weapon_set_passives: isPlainObject(payload.weapon_set_passives) ? payload.weapon_set_passives : undefined,
+    inventory_slots: input.inventory
+      .filter((row) => row.itemName || row.rawText)
+      .map((row) => ({
+        inventory_id: row.inventoryId,
+        item_name: row.itemName,
+        note: row.note,
+        is_unique: row.isUnique,
+        raw_text: row.rawText || input.itemText?.(row) || undefined
+      })),
+    skills: input.skills
+      .filter((row) => row.skillId.trim())
+      .map((row) => {
+        const group: Record<string, unknown> = {
+          ...calculationGem(row, !row.gemDisabled),
+          group_enabled: !row.disabled,
+          support: row.supportSkills.filter((s) => s.skillId.trim()).map((s) => calculationGem(s, !s.disabled))
+        };
+        if (row.itemSlot) group.slot = row.itemSlot;
+        if (row.itemSource) group.source = row.itemSource;
+        if (row.mainActiveSkill) group.main_active_skill = row.mainActiveSkill;
+        return group;
+      }),
+    activeWeaponSet: input.activeWeaponSet,
+    attribute_overrides: payload.attribute_overrides,
+    config_inputs: configInputs,
+    // Older payloads only carry the raw <Config> element.
+    config: configInputs ? undefined : payload.config,
+    main_socket_group: input.mainSocketGroup
+  };
 }
 
 export function buildFileName(name: string): string {

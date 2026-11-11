@@ -7,6 +7,10 @@ import { matchesQuery } from "../lib/text";
 import { PassiveTreeWorkspace } from "./PassiveTreePage";
 import {
   buildPayloadFromPobImport,
+  calculationRequestBody,
+  encodePobXmlText,
+  inventoryForSlots,
+  withoutPobGemDetails,
   gemNameRank,
   gemPickerOptions,
   buildFileName,
@@ -38,8 +42,12 @@ import {
   type BuildSupportSkillChoice,
   type BuildTreeSnapshot,
   type PobGem,
-  type PobImportData
+  type PobImportData,
+  type PobConfigInput
 } from "../lib/buildPlanner";
+import { pobItemTextFromRecord } from "../lib/buildStats";
+import { buildPobXml } from "../../server/pob-build-xml.mjs";
+import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 
 type SnapshotOption = {
   key: string;
@@ -318,9 +326,15 @@ function emptyEquipmentChoices(): BuildInventoryChoice[] {
   return equipmentSlots.map((slot) => newInventoryChoice(slot.id));
 }
 
+// Passive-tree jewels and PoB extra slots (augments, gear jewel sockets) ride along after the doll slots.
 function inventoryWithEmptySlots(rows: BuildInventoryChoice[]): BuildInventoryChoice[] {
-  const bySlot = new Map(rows.map((row) => [row.inventoryId, row]));
-  return equipmentSlots.map((slot) => bySlot.get(slot.id) ?? newInventoryChoice(slot.id));
+  return inventoryForSlots(rows, equipmentSlotIds, newInventoryChoice);
+}
+
+/** The weapon set PoB had active in an imported build, if it says. */
+function payloadWeaponSet(payload: BuildPayload): 1 | 2 | undefined {
+  const value = Number(payload.active_weapon_set);
+  return value === 1 || value === 2 ? value : undefined;
 }
 
 function preferredWeaponSet(rows: BuildInventoryChoice[]): 1 | 2 {
@@ -983,6 +997,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   };
 
   const [liveStats, setLiveStats] = useState<any>(null);
+  // Stats of the calculation before the current one, for the "what changed" badges.
+  const [previousStats, setPreviousStats] = useState<any>(null);
+  const liveStatsRef = useRef<any>(null);
+  liveStatsRef.current = liveStats;
+  // Conditions the player changed in the planner; null = the build's own (imported) config.
+  const [configInputs, setConfigInputs] = useState<PobConfigInput[] | null>(null);
   const activeStats = useMemo(() => {
     if (!liveStats) return null;
     // /api/builds/calculate already runs for activeWeaponSet and returns PoB's flat output;
@@ -1192,6 +1212,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     return match ? officialGemId(match, "SupportGem") : "";
   }, [supportGemOptions]);
   const isPobSupportGem = useCallback((gem: PobGem) => {
+    if (gem.gemId) return /SupportGem/i.test(gem.gemId);
     if (/SupportGem/i.test(gem.skillId) || /^support/i.test(gem.skillId)) return true;
     if (/SkillGem/i.test(gem.skillId)) return false;
     const supportMatch = pobGemRecord(gem, supportGemOptions, "SupportGem");
@@ -1222,73 +1243,75 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     ? localizedText(copy.emptyTree, "", locale)
     : localizedText(copy.noTree, "", locale);
 
+  // Builds made from scratch have no imported payload: class, ascendancy and level come from the tree.
+  const calcPayload = useMemo<BuildPayload | null>(() => {
+    if (importedBuild?.payload) return importedBuild.payload;
+    if (!buildTree || !buildTree.className || !passiveCount(buildTree)) return null;
+    return { className: buildTree.className, ascendancy: buildTree.ascendancyName || "None", level: 90 };
+  }, [importedBuild, buildTree]);
+  const importedConfigInputs = useMemo<PobConfigInput[]>(() => (
+    Array.isArray(importedBuild?.payload?.config_inputs) ? importedBuild!.payload.config_inputs as PobConfigInput[] : []
+  ), [importedBuild]);
+  const effectiveConfigInputs = configInputs ?? importedConfigInputs;
+
+  const calcRequestRef = useRef(0);
+  const currentCalculationBody = useCallback(() => calcPayload ? calculationRequestBody({
+      payload: calcPayload,
+      passives: buildTree?.allocatedIds || [],
+      inventory,
+      skills: buildSkills,
+      activeWeaponSet,
+      mainSocketGroup: mainSocketGroupRef.current,
+      configInputs: configInputs ?? undefined,
+      itemText: (choice) => {
+        const record = itemRecordForChoice(choice);
+        return record ? pobItemTextFromRecord({ name: itemTitle(record, "en"), rarity: record.rarity, baseName: record.properties?.[0], mods: record.mods }) : undefined;
+      }
+    }) : null, [calcPayload, inventory, buildSkills, buildTree, activeWeaponSet, configInputs, itemRecordForChoice]);
+
   const runCalculation = useCallback(() => {
-    if (!importedBuild?.payload) return;
+    const body = currentCalculationBody();
+    if (!body) return;
     setIsCalculating(true);
-    const className = importedBuild.payload.className || "Witch";
-    const ascendancy = importedBuild.payload.ascendancy || "None";
-    const level = importedBuild.payload.level || 90;
-    const passives = (buildTree?.allocatedIds || []).map(id => parseInt(id, 10)).filter(Boolean);
-    const inventory_slots = inventory.map(row => ({
-      inventory_id: row.inventoryId,
-      item_name: row.itemName,
-      note: row.note,
-      is_unique: row.isUnique,
-      raw_text: row.rawText
-    }));
-    const skills = buildSkills.map(row => ({
-      skill_id: row.skillId,
-      level: parseInt(row.levelEnd, 10) || 20,
-      enabled: true,
-      support: (row.supportSkills || []).map(s => ({
-        skill_id: s.skillId,
-        level: parseInt(s.levelEnd, 10) || 20
-      }))
-    }));
-    const attribute_overrides = importedBuild?.payload?.attribute_overrides;
-    const config = importedBuild?.payload?.config;
-    const main_socket_group = mainSocketGroupRef.current;
+    const requestId = ++calcRequestRef.current;
 
     fetch("/api/builds/calculate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        className,
-        ascendancy,
-        level,
-        passives,
-        inventory_slots,
-        skills,
-        activeWeaponSet,
-        attribute_overrides,
-        config,
-        main_socket_group
-      })
+      body: JSON.stringify(body)
     })
       .then(res => res.json())
       .then(res => {
+        // A newer request already went out: drop this answer.
+        if (requestId !== calcRequestRef.current) return;
         if (res.ok && res.data) {
+          if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
           setLiveStats(res.data);
         }
         setIsCalculating(false);
       })
       .catch(err => {
         console.error("Failed to calculate live stats", err);
-        setIsCalculating(false);
+        if (requestId === calcRequestRef.current) setIsCalculating(false);
       });
-  }, [importedBuild, inventory, buildSkills, buildTree, activeWeaponSet]);
+  }, [currentCalculationBody]);
+
+  // Typing a gem level or ticking several conditions in a row sends one request.
+  useEffect(() => {
+    if (!calcPayload) return;
+    const timer = window.setTimeout(runCalculation, 350);
+    return () => window.clearTimeout(timer);
+  }, [calcPayload, mainSocketGroup, runCalculation]);
 
   useEffect(() => {
-    if (importedBuild?.payload) {
-      runCalculation();
-    }
-  }, [importedBuild, mainSocketGroup, runCalculation]);
-
-  useEffect(() => {
+    setPreviousStats(null);
     if (!importedBuild?.payload) {
       setLiveStats(null);
       setMainSocketGroup(1);
+      setConfigInputs(null);
     } else {
+      const saved = importedBuild.payload.planner_config_inputs;
+      setConfigInputs(Array.isArray(saved) ? saved as PobConfigInput[] : null);
       const msg = importedBuild.payload.mainSocketGroup || importedBuild.payload.build?.mainSocketGroup || 1;
       setMainSocketGroup(Number(msg));
     }
@@ -1409,6 +1432,33 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       : row));
   };
 
+  const clampGemNumber = (value: string, min: number, max: number) => {
+    const n = Number.parseInt(value, 10);
+    return Number.isFinite(n) ? Math.min(Math.max(n, min), max) : undefined;
+  };
+  // Level / quality boxes for one gem; level defaults to 20 like the calculator.
+  const gemLevelControls = (gem: { gemLevel?: number; gemQuality?: number }, onPatch: (patch: { gemLevel?: number; gemQuality?: number }) => void) => (
+    <span className="pc-gem-levels">
+      <label title={locale === "vi" ? "Cấp gem. Gem cấp cao mạnh hơn; +cấp từ trang bị được PoB cộng thêm." : "Gem level"}>
+        Lv
+        <input type="number" min={1} max={40} value={gem.gemLevel ?? 20} onChange={(event) => onPatch({ gemLevel: clampGemNumber(event.target.value, 1, 40) })} />
+      </label>
+      <label title={locale === "vi" ? "Chất lượng (quality) của gem, thường 0–20%." : "Gem quality"}>
+        Q
+        <input type="number" min={0} max={23} value={gem.gemQuality ?? 0} onChange={(event) => onPatch({ gemQuality: clampGemNumber(event.target.value, 0, 23) })} />
+      </label>
+    </span>
+  );
+  const grantedSkillTag = (skill: BuildSkillChoice) => {
+    if (!skill.itemSlot && !skill.itemSource) return null;
+    const fromTree = /^Tree:/i.test(skill.itemSource || "");
+    const label = locale === "vi" ? (fromTree ? "Từ cây thụ động" : "Từ trang bị") : (fromTree ? "From passive tree" : "From item");
+    const hint = locale === "vi"
+      ? "Kỹ năng có sẵn nhờ trang bị hoặc điểm thụ động, không phải gem bạn tự gắn. Muốn bỏ thì tháo món đồ / điểm đó."
+      : "Granted by an item or a passive, not a gem you socketed.";
+    return <span className="pc-tag" title={hint}>{label}</span>;
+  };
+
   const openSkillGemPicker = (skillId: string) => {
     setActiveSlotId(null);
     setTreeChoicesOpen(false);
@@ -1425,10 +1475,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   const selectGem = (item: ItemRecord) => {
     if (!activeGemPicker) return;
-    if (activeGemPicker.kind === "skill") {
-      updateBuildSkill(activeGemPicker.skillId, { skillId: officialGemId(item, "SkillGem") });
+    // A new gem drops the PoB ids/settings of the gem it replaces (level and quality stay).
+    const target = activeGemPicker;
+    if (target.kind === "skill") {
+      const skillId = officialGemId(item, "SkillGem");
+      setBuildSkills((rows) => rows.map((row) => row.id === target.skillId && row.skillId !== skillId ? { ...withoutPobGemDetails(row), skillId } : row));
     } else {
-      updateSupportSkill(activeGemPicker.skillId, activeGemPicker.supportId, { skillId: officialGemId(item, "SupportGem") });
+      const skillId = officialGemId(item, "SupportGem");
+      setBuildSkills((rows) => rows.map((row) => row.id === target.skillId
+        ? { ...row, supportSkills: row.supportSkills.map((support) => support.id === target.supportId && support.skillId !== skillId ? { ...withoutPobGemDetails(support), skillId } : support) }
+        : row));
     }
     setActiveGemPicker(null);
   };
@@ -1468,7 +1524,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setDescription(project.description);
     setBuildTree(project.treeSnapshots[0] ?? null);
     const nextInventory = enrichInventoryChoices(inventoryWithEmptySlots(project.inventory), itemsData, locale);
-    setActiveWeaponSet(preferredWeaponSet(nextInventory));
+    setActiveWeaponSet((project.importedPayload && payloadWeaponSet(project.importedPayload)) || preferredWeaponSet(nextInventory));
     setInventory(nextInventory);
     setBuildSkills(project.skills ?? []);
     setImportedBuild(project.importedPayload ? {
@@ -1493,7 +1549,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const saveCurrentBuild = ({ showDialog = false, navigateAfterSave = true } = {}) => {
     const updatedPayload = importedBuild?.payload ? {
       ...importedBuild.payload,
-      mainSocketGroup
+      mainSocketGroup,
+      planner_config_inputs: configInputs ?? undefined
     } : undefined;
     const project = createBuildProject({
       id: activeBuildId || undefined,
@@ -1609,7 +1666,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setName(saved ? project.name : nextName);
     setAuthor(nextAuthor);
     setDescription(nextDescription);
-    setActiveWeaponSet(preferredWeaponSet(nextInventory));
+    setActiveWeaponSet(payloadWeaponSet(payload) ?? preferredWeaponSet(nextInventory));
     setInventory(nextInventory);
     setBuildSkills(nextSkills);
     setTreeChoicesOpen(false);
@@ -1689,6 +1746,30 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       baseName: itemBaseName(item, locale)
     });
     setActiveSlotId(null);
+  };
+
+  // The build as a PoB code: the same XML the calculator runs, so PoB shows the same numbers.
+  const exportPobCode = async () => {
+    const body = currentCalculationBody();
+    if (!body) return;
+    try {
+      const code = await encodePobXmlText(buildPobXml(body));
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(code);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+      showInfoDialog(
+        locale === "vi" ? (copied ? "Đã chép PoB code" : "PoB code của build") : (copied ? "PoB code copied" : "PoB code"),
+        copied
+          ? (locale === "vi" ? "Mở Path of Building → Import/Export Build → dán code vào ô \"Import from\"." : "In Path of Building: Import/Export Build → paste the code.")
+          : code
+      );
+    } catch (error) {
+      showInfoDialog(locale === "vi" ? "Không tạo được PoB code" : "Could not create a PoB code", error instanceof Error ? error.message : "");
+    }
   };
 
   const exportBuild = () => {
@@ -1943,6 +2024,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 <button className="build-btn build-btn--import" type="button" onClick={openPobImport}>
                   <span className="material-symbols-rounded" aria-hidden="true">data_object</span>
                   {localizedText(copy.importPob, "", locale)}
+                </button>
+                <button
+                  className="build-btn build-btn--export"
+                  type="button"
+                  onClick={exportPobCode}
+                  disabled={!calcPayload}
+                  title={locale === "vi" ? "Chép PoB code để mở build này trong Path of Building" : "Copy a PoB code to open this build in Path of Building"}
+                >
+                  <span className="material-symbols-rounded" aria-hidden="true">content_copy</span>
+                  PoB code
                 </button>
                 <button className="build-btn build-btn--export" type="button" onClick={exportBuild} disabled={!canExport} title={!canExport ? exportDisabledHint : localizedText(copy.export, "", locale)}>
                   <span className="material-symbols-rounded" aria-hidden="true">download</span>
@@ -2226,7 +2317,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   const dps = skillDps(index);
                   const mainIcon = skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "";
                   return (
-                    <article className={`nj-skill-card ${isMain ? "is-main" : ""}`} key={skill.id}>
+                    <article className={`nj-skill-card ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""}`} key={skill.id}>
                       <div className="nj-gem-row nj-gem-row--main">
                         <button
                           type="button"
@@ -2249,7 +2340,20 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                           </span>
                         </button>
                         <span className="nj-gem-aside">
+                          {grantedSkillTag(skill)}
+                          {skill.skillId ? gemLevelControls(skill, (patch) => updateBuildSkill(skill.id, patch)) : null}
                           {dps > 0 ? <span className="nj-dps-mini">{Math.round(dps).toLocaleString("en-US")}</span> : null}
+                          {skill.skillId ? (
+                            <button
+                              type="button"
+                              className={`nj-icon-btn ${skill.disabled ? "" : "is-on"}`}
+                              onClick={() => updateBuildSkill(skill.id, { disabled: !skill.disabled })}
+                              aria-pressed={!skill.disabled}
+                              title={locale === "vi" ? (skill.disabled ? "Nhóm đang tắt — bấm để bật lại (tính vào chỉ số)" : "Tắt cả nhóm kỹ năng này (không tính vào chỉ số)") : (skill.disabled ? "Enable this group" : "Disable this group")}
+                            >
+                              <span className="material-symbols-rounded">{skill.disabled ? "toggle_off" : "toggle_on"}</span>
+                            </button>
+                          ) : null}
                           {skill.skillId ? (
                             <button
                               type="button"
@@ -2272,16 +2376,19 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       </div>
 
                       {skill.supportSkills.map((support) => {
-                        const supportIcon = support.skillId ? gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem") : "";
+                        // A second active gem (e.g. the spell in Cast on Critical) is a skill gem, not a support.
+                        const supportOptions = support.active ? skillGemOptions : supportGemOptions;
+                        const supportPrefix = support.active ? "SkillGem" : "SupportGem";
+                        const supportIcon = support.skillId ? gemChoiceIcon(support.skillId, supportOptions, supportPrefix) : "";
                         return (
-                          <div className="nj-gem-row nj-gem-row--support" key={support.id}>
+                          <div className={`nj-gem-row nj-gem-row--support ${support.disabled ? "is-disabled" : ""}`} key={support.id}>
                             <button
                               type="button"
                               className="nj-gem-pick"
                               onClick={() => openSupportGemPicker(skill.id, support.id)}
                               onMouseEnter={(event) => {
                                 if (support.skillId) {
-                                  const html = getGemTooltipHtml(support.skillId, supportGemOptions, "SupportGem", locale, support.note);
+                                  const html = getGemTooltipHtml(support.skillId, supportOptions, supportPrefix, locale, support.note);
                                   if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
                                 }
                               }}
@@ -2292,10 +2399,23 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                                 {supportIcon ? <img src={supportIcon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
                               </span>
                               <span className={`nj-gem-name ${support.skillId ? "" : "is-empty"}`}>
-                                {support.skillId ? gemChoiceLabel(support.skillId, supportGemOptions, "SupportGem", locale, "Empty") : (locale === "vi" ? "Chọn support gem" : "Choose support gem")}
+                                {support.skillId ? gemChoiceLabel(support.skillId, supportOptions, supportPrefix, locale, support.nameSpec || "Empty") : (locale === "vi" ? "Chọn support gem" : "Choose support gem")}
                               </span>
                             </button>
                             <span className="nj-gem-aside">
+                              {support.active ? <span className="pc-tag" title={locale === "vi" ? "Gem kỹ năng gắn chung nhóm (vd. phép trong Cast on Critical)." : "Active gem in this group"}>{locale === "vi" ? "Kỹ năng" : "Skill"}</span> : null}
+                              {support.skillId ? gemLevelControls(support, (patch) => updateSupportSkill(skill.id, support.id, patch)) : null}
+                              {support.skillId ? (
+                                <button
+                                  type="button"
+                                  className={`nj-icon-btn ${support.disabled ? "" : "is-on"}`}
+                                  onClick={() => updateSupportSkill(skill.id, support.id, { disabled: !support.disabled })}
+                                  aria-pressed={!support.disabled}
+                                  title={locale === "vi" ? (support.disabled ? "Gem đang tắt — bấm để bật lại" : "Tắt gem này (không tính vào chỉ số)") : (support.disabled ? "Enable gem" : "Disable gem")}
+                                >
+                                  <span className="material-symbols-rounded">{support.disabled ? "toggle_off" : "toggle_on"}</span>
+                                </button>
+                              ) : null}
                               <button
                                 type="button"
                                 className="nj-icon-btn nj-icon-btn--danger"
@@ -2331,6 +2451,33 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             )}
           </div>
         </section>
+
+        {/* Row: detailed numbers from Path of Building | the conditions it assumes */}
+        <div className="nj-row nj-row--calc">
+          <section className="nj-panel nj-calc-details">
+            <header className="nj-panel-head">
+              <h2>{locale === "vi" ? "Chỉ số chi tiết" : "Detailed stats"}</h2>
+              <span className="nj-panel-aside">{isCalculating ? (locale === "vi" ? "Đang tính..." : "Calculating...") : (locale === "vi" ? "Tính bằng Path of Building" : "Calculated by Path of Building")}</span>
+            </header>
+            <div className="nj-panel-body">
+              <BuildStatDetails stats={activeStats} previous={previousStats} locale={locale} calculating={isCalculating} />
+            </div>
+          </section>
+          <section className="nj-panel nj-calc-config">
+            <header className="nj-panel-head">
+              <h2>{locale === "vi" ? "Điều kiện tính" : "Conditions"}</h2>
+            </header>
+            <div className="nj-panel-body">
+              <BuildConfigPanel
+                inputs={effectiveConfigInputs}
+                onChange={setConfigInputs}
+                onReset={() => setConfigInputs(null)}
+                changed={configInputs !== null}
+                locale={locale}
+              />
+            </div>
+          </section>
+        </div>
       </section>
       )}
 

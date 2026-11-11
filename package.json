@@ -25,6 +25,7 @@
     "server": "node src/server/index.mjs",
     "site": "node scripts/serve-static.mjs public",
     "test": "node --test",
+    "check:pob": "node scripts/check-pob-parity.mjs",
     "dev:spa": "vite --config vite.spa.config.mjs",
     "build:spa": "vite build --config vite.spa.config.mjs",
     "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./public/dist/app.css --minify",

@@ -449,7 +449,10 @@ test("Build planner can import PoB export data into a .build draft", async () =>
   assert.deepEqual(plain(payload.passives), ["123", "456", "789"]);
   assert.equal(payload.ascendancy, "Huntress1");
   assert.equal(payload.skills[0].id, "Metadata/Items/Gems/SkillGemLightningArrow");
-  assert.equal(payload.skills[0].support_skills[0], "Metadata/Items/Gems/SupportGemMartialTempo");
+  // Supports keep the PoB gem's own level so the calculator sees the same gem.
+  assert.equal(payload.skills[0].support_skills[0].id, "Metadata/Items/Gems/SupportGemMartialTempo");
+  assert.equal(payload.skills[0].support_skills[0].gem_level, 20);
+  assert.equal(payload.skills[0].item_slot, "Weapon 1");
   assert.match(page, /parsePobExportCode/);
   assert.match(page, /isPobExportCode\(pobCode\)/);
   assert.match(page, /treeSnapshotFromPobImport/);
