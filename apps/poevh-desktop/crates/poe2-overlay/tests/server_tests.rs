@@ -432,6 +432,9 @@ async fn obsolete_platform_graphics_commands_are_explicitly_rejected() {
 #[tokio::test]
 async fn unknown_and_unimplemented_runtime_settings_are_not_reported_as_success() {
     use serde_json::json;
+    // Bot settings are premium-gated; this test is about their validation, so it
+    // uses the debug-only developer unlock.
+    std::env::set_var("POEVH_PREMIUM_UNLOCK", "1");
     let app = build_app(Arc::new(Mutex::new(BotRuntime::default_mock())));
     assert_eq!(
         instance_command(

@@ -38,6 +38,7 @@ const RISK_BY_TAB = {
   'tab-expedition': 1,
   'tab-leveling': 1,
   'tab-physical-controllers': 1,
+  'tab-premium': 1,
   'tab-smoother': 2,
   'tab-tracker': 2,
   'tab-keybinds': 2,

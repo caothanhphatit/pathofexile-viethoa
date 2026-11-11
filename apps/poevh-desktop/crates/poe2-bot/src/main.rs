@@ -477,6 +477,8 @@ async fn main() {
 
 async fn run() -> Result<()> {
     info!("POE2 Party-Follow Bot starting.");
+    poe2_world::premium::init();
+    poe2_world::premium::spawn_refresh_worker();
 
     // World Adapter Initialization
     let mut runtime = {
@@ -1231,8 +1233,18 @@ async fn run() -> Result<()> {
             match action {
                 "TOGGLE_BOT" => {
                     let cur = r.to_api_snapshot().running;
-                    r.cmd_run(!cur);
-                    info!(running = !cur, "🖱️ [Mouse 4 / Hotkey] Toggled Bot state");
+                    if !cur && !poe2_world::premium::is_active() {
+                        warn!("🖱️ [Mouse 4 / Hotkey] Bot start refused: Premium is not active");
+                        r.push_event(
+                            "SYSTEM",
+                            "PREMIUM_REQUIRED",
+                            "Follow bot cần Premium; nhập key trong mục Premium",
+                            true,
+                        );
+                    } else {
+                        r.cmd_run(!cur);
+                        info!(running = !cur, "🖱️ [Mouse 4 / Hotkey] Toggled Bot state");
+                    }
                 }
                 "REGROUP" => {
                     r.cmd_join_p2();
@@ -1373,8 +1385,23 @@ async fn run() -> Result<()> {
 
                 // 4. Gamepad input + Auto-Flask for Followers. A transient or
                 // incompatible memory frame must never replay stale movement.
-                let live_input_allowed =
-                    snapshot.running && snapshot.memory_reader.state == "compatible";
+                // The Follow bot is a premium feature: a licence that lapses while the
+                // bot runs pauses it on the next tick.
+                let premium_active = poe2_world::premium::is_active();
+                if snapshot.running && !premium_active {
+                    let mut r = rt.lock();
+                    r.cmd_run(false);
+                    r.push_event(
+                        "SYSTEM",
+                        "PREMIUM_REQUIRED",
+                        "Bot tạm dừng: giấy phép Premium không còn hiệu lực",
+                        true,
+                    );
+                    warn!("Follow bot paused: Premium licence is not active");
+                }
+                let live_input_allowed = snapshot.running
+                    && premium_active
+                    && snapshot.memory_reader.state == "compatible";
                 if live_input_allowed {
                     let mut extra_events = Vec::new();
                     let mut pickup_outcomes = Vec::new();

@@ -125,6 +125,7 @@ const LEVELING_OVERLAY_CSS: &str = include_str!("../ui/css/leveling-overlay.css"
 const LEVELING_OVERLAY_JS: &str = include_str!("../ui/js/leveling-overlay.js");
 const LEVELING_TAB_JS: &str = include_str!("../ui/js/leveling-tab.js");
 const LEVELING_DATA_JS: &str = include_str!("../ui/js/leveling-data.js");
+const PREMIUM_JS: &str = include_str!("../ui/js/premium.js");
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
@@ -439,6 +440,18 @@ pub fn build_app(runtime: SharedRuntime) -> Router {
                 )
             }),
         )
+        .route(
+            "/static/premium.js",
+            get(|| async {
+                (
+                    [(
+                        header::CONTENT_TYPE,
+                        "application/javascript; charset=utf-8",
+                    )],
+                    PREMIUM_JS,
+                )
+            }),
+        )
         .route("/api/leveling/current-zone", get(get_leveling_current_zone))
         .route("/api/leveling/visibility", get(get_leveling_visibility))
         .route("/api/leveling/toggle", post(post_leveling_toggle))
@@ -453,6 +466,12 @@ pub fn build_app(runtime: SharedRuntime) -> Router {
         .route("/api/expedition/latest", get(get_expedition_latest))
         .route("/api/expedition/dismiss", post(post_expedition_dismiss))
         .route("/api/command", post(post_command))
+        .route("/api/premium/status", get(get_premium_status))
+        .route("/api/premium/activate", post(post_premium_activate))
+        .route("/api/premium/refresh", post(post_premium_refresh))
+        .route("/api/premium/deactivate", post(post_premium_deactivate))
+        .route("/api/premium/offer", get(get_premium_offer))
+        .route("/api/premium/open-page", post(post_premium_open_page))
         .route("/api/client-log", post(post_client_log))
         .route("/api/credentials", post(post_credentials))
         .route("/api/login-calibration", post(post_login_calibration))
@@ -1758,6 +1777,12 @@ async fn post_command(
         }
         return (StatusCode::OK, Json(rt.to_api_snapshot())).into_response();
     }
+    if premium_gated_command(&payload) && !poe2_world::premium::is_active() {
+        return api_error(
+            StatusCode::PAYMENT_REQUIRED,
+            "Cụm Follow bot cần Premium. Mở mục Premium để nhập key.",
+        );
+    }
     let mut rt = runtime.lock();
     if poe2_world::login::is_active() {
         return instance_error(IE::Conflict("Login in progress; other commands are paused"));
@@ -1927,4 +1952,172 @@ async fn post_command(
     }
     let snap = rt.to_api_snapshot();
     (StatusCode::OK, Json(snap)).into_response()
+}
+
+// ─── Premium licence ─────────────────────────────────────────────────────────
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PremiumActivatePayload {
+    key: String,
+}
+impl Drop for PremiumActivatePayload {
+    fn drop(&mut self) {
+        use zeroize::Zeroize;
+        self.key.zeroize();
+    }
+}
+
+fn premium_error_status(code: &str) -> StatusCode {
+    match code {
+        "bad_key" | "bad_device" | "no_key" => StatusCode::BAD_REQUEST,
+        "unknown_key" => StatusCode::UNAUTHORIZED,
+        "premium_expired" => StatusCode::FORBIDDEN,
+        "device_mismatch" | "busy" => StatusCode::CONFLICT,
+        "rate_limited" => StatusCode::TOO_MANY_REQUESTS,
+        "network" | "signing_unavailable" => StatusCode::SERVICE_UNAVAILABLE,
+        _ => StatusCode::BAD_GATEWAY,
+    }
+}
+
+fn premium_response(
+    result: Result<poe2_types::PremiumStatus, poe2_world::premium::PremiumError>,
+) -> Response {
+    match result {
+        Ok(status) => (
+            StatusCode::OK,
+            Json(json!({ "ok": true, "premium": status })),
+        )
+            .into_response(),
+        Err(error) => {
+            let request_id = current_request_id();
+            warn!(
+                target: "poevh_overlay::premium",
+                request_id = request_id.as_deref().unwrap_or("unknown"),
+                code = %error.code,
+                "premium request failed"
+            );
+            (
+                premium_error_status(&error.code),
+                Json(json!({
+                    "ok": false,
+                    "error": error.message,
+                    "code": error.code,
+                    "premium": poe2_world::premium::status()
+                })),
+            )
+                .into_response()
+        }
+    }
+}
+
+async fn get_premium_status() -> Response {
+    premium_response(Ok(poe2_world::premium::status()))
+}
+
+async fn post_premium_activate(body: axum::body::Bytes) -> Response {
+    // Never return serde's parse errors: they may contain the submitted key.
+    let payload: PremiumActivatePayload = match serde_json::from_slice(&body) {
+        Ok(payload) => payload,
+        Err(_) => return api_error(StatusCode::BAD_REQUEST, "Invalid premium request"),
+    };
+    match tokio::task::spawn_blocking(move || poe2_world::premium::activate(&payload.key)).await {
+        Ok(result) => premium_response(result),
+        Err(_) => api_error(StatusCode::SERVICE_UNAVAILABLE, "Premium worker failed"),
+    }
+}
+
+async fn post_premium_refresh() -> Response {
+    match tokio::task::spawn_blocking(poe2_world::premium::refresh).await {
+        Ok(result) => premium_response(result),
+        Err(_) => api_error(StatusCode::SERVICE_UNAVAILABLE, "Premium worker failed"),
+    }
+}
+
+async fn post_premium_deactivate() -> Response {
+    match tokio::task::spawn_blocking(poe2_world::premium::deactivate).await {
+        Ok(status) => premium_response(Ok(status)),
+        Err(_) => api_error(StatusCode::SERVICE_UNAVAILABLE, "Premium worker failed"),
+    }
+}
+
+// ─── Premium gate for the Follow bot cluster ─────────────────────────────────
+
+/// Commands that drive or configure the Follow bot (the risk-3 automation
+/// tabs). Everything else, such as instance management, price-check, smoother
+/// and the KBM bridge switch, stays free.
+fn premium_gated_command(payload: &CommandPayload) -> bool {
+    match payload.command.as_str() {
+        // Pausing is always allowed; only starting needs a licence.
+        "run" => payload.value.as_bool().unwrap_or(true),
+        "move" | "set_param" | "toggle_client_bot" | "request_party_invite" | "stash"
+        | "broadcast_a" | "set_focus" | "spawn_loot" | "spawn_threat" => true,
+        "toggle" => payload.key.as_deref() != Some("kbm"),
+        _ => false,
+    }
+}
+
+async fn get_premium_offer() -> Response {
+    match tokio::task::spawn_blocking(poe2_world::premium::offer).await {
+        Ok(Ok(offer)) => (
+            StatusCode::OK,
+            Json(json!({ "ok": true, "offer": offer })),
+        )
+            .into_response(),
+        Ok(Err(error)) => (
+            premium_error_status(&error.code),
+            Json(json!({
+                "ok": false,
+                "error": error.message,
+                "code": error.code,
+                "page_url": poe2_world::premium::premium_page_url()
+            })),
+        )
+            .into_response(),
+        Err(_) => api_error(StatusCode::SERVICE_UNAVAILABLE, "Premium worker failed"),
+    }
+}
+
+/// Opens the website's premium page in the user's default browser. The URL is
+/// fixed to the configured API base, never taken from the request.
+async fn post_premium_open_page() -> Response {
+    let url = poe2_world::premium::premium_page_url();
+    match tokio::task::spawn_blocking(move || open_in_default_browser(&url)).await {
+        Ok(Ok(url)) => (StatusCode::OK, Json(json!({ "ok": true, "url": url }))).into_response(),
+        Ok(Err(message)) => api_error(StatusCode::SERVICE_UNAVAILABLE, message),
+        Err(_) => api_error(StatusCode::SERVICE_UNAVAILABLE, "Browser worker failed"),
+    }
+}
+
+#[cfg(windows)]
+fn open_in_default_browser(url: &str) -> Result<String, String> {
+    use windows::{
+        core::{w, PCWSTR},
+        Win32::UI::{Shell::ShellExecuteW, WindowsAndMessaging::SW_SHOWNORMAL},
+    };
+    if !(url.starts_with("https://") || url.starts_with("http://")) {
+        return Err("Only http(s) pages can be opened".into());
+    }
+    let wide: Vec<u16> = url.encode_utf16().chain(Some(0)).collect();
+    let result = unsafe {
+        ShellExecuteW(
+            None,
+            w!("open"),
+            PCWSTR(wide.as_ptr()),
+            PCWSTR::null(),
+            PCWSTR::null(),
+            SW_SHOWNORMAL,
+        )
+    };
+    // ShellExecuteW returns a value above 32 on success.
+    if result.0 as usize > 32 {
+        Ok(url.to_string())
+    } else {
+        Err("Windows could not open the default browser".into())
+    }
+}
+
+#[cfg(not(windows))]
+fn open_in_default_browser(_url: &str) -> Result<String, String> {
+    Err("Opening a browser is only supported on Windows".into())
 }

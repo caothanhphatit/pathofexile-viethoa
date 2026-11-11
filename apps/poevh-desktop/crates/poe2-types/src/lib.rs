@@ -12,7 +12,9 @@ pub mod trade;
 pub use trade::*;
 pub mod expedition;
 pub use expedition::*;
+pub mod premium;
 pub mod profiles;
+pub use premium::*;
 pub use profiles::*;
 
 // ─── Geometry ────────────────────────────────────────────────────────────────

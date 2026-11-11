@@ -8,6 +8,7 @@ pub mod ggpk_patcher;
 pub mod instances;
 pub mod launcher;
 pub mod login;
+pub mod premium;
 pub mod smoother;
 pub mod trade;
 

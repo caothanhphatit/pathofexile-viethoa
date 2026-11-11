@@ -24,6 +24,11 @@
       <span id="statusLabel">BOT ĐANG TẮT</span>
     </div>
 
+    <button type="button" id="premiumPill" class="status-pill pill-stopped" title="Trạng thái premium trên máy này" style="cursor:pointer;font:inherit" onclick="overviewGoToTab('tab-premium')">
+      <span id="premiumDot" class="pill-dot dot-off"></span>
+      <span id="premiumLabel">PREMIUM: —</span>
+    </button>
+
     <button class="btn btn-neutral btn-sm" onclick="cmdReset()" title="Làm mới trạng thái">
       <svg style="width:13px;height:13px;margin-right:4px;vertical-align:-2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>Làm mới
     </button>
@@ -73,7 +78,7 @@
       <!-- Nhóm 3: KÉO VONG -->
       <div class="nav-accordion" id="acc-auto">
         <button type="button" class="nav-accordion-header" aria-expanded="true" onclick="toggleAccordion('acc-auto')">
-          <span>FOLLOW BOT</span>
+          <span>FOLLOW BOT</span><span class="premium-tag" id="premium-tag-auto" title="Cần Premium">PREMIUM</span>
           <span class="chevron">▼</span>
         </button>
         <div class="nav-accordion-content">
@@ -135,6 +140,9 @@
           <button class="nav-item" onclick="navTab('tab-physical-controllers', this)">
             <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a4 4 0 0 1 4 4v5a3 3 0 0 1-5 2l-2-2h-4l-2 2a3 3 0 0 1-5-2v-5a4 4 0 0 1 4-4Z"/><path d="M7 12v4m-2-2h4m7-1h.01M18 15h.01"/></svg></span> <span>Tay cầm vật lý</span>
           </button>
+          <button class="nav-item" onclick="navTab('tab-premium', this)">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 5 7l5 4 2-6 2 6 5-4 2 10H3Zm0 0v2h18v-2"/></svg></span> <span>Premium</span>
+          </button>
         </div>
       </div>
 
@@ -149,6 +157,16 @@
 
     <!-- Center Workspace -->
     <main class="tab-viewport">
+      <div id="premium-lock" class="premium-lock" hidden>
+        <div class="premium-lock-card">
+          <div class="premium-lock-crown" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 5 7l5 4 2-6 2 6 5-4 2 10H3Zm0 0v2h18v-2"/></svg></div>
+          <h2>Tính năng Premium</h2>
+          <p>Cụm Follow bot cần giấy phép Premium trên máy này. Bạn vẫn xem được cấu hình, nhưng không bật hay chỉnh được.</p>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary" type="button" onclick="goToPremium()">Nhập key / Mua Premium</button>
+          </div>
+        </div>
+      </div>
 
       <!-- ══════════════════ TAB 1: TỔNG QUAN ══════════════════ -->
       <div id="tab-home" class="tab-pane active">
@@ -1182,6 +1200,64 @@
         <div id="instance-profile-list" class="grid-3" style="gap:10px"></div>
       </div>
 
+      <!-- ==================== TAB: PREMIUM ==================== -->
+      <div id="tab-premium" class="tab-pane">
+        <header class="page-heading"><div><p class="section-caption">POEVH / Tài khoản</p><h1>Premium</h1><p>Dán key lấy từ trang poeviethoa.net/premium để dùng các tính năng premium trên máy này.</p></div></header>
+
+        <div class="card" id="premium-status-card">
+          <div class="card-header">
+            <div>
+              <span class="card-title">Trạng thái giấy phép</span>
+              <div id="premium-state-line" style="font-size:12px;color:var(--sub);margin-top:2px">Đang tải…</div>
+            </div>
+            <span id="premium-state-badge" class="status-pill pill-stopped"><span class="pill-dot dot-off"></span><span>—</span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px;font-size:12.5px">
+            <div><div style="color:var(--dim);font-size:11px;text-transform:uppercase">Key</div><div id="premium-fact-key" style="font-weight:600;color:var(--text)">—</div></div>
+            <div><div style="color:var(--dim);font-size:11px;text-transform:uppercase">Gói</div><div id="premium-fact-plan" style="font-weight:600;color:var(--text)">—</div></div>
+            <div><div style="color:var(--dim);font-size:11px;text-transform:uppercase">Premium đến</div><div id="premium-fact-until" style="font-weight:600;color:var(--text)">—</div></div>
+            <div><div style="color:var(--dim);font-size:11px;text-transform:uppercase">Giấy phép máy này đến</div><div id="premium-fact-token" style="font-weight:600;color:var(--text)">—</div></div>
+            <div><div style="color:var(--dim);font-size:11px;text-transform:uppercase">Kiểm tra lần cuối</div><div id="premium-fact-verified" style="font-weight:600;color:var(--text)">—</div></div>
+            <div><div style="color:var(--dim);font-size:11px;text-transform:uppercase">Thiết bị</div><div id="premium-fact-device" style="font-weight:600;color:var(--text)">—</div></div>
+          </div>
+          <div id="premium-error" role="alert" hidden style="margin-top:12px;padding:8px 10px;border:1px solid var(--red);border-radius:6px;font-size:12px;color:var(--red)"></div>
+          <p style="font-size:12px;color:var(--dim);margin-top:12px">Giấy phép được máy chủ ký và tự làm mới trước khi hết hạn (tối đa 7 ngày). Không cần mạng liên tục, nhưng cần kết nối ít nhất một lần mỗi tuần.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+            <button class="btn btn-neutral btn-sm" id="premium-refresh" onclick="refreshPremium()" hidden>Kiểm tra lại</button>
+            <button class="btn btn-danger btn-sm" id="premium-deactivate" onclick="deactivatePremium()" hidden>Gỡ key khỏi máy này</button>
+          </div>
+        </div>
+
+        <div class="card premium-buy" id="premium-buy-card">
+          <div class="card-header">
+            <div>
+              <span class="card-title" style="color:var(--gold)">Mua Premium</span>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px">Premium mở khóa toàn bộ cụm Follow bot: bám theo, chiến đấu, bình, nhặt đồ, cất hòm, mời nhóm, chuẩn bị map và đồng bộ tay cầm.</div>
+            </div>
+            <button class="btn btn-primary" type="button" id="premium-open-page" onclick="openPremiumPage()">Mở trang Premium</button>
+          </div>
+          <div id="premium-plans" class="premium-plans" aria-live="polite">
+            <div style="color:var(--dim);font-size:12px">Đang tải bảng giá…</div>
+          </div>
+          <div class="premium-pay" id="premium-pay" hidden>
+            <div class="premium-pay-title">Thông tin thanh toán</div>
+            <dl id="premium-pay-list"></dl>
+          </div>
+          <ol class="premium-steps" id="premium-steps"></ol>
+          <p id="premium-offer-status" role="status" style="font-size:12px;color:var(--sub);margin-top:8px"></p>
+        </div>
+
+        <div class="card" id="premium-activate-card">
+          <div class="card-title" id="premium-activate-title">Nhập key</div>
+          <p style="font-size:12px;color:var(--sub)">Mỗi tài khoản có một key và key chỉ chạy trên một máy tại một thời điểm. Đổi máy tại trang premium (30 ngày một lần) hoặc nhờ admin gỡ thiết bị.</p>
+          <form onsubmit="return activatePremium(event)" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px">
+            <input type="text" id="premium-key-input" placeholder="PVH-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false" maxlength="64" style="flex:1;min-width:260px;font-family:ui-monospace,Consolas,monospace;letter-spacing:.04em">
+            <button class="btn btn-primary" type="submit" id="premium-activate">Kích hoạt</button>
+          </form>
+          <p id="premium-activate-status" role="status" aria-live="polite" style="font-size:12px;margin-top:8px"></p>
+        </div>
+      </div>
+
       <div id="tab-physical-controllers" class="tab-pane">
         <header class="page-heading"><div><p class="section-caption">POEVH / Thiết bị</p><h1>Tay cầm vật lý</h1><p>Kiểm tra tay cầm USB hoặc không dây mà Windows đang nhận.</p></div></header>
         <section class="controller-summary" aria-labelledby="physical-controller-heading">
@@ -1593,5 +1669,6 @@
   <script src="/static/expedition.js"></script>
   <script src="/static/leveling-data.js"></script>
   <script src="/static/leveling-tab.js"></script>
+  <script src="/static/premium.js"></script>
 </body>
 </html>
