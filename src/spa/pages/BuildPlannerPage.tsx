@@ -1,5 +1,7 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { loadBuildPlannerData, loadItemsData, loadSkillGemsData } from "../lib/data";
+import { loadBuildPlannerData, loadCraftData, loadCraftIndex, loadItemsData, loadSkillGemsData } from "../lib/data";
+import { buildModPool, type ModPool } from "../../shared/item-mods.mjs";
+import { ItemEditor, NewItemDialog, type NewItemChoice } from "../components/ItemEditor";
 import { displayImageUrl } from "../lib/image";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
 import { navigateTo } from "../lib/routes";
@@ -61,8 +63,12 @@ import {
   type StashItemView
 } from "../components/BuildInventoryPanel";
 import {
+  duplicateStashItem,
   equipStashItem,
   equipTargets,
+  isItemEdited,
+  resetItemText,
+  withItemText,
   itemCategoriesFromText,
   removeStashItem,
   slotIdsForCategories,
@@ -1001,6 +1007,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   // An inventory item waiting for the player to pick one of several slots.
   const [slotChoice, setSlotChoice] = useState<{ itemId: string; slots: string[] } | null>(null);
   const [dropSlotId, setDropSlotId] = useState<string | null>(null);
+  // Item editor: the mod pool loads the first time it opens.
+  const [modPool, setModPool] = useState<ModPool | null>(null);
+  const [editorTarget, setEditorTarget] = useState<
+    | { kind: "stash"; id: string }
+    | { kind: "slot"; slotId: string; before: BuildInventoryChoice }
+    | { kind: "new"; text: string; built: boolean; iconUrl?: string; itemSlug?: string }
+    | null
+  >(null);
+  const [newItemOpen, setNewItemOpen] = useState(false);
+  const [calcError, setCalcError] = useState("");
   // Gem whose alternatives are shown under it ("main" = the group's own skill gem).
   const [gemStrip, setGemStrip] = useState<{ skillId: string; supportId: string | "main"; limit?: number } | null>(null);
   const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
@@ -1354,6 +1370,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       .then(res => {
         // A newer request already went out: drop this answer.
         if (requestId !== calcRequestRef.current) return;
+        setCalcError(res.ok ? "" : String(res.error || ""));
         if (res.ok && res.data) {
           compareQueue.seed(bodyKey, res.data);
           if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
@@ -1590,6 +1607,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     }
     addStashItems([item]);
   };
+  const nameFields = (text: string) => {
+    const details = parsePobItemDetails(text);
+    const isUnique = details.rarity === "unique";
+    return { itemName: isUnique ? details.name : details.baseName || details.name, isUnique, baseName: details.baseName || details.name };
+  };
   const stashViews = useMemo<StashItemView[]>(() => stash.map((item) => {
     const summary = stashItemSummary(item);
     const record = stashRecord(item);
@@ -1599,9 +1621,131 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       baseName: summary.baseName,
       rarity: summary.rarity || "normal",
       iconUrl: item.iconUrl || (record ? displayImageUrl(record.icon_url) : undefined),
-      fits: activeSlotId ? slotIdsForCategories(stashCategories(item)).includes(activeSlotId) : true
+      fits: activeSlotId ? slotIdsForCategories(stashCategories(item)).includes(activeSlotId) : true,
+      edited: isItemEdited(item)
     };
   }), [stash, stashRecord, stashCategories, activeSlotId]);
+
+  const ensureModPool = async (): Promise<ModPool | null> => {
+    if (modPool) return modPool;
+    try {
+      const [craft, index] = await Promise.all([loadCraftData(), loadCraftIndex()]);
+      const pool = buildModPool(craft, index, itemsData.filter((item) => isUniqueItem(item)).map((item) => ({ name: itemTitle(item, "en"), rarity: "unique", mods: item.mods })));
+      setModPool(pool);
+      return pool;
+    } catch (error) {
+      showInfoDialog(locale === "vi" ? "Không tải được dữ liệu mod" : "Could not load mod data", error instanceof Error ? error.message : "");
+      return null;
+    }
+  };
+  /** Text to edit for an item known only by name (older builds): the site's record. */
+  const itemTextFor = (item: { rawText?: string; itemSlug?: string; itemName: string; isUnique: boolean; baseName?: string }) => {
+    if (item.rawText) return item.rawText;
+    const record = itemRecordForChoice({ itemSlug: item.itemSlug, itemName: item.itemName });
+    return record
+      ? pobItemTextFromRecord({ name: itemTitle(record, "en"), rarity: record.rarity, baseName: record.properties?.[0], mods: record.mods })
+      : `Rarity: ${item.isUnique ? "Unique" : "Normal"}\n${item.itemName}${item.isUnique && item.baseName ? `\n${item.baseName}` : ""}`;
+  };
+  const editStashItem = async (itemId: string) => {
+    if (!(await ensureModPool())) return;
+    setTooltip((prev) => ({ ...prev, visible: false }));
+    setEditorTarget({ kind: "stash", id: itemId });
+  };
+  const editSlotItem = async (slotId: string) => {
+    const choice = inventoryBySlot.get(slotId);
+    if (!choice?.itemName && !choice?.rawText) return;
+    if (!(await ensureModPool())) return;
+    setEditorTarget({ kind: "slot", slotId, before: choice });
+  };
+  const openNewItem = async () => {
+    if (!(await ensureModPool())) return;
+    setNewItemOpen(true);
+  };
+  const newItemChoices = useMemo<NewItemChoice[]>(() => {
+    if (!modPool || !newItemOpen) return [];
+    const byName = new Map(itemsData.map((item) => [itemTitle(item, "en").toLowerCase(), item]));
+    const bases = [...modPool.bases.values()].map((base): NewItemChoice => ({
+      key: `base:${base.name}`,
+      name: base.name,
+      baseName: base.name,
+      itemClass: base.itemClass,
+      unique: false,
+      iconUrl: byName.get(base.name.toLowerCase()) ? displayImageUrl(byName.get(base.name.toLowerCase())!.icon_url) : undefined,
+      text: `Rarity: RARE\nNew Item\n${base.name}\nItem Level: 82`
+    }));
+    const uniques = itemsData.filter((item) => isUniqueItem(item) && buildSlotCategories(item).length).map((item): NewItemChoice => ({
+      key: `unique:${item.slug || itemTitle(item, "en")}`,
+      name: itemTitle(item, "en"),
+      baseName: item.properties?.[0] ?? "",
+      itemClass: item.menu_label ?? "",
+      unique: true,
+      iconUrl: displayImageUrl(item.icon_url),
+      text: pobItemTextFromRecord({ name: itemTitle(item, "en"), rarity: item.rarity, baseName: item.properties?.[0], mods: item.mods })
+    }));
+    return [...bases, ...uniques].sort((a, b) => a.name.localeCompare(b.name));
+  }, [modPool, newItemOpen, itemsData]);
+  const pickNewItem = (choice: NewItemChoice) => {
+    setNewItemOpen(false);
+    // A unique starts as the game makes it (its own lines are the original); a base is built from scratch.
+    setEditorTarget({ kind: "new", text: choice.text, built: !choice.unique, iconUrl: choice.iconUrl });
+  };
+
+  const editorModel = (() => {
+    if (!editorTarget || !modPool) return null;
+    const vi = locale === "vi";
+    if (editorTarget.kind === "stash") {
+      const item = stash.find((row) => row.id === editorTarget.id);
+      if (!item) return null;
+      const text = itemTextFor(item);
+      return {
+        text,
+        originalText: item.edited && item.originalText === undefined ? "" : item.originalText ?? text,
+        title: vi ? "Sửa đồ trong kho" : "Edit inventory item",
+        canReset: item.originalText !== undefined && item.originalText !== item.rawText
+      };
+    }
+    if (editorTarget.kind === "slot") {
+      const choice = inventoryBySlot.get(editorTarget.slotId);
+      if (!choice) return null;
+      const text = itemTextFor(choice);
+      return {
+        text,
+        originalText: choice.edited && choice.originalText === undefined ? "" : choice.originalText ?? text,
+        title: vi ? `Sửa đồ đang mặc · ${slotLabel(editorTarget.slotId)} (chỉ số tính lại ngay)` : `Edit equipped item · ${slotLabel(editorTarget.slotId)}`,
+        canReset: choice.originalText !== undefined && choice.originalText !== choice.rawText
+      };
+    }
+    return { text: editorTarget.text, originalText: editorTarget.built ? "" : editorTarget.text, title: vi ? "Tạo đồ mới" : "New item", canReset: false };
+  })();
+  const setSlotText = (slotId: string, text: string) => setInventory((rows) => rows.map((row) => (row.inventoryId === slotId ? withItemText(row, text) : row)));
+  const saveEditor = (text: string) => {
+    if (!editorTarget) return;
+    if (editorTarget.kind === "stash") {
+      setStash((rows) => rows.map((row) => (row.id === editorTarget.id ? withItemText({ ...row, ...nameFields(text) }, text) : row)));
+    } else if (editorTarget.kind === "slot") {
+      setSlotText(editorTarget.slotId, text);
+    } else {
+      const item = stashItemFromText(text, "search", editorTarget.built ? { edited: true, iconUrl: editorTarget.iconUrl } : { originalText: editorTarget.text, iconUrl: editorTarget.iconUrl });
+      if (item) {
+        const final = editorTarget.built ? item : withItemText({ ...item, rawText: editorTarget.text }, text);
+        addStashItems([final]);
+      }
+    }
+    setEditorTarget(null);
+  };
+  const cancelEditor = () => {
+    // Live edits of an equipped item are undone.
+    if (editorTarget?.kind === "slot") {
+      const { slotId, before } = editorTarget;
+      setInventory((rows) => rows.map((row) => (row.inventoryId === slotId ? before : row)));
+    }
+    setEditorTarget(null);
+  };
+  const resetEditor = () => {
+    if (editorTarget?.kind === "stash") setStash((rows) => rows.map((row) => (row.id === editorTarget.id ? resetItemText(row) : row)));
+    if (editorTarget?.kind === "slot") setInventory((rows) => rows.map((row) => (row.inventoryId === editorTarget.slotId ? resetItemText(row) : row)));
+    setEditorTarget(null);
+  };
 
   /** "Nếu mặc vào": the build with this item in each slot it could go to, against the build as it is. */
   const stashCompareSpec = (item: BuildStashItem, priority: number): CompareSpec | undefined => {
@@ -2455,7 +2599,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       title={locale === "vi" ? "Bấm để chọn ô (kho đồ lọc theo ô này). Kéo đồ từ kho thả vào để mặc. Chuột phải để tháo." : "Click to select; drop an item to equip; right-click to unequip."}
                     >
                       {hasItem ? (
-                        choice?.iconUrl ? <img src={choice.iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded build-slot-fallback" aria-hidden="true">inventory_2</span>
+                        <>
+                          {choice?.iconUrl ? <img src={choice.iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded build-slot-fallback" aria-hidden="true">inventory_2</span>}
+                          {choice && isItemEdited(choice) ? <span className="pi-edited">{locale === "vi" ? "Đã sửa" : "Edited"}</span> : null}
+                        </>
                       ) : (
                         <>
                           <span className="material-symbols-rounded build-slot-silhouette" aria-hidden="true">
@@ -2480,6 +2627,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 onItemMove={handleMouseMove}
                 onItemLeave={handleMouseLeave}
                 onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
+                onEdit={editStashItem}
+                onDuplicate={(itemId) => setStash((rows) => duplicateStashItem(rows, itemId))}
+                onNewItem={openNewItem}
+                onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
                 onDropSlot={unequipItem}
                 onPasteText={pasteStashText}
                 search={catalogSearch}
@@ -2499,6 +2650,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             <header className="nj-panel-head">
               <h2>{locale === "vi" ? "Chỉ số" : "Stats"}</h2>
               {isCalculating ? <span className="nj-panel-aside">{locale === "vi" ? "Đang tính..." : "Calculating..."}</span> : null}
+              {!isCalculating && calcError ? <span className="nj-panel-aside nj-calc-error" role="alert">{calcError}</span> : null}
             </header>
             {(() => {
               const payloadStats = importedBuild?.payload?.stats || [];
@@ -3038,6 +3190,22 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           </section>
         </div>
       ) : null}
+
+      {editorTarget && modPool && editorModel ? (
+        <ItemEditor
+          key={editorTarget.kind === "stash" ? editorTarget.id : editorTarget.kind === "slot" ? editorTarget.slotId : "new"}
+          pool={modPool}
+          text={editorModel.text}
+          originalText={editorModel.originalText}
+          title={editorModel.title}
+          locale={locale}
+          onLive={editorTarget.kind === "slot" ? (text) => setSlotText(editorTarget.slotId, text) : undefined}
+          onSave={saveEditor}
+          onCancel={cancelEditor}
+          onReset={editorModel.canReset ? resetEditor : undefined}
+        />
+      ) : null}
+      {newItemOpen ? <NewItemDialog choices={newItemChoices} locale={locale} onPick={pickNewItem} onCancel={() => setNewItemOpen(false)} /> : null}
 
       {tooltip.visible && (
         <div ref={tooltipRef} className="poe-tooltip-float poe-no-tooltip" style={{

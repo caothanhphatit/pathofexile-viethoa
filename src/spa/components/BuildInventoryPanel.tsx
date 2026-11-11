@@ -23,6 +23,8 @@ export interface StashItemView {
   iconUrl?: string;
   /** Fits the selected slot (or any slot when none is selected). */
   fits: boolean;
+  /** Changed or built in the planner. */
+  edited?: boolean;
 }
 
 export interface CatalogEntry {
@@ -53,6 +55,12 @@ export function BuildInventoryPanel(props: {
   onItemMove: (event: MouseEvent) => void;
   onItemLeave: () => void;
   onRemove: (itemId: string) => void;
+  onEdit: (itemId: string) => void;
+  onDuplicate: (itemId: string) => void;
+  /** "Tạo đồ mới": build an item from a base or a unique. */
+  onNewItem: () => void;
+  /** Edit the item in the selected slot. */
+  onEditSelected: () => void;
   /** An equipped item dropped on the panel. */
   onDropSlot: (slotId: string) => void;
   /** Returns how many items were added, or an error message. */
@@ -120,7 +128,11 @@ export function BuildInventoryPanel(props: {
       <header className="pi-head">
         <h3>{vi ? "Kho đồ" : "Inventory"}</h3>
         <span className="pi-count">{props.items.length}</span>
-        <button type="button" className="pi-btn" onClick={() => setPasteOpen((open) => !open)} aria-expanded={pasteOpen}>
+        <button type="button" className="pi-btn" onClick={props.onNewItem}>
+          <span className="material-symbols-rounded" aria-hidden="true">add_box</span>
+          {vi ? "Tạo đồ mới" : "New item"}
+        </button>
+        <button type="button" className="pi-btn pi-btn--paste" onClick={() => setPasteOpen((open) => !open)} aria-expanded={pasteOpen}>
           <span className="material-symbols-rounded" aria-hidden="true">content_paste</span>
           {vi ? "Dán đồ từ game" : "Paste from game"}
         </button>
@@ -129,6 +141,12 @@ export function BuildInventoryPanel(props: {
       {props.selectedSlotLabel ? (
         <div className="pi-filter">
           <span>{vi ? "Ô đang chọn:" : "Selected slot:"} <b>{props.selectedSlotLabel}</b> — {vi ? "chỉ hiện đồ vừa ô này" : "showing items that fit"}</span>
+          {props.selectedSlotFilled ? (
+            <button type="button" className="pi-btn" onClick={props.onEditSelected}>
+              <span className="material-symbols-rounded" aria-hidden="true">edit</span>
+              {vi ? "Sửa đồ" : "Edit"}
+            </button>
+          ) : null}
           {props.selectedSlotFilled ? (
             <button type="button" className="pi-btn" onClick={props.onUnequipSelected}>
               <span className="material-symbols-rounded" aria-hidden="true">move_to_inbox</span>
@@ -184,7 +202,16 @@ export function BuildInventoryPanel(props: {
                 aria-label={`${row.name} (${vi ? RARITY_LABEL[row.rarity] ?? row.rarity : row.rarity}) — ${vi ? "bấm để mặc" : "click to equip"}`}
               >
                 <ItemIcon iconUrl={row.iconUrl} name={row.name} rarity={row.rarity} />
+                {row.edited ? <span className="pi-edited">{vi ? "Đã sửa" : "Edited"}</span> : null}
               </button>
+              <span className="pi-cell-actions">
+                <button type="button" onClick={() => props.onEdit(row.item.id)} aria-label={vi ? `Sửa ${row.name}` : `Edit ${row.name}`} title={vi ? "Sửa chỉ số" : "Edit"}>
+                  <span className="material-symbols-rounded" aria-hidden="true">edit</span>
+                </button>
+                <button type="button" onClick={() => props.onDuplicate(row.item.id)} aria-label={vi ? `Nhân bản ${row.name}` : `Duplicate ${row.name}`} title={vi ? "Nhân bản để thử biến thể" : "Duplicate"}>
+                  <span className="material-symbols-rounded" aria-hidden="true">content_copy</span>
+                </button>
+              </span>
               <button type="button" className="pi-remove" onClick={() => props.onRemove(row.item.id)} aria-label={vi ? `Bỏ ${row.name} khỏi kho` : `Remove ${row.name}`} title={vi ? "Bỏ khỏi kho" : "Remove"}>
                 <span className="material-symbols-rounded" aria-hidden="true">close</span>
               </button>
@@ -200,7 +227,7 @@ export function BuildInventoryPanel(props: {
       )}
       <p className="pi-help">
         {vi
-          ? "Bấm một món để mặc vào (hoặc kéo thả lên ô đồ). Rê chuột để xem nếu mặc vào thì sát thương, máu, kháng đổi bao nhiêu. Bấm chuột phải vào ô đồ để tháo ra."
+          ? "Bấm một món để mặc vào (hoặc kéo thả lên ô đồ). Rê chuột để xem nếu mặc vào thì sát thương, máu, kháng đổi bao nhiêu. Nút bút để sửa chỉ số, nút copy để nhân bản. Bấm chuột phải vào ô đồ để tháo ra."
           : "Click an item to equip it (or drag it onto a slot). Hover to see how damage, life and resistances would change. Right-click a slot to unequip."}
       </p>
 

@@ -87,7 +87,9 @@ export function stashItemFromChoice(choice: BuildInventoryChoice, source: StashS
     baseName: choice.baseName || undefined,
     itemSlug: choice.itemSlug || undefined,
     iconUrl: choice.iconUrl || undefined,
-    source
+    source,
+    ...(choice.originalText !== undefined ? { originalText: choice.originalText } : {}),
+    ...(choice.edited ? { edited: true } : {})
   };
 }
 
@@ -113,7 +115,9 @@ export function choiceFromStashItem(item: BuildStashItem, slotId: string): Build
     quality: details?.quality,
     corrupted: details ? details.corrupted : undefined,
     rareName,
-    rawText: item.rawText
+    rawText: item.rawText,
+    ...(item.originalText !== undefined ? { originalText: item.originalText } : {}),
+    ...(item.edited ? { edited: true } : {})
   };
 }
 
@@ -233,4 +237,36 @@ export function stashFromPobImport(data: PobImportData): BuildStashItem[] {
     if (row) rows.push(row);
   }
   return rows;
+}
+
+/** Shown as "Đã sửa": built in the planner, or its text differs from the original. */
+export function isItemEdited(item: { rawText?: string; originalText?: string; edited?: boolean }): boolean {
+  return Boolean(item.edited) || (item.originalText !== undefined && item.originalText !== item.rawText);
+}
+
+/** New text for an item; the first edit remembers the text it started from. */
+export function withItemText<T extends { rawText?: string; originalText?: string; edited?: boolean }>(item: T, rawText: string, options: { built?: boolean } = {}): T {
+  // Built in the planner: there is no game original to go back to.
+  if (options.built || (item.edited && item.originalText === undefined)) return { ...item, rawText, edited: true };
+  const originalText = item.originalText ?? item.rawText ?? "";
+  const next: T = { ...item, rawText, originalText, edited: rawText !== originalText };
+  if (!next.edited) delete (next as { edited?: boolean }).edited;
+  return next;
+}
+
+/** Back to the text the item had before it was edited (built items have none). */
+export function resetItemText<T extends { rawText?: string; originalText?: string; edited?: boolean }>(item: T): T {
+  if (item.originalText === undefined) return item;
+  const next = { ...item, rawText: item.originalText };
+  delete next.originalText;
+  delete next.edited;
+  return next;
+}
+
+/** A copy of a stash item right after it, to try a variation side by side. */
+export function duplicateStashItem(stash: BuildStashItem[], itemId: string): BuildStashItem[] {
+  const index = stash.findIndex((row) => row.id === itemId);
+  if (index < 0) return stash;
+  const copy = { ...stash[index], id: stashId() };
+  return [...stash.slice(0, index + 1), copy, ...stash.slice(index + 1)];
 }

@@ -3,6 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { requireLocalRequest } from "../local-request.mjs";
 import { buildPobXml } from "../pob-build-xml.mjs";
 import { pobRunnerFromEnv } from "../pob-runner.mjs";
+import { calculationRowItem, editedItemErrors, itemErrorSummary, projectRowItem } from "../item-validation.mjs";
 
 const newSharedBuildId = () => randomBytes(9).toString("base64url");
 const hashEditToken = (token) => createHash("sha256").update(String(token)).digest("hex");
@@ -331,6 +332,14 @@ export const publicRoutes = async (app, options = {}) => {
     if (!project || typeof project !== "object" || Array.isArray(project)) {
       return reply.status(400).send({ ok: false, error: "Missing project data" });
     }
+    // Items edited in the planner must follow the game's rules (src/shared/item-mods.mjs).
+    const itemProblems = [
+      ...editedItemErrors(project.inventory, projectRowItem),
+      ...editedItemErrors(project.stash, projectRowItem)
+    ];
+    if (itemProblems.length) {
+      return reply.status(400).send({ ok: false, error: itemErrorSummary(itemProblems), item_errors: itemProblems });
+    }
     const editToken = String(request.headers["x-build-edit-token"] || "");
     const requestedId = typeof project.id === "string" ? project.id.trim() : "";
     const isUpdate = Boolean(requestedId && editToken);
@@ -343,6 +352,7 @@ export const publicRoutes = async (app, options = {}) => {
       treeSnapshots: project.treeSnapshots,
       activeTreeId: project.activeTreeId,
       inventory: project.inventory,
+      stash: project.stash,
       skills: project.skills,
       createdAt: project.createdAt,
       updatedAt: project.updatedAt
@@ -416,6 +426,10 @@ export const publicRoutes = async (app, options = {}) => {
     const buildData = request.body;
     if (!buildData || typeof buildData !== "object") {
       return reply.status(400).send({ ok: false, error: "Missing build data" });
+    }
+    const itemProblems = editedItemErrors(buildData.inventory_slots, calculationRowItem);
+    if (itemProblems.length) {
+      return reply.status(400).send({ ok: false, error: itemErrorSummary(itemProblems), item_errors: itemProblems });
     }
     app.log.info({
       className: buildData.className,

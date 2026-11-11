@@ -38,6 +38,10 @@ export interface BuildInventoryChoice {
   rareName?: string;
   implicitCount?: number;
   rawText?: string;
+  /** The item text before the player edited it (unset = never edited). */
+  originalText?: string;
+  /** Built or edited in the planner (checked by the item rules on the server too). */
+  edited?: boolean;
 }
 
 /**
@@ -133,6 +137,8 @@ export interface BuildStashItem {
   itemSlug?: string;
   iconUrl?: string;
   source: StashSource;
+  originalText?: string;
+  edited?: boolean;
 }
 
 export interface BuildProject {
@@ -345,7 +351,9 @@ const normalizeInventoryChoices = (rows: unknown): BuildInventoryChoice[] => {
     corrupted: row.corrupted !== undefined ? row.corrupted : (row as any).corrupted,
     rareName: row.rareName || (row as any).rare_name,
     implicitCount: row.implicitCount !== undefined ? row.implicitCount : (row as any).implicit_count,
-    rawText: row.rawText || (row as any).raw_text || ""
+    rawText: row.rawText || (row as any).raw_text || "",
+    ...(typeof row.originalText === "string" ? { originalText: row.originalText } : {}),
+    ...(row.edited ? { edited: true } : {})
   }));
 }
 
@@ -404,7 +412,9 @@ export function normalizeStash(rows: unknown): BuildStashItem[] {
         baseName: typeof row.baseName === "string" ? row.baseName : undefined,
         itemSlug: typeof row.itemSlug === "string" ? row.itemSlug : undefined,
         iconUrl: typeof row.iconUrl === "string" ? row.iconUrl : undefined,
-        source: STASH_SOURCES.includes(row.source as StashSource) ? row.source as StashSource : "paste"
+        source: STASH_SOURCES.includes(row.source as StashSource) ? row.source as StashSource : "paste",
+        ...(typeof row.originalText === "string" ? { originalText: row.originalText } : {}),
+        ...(row.edited ? { edited: true } : {})
       };
     })
     .filter((row): row is BuildStashItem => Boolean(row))
@@ -1805,7 +1815,10 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
         item_name: row.itemName,
         note: row.note,
         is_unique: row.isUnique,
-        raw_text: row.rawText || input.itemText?.(row) || undefined
+        raw_text: row.rawText || input.itemText?.(row) || undefined,
+        // Edited items are checked against the item rules on the server.
+        ...(row.edited ? { edited: true } : {}),
+        ...(typeof row.originalText === "string" && row.originalText !== row.rawText ? { original_text: row.originalText } : {})
       })),
     skills: input.skills
       .filter((row) => row.skillId.trim())
