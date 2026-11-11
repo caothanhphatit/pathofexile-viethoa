@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
+const readProjectFile = (filename) => readFile(join(repoRoot, "public", "content", filename), "utf8");
 
 test("newbie hub presents beginner articles as list cards", async () => {
   const html = await readProjectFile("newbie.html");

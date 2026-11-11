@@ -3,11 +3,11 @@ import { localizedText, type Locale, uiText } from "../lib/locale";
 import type { RouteKey } from "../lib/routes";
 
 const legacyFiles: Partial<Record<RouteKey, string>> = {
-  patchnote: "/patchnote_vn.html",
-  newbie: "/newbie.html",
-  beginner: "/beginner.html",
-  craft: "/craft.html",
-  weapon: "/weapon.html"
+  patchnote: "/content/patchnote_vn.html",
+  newbie: "/content/newbie.html",
+  beginner: "/content/beginner.html",
+  craft: "/content/craft.html",
+  weapon: "/content/weapon.html"
 };
 
 const fallbackCopy: Record<string, { eyebrow: string; title: string; body: string }> = {

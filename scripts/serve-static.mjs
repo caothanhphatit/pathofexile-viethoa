@@ -55,10 +55,14 @@ const cleanRouteFiles = new Map([
   ["/builds", "/index.html"],
   ["/leveling", "/index.html"],
   ["/premium", "/index.html"],
-  // Standalone boss pages (script-rendered): serve their real HTML directly.
-  ["/boss", "/boss.html"],
-  ["/boss-detail", "/boss_detail.html"],
-  ["/boss_detail", "/boss_detail.html"]
+  ["/tai-app", "/index.html"],
+  ["/cai-app", "/index.html"],
+  ["/install", "/index.html"],
+  ["/download", "/index.html"],
+  ["/poevh", "/index.html"],
+  ["/boss", "/index.html"],
+  ["/boss-detail", "/index.html"],
+  ["/boss_detail", "/index.html"]
 ]);
 
 const goneRoutes = new Set([

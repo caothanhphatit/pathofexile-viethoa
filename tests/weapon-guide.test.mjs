@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
+const readProjectFile = (filename) => readFile(join(repoRoot, "public", "content", filename), "utf8");
 const readSpaFile = (filename) => readFile(join(repoRoot, "src", "spa", filename), "utf8");
 
 test("weapon guide exposes a Vietnamese NEWBIE tab with PoE2 weapon basics", async () => {
@@ -32,9 +32,8 @@ test("weapon guide avoids cross-version comparison language", async () => {
 });
 
 test("weapon guide is linked from SPA home and app routes", async () => {
-  const [home, routes, spaRoutes, newbie] = await Promise.all([
+  const [home, spaRoutes, newbie] = await Promise.all([
     readSpaFile("pages/HomePage.tsx"),
-    readProjectFile("app-routes.js"),
     readSpaFile("lib/routes.ts"),
     readProjectFile("newbie.html")
   ]);
@@ -43,9 +42,6 @@ test("weapon guide is linked from SPA home and app routes", async () => {
   assert.match(home, /href=\{route\.path\}/);
   assert.match(newbie, /href="\/weapon"/);
   assert.match(newbie, /Hướng dẫn cơ bản vũ khí đầu game/);
-  assert.match(routes, /weapon:\s*{/);
-  assert.match(routes, /href:\s*"\/weapon"/);
-  assert.match(routes, /navParent:\s*"newbie"/);
   assert.match(spaRoutes, /key:\s*"weapon"[\s\S]*?path:\s*"\/weapon"/);
   assert.match(spaRoutes, /key:\s*"weapon"[\s\S]*?navParent:\s*"newbie"/);
 });

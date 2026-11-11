@@ -281,3 +281,61 @@ export const verifyKey = async (db, signer, { key, deviceId, deviceLabel = "", i
   };
   return { token: signer.sign(payload), payload };
 };
+
+// ── Offer (plans and how to pay) ──────────────────────────────────────────
+
+// Shown by client apps and the /premium page. There is no payment gateway yet, so
+// the offer carries manual payment instructions; an admin grants the plan after
+// the transfer. Override any part with PREMIUM_OFFER_JSON in .env, for example
+//   PREMIUM_OFFER_JSON={"plans":[{"id":"month","price":49000}],"payment":{"bank":"MB","account":"0123"}}
+export const DEFAULT_PREMIUM_OFFER = Object.freeze({
+  currency: "VND",
+  plans: [
+    { id: "month", name: "1 tháng", days: PLAN_DAYS.month, price: null },
+    { id: "year", name: "1 năm", days: PLAN_DAYS.year, price: null },
+    { id: "lifetime", name: "Trọn đời", days: null, price: null }
+  ],
+  payment: {
+    method: "Chuyển khoản ngân hàng",
+    bank: "",
+    account: "",
+    holder: "",
+    note_template: "POEVH {email} {plan}",
+    contact: ""
+  },
+  steps: [
+    "Đăng nhập poeviethoa.net và mở trang Premium.",
+    "Chuyển khoản theo gói đã chọn, ghi đúng nội dung chuyển khoản.",
+    "Admin kích hoạt gói trong vòng 24 giờ; trang Premium sẽ hiện gói đang dùng.",
+    "Bấm \"Tạo key\" trên trang Premium, dán key vào ứng dụng POEVH."
+  ]
+});
+
+const mergePlans = (defaults, overrides) => {
+  if (!Array.isArray(overrides)) return defaults;
+  const merged = defaults.map((plan) => ({ ...plan, ...(overrides.find((item) => item?.id === plan.id) || {}) }));
+  for (const item of overrides) {
+    if (item?.id && !merged.some((plan) => plan.id === item.id)) merged.push({ name: item.id, days: null, price: null, ...item });
+  }
+  return merged;
+};
+
+export const premiumOffer = (env = process.env) => {
+  let overrides = {};
+  const raw = String(env.PREMIUM_OFFER_JSON || "").trim();
+  if (raw) {
+    try {
+      overrides = JSON.parse(raw) || {};
+    } catch {
+      throw new Error("PREMIUM_OFFER_JSON is not valid JSON");
+    }
+  }
+  const appUrl = String(env.APP_URL || "").trim().replace(/\/+$/, "");
+  return {
+    currency: overrides.currency || DEFAULT_PREMIUM_OFFER.currency,
+    plans: mergePlans(DEFAULT_PREMIUM_OFFER.plans, overrides.plans),
+    payment: { ...DEFAULT_PREMIUM_OFFER.payment, ...(overrides.payment || {}) },
+    steps: Array.isArray(overrides.steps) && overrides.steps.length ? overrides.steps : [...DEFAULT_PREMIUM_OFFER.steps],
+    page_url: appUrl ? `${appUrl}/premium` : "/premium"
+  };
+};

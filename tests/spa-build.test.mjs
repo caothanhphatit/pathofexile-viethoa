@@ -26,7 +26,8 @@ test("SPA shell mounts React bundle without legacy app shell scripts", async () 
 
   assert.match(html, /<div id="root">/);
   assert.match(html, /src="\/components\/theme-boot\.js"/);
-  assert.match(html, /href="\/dist\/app\.css\?v=20260702-header-sync"/);
+  // Tailwind build used only by the guide articles in public/content.
+  assert.match(html, /href="\/dist\/app\.css\?v=[\w-]+"/);
   assert.match(html, /dist\/spa\/assets\/app\.css/);
   assert.match(html, /type="module" src="\/dist\/spa\/assets\/app\.js(?:\?[^"]*)?"/);
   assert.match(html, /components\/theme-boot\.js/);

@@ -4,8 +4,13 @@ Workspace chung cho trang tham khảo POE2 tiếng Việt và ứng dụng deskt
 
 ## Layout
 
-- `public/`: browser-facing static app, compiled CSS, shared UI helpers, images, and generated data exports.
-- `src/`: backend, database, localization, and source CSS.
+- `public/`: the SPA shell (`index.html`), built assets in `dist/`, images, generated data
+  exports in `data/`, guide article sources in `content/` and published POEVH builds in
+  `downloads/poevh/` (generated, not committed).
+- `src/spa/`: the React app. Every page of the site is a route in `src/spa/lib/routes.ts`;
+  there are no standalone HTML pages any more.
+- `src/`: also the backend, database, localization, and the Tailwind source used only by
+  the guide articles in `public/content/`.
 - `scripts/`: crawlers, exporters, translation rebuilds, and local static serving.
 - `migrations/`: PostgreSQL schema migrations.
 - `tests/`: Node test suite.
@@ -14,8 +19,8 @@ Workspace chung cho trang tham khảo POE2 tiếng Việt và ứng dụng deskt
 
 ## What Is Included
 
-- Production static pages for patch notes, dictionary, weapon basics, skill gems, currency, and leveling.
-- Shared frontend shell, theme boot, dictionary tooltip modal, and data-page utilities.
+- One React app for patch notes, lookup, dictionary, items, skill gems, currency, passive
+  tree, build planner, leveling, craft simulator, bosses, Premium and the POEVH download page.
 - Fastify backend for health checks, public read APIs, account/log routes, and token-protected admin crawl/export endpoints.
 - PostgreSQL migrations and crawl/export scripts for skill gems, currency, dictionary terms, and items.
 - Node test suite covering parsers, translation cleanup, backend route shape, frontend listing behavior, and performance guards.
@@ -36,7 +41,12 @@ npm run poevh:check
 npm run poevh:test
 npm run poevh:clippy
 npm run poevh:build
+npm run poevh:publish -- --notes="Ghi chú 1|Ghi chú 2"
 ```
+
+`poevh:publish` copies the release exe to `public/downloads/poevh/` and writes the
+`latest.json` the `/tai-app` page reads (version, size, SHA-256, notes). Upload both with
+the rest of `public/` when deploying.
 
 For backend and crawler workflows, copy `.env.example` to `.env` and fill local values:
 
@@ -116,6 +126,11 @@ apps, and a key works on one device at a time.
    Also: `GET /api/admin/premium/user?email=…`, `POST /api/admin/premium/revoke`
    (`subscription_id`), `POST /api/admin/premium/release-device` (frees the device at once).
 
+Plans, prices and manual payment details come from `PREMIUM_OFFER_JSON` in `.env` and are
+served at `GET /api/premium/offer` (the POEVH app shows them on its Premium page), e.g.
+`{"plans":[{"id":"month","price":49000}],"payment":{"bank":"MB","account":"0123","holder":"NAME"}}`.
+Plans left out keep their defaults; a missing price shows as "Liên hệ".
+
 3. The user opens `/premium`, creates a key (shown once), and can change device once every
    30 days.
 
@@ -132,6 +147,10 @@ On success the response holds `token`, a licence of the form
 key and call verify again before `exp`; tokens last at most 7 days and never past the
 paid period, so revoked or expired premium stops within that time.
 `verifyLicenceToken` in `src/server/services/premium-service.mjs` is a reference check.
+
+The POEVH desktop app implements this client in `apps/poevh-desktop/crates/poe2-world/src/premium.rs`
+(see `apps/poevh-desktop/README.md`, "Premium"). Build it with `POEVH_PREMIUM_PUBLIC_KEY` set to the
+public key so the app does not have to trust the first key it downloads.
 
 Error codes: `bad_key`, `bad_device`, `unknown_key`, `premium_expired`, `device_mismatch`,
 `signing_unavailable`.

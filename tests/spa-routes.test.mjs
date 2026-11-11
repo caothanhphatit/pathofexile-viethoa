@@ -24,7 +24,10 @@ const appRoutes = [
   "/passive-tree",
   "/build",
   "/leveling",
-  "/premium"
+  "/premium",
+  "/tai-app",
+  "/boss",
+  "/boss-detail"
 ];
 
 const goneRoutes = [

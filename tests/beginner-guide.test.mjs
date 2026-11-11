@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const readProjectFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
+const readProjectFile = (filename) => readFile(join(repoRoot, "public", "content", filename), "utf8");
 
 test("beginner guide reads as a standalone Vietnamese beginner guide", async () => {
   const html = await readProjectFile("beginner.html");
@@ -89,12 +89,11 @@ test("beginner guide reads as a standalone Vietnamese beginner guide", async () 
 test("beginner guide is linked from newbie and app routes", async () => {
   const [newbie, routes] = await Promise.all([
     readProjectFile("newbie.html"),
-    readProjectFile("app-routes.js")
+    readFile(join(repoRoot, "src", "spa", "lib", "routes.ts"), "utf8")
   ]);
 
   assert.match(newbie, /href="\/beginner-guide"/);
   assert.match(newbie, /data-newbie-card="beginner"/);
-  assert.match(routes, /beginner:\s*{/);
-  assert.match(routes, /href:\s*"\/beginner-guide"/);
-  assert.match(routes, /navParent:\s*"newbie"/);
+  assert.match(routes, /key:\s*"beginner"[\s\S]*?path:\s*"\/beginner-guide"/);
+  assert.match(routes, /key:\s*"beginner"[\s\S]*?navParent:\s*"newbie"/);
 });

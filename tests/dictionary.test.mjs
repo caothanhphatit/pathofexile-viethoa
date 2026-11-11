@@ -118,23 +118,6 @@ test("dictionary exposes every skill gem tag as an English lookup term", async (
   assert.match(ammunition.meaning, /tag cho skill|Crossbow/);
 });
 
-test("dictionary page renders compact lookup cards without keep-note panels", async () => {
-  const html = await readFile(new URL("../public/dictionary.html", import.meta.url), "utf8");
-
-  assert.match(html, /compactMeaning/);
-  assert.doesNotMatch(html, /Keyword in-game/);
-  assert.doesNotMatch(html, /Tag skill của Skill Gem in-game/);
-  assert.match(html, /term-meaning/);
-  assert.match(html, /id="modalOriginal"/);
-  assert.doesNotMatch(html, /Nguyên bản PoE2DB English/);
-  assert.doesNotMatch(html, /Quy chuẩn giữ từ gốc/);
-  assert.doesNotMatch(html, /modalKeep/);
-  assert.doesNotMatch(html, /escapeHtml\(term\.keep\)/);
-  assert.doesNotMatch(html, />keep</);
-  assert.doesNotMatch(html, /variantChips/);
-  assert.doesNotMatch(html, />Tooltip</);
-});
-
 test("dictionary meanings do not expose mixed English/Vietnamese glue text", async () => {
   const dictionary = await loadDictionary();
   const dirty = (dictionary.terms || []).filter((entry) => hasDirtyEnglishDescription(entry.meaning));

@@ -27,6 +27,8 @@ import { PassiveTreePage } from "./pages/PassiveTreePage";
 import { CraftSimPage } from "./pages/CraftSimPage";
 import { BuildPlannerPage } from "./pages/BuildPlannerPage";
 import { PremiumPage } from "./pages/PremiumPage";
+import { InstallPage } from "./pages/InstallPage";
+import { BossDetailPage, BossListPage } from "./pages/BossPages";
 
 const facebookUrl = "https://www.facebook.com/poeviethoa";
 
@@ -54,6 +56,14 @@ export function App() {
     updateSeo(route, locale);
   }, [route, locale]);
 
+  // On narrow screens the nav scrolls sideways; bring the current page into view.
+  useEffect(() => {
+    const active = document.querySelector<HTMLElement>(".nav-rail a.is-active");
+    const rail = active?.parentElement;
+    if (!active || !rail || rail.scrollWidth <= rail.clientWidth) return;
+    rail.scrollTo({ left: active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2, behavior: "auto" });
+  }, [activeNav]);
+
   useEffect(() => {
     const handler = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -63,10 +73,6 @@ export function App() {
       if (!href || anchor.hasAttribute("download") || href.startsWith("#") || /^(https?:|mailto:|tel:|blob:|data:)/i.test(href)) return;
       const url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin) return;
-      // Standalone boss pages render their content via inline scripts, so they
-      // must load as full pages instead of being intercepted by the SPA router.
-      const cleanPath = url.pathname.replace(/\.html$/, "");
-      if (cleanPath === "/boss" || cleanPath === "/boss-detail" || cleanPath === "/boss_detail") return;
       event.preventDefault();
       navigateTo(`${url.pathname}${url.search}${url.hash}`);
     };
@@ -163,6 +169,12 @@ function renderRoute(route: AppRoute, locale: Locale) {
       return <CraftSimPage locale={locale} />;
     case "premium":
       return <PremiumPage locale={locale} />;
+    case "install":
+      return <InstallPage locale={locale} />;
+    case "boss":
+      return <BossListPage locale={locale} />;
+    case "bossDetail":
+      return <BossDetailPage locale={locale} />;
     default:
       return <HomePage locale={locale} />;
   }

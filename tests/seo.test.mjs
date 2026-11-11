@@ -5,81 +5,66 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const readPublicFile = (filename) => readFile(join(repoRoot, "public", filename), "utf8");
+const readRepoFile = (filename) => readFile(join(repoRoot, filename), "utf8");
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const indexablePages = [
-  ["index.html", "https://poeviethoa.net/"],
-  ["patchnote_vn.html", "https://poeviethoa.net/patchnote"],
-  ["newbie.html", "https://poeviethoa.net/newbie"],
-  ["beginner.html", "https://poeviethoa.net/beginner-guide"],
-  ["lookup.html", "https://poeviethoa.net/tra-cuu"],
-  ["items.html", "https://poeviethoa.net/items"],
-  ["dictionary.html", "https://poeviethoa.net/dictionary"],
-  ["weapon.html", "https://poeviethoa.net/weapon"],
-  ["skill_gems.html", "https://poeviethoa.net/skill-gems"],
-  ["skill_gem_detail.html", "https://poeviethoa.net/skill-gem"],
-  ["currency.html", "https://poeviethoa.net/currency"],
-  ["currency_detail.html", "https://poeviethoa.net/currency-detail"],
-  ["leveling.html", "https://poeviethoa.net/leveling"]
+// Public pages a search engine should find; every one is a React route.
+const indexablePaths = [
+  "/",
+  "/patchnote",
+  "/tra-cuu",
+  "/newbie",
+  "/beginner-guide",
+  "/items",
+  "/dictionary",
+  "/weapon",
+  "/skill-gems",
+  "/currency",
+  "/leveling",
+  "/passive-tree",
+  "/build",
+  "/craft-sim",
+  "/boss",
+  "/tai-app"
 ];
 
-test("indexable pages expose production SEO metadata", async () => {
-  for (const [page, canonical] of indexablePages) {
-    const html = await readPublicFile(page);
+test("the SPA shell ships production SEO defaults before React runs", async () => {
+  const html = await readRepoFile("public/index.html");
 
-    assert.match(html, /<meta name="description" content="[^"]{50,}">/, `${page} has a useful description`);
-    assert.match(html, /<meta name="robots" content="index,follow,max-image-preview:large">/, `${page} is indexable`);
-    assert.match(html, new RegExp(`<link rel="canonical" href="${canonical.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}">`), `${page} has canonical URL`);
-    assert.match(html, /<meta property="og:title" content="[^"]+">/, `${page} has OG title`);
-    assert.match(html, /<meta property="og:description" content="[^"]{50,}">/, `${page} has OG description`);
-    assert.match(html, /<meta property="og:image" content="https:\/\/poeviethoa\.net\/assets\//, `${page} has share image`);
-    assert.match(html, /<meta name="twitter:card" content="summary(?:_large_image)?">/, `${page} has Twitter card`);
+  assert.match(html, /<meta name="description" content="[^"]{50,}">/);
+  assert.match(html, /<meta name="robots" content="index,follow,max-image-preview:large">/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/poeviethoa\.net\/">/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/poeviethoa\.net\/assets\//);
+});
+
+test("route changes rewrite title, description, canonical and social tags", async () => {
+  const seo = await readRepoFile("src/spa/lib/seo.ts");
+
+  assert.match(seo, /SITE_ORIGIN = "https:\/\/poeviethoa\.net"/);
+  for (const tag of ['meta[name="description"]', 'link[rel="canonical"]', 'meta[property="og:title"]', 'meta[property="og:url"]', 'meta[name="twitter:card"]']) {
+    assert.ok(seo.includes(tag), `updateSeo writes ${tag}`);
   }
 });
 
-test("non-canonical helper pages are marked noindex", async () => {
-  const noindexPages = [
-    "404.html",
-    "analysis.html",
-    "leveling_act1.html",
-    "leveling_act2.html",
-    "leveling_act3.html",
-    "leveling_act4.html",
-    "leveling_interlude.html",
-    "src1.html"
-  ];
+test("boss guides publish their own canonical URL and description", async () => {
+  const page = await readRepoFile("src/spa/pages/BossPages.tsx");
 
-  for (const page of noindexPages) {
-    const html = await readPublicFile(page);
-    assert.match(html, /<meta name="robots" content="noindex,(?:follow|nofollow)">/, `${page} is not indexed`);
-  }
+  assert.match(page, /updateSeo\(/);
+  assert.match(page, /canonicalPath: bossDetailHref\(slug\)/);
 });
 
 test("sitemap and robots expose the clean public URL set", async () => {
-  const [sitemap, robots] = await Promise.all([
-    readPublicFile("sitemap.xml"),
-    readPublicFile("robots.txt")
+  const [sitemap, robots, routes] = await Promise.all([
+    readRepoFile("public/sitemap.xml"),
+    readRepoFile("public/robots.txt"),
+    readRepoFile("src/spa/lib/routes.ts")
   ]);
 
-  for (const [, canonical] of indexablePages.filter(([page]) => !page.includes("_detail"))) {
-    assert.match(sitemap, new RegExp(`<loc>${canonical.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc>`));
+  for (const path of indexablePaths) {
+    assert.match(sitemap, new RegExp(`<loc>https://poeviethoa\\.net${escapeRegex(path)}</loc>`), `${path} is in the sitemap`);
+    assert.match(routes, new RegExp(`path:\\s*"${escapeRegex(path)}"`), `${path} is a SPA route`);
   }
-
+  assert.doesNotMatch(sitemap, /\.html</, "sitemap lists clean URLs only");
   assert.match(robots, /Sitemap: https:\/\/poeviethoa\.net\/sitemap\.xml/);
-  assert.match(robots, /Disallow: \/src1\.html/);
-  assert.match(robots, /Disallow: \/analysis/);
-});
-
-test("detail pages update SEO metadata from the selected item", async () => {
-  const [skillDetail, currencyDetail, uiUtils] = await Promise.all([
-    readPublicFile("skill_gem_detail.html"),
-    readPublicFile("currency_detail.html"),
-    readPublicFile("components/poe-ui-utils.js")
-  ]);
-
-  assert.match(uiUtils, /updateDocumentSeo/);
-  assert.match(uiUtils, /PUBLIC_SITE_ORIGIN = "https:\/\/poeviethoa\.net"/);
-  assert.doesNotMatch(uiUtils, /new URL\(path, window\.location\.origin\)/);
-  assert.match(skillDetail, /updateDocumentSeo\(\{[\s\S]*?canonicalPath: `\/skill-gem\?slug=\$\{encodeURIComponent\(gem\.slug\)\}`/);
-  assert.match(currencyDetail, /updateDocumentSeo\(\{[\s\S]*?canonicalPath: `\/currency-detail\?slug=\$\{encodeURIComponent\(item\.slug\)\}`/);
+  assert.match(robots, /Disallow: \/content\//, "guide article sources are not indexed on their own");
 });

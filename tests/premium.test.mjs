@@ -14,6 +14,7 @@ import {
   grantPremium,
   issueKey,
   normalizePremiumKey,
+  premiumOffer,
   premiumStatus,
   releaseDevice,
   revokeSubscription,
@@ -240,6 +241,44 @@ test("verify answers 503 instead of signing when no signing key is configured", 
     const response = await app.inject({ method: "POST", url: "/api/premium/verify", payload: { key: generatePremiumKey(), device_id: DEVICE_A } });
     assert.equal(response.statusCode, 503);
     assert.equal(response.json().code, "signing_unavailable");
+  } finally {
+    await app.close();
+  }
+});
+
+test("premium offer merges PREMIUM_OFFER_JSON over the defaults", async () => {
+  const defaults = premiumOffer({});
+  assert.equal(defaults.currency, "VND");
+  assert.deepEqual(defaults.plans.map((plan) => plan.id), ["month", "year", "lifetime"]);
+  assert.equal(defaults.plans[0].days, 30);
+  assert.equal(defaults.plans[0].price, null);
+  assert.equal(defaults.page_url, "/premium");
+  assert.ok(defaults.steps.length >= 3);
+
+  const custom = premiumOffer({
+    APP_URL: "https://poeviethoa.net/",
+    PREMIUM_OFFER_JSON: JSON.stringify({
+      plans: [{ id: "month", price: 49000 }, { id: "season", name: "1 mùa", days: 120, price: 120000 }],
+      payment: { bank: "MB Bank", account: "0123456789", holder: "NGUYEN VAN A" }
+    })
+  });
+  assert.equal(custom.page_url, "https://poeviethoa.net/premium");
+  assert.equal(custom.plans.find((plan) => plan.id === "month").price, 49000);
+  assert.equal(custom.plans.find((plan) => plan.id === "month").days, 30, "defaults survive a partial override");
+  assert.equal(custom.plans.find((plan) => plan.id === "season").name, "1 mùa");
+  assert.equal(custom.payment.bank, "MB Bank");
+  assert.equal(custom.payment.note_template, "POEVH {email} {plan}");
+  assert.throws(() => premiumOffer({ PREMIUM_OFFER_JSON: "{not json" }), /PREMIUM_OFFER_JSON/);
+
+  const app = await buildApp({ db: null, logger: false, sessionSecret: "test-session-secret", premiumSigner: null });
+  try {
+    const response = await app.inject({ method: "GET", url: "/api/premium/offer" });
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.headers["cache-control"], "public, max-age=300");
+    const body = response.json();
+    assert.equal(body.ok, true);
+    assert.equal(body.data.plans.length, 3);
+    assert.equal(typeof body.data.page_url, "string");
   } finally {
     await app.close();
   }

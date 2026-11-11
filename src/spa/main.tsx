@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import "./styles.css";
 import "./styles/poe-theme.css";
+import "./styles/boss.css";
+import "./styles/theme.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

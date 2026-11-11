@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /src1.html
-Disallow: /analysis
-Disallow: /analysis.html
+Disallow: /content/
 
 Sitemap: https://poeviethoa.net/sitemap.xml

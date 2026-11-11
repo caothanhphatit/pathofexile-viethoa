@@ -19,6 +19,8 @@ export type RouteKey =
   | "buildPlanner"
   | "leveling"
   | "boss"
+  | "bossDetail"
+  | "install"
   | "premium";
 
 export interface AppRoute {
@@ -212,7 +214,27 @@ export const routes: AppRoute[] = [
     description: "Danh sách boss và hướng dẫn chi tiết cơ chế, chiến thuật, drop.",
     icon: "skull",
     navOrder: 72,
-    aliases: ["/boss.html"]
+    aliases: ["/boss.html", "/bosses"]
+  },
+  {
+    key: "bossDetail",
+    path: "/boss-detail",
+    title: "Hướng dẫn Boss POE2",
+    shortTitle: "Boss",
+    description: "Cơ chế, chiến thuật, drop và cách vào map của từng boss Path of Exile 2.",
+    icon: "skull",
+    navParent: "boss",
+    aliases: ["/boss_detail", "/boss_detail.html"]
+  },
+  {
+    key: "install",
+    path: "/tai-app",
+    title: "Tải ứng dụng POEVH",
+    shortTitle: "Cài app",
+    description: "Tải và cài POEVH cho Windows: price-check, expedition, leveling overlay và follow bot cho Path of Exile 2.",
+    icon: "install_desktop",
+    navOrder: 85,
+    aliases: ["/cai-app", "/install", "/download", "/poevh"]
   },
   {
     key: "premium",
@@ -353,6 +375,20 @@ const routeCopy: Partial<Record<RouteKey, Partial<Record<Locale, Partial<RouteTe
       title: "POE2 Boss Guide",
       shortTitle: "Bosses",
       description: "List of Path of Exile 2 bosses with mechanics, strategy, and drop details."
+    }
+  },
+  bossDetail: {
+    en: {
+      title: "POE2 Boss Guide",
+      shortTitle: "Bosses",
+      description: "Mechanics, strategy, drops and access for each Path of Exile 2 boss."
+    }
+  },
+  install: {
+    en: {
+      title: "Download POEVH",
+      shortTitle: "Get the app",
+      description: "Download and install POEVH for Windows: price-check, expedition, leveling overlay and follow bot for Path of Exile 2."
     }
   },
   premium: {

@@ -2,6 +2,7 @@ import {
   createPremiumSigner,
   grantPremium,
   issueKey,
+  premiumOffer,
   premiumStatus,
   releaseDevice,
   revokeSubscription,
@@ -72,6 +73,12 @@ export const premiumRoutes = async (app, options = {}) => {
   });
 
   // ── Client apps ─────────────────────────────────────────────────────────
+
+  // Plans and payment instructions; public and cacheable (no account data).
+  app.get("/api/premium/offer", async (request, reply) => {
+    reply.header("cache-control", "public, max-age=300");
+    return { ok: true, data: premiumOffer() };
+  });
 
   app.get("/api/premium/public-key", async (request, reply) => {
     if (!signer) return reply.status(503).send({ ok: false, error: "Licence signing is not configured", code: "signing_unavailable" });

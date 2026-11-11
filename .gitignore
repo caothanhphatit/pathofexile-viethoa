@@ -43,3 +43,6 @@ data/game-extract/check/
 
 # GGPK extraction output (regenerated from the installed game)
 data/game-extract/ggpk/
+
+# POEVH builds published for /tai-app (npm run poevh:publish); deploy with public/
+/public/downloads/poevh/

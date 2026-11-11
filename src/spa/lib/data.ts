@@ -7,7 +7,11 @@ type GlobalName =
   | "POE2_PASSIVE_TREE"
   | "POE2_CRAFT"
   | "POE2_CRAFT_INDEX"
-  | "levelingRouteZones";
+  | "levelingRouteZones"
+  | "POE2_BOSS_DETAILS"
+  | "POE2_BOSS_IMAGES"
+  | "POE2_DROP_ITEMS"
+  | "POE2_PRICES";
 
 const pendingScripts = new Map<string, Promise<unknown>>();
 const passiveTreeDataVersion = "20260528-pruned-nodes";
@@ -79,3 +83,10 @@ export function useAsyncData<T>(loader: () => Promise<T>, onData: (value: T) => 
     cancelled = true;
   };
 }
+
+// Boss guide data (Game8 text, R2 images, poe2db drop stats, poe.ninja prices).
+const bossDataVersion = "20260702a";
+export const loadBossDetails = () => loadScriptGlobal<any>(`/data/boss-data.js?v=${bossDataVersion}`, "POE2_BOSS_DETAILS");
+export const loadBossImages = () => loadScriptGlobal<any>(`/data/boss-images.js?v=${bossDataVersion}`, "POE2_BOSS_IMAGES");
+export const loadBossDropItems = () => loadScriptGlobal<any>(`/data/boss-items.js?v=${bossDataVersion}`, "POE2_DROP_ITEMS");
+export const loadPoePrices = () => loadScriptGlobal<any>(`/data/poe-prices.js?v=${bossDataVersion}`, "POE2_PRICES");
