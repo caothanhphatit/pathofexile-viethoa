@@ -60,6 +60,24 @@ npm run server
 
 Do not commit real database URLs, OAuth secrets, admin tokens, or local `.env` files.
 
+### Build damage (Path of Building)
+
+`POST /api/builds/calculate` runs PoB's `calculate.lua`. PoB needs a LuaJIT that reads its
+extended syntax (`a?.b`, `x += 1`, `continue`): PoB's own Windows runtime, or upstream LuaJIT
+at the commit PoB's CI pins. Ubuntu's packaged `luajit` (2.1.0-beta3) cannot, and since PoB
+commit `48420ba` (2026-09-29) a server using it times out on every calculation.
+
+The calculation can run on another machine (`src/server/pob-runner.mjs`):
+
+1. On a PC with PoB set up (`scripts/setup-pob-local.mjs`), run the calculator with a random
+   secret: `POB_CALC_TOKEN=<secret> node scripts/pob-calc-server.mjs` (port 18766).
+2. Open a reverse tunnel so the server reaches it, e.g.
+   `ssh -N -R 20140:127.0.0.1:18766 root@<server>`.
+3. In the server `.env`: `POB_REMOTE_URL=http://127.0.0.1:20140/calculate` and
+   `POB_REMOTE_TOKEN=<same secret>`, then restart the backend.
+
+Without `POB_REMOTE_URL` the backend runs PoB itself (`POB_CORE_DIR`, `POB_LUAJIT`).
+
 ### Checking the crawled data against the game files
 
 `npm run check:game-data` reads BaseItemTypes, ItemClasses, UniqueStashLayout and Words

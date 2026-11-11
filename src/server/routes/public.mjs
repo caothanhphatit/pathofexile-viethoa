@@ -2,6 +2,7 @@ import { createHash, randomBytes } from "node:crypto";
 
 import { requireLocalRequest } from "../local-request.mjs";
 import { buildPobXml } from "../pob-build-xml.mjs";
+import { pobRunnerFromEnv } from "../pob-runner.mjs";
 
 const newSharedBuildId = () => randomBytes(9).toString("base64url");
 const hashEditToken = (token) => createHash("sha256").update(String(token)).digest("hex");
@@ -47,7 +48,7 @@ const imageContentTypeFromPath = (pathname = "") => {
   return "";
 };
 
-export const publicRoutes = async (app) => {
+export const publicRoutes = async (app, options = {}) => {
   const initDb = app.db;
   if (initDb) {
     try {
@@ -383,11 +384,9 @@ export const publicRoutes = async (app) => {
   // Each calculation spawns a LuaJIT process. Bound how many run at once and
   // how long each may take so a burst of planner requests cannot pile up
   // dozens of interpreters or hang a worker on a pathological build.
-  const POB_CORE_DIR = process.env.POB_CORE_DIR || "/root/pob-core/src";
-  // Interpreter for calculate.lua. Windows dev machines point this at the PoB-runtime
-  // host built by scripts/setup-pob-local.mjs (stock luajit cannot parse PoB's sources).
-  const POB_LUAJIT = process.env.POB_LUAJIT || "luajit";
-  const CALCULATE_TIMEOUT_MS = Number(process.env.POB_CALCULATE_TIMEOUT_MS || 20_000);
+  // Runs calculate.lua here (POB_CORE_DIR + POB_LUAJIT) or on another machine
+  // (POB_REMOTE_URL), see ../pob-runner.mjs.
+  const pobRunner = options.pobRunner || pobRunnerFromEnv();
   const CALCULATE_MAX_CONCURRENT = Number(process.env.POB_CALCULATE_MAX_CONCURRENT || 2);
   const CALCULATE_MAX_QUEUE = Number(process.env.POB_CALCULATE_MAX_QUEUE || 8);
   let calculationsRunning = 0;
@@ -429,12 +428,6 @@ export const publicRoutes = async (app) => {
       inventoryCount: buildData.inventory_slots?.length
     }, "build calculate request");
 
-    const { writeFileSync, unlinkSync } = await import("fs");
-    const { join } = await import("path");
-    const { tmpdir } = await import("os");
-    const { execFile } = await import("child_process");
-    const { createHash } = await import("crypto");
-
     const xmlContent = buildXml(buildData);
     const hash = createHash("sha256").update(xmlContent).digest("hex");
     if (calculationCache.has(hash)) {
@@ -448,36 +441,9 @@ export const publicRoutes = async (app) => {
       return reply.status(err.statusCode || 503).send({ ok: false, error: err.message });
     }
 
-    const tempFileName = `pob_temp_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.xml`;
-    const tempFilePath = join(tmpdir(), tempFileName);
-
     try {
-      writeFileSync(tempFilePath, xmlContent, "utf8");
+      const stats = await pobRunner.run(xmlContent);
 
-      const stdout = await new Promise((resolve, reject) => {
-        execFile(POB_LUAJIT, ["calculate.lua", tempFilePath], {
-          cwd: POB_CORE_DIR,
-          timeout: CALCULATE_TIMEOUT_MS,
-          maxBuffer: 4 * 1024 * 1024
-        }, (error, stdout, stderr) => {
-          if (error) {
-            const timedOut = error.killed || error.signal === "SIGTERM";
-            reject(new Error(timedOut ? "Calculation timed out" : (stderr || error.message)));
-          } else {
-            resolve(stdout);
-          }
-        });
-      });
-
-      const lines = String(stdout).split("\n");
-      const jsonLine = lines.find(line => line.trim().startsWith("{") && line.trim().endsWith("}"));
-      
-      if (!jsonLine) {
-        throw new Error("Invalid output from calculation engine");
-      }
-
-      const stats = JSON.parse(jsonLine);
-      
       if (calculationCache.size > 500) {
         const firstKey = calculationCache.keys().next().value;
         calculationCache.delete(firstKey);
@@ -491,9 +457,6 @@ export const publicRoutes = async (app) => {
       return reply.status(500).send({ ok: false, error: err.message || "Failed to calculate build stats" });
     } finally {
       releaseCalculationSlot();
-      try {
-        unlinkSync(tempFilePath);
-      } catch {}
     }
   });
 };
