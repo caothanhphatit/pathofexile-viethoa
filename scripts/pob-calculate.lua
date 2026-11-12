@@ -31,6 +31,21 @@ if output then
             cleanOutput[k] = v
         end
     end
+    -- One row per skill of the groups marked "include in Full DPS" (the planner marks
+    -- every enabled group), so the planner can show each skill's own damage.
+    if type(output.SkillDPS) == "table" then
+        local skills = {}
+        for _, skill in ipairs(output.SkillDPS) do
+            skills[#skills + 1] = {
+                name = skill.name,
+                dps = skill.dps,
+                count = skill.count,
+                trigger = skill.trigger,
+                skillPart = skill.skillPart
+            }
+        end
+        cleanOutput.SkillDPS = skills
+    end
 end
 
 local jsonStr = dkjson.encode(cleanOutput)

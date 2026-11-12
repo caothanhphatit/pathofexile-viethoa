@@ -190,3 +190,18 @@ test("PoB code export opens in PoB as the same build the planner calculated", as
   const again = await plannerCalculationRequest(code);
   assert.equal(buildPobXml(again.body), xml);
 });
+
+test("every skill group gets its own DPS from PoB's per-skill list", async () => {
+  const stats = await loadStatsLib();
+  const rows = [
+    { name: "Living Bomb", dps: 1000 },
+    { name: "Comet", dps: 300 },
+    { name: "Arc", dps: 200 },
+    { name: "Full Culling DPS", dps: 99 },
+    { name: "Power Siphon", dps: 50, count: 2 },
+    { name: "Power Siphon", dps: 10 }
+  ];
+  const groups = [["Cast on Elemental Ailment", "Living Bomb"], ["Power Siphon"], ["Purity of Fire"], ["Elemental Invocation", "Arc"], ["Power Siphon"], ["Cast on Critical", "Comet"]];
+  assert.deepEqual(plain(stats.skillDpsByGroup(rows, groups)), [1000, 100, 0, 200, 10, 300]);
+  assert.deepEqual(plain(stats.skillDpsByGroup(undefined, [["Arc"]])), [0]);
+});

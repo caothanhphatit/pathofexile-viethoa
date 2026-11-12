@@ -39,6 +39,7 @@ export class CalcQueue<T> {
   private running = 0;
   private order = 0;
   private version = 0;
+  private paused = false;
 
   constructor(
     private readonly run: (body: unknown) => Promise<T>,
@@ -99,6 +100,17 @@ export class CalcQueue<T> {
     if (dropped) this.changed();
   }
 
+  /** Holds queued jobs (running ones finish), e.g. while the page's own calculation runs. */
+  setPaused(paused: boolean): void {
+    if (this.paused === paused) return;
+    this.paused = paused;
+    if (!paused) this.pump();
+  }
+
+  get isPaused(): boolean {
+    return this.paused;
+  }
+
   get queuedCount(): number {
     return this.pending.length;
   }
@@ -123,7 +135,7 @@ export class CalcQueue<T> {
 
   private pump(): void {
     const concurrency = Math.max(1, this.options.concurrency ?? 1);
-    while (this.running < concurrency) {
+    while (!this.paused && this.running < concurrency) {
       const job = this.next();
       if (!job) return;
       this.running += 1;

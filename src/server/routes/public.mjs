@@ -400,26 +400,43 @@ export const publicRoutes = async (app, options = {}) => {
   const CALCULATE_MAX_CONCURRENT = Number(process.env.POB_CALCULATE_MAX_CONCURRENT || 2);
   const CALCULATE_MAX_QUEUE = Number(process.env.POB_CALCULATE_MAX_QUEUE || 8);
   let calculationsRunning = 0;
-  const calculationQueue = [];
-  const acquireCalculationSlot = () => new Promise((resolve, reject) => {
-    if (calculationsRunning < CALCULATE_MAX_CONCURRENT) {
-      calculationsRunning += 1;
+  // Two kinds of request: "main" (the planner's own numbers) and "compare" (what-if
+  // previews: hover an item, gem suggestions). Main requests go first, and compares
+  // never take the last free slot, so a burst of previews cannot delay the build's
+  // own recalculation.
+  const calculationQueues = { main: [], compare: [] };
+  let comparesRunning = 0;
+  const startCalculation = (kind) => {
+    calculationsRunning += 1;
+    if (kind === "compare") comparesRunning += 1;
+  };
+  const canStart = (kind) => calculationsRunning < CALCULATE_MAX_CONCURRENT
+    && (kind === "main" || comparesRunning < Math.max(1, CALCULATE_MAX_CONCURRENT - 1));
+  const pumpCalculations = () => {
+    for (;;) {
+      const kind = calculationQueues.main.length && canStart("main") ? "main"
+        : calculationQueues.compare.length && canStart("compare") ? "compare" : null;
+      if (!kind) return;
+      startCalculation(kind);
+      calculationQueues[kind].shift()();
+    }
+  };
+  const acquireCalculationSlot = (kind = "main") => new Promise((resolve, reject) => {
+    if (canStart(kind) && (kind === "compare" || !calculationQueues.main.length)) {
+      startCalculation(kind);
       resolve();
       return;
     }
-    if (calculationQueue.length >= CALCULATE_MAX_QUEUE) {
+    if (calculationQueues[kind].length >= CALCULATE_MAX_QUEUE) {
       reject(Object.assign(new Error("Calculation service is busy, retry shortly"), { statusCode: 503 }));
       return;
     }
-    calculationQueue.push(resolve);
+    calculationQueues[kind].push(resolve);
   });
-  const releaseCalculationSlot = () => {
-    const next = calculationQueue.shift();
-    if (next) {
-      next();
-    } else {
-      calculationsRunning -= 1;
-    }
+  const releaseCalculationSlot = (kind = "main") => {
+    calculationsRunning -= 1;
+    if (kind === "compare") comparesRunning -= 1;
+    pumpCalculations();
   };
 
   app.post("/api/builds/calculate", { bodyLimit: 512 * 1024 }, async (request, reply) => {
@@ -448,8 +465,9 @@ export const publicRoutes = async (app, options = {}) => {
       return { ok: true, data: calculationCache.get(hash) };
     }
 
+    const calcKind = buildData.calc_priority === "compare" ? "compare" : "main";
     try {
-      await acquireCalculationSlot();
+      await acquireCalculationSlot(calcKind);
     } catch (err) {
       reply.header("retry-after", "2");
       return reply.status(err.statusCode || 503).send({ ok: false, error: err.message });
@@ -470,7 +488,7 @@ export const publicRoutes = async (app, options = {}) => {
       app.log.error(err, "Failed to run PoB calculation");
       return reply.status(500).send({ ok: false, error: err.message || "Failed to calculate build stats" });
     } finally {
-      releaseCalculationSlot();
+      releaseCalculationSlot(calcKind);
     }
   });
 };

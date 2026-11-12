@@ -1,17 +1,10 @@
 /* Build Planner: "Kho đồ" inventory, "Nếu mặc vào" comparison, gem swap strip
    (BuildInventoryPanel.tsx). Dark game-like cells as in the in-game inventory. */
 
-.nj-equip-layout {
-  display: grid;
-  grid-template-columns: minmax(0, auto) minmax(220px, 1fr);
-  gap: 16px;
-  align-items: start;
-}
-
-@media (max-width: 1100px) {
-  .nj-equip-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
+/* The inventory has its own full-width row under "Trang bị | Chỉ số", so it never
+   squeezes or overlaps the paper doll at any width. */
+.nj-inventory .nj-panel-body {
+  padding: 12px 16px 16px;
 }
 
 .pi-panel {
@@ -32,8 +25,9 @@
 
 .pi-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px 8px;
 }
 
 .pi-head h3 {
@@ -52,8 +46,12 @@
   font-size: 12px;
 }
 
+.pi-head .pi-count {
+  margin-right: auto;
+}
+
 .pi-head .pi-btn {
-  margin-left: auto;
+  white-space: nowrap;
 }
 
 .pi-btn {
@@ -132,7 +130,7 @@
 
 .pi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(52px, 60px));
   gap: 3px;
   padding: 4px;
   border: 1px solid #2b2418;
@@ -697,4 +695,37 @@
   color: var(--nj-red) !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
+}
+
+/* "Kỹ năng chính" rows are buttons: click one to make it the main skill. */
+button.nj-main-skill {
+  width: 100%;
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-color: var(--nj-line-soft);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.nj-main-skill:hover { background: rgba(255, 255, 255, .03); }
+button.nj-main-skill.is-main { box-shadow: inset 3px 0 0 var(--poe-unique, #af6025); padding-left: 6px; }
+
+.nj-main-skill-sub { color: var(--nj-muted); font-weight: 400; }
+
+/* Top row: doll | stats, then the inventory across both; stacked: doll, inventory, stats. */
+.nj-row--top {
+  grid-template-areas: "equip stats" "inv inv";
+}
+
+.nj-row--top > .nj-equipment { grid-area: equip; }
+.nj-row--top > .nj-stats { grid-area: stats; }
+.nj-row--top > .nj-inventory { grid-area: inv; }
+
+@media (max-width: 1100px) {
+  .nj-row--top {
+    grid-template-areas: "equip" "inv" "stats";
+  }
 }

@@ -162,7 +162,7 @@ const gemXml = (gem) => {
   return `<Gem ${attrs.map(([key, value]) => `${key}="${escapeXml(value)}"`).join(" ")}/>`;
 };
 
-const skillGroupXml = (group) => {
+const skillGroupXml = (group, fullDps = false) => {
   const gems = [gemXml(group), ...(Array.isArray(group.support) ? group.support : [])
     .filter((support) => support && support.skill_id)
     .map(gemXml)];
@@ -173,6 +173,8 @@ const skillGroupXml = (group) => {
     ["mainActiveSkill", mainActive],
     ["mainActiveSkillCalcs", mainActive]
   ];
+  // PoB then lists this group's skills in SkillDPS, each with its own damage.
+  if (fullDps) attrs.push(["includeInFullDPS", "true"]);
   const slotName = group.slot ? String(group.slot).replace(/[^A-Za-z0-9 ]/g, "").slice(0, 30) : "";
   if (slotName) attrs.push(["slot", slotName]);
   if (group.source) attrs.push(["source", String(group.source).slice(0, 160)]);
@@ -222,7 +224,7 @@ export function buildPobXml(build = {}) {
 
   const skillGroups = (Array.isArray(build.skills) ? build.skills : [])
     .filter((group) => group && group.skill_id)
-    .map(skillGroupXml);
+    .map((group) => skillGroupXml(group, build.full_dps !== false));
 
   const mainSocketGroup = clampInt(build.main_socket_group, 1, Math.max(skillGroups.length, 1), 1);
   const attrOverride = build.attribute_overrides && typeof build.attribute_overrides === "object" ? build.attribute_overrides : null;

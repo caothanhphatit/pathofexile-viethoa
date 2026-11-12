@@ -286,3 +286,44 @@ export function pobItemTextFromRecord(record: ItemTextSource): string {
     .filter((line) => line && !/\[[-+]?\d+(?:\.\d+)?\]\s*\.?$/.test(line));
   return ["Rarity: Unique", name, String(record.baseName ?? "").trim(), ...mods].filter(Boolean).join("\n");
 }
+
+// ── Damage of every skill ───────────────────────────────────────────────────
+
+/** One row of PoB's SkillDPS list (scripts/pob-calculate.lua). */
+export interface PobSkillDps {
+  name: string;
+  dps: number;
+  count?: number;
+  trigger?: string;
+  skillPart?: string;
+}
+
+/** Rows PoB adds as summaries rather than skills ("Full Culling DPS", "Best Ignite DPS"). */
+const SUMMARY_ROW = /^(full|best) .*dps$/i;
+
+const nameKey = (value: string) => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+/**
+ * DPS of each skill group, from PoB's per-skill list. `groupNames[i]` holds the names
+ * of the active gems of group i (its skill, and e.g. the spell in Cast on Critical).
+ * Rows are matched in group order, so two groups with the same skill each get their
+ * own row. Groups with no row get 0.
+ */
+export function skillDpsByGroup(rows: PobSkillDps[] | undefined, groupNames: string[][]): number[] {
+  const pending = (rows ?? []).filter((row) => row && !SUMMARY_ROW.test(row.name) && Number(row.dps) > 0)
+    .map((row) => ({ key: nameKey(row.name), dps: Number(row.dps) * (Number(row.count) > 0 ? Number(row.count) : 1), used: false }));
+  return groupNames.map((names) => {
+    let total = 0;
+    for (const name of names) {
+      const key = nameKey(name);
+      if (!key) continue;
+      // "Arc (part 2)"-style rows still belong to Arc.
+      const row = pending.find((candidate) => !candidate.used && (candidate.key === key || candidate.key.startsWith(`${key} `)));
+      if (row) {
+        row.used = true;
+        total += row.dps;
+      }
+    }
+    return total;
+  });
+}

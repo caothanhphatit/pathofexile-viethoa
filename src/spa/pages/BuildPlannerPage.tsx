@@ -48,7 +48,7 @@ import {
   type PobConfigInput,
   type BuildStashItem
 } from "../lib/buildPlanner";
-import { pobItemTextFromRecord } from "../lib/buildStats";
+import { pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import {
@@ -1072,10 +1072,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   // PoB's calculate.lua returns totals for the main socket group only (no per-skill
   // skillsDps array), so the main skill shows CombinedDPS and the others show nothing
   // until they are picked as main.
+  // The main group shows PoB's main-skill DPS (what PoB's sidebar shows); the others
+  // their row of PoB's per-skill list (every enabled group is in it).
   const skillDps = (index: number): number => {
-    const perSkill = activeStats?.skillsDps?.[index];
-    if (typeof perSkill === "number") return perSkill;
-    return index + 1 === mainSocketGroup ? Number(activeStats?.CombinedDPS ?? activeStats?.TotalDPS ?? 0) : 0;
+    if (index + 1 === mainSocketGroup) return Number(activeStats?.CombinedDPS ?? activeStats?.TotalDPS ?? 0);
+    return groupSkillDps[index] ?? 0;
   };
 
   const [tooltip, setTooltip] = useState<{
@@ -1223,6 +1224,14 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   );
   const skillGemOptions = useMemo(() => gemPickerOptions(gemsData, "skill"), [gemsData, locale]);
   const supportGemOptions = useMemo(() => gemPickerOptions(gemsData, "support"), [gemsData, locale]);
+  // Names of each group's active gems, to find their rows in PoB's per-skill DPS list.
+  const groupSkillDps = useMemo(() => skillDpsByGroup(
+    Array.isArray(activeStats?.SkillDPS) ? activeStats.SkillDPS as PobSkillDps[] : undefined,
+    buildSkills.map((skill) => skill.disabled ? [] : [
+      skill.nameSpec || gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem")?.name || "",
+      ...skill.supportSkills.filter((support) => support.active && !support.disabled).map((support) => support.nameSpec || gemChoiceItem(support.skillId, skillGemOptions, "SkillGem")?.name || "")
+    ])
+  ), [activeStats, buildSkills, skillGemOptions]);
 
   const gemPickerItems = useMemo(() => {
     const kind = activeGemPicker?.kind ?? "skill";
@@ -1332,7 +1341,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const response = await fetch("/api/builds/calculate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      // The server runs these after the build's own calculation and never on its last free slot.
+      body: JSON.stringify({ ...(body as Record<string, unknown>), calc_priority: "compare" })
     });
     const json = await response.json().catch(() => null);
     if (!response.ok || !json?.ok || !json.data) throw new Error(json?.error || `HTTP ${response.status}`);
@@ -1360,29 +1370,44 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const requestId = ++calcRequestRef.current;
     const bodyKey = calcKey(body);
     mainCalcKeyRef.current = bodyKey;
+    // What-if previews wait while the build's own numbers are being calculated.
+    compareQueue.setPaused(true);
 
-    fetch("/api/builds/calculate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    })
-      .then(res => res.json())
-      .then(res => {
-        // A newer request already went out: drop this answer.
-        if (requestId !== calcRequestRef.current) return;
-        setCalcError(res.ok ? "" : String(res.error || ""));
-        if (res.ok && res.data) {
-          compareQueue.seed(bodyKey, res.data);
-          if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
-          setLiveStats(res.data);
-        }
-        setIsCalculating(false);
-      })
-      .catch(err => {
-        console.error("Failed to calculate live stats", err);
-        if (requestId === calcRequestRef.current) setIsCalculating(false);
+    const attempt = async (triesLeft: number): Promise<void> => {
+      const response = await fetch("/api/builds/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
       });
-  }, [currentCalculationBody, compareQueue]);
+      const res = await response.json().catch(() => ({ ok: false, error: `HTTP ${response.status}` }));
+      // A newer request already went out: drop this answer.
+      if (requestId !== calcRequestRef.current) return;
+      // Busy calculator: try again shortly instead of leaving the old numbers up.
+      if (response.status === 503 && triesLeft > 0) {
+        const wait = Math.min(Number(response.headers.get("retry-after")) || 2, 10) * 1000;
+        await new Promise((resolve) => window.setTimeout(resolve, wait));
+        if (requestId === calcRequestRef.current) await attempt(triesLeft - 1);
+        return;
+      }
+      setCalcError(res.ok ? "" : String(res.error || (locale === "vi" ? "Không tính được chỉ số." : "Calculation failed.")));
+      if (res.ok && res.data) {
+        compareQueue.seed(bodyKey, res.data);
+        if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
+        setLiveStats(res.data);
+      }
+    };
+
+    attempt(3)
+      .catch((err) => {
+        console.error("Failed to calculate live stats", err);
+        if (requestId === calcRequestRef.current) setCalcError(locale === "vi" ? "Không kết nối được máy tính chỉ số." : "Calculator unreachable.");
+      })
+      .finally(() => {
+        if (requestId !== calcRequestRef.current) return;
+        setIsCalculating(false);
+        compareQueue.setPaused(false);
+      });
+  }, [currentCalculationBody, compareQueue, locale]);
 
   // Typing a gem level or ticking several conditions in a row sends one request.
   useEffect(() => {
@@ -2529,7 +2554,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <span className="nj-panel-aside">{formatNumber(selectedInventoryCount, locale)} {localizedText(copy.selected, "", locale)}</span>
             </header>
             <div className="nj-panel-body">
-              <div className="nj-equip-layout">
               <div className="build-equipment-frame" aria-label={localizedText(copy.equipment, "", locale)}>
                 <div className="build-weapon-set-switch" style={{ gridArea: "setswitch" }} role="group" aria-label="Weapon set">
                   {[1, 2].map((set) => (
@@ -2615,34 +2639,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   );
                 })}
               </div>
-              <BuildInventoryPanel
-                locale={locale}
-                items={stashViews}
-                selectedSlotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined}
-                selectedSlotFilled={Boolean(activeSlotId && inventoryBySlot.get(activeSlotId)?.itemName)}
-                onClearSlot={() => setActiveSlotId(null)}
-                onUnequipSelected={() => activeSlotId && unequipItem(activeSlotId)}
-                onItemClick={clickStashItem}
-                onItemEnter={enterStashItem}
-                onItemMove={handleMouseMove}
-                onItemLeave={handleMouseLeave}
-                onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
-                onEdit={editStashItem}
-                onDuplicate={(itemId) => setStash((rows) => duplicateStashItem(rows, itemId))}
-                onNewItem={openNewItem}
-                onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
-                onDropSlot={unequipItem}
-                onPasteText={pasteStashText}
-                search={catalogSearch}
-                onAddCatalog={addCatalogItem}
-                slotChoice={slotChoice ? {
-                  itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
-                  slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
-                } : null}
-                onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
-                onCancelChoice={() => setSlotChoice(null)}
-              />
-              </div>
             </div>
           </section>
 
@@ -2707,7 +2703,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               const esRecharge = readStat("EnergyShieldRecharge");
               const mainSkills = buildSkills
                 .map((skill, index) => ({ skill, index, dps: skillDps(index), details: activeStats?.skillsDetails?.[index] }))
-                .filter((entry) => entry.skill.skillId && (entry.dps > 0 || entry.index + 1 === mainSocketGroup));
+                .filter((entry) => entry.skill.skillId && (entry.dps > 0 || entry.index + 1 === mainSocketGroup))
+                // Main skill first, then the hardest hitting.
+                .sort((a, b) => Number(b.index + 1 === mainSocketGroup) - Number(a.index + 1 === mainSocketGroup) || b.dps - a.dps);
               return (
                 <div className="nj-panel-body poe-no-tooltip">
                   <h3 className="nj-stat-group">{locale === "vi" ? "Nhân vật" : "Character"}</h3>
@@ -2762,12 +2760,25 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     ].filter((entry) => Number(entry[1]) > 0) as Array<[string, number]> : [];
                     const dmgTotal = dmg.reduce((sum, entry) => sum + entry[1], 0);
                     return (
-                      <div className="nj-main-skill" key={skill.id}>
+                      <button
+                        type="button"
+                        className={`nj-main-skill ${index + 1 === mainSocketGroup ? "is-main" : ""}`}
+                        key={skill.id}
+                        onClick={() => setMainSocketGroup(index + 1)}
+                        aria-pressed={index + 1 === mainSocketGroup}
+                        title={locale === "vi" ? (index + 1 === mainSocketGroup ? "Kỹ năng chính: các chỉ số chi tiết tính theo kỹ năng này" : "Bấm để chọn làm kỹ năng chính (chỉ số chi tiết tính theo kỹ năng này)") : "Set as main skill"}
+                      >
                         <span className="nj-gem-icon">
                           {icon ? <img src={icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">auto_awesome_motion</span>}
                         </span>
                         <span className="nj-main-skill-copy">
-                          <strong>{gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty")}</strong>
+                          <strong>
+                            {gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty")}
+                            {/* Meta gems (Cast on X): name the spell that does the damage. */}
+                            {skill.supportSkills.filter((support) => support.active && !support.disabled).slice(0, 1).map((support) => (
+                              <span className="nj-main-skill-sub" key={support.id}> → {gemChoiceLabel(support.skillId, skillGemOptions, "SkillGem", locale, support.nameSpec || "")}</span>
+                            ))}
+                          </strong>
                           {parts.length ? (
                             <small>
                               {parts.map((part, partIndex) => (
@@ -2784,7 +2795,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                             </i>
                           ) : null}
                         </span>
-                      </div>
+                      </button>
                     );
                   }) : (
                     <div className="nj-stat-row"><span className="is-empty" style={{ color: "var(--nj-muted)" }}>{locale === "vi" ? "Chọn skill ở phần Skills bên dưới." : "Pick a skill in the Skills panel below."}</span></div>
@@ -2792,6 +2803,39 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 </div>
               );
             })()}
+          </section>
+
+          {/* The build's inventory: its own grid area, under the doll on narrow screens (never beside it). */}
+          <section className="nj-panel nj-inventory" aria-label={locale === "vi" ? "Kho đồ" : "Inventory"}>
+            <div className="nj-panel-body">
+              <BuildInventoryPanel
+                locale={locale}
+                items={stashViews}
+                selectedSlotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined}
+                selectedSlotFilled={Boolean(activeSlotId && inventoryBySlot.get(activeSlotId)?.itemName)}
+                onClearSlot={() => setActiveSlotId(null)}
+                onUnequipSelected={() => activeSlotId && unequipItem(activeSlotId)}
+                onItemClick={clickStashItem}
+                onItemEnter={enterStashItem}
+                onItemMove={handleMouseMove}
+                onItemLeave={handleMouseLeave}
+                onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
+                onEdit={editStashItem}
+                onDuplicate={(itemId) => setStash((rows) => duplicateStashItem(rows, itemId))}
+                onNewItem={openNewItem}
+                onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
+                onDropSlot={unequipItem}
+                onPasteText={pasteStashText}
+                search={catalogSearch}
+                onAddCatalog={addCatalogItem}
+                slotChoice={slotChoice ? {
+                  itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
+                  slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
+                } : null}
+                onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
+                onCancelChoice={() => setSlotChoice(null)}
+              />
+            </div>
           </section>
         </div>
 

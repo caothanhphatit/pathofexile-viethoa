@@ -78,6 +78,7 @@ export function BuildInventoryPanel(props: {
   const [pasteText, setPasteText] = useState("");
   const [message, setMessage] = useState("");
   const [dropActive, setDropActive] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const results = query.trim().length >= 2 ? props.search(query) : [];
   const shown = props.selectedSlotLabel ? props.items.filter((row) => row.fits) : props.items;
 
@@ -135,6 +136,9 @@ export function BuildInventoryPanel(props: {
         <button type="button" className="pi-btn pi-btn--paste" onClick={() => setPasteOpen((open) => !open)} aria-expanded={pasteOpen}>
           <span className="material-symbols-rounded" aria-hidden="true">content_paste</span>
           {vi ? "Dán đồ từ game" : "Paste from game"}
+        </button>
+        <button type="button" className="pi-btn pi-btn--ghost" onClick={() => setHelpOpen((open) => !open)} aria-expanded={helpOpen} aria-label={vi ? "Cách dùng kho đồ" : "How to use"} title={vi ? "Cách dùng" : "How to use"}>
+          <span className="material-symbols-rounded" aria-hidden="true">help</span>
         </button>
       </header>
 
@@ -225,11 +229,11 @@ export function BuildInventoryPanel(props: {
             : (vi ? "Kho đồ trống. Đồ dự phòng trong PoB code, đồ bạn tháo ra, đồ dán từ game và đồ tìm bên dưới sẽ nằm ở đây." : "Empty. Spare items from the PoB code, unequipped items, pasted and searched items go here.")}
         </p>
       )}
-      <p className="pi-help">
+      {helpOpen ? <p className="pi-help">
         {vi
           ? "Bấm một món để mặc vào (hoặc kéo thả lên ô đồ). Rê chuột để xem nếu mặc vào thì sát thương, máu, kháng đổi bao nhiêu. Nút bút để sửa chỉ số, nút copy để nhân bản. Bấm chuột phải vào ô đồ để tháo ra."
           : "Click an item to equip it (or drag it onto a slot). Hover to see how damage, life and resistances would change. Right-click a slot to unequip."}
-      </p>
+      </p> : null}
 
       <label className="pi-search">
         <span className="material-symbols-rounded" aria-hidden="true">search</span>
