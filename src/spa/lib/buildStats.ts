@@ -327,3 +327,39 @@ export function skillDpsByGroup(rows: PobSkillDps[] | undefined, groupNames: str
     return total;
   });
 }
+
+export interface SkillCardInput {
+  index: number;
+  /** Group has an active gem picked. */
+  hasSkill: boolean;
+  disabled: boolean;
+  /** Its DPS from the last calculation; undefined while unknown. */
+  dps: number | undefined;
+  isMain: boolean;
+}
+
+/**
+ * Skills panel order: damaging skills first (highest DPS first, the main skill on
+ * ties), then new empty groups; disabled groups and skills without damage (auras,
+ * buffs, utility) go to "Kỹ năng phụ". Before the first calculation everything
+ * stays in the build's own order.
+ */
+export function arrangeSkillCards(cards: SkillCardInput[]): { primary: number[]; secondary: number[] } {
+  const known = cards.some((card) => card.dps !== undefined);
+  const primary: SkillCardInput[] = [];
+  const secondary: SkillCardInput[] = [];
+  for (const card of cards) {
+    if (card.disabled) secondary.push(card);
+    else if (!card.hasSkill) primary.push(card);
+    // Unknown DPS (not calculated yet, or an older calculator) stays visible.
+    else if (card.dps === undefined || card.isMain || card.dps > 0) primary.push(card);
+    else secondary.push(card);
+  }
+  if (known) {
+    primary.sort((a, b) => Number(b.hasSkill) - Number(a.hasSkill)
+      || (b.dps ?? 0) - (a.dps ?? 0)
+      || Number(b.isMain) - Number(a.isMain)
+      || a.index - b.index);
+  }
+  return { primary: primary.map((card) => card.index), secondary: secondary.map((card) => card.index) };
+}

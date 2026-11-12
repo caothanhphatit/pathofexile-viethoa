@@ -416,3 +416,26 @@ export function GemSwapStrip({ queue, baseKey, options, locale, title, onPick, o
     </div>
   );
 }
+
+/**
+ * What one support adds to its group: the group's DPS with it against without it
+ * (both calculated through the queue). "Cần thiết" when the skill does nothing without it.
+ */
+export function SupportValue({ queue, withKey, withoutKey, locale }: { queue: CalcQueue<Stats>; withKey: string; withoutKey: string; locale: Locale }) {
+  useQueueVersion(queue);
+  const vi = locale === "vi";
+  const withEntry = queue.get(withKey);
+  const withoutEntry = queue.get(withoutKey);
+  if (withEntry?.status === "error" || withoutEntry?.status === "error") return <span className="sk-value">{vi ? "Không tính được" : "Could not calculate"}</span>;
+  if (withEntry?.status !== "done" || withoutEntry?.status !== "done") {
+    return <span className="sk-value"><span className="pi-spinner" aria-hidden="true" />{vi ? "Đang tính gem này thêm bao nhiêu DPS…" : "Calculating…"}</span>;
+  }
+  const withDps = Number(withEntry.result?.CombinedDPS) || 0;
+  const withoutDps = Number(withoutEntry.result?.CombinedDPS) || 0;
+  if (withDps <= 0) return <span className="sk-value">{vi ? "Nhóm này chưa gây sát thương." : "This group deals no damage."}</span>;
+  if (withoutDps <= 0) return <span className="sk-value is-better">{vi ? "Cần thiết: bỏ gem này thì kỹ năng không gây sát thương." : "Required for the skill to deal damage."}</span>;
+  const ratio = withDps / withoutDps - 1;
+  if (Math.abs(ratio) < 0.0005) return <span className="sk-value">{vi ? "Gem này không đổi DPS (có thể giúp mana, tốc độ, phòng thủ…)." : "No DPS change."}</span>;
+  const pct = `${ratio > 0 ? "+" : "−"}${Math.abs(ratio * 100).toFixed(Math.abs(ratio) < 0.1 ? 1 : 0)}%`;
+  return <span className={`sk-value ${ratio > 0 ? "is-better" : "is-worse"}`}>{vi ? `Gem này ${ratio > 0 ? "thêm" : "làm giảm"} ${pct} DPS` : `${pct} DPS`}</span>;
+}

@@ -205,3 +205,30 @@ test("every skill group gets its own DPS from PoB's per-skill list", async () =>
   assert.deepEqual(plain(stats.skillDpsByGroup(rows, groups)), [1000, 100, 0, 200, 10, 300]);
   assert.deepEqual(plain(stats.skillDpsByGroup(undefined, [["Arc"]])), [0]);
 });
+
+test("skills panel: damaging skills first by DPS, auras and disabled groups tucked away", async () => {
+  const stats = await loadStatsLib();
+  const card = (index, dps, extra = {}) => ({ index, hasSkill: true, disabled: false, dps, isMain: false, ...extra });
+  const arranged = stats.arrangeSkillCards([
+    card(0, 0),
+    card(1, 300),
+    card(2, 900, { isMain: true }),
+    card(3, 500, { disabled: true }),
+    { index: 4, hasSkill: false, disabled: false, dps: undefined, isMain: false },
+    card(5, 1200)
+  ]);
+  assert.deepEqual(plain(arranged), { primary: [5, 2, 1, 4], secondary: [0, 3] });
+  const before = stats.arrangeSkillCards([card(0, undefined), card(1, undefined)]);
+  assert.deepEqual(plain(before), { primary: [0, 1], secondary: [] }, "no numbers yet: keep the build's order");
+  const mainWithoutDamage = stats.arrangeSkillCards([card(0, 0, { isMain: true }), card(1, 10)]);
+  assert.deepEqual(plain(mainWithoutDamage.primary), [1, 0], "the main skill always stays visible");
+});
+
+test("skills panel: groups whose DPS is unknown stay visible", async () => {
+  const stats = await loadStatsLib();
+  const arranged = stats.arrangeSkillCards([
+    { index: 0, hasSkill: true, disabled: false, dps: 500, isMain: true },
+    { index: 1, hasSkill: true, disabled: false, dps: undefined, isMain: false }
+  ]);
+  assert.deepEqual(plain(arranged), { primary: [0, 1], secondary: [] });
+});

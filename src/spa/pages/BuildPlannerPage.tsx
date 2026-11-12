@@ -48,7 +48,7 @@ import {
   type PobConfigInput,
   type BuildStashItem
 } from "../lib/buildPlanner";
-import { pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
+import { arrangeSkillCards, formatStat, pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import {
@@ -56,6 +56,7 @@ import {
   CompareBlock,
   GemSwapStrip,
   SLOT_DRAG_TYPE,
+  SupportValue,
   STASH_DRAG_TYPE,
   type CatalogEntry,
   type CompareSpec,
@@ -1018,6 +1019,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [newItemOpen, setNewItemOpen] = useState(false);
   const [calcError, setCalcError] = useState("");
   // Gem whose alternatives are shown under it ("main" = the group's own skill gem).
+  // Support whose DPS contribution is shown, and the card whose details are open.
+  const [hoveredSupport, setHoveredSupport] = useState<{ skillId: string; supportId: string; keys: { withKey: string; withoutKey: string } | null } | null>(null);
+  const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
   const [gemStrip, setGemStrip] = useState<{ skillId: string; supportId: string | "main"; limit?: number } | null>(null);
   const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
   const [activeWeaponSet, setActiveWeaponSet] = useState<1 | 2>(1);
@@ -1074,10 +1078,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   // until they are picked as main.
   // The main group shows PoB's main-skill DPS (what PoB's sidebar shows); the others
   // their row of PoB's per-skill list (every enabled group is in it).
-  const skillDps = (index: number): number => {
-    if (index + 1 === mainSocketGroup) return Number(activeStats?.CombinedDPS ?? activeStats?.TotalDPS ?? 0);
-    return groupSkillDps[index] ?? 0;
-  };
+  const skillDps = (index: number): number => groupSkillDps[index] ?? 0;
 
   const [tooltip, setTooltip] = useState<{
     visible: boolean;
@@ -1225,13 +1226,24 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const skillGemOptions = useMemo(() => gemPickerOptions(gemsData, "skill"), [gemsData, locale]);
   const supportGemOptions = useMemo(() => gemPickerOptions(gemsData, "support"), [gemsData, locale]);
   // Names of each group's active gems, to find their rows in PoB's per-skill DPS list.
-  const groupSkillDps = useMemo(() => skillDpsByGroup(
-    Array.isArray(activeStats?.SkillDPS) ? activeStats.SkillDPS as PobSkillDps[] : undefined,
-    buildSkills.map((skill) => skill.disabled ? [] : [
-      skill.nameSpec || gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem")?.name || "",
-      ...skill.supportSkills.filter((support) => support.active && !support.disabled).map((support) => support.nameSpec || gemChoiceItem(support.skillId, skillGemOptions, "SkillGem")?.name || "")
-    ])
-  ), [activeStats, buildSkills, skillGemOptions]);
+  const groupNames = useMemo(() => buildSkills.map((skill) => skill.disabled ? [] : [
+    skill.nameSpec || gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem")?.name || "",
+    ...skill.supportSkills.filter((support) => support.active && !support.disabled).map((support) => support.nameSpec || gemChoiceItem(support.skillId, skillGemOptions, "SkillGem")?.name || "")
+  ]), [buildSkills, skillGemOptions]);
+  /**
+   * DPS of each group in a stats object: the group that was main when it was
+   * calculated gets PoB's main-skill DPS, the others their per-skill row
+   * (undefined when the calculator did not send the per-skill list).
+   */
+  const groupDpsIn = useCallback((stats: any): Array<number | undefined> | undefined => {
+    if (!stats) return undefined;
+    const main = Number(stats.__mainGroup) || mainSocketGroup;
+    const rows = Array.isArray(stats.SkillDPS) ? skillDpsByGroup(stats.SkillDPS as PobSkillDps[], groupNames) : null;
+    return groupNames.map((_, index) => (index + 1 === main ? Number(stats.CombinedDPS ?? stats.TotalDPS ?? 0) : rows ? rows[index] : undefined));
+  }, [groupNames, mainSocketGroup]);
+  const currentGroupDps = useMemo(() => groupDpsIn(activeStats), [groupDpsIn, activeStats]);
+  const previousGroupDps = useMemo(() => groupDpsIn(previousStats), [groupDpsIn, previousStats]);
+  const groupSkillDps = useMemo(() => (currentGroupDps ?? []).map((value) => value ?? 0), [currentGroupDps]);
 
   const gemPickerItems = useMemo(() => {
     const kind = activeGemPicker?.kind ?? "skill";
@@ -1393,7 +1405,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       if (res.ok && res.data) {
         compareQueue.seed(bodyKey, res.data);
         if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
-        setLiveStats(res.data);
+        setLiveStats({ ...res.data, __mainGroup: Number(body.main_socket_group) || 1 });
       }
     };
 
@@ -1925,6 +1937,18 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     requestCalc(gemStripModel.baseBody, 3);
     for (const option of gemStripModel.options) requestCalc(option.body, 2);
   }, [gemStripModel, requestCalc]);
+
+  const supportValueKeys = (skillId: string, supportId: string) => {
+    const groupIndex = buildSkills.findIndex((row) => row.id === skillId);
+    if (groupIndex < 0) return null;
+    const withBody = calculationBodyFor({ mainSocketGroup: groupIndex + 1 });
+    const withoutBody = calculationBodyFor({
+      mainSocketGroup: groupIndex + 1,
+      skills: buildSkills.map((row) => (row.id === skillId ? { ...row, supportSkills: row.supportSkills.map((item) => (item.id === supportId ? { ...item, disabled: true } : item)) } : row))
+    });
+    if (!withBody || !withoutBody) return null;
+    return { withKey: requestCalc(withBody, 8), withoutKey: requestCalc(withoutBody, 8) };
+  };
 
   const pickStripGem = (gemId: string) => {
     if (!gemStripModel) return;
@@ -2876,146 +2900,226 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         <section className="nj-panel nj-skills">
           <header className="nj-panel-head">
             <h2>{localizedText(copy.skills, "", locale)}</h2>
+            {isCalculating ? <span className="nj-panel-aside">{locale === "vi" ? "Đang tính..." : "Calculating..."}</span> : null}
             <button type="button" onClick={addBuildSkill} className="nj-btn nj-btn--outline">
               <span className="material-symbols-rounded" aria-hidden="true">add</span>
               {localizedText(copy.addSkill, "", locale)}
             </button>
           </header>
           <div className="nj-panel-body">
-            {buildSkills.length ? (
-              <div className="nj-skill-grid">
-                {buildSkills.map((skill, index) => {
-                  const isMain = (index + 1) === mainSocketGroup;
-                  const dps = skillDps(index);
-                  const mainIcon = skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "";
-                  return (
-                    <article className={`nj-skill-card ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""}`} key={skill.id}>
-                      <div className="nj-gem-row nj-gem-row--main">
+            {buildSkills.length ? (() => {
+              const vi = locale === "vi";
+              const arranged = arrangeSkillCards(buildSkills.map((skill, index) => ({
+                index,
+                hasSkill: Boolean(skill.skillId),
+                disabled: Boolean(skill.disabled),
+                dps: currentGroupDps?.[index],
+                isMain: index + 1 === mainSocketGroup
+              })));
+              const renderCard = (index: number, compact = false) => {
+                const skill = buildSkills[index];
+                const isMain = index + 1 === mainSocketGroup;
+                const dps = currentGroupDps?.[index];
+                const before = previousGroupDps?.[index];
+                const delta = dps !== undefined && before !== undefined && before > 0 && Math.abs(dps - before) / before >= 0.0005 ? (dps - before) / before : undefined;
+                const icon = skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "";
+                const triggered = skill.supportSkills.filter((support) => support.active && !support.disabled);
+                const supports = skill.supportSkills.filter((support) => !support.active);
+                const freeSockets = Math.max(0, 5 - supports.length);
+                const expanded = expandedSkill === skill.id;
+                const details = isMain && activeStats ? activeStats : null;
+                const damageParts = details ? ([
+                  ["nj-dps-phys", vi ? "Vật lý" : "Physical", (Number(details.PhysicalMin) + Number(details.PhysicalMax)) / 2],
+                  ["nj-dps-fire", vi ? "Lửa" : "Fire", (Number(details.FireMin) + Number(details.FireMax)) / 2],
+                  ["nj-dps-cold", vi ? "Băng" : "Cold", (Number(details.ColdMin) + Number(details.ColdMax)) / 2],
+                  ["nj-dps-lightning", vi ? "Sét" : "Lightning", (Number(details.LightningMin) + Number(details.LightningMax)) / 2],
+                  ["nj-dps-chaos", vi ? "Hỗn mang" : "Chaos", (Number(details.ChaosMin) + Number(details.ChaosMax)) / 2]
+                ] as Array<[string, string, number]>).filter((part) => part[2] > 0) : [];
+                const damageTotal = damageParts.reduce((sum, part) => sum + part[2], 0);
+                return (
+                  <article className={`sk-card ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""} ${compact ? "is-compact" : ""}`} key={skill.id}>
+                    <div className="sk-top">
+                      <button
+                        type="button"
+                        className="sk-gem"
+                        onClick={() => (skill.skillId ? toggleGemStrip(skill.id, "main") : openSkillGemPicker(skill.id))}
+                        onMouseEnter={(event) => {
+                          if (!skill.skillId) return;
+                          const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
+                          if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
+                        }}
+                        onMouseMove={handleMouseMove}
+                        onMouseLeave={handleMouseLeave}
+                        title={vi ? "Bấm để đổi kỹ năng" : "Click to swap the skill"}
+                      >
+                        <span className="sk-gem-icon">
+                          {icon ? <img src={icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+                        </span>
+                        <span className="sk-name">
+                          <strong className={skill.skillId ? "" : "is-empty"}>
+                            {skill.skillId ? gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "Empty") : (vi ? "Chọn kỹ năng" : "Choose a skill")}
+                          </strong>
+                          {triggered.length ? <small>→ {triggered.map((support) => gemChoiceLabel(support.skillId, skillGemOptions, "SkillGem", locale, support.nameSpec || "")).join(", ")}</small> : null}
+                          <span className="sk-badges">
+                            {/* Full cards edit level/quality below; compact ones only show them. */}
+                            {compact && skill.skillId ? <span className="sk-badge">Lv {skill.gemLevel ?? 20}</span> : null}
+                            {compact && skill.gemQuality ? <span className="sk-badge">Q {skill.gemQuality}%</span> : null}
+                            {grantedSkillTag(skill)}
+                          </span>
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        className="sk-dps"
+                        onClick={() => setMainSocketGroup(index + 1)}
+                        aria-pressed={isMain}
+                        title={vi ? (isMain ? "Kỹ năng chính: chỉ số chi tiết tính theo kỹ năng này" : "Bấm để chọn làm kỹ năng chính") : "Set as main skill"}
+                      >
+                        <span className="sk-star material-symbols-rounded" aria-hidden="true">{isMain ? "star" : "star_outline"}</span>
+                        <b>{skill.disabled ? (vi ? "Tắt" : "Off") : dps === undefined ? (isCalculating ? "…" : "—") : dps > 0 ? formatStat(dps, "short") : "0"}</b>
+                        <small>
+                          {delta !== undefined ? <em className={delta > 0 ? "is-better" : "is-worse"}>{`${delta > 0 ? "+" : "−"}${Math.abs(delta * 100).toFixed(Math.abs(delta) < 0.1 ? 1 : 0)}%`}</em> : null}
+                          DPS
+                        </small>
+                      </button>
+                    </div>
+
+                    {gemStripFor(skill.id, "main")}
+
+                    {!compact ? (
+                      <div className="sk-supports" role="list" aria-label={vi ? "Gem hỗ trợ" : "Supports"}>
+                        {supports.map((support) => {
+                          const supportIcon = support.skillId ? gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem") : "";
+                          const label = support.skillId ? gemChoiceLabel(support.skillId, supportGemOptions, "SupportGem", locale, support.nameSpec || "") : (vi ? "Ô trống" : "Empty");
+                          const hovered = hoveredSupport?.skillId === skill.id && hoveredSupport.supportId === support.id;
+                          const keys = hovered ? hoveredSupport.keys : null;
+                          return (
+                            <span className={`sk-support ${support.disabled ? "is-disabled" : ""} ${gemStrip?.supportId === support.id ? "is-open" : ""}`} role="listitem" key={support.id}
+                              onMouseEnter={() => setHoveredSupport({
+                                skillId: skill.id,
+                                supportId: support.id,
+                                // Queues "this group with and without the support" (one at a time, cached).
+                                keys: support.skillId && !support.disabled && !skill.disabled ? supportValueKeys(skill.id, support.id) : null
+                              })}
+                              onMouseLeave={() => setHoveredSupport(null)}
+                            >
+                              <button type="button" className="sk-support-gem" onClick={() => toggleGemStrip(skill.id, support.id)} aria-label={`${label} — ${vi ? "bấm để đổi" : "click to swap"}`}>
+                                {/* Initials stay underneath: they show when the icon is missing or fails to load. */}
+                                {support.skillId ? <span className="sk-support-initial" aria-hidden="true">{label.replace(/[^A-Za-z0-9 ]/g, "").split(" ").filter(Boolean).slice(0, 2).map((word) => word[0]).join("").toUpperCase()}</span> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+                                {supportIcon ? <img src={supportIcon} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
+                              </button>
+                              <button type="button" className="sk-support-remove" onClick={() => removeSupportSkill(skill.id, support.id)} aria-label={vi ? `Gỡ ${label}` : `Remove ${label}`} title={vi ? "Gỡ gem này" : "Remove"}>
+                                <span className="material-symbols-rounded" aria-hidden="true">close</span>
+                              </button>
+                              {hovered ? (
+                                <span className="sk-support-tip" role="tooltip">
+                                  <b>{label}</b>
+                                  {support.gemLevel ? <small> · Lv {support.gemLevel}</small> : null}
+                                  {support.disabled ? <span className="sk-value">{vi ? "Đang tắt" : "Disabled"}</span> : keys ? <SupportValue queue={compareQueue} withKey={keys.withKey} withoutKey={keys.withoutKey} locale={locale} /> : null}
+                                </span>
+                              ) : null}
+                            </span>
+                          );
+                        })}
+                        {freeSockets > 0 ? (
+                          <button type="button" className="sk-support-add" onClick={() => addSupportSkill(skill.id)} title={vi ? "Thêm gem hỗ trợ (gợi ý theo DPS tăng thêm)" : "Add a support (ranked by DPS gain)"}>
+                            <span className="material-symbols-rounded" aria-hidden="true">add</span>
+                            <small>{vi ? `còn ${freeSockets} ô` : `${freeSockets} free`}</small>
+                          </button>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    {gemStrip && gemStrip.skillId === skill.id && gemStrip.supportId !== "main" ? gemStripFor(skill.id, gemStrip.supportId) : null}
+
+                    <div className="sk-actions">
+                      {skill.skillId ? (
                         <button
                           type="button"
-                          className="nj-gem-pick"
-                          onClick={() => (skill.skillId ? toggleGemStrip(skill.id, "main") : openSkillGemPicker(skill.id))}
-                          onMouseEnter={(event) => {
-                            if (skill.skillId) {
-                              const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
-                              if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
-                            }
-                          }}
-                          onMouseMove={handleMouseMove}
-                          onMouseLeave={handleMouseLeave}
+                          className={`sk-toggle ${skill.disabled ? "" : "is-on"}`}
+                          onClick={() => updateBuildSkill(skill.id, { disabled: !skill.disabled })}
+                          aria-pressed={!skill.disabled}
+                          title={vi ? (skill.disabled ? "Nhóm đang tắt — bấm để bật lại" : "Tắt nhóm này (không tính vào chỉ số)") : "Enable / disable"}
                         >
-                          <span className="nj-gem-icon">
-                            {mainIcon ? <img src={mainIcon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
-                          </span>
-                          <span className={`nj-gem-name ${skill.skillId ? "" : "is-empty"}`}>
-                            {skill.skillId ? gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty") : (locale === "vi" ? "Chọn skill gem" : "Choose skill gem")}
-                          </span>
-                        </button>
-                        <span className="nj-gem-aside">
-                          {grantedSkillTag(skill)}
-                          {skill.skillId ? gemLevelControls(skill, (patch) => updateBuildSkill(skill.id, patch)) : null}
-                          {dps > 0 ? <span className="nj-dps-mini">{Math.round(dps).toLocaleString("en-US")}</span> : null}
-                          {skill.skillId ? (
-                            <button
-                              type="button"
-                              className={`nj-icon-btn ${skill.disabled ? "" : "is-on"}`}
-                              onClick={() => updateBuildSkill(skill.id, { disabled: !skill.disabled })}
-                              aria-pressed={!skill.disabled}
-                              title={locale === "vi" ? (skill.disabled ? "Nhóm đang tắt — bấm để bật lại (tính vào chỉ số)" : "Tắt cả nhóm kỹ năng này (không tính vào chỉ số)") : (skill.disabled ? "Enable this group" : "Disable this group")}
-                            >
-                              <span className="material-symbols-rounded">{skill.disabled ? "toggle_off" : "toggle_on"}</span>
-                            </button>
-                          ) : null}
-                          {skill.skillId ? (
-                            <button
-                              type="button"
-                              className={`nj-icon-btn ${isMain ? "is-on" : ""}`}
-                              onClick={() => setMainSocketGroup(index + 1)}
-                              title={locale === "vi" ? "Chọn làm kỹ năng chính để tính DPS" : "Set as main skill for DPS calculation"}
-                            >
-                              <span className="material-symbols-rounded">{isMain ? "star" : "star_outline"}</span>
-                            </button>
-                          ) : null}
-                          <button
-                            type="button"
-                            className="nj-icon-btn nj-icon-btn--danger"
-                            onClick={() => removeBuildSkill(skill.id)}
-                            title={locale === "vi" ? "Xóa nhóm kỹ năng" : "Remove socket group"}
-                          >
-                            <span className="material-symbols-rounded">close</span>
-                          </button>
-                        </span>
-                      </div>
-
-                      {gemStripFor(skill.id, "main")}
-
-                      {skill.supportSkills.map((support) => {
-                        // A second active gem (e.g. the spell in Cast on Critical) is a skill gem, not a support.
-                        const supportOptions = support.active ? skillGemOptions : supportGemOptions;
-                        const supportPrefix = support.active ? "SkillGem" : "SupportGem";
-                        const supportIcon = support.skillId ? gemChoiceIcon(support.skillId, supportOptions, supportPrefix) : "";
-                        return (
-                          <div className={`nj-gem-row nj-gem-row--support ${support.disabled ? "is-disabled" : ""}`} key={support.id}>
-                            <button
-                              type="button"
-                              className="nj-gem-pick"
-                              onClick={() => toggleGemStrip(skill.id, support.id)}
-                              onMouseEnter={(event) => {
-                                if (support.skillId) {
-                                  const html = getGemTooltipHtml(support.skillId, supportOptions, supportPrefix, locale, support.note);
-                                  if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
-                                }
-                              }}
-                              onMouseMove={handleMouseMove}
-                              onMouseLeave={handleMouseLeave}
-                            >
-                              <span className="nj-gem-icon">
-                                {supportIcon ? <img src={supportIcon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
-                              </span>
-                              <span className={`nj-gem-name ${support.skillId ? "" : "is-empty"}`}>
-                                {support.skillId ? gemChoiceLabel(support.skillId, supportOptions, supportPrefix, locale, support.nameSpec || "Empty") : (locale === "vi" ? "Chọn support gem" : "Choose support gem")}
-                              </span>
-                            </button>
-                            <span className="nj-gem-aside">
-                              {support.active ? <span className="pc-tag" title={locale === "vi" ? "Gem kỹ năng gắn chung nhóm (vd. phép trong Cast on Critical)." : "Active gem in this group"}>{locale === "vi" ? "Kỹ năng" : "Skill"}</span> : null}
-                              {support.skillId ? gemLevelControls(support, (patch) => updateSupportSkill(skill.id, support.id, patch)) : null}
-                              {support.skillId ? (
-                                <button
-                                  type="button"
-                                  className={`nj-icon-btn ${support.disabled ? "" : "is-on"}`}
-                                  onClick={() => updateSupportSkill(skill.id, support.id, { disabled: !support.disabled })}
-                                  aria-pressed={!support.disabled}
-                                  title={locale === "vi" ? (support.disabled ? "Gem đang tắt — bấm để bật lại" : "Tắt gem này (không tính vào chỉ số)") : (support.disabled ? "Enable gem" : "Disable gem")}
-                                >
-                                  <span className="material-symbols-rounded">{support.disabled ? "toggle_off" : "toggle_on"}</span>
-                                </button>
-                              ) : null}
-                              <button
-                                type="button"
-                                className="nj-icon-btn nj-icon-btn--danger"
-                                onClick={() => removeSupportSkill(skill.id, support.id)}
-                                title={localizedText(copy.removeSupport, "", locale)}
-                              >
-                                <span className="material-symbols-rounded">close</span>
-                              </button>
-                            </span>
-                          </div>
-                        );
-                      })}
-
-                      {gemStrip && gemStrip.skillId === skill.id && gemStrip.supportId !== "main" ? gemStripFor(skill.id, gemStrip.supportId) : null}
-
-                      {skill.supportSkills.length < 5 ? (
-                        <button type="button" className="nj-gem-row--add" onClick={() => addSupportSkill(skill.id)}>
-                          <span className="nj-gem-icon"><span className="material-symbols-rounded" aria-hidden="true">add</span></span>
-                          <span>{localizedText(copy.addSupport, "", locale)}</span>
+                          <span className="material-symbols-rounded" aria-hidden="true">{skill.disabled ? "toggle_off" : "toggle_on"}</span>
+                          {skill.disabled ? (vi ? "Đang tắt" : "Off") : (vi ? "Đang bật" : "On")}
                         </button>
                       ) : null}
-                    </article>
-                  );
-                })}
-              </div>
-            ) : (
+                      {skill.skillId && !compact ? gemLevelControls(skill, (patch) => updateBuildSkill(skill.id, patch)) : null}
+                      <span className="sk-gap" />
+                      {skill.skillId ? (
+                        <button type="button" className="sk-link" onClick={() => setExpandedSkill(expanded ? null : skill.id)} aria-expanded={expanded}>
+                          {vi ? "Chi tiết" : "Details"}
+                          <span className="material-symbols-rounded" aria-hidden="true">{expanded ? "expand_less" : "expand_more"}</span>
+                        </button>
+                      ) : null}
+                      <button type="button" className="nj-icon-btn nj-icon-btn--danger" onClick={() => removeBuildSkill(skill.id)} title={vi ? "Xóa nhóm kỹ năng" : "Remove group"}>
+                        <span className="material-symbols-rounded" aria-hidden="true">delete</span>
+                      </button>
+                    </div>
+
+                    {expanded ? (
+                      <div className="sk-details">
+                        {details ? (
+                          <>
+                            {damageTotal > 0 ? (
+                              <div className="sk-damage">
+                                <i className="sk-damage-bar">
+                                  {damageParts.map(([cls, , value]) => <b className={cls} style={{ width: `${(value / damageTotal) * 100}%` }} key={cls} />)}
+                                </i>
+                                <span>{damageParts.map(([cls, label, value]) => <span className={cls.replace("nj-dps-", "nj-c-")} key={cls}>{label} {Math.round((value / damageTotal) * 100)}%</span>)}</span>
+                              </div>
+                            ) : null}
+                            <dl className="sk-facts">
+                              {Number(details.Speed) > 0 ? <><dt>{vi ? "Tốc độ" : "Speed"}</dt><dd>{formatStat(Number(details.Speed), "speed")}</dd></> : null}
+                              {Number(details.CritChance) > 0 ? <><dt>{vi ? "Chí mạng" : "Crit"}</dt><dd>{formatStat(Number(details.CritChance), "pct1")}</dd></> : null}
+                              {details.HitChance !== undefined ? <><dt>{vi ? "Trúng" : "Hit"}</dt><dd>{formatStat(Number(details.HitChance), "pct")}</dd></> : null}
+                              {Number(details.AverageDamage) > 0 ? <><dt>{vi ? "Mỗi đòn" : "Per hit"}</dt><dd>{formatStat(Number(details.AverageDamage), "short")}</dd></> : null}
+                              {Number(details.ManaCost) > 0 ? <><dt>Mana</dt><dd>{formatStat(Number(details.ManaCost), "int")}</dd></> : null}
+                            </dl>
+                          </>
+                        ) : (
+                          <p className="sk-note">{vi ? "Bấm số DPS (ngôi sao) để chọn làm kỹ năng chính và xem chi tiết sát thương." : "Make it the main skill to see its damage breakdown."}</p>
+                        )}
+                        {skill.supportSkills.length ? (
+                          <ul className="sk-gem-list">
+                            {skill.supportSkills.map((support) => {
+                              const options = support.active ? skillGemOptions : supportGemOptions;
+                              const prefix = support.active ? "SkillGem" : "SupportGem";
+                              return (
+                                <li key={support.id} className={support.disabled ? "is-disabled" : ""}>
+                                  <span>{support.skillId ? gemChoiceLabel(support.skillId, options, prefix, locale, support.nameSpec || "") : (vi ? "Ô trống" : "Empty")}{support.active ? <small> · {vi ? "kỹ năng" : "skill"}</small> : null}</span>
+                                  {support.skillId ? gemLevelControls(support, (patch) => updateSupportSkill(skill.id, support.id, patch)) : null}
+                                  {support.skillId ? (
+                                    <button type="button" className={`nj-icon-btn ${support.disabled ? "" : "is-on"}`} onClick={() => updateSupportSkill(skill.id, support.id, { disabled: !support.disabled })} aria-pressed={!support.disabled} title={vi ? "Bật / tắt gem" : "Enable / disable"}>
+                                      <span className="material-symbols-rounded" aria-hidden="true">{support.disabled ? "toggle_off" : "toggle_on"}</span>
+                                    </button>
+                                  ) : null}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </article>
+                );
+              };
+              return (
+                <>
+                  <div className="sk-grid">{arranged.primary.map((index) => renderCard(index))}</div>
+                  {arranged.secondary.length ? (
+                    <details className="sk-secondary">
+                      <summary>
+                        {vi ? `Kỹ năng phụ (${arranged.secondary.length})` : `Other skills (${arranged.secondary.length})`}
+                        <small>{vi ? " — aura, buff, kỹ năng không gây sát thương và nhóm đang tắt" : " — auras, buffs, no-damage and disabled groups"}</small>
+                      </summary>
+                      <div className="sk-grid sk-grid--compact">{arranged.secondary.map((index) => renderCard(index, true))}</div>
+                    </details>
+                  ) : null}
+                </>
+              );
+            })() : (
               <div className="build-empty" style={{ padding: "24px" }}>
                 <span className="material-symbols-rounded" style={{ fontSize: "36px" }}>auto_awesome_motion</span>
                 <p>{localizedText(copy.noSkills, "", locale)}</p>
