@@ -163,33 +163,31 @@ test("planner numbers match Path of Building on every fixture", {
   assert.equal(failed.length, 0, formatReport(failed));
 });
 
-test("analysis requests ride in the build XML, whitelisted and capped", async () => {
-  const { plannerRequestXml, MAX_ANALYSIS_NODES } = await import("../src/server/pob-build-xml.mjs");
+test("stat breakdown requests ride in the build XML, whitelisted", async () => {
+  const { plannerRequestXml, BREAKDOWN_STATS } = await import("../src/server/pob-breakdown.mjs");
   assert.equal(plannerRequestXml(null), "");
-  assert.equal(plannerRequestXml({ breakdown: ["Nope"], nodes: [] }), "");
-  const xml = plannerRequestXml({ breakdown: ["Life", "CritChance", "Evil\"/>"], nodes: ["10", "x", 10, -2, ...Array.from({ length: 200 }, (_, i) => i + 100)] });
-  assert.match(xml, /<PlannerRequest breakdown="Life,CritChance" nodes="10,100,/);
-  assert.equal(xml.match(/nodes="([^"]*)"/)[1].split(",").length, MAX_ANALYSIS_NODES);
+  assert.equal(plannerRequestXml({ breakdown: ["Nope"] }), "");
+  assert.equal(plannerRequestXml({ breakdown: ["Life", "CritChance", "Life", "Evil\"/>"] }), '\n\t<PlannerRequest breakdown="Life,CritChance"/>');
+  assert.ok(BREAKDOWN_STATS.includes("CombinedDPS"));
+  assert.match(buildPobXml({ className: "Witch", analysis: { breakdown: ["Life"] } }), /<PlannerRequest breakdown="Life"\/>\n<\/PathOfBuilding2>/);
   assert.doesNotMatch(buildPobXml({ className: "Witch" }), /PlannerRequest/);
 });
 
-test("one PoB run explains stats and prices passive nodes", {
+test("one PoB run explains where stats come from", {
   skip: runtime.available ? false : "PoB not installed locally",
   timeout: 120_000
 }, async () => {
   const { runPob } = await import("../scripts/check-pob-parity.mjs");
   const [fixture] = readFixtures(["mercenary-gemling.json"]);
   const { body } = await plannerCalculationRequest(fixture.code);
-  const allocated = body.passives.slice(0, 4);
-  const out = await runPob(buildPobXml({ ...body, analysis: { breakdown: ["Life", "FireResist", "CombinedDPS"], nodes: allocated } }), runtime);
+  const out = await runPob(buildPobXml({ ...body, analysis: { breakdown: ["Life", "FireResist", "CritChance", "CombinedDPS"] } }), runtime);
   const life = out.Breakdown.Life;
   assert.equal(life.value, out.Life);
   assert.ok(life.lines.some((line) => /\(base\)/.test(line)), "PoB's own breakdown lines");
-  assert.ok(life.sources.some((row) => row.kind === "item" && row.type === "BASE"), "Life from items, with the item's name");
-  assert.ok(out.Breakdown.CombinedDPS.sources.some((row) => row.kind === "tree"), "damage from passives");
-  for (const id of allocated) {
-    const delta = out.NodeDeltas[String(id)];
-    assert.ok(delta, `node ${id}`);
-    assert.equal(delta.allocated, true);
-  }
+  assert.ok(life.sources.some((row) => row.kind === "item" && row.type === "BASE" && row.label), "Life from named items");
+  assert.ok(out.Breakdown.FireResist.sources.some((row) => row.kind === "quest"), "resistance from quests");
+  assert.ok(out.Breakdown.CritChance.sources.some((row) => row.kind === "tree" && row.type === "INC"), "crit from passives");
+  assert.ok(out.Breakdown.CombinedDPS.sources.length > 0);
+  assert.equal(out.NodeDeltas, undefined);
+  assert.equal(Math.round(out.CombinedDPS), Math.round((await runPob(buildPobXml(body), runtime)).CombinedDPS), "asking for a breakdown does not change the numbers");
 });

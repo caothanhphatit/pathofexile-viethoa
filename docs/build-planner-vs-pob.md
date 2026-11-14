@@ -1,6 +1,6 @@
 # Build Planner so với Path of Building (PoE2)
 
-Cập nhật: 2026-11-11. Bản PoB dùng để so: `D:\code\pob-core` (nhánh `dev`).
+Cập nhật: 2026-11-14. Bản PoB dùng để so: `D:\code\pob-core` (nhánh `dev`).
 
 Ký hiệu: ✅ có · 🟡 làm dở / chỉ một phần · ❌ chưa có.
 Cột **Ưu tiên** là thứ tự nên làm tiếp (1 = làm trước), xét theo mức hữu ích cho người chơi Việt.
@@ -69,8 +69,8 @@ Kết quả hiện tại: **5/5 build khớp PoB** ở mọi chỉ số trên.
 | Chọn item từ danh sách base / unique | ✅ | Unique giờ được gửi kèm mod (giá trị giữa khoảng roll) để PoB tính | |
 | Import item từ PoB, giữ nguyên dòng mod và roll | ✅ | | |
 | Ô Ring 3, Arm/Leg (augment), jewel trong trang bị | 🟡 | Tính đúng; chưa hiện trên hình nhân vật | 7 |
-| Dán item copy từ game (Ctrl+C) | ❌ | Parser đã có (`parsePobItemDetails`), thiếu ô dán | 2 |
-| Sửa roll / thêm mod (craft item rare) | ❌ | | 9 |
+| Dán item copy từ game (Ctrl+C) | ✅ | "Kho đồ" → "Dán đồ từ game" hoặc Ctrl+V trên kho; dán nhiều món một lần | |
+| Sửa roll / thêm mod (craft item rare) | ✅ | Trình sửa đồ: đổi tier và giá trị trong khoảng, thêm mod chỉ từ pool của base (gợi ý khi gõ, có tiếng Việt), kiểm tra luật game (số prefix/suffix, nhóm mod, cấp vật phẩm, unique, corrupt) ở cả trình duyệt và server. Pool lấy từ dữ liệu poe2db, chưa có jewel/implicit/rune | |
 | Bật/tắt flask, charm | 🟡 | Luôn tính là đang bật (như PoB mặc định) | |
 
 ### Skill / support gem
@@ -84,7 +84,7 @@ Kết quả hiện tại: **5/5 build khớp PoB** ở mọi chỉ số trên.
 | Gem kích hoạt thứ hai trong nhóm (Cast on Crit…) | ✅ | Mới: hiện nhãn "Kỹ năng" | |
 | Kỹ năng do item / cây cho sẵn | ✅ | Mới: nhãn "Từ trang bị" / "Từ cây thụ động" | |
 | Gem corrupt, chọn phần kỹ năng (skill part), minion | 🟡 | Giữ từ PoB import; chưa chỉnh trong Planner | 10 |
-| DPS riêng từng nhóm (Full DPS) | ❌ | Backend chỉ trả kỹ năng chính | 4 |
+| DPS riêng từng nhóm (Full DPS) | ✅ | Mỗi thẻ kỹ năng hiện DPS của nhóm đó (danh sách SkillDPS của PoB), bấm để chọn kỹ năng chính; gợi ý support xếp theo DPS tăng thêm | |
 
 ### Config (điều kiện tính)
 
@@ -110,7 +110,7 @@ Kết quả hiện tại: **5/5 build khớp PoB** ở mọi chỉ số trên.
 | Chỉ số chi tiết phòng thủ | ✅ | Mới: EHP, đòn lớn nhất chịu được theo từng loại sát thương, né, deflect, block, giảm sát thương vật lý, kháng + phần vượt trần, ngưỡng choáng, Spirit còn trống | |
 | Hồi phục (regen, ES recharge, leech) | ✅ | Mới | |
 | Giải thích từng chỉ số | ✅ | Mới: dấu ? cạnh mỗi dòng, lời tiếng Việt không dùng thuật ngữ PoB | |
-| Breakdown (chỉ số đến từ đâu, tab Calcs) | ❌ | Cần backend trả thêm `calcsTab` breakdown | 1 |
+| Breakdown (chỉ số đến từ đâu, tab Calcs) | ✅ | Bấm tên chỉ số (Máu, kháng, chí mạng, tốc độ, DPS…) trong "Chỉ số chi tiết": cách PoB tính từng bước và các nguồn (gốc, thuộc tính, trang bị, cây, gem, nhiệm vụ) với +/tăng/nhân thêm, bằng tiếng Việt. Một lần chạy PoB cho mọi chỉ số (`src/server/pob-breakdown.mjs`) | |
 | Minion, totem, chỉ số theo từng phần kỹ năng | ❌ | | 12 |
 
 ### So sánh
@@ -118,7 +118,7 @@ Kết quả hiện tại: **5/5 build khớp PoB** ở mọi chỉ số trên.
 | Tính năng PoB | Planner | Ghi chú | Ưu tiên |
 | --- | --- | --- | --- |
 | Thay đổi so với trước khi sửa | ✅ | Mới: mỗi lần tính lại, chỉ số hiện +/− (xanh tốt, đỏ xấu) so với lần trước | |
-| So item đang mặc với item khác (tooltip "nếu mặc vào thì…") | ❌ | Cần một lần tính PoB cho mỗi item so | 3 |
+| So item đang mặc với item khác (tooltip "nếu mặc vào thì…") | ✅ | Rê chuột lên đồ trong "Kho đồ": DPS, Máu, ES, kháng, EHP thay đổi theo từng ô có thể mặc; tính lần lượt qua hàng đợi, có cache | |
 | So hai build với nhau (Compare tab) | ❌ | | 13 |
 
 ### Import / export
@@ -133,14 +133,14 @@ Kết quả hiện tại: **5/5 build khớp PoB** ở mọi chỉ số trên.
 
 ## Việc nên làm tiếp (theo thứ tự)
 
-1. **Breakdown chỉ số**: bấm vào một chỉ số thấy nó đến từ đâu (item, cây, gem). PoB có sẵn trong `calcsTab`; backend cần trả thêm.
-2. **Dán item từ game** (Ctrl+C trong game → dán vào ô đồ).
-3. **So item / node**: "mặc món này vào thì DPS, máu đổi bao nhiêu" và rê chuột lên node passive. Cần endpoint tính nhiều biến thể trong một lần chạy PoB để không phải chạy lại cả PoB cho từng món.
-4. **DPS từng nhóm skill** (Full DPS) và **gắn jewel trên cây**.
-5. Sửa node theo bộ vũ khí, chọn thuộc tính cho node, ô Ring 3/augment trên hình nhân vật.
+1. **Xem trước node passive**: rê chuột lên node thấy "+X% DPS, +Y Máu" khi lấy / bỏ node (dùng calculator nhanh của PoB, nhiều node một lần chạy).
+2. **Gắn jewel trên cây**, **node theo bộ vũ khí** và **chọn thuộc tính** cho node +Str/Dex/Int ngay trên cây.
+3. **Gem**: corrupt level, skill part, minion chỉnh trên thẻ kỹ năng; **chỉ số minion/totem** khi kỹ năng chính là minion/totem.
+4. Nhiều bộ cây / đồ / skill trong một build; so hai build.
 
 ## Tệp liên quan
 
+- Breakdown chỉ số: `src/server/pob-breakdown.mjs`, khối "STAT BREAKDOWN" trong `scripts/pob-calculate.lua`, `src/spa/lib/statBreakdown.ts`, `src/spa/components/StatBreakdown.tsx`
 - Planner: `src/spa/pages/BuildPlannerPage.tsx`, `src/spa/lib/buildPlanner.ts`, `src/spa/lib/buildStats.ts`, `src/spa/components/BuildCalcPanels.tsx`, `src/spa/styles/planner-calc.css`
 - Backend: `src/server/pob-build-xml.mjs` (XML gửi PoB, dùng chung cho route, test và export PoB code), `src/server/routes/public.mjs` (`POST /api/builds/calculate`), `scripts/pob-calculate.lua`
 - Luồng kiểm tra: `scripts/check-pob-parity.mjs`, `scripts/lib/planner-node.mjs`, `tests/pob-parity.test.mjs`, `tests/fixtures/pob-builds/`

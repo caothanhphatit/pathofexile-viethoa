@@ -5,6 +5,8 @@
 // Everything here ends up inside XML attributes or text, and the request body
 // comes from the browser: every value is escaped, clamped or whitelisted.
 
+import { plannerRequestXml } from "./pob-breakdown.mjs";
+
 export const escapeXml = (value) => {
   if (value === undefined || value === null) return "";
   return String(value)
@@ -187,27 +189,6 @@ const syntheticItemText = (slot) => [
   slot.item_name,
   ...(slot.note ? String(slot.note).split("\n").map((line) => line.trim()).filter(Boolean) : [])
 ].join("\n");
-
-/** Stats the planner can ask PoB to explain (see BREAKDOWN_MODS in scripts/pob-calculate.lua). */
-export const BREAKDOWN_STATS = [
-  "Life", "Mana", "Spirit", "EnergyShield", "Armour", "Evasion", "FireResist", "ColdResist", "LightningResist", "ChaosResist",
-  "LifeRegenRecovery", "ManaRegenRecovery", "EffectiveMovementSpeedMod", "BlockChance", "EvadeChance",
-  "CritChance", "CritMultiplier", "Speed", "HitChance", "CombinedDPS", "TotalDPS", "AverageDamage"
-];
-export const MAX_ANALYSIS_NODES = 120;
-
-/**
- * <PlannerRequest> read by scripts/pob-calculate.lua: stat breakdowns and per-node
- * deltas computed in the same PoB run as the build (one load for the whole batch).
- */
-export function plannerRequestXml(analysis) {
-  if (!analysis || typeof analysis !== "object") return "";
-  const stats = (Array.isArray(analysis.breakdown) ? analysis.breakdown : []).filter((stat) => BREAKDOWN_STATS.includes(stat));
-  const nodes = [...new Set(nodeIds(analysis.nodes))].slice(0, MAX_ANALYSIS_NODES);
-  if (!stats.length && !nodes.length) return "";
-  return `
-	<PlannerRequest breakdown="${stats.join(",")}" nodes="${nodes.join(",")}"/>`;
-}
 
 export function buildPobXml(build = {}) {
   const level = clampInt(build.level, 1, 100, 90);

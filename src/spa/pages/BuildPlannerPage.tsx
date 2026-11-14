@@ -51,6 +51,7 @@ import {
 import { arrangeSkillCards, formatStat, pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
+import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
 import {
   BuildInventoryPanel,
   CompareBlock,
@@ -1018,6 +1019,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   >(null);
   const [newItemOpen, setNewItemOpen] = useState(false);
   const [calcError, setCalcError] = useState("");
+  // Stat whose "where does it come from" breakdown is open.
+  const [explainStat, setExplainStat] = useState<ExplainTarget | null>(null);
   // Gem whose alternatives are shown under it ("main" = the group's own skill gem).
   // Support whose DPS contribution is shown, and the card whose details are open.
   const [hoveredSupport, setHoveredSupport] = useState<{ skillId: string; supportId: string; keys: { withKey: string; withoutKey: string } | null } | null>(null);
@@ -3153,7 +3156,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <span className="nj-panel-aside">{isCalculating ? (locale === "vi" ? "Đang tính..." : "Calculating...") : (locale === "vi" ? "Tính bằng Path of Building" : "Calculated by Path of Building")}</span>
             </header>
             <div className="nj-panel-body">
-              <BuildStatDetails stats={activeStats} previous={previousStats} locale={locale} calculating={isCalculating} />
+              <BuildStatDetails stats={activeStats} previous={previousStats} locale={locale} calculating={isCalculating} onExplain={setExplainStat} />
             </div>
           </section>
           <section className="nj-panel nj-calc-config">
@@ -3366,6 +3369,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           onReset={editorModel.canReset ? resetEditor : undefined}
         />
       ) : null}
+      {explainStat ? <StatBreakdownDialog queue={compareQueue} body={currentCalculationBody()} target={explainStat} locale={locale} onClose={() => setExplainStat(null)} /> : null}
       {newItemOpen ? <NewItemDialog choices={newItemChoices} locale={locale} onPick={pickNewItem} onCancel={() => setNewItemOpen(false)} /> : null}
 
       {tooltip.visible && (

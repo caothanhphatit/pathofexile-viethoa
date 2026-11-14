@@ -18,6 +18,7 @@ import {
   type StatDefinition
 } from "../lib/buildStats";
 import "../styles/planner-calc.css";
+import { canExplainStat, type ExplainTarget } from "./StatBreakdown";
 
 type Locale = "vi" | "en" | string;
 type Stats = Record<string, unknown> | null | undefined;
@@ -45,7 +46,14 @@ function ChangeBadge({ def, current, previous }: { def: StatDefinition; current?
   );
 }
 
-export function BuildStatDetails({ stats, previous, locale, calculating }: { stats: Stats; previous: Stats; locale: Locale; calculating?: boolean }) {
+export function BuildStatDetails({ stats, previous, locale, calculating, onExplain }: {
+  stats: Stats;
+  previous: Stats;
+  locale: Locale;
+  calculating?: boolean;
+  /** Opens "where does this come from" for a stat (StatBreakdownDialog). */
+  onExplain?: (target: ExplainTarget) => void;
+}) {
   const vi = locale === "vi";
   const [open, setOpen] = useState<Record<string, boolean>>({ offence: true, defence: true, recovery: false });
   if (!stats) {
@@ -86,7 +94,11 @@ export function BuildStatDetails({ stats, previous, locale, calculating }: { sta
                 {rows.map((def) => (
                   <div className="pc-row" key={def.stat}>
                     <span className="pc-label">
-                      {vi ? def.vi : def.en}
+                      {onExplain && canExplainStat(def.stat) ? (
+                        <button type="button" className="pc-explain" onClick={() => onExplain({ stat: def.stat, label: vi ? def.vi : def.en, valueText: formatStat(num(stats, def.stat), def.format) })} title={vi ? "Bấm để xem chỉ số này từ đâu ra" : "Where does this come from?"}>
+                          {vi ? def.vi : def.en}
+                        </button>
+                      ) : (vi ? def.vi : def.en)}
                       <Hint text={def.hint} />
                     </span>
                     <strong>
@@ -108,10 +120,16 @@ export function BuildStatDetails({ stats, previous, locale, calculating }: { sta
                         return (
                           <Fragment key={res.stat}>
                             {index ? <span className="nj-stat-sep">/</span> : null}
-                            <span className={res.cls} title={vi ? res.vi : res.en}>
+                            <button
+                              type="button"
+                              className={`pc-explain pc-explain--res ${res.cls}`}
+                              disabled={!onExplain}
+                              onClick={() => onExplain?.({ stat: res.stat, label: vi ? `Kháng ${res.vi.toLowerCase()}` : `${res.en} resistance`, valueText: value === undefined ? "-" : `${Math.round(value)}%` })}
+                              title={vi ? `Kháng ${res.vi.toLowerCase()} — bấm để xem từ đâu ra` : res.en}
+                            >
                               {value === undefined ? "-" : `${Math.round(value)}%`}
                               {over ? <small className="pc-over">({Math.round(over)})</small> : null}
-                            </span>
+                            </button>
                           </Fragment>
                         );
                       })}
