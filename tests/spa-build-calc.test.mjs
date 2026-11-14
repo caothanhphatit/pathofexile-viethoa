@@ -166,6 +166,18 @@ test("calculation request: picked items, edited conditions, extra slots, disable
   assert.equal(body.activeWeaponSet, 2);
 });
 
+test("calculation request: the main skill keeps pointing at its group when an empty group comes first", async () => {
+  const lib = await loadPlannerLib();
+  const group = (id, skillId) => ({ id, skillId, note: "", levelStart: "", levelEnd: "", supportSkills: [] });
+  const skills = [group("a", "SkillGemArc"), group("new", ""), group("b", "SkillGemComet")];
+  const body = (mainSocketGroup) => lib.calculationRequestBody({ payload: { className: "Witch" }, passives: [], inventory: [], skills, mainSocketGroup });
+  assert.equal(body(3).skills.length, 2, "the group with no gem is left out");
+  assert.equal(body(3).main_socket_group, 2, "listed group 3 is PoB's group 2");
+  assert.equal(body(1).main_socket_group, 1);
+  assert.equal(body(2).main_socket_group, 1, "an empty group falls back to the first");
+  assert.equal(body(9).main_socket_group, 1);
+});
+
 test("planner page uses the shared calculation request and the new panels", async () => {
   const page = await readFile(join(repoRoot, "src/spa/pages/BuildPlannerPage.tsx"), "utf8");
   assert.match(page, /calculationRequestBody\(\{/);
@@ -204,6 +216,9 @@ test("every skill group gets its own DPS from PoB's per-skill list", async () =>
   const groups = [["Cast on Elemental Ailment", "Living Bomb"], ["Power Siphon"], ["Purity of Fire"], ["Elemental Invocation", "Arc"], ["Power Siphon"], ["Cast on Critical", "Comet"]];
   assert.deepEqual(plain(stats.skillDpsByGroup(rows, groups)), [1000, 100, 0, 200, 10, 300]);
   assert.deepEqual(plain(stats.skillDpsByGroup(undefined, [["Arc"]])), [0]);
+  // A short name does not take the row of a longer skill listed later.
+  assert.deepEqual(plain(stats.skillDpsByGroup([{ name: "Ice Nova Echo", dps: 500 }, { name: "Ice Nova", dps: 40 }], [["Ice Nova"], ["Ice Nova Echo"]])), [40, 500]);
+  assert.deepEqual(plain(stats.skillDpsByGroup([{ name: "Arc (part 2)", dps: 70 }], [["Arc"]])), [70]);
 });
 
 test("skills panel: damaging skills first by DPS, auras and disabled groups tucked away", async () => {

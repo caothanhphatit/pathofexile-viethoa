@@ -1797,6 +1797,18 @@ const calculationGem = (choice: BuildSkillChoice | BuildSupportSkillChoice, enab
   return row;
 };
 
+/**
+ * The planner numbers skill groups as they are listed (1-based), but groups with no
+ * gem yet are left out of the calculation, which shifts PoB's numbering. This turns
+ * a listed group number into PoB's (1 when that group has no gem, or none is given).
+ */
+export function calculationMainGroup(skills: Array<{ skillId: string }>, listed: number | undefined): number | undefined {
+  if (listed === undefined || listed === null) return undefined;
+  const index = Math.trunc(Number(listed)) - 1;
+  if (!(index >= 0) || index >= skills.length || !skills[index].skillId.trim()) return 1;
+  return skills.slice(0, index).filter((row) => row.skillId.trim()).length + 1;
+}
+
 /** Body of POST /api/builds/calculate (see src/server/pob-build-xml.mjs). */
 export function calculationRequestBody(input: CalculationRequestInput): Record<string, unknown> {
   const { payload } = input;
@@ -1838,7 +1850,7 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
     config_inputs: configInputs,
     // Older payloads only carry the raw <Config> element.
     config: configInputs ? undefined : payload.config,
-    main_socket_group: input.mainSocketGroup
+    main_socket_group: calculationMainGroup(input.skills, input.mainSocketGroup)
   };
 }
 

@@ -150,6 +150,12 @@ test("comparison queue: one at a time, cached, deduplicated, hover jumps the lin
 
   queue.seed(calcKey({ name: "main" }), { dps: 9 });
   assert.deepEqual(plain(queue.get(calcKey({ name: "main" })).result), { dps: 9 });
+  // The page's own result for a body that is still queued replaces the queued job.
+  const keyQ = queue.request({ name: "q" });
+  assert.equal(queue.get(keyQ).status, "queued", "b is still running");
+  queue.seed(keyQ, { dps: 4 });
+  assert.deepEqual(plain(queue.get(keyQ)), { status: "done", result: { dps: 4 } });
+  assert.equal(queue.queuedCount, 0);
   assert.ok(updates > 5);
 });
 

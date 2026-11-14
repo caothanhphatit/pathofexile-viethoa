@@ -3,7 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { requireLocalRequest } from "../local-request.mjs";
 import { buildPobXml } from "../pob-build-xml.mjs";
 import { pobRunnerFromEnv } from "../pob-runner.mjs";
-import { calculationRowItem, editedItemErrors, itemErrorSummary, projectRowItem } from "../item-validation.mjs";
+import { calculationRowItem, dropInvalidEditedRows, editedItemErrors, itemErrorSummary, projectRowItem, serverModPool } from "../item-validation.mjs";
 
 const newSharedBuildId = () => randomBytes(9).toString("base64url");
 const hashEditToken = (token) => createHash("sha256").update(String(token)).digest("hex");
@@ -50,6 +50,17 @@ const imageContentTypeFromPath = (pathname = "") => {
 };
 
 export const publicRoutes = async (app, options = {}) => {
+  // Build the item-rule mod pool now rather than inside the first planner request:
+  // it evaluates several MB of data files and would stall every request meanwhile.
+  if (options.preloadModPool !== false) {
+    setImmediate(() => {
+      try {
+        serverModPool();
+      } catch (error) {
+        app.log.error(error, "Failed to load the item mod pool");
+      }
+    });
+  }
   const initDb = app.db;
   if (initDb) {
     try {
@@ -327,12 +338,11 @@ export const publicRoutes = async (app, options = {}) => {
   // updating an existing build requires that token (header x-build-edit-token), so
   // knowing a build's share link is not enough to overwrite it.
   app.post("/api/builds", { bodyLimit: 1024 * 1024 }, async (request, reply) => {
-    const db = requireDb(app);
     const project = request.body;
     if (!project || typeof project !== "object" || Array.isArray(project)) {
       return reply.status(400).send({ ok: false, error: "Missing project data" });
     }
-    // Items edited in the planner must follow the game's rules (src/shared/item-mods.mjs).
+    // Items edited in the planner must follow the editor's rules (src/server/item-validation.mjs).
     const itemProblems = [
       ...editedItemErrors(project.inventory, projectRowItem),
       ...editedItemErrors(project.stash, projectRowItem)
@@ -340,6 +350,7 @@ export const publicRoutes = async (app, options = {}) => {
     if (itemProblems.length) {
       return reply.status(400).send({ ok: false, error: itemErrorSummary(itemProblems), item_errors: itemProblems });
     }
+    const db = requireDb(app);
     const editToken = String(request.headers["x-build-edit-token"] || "");
     const requestedId = typeof project.id === "string" ? project.id.trim() : "";
     const isUpdate = Boolean(requestedId && editToken);
@@ -444,10 +455,11 @@ export const publicRoutes = async (app, options = {}) => {
     if (!buildData || typeof buildData !== "object") {
       return reply.status(400).send({ ok: false, error: "Missing build data" });
     }
-    const itemProblems = editedItemErrors(buildData.inventory_slots, calculationRowItem);
-    if (itemProblems.length) {
-      return reply.status(400).send({ ok: false, error: itemErrorSummary(itemProblems), item_errors: itemProblems });
-    }
+    // Edited items that break the rules are left out (and reported), not the whole build.
+    const checked = dropInvalidEditedRows(buildData.inventory_slots, calculationRowItem);
+    const itemProblems = checked.problems;
+    if (itemProblems.length) buildData.inventory_slots = checked.rows;
+    const withItemErrors = (body) => (itemProblems.length ? { ...body, item_errors: itemProblems } : body);
     app.log.info({
       className: buildData.className,
       ascendancy: buildData.ascendancy,
@@ -462,7 +474,7 @@ export const publicRoutes = async (app, options = {}) => {
     const xmlContent = buildXml(buildData);
     const hash = createHash("sha256").update(xmlContent).digest("hex");
     if (calculationCache.has(hash)) {
-      return { ok: true, data: calculationCache.get(hash) };
+      return withItemErrors({ ok: true, data: calculationCache.get(hash) });
     }
 
     const calcKind = buildData.calc_priority === "compare" ? "compare" : "main";
@@ -482,7 +494,7 @@ export const publicRoutes = async (app, options = {}) => {
       }
       calculationCache.set(hash, stats);
 
-      return { ok: true, data: stats };
+      return withItemErrors({ ok: true, data: stats });
 
     } catch (err) {
       app.log.error(err, "Failed to run PoB calculation");

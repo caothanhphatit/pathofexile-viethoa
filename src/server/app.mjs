@@ -96,7 +96,7 @@ export const buildApp = async (options = {}) => {
   await app.register(levelingAccountRoutes);
   await app.register(translationCommentRoutes);
   await app.register(premiumRoutes, { premiumSigner: options.premiumSigner });
-  await app.register(publicRoutes, { pobRunner: options.pobRunner });
+  await app.register(publicRoutes, { pobRunner: options.pobRunner, preloadModPool: options.preloadModPool });
   await app.register(adminRoutes);
 
   app.addHook("onClose", async () => {

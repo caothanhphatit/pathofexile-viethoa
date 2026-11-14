@@ -1,7 +1,14 @@
 // Server side of the item editor rules (src/shared/item-mods.mjs): items the
 // player edited or built in the planner are checked again before they are
-// calculated or saved, so the browser cannot skip the rules. Items straight from
-// the game or a PoB code (no edit) are passed through as they are.
+// calculated or saved, against the text they started from.
+//
+// This holds the editor to its rules; it is not proof an item exists in the game.
+// Players paste item text copied in game, and real items break the craft data's
+// limits (desecrated and essence mods, extra sockets, quality above 20%), so items
+// the browser does not mark as edited are taken as they are.
+//
+// Saving a shared build refuses invalid edited items. A calculation leaves them out
+// and says so, so one bad item does not take the whole build's numbers.
 import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -38,6 +45,14 @@ export function editedItemErrors(rows, pick, pool = serverModPool()) {
     if (errors.length) problems.push({ id, messages: [...new Set(errors.map((error) => error.message))] });
   }
   return problems;
+}
+
+/** The rows without the edited items that break the rules, and what was left out. */
+export function dropInvalidEditedRows(rows, pick, pool = serverModPool()) {
+  const problems = editedItemErrors(rows, pick, pool);
+  if (!problems.length) return { rows, problems };
+  const bad = new Set(problems.map((problem) => problem.id));
+  return { rows: rows.filter((row) => !(row && typeof row === "object" && bad.has(pick(row).id))), problems };
 }
 
 export const calculationRowItem = (row) => ({ id: row.inventory_id, text: row.raw_text, original: row.original_text, edited: row.edited });

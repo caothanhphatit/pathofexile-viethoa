@@ -6,7 +6,8 @@ import test from "node:test";
 import * as mods from "../src/shared/item-mods.mjs";
 import { buildPobXml } from "../src/server/pob-build-xml.mjs";
 import { buildApp } from "../src/server/app.mjs";
-import { pobRuntime, runPob } from "../scripts/check-pob-parity.mjs";
+import { inflateSync } from "node:zlib";
+import { pobRuntime, readFixtures, runPob } from "../scripts/check-pob-parity.mjs";
 import { loadModPool } from "../scripts/lib/mod-pool-node.mjs";
 import { repoRoot } from "../scripts/lib/planner-node.mjs";
 
@@ -180,7 +181,30 @@ test("editing an item changes what PoB calculates", { skip: runtime.available ? 
   assert.equal(before.Life - after.Life, 15, "Life drops by the 15 points taken off the ring");
 });
 
-test("calculate route rejects edited items that break the rules, before running PoB", async () => {
+test("server check: implicits and runes cannot be changed or added in the editor", () => {
+  const moreImplicit = RING.replace("+8% to Chaos Resistance", "+30% to Chaos Resistance");
+  assert.ok(mods.validateItemText(moreImplicit, pool, RING).some((error) => /implicit/.test(error.message)));
+  const builtWithImplicit = "Rarity: RARE\nNew Item\nUnset Ring\nItem Level: 82\nImplicits: 1\n+50% to Chaos Resistance";
+  assert.ok(mods.validateItemText(builtWithImplicit, pool, "").some((error) => /implicit/.test(error.message)));
+  assert.ok(mods.validateItemText(`${RING}\nRune: Desert Rune`, pool, RING).some((error) => /rune/.test(error.message)));
+});
+
+test("server check: every real item in the ladder fixtures passes once it goes through the editor", () => {
+  const unxml = (text) => text.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+  let count = 0;
+  for (const fixture of readFixtures()) {
+    const xml = inflateSync(Buffer.from(fixture.code.replace(/-/g, "+").replace(/_/g, "/"), "base64")).toString("utf8");
+    for (const match of xml.matchAll(/<Item\b[^>]*>([\s\S]*?)<\/Item>/g)) {
+      const original = unxml(match[1].replace(/<ModRange[^>]*\/>/g, "")).trim();
+      const saved = mods.serializeEditableItem(mods.parseEditableItem(original, pool), pool);
+      assert.deepEqual(mods.validateItemText(saved, pool, original), [], `${fixture.file}: ${original.split("\n").slice(1, 3).join(" / ")}`);
+      count += 1;
+    }
+  }
+  assert.ok(count > 50 || count === 0, `checked ${count} items`);
+});
+
+test("calculate route leaves out edited items that break the rules and says so", async () => {
   const calls = [];
   const app = await buildApp({
     db: null,
@@ -193,16 +217,32 @@ test("calculate route rejects edited items that break the rules, before running 
   const post = (payload) => app.inject({ method: "POST", url: "/api/builds/calculate", payload });
   try {
     const bad = await post(body(RING.replace("+115", "+400"), { original_text: RING }));
-    assert.equal(bad.statusCode, 400);
-    assert.match(bad.json().error, /vượt khoảng/);
+    assert.equal(bad.statusCode, 200, "the rest of the build is still calculated");
+    assert.match(bad.json().item_errors[0].messages[0], /vượt khoảng/);
     assert.equal(bad.json().item_errors[0].id, "Ring1");
+    assert.doesNotMatch(calls.at(-1), /\+400 to maximum Life/, "the invalid ring is not sent to PoB");
     const built = await post(body("Rarity: NORMAL\nUnset Ring\n+50 to maximum Life", { edited: true }));
-    assert.equal(built.statusCode, 400, "a mod put on a normal ring is rejected");
-    assert.equal(calls.length, 0, "PoB never ran for them");
+    assert.equal(built.json().item_errors?.[0]?.id, "Ring1", "a mod put on a normal ring is reported");
+    assert.doesNotMatch(calls.at(-1), /\+50 to maximum Life/);
     const fine = await post(body(RING.replace("+115", "+101"), { original_text: RING }));
     assert.equal(fine.statusCode, 200, fine.body);
     const untouched = await post(body(`${RING}\n+999 to Strength`));
-    assert.equal(untouched.statusCode, 200, "items straight from the game or a PoB code are not judged");
+    assert.equal(untouched.statusCode, 200, "a calculation takes unedited items as they are");
+  } finally {
+    await app.close();
+  }
+});
+
+test("saving a shared build refuses edited items that break the rules", async () => {
+  const app = await buildApp({ db: null, logger: false, sessionSecret: "test-session-secret", premiumSigner: null, preloadModPool: false });
+  const save = (rows) => app.inject({ method: "POST", url: "/api/builds", payload: { name: "x", inventory: rows } });
+  try {
+    const bad = await save([{ inventoryId: "Ring1", rawText: RING.replace("+115", "+400"), originalText: RING, edited: true }]);
+    assert.equal(bad.statusCode, 400);
+    assert.match(bad.json().error, /vượt khoảng/);
+    // A valid build passes the checks (and then needs the database, which this test has none of).
+    const real = await save([{ inventoryId: "Ring1", rawText: RING }]);
+    assert.equal(real.statusCode, 503, real.body);
   } finally {
     await app.close();
   }

@@ -1350,15 +1350,21 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   // "What if" calculations (equip this item, use that gem): one at a time, cached by body.
   const compareQueue = useMemo(() => new CalcQueue<Record<string, unknown>>(async (body) => {
-    const response = await fetch("/api/builds/calculate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // The server runs these after the build's own calculation and never on its last free slot.
-      body: JSON.stringify({ ...(body as Record<string, unknown>), calc_priority: "compare" })
-    });
-    const json = await response.json().catch(() => null);
-    if (!response.ok || !json?.ok || !json.data) throw new Error(json?.error || `HTTP ${response.status}`);
-    return json.data;
+    // The server runs these after the build's own calculation and never on its last free slot.
+    // Comparisons only read the main skill's numbers, so PoB skips every group's Full DPS.
+    const request = JSON.stringify({ ...(body as Record<string, unknown>), calc_priority: "compare", full_dps: false });
+    for (let attempt = 0; ; attempt += 1) {
+      const response = await fetch("/api/builds/calculate", { method: "POST", headers: { "Content-Type": "application/json" }, body: request });
+      const json = await response.json().catch(() => null);
+      // Busy calculator: wait and try again rather than showing an error.
+      if (response.status === 503 && attempt < 4) {
+        const wait = Math.min(Number(response.headers.get("retry-after")) || 2, 10) * 1000 * (attempt + 1);
+        await new Promise((resolve) => window.setTimeout(resolve, wait));
+        continue;
+      }
+      if (!response.ok || !json?.ok || !json.data) throw new Error(json?.error || `HTTP ${response.status}`);
+      return json.data;
+    }
   }), []);
   const mainCalcKeyRef = useRef("");
   // The build changed: queued comparisons are for the old build.
@@ -1378,6 +1384,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const runCalculation = useCallback(() => {
     const body = currentCalculationBody();
     if (!body) return;
+    // The main group as the page lists it (the body holds PoB's number, which skips empty groups).
+    const listedMainGroup = mainSocketGroupRef.current;
     setIsCalculating(true);
     const requestId = ++calcRequestRef.current;
     const bodyKey = calcKey(body);
@@ -1405,7 +1413,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       if (res.ok && res.data) {
         compareQueue.seed(bodyKey, res.data);
         if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
-        setLiveStats({ ...res.data, __mainGroup: Number(body.main_socket_group) || 1 });
+        setLiveStats({ ...res.data, __mainGroup: listedMainGroup || 1 });
+        if (Array.isArray(res.item_errors) && res.item_errors.length) {
+          setCalcError(locale === "vi"
+            ? `Đã bỏ qua món đồ không hợp lệ khi tính: ${res.item_errors.map((row: { messages?: string[] }) => row.messages?.[0]).filter(Boolean).join("; ")}`
+            : `Invalid edited items were left out of the calculation.`);
+        }
       }
     };
 

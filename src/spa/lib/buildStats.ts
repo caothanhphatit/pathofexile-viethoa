@@ -312,20 +312,23 @@ const nameKey = (value: string) => String(value || "").toLowerCase().replace(/[^
 export function skillDpsByGroup(rows: PobSkillDps[] | undefined, groupNames: string[][]): number[] {
   const pending = (rows ?? []).filter((row) => row && !SUMMARY_ROW.test(row.name) && Number(row.dps) > 0)
     .map((row) => ({ key: nameKey(row.name), dps: Number(row.dps) * (Number(row.count) > 0 ? Number(row.count) : 1), used: false }));
-  return groupNames.map((names) => {
-    let total = 0;
-    for (const name of names) {
-      const key = nameKey(name);
-      if (!key) continue;
-      // "Arc (part 2)"-style rows still belong to Arc.
-      const row = pending.find((candidate) => !candidate.used && (candidate.key === key || candidate.key.startsWith(`${key} `)));
-      if (row) {
-        row.used = true;
-        total += row.dps;
-      }
+  const totals = groupNames.map(() => 0);
+  const gems = groupNames.flatMap((names, group) => names.map((name) => ({ group, key: nameKey(name), matched: false })).filter((gem) => gem.key));
+  // Exact names first for every group, then "Arc (part 2)"-style rows that only start
+  // with a name, so a short name cannot take the row of a longer one ("Arc" vs "Arc X").
+  const claim = (matches: (rowKey: string, key: string) => boolean) => {
+    for (const gem of gems) {
+      if (gem.matched) continue;
+      const row = pending.find((candidate) => !candidate.used && matches(candidate.key, gem.key));
+      if (!row) continue;
+      row.used = true;
+      gem.matched = true;
+      totals[gem.group] += row.dps;
     }
-    return total;
-  });
+  };
+  claim((rowKey, key) => rowKey === key);
+  claim((rowKey, key) => rowKey.startsWith(`${key} `));
+  return totals;
 }
 
 export interface SkillCardInput {

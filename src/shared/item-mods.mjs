@@ -473,10 +473,24 @@ export function validateEditableItem(item, pool, original = null) {
   return errors;
 }
 
-/** Validates item text the browser sent, against the text it started from (if any). */
+const sameLines = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+/**
+ * Validates item text the browser sent, against the text it started from (if any).
+ *
+ * What is "from the game" cannot be proven: players paste item text copied in game,
+ * and real items break the craft data's limits (desecrated and essence mods, extra
+ * sockets, quality above 20%; 16 of 129 items in the ladder fixtures would fail).
+ * So the rules hold the editor to what it can do, not a pasted item to the craft data.
+ */
 export function validateItemText(rawText, pool, originalText = "") {
   const item = parseEditableItem(rawText, pool);
   const original = originalText ? parseEditableItem(originalText, pool) : null;
+  // The editor never changes implicits or runes: they stay as the original had them.
+  const fixedParts = (row) => ({ implicits: row.implicits.map((line) => line.text), runes: row.runes });
+  if (!sameLines(fixedParts(item), original ? fixedParts(original) : { implicits: [], runes: [] })) {
+    return [{ field: "implicits", message: "Dòng implicit và rune không sửa được trong trình sửa đồ." }];
+  }
   // Read-only lines must come from the original: pair them by text.
   if (original) {
     const originalTexts = new Set(original.mods.map((line) => line.original));

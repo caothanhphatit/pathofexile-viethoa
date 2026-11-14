@@ -65,19 +65,24 @@ const spaModules = new Map();
  * Any src/spa/lib/*.ts file as a CommonJS module object; its "./x" imports load
  * the same way (and share one instance each).
  */
-export function loadSpaLib(name) {
-  if (!spaModules.has(name)) spaModules.set(name, loadSpaModule(name));
+export function loadSpaLib(name, chain = []) {
+  // Each module waits for its imports before it runs, so two modules importing each
+  // other would wait forever: fail with the import chain instead.
+  if (chain.includes(name)) {
+    return Promise.reject(new Error(`Circular import in src/spa/lib: ${[...chain, name].join(" -> ")}`));
+  }
+  if (!spaModules.has(name)) spaModules.set(name, loadSpaModule(name, [...chain, name]));
   return spaModules.get(name);
 }
 
-async function loadSpaModule(name) {
+async function loadSpaModule(name, chain) {
   const source = await readFile(join(repoRoot, "src/spa/lib", `${name}.ts`), "utf8");
   const js = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021 }
   }).outputText;
   const deps = new Map();
   for (const match of js.matchAll(/require\("\.\/([\w-]+)"\)/g)) {
-    deps.set(`./${match[1]}`, await loadSpaLib(match[1]));
+    deps.set(`./${match[1]}`, await loadSpaLib(match[1], chain));
   }
   const module = { exports: {} };
   const context = vm.createContext({

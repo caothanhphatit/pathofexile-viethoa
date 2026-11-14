@@ -57,8 +57,9 @@ export class CalcQueue<T> {
 
   /** Stores a result computed elsewhere (the page's own calculation). */
   seed(key: string, result: T): void {
-    this.entries.set(key, { status: "done", result });
+    // Drop a queued copy first: dropPending also forgets its entry.
     this.dropPending((job) => job.key === key);
+    this.entries.set(key, { status: "done", result });
     this.trim();
     this.changed();
   }
