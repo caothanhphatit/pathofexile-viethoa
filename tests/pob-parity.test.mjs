@@ -162,3 +162,34 @@ test("planner numbers match Path of Building on every fixture", {
   const failed = results.filter((result) => !result.ok);
   assert.equal(failed.length, 0, formatReport(failed));
 });
+
+test("analysis requests ride in the build XML, whitelisted and capped", async () => {
+  const { plannerRequestXml, MAX_ANALYSIS_NODES } = await import("../src/server/pob-build-xml.mjs");
+  assert.equal(plannerRequestXml(null), "");
+  assert.equal(plannerRequestXml({ breakdown: ["Nope"], nodes: [] }), "");
+  const xml = plannerRequestXml({ breakdown: ["Life", "CritChance", "Evil\"/>"], nodes: ["10", "x", 10, -2, ...Array.from({ length: 200 }, (_, i) => i + 100)] });
+  assert.match(xml, /<PlannerRequest breakdown="Life,CritChance" nodes="10,100,/);
+  assert.equal(xml.match(/nodes="([^"]*)"/)[1].split(",").length, MAX_ANALYSIS_NODES);
+  assert.doesNotMatch(buildPobXml({ className: "Witch" }), /PlannerRequest/);
+});
+
+test("one PoB run explains stats and prices passive nodes", {
+  skip: runtime.available ? false : "PoB not installed locally",
+  timeout: 120_000
+}, async () => {
+  const { runPob } = await import("../scripts/check-pob-parity.mjs");
+  const [fixture] = readFixtures(["mercenary-gemling.json"]);
+  const { body } = await plannerCalculationRequest(fixture.code);
+  const allocated = body.passives.slice(0, 4);
+  const out = await runPob(buildPobXml({ ...body, analysis: { breakdown: ["Life", "FireResist", "CombinedDPS"], nodes: allocated } }), runtime);
+  const life = out.Breakdown.Life;
+  assert.equal(life.value, out.Life);
+  assert.ok(life.lines.some((line) => /\(base\)/.test(line)), "PoB's own breakdown lines");
+  assert.ok(life.sources.some((row) => row.kind === "item" && row.type === "BASE"), "Life from items, with the item's name");
+  assert.ok(out.Breakdown.CombinedDPS.sources.some((row) => row.kind === "tree"), "damage from passives");
+  for (const id of allocated) {
+    const delta = out.NodeDeltas[String(id)];
+    assert.ok(delta, `node ${id}`);
+    assert.equal(delta.allocated, true);
+  }
+});
