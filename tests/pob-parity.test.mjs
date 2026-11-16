@@ -5,10 +5,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildPobXml, configXml } from "../src/server/pob-build-xml.mjs";
-import { checkFixture, formatReport, pobRuntime, readFixtures } from "../scripts/check-pob-parity.mjs";
-import { NodeDOMParser, plannerCalculationRequest } from "../scripts/lib/planner-node.mjs";
+import { checkFixture, compareStats, formatReport, pobRuntime, readFixtures } from "../scripts/check-pob-parity.mjs";
+import { NodeDOMParser, loadPlannerLib, loadSpaLib, plannerCalculationRequest } from "../scripts/lib/planner-node.mjs";
 
 const fixtures = readFixtures();
+const plain = (value) => JSON.parse(JSON.stringify(value));
 const parse = (xml) => new NodeDOMParser().parseFromString(xml).documentElement;
 const attrs = (element, keys) => Object.fromEntries(keys.map((key) => [key, element.getAttribute(key)]));
 const activeSet = (root, container, child, attr) => {
@@ -72,6 +73,12 @@ for (const fixture of fixtures) {
     for (const set of ["WeaponSet1", "WeaponSet2"]) {
       assert.deepEqual(ids(spec(planner).querySelector(set)?.getAttribute("nodes")), ids(spec(original).querySelector(set)?.getAttribute("nodes")), set);
     }
+    // Attribute picks (PoB's AttributeOverride), each list in any order.
+    const overrides = (root) => {
+      const element = spec(root).querySelector("AttributeOverride");
+      return Object.fromEntries(["strNodes", "dexNodes", "intNodes"].map((key) => [key, ids(element?.getAttribute(key))]));
+    };
+    assert.deepEqual(overrides(planner), overrides(original), "attribute overrides");
     const sockets = (root) => spec(root).querySelectorAll("Socket").map((socket) => `${socket.getAttribute("nodeId")}:${itemText(root, socket.getAttribute("itemId"))}`).sort();
     assert.deepEqual(sockets(planner), sockets(original), "jewel sockets");
 
@@ -190,4 +197,85 @@ test("one PoB run explains where stats come from", {
   assert.ok(out.Breakdown.CombinedDPS.sources.length > 0);
   assert.equal(out.NodeDeltas, undefined);
   assert.equal(Math.round(out.CombinedDPS), Math.round((await runPob(buildPobXml(body), runtime)).CombinedDPS), "asking for a breakdown does not change the numbers");
+});
+
+// ── Tree editing round trips (weapon sets, attributes, jewels) ─────────────
+
+const socketsOf = (xml) => parse(xml).querySelector("Spec").querySelectorAll("Socket").map((row) => row.getAttribute("nodeId")).sort();
+/** Sockets as "node:item text", worn slots as "slot:item text", and the rest of the XML without items. */
+const buildShape = (xml) => {
+  const root = parse(xml);
+  const text = (id) => root.querySelectorAll("Item").find((item) => item.getAttribute("id") === id)?.textContent.trim();
+  return {
+    sockets: root.querySelector("Spec").querySelectorAll("Socket").map((row) => `${row.getAttribute("nodeId")}:${text(row.getAttribute("itemId"))}`).sort(),
+    slots: root.querySelectorAll("Slot").map((row) => `${row.getAttribute("name")}:${text(row.getAttribute("itemId"))}`).sort(),
+    rest: xml.replace(/<Items[\s\S]*<\/Items>/, "").replace(/<Sockets>[\s\S]*<\/Sockets>/, "")
+  };
+};
+const isAllocatedSocket = (body, row) => {
+  const nodeId = row.inventoryId.replace(/^PassiveJewel:/, "");
+  return row.inventoryId.startsWith("PassiveJewel:") && body.passives.includes(Number(nodeId)) ? nodeId : "";
+};
+
+test("weapon-set and attribute picks survive the PoB-code export and a re-import", async () => {
+  const lib = await loadPlannerLib();
+  for (const fixture of readFixtures(["mercenary-gemling.json", "sorceress-stormweaver.json"])) {
+    const { tree, bodyFor } = await plannerCalculationRequest(fixture.code);
+    assert.ok(Object.keys(tree.weaponSets).length > 0, `${fixture.file} has weapon-set passives`);
+    // Change the picks the way the tree does: one attribute node to Dex, one set node to set 2.
+    const attributeNode = Object.keys(tree.attributeChoices)[0];
+    const setNode = Object.keys(tree.weaponSets).find((id) => tree.weaponSets[id] === 1);
+    const attributeChoices = { ...tree.attributeChoices, [attributeNode]: "dex" };
+    const weaponSets = { ...tree.weaponSets, [setNode]: 2 };
+    const body = bodyFor({ attributeChoices, weaponSets });
+    const code = await lib.encodePobXmlText(buildPobXml(body));
+    const back = lib.treePicksFromPobImport(await lib.parsePobExportCode(code));
+    assert.deepEqual(plain(back.weaponSets), plain(lib.createTreeSnapshot({ ...tree, weaponSets }).weaponSets), "weapon sets after export + import");
+    assert.deepEqual(plain(back.attributeChoices), plain(attributeChoices), "attributes after export + import");
+    assert.match(parse(buildPobXml(body)).querySelector("AttributeOverride").getAttribute("dexNodes"), new RegExp(`(^|,)${attributeNode}(,|$)`));
+  }
+});
+
+test("a jewel taken out of its socket and put back gives the same XML", async () => {
+  const inv = await loadSpaLib("buildInventory");
+  let checked = 0;
+  for (const fixture of fixtures) {
+    const { body, inventory, project, bodyFor } = await plannerCalculationRequest(fixture.code);
+    const row = inventory.find((choice) => isAllocatedSocket(body, choice));
+    if (!row) continue;
+    const nodeId = isAllocatedSocket(body, row);
+    const removed = inv.unsocketJewel({ inventory, stash: project.stash }, nodeId);
+    const restored = inv.socketJewel(removed, removed.stash[0].id, nodeId);
+    assert.deepEqual(socketsOf(buildPobXml(bodyFor({ inventory: removed.inventory }))), socketsOf(buildPobXml(body)).filter((id) => id !== nodeId));
+    assert.deepEqual(buildShape(buildPobXml(bodyFor({ inventory: restored.inventory }))), buildShape(buildPobXml(body)), `${fixture.file}: same build after the round trip`);
+    checked += 1;
+  }
+  assert.ok(checked > 0, "at least one fixture has a socketed jewel");
+});
+
+test("socketing a jewel in the planner moves the numbers exactly as PoB does", {
+  skip: runtime.available ? false : "PoB not installed locally",
+  timeout: 300_000
+}, async () => {
+  const { runPob } = await import("../scripts/check-pob-parity.mjs");
+  const inv = await loadSpaLib("buildInventory");
+  const fixture = fixtures.find((row) => row.file === "mercenary-gemling.json") ?? fixtures[0];
+  const { body, inventory, project, bodyFor, xml } = await plannerCalculationRequest(fixture.code);
+  // The jewel that matters most is not known up front: take the first allocated socket.
+  const row = inventory.find((choice) => isAllocatedSocket(body, choice));
+  assert.ok(row, "fixture has a socketed jewel");
+  const nodeId = isAllocatedSocket(body, row);
+  const removed = inv.unsocketJewel({ inventory, stash: project.stash }, nodeId);
+  const restored = inv.socketJewel(removed, removed.stash[0].id, nodeId);
+  const [pobOwn, before, without, withAgain] = await Promise.all([
+    runPob(xml, runtime),
+    runPob(buildPobXml(body), runtime),
+    runPob(buildPobXml(bodyFor({ inventory: removed.inventory })), runtime),
+    runPob(buildPobXml(bodyFor({ inventory: restored.inventory })), runtime)
+  ]);
+  const stats = ["CombinedDPS", "Life", "EnergyShield", "Mana", "Spirit", "Str", "Dex", "Int", "FireResist", "ColdResist", "LightningResist", "ChaosResist", "TotalEHP"];
+  for (const stat of stats) assert.equal(withAgain[stat], before[stat], `${stat}: the numbers come back once the jewel is put back`);
+  assert.ok(stats.some((stat) => without[stat] !== before[stat]), "taking the jewel out changes something");
+  const rows = compareStats({ code: {}, pob: pobOwn, planner: withAgain });
+  assert.ok(rows.every((row) => row.plannerOk), `jewel put back in the planner = PoB on the code itself: ${JSON.stringify(rows.filter((row) => !row.plannerOk))}`);
 });

@@ -12,7 +12,23 @@ export interface BuildTreeSnapshot {
   treeVersion: string;
   createdAt: string;
   updatedAt: string;
+  /**
+   * Nodes allocated to a weapon set (PoB's <WeaponSet1/2 nodes="..">): node id -> 1 or 2.
+   * Nodes not listed belong to the main tree. Unset = take them from the imported payload.
+   */
+  weaponSets?: Record<string, WeaponSetNumber>;
+  /**
+   * The attribute picked on each "+5 to any Attribute" node (PoB's <AttributeOverride>).
+   * Unset = take them from the imported payload.
+   */
+  attributeChoices?: Record<string, AttributeChoice>;
 }
+
+export type WeaponSetNumber = 1 | 2;
+export type AttributeChoice = "str" | "dex" | "int";
+export const ATTRIBUTE_CHOICES: AttributeChoice[] = ["str", "dex", "int"];
+/** Weapon set passive points per set (PoB: the quest points of every act, 12 quests x 2). */
+export const WEAPON_SET_POINTS = 24;
 
 export interface BuildPlannerData {
   version?: string;
@@ -533,7 +549,9 @@ export function createTreeSnapshot({
   allocatedIds,
   startIds,
   treeVersion,
-  id
+  id,
+  weaponSets,
+  attributeChoices
 }: {
   name: string;
   className: string;
@@ -542,22 +560,134 @@ export function createTreeSnapshot({
   startIds: Iterable<string>;
   treeVersion: string;
   id?: string;
+  weaponSets?: Record<string, WeaponSetNumber>;
+  attributeChoices?: Record<string, AttributeChoice>;
 }): BuildTreeSnapshot {
   const timestamp = nowIso();
   const safeClass = className || "Passive tree";
   const safeAscendancy = ascendancyName || "Base tree";
   const title = name.trim() || `${safeClass} - ${safeAscendancy}`;
-  return {
+  const allocated = uniqueStrings(allocatedIds);
+  const snapshot: BuildTreeSnapshot = {
     id: id || `tree-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
     name: title,
     className: safeClass,
     ascendancyName: ascendancyName || "",
-    allocatedIds: uniqueStrings(allocatedIds),
+    allocatedIds: allocated,
     startIds: uniqueStrings(startIds),
     treeVersion,
     createdAt: timestamp,
     updatedAt: timestamp
   };
+  // Choices of nodes that are no longer allocated are dropped (PoB forgets them too).
+  if (weaponSets) snapshot.weaponSets = pickAllocated(weaponSets, allocated, (value) => value === 1 || value === 2);
+  if (attributeChoices) snapshot.attributeChoices = pickAllocated(attributeChoices, allocated, (value) => ATTRIBUTE_CHOICES.includes(value));
+  return snapshot;
+}
+
+function pickAllocated<T>(values: Record<string, T>, allocated: Iterable<string>, valid: (value: T) => boolean): Record<string, T> {
+  const keep = new Set(allocated);
+  const out: Record<string, T> = {};
+  for (const id of Object.keys(values).sort((a, b) => Number(a) - Number(b))) {
+    if (keep.has(id) && valid(values[id])) out[id] = values[id];
+  }
+  return out;
+}
+
+const nodeIdList = (value: unknown): string[] => (Array.isArray(value) ? value : String(value ?? "").split(","))
+  .map((id) => String(id).trim())
+  .filter((id) => /^\d+$/.test(id) && id !== "0");
+
+/** Weapon-set nodes of a payload (weapon_set_passives: { "1": [...], "2": [...] }). */
+export function weaponSetsFromPayload(payload: BuildPayload | null | undefined): Record<string, WeaponSetNumber> | undefined {
+  const raw = payload?.weapon_set_passives;
+  if (!isPlainObject(raw)) return undefined;
+  const out: Record<string, WeaponSetNumber> = {};
+  for (const set of [1, 2] as const) {
+    for (const id of nodeIdList(raw[set] ?? raw[String(set)])) out[id] = set;
+  }
+  return out;
+}
+
+const ATTRIBUTE_OVERRIDE_KEYS: Record<AttributeChoice, "strNodes" | "dexNodes" | "intNodes"> = { str: "strNodes", dex: "dexNodes", int: "intNodes" };
+
+/** Attribute picks of a payload (attribute_overrides: { strNodes: "1,2", dexNodes, intNodes }). */
+export function attributeChoicesFromPayload(payload: BuildPayload | null | undefined): Record<string, AttributeChoice> | undefined {
+  const raw = payload?.attribute_overrides;
+  if (!isPlainObject(raw)) return undefined;
+  const out: Record<string, AttributeChoice> = {};
+  for (const choice of ATTRIBUTE_CHOICES) {
+    for (const id of nodeIdList(raw[ATTRIBUTE_OVERRIDE_KEYS[choice]])) out[id] = choice;
+  }
+  return out;
+}
+
+/** A tree from before weapon sets / attributes were editable: read them from the imported build. */
+export function withTreePicksFromPayload(snapshot: BuildTreeSnapshot, payload: BuildPayload | null | undefined): BuildTreeSnapshot;
+export function withTreePicksFromPayload(snapshot: BuildTreeSnapshot | null, payload: BuildPayload | null | undefined): BuildTreeSnapshot | null;
+export function withTreePicksFromPayload(snapshot: BuildTreeSnapshot | null, payload: BuildPayload | null | undefined): BuildTreeSnapshot | null {
+  if (!snapshot || (snapshot.weaponSets && snapshot.attributeChoices)) return snapshot;
+  const weaponSets = snapshot.weaponSets ?? weaponSetsFromPayload(payload);
+  const attributeChoices = snapshot.attributeChoices ?? attributeChoicesFromPayload(payload);
+  if (!weaponSets && !attributeChoices) return snapshot;
+  return {
+    ...snapshot,
+    ...(weaponSets ? { weaponSets: pickAllocated(weaponSets, snapshot.allocatedIds, () => true) } : {}),
+    ...(attributeChoices ? { attributeChoices: pickAllocated(attributeChoices, snapshot.allocatedIds, () => true) } : {})
+  };
+}
+
+/** Weapon-set nodes and attribute picks of a PoB code, as the tree keeps them. */
+export function treePicksFromPobImport(data: PobImportData): Pick<BuildTreeSnapshot, "weaponSets" | "attributeChoices"> {
+  const weaponSets: Record<string, WeaponSetNumber> = {};
+  for (const id of passiveIdsFromPobNodeList(data.treeSpec?.weaponSet1Nodes ?? "")) weaponSets[id] = 1;
+  for (const id of passiveIdsFromPobNodeList(data.treeSpec?.weaponSet2Nodes ?? "")) weaponSets[id] = 2;
+  const overrides = data.build.attribute_overrides;
+  const attributeChoices: Record<string, AttributeChoice> = {};
+  for (const choice of ATTRIBUTE_CHOICES) {
+    for (const id of nodeIdList(overrides?.[ATTRIBUTE_OVERRIDE_KEYS[choice]])) attributeChoices[id] = choice;
+  }
+  return { weaponSets, attributeChoices };
+}
+
+/** weapon_set_passives of the calculation body: allocated nodes of each set, as PoB numbers. */
+export function weaponSetPassivesBody(weaponSets: Record<string, WeaponSetNumber>, passives: Iterable<string>): Record<string, number[]> | undefined {
+  const allocated = new Set([...passives].map(String));
+  const out: Record<string, number[]> = {};
+  for (const [id, set] of Object.entries(weaponSets)) {
+    if (!allocated.has(id) || (set !== 1 && set !== 2)) continue;
+    (out[set] ??= []).push(Number(id));
+  }
+  for (const key of Object.keys(out)) out[key].sort((a, b) => a - b);
+  return Object.keys(out).length ? out : undefined;
+}
+
+/** attribute_overrides of the calculation body (PoB's <AttributeOverride strNodes dexNodes intNodes>). */
+export function attributeOverridesBody(choices: Record<string, AttributeChoice>, passives: Iterable<string>): Record<string, string> | undefined {
+  const allocated = new Set([...passives].map(String));
+  const lists: Record<AttributeChoice, number[]> = { str: [], dex: [], int: [] };
+  for (const [id, choice] of Object.entries(choices)) {
+    if (allocated.has(id) && lists[choice]) lists[choice].push(Number(id));
+  }
+  if (!lists.str.length && !lists.dex.length && !lists.int.length) return undefined;
+  const join = (ids: number[]) => ids.sort((a, b) => a - b).join(",");
+  return { dexNodes: join(lists.dex), intNodes: join(lists.int), strNodes: join(lists.str) };
+}
+
+/**
+ * Points of each weapon set, counted as PoB does: a point spent in both sets is
+ * paid once, so the main tree pays min(set 1, set 2) of them.
+ */
+export function weaponSetPointCounts(weaponSets: Record<string, WeaponSetNumber> | undefined, allocatedIds: Iterable<string>): { set1: number; set2: number; shared: number } {
+  const allocated = new Set([...allocatedIds].map(String));
+  let set1 = 0;
+  let set2 = 0;
+  for (const [id, set] of Object.entries(weaponSets ?? {})) {
+    if (!allocated.has(id)) continue;
+    if (set === 1) set1 += 1;
+    else if (set === 2) set2 += 1;
+  }
+  return { set1, set2, shared: Math.min(set1, set2) };
 }
 
 export function officialAscendancyId(snapshot: BuildTreeSnapshot, plannerData?: BuildPlannerData | null): string {
@@ -1689,6 +1819,18 @@ export function buildPlannerPayload(input: BuildExportInput): BuildPayload {
     else delete build.ascendancy;
     if (passives.length) build.passives = passives;
     else delete build.passives;
+    // Tree edits go with the build (planner ids, the ones the calculator gets).
+    const allocated = selectedPassiveIds(input.snapshot);
+    if (input.snapshot.weaponSets) {
+      const sets = weaponSetPassivesBody(input.snapshot.weaponSets, allocated);
+      if (sets) build.weapon_set_passives = Object.fromEntries(Object.entries(sets).map(([set, ids]) => [set, ids.map(String)]));
+      else delete build.weapon_set_passives;
+    }
+    if (input.snapshot.attributeChoices) {
+      const overrides = attributeOverridesBody(input.snapshot.attributeChoices, allocated);
+      if (overrides) build.attribute_overrides = overrides;
+      else delete build.attribute_overrides;
+    }
   }
 
   const nextInventorySlots = [...baseInventorySlots, ...inventorySlots];
@@ -1780,6 +1922,10 @@ export interface CalculationRequestInput {
   configInputs?: PobConfigInput[];
   /** PoB item text for a slot without imported text (an item picked from the site list). */
   itemText?: (choice: BuildInventoryChoice) => string | undefined;
+  /** Weapon-set nodes edited on the tree; replaces the payload's weapon_set_passives. */
+  weaponSets?: Record<string, WeaponSetNumber>;
+  /** Attribute picks edited on the tree; replaces the payload's attribute_overrides. */
+  attributeChoices?: Record<string, AttributeChoice>;
 }
 
 const calculationGem = (choice: BuildSkillChoice | BuildSupportSkillChoice, enabled: boolean) => {
@@ -1819,7 +1965,9 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
     ascendancy: text("ascendancy") || "None",
     level: parseWholeNumber(payload.level, 90) || 90,
     passives: input.passives.map((id) => parseWholeNumber(id, 0)).filter(Boolean),
-    weapon_set_passives: isPlainObject(payload.weapon_set_passives) ? payload.weapon_set_passives : undefined,
+    weapon_set_passives: input.weaponSets
+      ? weaponSetPassivesBody(input.weaponSets, input.passives)
+      : isPlainObject(payload.weapon_set_passives) ? payload.weapon_set_passives : undefined,
     inventory_slots: input.inventory
       .filter((row) => row.itemName || row.rawText)
       .map((row) => ({
@@ -1846,7 +1994,9 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
         return group;
       }),
     activeWeaponSet: input.activeWeaponSet,
-    attribute_overrides: payload.attribute_overrides,
+    attribute_overrides: input.attributeChoices
+      ? attributeOverridesBody(input.attributeChoices, input.passives)
+      : payload.attribute_overrides,
     config_inputs: configInputs,
     // Older payloads only carry the raw <Config> element.
     config: configInputs ? undefined : payload.config,

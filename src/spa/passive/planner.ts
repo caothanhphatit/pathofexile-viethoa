@@ -143,3 +143,129 @@ export function refundAllocatedNodeIds({
   }
   return keep;
 }
+
+// ── Weapon-set passives (PoB's allocMode) ──────────────────────────────────
+// PoE2 has a point pool per weapon set: a node can belong to the main tree
+// (mode 0) or to weapon set 1 / 2. PoB's rules (PassiveSpec:AllocNode):
+// - allocating in a set paths from main-tree nodes and that set's nodes only, and
+//   the new nodes join that set; keystones, jewel sockets and ascendancy nodes stay
+//   on the main tree and cannot be taken while a set is selected;
+// - allocating on the main tree may run through a set's branch, which then
+//   becomes main tree;
+// - a set node only stays allocated while it connects to the start through
+//   main-tree nodes and nodes of its own set.
+
+export type AllocMode = 0 | 1 | 2;
+
+interface ModeInput {
+  targetId: string;
+  allocatedIds?: Iterable<string>;
+  startNodeIds?: Iterable<string>;
+  graphByNodeId?: Map<string, string[]>;
+  visibleNodeIds?: Iterable<string>;
+  weaponSets?: Record<string, 1 | 2>;
+}
+
+export interface ModeAllocation {
+  allocated: Set<string>;
+  weaponSets: Record<string, 1 | 2>;
+  /** Why nothing changed ("global": keystone/socket while a set is selected). */
+  blocked?: "global";
+}
+
+const modeOf = (weaponSets: Record<string, 1 | 2>, id: string): AllocMode => weaponSets[id] ?? 0;
+
+export function allocatePathInMode({
+  targetId,
+  allocatedIds = [],
+  startNodeIds = [],
+  graphByNodeId = new Map(),
+  visibleNodeIds = [],
+  weaponSets = {},
+  mode = 0,
+  isMainTreeOnly = () => false
+}: ModeInput & { mode?: AllocMode; isMainTreeOnly?: (id: string) => boolean }): ModeAllocation {
+  const target = String(targetId);
+  const allocated = new Set([...allocatedIds].map(String));
+  const sets = { ...weaponSets };
+  const visible = new Set([...visibleNodeIds].map(String));
+  if (!target || !visible.has(target) || allocated.has(target)) return { allocated, weaponSets: sets };
+  if (mode > 0 && isMainTreeOnly(target)) return { allocated, weaponSets: sets, blocked: "global" };
+
+  const usable = (id: string) => {
+    const nodeMode = modeOf(sets, id);
+    return nodeMode === 0 || nodeMode === mode;
+  };
+  const anchors = [...new Set([...allocated, ...[...startNodeIds].map(String)])]
+    .filter((id) => visible.has(id) && (mode === 0 ? modeOf(sets, id) === 0 : usable(id)));
+  // Main tree: may run through a set's allocated branch (it becomes main tree).
+  const passable = (id: string) => !allocated.has(id) || (mode === 0 ? true : usable(id));
+
+  const queue = [...anchors];
+  const visited = new Set(queue);
+  const previous = new Map<string, string>();
+  for (let cursor = 0; cursor < queue.length && !visited.has(target); cursor += 1) {
+    for (const nextId of graphByNodeId.get(queue[cursor]) ?? []) {
+      if (!visible.has(nextId) || visited.has(nextId) || !passable(nextId)) continue;
+      visited.add(nextId);
+      previous.set(nextId, queue[cursor]);
+      queue.push(nextId);
+      if (nextId === target) break;
+    }
+  }
+  // No way there from the nodes this mode may use (PoB does nothing either).
+  if (anchors.length && !visited.has(target)) return { allocated, weaponSets: sets };
+  const path = [target];
+  if (anchors.length) {
+    for (let current = target; previous.has(current);) {
+      current = previous.get(current)!;
+      path.push(current);
+    }
+  }
+  if (mode > 0 && path.some((id) => !allocated.has(id) && isMainTreeOnly(id))) return { allocated, weaponSets: sets, blocked: "global" };
+  for (const id of path) {
+    if (allocated.has(id)) {
+      if (mode === 0 && modeOf(sets, id) !== 0) delete sets[id];
+      continue;
+    }
+    allocated.add(id);
+    if (mode > 0 && !isMainTreeOnly(id)) sets[id] = mode as 1 | 2;
+    else delete sets[id];
+  }
+  return { allocated, weaponSets: sets };
+}
+
+export function refundInMode({
+  targetId,
+  allocatedIds = [],
+  startNodeIds = [],
+  graphByNodeId = new Map(),
+  visibleNodeIds = [],
+  weaponSets = {}
+}: ModeInput): ModeAllocation {
+  const target = String(targetId);
+  const allocated = new Set([...allocatedIds].map(String));
+  const starts = new Set([...startNodeIds].map(String));
+  if (!target || starts.has(target) || !allocated.has(target)) return { allocated, weaponSets: { ...weaponSets } };
+  const visible = new Set([...visibleNodeIds].map(String));
+
+  const grow = (seed: Iterable<string>, mode: AllocMode) => {
+    const keep = new Set(seed);
+    const queue = [...keep];
+    for (let cursor = 0; cursor < queue.length; cursor += 1) {
+      for (const nextId of graphByNodeId.get(queue[cursor]) ?? []) {
+        if (nextId === target || keep.has(nextId) || !allocated.has(nextId) || !visible.has(nextId)) continue;
+        if (modeOf(weaponSets, nextId) !== mode) continue;
+        keep.add(nextId);
+        queue.push(nextId);
+      }
+    }
+    return keep;
+  };
+  const main = grow([...starts].filter((id) => allocated.has(id) && visible.has(id)), 0);
+  const keep = new Set(main);
+  for (const mode of [1, 2] as const) for (const id of grow(main, mode)) keep.add(id);
+  const sets: Record<string, 1 | 2> = {};
+  for (const [id, set] of Object.entries(weaponSets)) if (keep.has(id)) sets[id] = set;
+  return { allocated: keep, weaponSets: sets };
+}

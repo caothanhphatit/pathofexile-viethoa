@@ -1,17 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { loadPassiveTreeData } from "../lib/data";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
 import { matchesQuery } from "../lib/text";
-import { createTreeSnapshot, deleteTreeSnapshot, passiveCount, readCurrentTreeSnapshot, readSavedTreeSnapshots, saveTreeSnapshot, writeCurrentTreeSnapshot, type BuildTreeSnapshot } from "../lib/buildPlanner";
+import { createTreeSnapshot, deleteTreeSnapshot, passiveCount, readCurrentTreeSnapshot, readSavedTreeSnapshots, saveTreeSnapshot, WEAPON_SET_POINTS, weaponSetPointCounts, writeCurrentTreeSnapshot, type AttributeChoice, type BuildTreeSnapshot } from "../lib/buildPlanner";
 import { TreeCanvas, type CanvasCommand } from "../passive/TreeCanvas";
 import {
   allStartNodeIds,
-  allocatePathToNode,
+  allocatePathInMode,
   buildPassiveGraph,
-  refundAllocatedNodeIds,
+  refundInMode,
   selectedStartNodeIds,
-  syncSelectedStartNodeIds
+  syncSelectedStartNodeIds,
+  type AllocMode
 } from "../passive/planner";
+import { WEAPON_SET_COLORS } from "../passive/draw";
+import "../styles/planner-tree-edit.css";
 import { filteredTreeNodes, parsePassiveTree, projectNodeForView, type PassiveNode, type PassiveTreeModel } from "../passive/tree";
 import { parsePobBuild, type PobBuild } from "../passive/pob";
 
@@ -51,7 +54,36 @@ export interface PassiveTreeWorkspaceProps {
   initialSnapshot?: BuildTreeSnapshot | null;
   onSnapshotChange?: (snapshot: BuildTreeSnapshot) => void;
   onSaveSnapshot?: (snapshot: BuildTreeSnapshot) => void;
+  /** Jewel sockets, when the tree sits in the Build Planner (it holds the jewels). */
+  jewels?: TreeJewelHooks;
 }
+
+/** What the Build Planner gives the tree so its sockets can hold jewels. */
+export interface TreeJewelHooks {
+  /** Socketed jewels: node id -> name and rarity. */
+  socketed: Map<string, { name: string; rarity: string }>;
+  /** A jewel picked in the inventory or being dragged: sockets that take it light up. */
+  carried?: { name: string; accepts: (node: PassiveNode) => boolean; dragging: boolean } | null;
+  onCancelCarried?: () => void;
+  /** The carried jewel goes into this socket (a click or a drop). */
+  onSocketCarried: (node: PassiveNode) => void;
+  /** Data type of an inventory drag (see BuildInventoryPanel). */
+  dragType?: string;
+  /** A socket under the mouse (or under a dragged jewel); null when it leaves. */
+  onSocketHover?: (node: PassiveNode | null) => void;
+  /** Extra tooltip lines for a socket. */
+  renderSocketTooltip?: (node: PassiveNode, allocated: boolean) => ReactNode;
+  /** Body of the socket menu (jewels to put in, take out). */
+  renderSocketMenu: (node: PassiveNode, allocated: boolean, close: () => void) => ReactNode;
+}
+
+const ATTRIBUTE_LABELS: Record<AttributeChoice, { vi: string; en: string; short: string }> = {
+  str: { vi: "Sức mạnh (Str)", en: "Strength", short: "Str" },
+  dex: { vi: "Khéo léo (Dex)", en: "Dexterity", short: "Dex" },
+  int: { vi: "Trí tuệ (Int)", en: "Intelligence", short: "Int" }
+};
+/** PoB keeps keystones, jewel sockets and ascendancy nodes on the main tree. */
+const isMainTreeOnlyNode = (node: PassiveNode | undefined) => Boolean(node && (node.ascendancyName || /keystone|jewel/i.test(node.type)));
 
 function formatPassiveStatText(value: string): string {
   return String(value || "")
@@ -152,11 +184,13 @@ function treeSnapshotSignature(snapshot: BuildTreeSnapshot | null | undefined): 
     ascendancyName: snapshot.ascendancyName || "",
     allocatedIds: [...new Set(snapshot.allocatedIds)].sort(),
     startIds: [...new Set(snapshot.startIds)].sort(),
-    treeVersion: snapshot.treeVersion || ""
+    treeVersion: snapshot.treeVersion || "",
+    weaponSets: snapshot.weaponSets ?? {},
+    attributeChoices: snapshot.attributeChoices ?? {}
   });
 }
 
-export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, initialSnapshot = null, onSnapshotChange, onSaveSnapshot }: PassiveTreeWorkspaceProps) {
+export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, initialSnapshot = null, onSnapshotChange, onSaveSnapshot, jewels }: PassiveTreeWorkspaceProps) {
   const [tree, setTree] = useState<PassiveTreeModel | null>(null);
   const [error, setError] = useState("");
   const [classFilter, setClassFilter] = useState("");
@@ -165,6 +199,13 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   const [activeMode, setActiveMode] = useState<PassivePanelMode>("build");
   const [buildPanelCollapsed, setBuildPanelCollapsed] = useState(false);
   const [allocatedIds, setAllocatedIds] = useState<Set<string>>(() => new Set());
+  // PoB's weapon-set allocation mode and the attribute new "+5 to any Attribute" nodes get.
+  const [allocMode, setAllocMode] = useState<AllocMode>(0);
+  const [weaponSets, setWeaponSets] = useState<Record<string, 1 | 2>>({});
+  const [attributeChoices, setAttributeChoices] = useState<Record<string, AttributeChoice>>({});
+  const [defaultAttribute, setDefaultAttribute] = useState<AttributeChoice>("str");
+  const [nodeMenu, setNodeMenu] = useState<{ node: PassiveNode; x: number; y: number } | null>(null);
+  const [dragHover, setDragHover] = useState<{ node: PassiveNode; x: number; y: number } | null>(null);
   const [buildLimitWarning, setBuildLimitWarning] = useState("");
   const [hover, setHover] = useState<{ node: PassiveNode | null; x: number; y: number; held: boolean }>({ node: null, x: 0, y: 0, held: false });
   const [command, setCommand] = useState<CanvasCommand | null>(null);
@@ -218,6 +259,8 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       setAscendancyFilter(stored ? storedAscendancy : initialAscendancy);
       setTreeBuildName(stored?.name || "");
       setAllocatedIds(stored ? new Set(stored.allocatedIds) : new Set());
+      setWeaponSets({ ...(stored?.weaponSets ?? {}) });
+      setAttributeChoices({ ...(stored?.attributeChoices ?? {}) });
       setSavedTrees(storedSavedTrees);
       setActiveSavedTreeId(storedSavedTree?.id || "");
       setSavedTreeBaseline(storedSavedTree ? treeSnapshotSignature(storedSavedTree) : "");
@@ -291,7 +334,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       .map((id) => targetNodeById.get(id) || tree?.nodeById.get(id))
       .filter((node): node is PassiveNode => Boolean(node));
   }, [allocatedIds, selectedStartIds, targetNodeById, tree]);
-  const buildCounts = useMemo(() => buildCountsForIds(allocatedIds, selectedStartIds, targetNodeById), [allocatedIds, selectedStartIds, targetNodeById]);
+  const setCounts = useMemo(() => weaponSetPointCounts(weaponSets, allocatedIds), [weaponSets, allocatedIds]);
+  const buildCounts = useMemo(() => {
+    const counts = buildCountsForIds(allocatedIds, selectedStartIds, targetNodeById);
+    // PoB: a point spent in both weapon sets is paid once from the main pool.
+    return { ...counts, passive: counts.passive - setCounts.shared, total: counts.total - setCounts.shared };
+  }, [allocatedIds, selectedStartIds, targetNodeById, setCounts]);
   const buildStatRows = useMemo(() => aggregateNodeStats(selectedBuildNodes), [selectedBuildNodes]);
   const buildLimitExceeded = buildCounts.passive > BUILD_PASSIVE_LIMIT || buildCounts.ascendancy > BUILD_ASCENDANCY_LIMIT;
   const visibleNodeCount = visibleNodeIds.size;
@@ -307,8 +355,15 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     return tree.classByName.get(classFilter)?.ascendancies.map((asc) => asc.name) ?? [];
   }, [tree, classFilter]);
 
+  const resetTreeEdits = () => {
+    setWeaponSets({});
+    setAttributeChoices({});
+    setNodeMenu(null);
+  };
+
   const selectClass = (name: string) => {
     setBuildLimitWarning("");
+    resetTreeEdits();
     setClassFilter(name);
     const nextAscendancy = name ? tree?.classByName.get(name)?.ascendancies[0]?.name || "" : "";
     setAscendancyFilter(nextAscendancy);
@@ -327,36 +382,119 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     }
   };
 
+  const vi = locale === "vi";
+
+  /** Takes the point back (and every node that only hung on it), as PoB does. */
+  const refundNode = (node: PassiveNode) => {
+    const seeded = syncSelectedStartNodeIds(allocatedIds, selectedStartIds, startIds);
+    const result = refundInMode({ targetId: node.id, allocatedIds: seeded, startNodeIds: selectedStartIds, graphByNodeId, visibleNodeIds, weaponSets });
+    setBuildLimitWarning("");
+    setAllocatedIds(result.allocated);
+    setWeaponSets(result.weaponSets);
+    // PoB forgets the attribute of a node once it is refunded.
+    setAttributeChoices((current) => Object.fromEntries(Object.entries(current).filter(([id]) => result.allocated.has(id))));
+    setNodeMenu(null);
+  };
+
   const toggleAllocated = (node: PassiveNode) => {
     if (!allocationEnabled) return;
-    setAllocatedIds((current) => {
-      const seeded = syncSelectedStartNodeIds(current, selectedStartIds, startIds);
-      if (seeded.has(node.id) && !selectedStartIds.has(node.id)) {
-        setBuildLimitWarning("");
-        return refundAllocatedNodeIds({
-          targetId: node.id,
-          allocatedIds: seeded,
-          startNodeIds: selectedStartIds,
-          graphByNodeId,
-          visibleNodeIds
-        });
-      }
-      const next = allocatePathToNode({
-        targetId: node.id,
-        allocatedIds: seeded,
-        startNodeIds: selectedStartIds,
-        graphByNodeId,
-        visibleNodeIds
-      });
-      const counts = buildCountsForIds(next, selectedStartIds, targetNodeById);
-      if (counts.passive > BUILD_PASSIVE_LIMIT || counts.ascendancy > BUILD_ASCENDANCY_LIMIT) {
-        setBuildLimitWarning(localizedText(passiveCopy.buildLimitReached, "", locale));
-        return seeded;
-      }
-      setBuildLimitWarning("");
-      return next;
+    const carried = jewels?.carried;
+    if (carried && node.jewelSocket) {
+      if (carried.accepts(node)) jewels!.onSocketCarried(node);
+      return;
+    }
+    const seeded = syncSelectedStartNodeIds(allocatedIds, selectedStartIds, startIds);
+    const isAllocated = seeded.has(node.id) && !selectedStartIds.has(node.id);
+    // An allocated attribute node or jewel socket opens its menu (pick the attribute,
+    // put a jewel in); the menu also has the button that takes the point back.
+    if (isAllocated && (node.isAttribute || (node.jewelSocket && jewels))) {
+      setNodeMenu({ node, x: hover.node?.id === node.id ? hover.x : window.innerWidth / 2, y: hover.node?.id === node.id ? hover.y : window.innerHeight / 3 });
+      return;
+    }
+    if (isAllocated) {
+      refundNode(node);
+      return;
+    }
+    const result = allocatePathInMode({
+      targetId: node.id,
+      allocatedIds: seeded,
+      startNodeIds: selectedStartIds,
+      graphByNodeId,
+      visibleNodeIds,
+      weaponSets,
+      mode: allocMode,
+      isMainTreeOnly: (id) => isMainTreeOnlyNode(tree?.nodeById.get(id))
     });
+    if (result.blocked) {
+      setBuildLimitWarning(vi ? "Điểm quan trọng (keystone), ô ngọc và điểm thăng hoa chỉ chọn được ở Cây chính." : "Keystones, jewel sockets and ascendancy nodes belong to the main tree.");
+      return;
+    }
+    const sets = weaponSetPointCounts(result.weaponSets, result.allocated);
+    const counts = buildCountsForIds(result.allocated, selectedStartIds, targetNodeById);
+    if (counts.passive - sets.shared > BUILD_PASSIVE_LIMIT || counts.ascendancy > BUILD_ASCENDANCY_LIMIT) {
+      setBuildLimitWarning(localizedText(passiveCopy.buildLimitReached, "", locale));
+      return;
+    }
+    setBuildLimitWarning("");
+    setAllocatedIds(result.allocated);
+    setWeaponSets(result.weaponSets);
+    // New attribute nodes take the attribute picked last (PoB: Strength until one is picked).
+    const added = [...result.allocated].filter((id) => !seeded.has(id) && tree?.nodeById.get(id)?.isAttribute);
+    if (added.length) setAttributeChoices((current) => ({ ...current, ...Object.fromEntries(added.map((id) => [id, defaultAttribute])) }));
   };
+
+  const chooseAttribute = (nodeId: string, choice: AttributeChoice) => {
+    setAttributeChoices((current) => ({ ...current, [nodeId]: choice }));
+    setDefaultAttribute(choice);
+  };
+
+  // Escape closes the node menu.
+  useEffect(() => {
+    if (!nodeMenu) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setNodeMenu(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [nodeMenu]);
+
+  const onTreeHover = (node: PassiveNode | null, x: number, y: number, held: boolean) => {
+    setHover({ node, x, y, held });
+    if (jewels?.onSocketHover) jewels.onSocketHover(node?.jewelSocket ? node : null);
+  };
+
+  const onNodeDrop = (phase: "over" | "leave" | "drop", node: PassiveNode | null, x: number, y: number) => {
+    const carried = jewels?.carried;
+    if (!jewels || !carried) return false;
+    if (phase === "leave") {
+      setDragHover(null);
+      jewels.onSocketHover?.(null);
+      return false;
+    }
+    const target = node?.jewelSocket && carried.accepts(node) ? node : null;
+    if (phase === "drop") {
+      setDragHover(null);
+      if (target) jewels.onSocketCarried(target);
+      return Boolean(target);
+    }
+    if ((target?.id ?? "") !== (dragHover?.node.id ?? "")) jewels.onSocketHover?.(target);
+    setDragHover(target ? { node: target, x, y } : null);
+    return Boolean(target);
+  };
+
+  const treeMarks = useMemo(() => {
+    const carried = jewels?.carried;
+    const dropSocketIds = carried && tree
+      ? new Set(tree.nodes.filter((node) => node.jewelSocket && carried.accepts(node)).map((node) => node.id))
+      : undefined;
+    return {
+      weaponSets,
+      attributeChoices,
+      socketedJewels: jewels ? new Map([...jewels.socketed].map(([id, jewel]) => [id, jewel.rarity])) : undefined,
+      dropSocketIds,
+      dropTargetId: dragHover?.node.id
+    };
+  }, [weaponSets, attributeChoices, jewels, tree, dragHover]);
 
   const applyPob = (build: PobBuild) => {
     if (!tree) return;
@@ -368,6 +506,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     const starts = selectedStartNodeIds(tree, className, ascendancy);
     const ids = new Set<string>(build.nodeIds.filter((id) => tree.nodeById.has(id)));
     setAllocatedIds(syncSelectedStartNodeIds(ids, starts, allStartNodeIds(tree)));
+    resetTreeEdits();
     setBuildLimitWarning("");
     setPob(build);
   };
@@ -403,9 +542,11 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       ascendancyName: ascendancyFilter,
       allocatedIds,
       startIds: selectedStartIds,
-      treeVersion: "0.5"
+      treeVersion: "0.5",
+      weaponSets,
+      attributeChoices
     });
-  }, [tree, treeBuildName, classFilter, ascendancyFilter, allocatedIds, selectedStartIds, embedded, initialSnapshot?.id]);
+  }, [tree, treeBuildName, classFilter, ascendancyFilter, allocatedIds, selectedStartIds, embedded, initialSnapshot?.id, weaponSets, attributeChoices]);
   const currentTreeSignature = useMemo(() => treeSnapshotSignature(currentBuildSnapshot), [currentBuildSnapshot]);
   const hasUnsavedTreeChanges = Boolean(currentBuildSnapshot && (
     savedTreeBaseline
@@ -431,6 +572,9 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     setAscendancyFilter(snapshot.ascendancyName);
     setTreeBuildName(snapshot.name);
     setAllocatedIds(new Set(snapshot.allocatedIds));
+    setWeaponSets({ ...(snapshot.weaponSets ?? {}) });
+    setAttributeChoices({ ...(snapshot.attributeChoices ?? {}) });
+    setNodeMenu(null);
     setActiveSavedTreeId(snapshot.id);
     setSavedTreeBaseline(treeSnapshotSignature(snapshot));
     setTreeLibraryOpen(false);
@@ -470,6 +614,27 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     setSaveMessage(localizedText(passiveCopy.treeSaved, "", locale));
     window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "saved", id: saved.id } }));
     window.setTimeout(() => setSaveMessage(""), 2200);
+  };
+
+  /** Weapon set, attribute and socket lines of a node's tooltip. */
+  const nodePickTooltip = (node: PassiveNode): ReactNode => {
+    const allocated = allocatedIds.has(node.id);
+    const set = allocated ? weaponSets[node.id] : undefined;
+    const attribute = allocated && node.isAttribute ? attributeChoices[node.id] : undefined;
+    const lines: ReactNode[] = [];
+    if (set) lines.push(<p key="set" className="passive-tooltip-set" style={{ color: WEAPON_SET_COLORS[set] }}>{vi ? `Chỉ có tác dụng khi cầm bộ vũ khí ${set}` : `Weapon set ${set} only`}</p>);
+    if (node.isAttribute) {
+      lines.push(<p key="attr" className="passive-tooltip-hint">{attribute
+        ? (vi ? `Đang cho: ${ATTRIBUTE_LABELS[attribute].vi}. Bấm để đổi.` : `Gives ${ATTRIBUTE_LABELS[attribute].en}. Click to change.`)
+        : allocated
+          ? (vi ? "Chưa chọn thuộc tính nên điểm này chưa cho gì. Bấm để chọn." : "No attribute picked yet. Click to pick one.")
+          : (vi ? `Khi chọn sẽ cho ${ATTRIBUTE_LABELS[defaultAttribute].vi}.` : `Will give ${ATTRIBUTE_LABELS[defaultAttribute].en}.`)}</p>);
+    }
+    if (!allocated && allocMode > 0 && isMainTreeOnlyNode(node) && !node.ascendancyName) {
+      lines.push(<p key="global" className="passive-tooltip-hint">{vi ? "Chỉ chọn được ở Cây chính." : "Main tree only."}</p>);
+    }
+    if (node.jewelSocket && jewels?.renderSocketTooltip) lines.push(<div key="socket">{jewels.renderSocketTooltip(node, allocated)}</div>);
+    return lines.length ? <div className="passive-tooltip-edits">{lines}</div> : null;
   };
 
   const routeClassName = embedded ? "passive-route passive-route--embedded" : "passive-route";
@@ -563,10 +728,55 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           classFilter={classFilter}
           ascendancyFilter={ascendancyFilter}
           command={command}
-          onHover={(node, x, y, held) => setHover({ node, x, y, held })}
+          onHover={onTreeHover}
           onToggle={toggleAllocated}
           onZoomChange={handleZoomChange}
+          marks={treeMarks}
+          dropType={jewels?.dragType}
+          onNodeDrop={jewels ? onNodeDrop : undefined}
         />
+
+        {!readOnly && activeMode === "build" ? (
+          <div className="passive-alloc-mode" role="group" aria-label={vi ? "Điểm cho cây chính hay bộ vũ khí" : "Allocate to"}>
+            <div className="passive-alloc-mode-row">
+              {([0, 1, 2] as AllocMode[]).map((mode) => {
+                const used = mode === 1 ? setCounts.set1 : mode === 2 ? setCounts.set2 : 0;
+                return (
+                  <button
+                    key={mode}
+                    type="button"
+                    className={`passive-alloc-mode-btn ${allocMode === mode ? "is-active" : ""} ${mode && used > WEAPON_SET_POINTS ? "is-danger" : ""}`}
+                    style={mode ? { ["--set-color" as string]: WEAPON_SET_COLORS[mode as 1 | 2] } : undefined}
+                    onClick={() => setAllocMode(mode)}
+                    aria-pressed={allocMode === mode}
+                    title={mode ? (vi ? `Điểm chọn lúc này chỉ có tác dụng khi cầm bộ vũ khí ${mode}. Còn ${Math.max(WEAPON_SET_POINTS - used, 0)} điểm.` : `Points for weapon set ${mode}`) : (vi ? "Điểm dùng cho mọi bộ vũ khí" : "Points for both weapon sets")}
+                  >
+                    {mode ? <i aria-hidden="true" /> : null}
+                    <span>{vi ? (mode ? `Bộ ${mode}` : "Cây chính") : (mode ? `Set ${mode}` : "Main")}</span>
+                    {mode ? <small>{used}/{WEAPON_SET_POINTS}</small> : null}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="passive-alloc-mode-row passive-alloc-attr" title={vi ? "Thuộc tính cho các điểm \"+5 bất kỳ thuộc tính\" chọn mới" : "Attribute for new attribute nodes"}>
+              <span>{vi ? "Điểm +5:" : "+5 nodes:"}</span>
+              {(["str", "dex", "int"] as AttributeChoice[]).map((choice) => (
+                <button key={choice} type="button" className={`passive-attr-btn is-${choice} ${defaultAttribute === choice ? "is-active" : ""}`} onClick={() => setDefaultAttribute(choice)} aria-pressed={defaultAttribute === choice}>
+                  {ATTRIBUTE_LABELS[choice].short}
+                </button>
+              ))}
+            </div>
+            {allocMode ? <p className="passive-alloc-mode-hint">{vi ? `Đang chọn điểm cho bộ vũ khí ${allocMode}` : `Allocating weapon set ${allocMode}`}</p> : null}
+          </div>
+        ) : null}
+
+        {jewels?.carried && !jewels.carried.dragging ? (
+          <div className="passive-carry-banner" role="status">
+            <span className="material-symbols-rounded" aria-hidden="true">diamond</span>
+            <span>{vi ? <>Bấm vào một ô ngọc đang sáng để gắn <b>{jewels.carried.name}</b>.</> : <>Click a lit socket to put in <b>{jewels.carried.name}</b>.</>}</span>
+            <button type="button" onClick={jewels.onCancelCarried}>{vi ? "Hủy" : "Cancel"}</button>
+          </div>
+        ) : null}
 
         {/* Zoom Slider Overlay */}
         <div className="passive-zoom-control" style={{
@@ -662,6 +872,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
                         </button>
                         <button className="passive-build-clear" type="button" onClick={() => {
                           setBuildLimitWarning("");
+                          resetTreeEdits();
                           setAllocatedIds(syncSelectedStartNodeIds(new Set(), selectedStartIds, startIds));
                         }} title={localizedText(passiveCopy.clearBuild, "", locale)} aria-label={localizedText(passiveCopy.clearBuild, "", locale)}>
                           <span className="material-symbols-rounded" aria-hidden="true">delete_sweep</span>
@@ -677,6 +888,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
                 <div className="passive-build-meters">
                   <span className={buildCounts.passive >= BUILD_PASSIVE_LIMIT ? "is-danger" : ""}><strong>{formatNumber(buildCounts.passive, locale)}</strong>/{BUILD_PASSIVE_LIMIT} {localizedText(passiveCopy.passives, "", locale)}</span>
                   <span className={buildCounts.ascendancy >= BUILD_ASCENDANCY_LIMIT ? "is-danger" : ""}><strong>{formatNumber(buildCounts.ascendancy, locale)}</strong>/{BUILD_ASCENDANCY_LIMIT} {localizedText(passiveCopy.ascendancyPoints, "", locale)}</span>
+                  {setCounts.set1 || setCounts.set2 ? (
+                    <>
+                      <span className={setCounts.set1 > WEAPON_SET_POINTS ? "is-danger" : ""}><strong>{formatNumber(setCounts.set1, locale)}</strong>/{WEAPON_SET_POINTS} {vi ? "bộ 1" : "set 1"}</span>
+                      <span className={setCounts.set2 > WEAPON_SET_POINTS ? "is-danger" : ""}><strong>{formatNumber(setCounts.set2, locale)}</strong>/{WEAPON_SET_POINTS} {vi ? "bộ 2" : "set 2"}</span>
+                    </>
+                  ) : null}
                 </div>
                 <label className="passive-build-name">
                   <span>{localizedText(passiveCopy.treeName, "", locale)}</span>
@@ -791,11 +1008,53 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             ) : null}
           </aside>
         ) : null}
-        {hover.node ? (
-          <div className={`passive-tooltip ${hover.held ? "is-held" : ""}`} style={{ left: Math.min(hover.x + 18, window.innerWidth - 380), top: Math.min(hover.y + 18, window.innerHeight - 220) }}>
-            <strong translate="no">{hover.node.name || `Node ${hover.node.id}`}</strong>
-            <span>{hover.node.type}</span>
-            {hover.node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}
+        {(() => {
+          // While a jewel is dragged the browser sends no hover, so the socket under it shows here.
+          const shown = dragHover ? { ...dragHover, held: false } : hover.node ? hover : null;
+          if (!shown?.node || nodeMenu) return null;
+          const node = shown.node;
+          return (
+            <div className={`passive-tooltip ${!dragHover && hover.held ? "is-held" : ""}`} style={{ left: Math.min(shown.x + 18, window.innerWidth - 380), top: Math.min(shown.y + 18, window.innerHeight - 220) }}>
+              <strong translate="no">{node.name || `Node ${node.id}`}</strong>
+              <span>{node.type}</span>
+              {node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}
+              {nodePickTooltip(node)}
+            </div>
+          );
+        })()}
+        {nodeMenu ? (
+          <div className="passive-node-menu-backdrop" onClick={() => setNodeMenu(null)}>
+            <div
+              className="passive-node-menu"
+              role="dialog"
+              aria-label={nodeMenu.node.name}
+              onClick={(event) => event.stopPropagation()}
+              style={{ left: Math.max(8, Math.min(nodeMenu.x + 12, window.innerWidth - 340)), top: Math.max(8, Math.min(nodeMenu.y + 12, window.innerHeight - 420)) }}
+            >
+              <div className="passive-node-menu-head">
+                <strong translate="no">{nodeMenu.node.name || `Node ${nodeMenu.node.id}`}</strong>
+                <button type="button" onClick={() => setNodeMenu(null)} aria-label={vi ? "Đóng" : "Close"}>
+                  <span className="material-symbols-rounded" aria-hidden="true">close</span>
+                </button>
+              </div>
+              {nodeMenu.node.isAttribute ? (
+                <div className="passive-node-menu-attrs">
+                  <p>{vi ? "Điểm này cho +5 vào thuộc tính:" : "This node gives +5 to:"}</p>
+                  {(["str", "dex", "int"] as AttributeChoice[]).map((choice) => (
+                    <button key={choice} type="button" className={`passive-attr-btn is-${choice} ${attributeChoices[nodeMenu.node.id] === choice ? "is-active" : ""}`} onClick={() => { chooseAttribute(nodeMenu.node.id, choice); setNodeMenu(null); }} aria-pressed={attributeChoices[nodeMenu.node.id] === choice}>
+                      {vi ? ATTRIBUTE_LABELS[choice].vi : ATTRIBUTE_LABELS[choice].en}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              {nodeMenu.node.jewelSocket && jewels ? jewels.renderSocketMenu(nodeMenu.node, allocatedIds.has(nodeMenu.node.id), () => setNodeMenu(null)) : null}
+              {allocatedIds.has(nodeMenu.node.id) ? (
+                <button type="button" className="passive-node-menu-refund" onClick={() => refundNode(nodeMenu.node)}>
+                  <span className="material-symbols-rounded" aria-hidden="true">undo</span>
+                  {vi ? "Bỏ điểm này" : "Refund this node"}
+                </button>
+              ) : null}
+            </div>
           </div>
         ) : null}
       </div>

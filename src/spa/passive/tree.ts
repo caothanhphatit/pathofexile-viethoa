@@ -16,6 +16,10 @@ export interface PassiveNode {
   iconPath: string;
   isClassStart: boolean;
   isAscendancyStart: boolean;
+  /** "+5 to any Attribute": the player picks Str, Dex or Int (PoB isAttribute). */
+  isAttribute?: boolean;
+  /** Jewel socket and its PoB rule: "sinister" takes no unique, "basic" only a basic non-unique jewel. */
+  jewelSocket?: "normal" | "sinister" | "basic";
   viewProjection?: PassiveViewProjection;
 }
 
@@ -87,6 +91,14 @@ const finiteOptional = (value: unknown) => Number.isFinite(Number(value)) ? Numb
 const normalizeTreeLocale = (value: unknown): "vi" | "en" => String(value || "").toLowerCase().slice(0, 2) === "en" ? "en" : "vi";
 const hiddenPassiveClasses = new Set(["Marauder"]);
 const isVisiblePassiveClass = (name: unknown) => !hiddenPassiveClasses.has(String(name ?? ""));
+
+/** PoB: Sinister sockets refuse uniques; a socket inside a node (the Lich's Phylactery) takes basic jewels only. */
+export function passiveJewelSocketKind(type: string, name: string, stats: string[]): PassiveNode["jewelSocket"] {
+  if (!/jewel/i.test(type)) return undefined;
+  if (/sinister/i.test(name)) return "sinister";
+  if (stats.some((line) => /socket a non-unique basic jewel/i.test(line))) return "basic";
+  return "normal";
+}
 
 function canvasAngleFromPassiveAngle(angle: number): number {
   return angle - Math.PI / 2;
@@ -183,7 +195,9 @@ export function parsePassiveTree(raw: any, locale: "vi" | "en" = "vi"): PassiveT
       ascendancyName: String(node.ascendancy_name ?? node.ascendancyName ?? ""),
       iconPath: String(node.icon_path ?? ""),
       isClassStart: Boolean(classNames.length),
-      isAscendancyStart: Boolean(node.is_ascendancy_start || node.isAscendancyStart)
+      isAscendancyStart: Boolean(node.is_ascendancy_start || node.isAscendancyStart),
+      isAttribute: rawStats.length === 1 && /^\+\d+ to any Attribute$/i.test(rawStats[0].trim()),
+      jewelSocket: passiveJewelSocketKind(String(node.type ?? ""), rawName, rawStats)
     };
   }).filter((node) => node.id && Number.isFinite(node.x) && Number.isFinite(node.y));
 

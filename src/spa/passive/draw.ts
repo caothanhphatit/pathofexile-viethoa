@@ -8,7 +8,25 @@ export interface RenderOptions {
   hoverId: string;
   classFilter: string;
   ascendancyFilter: string;
+  /** Weapon-set nodes (node id -> 1 or 2); others are main tree. */
+  weaponSets?: Record<string, 1 | 2>;
+  /** Attribute picked on "+5 to any Attribute" nodes. */
+  attributeChoices?: Record<string, "str" | "dex" | "int">;
+  /** Sockets holding a jewel: node id -> rarity (normal/magic/rare/unique). */
+  socketedJewels?: Map<string, string>;
+  /** While a jewel is dragged: sockets that take it, and the one under the pointer. */
+  dropSocketIds?: Set<string>;
+  dropTargetId?: string;
 }
+
+/** Weapon set colours, as PoB draws them (set 1 red, set 2 green). */
+export const WEAPON_SET_COLORS: Record<1 | 2, string> = { 1: "#e4604e", 2: "#49b867" };
+const ATTRIBUTE_BADGES: Record<string, { letter: string; color: string }> = {
+  str: { letter: "S", color: "#c8473d" },
+  dex: { letter: "D", color: "#3c9b52" },
+  int: { letter: "I", color: "#3f72c9" }
+};
+const JEWEL_RARITY_COLORS: Record<string, string> = { unique: "#d9853b", rare: "#e8d36a", magic: "#7f9cf5", normal: "#d6d3c8", relic: "#7dd3a7" };
 
 interface IconRecord {
   image: HTMLImageElement;
@@ -204,6 +222,8 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
   ctx.lineJoin = "round";
   const inactiveEdges = new Path2D();
   const activeEdges = new Path2D();
+  const setEdges: Record<1 | 2, Path2D> = { 1: new Path2D(), 2: new Path2D() };
+  const sets = opts.weaponSets ?? {};
   for (const edge of tree.edges) {
     if (!visible.has(edge.from) || !visible.has(edge.to)) continue;
     const from = targetNodeById.get(edge.from);
@@ -211,7 +231,8 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     if (!from || !to) continue;
     if (from.ascendancyName !== to.ascendancyName) continue;
     const active = opts.allocatedIds.has(from.id) && opts.allocatedIds.has(to.id);
-    const path = active ? activeEdges : inactiveEdges;
+    const edgeSet = active ? sets[from.id] ?? sets[to.id] : undefined;
+    const path = !active ? inactiveEdges : edgeSet ? setEdges[edgeSet] : activeEdges;
     addEdgeSegment(path, edge, from, to);
   }
   ctx.strokeStyle = palette.inactiveEdge;
@@ -220,10 +241,15 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
   ctx.strokeStyle = palette.activeEdge;
   ctx.lineWidth = cssPx(2.5);
   ctx.stroke(activeEdges);
+  for (const set of [1, 2] as const) {
+    ctx.strokeStyle = WEAPON_SET_COLORS[set];
+    ctx.stroke(setEdges[set]);
+  }
 
   const dotBuckets = new Map<string, { color: string; alpha: number; path: Path2D }>();
   const ringBuckets = new Map<string, { color: string; path: Path2D; dashed: boolean }>();
   let hoverRing: { x: number; y: number; r: number } | null = null;
+  const badges: Array<{ x: number; y: number; r: number; fill: string; letter?: string; diamond?: boolean; faded?: boolean }> = [];
   const pushRing = (color: string, x: number, y: number, r: number, dashed = false) => {
     const key = `${color}:${dashed ? "dash" : "solid"}`;
     let bucket = ringBuckets.get(key);
@@ -252,7 +278,9 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     const r = visual.fullRadius;
     const framePad = visual.important ? IMPORTANT_FRAME_PAD : NORMAL_FRAME_PAD;
     const alpha = node.ascendancyName && opts.ascendancyFilter && node.ascendancyName !== opts.ascendancyFilter ? 0.18 : 1;
-    const canUseDot = shouldUseDotLod(z) && !isAllocated && !isSearch && !isHover;
+    const jewelRarity = opts.socketedJewels?.get(node.id);
+    const isDropSocket = Boolean(opts.dropSocketIds?.has(node.id));
+    const canUseDot = shouldUseDotLod(z) && !isAllocated && !isSearch && !isHover && !jewelRarity && !isDropSocket;
 
     if (canUseDot) {
       const dotRadius = visual.dotRadius;
@@ -294,7 +322,14 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     ctx.stroke();
 
     if (isSearch) pushRing(palette.searchRing, node.x, node.y, r + CHANGE_RING_GAP);
-    if (isAllocated) pushRing(palette.allocatedRing, node.x, node.y, r + CHANGE_RING_GAP);
+    const nodeSet = isAllocated ? sets[node.id] : undefined;
+    if (isAllocated) pushRing(nodeSet ? WEAPON_SET_COLORS[nodeSet] : palette.allocatedRing, node.x, node.y, r + CHANGE_RING_GAP);
+    if (isDropSocket) pushRing(palette.searchRing, node.x, node.y, r + CHANGE_RING_GAP * 2.2, opts.dropTargetId !== node.id);
+    if (jewelRarity) badges.push({ x: node.x, y: node.y, r: Math.max(r * 0.55, cssPx(4)), fill: JEWEL_RARITY_COLORS[jewelRarity] ?? JEWEL_RARITY_COLORS.normal, diamond: true, faded: !isAllocated });
+    const attribute = isAllocated ? opts.attributeChoices?.[node.id] : undefined;
+    if (attribute && ATTRIBUTE_BADGES[attribute]) {
+      badges.push({ x: node.x + r * 0.8, y: node.y - r * 0.8, r: Math.max(r * 0.62, cssPx(5)), fill: ATTRIBUTE_BADGES[attribute].color, letter: ATTRIBUTE_BADGES[attribute].letter });
+    }
     if (isHover) hoverRing = { x: node.x, y: node.y, r: r + CHANGE_RING_GAP };
 
     ctx.globalAlpha = 1;
@@ -311,6 +346,33 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     ctx.lineWidth = frameLineWidth(4.6, cssPx, 0.8);
     ctx.globalAlpha = 0.95;
     ctx.stroke(bucket.path);
+    ctx.restore();
+  }
+  for (const badge of badges) {
+    ctx.save();
+    ctx.globalAlpha = badge.faded ? 0.45 : 1;
+    ctx.fillStyle = badge.fill;
+    ctx.strokeStyle = "rgba(2, 6, 17, .85)";
+    ctx.lineWidth = frameLineWidth(3, cssPx, 0.8);
+    ctx.beginPath();
+    if (badge.diamond) {
+      ctx.moveTo(badge.x, badge.y - badge.r);
+      ctx.lineTo(badge.x + badge.r * 0.8, badge.y);
+      ctx.lineTo(badge.x, badge.y + badge.r);
+      ctx.lineTo(badge.x - badge.r * 0.8, badge.y);
+      ctx.closePath();
+    } else {
+      ctx.arc(badge.x, badge.y, badge.r, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.stroke();
+    if (badge.letter && badge.r * z >= 4.5) {
+      ctx.fillStyle = "#ffffff";
+      ctx.font = `700 ${badge.r * 1.25}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(badge.letter, badge.x, badge.y + badge.r * 0.05);
+    }
     ctx.restore();
   }
   if (hoverRing) {
