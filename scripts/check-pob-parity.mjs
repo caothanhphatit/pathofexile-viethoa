@@ -55,7 +55,11 @@ export const PARITY_STATS = [
   { stat: "Minion.Life", label: "Minion: Life", rel: 0.005 },
   { stat: "Minion.EnergyShield", label: "Minion: ES", rel: 0.005 },
   { stat: "Minion.FireResist", label: "Minion: kháng lửa", abs: 0.5 },
-  { stat: "Minion.ChaosResist", label: "Minion: kháng hỗn mang", abs: 0.5 }
+  { stat: "Minion.ChaosResist", label: "Minion: kháng hỗn mang", abs: 0.5 },
+  // Totems of the main skill (scripts/pob-calculate.lua -> Totem).
+  { stat: "Totem.DPS", label: "Totem: DPS", rel: 0.01 },
+  { stat: "Totem.Life", label: "Totem: Life", rel: 0.005 },
+  { stat: "Totem.Count", label: "Totem: số lượng", abs: 0 }
 ];
 
 /** stats["Minion.Life"] -> stats.Minion.Life. */
@@ -192,8 +196,10 @@ export async function checkGemOptionChange({ body, xml, planner, pob }, runtime 
   const group = body.skills?.[mainGroup - 1];
   const codeMain = Number(xml.match(/<Build\b[^>]*\bmainSocketGroup="(\d+)"/)?.[1]) || 1;
   if (!group) return null;
-  const option = (planner.GemOptions?.[String(mainGroup)] ?? []).find((row) => row.statSets || row.parts || row.minionSkills);
-  const gem = option && option.gem > 1 ? group.support?.[option.gem - 2] : group;
+  const target = lib.plannerGemTargets(planner.GemOptions, bodyGroups(body))
+    .find((row) => row.group === mainGroup - 1 && (row.option.statSets || row.option.parts || row.option.minionSkills));
+  const option = target?.option;
+  const gem = target?.supportId !== undefined ? group.support?.[Number(target.supportId)] : group;
   if (!gem) return null;
   let attrs = gem.pob_attrs ? { ...gem.pob_attrs } : undefined;
   const changes = [];
@@ -207,7 +213,7 @@ export async function checkGemOptionChange({ body, xml, planner, pob }, runtime 
   if (!editedXml) return null;
   const editedBody = structuredClone(body);
   const editedGroup = editedBody.skills[mainGroup - 1];
-  (option && option.gem > 1 ? editedGroup.support[option.gem - 2] : editedGroup).pob_attrs = attrs;
+  (target?.supportId !== undefined ? editedGroup.support[Number(target.supportId)] : editedGroup).pob_attrs = attrs;
   const [pobAfter, plannerAfter] = await Promise.all([runPob(editedXml, runtime), runPob(buildPobXml(editedBody), runtime)]);
   const rows = compareStats({ code: {}, pob: pobAfter, planner: plannerAfter });
   // Whether PoB's own numbers moved: a change that moves nothing proves little (the test wants some that do).
@@ -219,6 +225,158 @@ export async function checkGemOptionChange({ body, xml, planner, pob }, runtime 
     moved,
     ok: rows.every((row) => row.plannerOk)
   };
+}
+
+// ── --all-options: every choice PoB offers, on every build ──────────────────
+
+const activeSkillSet = (xml) => {
+  const active = xml.match(/<Skills\b[^>]*\bactiveSkillSet="(\d+)"/)?.[1];
+  const setMatch = active ? [...xml.matchAll(/<SkillSet\b[^>]*\bid="(\d+)"[^>]*>[\s\S]*?<\/SkillSet>/g)].find((m) => m[1] === active) : null;
+  const start = setMatch ? setMatch.index : xml.indexOf("<Skills");
+  const end = setMatch ? start + setMatch[0].length : xml.indexOf("</Skills>");
+  return { start, groups: [...xml.slice(start, end).matchAll(/<Skill\b[\s\S]*?<\/Skill>/g)] };
+};
+
+/** PoB group numbers (in the code's XML) of the groups the planner keeps: those with a gem. */
+export function codeGroupNumbers(xml) {
+  return activeSkillSet(xml).groups.map((m, index) => (/<Gem\b/.test(m[0]) ? index + 1 : 0)).filter(Boolean);
+}
+
+/**
+ * Makes XML group `group` (with its active skill `skill`) the main skill of the code's XML.
+ * PoB reads mainSocketGroup in XML order and follows that group when it later folds
+ * support groups into item-granted ones (CalcSetup), so the XML number is the right one.
+ */
+export function setPobMainSkill(xml, group, skill) {
+  const { start, groups } = activeSkillSet(xml);
+  const target = groups[group - 1];
+  if (!target) return null;
+  const open = target[0].match(/^<Skill\b[^>]*>/)[0];
+  let tag = setAttr(open, "mainActiveSkill", String(skill));
+  tag = setAttr(tag, "mainActiveSkillCalcs", String(skill));
+  const at = start + target.index;
+  const edited = xml.slice(0, at) + tag + xml.slice(at + open.length);
+  return edited.replace(/(<Build\b[^>]*\bmainSocketGroup=)"\d+"/, `$1"${group}"`);
+}
+
+/** The request body's groups in the shape src/spa/lib/gemOptions.ts matches against. */
+const bodyGroups = (body) => body.skills.map((row) => ({
+  skillId: row.skill_id, pobSkillId: row.pob_skill_id, pobGemId: row.pob_gem_id, itemSource: row.source, itemSlot: row.slot,
+  supportSkills: (row.support ?? []).map((gem, index) => ({ id: String(index), skillId: gem.skill_id, pobSkillId: gem.pob_skill_id, pobGemId: gem.pob_gem_id }))
+}));
+
+const pool = async (jobs, size = 4) => {
+  const results = new Array(jobs.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(size, jobs.length) }, async () => {
+    while (next < jobs.length) {
+      const index = next++;
+      results[index] = await jobs[index]();
+    }
+  }));
+  return results;
+};
+
+/**
+ * Every choice PoB reports in GemOptions (each other stat set, part, minion, minion
+ * skill, stage count) for every group, with that skill made the main one, plus the
+ * three other corruption states of the build's main gem. Each is applied to the code's
+ * own XML (as PoB's UI stores it) and through the planner, and both PoB runs compared:
+ * the stats, the minion / totem numbers and the choice PoB reports back.
+ */
+export async function checkAllGemOptions(fixture, runtime = pobRuntime()) {
+  const lib = await loadSpaLib("gemOptions");
+  const { body, xml } = await plannerCalculationRequest(fixture.code);
+  const base = await runPob(buildPobXml(body), runtime);
+  const codeGroups = codeGroupNumbers(xml);
+  if (codeGroups.length !== body.skills.length) throw new Error(`group count ${codeGroups.length} vs ${body.skills.length}`);
+  const scenarios = [];
+  // g is PoB's own group number (GemOptions key); target is where that skill is in the
+  // planner body, and codeGroups[target.group] its <Skill> in the code's XML.
+  const plannerGem = (b, target) => (target.supportId === undefined ? b.skills[target.group] : b.skills[target.group].support?.[Number(target.supportId)]);
+  const targets = lib.plannerGemTargets(base.GemOptions, bodyGroups(body));
+  for (const [groupKey, entries] of Object.entries(base.GemOptions ?? {})) {
+    const g = Number(groupKey);
+    for (const entry of entries) {
+      const target = targets.find((row) => row.option === entry);
+      if (!target || !lib.hasGemChoices(entry)) {
+        if (!lib.hasGemChoices(entry)) continue;
+        // A group PoB built itself (e.g. "Default Attack" for a spear, where the code still has an
+        // item group from an older PoB) has no planner row: the card shows no option for it.
+        scenarios.push({ g, label: `${entry.name}: nhóm do PoB tự tạo (${entry.groupSource ?? "?"}), planner không có`, missing: true });
+        continue;
+      }
+      const attrs = plannerGem(body, target)?.pob_attrs;
+      const changes = [];
+      (entry.statSets ?? []).forEach((name, i) => { if (i + 1 !== lib.pickedStatSet(attrs, entry.grantedEffect)) changes.push([{ kind: "statSet", grantedEffect: entry.grantedEffect, value: i + 1 }, name]); });
+      (entry.parts ?? []).forEach((name, i) => { if (i + 1 !== (entry.part ?? 1)) changes.push([{ kind: "part", value: i + 1 }, name]); });
+      (entry.minions ?? []).forEach((minion) => { if (minion.id !== entry.minion) changes.push([{ kind: "minion", value: minion.id }, minion.name]); });
+      (entry.minionSkills ?? []).forEach((name, i) => { if (i + 1 !== (entry.minionSkill ?? 1)) changes.push([{ kind: "minionSkill", value: i + 1 }, name]); });
+      if (entry.maxStages) {
+        for (const value of [...new Set([1, Math.ceil(entry.maxStages / 2), entry.maxStages])]) {
+          if (value !== (entry.stages ?? 1)) changes.push([{ kind: "stages", value }, `${value}`]);
+        }
+      }
+      for (const [change, name] of changes) scenarios.push({ g, target, skill: entry.skill ?? 1, change, label: `${entry.name}: ${change.kind} = ${name}` });
+    }
+  }
+  const mainGroup = Number(body.main_socket_group) || 1;
+  const mainCorrupt = lib.corruptChoice(body.skills[mainGroup - 1]?.pob_attrs);
+  for (const choice of lib.CORRUPT_CHOICES) {
+    if (choice.value === mainCorrupt) continue;
+    scenarios.push({ g: mainGroup, target: { group: mainGroup - 1 }, skill: Number(body.skills[mainGroup - 1]?.main_active_skill) || 1, change: { kind: "corrupt", value: choice.value }, label: `kỹ năng chính: corrupt = ${choice.value}`, keepMain: true });
+  }
+  const baselines = new Map();
+  const baseline = (g, target, skill) => {
+    const key = `${g}:${skill}`;
+    if (!baselines.has(key)) baselines.set(key, runPob(setPobMainSkill(xml, codeGroups[target.group], skill), runtime));
+    return baselines.get(key);
+  };
+  const jobs = scenarios.map((scenario) => async () => {
+    if (scenario.missing) return { ...scenario, ok: true, skipped: true };
+    const { g, target, skill, change } = scenario;
+    const gemBody = plannerGem(body, target);
+    if (!gemBody) return { ...scenario, ok: false, error: "gem not found" };
+    const attrs = lib.withGemOption(gemBody.pob_attrs, change);
+    const changed = Object.fromEntries(Object.entries(attrs ?? {}).filter(([key, value]) => gemBody.pob_attrs?.[key] !== value));
+    const xmlGroup = codeGroups[target.group];
+    const codeMain = scenario.keepMain ? xml : setPobMainSkill(xml, xmlGroup, skill);
+    const editedXml = editPobGem(codeMain, { group: xmlGroup, skillId: gemBody.pob_skill_id || gemBody.skill_id, attrs: changed });
+    if (!editedXml) return { ...scenario, ok: false, error: "gem not found in the code's XML" };
+    const editedBody = structuredClone(body);
+    if (!scenario.keepMain) {
+      editedBody.main_socket_group = target.group + 1;
+      editedBody.skills[target.group].main_active_skill = skill;
+    }
+    plannerGem(editedBody, target).pob_attrs = attrs;
+    const [before, pob, planner] = await Promise.all([scenario.keepMain ? runPob(xml, runtime) : baseline(g, target, skill), runPob(editedXml, runtime), runPob(buildPobXml(editedBody), runtime)]);
+    const rows = compareStats({ code: {}, pob, planner });
+    // The pick PoB reports back for that group (ids aside: item numbers differ between the two XMLs).
+    const pick = (stats) => JSON.stringify((stats.GemOptions?.[String(g)] ?? []).map((row) => [row.name, row.part, row.statSet, row.stages, row.minion, row.minionSkill]));
+    const dps = (stats) => [stats.CombinedDPS, stats.Minion?.CombinedDPS, stats.Totem?.DPS, stats.Totem?.Life].map((v) => Number(v || 0));
+    const moved = dps(before).some((value, index) => Math.abs(value - dps(pob)[index]) > 1e-6);
+    const samePick = pick(pob) === pick(planner);
+    return { ...scenario, rows, moved, samePick, dps: dps(pob)[0] || dps(pob)[1] || dps(pob)[2], ok: samePick && rows.every((row) => row.plannerOk) };
+  });
+  const results = await pool(jobs);
+  return { fixture: fixture.name || fixture.file, results, ok: results.every((row) => row.ok) };
+}
+
+export function formatAllOptionsReport(reports) {
+  const lines = [];
+  for (const report of reports) {
+    lines.push(`\n${report.ok ? "KHỚP" : "LỆCH"}  ${report.fixture} (${report.results.length} lựa chọn)`);
+    for (const row of report.results) {
+      const bad = (row.rows ?? []).filter((r) => !r.plannerOk).map((r) => `${r.label}: PoB ${fmt(r.pob)} / Planner ${fmt(r.planner)}`);
+      lines.push(`${row.ok ? "  " : "✗ "}${row.label.padEnd(58)} ${fmt(row.dps).padStart(12)}${row.skipped ? "  (bỏ qua)" : row.moved ? "" : "  (PoB không đổi số)"}${row.samePick === false ? "  [PoB đọc lựa chọn khác]" : ""}${row.error ? `  ${row.error}` : ""}${bad.length ? `\n      ${bad.join("; ")}` : ""}`);
+    }
+  }
+  const total = reports.reduce((sum, report) => sum + report.results.length, 0);
+  const failed = reports.reduce((sum, report) => sum + report.results.filter((row) => !row.ok).length, 0);
+  const moved = reports.reduce((sum, report) => sum + report.results.filter((row) => row.moved).length, 0);
+  const skipped = reports.reduce((sum, report) => sum + report.results.filter((row) => row.skipped).length, 0);
+  lines.push(`\n${total - failed - skipped}/${total - skipped} lựa chọn khớp PoB (${moved} làm PoB đổi số; ${skipped} bỏ qua vì planner không có nhóm đó).`);
+  return lines.join("\n");
 }
 
 const fmt = (value) => {
@@ -260,6 +418,19 @@ if (isMain) {
   if (!runtime.available) {
     console.error(`Không tìm thấy PoB để chạy (POB_CORE_DIR=${runtime.coreDir}, POB_LUAJIT=${runtime.luajit}). Xem scripts/setup-pob-local.mjs.`);
     process.exit(2);
+  }
+  if (args.includes("--all-options")) {
+    const reports = [];
+    for (const fixture of readFixtures(names)) {
+      try {
+        reports.push(await checkAllGemOptions(fixture, runtime));
+      } catch (error) {
+        reports.push({ fixture: fixture.name || fixture.file, results: [], ok: false });
+        console.error(`${fixture.file}: ${error.message}`);
+      }
+    }
+    console.log(json ? JSON.stringify(reports, null, 2) : formatAllOptionsReport(reports));
+    process.exit(!reportOnly && reports.some((report) => !report.ok) ? 1 : 0);
   }
   const results = [];
   for (const fixture of readFixtures(names)) {

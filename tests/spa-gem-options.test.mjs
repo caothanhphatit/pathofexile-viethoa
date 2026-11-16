@@ -7,7 +7,7 @@ import { join } from "node:path";
 import test from "node:test";
 
 import { buildPobXml, statSetsXml } from "../src/server/pob-build-xml.mjs";
-import { editPobGem, playerStats } from "../scripts/check-pob-parity.mjs";
+import { editPobGem, playerStats, readFixtures } from "../scripts/check-pob-parity.mjs";
 import { NodeDOMParser, loadPlannerLib, loadSpaLib, repoRoot } from "../scripts/lib/planner-node.mjs";
 
 const plain = (value) => JSON.parse(JSON.stringify(value));
@@ -59,6 +59,80 @@ test("PoB's GemOptions land on the right planner gem", async () => {
   assert.equal(lib.optionLabel("Explosion", "vi"), "Nổ (Explosion)");
   assert.equal(lib.optionLabel("Explosion", "en"), "Explosion");
   assert.equal(lib.optionLabel("Large Star", "vi"), "Large Star");
+});
+
+test("GemOptions follow the XML row, not PoB's own group number", async () => {
+  const lib = await loadSpaLib("gemOptions");
+  // As in the warbringer fixture: the player's Ancestral Spirits group (row 1) and the
+  // tree's (row 3). PoB keeps the player's group as its group 1 with the tree's source,
+  // drops row 3, and adds a "Default Attack" group of its own (no row).
+  const skills = [
+    { skillId: "AncestralSpirits", pobSkillId: "AncestralSpiritsPlayer", supportSkills: [{ id: "cull", skillId: "SupportCullingStrike", pobSkillId: "SupportCullingStrikePlayer" }, { id: "comet", skillId: "Comet", pobSkillId: "CometPlayer" }] },
+    { skillId: "", supportSkills: [] },
+    { skillId: "SiegeBallista", pobSkillId: "SiegeBallistaPlayer", supportSkills: [] },
+    { skillId: "AncestralSpirits", pobSkillId: "AncestralSpiritsPlayer", itemSource: "Tree:39411", supportSkills: [] }
+  ];
+  const options = {
+    1: [
+      { gem: 1, xmlRow: 1, name: "Ancestral Spirits", grantedEffect: "AncestralSpiritsPlayer", groupSource: "Tree:39411", grantedSkill: true, minions: [{ id: "A", name: "A" }, { id: "B", name: "B" }] },
+      // Gems are found by id, whatever their position in PoB's merged list.
+      { gem: 4, xmlRow: 1, name: "Comet", skillId: "CometPlayer", grantedEffect: "CometPlayer", statSets: ["Comet", "Fire-Infused"] },
+      { gem: 5, xmlRow: 1, name: "Gone", skillId: "NotInPlanner", grantedEffect: "X", statSets: ["a", "b"] }
+    ],
+    2: [{ gem: 1, xmlRow: 2, name: "Artillery", grantedEffect: "SiegeBallistaProjectilePlayer", statSets: ["Artillery", "Explosion"] }],
+    3: [{ gem: 1, name: "Spear Throw", groupSource: "Default Attack", grantedEffect: "SpearThrowPlayer", statSets: ["a", "b"] }]
+  };
+  const targets = plain(lib.plannerGemTargets(options, skills)).map((row) => [row.group, row.supportId ?? "main", row.option.name]);
+  assert.deepEqual(targets, [[0, "main", "Ancestral Spirits"], [0, "comet", "Comet"], [2, "main", "Artillery"]]);
+  assert.equal(lib.hasGemChoices(options[1][0]), true);
+  assert.equal(lib.hasGemChoices({ gem: 1, name: "x", grantedEffect: "x", grantedSkill: true }), false);
+});
+
+test("item-granted groups point at the item now in their slot", () => {
+  const xml = buildPobXml({
+    inventory_slots: [
+      { inventory_id: "Helm1", raw_text: "Rarity: Normal\nIron Hat" },
+      { inventory_id: "Weapon1", raw_text: "Rarity: Unique\nFate Weaver\nRattling Sceptre" }
+    ],
+    skills: [
+      { skill_id: "SummonSkeletalWarriorsPlayer", pob_skill_id: "SummonSkeletalWarriorsPlayer", slot: "Weapon 1", source: "Item:24:Fate Weaver, Rattling Sceptre" },
+      { skill_id: "ThingPlayer", pob_skill_id: "ThingPlayer", slot: "Gloves", source: "Item:22:Horror's Flight" },
+      { skill_id: "EnemyExplode", pob_skill_id: "EnemyExplode", source: "Explode" }
+    ]
+  });
+  const sources = parse(xml).querySelectorAll("Skill").map((row) => row.getAttribute("source"));
+  // Weapon 1 holds item 2 here; no item in Gloves keeps the code's text; other sources stay.
+  assert.deepEqual(sources, ["Item:2:Fate Weaver, Rattling Sceptre", "Item:22:Horror's Flight", "Explode"]);
+});
+
+test("gem choices survive save / reload and the PoB code export", async () => {
+  const lib = await loadPlannerLib();
+  const options = await loadSpaLib("gemOptions");
+  const fixture = readFixtures(["warbringer-supercharged"])[0];
+  assert.ok(fixture, "warbringer-supercharged fixture");
+  const data = await lib.parsePobExportCode(fixture.code);
+  const { choices } = lib.pobSkillGroupChoices(data);
+  const slam = choices.find((row) => row.pobSkillId === "SuperchargedSlamPlayer");
+  const hammer = choices.find((row) => row.pobSkillId === "ForgeHammerPlayer");
+  let attrs = options.withGemOption(slam.pobAttrs, { kind: "statSet", grantedEffect: "SuperchargedSlamPlayer", value: 2 });
+  attrs = options.withGemOption(attrs, { kind: "stages", value: 3 });
+  attrs = options.withGemOption(attrs, { kind: "corrupt", value: "minus" });
+  slam.pobAttrs = attrs;
+  hammer.pobAttrs = options.withGemOption(hammer.pobAttrs, { kind: "minionSkill", value: 2 });
+  const want = (row) => ({ statSets: row.pobAttrs.statSets, skillStageCount: row.pobAttrs.skillStageCount, corruptLevel: row.pobAttrs.corruptLevel, corrupted: row.pobAttrs.corrupted, skillMinionSkill: row.pobAttrs.skillMinionSkill });
+  const before = [want(slam), want(hammer)];
+
+  // Saved to the browser and opened again.
+  const saved = lib.normalizeBuildProject(JSON.parse(JSON.stringify(lib.createBuildProject({ name: "t", author: "", description: "", inventory: [], skills: choices }))));
+  const pick = (rows) => [rows.find((row) => row.pobSkillId === "SuperchargedSlamPlayer"), rows.find((row) => row.pobSkillId === "ForgeHammerPlayer")].map(want);
+  assert.deepEqual(plain(pick(saved.skills)), plain(before), "after reload");
+
+  // Exported as a PoB code and imported again.
+  const body = lib.calculationRequestBody({ payload: {}, passives: [], inventory: [], skills: saved.skills, activeWeaponSet: 1, mainSocketGroup: 1 });
+  const code = await lib.encodePobXmlText(buildPobXml(body));
+  const again = lib.pobSkillGroupChoices(await lib.parsePobExportCode(code)).choices;
+  assert.deepEqual(plain(pick(again)), plain(before), "after PoB code export + import");
+  assert.deepEqual(before[0], { statSets: "SuperchargedSlamPlayer:2", skillStageCount: "3", corruptLevel: "-1", corrupted: "true", skillMinionSkill: undefined });
 });
 
 test("stat sets reach PoB as <StatSetIndex> children, whitelisted", () => {

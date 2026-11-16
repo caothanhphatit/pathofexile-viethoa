@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildPobXml, configXml } from "../src/server/pob-build-xml.mjs";
-import { checkFixture, compareStats, formatReport, pobRuntime, readFixtures } from "../scripts/check-pob-parity.mjs";
+import { checkAllGemOptions, checkFixture, compareStats, formatAllOptionsReport, formatReport, pobRuntime, readFixtures } from "../scripts/check-pob-parity.mjs";
 import { NodeDOMParser, loadPlannerLib, loadSpaLib, plannerCalculationRequest } from "../scripts/lib/planner-node.mjs";
 
 const fixtures = readFixtures();
@@ -282,4 +282,19 @@ test("socketing a jewel in the planner moves the numbers exactly as PoB does", {
   assert.ok(stats.some((stat) => without[stat] !== before[stat]), "taking the jewel out changes something");
   const rows = compareStats({ code: {}, pob: pobOwn, planner: withAgain });
   assert.ok(rows.every((row) => row.plannerOk), `jewel put back in the planner = PoB on the code itself: ${JSON.stringify(rows.filter((row) => !row.plannerOk))}`);
+});
+
+test("every gem choice PoB offers gives PoB's numbers, on the minion and totem builds", {
+  skip: runtime.available ? false : `PoB not installed locally (${runtime.coreDir}); run scripts/setup-pob-local.mjs`,
+  timeout: 600_000
+}, async () => {
+  // The full run over every fixture is `npm run check:pob -- --all-options`.
+  const reports = [];
+  for (const fixture of readFixtures(["lich-minions", "warbringer-ballista"])) reports.push(await checkAllGemOptions(fixture, runtime));
+  assert.equal(reports.length, 2);
+  assert.ok(reports.every((report) => report.ok), formatAllOptionsReport(reports));
+  const results = reports.flatMap((report) => report.results);
+  // Minion type, minion skill and stat set choices all present, and most move PoB's numbers.
+  for (const kind of ["minion", "minionSkill", "statSet", "corrupt"]) assert.ok(results.some((row) => row.change?.kind === kind && row.moved), kind);
+  assert.ok(results.some((row) => row.rows?.some((r) => r.stat === "Totem.Life" && r.pob > 0)), "a totem main skill");
 });
