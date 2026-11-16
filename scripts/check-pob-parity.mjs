@@ -18,6 +18,9 @@
 // Cần PoB chạy được trên máy: POB_CORE_DIR (thư mục src của PoB) và POB_LUAJIT
 // (mặc định: ../pob-core/src và ../pob-core/runtime/pob-luajit-bin/pob-luajit.exe
 // do scripts/setup-pob-local.mjs dựng; trên Linux là `luajit`).
+// Script tính là scripts/pob-calculate.lua của repo này (ghi ra thư mục tạm), không phải
+// calculate.lua đã cài trong POB_CORE_DIR (có thể là bản cũ); POB_CALC_SCRIPT=installed
+// để chạy bản đã cài, hoặc đường dẫn tới một script khác.
 import { execFile } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -25,6 +28,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { buildPobXml } from "../src/server/pob-build-xml.mjs";
+import { localCalculateScript } from "./setup-pob-local.mjs";
 import { loadSpaLib, plannerCalculationRequest, repoRoot } from "./lib/planner-node.mjs";
 
 export const FIXTURE_DIR = join(repoRoot, "tests", "fixtures", "pob-builds");
@@ -75,14 +79,27 @@ export function pobRuntime(env = process.env) {
   const winHost = resolve(coreDir, "..", "runtime", "pob-luajit-bin", "pob-luajit.exe");
   const luajit = env.POB_LUAJIT || (existsSync(winHost) ? winHost : "luajit");
   const available = existsSync(join(coreDir, "calculate.lua")) && (luajit === "luajit" ? process.platform !== "win32" : existsSync(luajit));
-  return { coreDir, luajit, available };
+  return { coreDir, luajit, available, script: calculateScript(env.POB_CALC_SCRIPT) };
+}
+
+let repoScript;
+/** The calculate script to run: this repo's scripts/pob-calculate.lua unless told otherwise. */
+function calculateScript(choice) {
+  if (choice === "installed") return "calculate.lua";
+  if (choice) return resolve(choice);
+  if (!repoScript) {
+    repoScript = join(tmpdir(), `pob_parity_calculate_${process.pid}.lua`);
+    writeFileSync(repoScript, localCalculateScript(readFileSync(join(repoRoot, "scripts", "pob-calculate.lua"), "utf8")), "utf8");
+    process.once("exit", () => { try { unlinkSync(repoScript); } catch {} });
+  }
+  return repoScript;
 }
 
 export function runPob(xml, runtime = pobRuntime()) {
   const file = join(tmpdir(), `pob_parity_${process.pid}_${Math.random().toString(36).slice(2, 8)}.xml`);
   writeFileSync(file, xml, "utf8");
   return new Promise((resolvePromise, reject) => {
-    execFile(runtime.luajit, ["calculate.lua", file], { cwd: runtime.coreDir, timeout: 120_000, maxBuffer: 16 * 1024 * 1024 }, (error, stdout, stderr) => {
+    execFile(runtime.luajit, [runtime.script || "calculate.lua", file], { cwd: runtime.coreDir, timeout: 120_000, maxBuffer: 16 * 1024 * 1024 }, (error, stdout, stderr) => {
       try { unlinkSync(file); } catch {}
       if (error) return reject(new Error(stderr || error.message));
       const line = String(stdout).split("\n").find((row) => row.trim().startsWith("{"));
