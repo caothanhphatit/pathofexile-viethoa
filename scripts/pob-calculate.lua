@@ -147,6 +147,115 @@ if breakdownEnv and #breakdownNames > 0 then
 end
 -- ===== STAT BREAKDOWN (planner) — end =====================================
 
+-- ── Planner: gem options, minion and totem stats ───────────────────────────
+-- A separate block: it only adds the keys GemOptions, Minion and Totem and leaves
+-- everything above as it is.
+-- GemOptions: per socket group (key = group number, same order as the XML <Skill>
+--             rows), the choices PoB offers for each active skill of that group:
+--             skill parts, stat sets, stages, minion type and minion skill, with the
+--             current pick. The planner shows them on the skill cards and writes the
+--             pick back as <Gem> attributes (skillPart, skillMinion...).
+-- Minion:     a compact subset of PoB's output.Minion for the main skill's minion.
+-- Totem:      count, life and damage of the main skill's totems.
+local function plannerGemOptions()
+    local groups = {}
+    local list = build.skillsTab and build.skillsTab.socketGroupList or {}
+    for groupIndex, group in ipairs(list) do
+        local skills = {}
+        for _, activeSkill in ipairs(group.displaySkillList or {}) do
+            local effect = activeSkill.activeEffect
+            local src = effect and effect.srcInstance
+            local granted = effect and effect.grantedEffect
+            local gemIndex
+            for index, gem in ipairs(group.gemList or {}) do
+                if gem == src then gemIndex = index end
+            end
+            if granted and gemIndex then
+                local entry = { gem = gemIndex, name = granted.name, grantedEffect = granted.id }
+                if granted.parts and #granted.parts > 1 then
+                    entry.parts = {}
+                    for _, part in ipairs(granted.parts) do entry.parts[#entry.parts + 1] = part.name or "" end
+                    entry.part = src.skillPart or 1
+                end
+                if granted.statSets and #granted.statSets > 1 then
+                    entry.statSets = {}
+                    for _, set in ipairs(granted.statSets) do entry.statSets[#entry.statSets + 1] = set.label or "" end
+                    entry.statSet = (type(src.statSet) == "table" and src.statSet[granted.id]) or 1
+                end
+                local flags = effect.statSet and effect.statSet.skillFlags or {}
+                if flags.multiStage then
+                    local key = "Multiplier:" .. granted.name:gsub("%s+", "") .. "MaxStages"
+                    local ok, max = pcall(function() return activeSkill.skillModList:Sum("BASE", activeSkill.skillCfg, key) end)
+                    if ok and type(max) == "number" and max > 1 then
+                        entry.maxStages = max
+                        entry.stages = src.skillStageCount or (activeSkill.skillData and activeSkill.skillData.stagesMin) or 1
+                    end
+                end
+                local minionList = activeSkill.minionList
+                if minionList and #minionList > 1 and not granted.minionHasItemSet then
+                    entry.minions = {}
+                    for _, id in ipairs(minionList) do
+                        local minion = data.minions[id]
+                        if minion then entry.minions[#entry.minions + 1] = { id = id, name = minion.name } end
+                    end
+                    entry.minion = src.skillMinion or minionList[1]
+                end
+                local minionSkills = activeSkill.minion and activeSkill.minion.activeSkillList
+                if minionSkills and #minionSkills > 1 then
+                    entry.minionSkills = {}
+                    for _, minionSkill in ipairs(minionSkills) do
+                        entry.minionSkills[#entry.minionSkills + 1] = minionSkill.activeEffect.grantedEffect.name
+                    end
+                    entry.minionSkill = src.skillMinionSkill or 1
+                end
+                if entry.parts or entry.statSets or entry.maxStages or entry.minions or entry.minionSkills then
+                    skills[#skills + 1] = entry
+                end
+            end
+        end
+        if #skills > 0 then groups[tostring(groupIndex)] = skills end
+    end
+    return groups
+end
+
+local okOptions, gemOptions = pcall(plannerGemOptions)
+if okOptions and next(gemOptions) then cleanOutput.GemOptions = gemOptions end
+
+local MINION_STATS = {
+    "CombinedDPS", "TotalDPS", "TotalDot", "AverageDamage", "Speed", "HitChance", "CritChance",
+    "Life", "EnergyShield", "Armour", "Evasion", "TotalEHP",
+    "FireResist", "ColdResist", "LightningResist", "ChaosResist"
+}
+if output and type(output.Minion) == "table" then
+    local minionEnv = env and env.minion
+    local minion = {}
+    for _, stat in ipairs(MINION_STATS) do
+        if type(output.Minion[stat]) == "number" then minion[stat] = output.Minion[stat] end
+    end
+    -- How many: output[<limit stat>] (e.g. ActiveSkeletonLimit, shared by every skeleton
+    -- skill) or ActiveMinionLimit. Many PoE2 summons have no limit stat (one minion per
+    -- gem); then PoB has no count and none is sent.
+    local limitStat = minionEnv and minionEnv.minionData and minionEnv.minionData.limit
+    local count = limitStat and output[limitStat]
+    if type(count) ~= "number" or count <= 0 then count = output.ActiveMinionLimit end
+    if type(count) == "number" and count > 0 then minion.Count = count end
+    minion.Name = minionEnv and minionEnv.minionData and minionEnv.minionData.name or nil
+    local minionSkill = minionEnv and minionEnv.mainSkill
+    minion.Skill = minionSkill and minionSkill.activeEffect and minionSkill.activeEffect.grantedEffect.name or nil
+    cleanOutput.Minion = minion
+end
+-- PoB only sets TotemLife when the main skill is a totem skill (CalcOffence, skillFlags.totem;
+-- PoE2 keeps those flags per stat set, so the output is the reliable sign).
+if output and type(output.TotemLife) == "number" then
+    cleanOutput.Totem = {
+        Count = output.ActiveTotemLimit,
+        Life = output.TotemLife,
+        EnergyShield = output.TotemEnergyShield,
+        Armour = output.TotemArmour,
+        DPS = output.TotalDPS
+    }
+end
+
 local jsonStr = dkjson.encode(cleanOutput)
 print(jsonStr)
 os.exit(0)

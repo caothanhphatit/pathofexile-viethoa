@@ -132,8 +132,25 @@ export const POB_GEM_EXTRA_ATTRIBUTES = [
   "skillPart", "skillPartCalcs", "skillStageCount", "skillStageCountCalcs",
   "skillMineCount", "skillMineCountCalcs", "skillMinion", "skillMinionCalcs",
   "skillMinionItemSet", "skillMinionItemSetCalcs", "skillMinionSkill", "skillMinionSkillCalcs",
-  "statSetIndex", "statSetIndexCalcs"
+  "statSetIndex", "statSetIndexCalcs",
+  // Not a PoB attribute: the gem's <StatSetIndex> children, "CometPlayer:2,SparkPlayer:1".
+  "statSets"
 ];
+
+/**
+ * The picked stat sets ("CometPlayer:2,SparkPlayer:1", see src/spa/lib/gemOptions.ts)
+ * as PoB's <StatSetIndex> children, for the main sidebar and the Calcs tab alike.
+ */
+export const statSetsXml = (value) => {
+  if (typeof value !== "string") return "";
+  const rows = [];
+  for (const part of value.split(",").slice(0, 12)) {
+    const match = part.trim().match(/^([\w.-]{1,80}):(\d{1,2})$/);
+    if (!match || Number(match[2]) < 1) continue;
+    rows.push(`<StatSetIndex grantedEffect="${match[1]}" index="${Number(match[2])}"/>`, `<StatSetCalcsIndex grantedEffect="${match[1]}" index="${Number(match[2])}"/>`);
+  }
+  return rows.join("");
+};
 
 const gemXml = (gem) => {
   const siteId = String(gem.skill_id || "");
@@ -155,13 +172,15 @@ const gemXml = (gem) => {
   // PoB's own per-gem settings from an import (corrupt level, skill part, minion...).
   const extra = gem.pob_attrs && typeof gem.pob_attrs === "object" ? gem.pob_attrs : {};
   for (const key of POB_GEM_EXTRA_ATTRIBUTES) {
-    if (typeof extra[key] !== "string") continue;
+    if (typeof extra[key] !== "string" || key === "statSets") continue;
     const value = extra[key].replace(/[^\w./ -]/g, "").slice(0, 80);
     const index = attrs.findIndex(([name]) => name === key);
     if (index >= 0) attrs[index] = [key, value];
     else attrs.push([key, value]);
   }
-  return `<Gem ${attrs.map(([key, value]) => `${key}="${escapeXml(value)}"`).join(" ")}/>`;
+  const open = `<Gem ${attrs.map(([key, value]) => `${key}="${escapeXml(value)}"`).join(" ")}`;
+  const statSets = statSetsXml(extra.statSets);
+  return statSets ? `${open}>${statSets}</Gem>` : `${open}/>`;
 };
 
 const skillGroupXml = (group, fullDps = false) => {

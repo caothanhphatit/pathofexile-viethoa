@@ -7,6 +7,7 @@ import { useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, ty
 import type { BuildStashItem } from "../lib/buildPlanner";
 import { formatStatChange, statChange, type StatFormat } from "../lib/buildStats";
 import type { CalcQueue } from "../lib/calcQueue";
+import { mainSkillDps } from "../lib/summonStats";
 import "../styles/planner-inventory.css";
 
 type Locale = "vi" | "en" | string;
@@ -359,15 +360,15 @@ export function GemSwapStrip({ queue, baseKey, options, locale, title, onPick, o
   useQueueVersion(queue);
   const vi = locale === "vi";
   const base = queue.get(baseKey);
-  const baseDps = base?.status === "done" ? Number(base.result?.CombinedDPS) || 0 : undefined;
+  const baseDps = base?.status === "done" ? mainSkillDps(base.result) : undefined;
   const rows = options.map((option) => {
     const entry = queue.get(option.key);
-    const dps = entry?.status === "done" ? Number(entry.result?.CombinedDPS) || 0 : undefined;
+    const dps = entry?.status === "done" ? mainSkillDps(entry.result) : undefined;
     const delta = dps !== undefined && baseDps !== undefined ? dps - baseDps : undefined;
     return { option, entry, delta };
   });
   // A gem that leaves the group with no damage at all does not work in it: hide it.
-  const unusable = rows.filter((row) => baseDps && row.entry?.status === "done" && !(Number(row.entry.result?.CombinedDPS) > 0));
+  const unusable = rows.filter((row) => baseDps && row.entry?.status === "done" && !(mainSkillDps(row.entry.result) > 0));
   // Best first once known; the rest keep their order (most fitting tags first).
   const sorted = rows.filter((row) => !unusable.includes(row)).sort((a, b) => (b.delta ?? -Infinity) - (a.delta ?? -Infinity));
   const waiting = rows.filter((row) => row.entry?.status !== "done" && row.entry?.status !== "error").length;
@@ -430,8 +431,8 @@ export function SupportValue({ queue, withKey, withoutKey, locale }: { queue: Ca
   if (withEntry?.status !== "done" || withoutEntry?.status !== "done") {
     return <span className="sk-value"><span className="pi-spinner" aria-hidden="true" />{vi ? "Đang tính gem này thêm bao nhiêu DPS…" : "Calculating…"}</span>;
   }
-  const withDps = Number(withEntry.result?.CombinedDPS) || 0;
-  const withoutDps = Number(withoutEntry.result?.CombinedDPS) || 0;
+  const withDps = mainSkillDps(withEntry.result);
+  const withoutDps = mainSkillDps(withoutEntry.result);
   if (withDps <= 0) return <span className="sk-value">{vi ? "Nhóm này chưa gây sát thương." : "This group deals no damage."}</span>;
   if (withoutDps <= 0) return <span className="sk-value is-better">{vi ? "Cần thiết: bỏ gem này thì kỹ năng không gây sát thương." : "Required for the skill to deal damage."}</span>;
   const ratio = withDps / withoutDps - 1;

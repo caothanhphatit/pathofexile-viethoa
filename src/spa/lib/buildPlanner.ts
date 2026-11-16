@@ -66,7 +66,9 @@ export const POB_GEM_EXTRA_ATTRIBUTES = [
   "skillPart", "skillPartCalcs", "skillStageCount", "skillStageCountCalcs",
   "skillMineCount", "skillMineCountCalcs", "skillMinion", "skillMinionCalcs",
   "skillMinionItemSet", "skillMinionItemSetCalcs", "skillMinionSkill", "skillMinionSkillCalcs",
-  "statSetIndex", "statSetIndexCalcs"
+  "statSetIndex", "statSetIndexCalcs",
+  // Not a PoB attribute: the gem's <StatSetIndex> children, "CometPlayer:2,SparkPlayer:1".
+  "statSets"
 ];
 
 export interface BuildSupportSkillChoice extends BuildGemDetails {
@@ -716,6 +718,13 @@ function pobGemExtraAttributes(gem: Element): Record<string, string> | undefined
     const value = gem.getAttribute(key);
     if (value !== null && value !== "") extra[key] = value;
   }
+  // PoB keeps the picked stat set (Comet / Fire-Infused...) in child elements.
+  const statSets = [...gem.querySelectorAll("StatSetIndex")]
+    .map((row) => [row.getAttribute("grantedEffect") ?? "", Number(row.getAttribute("index"))] as const)
+    .filter(([id, index]) => /^[\w.-]+$/.test(id) && Number.isInteger(index) && index > 1)
+    .map(([id, index]) => `${id}:${index}`);
+  if (statSets.length) extra.statSets = statSets.join(",");
+  else delete extra.statSets;
   return Object.keys(extra).length ? extra : undefined;
 }
 

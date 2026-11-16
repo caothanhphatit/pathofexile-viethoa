@@ -161,6 +161,10 @@ test("planner numbers match Path of Building on every fixture", {
   for (const fixture of fixtures) results.push(await checkFixture(fixture, runtime));
   const failed = results.filter((result) => !result.ok);
   assert.equal(failed.length, 0, formatReport(failed));
+  // Gem option changes (stat set / minion skill / corruption) checked against PoB must
+  // include some that really change PoB's numbers, and a minion build.
+  assert.ok(results.filter((result) => result.option?.moved).length >= 2, formatReport(results));
+  assert.ok(results.some((result) => result.rows.some((row) => row.stat.startsWith("Minion.") && row.pob > 0)), "a fixture with minion stats");
 });
 
 test("stat breakdown requests ride in the build XML, whitelisted", async () => {

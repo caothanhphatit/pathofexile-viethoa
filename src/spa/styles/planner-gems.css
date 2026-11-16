@@ -1,0 +1,77 @@
+/* Build Planner: per-gem PoB choices on the skill cards and the minion / totem sheet (BuildGemOptions.tsx). */
+
+.gx-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  min-width: 0;
+}
+
+.gx-title {
+  color: var(--nj-text-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gx-title small {
+  color: var(--nj-muted);
+  font-weight: 400;
+}
+
+.gx-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: flex-end;
+}
+
+.sk-gem-list .gx-controls { flex: 1 1 100%; padding-left: 8px; }
+
+.gx-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  min-width: 0;
+  color: var(--nj-muted);
+  font-size: 11px;
+}
+
+.gx-field > span { display: inline-flex; align-items: center; gap: 2px; }
+
+.gx-field select,
+.gx-field input {
+  max-width: 220px;
+  min-height: 26px;
+  padding: 2px 6px;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 6px;
+  background: var(--nj-well);
+  color: var(--nj-text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.gx-field input { width: 64px; }
+
+.sk-badge--option {
+  border-color: rgba(233, 180, 76, .45);
+  color: #e9b44c;
+}
+
+.gx-summon { margin-bottom: 10px; }
+
+.gx-summon-head {
+  cursor: default;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.gx-summon-head small {
+  color: var(--nj-muted);
+  font-weight: 400;
+}
+
+@media (max-width: 520px) {
+  .gx-field select { width: 100%; max-width: 100%; }
+  .gx-controls > .gx-field { flex: 1 1 140px; }
+}

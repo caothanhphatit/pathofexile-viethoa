@@ -52,6 +52,9 @@ import { arrangeSkillCards, formatStat, pobItemTextFromRecord, skillDpsByGroup, 
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
+import { BuildSummonStats, GemOptionControls, gemOptionBadges } from "../components/BuildGemOptions";
+import { plannerGemTargets, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
+import { mainSkillDps } from "../lib/summonStats";
 import {
   BuildInventoryPanel,
   CompareBlock,
@@ -1242,11 +1245,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     if (!stats) return undefined;
     const main = Number(stats.__mainGroup) || mainSocketGroup;
     const rows = Array.isArray(stats.SkillDPS) ? skillDpsByGroup(stats.SkillDPS as PobSkillDps[], groupNames) : null;
-    return groupNames.map((_, index) => (index + 1 === main ? Number(stats.CombinedDPS ?? stats.TotalDPS ?? 0) : rows ? rows[index] : undefined));
+    // A minion skill deals no damage itself: its card shows the minion's.
+    return groupNames.map((_, index) => (index + 1 === main ? mainSkillDps(stats) : rows ? rows[index] : undefined));
   }, [groupNames, mainSocketGroup]);
   const currentGroupDps = useMemo(() => groupDpsIn(activeStats), [groupDpsIn, activeStats]);
   const previousGroupDps = useMemo(() => groupDpsIn(previousStats), [groupDpsIn, previousStats]);
   const groupSkillDps = useMemo(() => (currentGroupDps ?? []).map((value) => value ?? 0), [currentGroupDps]);
+  // Choices PoB offers per gem (stat set, skill part, minion...), from the last calculation.
+  const gemTargets = useMemo(() => plannerGemTargets(activeStats?.GemOptions, buildSkills), [activeStats, buildSkills]);
+  const gemOptionFor = (group: number, supportId?: string): PobGemOptions | undefined =>
+    gemTargets.find((target) => target.group === group && target.supportId === supportId)?.option;
 
   const gemPickerItems = useMemo(() => {
     const kind = activeGemPicker?.kind ?? "skill";
@@ -2535,7 +2543,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 <span>DPS</span>
                 <strong>
                   {activeStats && activeStats.CombinedDPS !== undefined
-                    ? Math.round(((activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1]) || activeStats.CombinedDPS)).toLocaleString("en-US")
+                    ? Math.round(((activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1]) || mainSkillDps(activeStats))).toLocaleString("en-US")
                     : (getBaseDps() ? Math.round(getBaseDps()).toLocaleString("en-US") : "—")}
                 </strong>
               </div>
@@ -2981,6 +2989,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                             {compact && skill.skillId ? <span className="sk-badge">Lv {skill.gemLevel ?? 20}</span> : null}
                             {compact && skill.gemQuality ? <span className="sk-badge">Q {skill.gemQuality}%</span> : null}
                             {grantedSkillTag(skill)}
+                            {skill.skillId ? gemOptionBadges(gemOptionFor(index), skill.pobAttrs, locale).map((badge) => <span className="sk-badge sk-badge--option" key={badge}>{badge}</span>) : null}
                           </span>
                         </span>
                       </button>
@@ -3097,6 +3106,17 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         ) : (
                           <p className="sk-note">{vi ? "Bấm số DPS (ngôi sao) để chọn làm kỹ năng chính và xem chi tiết sát thương." : "Make it the main skill to see its damage breakdown."}</p>
                         )}
+                        {/* Granted skills (from an item or passive) are not gems you can corrupt. */}
+                        {gemOptionFor(index) || !(skill.itemSlot || skill.itemSource) ? (
+                          <div className="gx-main">
+                            <span className="gx-title">
+                              {vi ? "Tuỳ chọn gem" : "Gem options"}
+                              <small>{vi ? " — như trong PoB, đổi là tính lại" : " — as in PoB, recalculates on change"}</small>
+                            </span>
+                            <GemOptionControls option={gemOptionFor(index)} attrs={skill.pobAttrs} locale={locale} corrupt={!(skill.itemSlot || skill.itemSource)}
+                              onChange={(change: GemOptionChange) => updateBuildSkill(skill.id, { pobAttrs: withGemOption(skill.pobAttrs, change) })} />
+                          </div>
+                        ) : null}
                         {skill.supportSkills.length ? (
                           <ul className="sk-gem-list">
                             {skill.supportSkills.map((support) => {
@@ -3106,6 +3126,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                                 <li key={support.id} className={support.disabled ? "is-disabled" : ""}>
                                   <span>{support.skillId ? gemChoiceLabel(support.skillId, options, prefix, locale, support.nameSpec || "") : (vi ? "Ô trống" : "Empty")}{support.active ? <small> · {vi ? "kỹ năng" : "skill"}</small> : null}</span>
                                   {support.skillId ? gemLevelControls(support, (patch) => updateSupportSkill(skill.id, support.id, patch)) : null}
+                                  {support.skillId ? (
+                                    <GemOptionControls option={gemOptionFor(index, support.id)} attrs={support.pobAttrs} locale={locale} corrupt={Boolean(support.active)}
+                                      onChange={(change: GemOptionChange) => updateSupportSkill(skill.id, support.id, { pobAttrs: withGemOption(support.pobAttrs, change) })} />
+                                  ) : null}
                                   {support.skillId ? (
                                     <button type="button" className={`nj-icon-btn ${support.disabled ? "" : "is-on"}`} onClick={() => updateSupportSkill(skill.id, support.id, { disabled: !support.disabled })} aria-pressed={!support.disabled} title={vi ? "Bật / tắt gem" : "Enable / disable"}>
                                       <span className="material-symbols-rounded" aria-hidden="true">{support.disabled ? "toggle_off" : "toggle_on"}</span>
@@ -3156,6 +3180,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <span className="nj-panel-aside">{isCalculating ? (locale === "vi" ? "Đang tính..." : "Calculating...") : (locale === "vi" ? "Tính bằng Path of Building" : "Calculated by Path of Building")}</span>
             </header>
             <div className="nj-panel-body">
+              <BuildSummonStats stats={activeStats} previous={previousStats} locale={locale} />
               <BuildStatDetails stats={activeStats} previous={previousStats} locale={locale} calculating={isCalculating} onExplain={setExplainStat} />
             </div>
           </section>
