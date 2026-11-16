@@ -55,15 +55,18 @@ export function pobRuntime(env = process.env) {
   const coreDir = env.POB_CORE_DIR || resolve(repoRoot, "..", "pob-core", "src");
   const winHost = resolve(coreDir, "..", "runtime", "pob-luajit-bin", "pob-luajit.exe");
   const luajit = env.POB_LUAJIT || (existsSync(winHost) ? winHost : "luajit");
-  const available = existsSync(join(coreDir, "calculate.lua")) && (luajit === "luajit" ? process.platform !== "win32" : existsSync(luajit));
-  return { coreDir, luajit, available };
+  // POB_CALCULATE_SCRIPT: another calculate.lua (e.g. a branch's, made with
+  // localCalculateScript in setup-pob-local.mjs) instead of the installed one.
+  const script = env.POB_CALCULATE_SCRIPT ? resolve(env.POB_CALCULATE_SCRIPT) : "calculate.lua";
+  const available = existsSync(resolve(coreDir, script)) && (luajit === "luajit" ? process.platform !== "win32" : existsSync(luajit));
+  return { coreDir, luajit, script, available };
 }
 
 export function runPob(xml, runtime = pobRuntime()) {
   const file = join(tmpdir(), `pob_parity_${process.pid}_${Math.random().toString(36).slice(2, 8)}.xml`);
   writeFileSync(file, xml, "utf8");
   return new Promise((resolvePromise, reject) => {
-    execFile(runtime.luajit, ["calculate.lua", file], { cwd: runtime.coreDir, timeout: 120_000, maxBuffer: 16 * 1024 * 1024 }, (error, stdout, stderr) => {
+    execFile(runtime.luajit, [runtime.script || "calculate.lua", file], { cwd: runtime.coreDir, timeout: 120_000, maxBuffer: 16 * 1024 * 1024 }, (error, stdout, stderr) => {
       try { unlinkSync(file); } catch {}
       if (error) return reject(new Error(stderr || error.message));
       const line = String(stdout).split("\n").find((row) => row.trim().startsWith("{"));
