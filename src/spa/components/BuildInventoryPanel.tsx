@@ -72,6 +72,9 @@ export function BuildInventoryPanel(props: {
   slotChoice?: { itemName: string; slots: Array<{ id: string; label: string }> } | null;
   onChooseSlot: (slotId: string) => void;
   onCancelChoice: () => void;
+  /** An item starts / stops being dragged (the passive tree shows where a jewel can go). */
+  onItemDragStart?: (itemId: string) => void;
+  onItemDragEnd?: () => void;
 }) {
   const vi = props.locale === "vi";
   const [query, setQuery] = useState("");
@@ -197,7 +200,9 @@ export function BuildInventoryPanel(props: {
                   event.dataTransfer.setData(STASH_DRAG_TYPE, row.item.id);
                   event.dataTransfer.effectAllowed = "move";
                   props.onItemLeave();
+                  props.onItemDragStart?.(row.item.id);
                 }}
+                onDragEnd={() => props.onItemDragEnd?.()}
                 onClick={() => props.onItemClick(row.item.id)}
                 onMouseEnter={(event) => props.onItemEnter(row.item.id, event)}
                 onMouseMove={props.onItemMove}

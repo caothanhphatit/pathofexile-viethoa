@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef } from "react";
 import { createCamera, fitCameraToBounds, panCamera, screenToWorld, zoomCameraAt, type Camera } from "./camera";
-import { renderPassiveTree } from "./draw";
+import { renderPassiveTree, type RenderOptions } from "./draw";
 import { boundsForNodes, filteredTreeNodes, hitTestNode, type PassiveNode, type PassiveTreeModel } from "./tree";
 
 export interface CanvasCommand {
@@ -22,9 +22,15 @@ interface Props {
   onHover: (node: PassiveNode | null, x: number, y: number, held: boolean) => void;
   onToggle: (node: PassiveNode) => void;
   onZoomChange?: (zoom: number) => void;
+  /** Tree edits drawn on the nodes (see RenderOptions). */
+  marks?: Pick<RenderOptions, "weaponSets" | "attributeChoices" | "socketedJewels" | "dropSocketIds" | "dropTargetId">;
+  /** Drag and drop of something carrying this data type (a jewel from the inventory). */
+  dropType?: string;
+  /** "over": return true when the node takes the drop. "drop" carries the dragged data. */
+  onNodeDrop?: (phase: "over" | "leave" | "drop", node: PassiveNode | null, x: number, y: number, data?: string) => boolean | void;
 }
 
-function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle, onZoomChange }: Props) {
+function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle, onZoomChange, marks, dropType, onNodeDrop }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraRef = useRef<Camera>(createCamera());
   const dragging = useRef(false);
@@ -46,7 +52,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
     onZoomChangeRef.current = onZoomChange;
   }, [onZoomChange]);
 
-  const renderOpts = useMemo(() => ({ searchIds, allocatedIds, hoverId: hoverId.current, classFilter, ascendancyFilter }), [searchIds, allocatedIds, classFilter, ascendancyFilter]);
+  const renderOpts = useMemo(() => ({ searchIds, allocatedIds, hoverId: hoverId.current, classFilter, ascendancyFilter, ...marks }), [searchIds, allocatedIds, classFilter, ascendancyFilter, marks]);
   const renderOptsRef = useRef(renderOpts);
 
   useEffect(() => {
@@ -353,10 +359,32 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
     dirty();
   };
 
+  const carriesDrop = (event: React.DragEvent) => Boolean(dropType && onNodeDrop && [...event.dataTransfer.types].includes(dropType));
+  const onDragOver = (event: React.DragEvent<HTMLCanvasElement>) => {
+    if (!carriesDrop(event)) return;
+    const node = pointerNode(event.clientX, event.clientY);
+    if (onNodeDrop!("over", node, event.clientX, event.clientY)) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+    }
+  };
+  const onDragLeave = (event: React.DragEvent<HTMLCanvasElement>) => {
+    if (carriesDrop(event)) onNodeDrop!("leave", null, 0, 0);
+  };
+  const onDrop = (event: React.DragEvent<HTMLCanvasElement>) => {
+    if (!carriesDrop(event)) return;
+    event.preventDefault();
+    const node = pointerNode(event.clientX, event.clientY);
+    onNodeDrop!("drop", node, event.clientX, event.clientY, event.dataTransfer.getData(dropType!));
+  };
+
   return (
     <canvas
       ref={canvasRef}
       className="passive-canvas"
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

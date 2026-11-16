@@ -231,8 +231,7 @@ export function stashFromPobImport(data: PobImportData): BuildStashItem[] {
     const text = item.text.trim();
     if (!text || seen.has(text)) continue;
     seen.add(text);
-    // Jewels belong in passive tree sockets, not on the paper doll.
-    if (!itemCategoriesFromText(text).length && /\bjewel|emerald|ruby|sapphire|diamond\b/i.test(parsePobItemDetails(text).baseName)) continue;
+    // Spare jewels come in too: they can be socketed on the tree.
     const row = stashItemFromText(text, "pob");
     if (row) rows.push(row);
   }
@@ -269,4 +268,88 @@ export function duplicateStashItem(stash: BuildStashItem[], itemId: string): Bui
   if (index < 0) return stash;
   const copy = { ...stash[index], id: stashId() };
   return [...stash.slice(0, index + 1), copy, ...stash.slice(index + 1)];
+}
+
+// ── Jewels in passive tree sockets ─────────────────────────────────────────
+// A socketed jewel is an inventory row "PassiveJewel:<node id>" (PoB's
+// <Socket nodeId=".." itemId="..">). Sockets only count while the node is
+// allocated, as in PoB; the jewel stays in its socket either way.
+
+export const PASSIVE_JEWEL_PREFIX = "PassiveJewel:";
+
+export const jewelSlotId = (nodeId: string) => `${PASSIVE_JEWEL_PREFIX}${nodeId}`;
+
+/** Node id of a "PassiveJewel:<id>" row, or "" for anything else. */
+export function jewelSocketNodeId(inventoryId: string): string {
+  return inventoryId.startsWith(PASSIVE_JEWEL_PREFIX) ? inventoryId.slice(PASSIVE_JEWEL_PREFIX.length) : "";
+}
+
+const BASIC_JEWEL_BASES = ["ruby", "emerald", "sapphire", "diamond"];
+
+/** A jewel by its base (Ruby, Time-Lost Emerald, Timeless Jewel...) or the game's "Item Class: Jewels". */
+export function isJewelText(text: string, baseName = ""): boolean {
+  const itemClass = String(text || "").match(/^Item Class:\s*(.+)$/im)?.[1]?.trim().toLowerCase() || "";
+  if (/\bjewels?\b/.test(itemClass)) return true;
+  const base = (baseName || (text ? parsePobItemDetails(text).baseName : "")).trim().toLowerCase();
+  return BASIC_JEWEL_BASES.some((name) => base === name || base === `time-lost ${name}`) || /\bjewel$/.test(base);
+}
+
+/**
+ * Socket kinds with PoB's rules (ItemsTab:IsItemValidForSlot): sinister sockets take
+ * no unique, the Lich's Crystalline Phylactery only a basic non-unique jewel.
+ */
+export type JewelSocketKind = "normal" | "sinister" | "basic";
+
+export function jewelSocketAccepts(kind: JewelSocketKind, item: { rawText?: string; baseName?: string; isUnique: boolean }): boolean {
+  if (!isJewelText(item.rawText || "", item.baseName)) return false;
+  const details = item.rawText ? parsePobItemDetails(item.rawText) : null;
+  const unique = details ? details.rarity === "unique" : item.isUnique;
+  if (kind === "sinister") return !unique;
+  if (kind === "basic") {
+    const base = (details?.baseName || item.baseName || "").trim().toLowerCase();
+    return !unique && BASIC_JEWEL_BASES.includes(base);
+  }
+  return true;
+}
+
+/** Puts a stash jewel into a tree socket; the jewel already there goes back into the stash. */
+export function socketJewel(state: InventoryState, itemId: string, nodeId: string): InventoryState {
+  const item = state.stash.find((row) => row.id === itemId);
+  if (!item || !nodeId) return state;
+  const slotId = jewelSlotId(nodeId);
+  const current = state.inventory.find((row) => row.inventoryId === slotId);
+  const replaced = isFilled(current) ? stashItemFromChoice(current!) : null;
+  const next = choiceFromStashItem(item, slotId);
+  const inventory = current
+    ? state.inventory.map((row) => (row.inventoryId === slotId ? next : row))
+    : [...state.inventory, next];
+  const stash = state.stash.filter((row) => row.id !== itemId);
+  if (replaced) stash.unshift(replaced);
+  return { inventory, stash };
+}
+
+/** Takes the jewel out of a tree socket and keeps it in the stash (the socket row goes away). */
+export function unsocketJewel(state: InventoryState, nodeId: string): InventoryState {
+  const slotId = jewelSlotId(nodeId);
+  const current = state.inventory.find((row) => row.inventoryId === slotId);
+  if (!current) return state;
+  const item = isFilled(current) ? stashItemFromChoice(current) : null;
+  return {
+    inventory: state.inventory.filter((row) => row.inventoryId !== slotId),
+    stash: item ? [item, ...state.stash] : state.stash
+  };
+}
+
+/** Moves a socketed jewel to another socket (swapping with what is there). */
+export function moveSocketedJewel(state: InventoryState, fromNodeId: string, toNodeId: string): InventoryState {
+  if (!fromNodeId || !toNodeId || fromNodeId === toNodeId) return state;
+  const fromId = jewelSlotId(fromNodeId);
+  const toId = jewelSlotId(toNodeId);
+  const from = state.inventory.find((row) => row.inventoryId === fromId);
+  if (!isFilled(from)) return state;
+  const to = state.inventory.find((row) => row.inventoryId === toId);
+  const inventory = state.inventory
+    .filter((row) => row.inventoryId !== fromId && row.inventoryId !== toId)
+    .concat({ ...from!, inventoryId: toId }, isFilled(to) ? [{ ...to!, inventoryId: fromId }] : []);
+  return { inventory, stash: state.stash };
 }

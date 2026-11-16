@@ -138,26 +138,41 @@ export async function plannerCalculationRequest(code, { activeWeaponSet } = {}) 
   const lib = await loadPlannerLib();
   const data = await lib.parsePobExportCode(code);
   const payload = lib.buildPayloadFromPobImport(data, { inventorySlotIds: DEFAULT_SLOTS, plannerData: loadPlannerData() });
+  // The tree as the page keeps it: nodes, weapon-set nodes and attribute picks.
+  const tree = lib.createTreeSnapshot({
+    name: "parity tree",
+    className: "",
+    ascendancyName: "",
+    allocatedIds: lib.passiveIdsFromPobImport(data),
+    startIds: [],
+    treeVersion: "pob",
+    ...lib.treePicksFromPobImport(data)
+  });
   const imported = lib.createBuildProject({
     name: "parity",
     author: "",
     description: "",
     inventory: lib.inventoryChoicesFromBuildPayload(payload, DEFAULT_SLOTS),
     skills: lib.skillChoicesFromBuildPayload(payload),
-    importedPayload: payload
+    importedPayload: payload,
+    treeSnapshot: tree
   });
   // localStorage round trip.
   const project = lib.normalizeBuildProject(JSON.parse(JSON.stringify(imported)));
   const inventory = lib.inventoryForSlots(project.inventory, DEFAULT_SLOTS, emptyChoice);
-  const passives = lib.passiveIdsFromPobImport(data);
+  const savedTree = project.treeSnapshots[0];
   const xml = await lib.decodePobXmlText(code);
-  const body = lib.calculationRequestBody({
+  // The body for this build with other inventory rows or tree edits ("what if" checks).
+  const bodyFor = (overrides = {}) => lib.calculationRequestBody({
     payload: project.importedPayload,
-    passives,
-    inventory,
+    passives: overrides.passives ?? savedTree.allocatedIds,
+    weaponSets: overrides.weaponSets ?? savedTree.weaponSets,
+    attributeChoices: overrides.attributeChoices ?? savedTree.attributeChoices,
+    inventory: overrides.inventory ?? inventory,
     skills: project.skills,
     activeWeaponSet: activeWeaponSet ?? (Number(payload.active_weapon_set) === 2 ? 2 : 1),
     mainSocketGroup: Number(project.importedPayload.mainSocketGroup) || 1
   });
-  return { data, payload, body, xml };
+  const body = bodyFor();
+  return { data, payload, body, xml, project, inventory, tree: savedTree, bodyFor };
 }

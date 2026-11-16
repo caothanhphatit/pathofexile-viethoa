@@ -1,0 +1,401 @@
+/* Passive tree editing: weapon-set mode, attribute picks, jewel sockets
+   (PassiveTreePage.tsx, SocketJewelMenu.tsx). */
+
+/* The planner's small tree shows node tooltips too (sockets tell what a jewel changes). */
+.build-tree-mini .passive-tooltip {
+  display: block;
+  position: fixed;
+}
+
+.passive-tooltip-edits {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--passive-border);
+}
+
+.passive-tooltip .passive-tooltip-edits span {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: none;
+}
+
+.passive-tooltip p.passive-tooltip-hint {
+  color: var(--passive-muted);
+  font-size: 12px;
+}
+
+.passive-tooltip p.passive-tooltip-set {
+  font-weight: 700;
+}
+
+.passive-tooltip .pc-cmp {
+  margin-top: 8px;
+}
+
+/* Weapon-set mode and default attribute, top left of the tree. */
+.passive-alloc-mode {
+  position: absolute;
+  z-index: 20;
+  top: 10px;
+  left: 10px;
+  display: grid;
+  gap: 6px;
+  max-width: calc(100% - 20px);
+  padding: 6px;
+  border: 1px solid var(--passive-border, var(--line));
+  border-radius: 8px;
+  background: var(--passive-tooltip-bg, rgba(10, 12, 16, .85));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .35);
+  backdrop-filter: blur(4px);
+  font-size: 12px;
+}
+
+.passive-alloc-mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.passive-alloc-mode-btn,
+.passive-attr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 3px 9px;
+  border: 1px solid var(--passive-border, var(--line));
+  border-radius: 999px;
+  background: transparent;
+  color: var(--passive-tooltip-text, var(--ink));
+  font: inherit;
+  cursor: pointer;
+}
+
+.passive-alloc-mode-btn i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--set-color);
+}
+
+.passive-alloc-mode-btn small {
+  color: var(--passive-muted, var(--muted));
+  font-variant-numeric: tabular-nums;
+}
+
+.passive-alloc-mode-btn.is-active {
+  border-color: var(--set-color, var(--gold));
+  background: color-mix(in srgb, var(--set-color, var(--gold)) 22%, transparent);
+  font-weight: 700;
+}
+
+.passive-alloc-mode-btn.is-danger small {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.passive-alloc-attr > span {
+  color: var(--passive-muted, var(--muted));
+  margin-right: 2px;
+}
+
+.passive-attr-btn {
+  min-height: 26px;
+  padding: 2px 8px;
+}
+
+.passive-attr-btn.is-str { --attr-color: #c8473d; }
+.passive-attr-btn.is-dex { --attr-color: #3c9b52; }
+.passive-attr-btn.is-int { --attr-color: #3f72c9; }
+
+.passive-attr-btn.is-active {
+  border-color: var(--attr-color);
+  background: var(--attr-color);
+  color: #fff;
+  font-weight: 700;
+}
+
+.passive-alloc-mode-hint {
+  margin: 0;
+  color: var(--passive-gold-strong, var(--gold));
+  font-weight: 700;
+}
+
+/* "Click a lit socket" while a jewel is carried. */
+.passive-carry-banner {
+  position: absolute;
+  z-index: 21;
+  bottom: 64px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 8px 12px;
+  border: 1px solid #5eead4;
+  border-radius: 8px;
+  background: var(--passive-tooltip-bg, rgba(10, 12, 16, .9));
+  color: var(--passive-tooltip-text, var(--ink));
+  transform: translateX(-50%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .4);
+  font-size: 13px;
+}
+
+.passive-carry-banner .material-symbols-rounded {
+  color: #5eead4;
+}
+
+.passive-carry-banner button {
+  padding: 4px 10px;
+  border: 1px solid var(--passive-border, var(--line));
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* The menu of an allocated attribute node or jewel socket. */
+.passive-node-menu-backdrop {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+}
+
+.passive-node-menu {
+  position: fixed;
+  display: grid;
+  gap: 8px;
+  width: min(330px, calc(100vw - 16px));
+  max-height: min(70vh, 520px);
+  overflow: auto;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--passive-border, var(--line));
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, .45);
+  font-size: 13px;
+}
+
+.passive-node-menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.passive-node-menu-head strong {
+  color: var(--gold);
+  font-size: 15px;
+}
+
+.passive-node-menu-head button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.passive-node-menu-attrs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.passive-node-menu-attrs p {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--muted);
+}
+
+.passive-node-menu .passive-attr-btn {
+  min-height: 34px;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.passive-node-menu .passive-attr-btn.is-active {
+  color: #fff;
+  border-color: var(--attr-color);
+}
+
+.passive-node-menu-refund {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--danger);
+  font: inherit;
+  cursor: pointer;
+}
+
+.passive-node-menu-refund .material-symbols-rounded {
+  font-size: 18px;
+}
+
+/* Socket menu body. */
+.sj-menu {
+  display: grid;
+  gap: 6px;
+}
+
+.sj-label {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sj-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sj-current {
+  display: grid;
+  gap: 4px;
+}
+
+.sj-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sj-row-cmp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.sj-row-cmp small {
+  color: var(--muted);
+}
+
+.sj-name {
+  min-width: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.sj-name small {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.sj-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.sj-btn .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.sj-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sj-pick {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sj-pick:hover,
+.sj-pick:focus-visible {
+  border-color: var(--gold);
+}
+
+.sj-pick.is-unique .sj-name { color: #b3611d; }
+.sj-pick.is-rare .sj-name { color: #9a7b12; }
+.sj-pick.is-magic .sj-name { color: #4b62c4; }
+
+.dark .sj-pick.is-unique .sj-name { color: #e0904a; }
+.dark .sj-pick.is-rare .sj-name { color: #e8d36a; }
+.dark .sj-pick.is-magic .sj-name { color: #8ea6ff; }
+
+.sj-cmp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 12px;
+}
+
+.sj-cmp.is-wait {
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.sj-cmp .is-better { color: var(--success); }
+.sj-cmp .is-worse { color: var(--danger); }
+
+@media (max-width: 720px) {
+  /* Phone: the menu is a sheet at the bottom of the screen. */
+  .passive-node-menu {
+    left: 8px !important;
+    right: 8px;
+    top: auto !important;
+    bottom: 8px;
+    width: auto;
+    max-height: 60vh;
+  }
+
+  .passive-alloc-mode {
+    top: 6px;
+    left: 6px;
+    padding: 4px;
+    font-size: 11px;
+  }
+
+  .passive-alloc-mode-btn,
+  .passive-attr-btn {
+    min-height: 30px;
+    padding: 2px 8px;
+  }
+
+  .passive-carry-banner {
+    bottom: 56px;
+    font-size: 12px;
+  }
+}

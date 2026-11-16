@@ -89,12 +89,13 @@ test("inventory: PoB alternates come in, survive a save, and old builds still lo
     ]
   };
   const stash = inv.stashFromPobImport(data);
-  assert.equal(stash.length, 1, "worn items, duplicates and jewels stay out");
+  assert.equal(stash.length, 2, "worn items and duplicates stay out; spare jewels come in for the tree sockets");
   assert.match(stash[0].rawText, /Spare/);
+  assert.match(stash[1].rawText, /Sapphire/);
 
   const project = planner.createBuildProject({ name: "x", author: "", description: "", stash });
   const saved = planner.normalizeBuildProject(plain(project));
-  assert.equal(saved.stash.length, 1);
+  assert.equal(saved.stash.length, 2);
   assert.equal(saved.stash[0].rawText, stash[0].rawText);
   assert.deepEqual(plain(planner.normalizeBuildProject({ id: "old", name: "old" }).stash), [], "builds saved before the inventory");
   assert.deepEqual(plain(inv.normalizeStash([{ itemName: "" }, null, { itemName: "Blackflame", isUnique: true, source: "weird" }]).map((row) => [row.itemName, row.source])), [["Blackflame", "paste"]]);

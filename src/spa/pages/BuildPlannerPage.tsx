@@ -6,7 +6,9 @@ import { displayImageUrl } from "../lib/image";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
 import { navigateTo } from "../lib/routes";
 import { matchesQuery } from "../lib/text";
-import { PassiveTreeWorkspace } from "./PassiveTreePage";
+import { PassiveTreeWorkspace, type TreeJewelHooks } from "./PassiveTreePage";
+import { SocketJewelMenu } from "../components/SocketJewelMenu";
+import type { PassiveNode } from "../passive/tree";
 import {
   buildPayloadFromPobImport,
   calculationRequestBody,
@@ -36,6 +38,8 @@ import {
   saveTreeSnapshot,
   saveBuildProject,
   skillChoicesFromBuildPayload,
+  treePicksFromPobImport,
+  withTreePicksFromPayload,
   type BuildPayload,
   type BuildInventoryChoice,
   type BuildPlannerData,
@@ -81,7 +85,13 @@ import {
   stashFromPobImport,
   stashItemFromText,
   stashItemSummary,
-  unequipSlot
+  unequipSlot,
+  isJewelText,
+  jewelSocketAccepts,
+  jewelSocketNodeId,
+  moveSocketedJewel,
+  socketJewel,
+  unsocketJewel
 } from "../lib/buildInventory";
 import { CalcQueue, calcKey } from "../lib/calcQueue";
 import { gemCandidates } from "../lib/gemSuggest";
@@ -798,7 +808,8 @@ function treeSnapshotFromPobImport(data: PobImportData, plannerData: BuildPlanne
     ascendancyName,
     allocatedIds,
     startIds: [],
-    treeVersion: data.treeSpec?.treeVersion || plannerData?.version || "pob"
+    treeVersion: data.treeSpec?.treeVersion || plannerData?.version || "pob",
+    ...treePicksFromPobImport(data)
   });
 }
 
@@ -810,7 +821,9 @@ function treeSignature(snapshot: BuildTreeSnapshot | null | undefined): unknown 
     ascendancyName: snapshot.ascendancyName || "",
     allocatedIds: [...new Set(snapshot.allocatedIds)].sort(),
     startIds: [...new Set(snapshot.startIds)].sort(),
-    treeVersion: snapshot.treeVersion || ""
+    treeVersion: snapshot.treeVersion || "",
+    weaponSets: snapshot.weaponSets ?? {},
+    attributeChoices: snapshot.attributeChoices ?? {}
   };
 }
 
@@ -859,7 +872,8 @@ function buildDraftSignature(input: {
     name: input.name.trim(),
     author: input.author.trim(),
     description: input.description.trim(),
-    tree: treeSignature(input.tree),
+    // Trees saved before weapon sets / attributes were editable read them from the payload.
+    tree: treeSignature(withTreePicksFromPayload(input.tree, input.importedPayload)),
     inventory: inventorySignature(input.inventory),
     skills: skillsSignature(input.skills),
     importedPayload: input.importedPayload ?? null,
@@ -1009,6 +1023,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [buildSkills, setBuildSkills] = useState<BuildSkillChoice[]>([]);
   // Personal inventory ("Kho đồ"): items for this build that are not worn.
   const [stash, setStash] = useState<BuildStashItem[]>([]);
+  /** A jewel picked in the inventory, waiting for a click on a tree socket. */
+  const [carriedJewelId, setCarriedJewelId] = useState<string | null>(null);
+  const [draggedJewelId, setDraggedJewelId] = useState<string | null>(null);
+  const [socketHover, setSocketHover] = useState<{ node: PassiveNode; allocated: boolean } | null>(null);
   // An inventory item waiting for the player to pick one of several slots.
   const [slotChoice, setSlotChoice] = useState<{ itemId: string; slots: string[] } | null>(null);
   const [dropSlotId, setDropSlotId] = useState<string | null>(null);
@@ -1341,12 +1359,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   ), [importedBuild]);
   const effectiveConfigInputs = configInputs ?? importedConfigInputs;
 
+  const effectiveTree = useMemo(() => withTreePicksFromPayload(buildTree, importedBuild?.payload), [buildTree, importedBuild]);
   const calcRequestRef = useRef(0);
   // The calculation request for the build as it is, or with another inventory / skills /
   // main skill ("what if" comparisons use the same body, so their numbers are comparable).
   const calculationBodyFor = useCallback((overrides: { inventory?: BuildInventoryChoice[]; skills?: BuildSkillChoice[]; mainSocketGroup?: number } = {}) => calcPayload ? calculationRequestBody({
       payload: calcPayload,
-      passives: buildTree?.allocatedIds || [],
+      passives: effectiveTree?.allocatedIds || [],
+      weaponSets: effectiveTree?.weaponSets,
+      attributeChoices: effectiveTree?.attributeChoices,
       inventory: overrides.inventory ?? inventory,
       skills: overrides.skills ?? buildSkills,
       activeWeaponSet,
@@ -1356,7 +1377,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         const record = itemRecordForChoice(choice);
         return record ? pobItemTextFromRecord({ name: itemTitle(record, "en"), rarity: record.rarity, baseName: record.properties?.[0], mods: record.mods }) : undefined;
       }
-    }) : null, [calcPayload, inventory, buildSkills, buildTree, activeWeaponSet, configInputs, itemRecordForChoice]);
+    }) : null, [calcPayload, inventory, buildSkills, effectiveTree, activeWeaponSet, configInputs, itemRecordForChoice]);
   const currentCalculationBody = useCallback(() => calculationBodyFor(), [calculationBodyFor]);
 
   // "What if" calculations (equip this item, use that gem): one at a time, cached by body.
@@ -1612,6 +1633,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const clickStashItem = (itemId: string) => {
     const item = stash.find((row) => row.id === itemId);
     if (!item) return;
+    if (isJewelText(item.rawText || "", item.baseName)) {
+      setCarriedJewelId((current) => (current === itemId ? null : itemId));
+      setTooltip((prev) => ({ ...prev, visible: false }));
+      return;
+    }
     const targets = equipTargetsFor(item);
     if (!targets.length) {
       showInfoDialog(
@@ -1813,6 +1839,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const base = currentCalculationBody();
     if (!base) return undefined;
     const vi = locale === "vi";
+    if (isJewelText(item.rawText || "", item.baseName)) {
+      return { title: vi ? "Ngọc cho cây thụ động" : "Passive tree jewel", baseKey: "", entries: [], note: vi ? "Bấm vào ngọc rồi bấm một ô ngọc trên cây (hoặc kéo thả vào ô) để gắn. Rê chuột lên ô ngọc để xem chỉ số thay đổi." : "Click it, then click a socket on the tree (or drag it there)." };
+    }
     const targets = equipTargetsFor(item);
     if (!targets.length) return { title: vi ? "Nếu mặc vào" : "If equipped", baseKey: "", entries: [], note: vi ? "Không có ô nào trên hình nhân vật vừa món này." : "No slot fits this item." };
     const baseKey = requestCalc(base, priority);
@@ -1824,6 +1853,104 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     });
     return { title: vi ? "Nếu mặc vào" : "If equipped", baseKey, entries };
   };
+  // ── Jewels in passive tree sockets ──────────────────────────────────────
+  const socketedRows = useMemo(() => inventory.filter((row) => jewelSocketNodeId(row.inventoryId) && (row.itemName || row.rawText)), [inventory]);
+  const jewelName = (row: { rawText?: string; itemName: string; rareName?: string }) => (row.rawText ? parsePobItemDetails(row.rawText).name : "") || row.rareName || row.itemName;
+  const jewelRarity = (row: { rawText?: string; isUnique: boolean }) => (row.rawText ? parsePobItemDetails(row.rawText).rarity : "") || (row.isUnique ? "unique" : "rare");
+  const carriedId = draggedJewelId ?? carriedJewelId;
+  const carriedJewel = carriedId ? stash.find((row) => row.id === carriedId) ?? null : null;
+  useEffect(() => {
+    if (carriedJewelId && !stash.some((row) => row.id === carriedJewelId)) setCarriedJewelId(null);
+  }, [stash, carriedJewelId]);
+  const putJewel = (itemId: string, nodeId: string) => {
+    const next = socketJewel({ inventory, stash }, itemId, nodeId);
+    setInventory(next.inventory);
+    setStash(next.stash.map(withStashIcon));
+    setCarriedJewelId(null);
+    setDraggedJewelId(null);
+    setSocketHover(null);
+  };
+  const takeOutJewel = (nodeId: string) => {
+    const next = unsocketJewel({ inventory, stash }, nodeId);
+    setInventory(next.inventory);
+    setStash(next.stash.map(withStashIcon));
+  };
+  const moveJewel = (fromNodeId: string, toNodeId: string) => {
+    const next = moveSocketedJewel({ inventory, stash }, fromNodeId, toNodeId);
+    setInventory(next.inventory);
+  };
+  const socketAccepts = (node: PassiveNode, item: BuildStashItem) => Boolean(node.jewelSocket) && jewelSocketAccepts(node.jewelSocket!, item);
+  /** "Nếu gắn vào": the build with this jewel in the socket, against the build as it is. */
+  const socketCompare = useCallback((nodeId: string, change: { put?: string; out?: boolean; from?: string }) => {
+    const base = currentCalculationBody();
+    if (!base) return null;
+    const state = { inventory, stash };
+    const next = change.put ? socketJewel(state, change.put, nodeId) : change.from ? moveSocketedJewel(state, change.from, nodeId) : change.out ? unsocketJewel(state, nodeId) : null;
+    const body = next ? calculationBodyFor({ inventory: next.inventory }) : null;
+    return body ? { base, body, baseKey: calcKey(base), key: calcKey(body) } : null;
+  }, [currentCalculationBody, calculationBodyFor, inventory, stash]);
+  // The socket under the mouse: with a carried jewel, what it would change.
+  const socketHoverCompare = useMemo(() => {
+    if (!socketHover || !carriedJewel || !socketHover.allocated) return null;
+    return socketCompare(socketHover.node.id, { put: carriedJewel.id });
+  }, [socketHover, carriedJewel, socketCompare]);
+  useEffect(() => {
+    if (!socketHoverCompare) return;
+    requestCalc(socketHoverCompare.base, 10);
+    requestCalc(socketHoverCompare.body, 10);
+  }, [socketHoverCompare, requestCalc]);
+  const treeJewelHooks = useMemo<TreeJewelHooks>(() => ({
+    socketed: new Map(socketedRows.map((row) => [jewelSocketNodeId(row.inventoryId), { name: jewelName(row), rarity: jewelRarity(row) }])),
+    carried: carriedJewel ? {
+      name: stashItemSummary(carriedJewel).name,
+      accepts: (node) => socketAccepts(node, carriedJewel),
+      dragging: Boolean(draggedJewelId)
+    } : null,
+    onCancelCarried: () => setCarriedJewelId(null),
+    onSocketCarried: (node) => carriedJewel && putJewel(carriedJewel.id, node.id),
+    dragType: STASH_DRAG_TYPE,
+    onSocketHover: (node) => setSocketHover((current) => {
+      if (!node) return null;
+      const allocated = Boolean(effectiveTree?.allocatedIds.includes(node.id));
+      return current?.node.id === node.id && current.allocated === allocated ? current : { node, allocated };
+    }),
+    renderSocketTooltip: (node, allocated) => {
+      const vi = locale === "vi";
+      const row = inventoryBySlot.get(`PassiveJewel:${node.id}`);
+      const lines: React.ReactNode[] = [];
+      if (row && (row.itemName || row.rawText)) lines.push(<p key="jewel" className="passive-tooltip-jewel">{vi ? "Đang gắn: " : "Socketed: "}<b translate="no">{jewelName(row)}</b></p>);
+      if (!allocated) lines.push(<p key="off" className="passive-tooltip-hint">{vi ? "Ô này chưa được chọn điểm nên ngọc chưa có tác dụng." : "Not allocated: the jewel does nothing yet."}</p>);
+      if (carriedJewel) {
+        if (!socketAccepts(node, carriedJewel)) {
+          lines.push(<p key="no" className="passive-tooltip-hint">{node.jewelSocket === "sinister" ? (vi ? "Ô này không nhận ngọc độc nhất (unique)." : "No unique jewels here.") : (vi ? "Ô này chỉ nhận ngọc cơ bản, không độc nhất." : "Basic non-unique jewels only.")}</p>);
+        } else if (socketHoverCompare && socketHover?.node.id === node.id) {
+          lines.push(<CompareBlock key="cmp" queue={compareQueue} spec={{ title: vi ? `Nếu gắn ${stashItemSummary(carriedJewel).name}` : "If socketed", baseKey: socketHoverCompare.baseKey, entries: [{ key: socketHoverCompare.key }] }} locale={locale} />);
+        }
+      } else {
+        lines.push(<p key="tip" className="passive-tooltip-hint">{allocated ? (vi ? "Bấm để gắn, đổi hoặc tháo ngọc." : "Click to socket, swap or remove a jewel.") : (vi ? "Bấm để chọn điểm ô này." : "Click to allocate.")}</p>);
+      }
+      return <>{lines}</>;
+    },
+    renderSocketMenu: (node, allocated, close) => (
+      <SocketJewelMenu
+        node={node}
+        allocated={allocated}
+        locale={locale}
+        queue={compareQueue}
+        current={inventoryBySlot.get(`PassiveJewel:${node.id}`) ?? null}
+        candidates={stash.filter((item) => socketAccepts(node, item))}
+        others={socketedRows.filter((row) => jewelSocketNodeId(row.inventoryId) !== node.id && jewelSocketAccepts(node.jewelSocket!, { rawText: row.rawText, baseName: row.baseName, isUnique: row.isUnique }))}
+        jewelName={jewelName}
+        compare={(change) => socketCompare(node.id, change)}
+        requestCalc={requestCalc}
+        onPut={(itemId) => { putJewel(itemId, node.id); close(); }}
+        onMove={(fromNodeId) => { moveJewel(fromNodeId, node.id); close(); }}
+        onTakeOut={() => { takeOutJewel(node.id); close(); }}
+      />
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [socketedRows, carriedJewel, draggedJewelId, effectiveTree, locale, inventoryBySlot, socketHoverCompare, socketHover, compareQueue, stash, socketCompare, requestCalc, inventory]);
+
   const enterStashItem = (itemId: string, event: React.MouseEvent) => {
     const item = stash.find((row) => row.id === itemId);
     if (!item) return;
@@ -2105,7 +2232,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       name,
       author,
       description,
-      treeSnapshot: buildTree,
+      treeSnapshot: effectiveTree,
       inventory,
       skills: buildSkills,
       stash,
@@ -2404,7 +2531,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             key={`${buildTree.id}:${buildTree.className}:${buildTree.ascendancyName}`}
             locale={locale}
             embedded
-            initialSnapshot={buildTree}
+            initialSnapshot={effectiveTree}
+            jewels={treeJewelHooks}
             onSnapshotChange={updateBuildTreeFromEditor}
             onSaveSnapshot={saveBuildTreeFromEditor}
           />
@@ -2882,6 +3010,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 } : null}
                 onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
                 onCancelChoice={() => setSlotChoice(null)}
+                onItemDragStart={(itemId) => {
+                  const item = stash.find((row) => row.id === itemId);
+                  if (item && isJewelText(item.rawText || "", item.baseName)) setDraggedJewelId(itemId);
+                }}
+                onItemDragEnd={() => setDraggedJewelId(null)}
               />
             </div>
           </section>
