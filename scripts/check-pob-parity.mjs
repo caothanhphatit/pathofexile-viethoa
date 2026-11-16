@@ -79,7 +79,7 @@ export function pobRuntime(env = process.env) {
   const winHost = resolve(coreDir, "..", "runtime", "pob-luajit-bin", "pob-luajit.exe");
   const luajit = env.POB_LUAJIT || (existsSync(winHost) ? winHost : "luajit");
   const available = existsSync(join(coreDir, "calculate.lua")) && (luajit === "luajit" ? process.platform !== "win32" : existsSync(luajit));
-  return { coreDir, luajit, available, script: calculateScript(env.POB_CALC_SCRIPT) };
+  return { coreDir, luajit, available, script: calculateScript(env.POB_CALC_SCRIPT || env.POB_CALCULATE_SCRIPT) };
 }
 
 let repoScript;

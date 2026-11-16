@@ -256,6 +256,86 @@ if output and type(output.TotemLife) == "number" then
     }
 end
 
+-- ===== PASSIVE NODE DELTAS (planner) — begin ============================
+-- The passive node preview adds to the build XML
+--   <PlannerNodeDeltas nodes="123,456"/>
+-- (src/server/pob-node-deltas.mjs, POST /api/builds/node-deltas). For each node this
+-- returns how the main stats change if it is allocated (or removed when already
+-- allocated), using PoB's fast misc calculator the way its own tree tooltip does,
+-- so a whole batch costs one build load.
+local DELTA_STATS = { "CombinedDPS", "Life", "EnergyShield", "Mana", "Spirit", "Armour", "Evasion", "FireResist", "ColdResist", "LightningResist", "ChaosResist", "TotalEHP", "Str", "Dex", "Int" }
+local nodeDeltaRequest = xmlText:match("<PlannerNodeDeltas%s([^>]*)/?>")
+local nodeIds = {}
+for item in ((nodeDeltaRequest and nodeDeltaRequest:match('nodes="([^"]*)"')) or ""):gmatch("[^,]+") do nodeIds[#nodeIds + 1] = item end
+if output and #nodeIds > 0 and build.calcsTab.GetMiscCalculator then
+    local calcFunc, calcBase = build.calcsTab:GetMiscCalculator(build)
+    local function diff(after)
+        local changes = {}
+        local any = false
+        for _, stat in ipairs(DELTA_STATS) do
+            local a, b = calcBase[stat], after and after[stat]
+            if type(a) == "number" and type(b) == "number" and math.abs(b - a) > 1e-6 then
+                changes[stat] = b - a
+                any = true
+            end
+        end
+        return any and changes or {}
+    end
+    local deltas = {}
+    for index, idText in ipairs(nodeIds) do
+        if index > 120 then break end
+        local id = tonumber(idText)
+        local node = id and build.spec.nodes[id]
+        if node then
+            local ok, entry = pcall(function()
+                if node.alloc then
+                    -- Removing it also removes the nodes that hang on it.
+                    local dependants = {}
+                    local count = 0
+                    for _, other in pairs(node.depends or {}) do dependants[other] = true; count = count + 1 end
+                    return { allocated = true, node = diff(calcFunc({ removeNodes = { [node] = true } })), path = count > 1 and diff(calcFunc({ removeNodes = dependants })) or nil, pathLength = count, weaponSet = (node.allocMode or 0) > 0 and node.allocMode or nil }
+                end
+                local path = {}
+                local count = 0
+                for _, other in pairs(node.path or {}) do path[other] = true; count = count + 1 end
+                -- A node reached only through weapon-set nodes is allocated in that set
+                -- (a full calculation drops it from the main tree), so price it as a
+                -- node of that set: its mods then only count while that set is active.
+                -- PoB's own tooltip prices it as a main-tree node, which overstates it.
+                local weaponSet = 0
+                if not (node.ascendancyName or node.type == "Keystone" or node.type == "Socket" or node.containJewelSocket) then
+                    for pathNode in pairs(count > 0 and path or { [node] = true }) do
+                        for _, other in ipairs(pathNode.linked or {}) do
+                            if other.alloc then
+                                if (other.allocMode or 0) == 0 then weaponSet = -1; break end
+                                if weaponSet == 0 then weaponSet = other.allocMode end
+                            end
+                        end
+                        if weaponSet < 0 then break end
+                    end
+                end
+                if weaponSet < 0 then weaponSet = 0 end
+                local function priced(nodes)
+                    if weaponSet == 0 then return diff(calcFunc({ addNodes = nodes })) end
+                    local saved = {}
+                    for other in pairs(nodes) do
+                        saved[#saved + 1] = { other, other.allocMode }
+                        other.allocMode = weaponSet
+                    end
+                    local okCalc, result = pcall(calcFunc, { addNodes = nodes })
+                    for _, row in ipairs(saved) do row[1].allocMode = row[2] end
+                    if not okCalc then error(result) end
+                    return diff(result)
+                end
+                return { allocated = false, node = priced({ [node] = true }), path = count > 1 and priced(path) or nil, pathLength = count, weaponSet = weaponSet > 0 and weaponSet or nil }
+            end)
+            if ok and entry then deltas[tostring(id)] = entry end
+        end
+    end
+    cleanOutput.NodeDeltas = deltas
+end
+-- ===== PASSIVE NODE DELTAS (planner) — end ==============================
+
 local jsonStr = dkjson.encode(cleanOutput)
 print(jsonStr)
 os.exit(0)

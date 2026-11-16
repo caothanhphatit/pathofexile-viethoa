@@ -56,6 +56,12 @@ export interface PassiveTreeWorkspaceProps {
   onSaveSnapshot?: (snapshot: BuildTreeSnapshot) => void;
   /** Jewel sockets, when the tree sits in the Build Planner (it holds the jewels). */
   jewels?: TreeJewelHooks;
+  /** Extra tooltip content for a hovered node (the planner's "what this node changes"). */
+  renderNodeExtra?: (node: PassiveNode, allocated: boolean) => ReactNode;
+  /** The node under the mouse (null when none). */
+  onNodeHover?: (node: PassiveNode | null, allocated: boolean) => void;
+  /** The parsed tree, once loaded. */
+  onTreeReady?: (tree: PassiveTreeModel) => void;
 }
 
 /** What the Build Planner gives the tree so its sockets can hold jewels. */
@@ -190,7 +196,7 @@ function treeSnapshotSignature(snapshot: BuildTreeSnapshot | null | undefined): 
   });
 }
 
-export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, initialSnapshot = null, onSnapshotChange, onSaveSnapshot, jewels }: PassiveTreeWorkspaceProps) {
+export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, initialSnapshot = null, onSnapshotChange, onSaveSnapshot, jewels, renderNodeExtra, onNodeHover, onTreeReady }: PassiveTreeWorkspaceProps) {
   const [tree, setTree] = useState<PassiveTreeModel | null>(null);
   const [error, setError] = useState("");
   const [classFilter, setClassFilter] = useState("");
@@ -211,6 +217,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   const [command, setCommand] = useState<CanvasCommand | null>(null);
   const [zoom, setZoom] = useState(0.035);
   const [pob, setPob] = useState<PobBuild | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const onTreeReadyRef = useRef(onTreeReady);
+  onTreeReadyRef.current = onTreeReady;
+  useEffect(() => {
+    if (tree) onTreeReadyRef.current?.(tree);
+  }, [tree]);
 
   const handleZoomChange = (newZoom: number) => {
     if (Math.abs(zoom - newZoom) > 0.0001) {
@@ -460,6 +472,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
 
   const onTreeHover = (node: PassiveNode | null, x: number, y: number, held: boolean) => {
     setHover({ node, x, y, held });
+    onNodeHover?.(node, Boolean(node && allocatedIds.has(node.id)));
     if (jewels?.onSocketHover) jewels.onSocketHover(node?.jewelSocket ? node : null);
   };
 
@@ -719,7 +732,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           <span>Reset</span>
         </button>
       </div>
-      <div className="passive-stage">
+      <div className="passive-stage" ref={stageRef}>
         <TreeCanvas
           tree={tree}
           searchIds={visibleSearchIds}
@@ -1013,12 +1026,22 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           const shown = dragHover ? { ...dragHover, held: false } : hover.node ? hover : null;
           if (!shown?.node || nodeMenu) return null;
           const node = shown.node;
+          const extra = renderNodeExtra?.(node, allocatedIds.has(node.id));
+          // The tooltip is placed inside the stage; embedded trees do not start at the window's corner.
+          const box = embedded ? stageRef.current?.getBoundingClientRect() : null;
+          const width = box?.width ?? window.innerWidth;
+          const height = box?.height ?? window.innerHeight;
+          const x = shown.x - (box?.left ?? 0);
+          const y = shown.y - (box?.top ?? 0);
+          // On a phone the stage is narrower than the tooltip's usual 360px: keep it inside.
+          const tipWidth = Math.min(360, width - 8);
           return (
-            <div className={`passive-tooltip ${!dragHover && hover.held ? "is-held" : ""}`} style={{ left: Math.min(shown.x + 18, window.innerWidth - 380), top: Math.min(shown.y + 18, window.innerHeight - 220) }}>
+            <div className={`passive-tooltip ${!dragHover && hover.held ? "is-held" : ""} ${extra ? "has-node-extra" : ""}`} style={{ left: Math.max(4, Math.min(x + 18, width - tipWidth - 20)), top: Math.max(4, Math.min(y + 18, height - (extra ? 300 : 220))), maxWidth: tipWidth }}>
               <strong translate="no">{node.name || `Node ${node.id}`}</strong>
               <span>{node.type}</span>
               {node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}
               {nodePickTooltip(node)}
+              {extra}
             </div>
           );
         })()}

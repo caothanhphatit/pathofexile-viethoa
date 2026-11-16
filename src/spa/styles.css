@@ -6241,3 +6241,43 @@ textarea:focus-visible {
   .install-grid, .install-tiers { grid-template-columns: 1fr; }
   .install-hero { flex-direction: column; }
 }
+
+/* Build Planner tree: what hovering a passive node would change (see src/spa/lib/nodePreview.ts). */
+.build-tree-mini .passive-tooltip.has-node-extra {
+  display: block;
+}
+
+.passive-node-delta {
+  display: grid;
+  gap: 3px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--passive-border-soft, var(--line));
+}
+
+.passive-tooltip .passive-node-delta__title {
+  color: var(--passive-muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.passive-tooltip .passive-node-delta p {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.passive-tooltip .passive-node-delta p.is-up {
+  color: var(--success);
+}
+
+.passive-tooltip .passive-node-delta p.is-down {
+  color: var(--danger);
+}
+
+.passive-tooltip .passive-node-delta .passive-node-delta__note {
+  color: var(--passive-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
