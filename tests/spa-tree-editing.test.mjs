@@ -70,6 +70,21 @@ test("weapon sets: refunds drop what only hung on the node, per set", async () =
   assert.deepEqual([...crossed.allocated].sort(), ["A", "B"], "set 2 nodes hanging on a set 1 node are not connected");
 });
 
+test("class starts without edges in the data link to the nodes next to them (as in PoB)", async () => {
+  const planner = await loadTs("src/spa/passive/planner.ts");
+  const node = (id, x, extra = {}) => ({ id, x, y: 0, ascendancyName: "", isClassStart: false, ...extra });
+  // Start at 0; P and Q right next to it; R further out (only reachable through P).
+  const nodes = [node("S", 0, { isClassStart: true }), node("P", 250), node("Q", -260), node("R", 600), node("Asc", 100, { ascendancyName: "Titan" })];
+  const tree = { nodes, edges: [{ from: "P", to: "R" }], nodeById: new Map(nodes.map((row) => [row.id, row])) };
+  const graph = planner.buildPassiveGraph(tree);
+  assert.deepEqual([...graph.get("S")].sort(), ["P", "Q"]);
+  const visibleNodeIds = nodes.map((row) => row.id);
+  const fresh = planner.allocatePathInMode({ targetId: "R", allocatedIds: ["S"], startNodeIds: ["S"], graphByNodeId: graph, visibleNodeIds });
+  assert.deepEqual([...fresh.allocated].sort(), ["P", "R", "S"], "a fresh tree paths out of the start");
+  const refund = planner.refundInMode({ targetId: "R", allocatedIds: ["S", "P", "Q", "R"], startNodeIds: ["S"], graphByNodeId: graph, visibleNodeIds });
+  assert.deepEqual([...refund.allocated].sort(), ["P", "Q", "S"], "a refund keeps what still hangs on the start");
+});
+
 test("tree edits: snapshot, calculation body and .build payload", async () => {
   const lib = await loadPlannerLib();
   const tree = lib.createTreeSnapshot({

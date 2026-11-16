@@ -37,8 +37,24 @@ export function buildPassiveGraph(tree: Pick<PassiveTreeModel, "edges" | "nodeBy
     add(from.id, to.id);
     add(to.id, from.id);
   }
+  // The exported tree leaves out the class start's own edges. In PoB each start links
+  // to the two main-tree nodes right next to it (~250 units away; the next ones sit
+  // 480+ away), so a start without edges gets those back. Without them a fresh tree
+  // has no way out of the start and a refund drops every node.
+  const nodes = [...tree.nodeById.values()];
+  for (const start of nodes) {
+    if (!start.isClassStart || graph.has(start.id) || !Number.isFinite(start.x) || !Number.isFinite(start.y)) continue;
+    for (const node of nodes) {
+      if (node === start || node.isClassStart || node.ascendancyName) continue;
+      if (Math.hypot(node.x - start.x, node.y - start.y) > CLASS_START_LINK_RADIUS) continue;
+      add(start.id, node.id);
+      add(node.id, start.id);
+    }
+  }
   return graph;
 }
+
+const CLASS_START_LINK_RADIUS = 320;
 
 export function computePathToNode({
   targetId,
