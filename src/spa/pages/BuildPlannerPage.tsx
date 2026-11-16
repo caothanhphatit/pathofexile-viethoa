@@ -81,6 +81,7 @@ import {
   unequipSlot
 } from "../lib/buildInventory";
 import { CalcQueue, calcKey } from "../lib/calcQueue";
+import { useNodePreview } from "../lib/useNodePreview";
 import { gemCandidates } from "../lib/gemSuggest";
 
 type SnapshotOption = {
@@ -1444,6 +1445,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     return () => window.clearTimeout(timer);
   }, [calcPayload, mainSocketGroup, runCalculation]);
 
+  // Hovering a passive node on the build's tree shows what taking (or dropping) it changes.
+  const nodePreviewBody = useMemo(() => calculationBodyFor(), [calculationBodyFor]);
+  const nodePreview = useNodePreview({
+    body: nodePreviewBody,
+    allocatedIds: buildTree?.allocatedIds ?? [],
+    paused: isCalculating,
+    locale: locale === "vi" ? "vi" : "en"
+  });
+
   useEffect(() => {
     setPreviousStats(null);
     if (!importedBuild?.payload) {
@@ -2399,6 +2409,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             initialSnapshot={buildTree}
             onSnapshotChange={updateBuildTreeFromEditor}
             onSaveSnapshot={saveBuildTreeFromEditor}
+            renderNodeExtra={nodePreview.renderNodeExtra}
+            onNodeHover={nodePreview.onNodeHover}
+            onTreeReady={nodePreview.onTreeReady}
           />
         </div>
       ) : null}

@@ -2,6 +2,7 @@ import { createHash, randomBytes } from "node:crypto";
 
 import { requireLocalRequest } from "../local-request.mjs";
 import { buildPobXml } from "../pob-build-xml.mjs";
+import { NODE_DELTAS_MAX_NODES, nodeDeltaIds, nodeDeltasXml, runNodeDeltas } from "../pob-node-deltas.mjs";
 import { pobRunnerFromEnv } from "../pob-runner.mjs";
 import { calculationRowItem, dropInvalidEditedRows, editedItemErrors, itemErrorSummary, projectRowItem, serverModPool } from "../item-validation.mjs";
 
@@ -501,6 +502,51 @@ export const publicRoutes = async (app, options = {}) => {
       return reply.status(500).send({ ok: false, error: err.message || "Failed to calculate build stats" });
     } finally {
       releaseCalculationSlot(calcKind);
+    }
+  });
+
+  // Passive node preview: what allocating (or removing) each listed node changes.
+  // One PoB run loads the build and prices the whole batch with PoB's fast misc
+  // calculator, so it costs about one calculation. Runs as a "compare" job: the
+  // planner's own recalculation always goes first.
+  const nodeDeltasCache = new Map();
+  app.post("/api/builds/node-deltas", { bodyLimit: 512 * 1024 }, async (request, reply) => {
+    const buildData = request.body;
+    if (!buildData || typeof buildData !== "object") {
+      return reply.status(400).send({ ok: false, error: "Missing build data" });
+    }
+    const nodeIds = nodeDeltaIds(buildData.node_ids);
+    if (!nodeIds.length) {
+      return reply.status(400).send({ ok: false, error: "node_ids must list passive node ids" });
+    }
+    if (nodeIds.length > NODE_DELTAS_MAX_NODES) {
+      return reply.status(400).send({ ok: false, error: `At most ${NODE_DELTAS_MAX_NODES} node_ids per request` });
+    }
+    const { node_ids: _ids, analysis: _analysis, calc_priority: _priority, ...build } = buildData;
+    build.inventory_slots = dropInvalidEditedRows(build.inventory_slots, calculationRowItem).rows;
+    const xmlContent = nodeDeltasXml(build, nodeIds);
+    const hash = createHash("sha256").update(xmlContent).digest("hex");
+    if (nodeDeltasCache.has(hash)) {
+      return { ok: true, data: nodeDeltasCache.get(hash) };
+    }
+    try {
+      await acquireCalculationSlot("compare");
+    } catch (err) {
+      reply.header("retry-after", "2");
+      return reply.status(err.statusCode || 503).send({ ok: false, error: err.message });
+    }
+    try {
+      const started = Date.now();
+      const data = await runNodeDeltas(pobRunner, xmlContent);
+      app.log.info({ nodes: nodeIds.length, ms: Date.now() - started }, "passive node deltas");
+      if (nodeDeltasCache.size >= 300) nodeDeltasCache.delete(nodeDeltasCache.keys().next().value);
+      nodeDeltasCache.set(hash, data);
+      return { ok: true, data };
+    } catch (err) {
+      app.log.error(err, "Failed to run PoB node deltas");
+      return reply.status(500).send({ ok: false, error: err.message || "Failed to calculate node deltas" });
+    } finally {
+      releaseCalculationSlot("compare");
     }
   });
 };
