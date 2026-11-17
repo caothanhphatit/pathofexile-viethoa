@@ -1719,9 +1719,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       rarity: summary.rarity || "normal",
       iconUrl: item.iconUrl || (record ? displayImageUrl(record.icon_url) : undefined),
       fits: activeSlotId ? slotIdsForCategories(stashCategories(item)).includes(activeSlotId) : true,
-      edited: isItemEdited(item)
+      edited: isItemEdited(item),
+      ...(isJewelText(item.rawText || "", item.baseName) ? { clickHint: locale === "vi" ? "bấm rồi chọn ô ngọc trên cây" : "click, then pick a tree socket" } : {})
     };
-  }), [stash, stashRecord, stashCategories, activeSlotId]);
+  }), [stash, stashRecord, stashCategories, activeSlotId, locale]);
 
   const ensureModPool = async (): Promise<ModPool | null> => {
     if (modPool) return modPool;

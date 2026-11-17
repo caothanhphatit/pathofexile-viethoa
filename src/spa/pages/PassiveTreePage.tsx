@@ -443,7 +443,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     }
     const sets = weaponSetPointCounts(result.weaponSets, result.allocated);
     const counts = buildCountsForIds(result.allocated, selectedStartIds, targetNodeById);
-    if (counts.passive - sets.shared > BUILD_PASSIVE_LIMIT || counts.ascendancy > BUILD_ASCENDANCY_LIMIT) {
+    const before = buildCountsForIds(seeded, selectedStartIds, targetNodeById);
+    const passiveNow = counts.passive - sets.shared;
+    const passiveBefore = before.passive - weaponSetPointCounts(weaponSets, seeded).shared;
+    // Only a pool that this click makes grow past its limit refuses the node: an imported
+    // build already over one (PoB leaves free ascendancy nodes out of the count) still edits.
+    if ((passiveNow > BUILD_PASSIVE_LIMIT && passiveNow > passiveBefore) || (counts.ascendancy > BUILD_ASCENDANCY_LIMIT && counts.ascendancy > before.ascendancy)) {
       setBuildLimitWarning(localizedText(passiveCopy.buildLimitReached, "", locale));
       return;
     }
@@ -627,6 +632,20 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     setSaveMessage(localizedText(passiveCopy.treeSaved, "", locale));
     window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "saved", id: saved.id } }));
     window.setTimeout(() => setSaveMessage(""), 2200);
+  };
+
+  /**
+   * Next to the clicked node; on a phone a sheet along the bottom of what is on screen
+   * (the visual viewport, so a page wider than the phone does not push it off screen).
+   */
+  const nodeMenuPosition = (x: number, y: number): React.CSSProperties => {
+    const view = window.visualViewport;
+    const width = view?.width ?? window.innerWidth;
+    const height = view?.height ?? window.innerHeight;
+    const left = view?.offsetLeft ?? 0;
+    const top = view?.offsetTop ?? 0;
+    if (width < 720) return { left: left + 8, width: width - 16, top: "auto", bottom: Math.max(8, window.innerHeight - (top + height) + 8) };
+    return { left: Math.max(8, Math.min(x + 12, left + width - 340)), top: Math.max(8, Math.min(y + 12, top + height - 420)) };
   };
 
   /** Weapon set, attribute and socket lines of a node's tooltip. */
@@ -1027,6 +1046,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           if (!shown?.node || nodeMenu) return null;
           const node = shown.node;
           const extra = renderNodeExtra?.(node, allocatedIds.has(node.id));
+          const picks = nodePickTooltip(node);
           // The tooltip is placed inside the stage; embedded trees do not start at the window's corner.
           const box = embedded ? stageRef.current?.getBoundingClientRect() : null;
           const width = box?.width ?? window.innerWidth;
@@ -1036,11 +1056,11 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           // On a phone the stage is narrower than the tooltip's usual 360px: keep it inside.
           const tipWidth = Math.min(360, width - 8);
           return (
-            <div className={`passive-tooltip ${!dragHover && hover.held ? "is-held" : ""} ${extra ? "has-node-extra" : ""}`} style={{ left: Math.max(4, Math.min(x + 18, width - tipWidth - 20)), top: Math.max(4, Math.min(y + 18, height - (extra ? 300 : 220))), maxWidth: tipWidth }}>
+            <div className={`passive-tooltip ${!dragHover && hover.held ? "is-held" : ""} ${extra ? "has-node-extra" : ""} ${picks ? "has-tree-pick" : ""}`} style={{ left: Math.max(4, Math.min(x + 18, width - tipWidth - 20)), top: Math.max(4, Math.min(y + 18, height - (extra ? 300 : 220))), maxWidth: tipWidth }}>
               <strong translate="no">{node.name || `Node ${node.id}`}</strong>
               <span>{node.type}</span>
               {node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}
-              {nodePickTooltip(node)}
+              {picks}
               {extra}
             </div>
           );
@@ -1052,7 +1072,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
               role="dialog"
               aria-label={nodeMenu.node.name}
               onClick={(event) => event.stopPropagation()}
-              style={{ left: Math.max(8, Math.min(nodeMenu.x + 12, window.innerWidth - 340)), top: Math.max(8, Math.min(nodeMenu.y + 12, window.innerHeight - 420)) }}
+              style={nodeMenuPosition(nodeMenu.x, nodeMenu.y)}
             >
               <div className="passive-node-menu-head">
                 <strong translate="no">{nodeMenu.node.name || `Node ${nodeMenu.node.id}`}</strong>

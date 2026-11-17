@@ -325,10 +325,11 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     const nodeSet = isAllocated ? sets[node.id] : undefined;
     if (isAllocated) pushRing(nodeSet ? WEAPON_SET_COLORS[nodeSet] : palette.allocatedRing, node.x, node.y, r + CHANGE_RING_GAP);
     if (isDropSocket) pushRing(palette.searchRing, node.x, node.y, r + CHANGE_RING_GAP * 2.2, opts.dropTargetId !== node.id);
-    if (jewelRarity) badges.push({ x: node.x, y: node.y, r: Math.max(r * 0.55, cssPx(4)), fill: JEWEL_RARITY_COLORS[jewelRarity] ?? JEWEL_RARITY_COLORS.normal, diamond: true, faded: !isAllocated });
+    if (jewelRarity) badges.push({ x: node.x, y: node.y, r: Math.min(Math.max(r * 0.55, cssPx(3)), r * 1.1), fill: JEWEL_RARITY_COLORS[jewelRarity] ?? JEWEL_RARITY_COLORS.normal, diamond: true, faded: !isAllocated });
     const attribute = isAllocated ? opts.attributeChoices?.[node.id] : undefined;
-    if (attribute && ATTRIBUTE_BADGES[attribute]) {
-      badges.push({ x: node.x + r * 0.8, y: node.y - r * 0.8, r: Math.max(r * 0.62, cssPx(5)), fill: ATTRIBUTE_BADGES[attribute].color, letter: ATTRIBUTE_BADGES[attribute].letter });
+    // Letters only once nodes are big enough to read; never larger than the node itself.
+    if (attribute && ATTRIBUTE_BADGES[attribute] && r * z >= 4) {
+      badges.push({ x: node.x + r * 0.8, y: node.y - r * 0.8, r: r * 0.62, fill: ATTRIBUTE_BADGES[attribute].color, letter: ATTRIBUTE_BADGES[attribute].letter });
     }
     if (isHover) hoverRing = { x: node.x, y: node.y, r: r + CHANGE_RING_GAP };
 
