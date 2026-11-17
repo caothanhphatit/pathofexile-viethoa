@@ -19,6 +19,26 @@ end
 local xmlText = f:read("*a")
 f:close()
 
+-- ── Planner: remember which XML <Skill> each socket group came from ─────────
+-- Used by the GemOptions block further down. When PoB calculates it folds the player's
+-- own group for an item- or tree-granted skill into that skill's group and builds new
+-- groups for granted skills (CalcSetup), so its group numbers stop matching the XML
+-- rows. Each group loaded from the XML is tagged with its row number here.
+pcall(function()
+    if not common.classes.SkillsTab then LoadModule("Classes/SkillsTab") end
+    local class = common.classes.SkillsTab
+    local loadSkill = class.LoadSkill
+    local rows = {}
+    class.LoadSkill = function(self, node, skillSetId)
+        loadSkill(self, node, skillSetId)
+        if node.elem ~= "Skill" then return end
+        rows[skillSetId] = (rows[skillSetId] or 0) + 1
+        local list = self.skillSets[skillSetId] and self.skillSets[skillSetId].socketGroupList
+        local group = list and list[#list]
+        if group and not group.plannerXmlRow then group.plannerXmlRow = rows[skillSetId] end
+    end
+end)
+
 loadBuildFromXML(xmlText)
 
 local output = build.calcsTab and build.calcsTab.mainOutput
@@ -150,11 +170,16 @@ end
 -- ── Planner: gem options, minion and totem stats ───────────────────────────
 -- A separate block: it only adds the keys GemOptions, Minion and Totem and leaves
 -- everything above as it is.
--- GemOptions: per socket group (key = group number, same order as the XML <Skill>
---             rows), the choices PoB offers for each active skill of that group:
---             skill parts, stat sets, stages, minion type and minion skill, with the
---             current pick. The planner shows them on the skill cards and writes the
---             pick back as <Gem> attributes (skillPart, skillMinion...).
+-- GemOptions: per socket group (key = PoB's group number), the choices PoB offers for
+--             each active skill of that group: skill parts, stat sets, stages, minion
+--             type and minion skill, with the current pick. The planner shows them on
+--             the skill cards and writes the pick back as <Gem> attributes (skillPart,
+--             skillMinion...). PoB's group numbers are not the XML <Skill> order, so each
+--             entry says which XML row its group came from (xmlRow, from the hook at the
+--             top; none for a group PoB built itself) and which gem it is (skill ids),
+--             and the planner matches on that (src/spa/lib/gemOptions.ts). grantedSkill:
+--             PoB grants it (item / tree / weapon), so it is never corrupted.
+--             Granted skills are listed even without choices, for that flag.
 -- Minion:     a compact subset of PoB's output.Minion for the main skill's minion.
 -- Totem:      count, life and damage of the main skill's totems.
 local function plannerGemOptions()
@@ -162,7 +187,7 @@ local function plannerGemOptions()
     local list = build.skillsTab and build.skillsTab.socketGroupList or {}
     for groupIndex, group in ipairs(list) do
         local skills = {}
-        for _, activeSkill in ipairs(group.displaySkillList or {}) do
+        for skillIndex, activeSkill in ipairs(group.displaySkillList or {}) do
             local effect = activeSkill.activeEffect
             local src = effect and effect.srcInstance
             local granted = effect and effect.grantedEffect
@@ -171,7 +196,16 @@ local function plannerGemOptions()
                 if gem == src then gemIndex = index end
             end
             if granted and gemIndex then
-                local entry = { gem = gemIndex, name = granted.name, grantedEffect = granted.id }
+                -- skill: its position in the group's skill list (PoB's mainActiveSkill when it is the one calculated).
+                local first = group.gemList[1]
+                local entry = {
+                    gem = gemIndex, skill = skillIndex, name = granted.name, grantedEffect = granted.id,
+                    skillId = src.skillId, gemId = src.gemId,
+                    xmlRow = group.plannerXmlRow,
+                    groupSource = group.source, groupSlot = group.slot,
+                    groupSkillId = first and first.skillId, groupGemId = first and first.gemId,
+                    grantedSkill = (src.fromItem or src.fromTree) and true or nil
+                }
                 if granted.parts and #granted.parts > 1 then
                     entry.parts = {}
                     for _, part in ipairs(granted.parts) do entry.parts[#entry.parts + 1] = part.name or "" end
@@ -208,7 +242,7 @@ local function plannerGemOptions()
                     end
                     entry.minionSkill = src.skillMinionSkill or 1
                 end
-                if entry.parts or entry.statSets or entry.maxStages or entry.minions or entry.minionSkills then
+                if entry.parts or entry.statSets or entry.maxStages or entry.minions or entry.minionSkills or entry.grantedSkill then
                     skills[#skills + 1] = entry
                 end
             end
@@ -227,7 +261,9 @@ local MINION_STATS = {
     "FireResist", "ColdResist", "LightningResist", "ChaosResist"
 }
 if output and type(output.Minion) == "table" then
-    local minionEnv = env and env.minion
+    -- This block's own handle on PoB's main calculation (other blocks name theirs).
+    local plannerEnv = build.calcsTab and build.calcsTab.mainEnv
+    local minionEnv = plannerEnv and plannerEnv.minion
     local minion = {}
     for _, stat in ipairs(MINION_STATS) do
         if type(output.Minion[stat]) == "number" then minion[stat] = output.Minion[stat] end

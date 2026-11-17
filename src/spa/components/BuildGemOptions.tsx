@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { formatStat, statChange, formatStatChange } from "../lib/buildStats";
 import {
   CORRUPT_CHOICES,
+  hasGemChoices,
   corruptChoice,
   optionLabel,
   pickedStatSet,
@@ -63,11 +64,14 @@ export function GemOptionControls({ option, attrs, onChange, locale, corrupt = t
   locale: string;
   corrupt?: boolean;
 }) {
-  if (!option && !corrupt) return null;
+  // PoB resets corruption on skills it grants (item, tree, weapon).
+  const showCorrupt = corrupt && !option?.grantedSkill;
+  if (!hasGemChoices(option) && !showCorrupt) return null;
   const vi = locale === "vi";
   const list = (names: string[]) => names.map((name, index) => ({ value: String(index + 1), label: optionLabel(name, locale) || `${index + 1}` }));
+  // poe-no-tooltip: the site's dictionary links would split these short labels.
   return (
-    <span className="gx-controls">
+    <span className="gx-controls poe-no-tooltip">
       {option?.statSets ? (
         <Select label={vi ? "Chế độ" : "Stat set"} hint={HINTS.statSet} value={String(pickedStatSet(attrs, option.grantedEffect))} options={list(option.statSets)}
           onChange={(value) => onChange({ kind: "statSet", grantedEffect: option.grantedEffect, value: Number(value) })} />
@@ -95,7 +99,7 @@ export function GemOptionControls({ option, attrs, onChange, locale, corrupt = t
         <Select label={vi ? "Kỹ năng minion" : "Minion skill"} hint={HINTS.minionSkill} value={String(Number(attrs?.skillMinionSkill) || option.minionSkill || 1)} options={list(option.minionSkills)}
           onChange={(value) => onChange({ kind: "minionSkill", value: Number(value) })} />
       ) : null}
-      {corrupt ? <Select label="Corrupt" hint={HINTS.corrupt} value={corruptChoice(attrs)}
+      {showCorrupt ? <Select label="Corrupt" hint={HINTS.corrupt} value={corruptChoice(attrs)}
         options={CORRUPT_CHOICES.map((choice) => ({ value: choice.value, label: vi ? choice.vi : choice.en }))}
         onChange={(value) => onChange({ kind: "corrupt", value: value as CorruptChoice })} /> : null}
     </span>

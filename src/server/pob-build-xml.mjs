@@ -183,7 +183,19 @@ const gemXml = (gem) => {
   return statSets ? `${open}>${statSets}</Gem>` : `${open}/>`;
 };
 
-const skillGroupXml = (group, fullDps = false) => {
+/**
+ * A group granted by an item names it as PoB's item.modSource, "Item:<id>:<name>". The
+ * XML here numbers items afresh, so the code's old id would point at another item (or
+ * none) and PoB would drop the group and make a new one, losing its settings and
+ * shifting the group numbers. The id is rewritten to the item now in the group's slot.
+ */
+const groupSource = (source, slotName, slotItemIds) => {
+  const text = String(source).slice(0, 160);
+  const id = slotName && slotItemIds?.get(slotName);
+  return id ? text.replace(/^Item:\d+:/, `Item:${id}:`) : text;
+};
+
+const skillGroupXml = (group, fullDps = false, slotItemIds = undefined) => {
   const gems = [gemXml(group), ...(Array.isArray(group.support) ? group.support : [])
     .filter((support) => support && support.skill_id)
     .map(gemXml)];
@@ -198,7 +210,7 @@ const skillGroupXml = (group, fullDps = false) => {
   if (fullDps) attrs.push(["includeInFullDPS", "true"]);
   const slotName = group.slot ? String(group.slot).replace(/[^A-Za-z0-9 ]/g, "").slice(0, 30) : "";
   if (slotName) attrs.push(["slot", slotName]);
-  if (group.source) attrs.push(["source", String(group.source).slice(0, 160)]);
+  if (group.source) attrs.push(["source", groupSource(group.source, slotName, slotItemIds)]);
   return `\t\t\t<Skill ${attrs.map(([key, value]) => `${key}="${escapeXml(value)}"`).join(" ")}>\n\t\t\t\t${gems.join("\n\t\t\t\t")}\n\t\t\t</Skill>`;
 };
 
@@ -222,6 +234,7 @@ export function buildPobXml(build = {}) {
   const items = [];
   const slots = [];
   const sockets = [];
+  const slotItemIds = new Map();
   let itemCounter = 1;
   for (const slot of Array.isArray(build.inventory_slots) ? build.inventory_slots : []) {
     if (!slot || typeof slot.inventory_id !== "string") continue;
@@ -240,12 +253,13 @@ export function buildPobXml(build = {}) {
       const usable = /^(Flask|Charm)/.test(slotName);
       const active = usable && isTrue(slot.active) ? ' active="true"' : "";
       slots.push(`<Slot name="${slotName}" itemId="${itemId}"${active}/>`);
+      slotItemIds.set(slotName, itemId);
     }
   }
 
   const skillGroups = (Array.isArray(build.skills) ? build.skills : [])
     .filter((group) => group && group.skill_id)
-    .map((group) => skillGroupXml(group, build.full_dps !== false));
+    .map((group) => skillGroupXml(group, build.full_dps !== false, slotItemIds));
 
   const mainSocketGroup = clampInt(build.main_socket_group, 1, Math.max(skillGroups.length, 1), 1);
   const attrOverride = build.attribute_overrides && typeof build.attribute_overrides === "object" ? build.attribute_overrides : null;

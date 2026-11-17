@@ -57,7 +57,7 @@ import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
 import { BuildSummonStats, GemOptionControls, gemOptionBadges } from "../components/BuildGemOptions";
-import { plannerGemTargets, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
+import { hasGemChoices, plannerGemTargets, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
 import { mainSkillDps } from "../lib/summonStats";
 import {
   BuildInventoryPanel,
@@ -3254,7 +3254,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                           <p className="sk-note">{vi ? "Bấm số DPS (ngôi sao) để chọn làm kỹ năng chính và xem chi tiết sát thương." : "Make it the main skill to see its damage breakdown."}</p>
                         )}
                         {/* Granted skills (from an item or passive) are not gems you can corrupt. */}
-                        {gemOptionFor(index) || !(skill.itemSlot || skill.itemSource) ? (
+                        {hasGemChoices(gemOptionFor(index)) || !(skill.itemSlot || skill.itemSource || gemOptionFor(index)?.grantedSkill) ? (
                           <div className="gx-main">
                             <span className="gx-title">
                               {vi ? "Tuỳ chọn gem" : "Gem options"}

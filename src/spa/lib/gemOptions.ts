@@ -25,6 +25,19 @@ export interface PobGemOptions {
   minion?: string;
   minionSkills?: string[];
   minionSkill?: number;
+  /** Position in the group's skill list (PoB's mainActiveSkill for it). */
+  skill?: number;
+  /** Which gem and group this is, to find them in the planner (see plannerGemTargets). */
+  skillId?: string;
+  gemId?: string;
+  groupSource?: string;
+  groupSlot?: string;
+  groupSkillId?: string;
+  groupGemId?: string;
+  /** XML <Skill> row the group was loaded from (none: a group PoB built itself). */
+  xmlRow?: number;
+  /** Granted by an item, the tree or a weapon: PoB never corrupts it. */
+  grantedSkill?: boolean;
 }
 
 export type CorruptChoice = "none" | "plus" | "corrupted" | "minus";
@@ -125,33 +138,69 @@ export interface PlannerGemTarget {
   option: PobGemOptions;
 }
 
-interface GroupLike {
+interface GemLike {
   skillId: string;
-  supportSkills: Array<{ id: string; skillId: string }>;
+  pobSkillId?: string;
+  pobGemId?: string;
 }
 
+interface GroupLike extends GemLike {
+  itemSource?: string;
+  itemSlot?: string;
+  supportSkills: Array<GemLike & { id: string }>;
+}
+
+/** Every id a planner gem may be known by in PoB (its skillId, its gem path...). */
+const gemKeys = (gem: GemLike): string[] => {
+  const site = gem.skillId.trim();
+  const keys = [gem.pobSkillId, gem.pobGemId, site];
+  if (site && !site.startsWith("Metadata/")) {
+    keys.push(site.startsWith("Support") ? `Metadata/Items/Gems/SupportGem${site.replace(/^Support/, "")}` : `Metadata/Items/Gems/SkillGem${site}`);
+  }
+  return keys.filter((key): key is string => Boolean(key)).map((key) => key.toLowerCase());
+};
+const sameGem = (gem: GemLike, ...ids: Array<string | undefined>) => {
+  const keys = gemKeys(gem);
+  return ids.some((id) => id && keys.includes(id.toLowerCase()));
+};
 /**
- * Matches PoB's GemOptions (keyed by PoB group number, gem position) with the planner's
- * groups. Groups without a gem are not sent to PoB, and inside a group only the rows
- * with a gem are, in order (see calculationRequestBody), so both numberings shift.
+ * Matches PoB's GemOptions with the planner's groups and gems. PoB's group numbers are
+ * not the order the groups were sent in (it folds the player's group for a granted skill
+ * into that skill's group and builds groups of its own), so each entry carries the XML
+ * row its group was loaded from (xmlRow): the planner sends one row per group that has
+ * a gem, in order. Entries without a row are groups PoB built itself, with no planner
+ * card. Within a group the gem is found by its ids (by position only when there are none).
+ * Output from an older calculate script has no rows at all: PoB's number is used then.
  */
 export function plannerGemTargets(gemOptions: unknown, skills: GroupLike[]): PlannerGemTarget[] {
   if (!gemOptions || typeof gemOptions !== "object") return [];
+  const sent = skills.map((skill, index) => ({ skill, index })).filter((row) => row.skill.skillId.trim());
+  const groups = Object.entries(gemOptions as Record<string, unknown>)
+    .map(([key, rows]) => ({ key: Number(key), rows: (Array.isArray(rows) ? rows : []).filter((row): row is PobGemOptions => row && typeof row.gem === "number") }))
+    .filter((group) => group.key > 0 && group.rows.length);
+  const tagged = groups.some((group) => group.rows.some((row) => typeof row.xmlRow === "number"));
   const targets: PlannerGemTarget[] = [];
-  let pobGroup = 0;
-  skills.forEach((skill, group) => {
-    if (!skill.skillId.trim()) return;
-    pobGroup += 1;
-    const rows = (gemOptions as Record<string, unknown>)[String(pobGroup)];
-    if (!Array.isArray(rows)) return;
-    const supports = skill.supportSkills.filter((support) => support.skillId.trim());
-    for (const row of rows as PobGemOptions[]) {
-      if (!row || typeof row.gem !== "number") continue;
-      if (row.gem === 1) targets.push({ group, option: row });
-      else if (supports[row.gem - 2]) targets.push({ group, supportId: supports[row.gem - 2].id, option: row });
+  for (const { key, rows } of groups) {
+    const xmlRow = rows.find((row) => typeof row.xmlRow === "number")?.xmlRow;
+    const match = tagged ? (xmlRow ? sent[xmlRow - 1] : undefined) : sent[key - 1];
+    if (!match) continue;
+    const supports = match.skill.supportSkills.filter((support) => support.skillId.trim());
+    for (const row of rows) {
+      const ids = [row.skillId, row.gemId].filter(Boolean) as string[];
+      if (row.gem === 1) {
+        targets.push({ group: match.index, option: row });
+        continue;
+      }
+      const support = ids.length ? supports.find((gem) => sameGem(gem, ...ids)) : supports[row.gem - 2];
+      if (support) targets.push({ group: match.index, supportId: support.id, option: row });
     }
-  });
+  }
   return targets;
+}
+
+/** Whether PoB offers any choice for this gem (not just the "granted skill" flag). */
+export function hasGemChoices(option: PobGemOptions | undefined): boolean {
+  return Boolean(option && (option.parts || option.statSets || option.maxStages || option.minions || option.minionSkills));
 }
 
 /** Vietnamese words for PoB's usual stat-set / part names; the rest stay as PoB writes them. */
