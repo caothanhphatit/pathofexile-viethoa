@@ -298,3 +298,14 @@ test("every gem choice PoB offers gives PoB's numbers, on the minion and totem b
   for (const kind of ["minion", "minionSkill", "statSet", "corrupt"]) assert.ok(results.some((row) => row.change?.kind === kind && row.moved), kind);
   assert.ok(results.some((row) => row.rows?.some((r) => r.stat === "Totem.Life" && r.pob > 0)), "a totem main skill");
 });
+
+test("the minion block names the minion and its skill (no stray globals in the Lua script)", {
+  skip: runtime.available ? false : `PoB not installed locally (${runtime.coreDir}); run scripts/setup-pob-local.mjs`,
+  timeout: 120_000
+}, async () => {
+  const { runPob } = await import("../scripts/check-pob-parity.mjs");
+  const { body } = await plannerCalculationRequest(readFixtures(["lich-minions"])[0].code);
+  const out = await runPob(buildPobXml(body), runtime);
+  assert.equal(out.Minion?.Name, "Skeletal Storm Mage");
+  assert.equal(out.Minion?.Skill, "Arc");
+});

@@ -36,7 +36,7 @@
   font-size: 11px;
 }
 
-.gx-field > span { display: inline-flex; align-items: center; gap: 2px; }
+.gx-field > span { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
 
 .gx-field select,
 .gx-field input {

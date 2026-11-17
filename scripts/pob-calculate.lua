@@ -261,7 +261,9 @@ local MINION_STATS = {
     "FireResist", "ColdResist", "LightningResist", "ChaosResist"
 }
 if output and type(output.Minion) == "table" then
-    local minionEnv = env and env.minion
+    -- This block's own handle on PoB's main calculation (other blocks name theirs).
+    local plannerEnv = build.calcsTab and build.calcsTab.mainEnv
+    local minionEnv = plannerEnv and plannerEnv.minion
     local minion = {}
     for _, stat in ipairs(MINION_STATS) do
         if type(output.Minion[stat]) == "number" then minion[stat] = output.Minion[stat] end
