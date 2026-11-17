@@ -1,10 +1,10 @@
 /* Passive tree editing: weapon-set mode, attribute picks, jewel sockets
    (PassiveTreePage.tsx, SocketJewelMenu.tsx). */
 
-/* The planner's small tree shows node tooltips too (sockets tell what a jewel changes). */
-.build-tree-mini .passive-tooltip {
+/* The planner's small tree hides plain node tooltips (styles.css); one with weapon-set,
+   attribute or socket lines shows (a socket tells what a jewel changes). */
+.build-tree-mini .passive-tooltip.has-tree-pick {
   display: block;
-  position: fixed;
 }
 
 .passive-tooltip-edits {
@@ -371,13 +371,8 @@
 .sj-cmp .is-worse { color: var(--danger); }
 
 @media (max-width: 720px) {
-  /* Phone: the menu is a sheet at the bottom of the screen. */
+  /* Phone: the menu is a sheet at the bottom of the screen (placed by nodeMenuPosition). */
   .passive-node-menu {
-    left: 8px !important;
-    right: 8px;
-    top: auto !important;
-    bottom: 8px;
-    width: auto;
     max-height: 60vh;
   }
 

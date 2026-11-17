@@ -378,6 +378,13 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
     onNodeDrop!("drop", node, event.clientX, event.clientY, event.dataTransfer.getData(dropType!));
   };
 
+  // The mouse leaves the tree: drop its tooltip (a held one stays until Alt is let go).
+  const onPointerLeave = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    lastPointer.current = null;
+    if (event.pointerType !== "mouse" || heldHover.current || pointers.current.size) return;
+    if (hoverId.current) showHover(null, 0, 0);
+  };
+
   return (
     <canvas
       ref={canvasRef}
@@ -389,6 +396,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
+      onPointerLeave={onPointerLeave}
       role="img"
       aria-label="Passive tree canvas"
     />

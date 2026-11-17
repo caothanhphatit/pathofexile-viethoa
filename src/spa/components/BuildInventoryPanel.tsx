@@ -26,6 +26,8 @@ export interface StashItemView {
   fits: boolean;
   /** Changed or built in the planner. */
   edited?: boolean;
+  /** What a click does, when it is not "equip" (a jewel goes to a tree socket). */
+  clickHint?: string;
 }
 
 export interface CatalogEntry {
@@ -209,7 +211,7 @@ export function BuildInventoryPanel(props: {
                 onMouseLeave={props.onItemLeave}
                 onFocus={(event) => props.onItemEnter(row.item.id, event as unknown as MouseEvent)}
                 onBlur={props.onItemLeave}
-                aria-label={`${row.name} (${vi ? RARITY_LABEL[row.rarity] ?? row.rarity : row.rarity}) — ${vi ? "bấm để mặc" : "click to equip"}`}
+                aria-label={`${row.name} (${vi ? RARITY_LABEL[row.rarity] ?? row.rarity : row.rarity}) — ${row.clickHint ?? (vi ? "bấm để mặc" : "click to equip")}`}
               >
                 <ItemIcon iconUrl={row.iconUrl} name={row.name} rarity={row.rarity} />
                 {row.edited ? <span className="pi-edited">{vi ? "Đã sửa" : "Edited"}</span> : null}
