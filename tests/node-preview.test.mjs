@@ -99,11 +99,23 @@ test("nodeDeltasXml: one element before the end, ids cleaned and capped, no brea
   assert.match(nodeDeltasXml({}, Array.from({ length: 80 }, (_, i) => i + 1)), /nodes="1,[\d,]*,59,60"\//);
 });
 
+test("nodeDeltasXml never asks PoB for Full DPS (the preview prices the main skill)", async () => {
+  const [fixture] = readFixtures(["sorceress-stormweaver.json"]);
+  const { body } = await plannerCalculationRequest(fixture.code);
+  assert.match(buildPobXml(body), /includeInFullDPS="true"/, "the build's own calculation keeps Full DPS");
+  assert.doesNotMatch(nodeDeltasXml(body, [1]), /includeInFullDPS/);
+  assert.equal(nodeDeltasXml(body, [1]), nodeDeltasXml({ ...body, full_dps: true }, [1]), "the client cannot turn it back on");
+});
+
 test("runNodeDeltas keeps the preview stats and the per-node answers", async () => {
   assert.deepEqual(nodeDeltasFromOutput(null), { base: {}, nodes: {} });
   assert.deepEqual(nodeDeltasFromOutput({ Life: 3, NodeDeltas: [] }), { base: { Life: 3 }, nodes: {} });
   const data = await runNodeDeltas({ run: async () => ({ CombinedDPS: 7, Str: 20, Foo: 1, NodeDeltas: { 4: { allocated: true, node: {} } } }) }, "<xml/>");
   assert.deepEqual(data, { base: { CombinedDPS: 7, Str: 20 }, nodes: { 4: { allocated: true, node: {} } } });
+  // The misc calculator's own base wins (MinionDPS included); older calculate.lua
+  // copies only have the main output.
+  assert.deepEqual(nodeDeltasFromOutput({ CombinedDPS: 9, Minion: { CombinedDPS: 8 }, NodeDeltaBase: { CombinedDPS: 0, MinionDPS: 500, Life: 1 } }).base, { CombinedDPS: 0, MinionDPS: 500, Life: 1 });
+  assert.deepEqual(nodeDeltasFromOutput({ CombinedDPS: 9, Minion: { CombinedDPS: 8 } }).base, { CombinedDPS: 9, MinionDPS: 8 });
   // dkjson writes an empty Lua table as [].
   assert.deepEqual(nodeDeltasFromOutput({ NodeDeltas: { 5: { allocated: false, node: [], path: [], pathLength: 2 } } }).nodes, { 5: { allocated: false, node: {}, path: {}, pathLength: 2 } });
 });
@@ -131,6 +143,7 @@ test("preview text in Vietnamese: DPS and EHP as a share of the build, the rest 
   assert.deepEqual(plain(lines.map((line) => line.text)), ["+4,2% DPS", "+35 máu", "−12 mana", "+8% kháng lửa", "−4% kháng hỗn loạn", "+2% máu hiệu dụng (EHP)"]);
   assert.deepEqual(plain(lines.map((line) => line.positive)), [true, true, false, true, false, true]);
   assert.deepEqual(plain(formatNodeDelta({ CombinedDPS: 250 }, { CombinedDPS: 0 }, "en").map((line) => line.text)), ["+250 DPS"], "no base: raw DPS");
+  assert.deepEqual(plain(formatNodeDelta({ MinionDPS: -3402 }, { CombinedDPS: 0, MinionDPS: 245447 }, "vi").map((line) => line.text)), ["−1,4% DPS minion"], "summoners: the minion's DPS");
 });
 
 test("preview store: batches, urgent first, one batch at a time, cache per build", async () => {
@@ -265,3 +278,55 @@ test("node deltas equal full PoB calculations with and without the node", {
   for (const stat of STATS) assert.ok(Math.abs((inSet1[stat] ?? 0) - (before[stat] ?? 0)) < 0.01, `14254 in set 1: ${stat} unchanged in a full run too`);
   assert.equal(batch.nodes["47374"].weaponSet, undefined);
 });
+
+// Every kind of node the tooltip can show, on more builds: a path of several nodes,
+// a removal that cuts nodes off, an ascendancy notable that keeps unconnected nodes
+// (Entwined Realities), weapon-set nodes, and a summoner's minion DPS. Each answer
+// is compared with full PoB runs with and without the nodes it covers (pathIds).
+const EDGE_CASES = [
+  { file: "druid-oracle.json", ids: { 32905: "Entwined Realities: removing it drops the nodes it kept", 535: "cut node", 8273: "2 steps away" } },
+  { file: "sorceress-stormweaver.json", ids: { 722: "cut node", 3567: "weapon set 1 node", 1104: "weapon set 2 node", 14294: "3 steps away", 16466: "next to weapon set 2 only" } },
+  { file: "lich-minions.json", ids: { 95: "minion DPS", 2995: "ascendancy node", 2254: "allocated notable" } }
+];
+const DELTA_STATS = ["CombinedDPS", "MinionDPS", ...STATS.slice(1), "Str", "Dex", "Int"];
+const statOf = (output, stat) => (stat === "MinionDPS" ? output.Minion?.CombinedDPS : output[stat]) ?? 0;
+
+for (const { file, ids } of EDGE_CASES) {
+  test(`node deltas match full PoB runs on ${file}: paths, cut nodes, ascendancy and weapon sets`, {
+    skip: runtime.available ? false : "PoB not installed locally",
+    timeout: 300_000
+  }, async () => {
+    const [fixture] = readFixtures([file]);
+    const { body } = await plannerCalculationRequest(fixture.code);
+    const batch = nodeDeltasFromOutput(await runPob(nodeDeltasXml(body, Object.keys(ids)), runtime));
+    const before = await runPob(buildPobXml(body), runtime);
+    for (const stat of DELTA_STATS) {
+      if (batch.base[stat] !== undefined) assert.ok(Math.abs(batch.base[stat] - statOf(before, stat)) < 0.01, `base ${stat}`);
+    }
+    const bodyFor = (delta, id) => {
+      const covered = new Set((delta.pathLength > 1 ? delta.pathIds : [Number(id)]).map(String));
+      const drop = (list = []) => list.filter((nodeId) => !covered.has(String(nodeId)));
+      if (delta.allocated) {
+        return { ...body, passives: drop(body.passives), weapon_set_passives: { 1: drop(body.weapon_set_passives?.["1"]), 2: drop(body.weapon_set_passives?.["2"]) } };
+      }
+      const next = { ...body, passives: [...body.passives, ...[...covered].map(Number)] };
+      if (delta.weaponSet) next.weapon_set_passives = { ...body.weapon_set_passives, [delta.weaponSet]: [...(body.weapon_set_passives?.[String(delta.weaponSet)] || []), ...covered] };
+      return next;
+    };
+    const entries = Object.entries(ids);
+    for (const [id] of entries) assert.ok(batch.nodes[id], `node ${id} answered`);
+    const fulls = await Promise.all(entries.map(([id]) => runPob(buildPobXml(bodyFor(batch.nodes[id], id)), runtime)));
+    entries.forEach(([id, label], index) => {
+      const delta = batch.nodes[id];
+      const shown = delta.pathLength > 1 ? delta.path : delta.node;
+      if (delta.pathLength > 1) assert.equal(delta.pathIds.length, delta.pathLength, `${id} lists its path`);
+      for (const stat of DELTA_STATS) {
+        const expected = statOf(fulls[index], stat) - statOf(before, stat);
+        const got = shown[stat] ?? 0;
+        assert.ok(Math.abs(expected - got) <= Math.max(0.01, Math.abs(expected) * 1e-6), `${id} (${label}) ${stat}: batch ${got}, full ${expected}`);
+      }
+    });
+    if (file === "druid-oracle.json") assert.ok(batch.nodes["32905"].pathLength > 1, "Entwined Realities takes the nodes it kept with it");
+    if (file === "lich-minions.json") assert.ok(batch.nodes["95"].node.MinionDPS < 0, "minion DPS is priced");
+  });
+}
