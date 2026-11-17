@@ -80,19 +80,33 @@ export function useNodePreview({ body, allocatedIds, paused, locale }: Options) 
       content = <p className="passive-node-delta__note">{vi ? "Không tính được." : "Could not calculate."}</p>;
     } else {
       const { delta, base } = entry;
-      const lines = formatNodeDelta(delta.node, base, locale);
-      const pathLines = delta.path && (delta.pathLength ?? 0) > 1 ? formatNodeDelta(delta.path, base, locale) : [];
+      // Lead with what a click really does: the whole path to the node, or (removing)
+      // everything PoB drops with it; this node alone comes second.
+      const many = Boolean(delta.path) && (delta.pathLength ?? 0) > 1;
+      const lines = formatNodeDelta(many ? delta.path! : delta.node, base, locale);
+      const aloneLines = many ? formatNodeDelta(delta.node, base, locale) : [];
+      const others = (delta.pathLength ?? 1) - 1;
+      const scope = many
+        ? (allocated
+          ? (vi ? `Mất luôn ${others} node khác không còn nối vào cây` : `Also drops ${others} nodes left unconnected`)
+          : (vi ? `Cả đường ${delta.pathLength} node` : `Whole ${delta.pathLength}-node path`))
+        : "";
       content = (
         <>
-          {lines.length
-            ? lines.map((line) => <p key={line.stat} className={line.positive ? "is-up" : "is-down"}>{line.text}</p>)
-            : <p className="passive-node-delta__note">{vi ? "Không đổi chỉ số chính." : "No change to the main stats."}</p>}
-          {pathLines.length ? (
+          {lines.length ? (
+            <>
+              {many ? <p className="passive-node-delta__note">{scope}:</p> : null}
+              {lines.map((line) => <p key={line.stat} className={line.positive ? "is-up" : "is-down"}>{line.text}</p>)}
+            </>
+          ) : (
             <p className="passive-node-delta__note">
-              {allocated
-                ? (vi ? `Kèm ${delta.pathLength! - 1} node phụ thuộc: ` : `With ${delta.pathLength! - 1} dependent nodes: `)
-                : (vi ? `Cả đường ${delta.pathLength} node: ` : `Whole ${delta.pathLength}-node path: `)}
-              {pathLines.map((line) => line.text).join(", ")}
+              {many ? `${scope}: ` : ""}{vi ? (many ? "không đổi chỉ số chính." : "Không đổi chỉ số chính.") : (many ? "no change to the main stats." : "No change to the main stats.")}
+            </p>
+          )}
+          {many && (lines.length || aloneLines.length) ? (
+            <p className="passive-node-delta__note">
+              {vi ? "Riêng node này: " : "This node alone: "}
+              {aloneLines.length ? aloneLines.map((line) => line.text).join(", ") : (vi ? "không đổi" : "no change")}
             </p>
           ) : null}
           {delta.weaponSet ? (

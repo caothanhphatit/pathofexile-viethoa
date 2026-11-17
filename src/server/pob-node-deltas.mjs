@@ -12,7 +12,7 @@ import { buildPobXml } from "./pob-build-xml.mjs";
 
 /** Stats a node preview reports (same list as DELTA_STATS in scripts/pob-calculate.lua). */
 export const NODE_DELTA_STATS = [
-  "CombinedDPS", "Life", "EnergyShield", "Mana", "Spirit", "Armour", "Evasion",
+  "CombinedDPS", "MinionDPS", "Life", "EnergyShield", "Mana", "Spirit", "Armour", "Evasion",
   "FireResist", "ColdResist", "LightningResist", "ChaosResist", "TotalEHP", "Str", "Dex", "Int"
 ];
 
@@ -24,11 +24,16 @@ export const nodeDeltaIds = (value) => [...new Set((Array.isArray(value) ? value
   .map((id) => Number.parseInt(id, 10))
   .filter((id) => Number.isInteger(id) && id > 0))];
 
-/** The build XML (without any stat breakdown request) with a node-delta request for `ids`. */
+/**
+ * The build XML (without any stat breakdown request) with a node-delta request for `ids`.
+ * Always without Full DPS: the preview reports the main skill's DPS (CombinedDPS, or
+ * its minion's), which is what the planner shows, and pricing every skill group per
+ * node made a 40-node batch about 4x slower.
+ */
 export function nodeDeltasXml(build, ids) {
   const { analysis: _analysis, ...rest } = build || {};
   const nodes = nodeDeltaIds(ids).slice(0, NODE_DELTAS_MAX_NODES);
-  const xml = buildPobXml(rest);
+  const xml = buildPobXml({ ...rest, full_dps: false });
   if (!nodes.length) return xml;
   return xml.replace(/<\/PathOfBuilding2>\s*$/, `\t<PlannerNodeDeltas nodes="${nodes.join(",")}"/>\n</PathOfBuilding2>\n`);
 }
@@ -38,9 +43,12 @@ export function nodeDeltasXml(build, ids) {
  * preview stats and, per node id, what allocating (or removing) it changes.
  */
 export function nodeDeltasFromOutput(output) {
+  // calculate.lua sends the misc calculator's own base (NodeDeltaBase); older copies do not.
+  const fromLua = output?.NodeDeltaBase && typeof output.NodeDeltaBase === "object" && !Array.isArray(output.NodeDeltaBase) ? output.NodeDeltaBase : null;
   const base = {};
   for (const stat of NODE_DELTA_STATS) {
-    if (typeof output?.[stat] === "number") base[stat] = output[stat];
+    const value = fromLua ? fromLua[stat] : stat === "MinionDPS" ? output?.Minion?.CombinedDPS : output?.[stat];
+    if (typeof value === "number") base[stat] = value;
   }
   const raw = output?.NodeDeltas;
   const nodes = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};

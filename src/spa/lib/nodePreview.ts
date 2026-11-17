@@ -13,7 +13,7 @@ import { hashString } from "./calcQueue";
 export type NodeDeltaStats = Partial<Record<NodeDeltaStat, number>>;
 
 export const NODE_DELTA_STATS = [
-  "CombinedDPS", "Life", "EnergyShield", "Mana", "Spirit", "Armour", "Evasion",
+  "CombinedDPS", "MinionDPS", "Life", "EnergyShield", "Mana", "Spirit", "Armour", "Evasion",
   "FireResist", "ColdResist", "LightningResist", "ChaosResist", "TotalEHP", "Str", "Dex", "Int"
 ] as const;
 export type NodeDeltaStat = typeof NODE_DELTA_STATS[number];
@@ -26,6 +26,8 @@ export interface NodeDelta {
   /** With the path to it (allocating) or the nodes hanging on it (removing), when longer than 1. */
   path?: NodeDeltaStats;
   pathLength?: number;
+  /** The node ids `path` covers (this node included), when longer than 1. */
+  pathIds?: number[];
   /** The weapon set PoB allocates it in (reached only through that set's nodes). */
   weaponSet?: number;
 }
@@ -226,6 +228,7 @@ export class NodePreviewStore {
 
 const STAT_LABELS: Record<NodeDeltaStat, { vi: string; en: string; percent?: boolean }> = {
   CombinedDPS: { vi: "DPS", en: "DPS" },
+  MinionDPS: { vi: "DPS minion", en: "minion DPS" },
   Life: { vi: "máu", en: "life" },
   EnergyShield: { vi: "khiên năng lượng", en: "energy shield" },
   Mana: { vi: "mana", en: "mana" },
@@ -264,7 +267,7 @@ export function formatNodeDelta(stats: NodeDeltaStats, base: NodeDeltaStats, loc
     if (typeof value !== "number" || !Number.isFinite(value)) continue;
     const label = STAT_LABELS[stat][locale];
     let text = "";
-    if (stat === "CombinedDPS" || stat === "TotalEHP") {
+    if (stat === "CombinedDPS" || stat === "MinionDPS" || stat === "TotalEHP") {
       const from = base[stat];
       if (typeof from === "number" && from > 0) {
         const percent = (value / from) * 100;

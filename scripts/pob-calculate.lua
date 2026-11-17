@@ -263,23 +263,82 @@ end
 -- returns how the main stats change if it is allocated (or removed when already
 -- allocated), using PoB's fast misc calculator the way its own tree tooltip does,
 -- so a whole batch costs one build load.
-local DELTA_STATS = { "CombinedDPS", "Life", "EnergyShield", "Mana", "Spirit", "Armour", "Evasion", "FireResist", "ColdResist", "LightningResist", "ChaosResist", "TotalEHP", "Str", "Dex", "Int" }
+local DELTA_STATS = { "CombinedDPS", "MinionDPS", "Life", "EnergyShield", "Mana", "Spirit", "Armour", "Evasion", "FireResist", "ColdResist", "LightningResist", "ChaosResist", "TotalEHP", "Str", "Dex", "Int" }
 local nodeDeltaRequest = xmlText:match("<PlannerNodeDeltas%s([^>]*)/?>")
 local nodeIds = {}
 for item in ((nodeDeltaRequest and nodeDeltaRequest:match('nodes="([^"]*)"')) or ""):gmatch("[^,]+") do nodeIds[#nodeIds + 1] = item end
 if output and #nodeIds > 0 and build.calcsTab.GetMiscCalculator then
     local calcFunc, calcBase = build.calcsTab:GetMiscCalculator(build)
+    -- MinionDPS: the main skill's minion (what the planner shows as DPS for summoners).
+    local function statOf(out, stat)
+        if not out then return nil end
+        if stat == "MinionDPS" then return type(out.Minion) == "table" and out.Minion.CombinedDPS or nil end
+        return out[stat]
+    end
     local function diff(after)
         local changes = {}
         local any = false
         for _, stat in ipairs(DELTA_STATS) do
-            local a, b = calcBase[stat], after and after[stat]
+            local a, b = statOf(calcBase, stat), statOf(after, stat)
             if type(a) == "number" and type(b) == "number" and math.abs(b - a) > 1e-6 then
                 changes[stat] = b - a
                 any = true
             end
         end
         return any and changes or {}
+    end
+    -- The numbers the deltas are relative to (the client shows DPS / EHP as a share of them).
+    local deltaBase = {}
+    for _, stat in ipairs(DELTA_STATS) do
+        local value = statOf(calcBase, stat)
+        if type(value) == "number" then deltaBase[stat] = value end
+    end
+    cleanOutput.NodeDeltaBase = deltaBase
+    -- Ids of a node set, sorted (the client and the parity tests read which nodes a path holds).
+    local function idList(nodes, count)
+        if count <= 1 then return nil end
+        local ids = {}
+        for other in pairs(nodes) do ids[#ids + 1] = other.id end
+        table.sort(ids)
+        return ids
+    end
+    -- What removing an allocated node really takes with it: what a full load of the
+    -- build without it would drop. node.depends misses nodes kept only by an
+    -- "allocate without being connected" effect (Entwined Realities, Intuitive
+    -- Leap-likes), so let PoB prune the tree itself, then put everything back.
+    local spec = build.spec
+    local function allocCount()
+        local count = 0
+        for _ in pairs(spec.allocNodes) do count = count + 1 end
+        return count
+    end
+    local function removedWith(node)
+        local saved = {}
+        for nodeId, other in pairs(spec.allocNodes) do
+            saved[nodeId] = { node = other, allocMode = other.allocMode, mastery = spec.masterySelections[nodeId] }
+        end
+        local ok, err = pcall(function()
+            for _, dep in ipairs(node.depends or { node }) do spec:DeallocSingleNode(dep) end
+            -- Pruning can uncover more orphans; a load converges the same way.
+            for _ = 1, 6 do
+                local before = allocCount()
+                spec:BuildAllDependsAndPaths()
+                if allocCount() == before then break end
+            end
+        end)
+        local removed, count = {}, 0
+        for nodeId, row in pairs(saved) do
+            if not spec.allocNodes[nodeId] then removed[row.node] = true; count = count + 1 end
+        end
+        for nodeId, row in pairs(saved) do
+            row.node.alloc = true
+            row.node.allocMode = row.allocMode
+            spec.allocNodes[nodeId] = row.node
+            spec.masterySelections[nodeId] = row.mastery
+        end
+        spec:BuildAllDependsAndPaths()
+        if not ok then error(err) end
+        return removed, count
     end
     local deltas = {}
     for index, idText in ipairs(nodeIds) do
@@ -290,10 +349,8 @@ if output and #nodeIds > 0 and build.calcsTab.GetMiscCalculator then
             local ok, entry = pcall(function()
                 if node.alloc then
                     -- Removing it also removes the nodes that hang on it.
-                    local dependants = {}
-                    local count = 0
-                    for _, other in pairs(node.depends or {}) do dependants[other] = true; count = count + 1 end
-                    return { allocated = true, node = diff(calcFunc({ removeNodes = { [node] = true } })), path = count > 1 and diff(calcFunc({ removeNodes = dependants })) or nil, pathLength = count, weaponSet = (node.allocMode or 0) > 0 and node.allocMode or nil }
+                    local dependants, count = removedWith(node)
+                    return { allocated = true, node = diff(calcFunc({ removeNodes = { [node] = true } })), path = count > 1 and diff(calcFunc({ removeNodes = dependants })) or nil, pathLength = count, pathIds = idList(dependants, count), weaponSet = (node.allocMode or 0) > 0 and node.allocMode or nil }
                 end
                 local path = {}
                 local count = 0
@@ -327,7 +384,7 @@ if output and #nodeIds > 0 and build.calcsTab.GetMiscCalculator then
                     if not okCalc then error(result) end
                     return diff(result)
                 end
-                return { allocated = false, node = priced({ [node] = true }), path = count > 1 and priced(path) or nil, pathLength = count, weaponSet = weaponSet > 0 and weaponSet or nil }
+                return { allocated = false, node = priced({ [node] = true }), path = count > 1 and priced(path) or nil, pathLength = count, pathIds = idList(path, count), weaponSet = weaponSet > 0 and weaponSet or nil }
             end)
             if ok and entry then deltas[tostring(id)] = entry end
         end
