@@ -27,12 +27,25 @@ ENV PATH=/opt/luajit/bin:$PATH LD_LIBRARY_PATH=/opt/luajit/lib
 COPY --from=pob src /pob/src
 COPY --from=pob runtime/lua /pob/runtime/lua
 # The calculator service and the calculate script, with package paths relative to /pob/src.
+# Repo files required by this image:
+#   scripts/pob-calc-server.mjs, scripts/pob-calculate.lua, scripts/setup-pob-local.mjs,
+#   src/server/pob-runner.mjs, src/server/pob-pool.mjs, deploy/pob-calc/install-calculate.mjs
 WORKDIR /app
 COPY scripts/pob-calc-server.mjs scripts/pob-calculate.lua scripts/setup-pob-local.mjs scripts/
-COPY src/server/pob-runner.mjs src/server/
+COPY src/server/pob-runner.mjs src/server/pob-pool.mjs src/server/
 COPY deploy/pob-calc/install-calculate.mjs deploy/pob-calc/
 RUN node deploy/pob-calc/install-calculate.mjs /pob/src
-ENV POB_CORE_DIR=/pob/src POB_LUAJIT=luajit POB_CALC_HOST=0.0.0.0 POB_CALC_PORT=18766 NODE_ENV=production
+ENV POB_CORE_DIR=/pob/src \
+    POB_LUAJIT=luajit \
+    POB_CALC_HOST=0.0.0.0 \
+    POB_CALC_PORT=18766 \
+    POB_CALC_WORKERS=4 \
+    POB_CALC_PREWARM=1 \
+    POB_CALC_WORKER_MAX_JOBS=200 \
+    POB_CALC_WORKER_MAX_RSS_MB=768 \
+    POB_CALC_QUEUE_MAX=32 \
+    POB_CALC_QUEUE_WAIT_MS=15000 \
+    NODE_ENV=production
 USER node
 EXPOSE 18766
 CMD ["node", "scripts/pob-calc-server.mjs"]

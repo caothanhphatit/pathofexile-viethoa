@@ -212,8 +212,10 @@ test("the parity check reads minion stats and edits a gem as PoB's UI does", () 
 
 test("the planner page shows gem options in the card details and the minion sheet", () => {
   const page = readFileSync(join(repoRoot, "src/spa/pages/BuildPlannerPage.tsx"), "utf8");
+  const skillDetail = readFileSync(join(repoRoot, "src/spa/components/BuildSkillDetail.tsx"), "utf8");
   assert.match(page, /plannerGemTargets\(activeStats\?\.GemOptions, buildSkills\)/);
-  assert.match(page, /<GemOptionControls option=\{gemOptionFor\(index\)\}/);
+  assert.match(page, /<BuildSkillPanel[\s\S]*gemOptionFor=\{gemOptionFor\}/);
+  assert.match(skillDetail, /<GemOptionControls[\s\S]*option=\{mainOption\}/);
   assert.match(page, /<BuildSummonStats stats=\{activeStats\}/);
   const lua = readFileSync(join(repoRoot, "scripts/pob-calculate.lua"), "utf8");
   for (const key of ["cleanOutput.GemOptions", "cleanOutput.Minion", "cleanOutput.Totem"]) assert.ok(lua.includes(key), key);

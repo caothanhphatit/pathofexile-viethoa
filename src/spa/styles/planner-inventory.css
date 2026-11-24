@@ -677,18 +677,17 @@ button.nj-main-skill.is-main { box-shadow: inset 3px 0 0 var(--poe-unique, #af60
 
 .nj-main-skill-sub { color: var(--nj-muted); font-weight: 400; }
 
-/* Top row: doll | stats, then the inventory across both; stacked: doll, inventory, stats. */
+/* Top row: doll | stats; inventory now sits in its own full-width panel below Skills. */
 .nj-row--top {
-  grid-template-areas: "equip stats" "inv inv";
+  grid-template-areas: "equip stats";
 }
 
 .nj-row--top > .nj-equipment { grid-area: equip; }
 .nj-row--top > .nj-stats { grid-area: stats; }
-.nj-row--top > .nj-inventory { grid-area: inv; }
 
 @media (max-width: 1100px) {
   .nj-row--top {
-    grid-template-areas: "equip" "inv" "stats";
+    grid-template-areas: "equip" "stats";
   }
 }
 

@@ -158,7 +158,7 @@ export function MonsterPicker({ library, value, onPick, locale }: {
  * The choices of one gem: PoB's options for it (when it has any) and, for skill gems,
  * corruption (PoE2 support gems have no level to corrupt).
  */
-export function GemOptionControls({ option, attrs, onChange, locale, corrupt = true, hideMinions = false }: {
+export function GemOptionControls({ option, attrs, onChange, locale, corrupt = true, hideMinions = false, hideStatSets = false, hideParts = false }: {
   option?: PobGemOptions;
   attrs: Attrs;
   onChange: (change: GemOptionChange) => void;
@@ -166,20 +166,30 @@ export function GemOptionControls({ option, attrs, onChange, locale, corrupt = t
   corrupt?: boolean;
   /** The card has its own monster selector (Companion / Spectre gems). */
   hideMinions?: boolean;
+  /** The detail panel renders stat sets as top tabs instead of a dropdown. */
+  hideStatSets?: boolean;
+  /** The detail panel renders skill parts as top tabs instead of a dropdown. */
+  hideParts?: boolean;
 }) {
   // PoB resets corruption on skills it grants (item, tree, weapon).
   const showCorrupt = corrupt && !option?.grantedSkill;
-  if (!hasGemChoices(option) && !showCorrupt) return null;
+  const showStatSets = Boolean(option?.statSets && !hideStatSets);
+  const showParts = Boolean(option?.parts && !hideParts);
+  const showMinions = Boolean(option?.minions && !hideMinions);
+  const hasVisibleChoices = Boolean(
+    showStatSets || showParts || option?.maxStages || showMinions || option?.minionSkills
+  );
+  if ((!hasGemChoices(option) || !hasVisibleChoices) && !showCorrupt) return null;
   const vi = locale === "vi";
   const list = (names: string[]) => names.map((name, index) => ({ value: String(index + 1), label: optionLabel(name, locale) || `${index + 1}` }));
   // poe-no-tooltip: the site's dictionary links would split these short labels.
   return (
     <span className="gx-controls poe-no-tooltip">
-      {option?.statSets ? (
+      {showStatSets && option?.statSets ? (
         <Select label={vi ? "Chế độ" : "Stat set"} hint={HINTS.statSet} value={String(pickedStatSet(attrs, option.grantedEffect))} options={list(option.statSets)}
           onChange={(value) => onChange({ kind: "statSet", grantedEffect: option.grantedEffect, value: Number(value) })} />
       ) : null}
-      {option?.parts ? (
+      {showParts && option?.parts ? (
         <Select label={vi ? "Phần kỹ năng" : "Skill part"} hint={HINTS.part} value={String(Number(attrs?.skillPart) || option.part || 1)} options={list(option.parts)}
           onChange={(value) => onChange({ kind: "part", value: Number(value) })} />
       ) : null}
@@ -193,7 +203,7 @@ export function GemOptionControls({ option, attrs, onChange, locale, corrupt = t
             }} />
         </label>
       ) : null}
-      {option?.minions && !hideMinions ? (
+      {showMinions && option?.minions ? (
         <Select label="Minion" hint={HINTS.minion} value={attrs?.skillMinion || option.minion || option.minions[0]?.id || ""}
           options={option.minions.map((minion) => ({ value: minion.id, label: minion.name }))}
           onChange={(value) => onChange({ kind: "minion", value })} />

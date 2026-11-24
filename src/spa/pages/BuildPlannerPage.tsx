@@ -26,6 +26,8 @@ import {
   officialAscendancyId,
   buildPayloadFromPobImport,
   calculationRequestBody,
+  effectiveSupportSockets,
+  MAX_SUPPORT_SOCKETS,
   encodePobXmlText,
   inventoryForSlots,
   withoutPobGemDetails,
@@ -66,25 +68,25 @@ import {
   type PobConfigInput,
   type BuildStashItem
 } from "../lib/buildPlanner";
-import { arrangeSkillCards, cardDamageLines, cardDamageNeedsNames, cardDamageOwners, foldedGrantedGroups, formatStat, groupDamageByRow, groupDamageValue, pobItemTextFromRecord, resistanceText, skillDpsByGroup, stampedStatsUsable, type PobSkillDps } from "../lib/buildStats";
+import { cardDamageLines, cardDamageNeedsNames, cardDamageOwners, foldedGrantedGroups, groupDamageByRow, groupDamageValue, pobItemTextFromRecord, resistanceText, skillDpsByGroup, stampedStatsUsable, type PobSkillDps } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { pobGemId } from "../../server/pob-gem-ids.mjs";
-import { supportFamilyConflicts } from "../../server/pob-gem-families.mjs";
-import { monsterGemTitle, monsterLibraryOf } from "../../server/pob-monster-gems.mjs";
-import type { MonsterGemPatch } from "../../server/pob-monsters.mjs";
+import { monsterGemTitle } from "../../server/pob-monster-gems.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import { CalcEngineSwitch } from "../components/CalcEngineSwitch";
 import { calcBackend } from "../lib/calcBackend";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
-import { BuildSummonStats, GemOptionControls, MonsterPicker, gemOptionBadges } from "../components/BuildGemOptions";
-import { hasGemChoices, plannerGemTargets, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
+import { BuildSummonStats } from "../components/BuildGemOptions";
+import { BuildSkillPanel } from "../components/BuildSkillPanel";
+import { BuildModal } from "../components/BuildModal";
+import { BuildDrawerBar, countChangedConditions, type BuildModalKind } from "../components/BuildDrawerBar";
+import { plannerGemTargets, type PobGemOptions } from "../lib/gemOptions";
 import { mainSkillDps } from "../lib/summonStats";
 import {
   BuildInventoryPanel,
   CompareBlock,
   GemSwapStrip,
   SLOT_DRAG_TYPE,
-  SupportValue,
   STASH_DRAG_TYPE,
   type CompareSpec,
   type GemOptionView,
@@ -903,6 +905,7 @@ function skillsSignature(rows: BuildSkillChoice[]): unknown[] {
     note: row.note || "",
     levelStart: row.levelStart || "",
     levelEnd: row.levelEnd || "",
+    supportSockets: row.supportSockets ?? null,
     supportSkills: row.supportSkills.map((support) => ({
       skillId: support.skillId || "",
       note: support.note || "",
@@ -1115,9 +1118,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [calcError, setCalcError] = useState("");
   // Stat whose "where does it come from" breakdown is open.
   const [explainStat, setExplainStat] = useState<ExplainTarget | null>(null);
-  // Gem whose alternatives are shown under it ("main" = the group's own skill gem).
-  // Support whose DPS contribution is shown, and the card whose details are open.
-  const [hoveredSupport, setHoveredSupport] = useState<{ skillId: string; supportId: string; keys: { withKey: string; withoutKey: string } | null } | null>(null);
+  // Skill whose detail panel is open, and gem whose alternatives strip is shown ("main" = active skill gem).
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
   const [gemStrip, setGemStrip] = useState<{ skillId: string; supportId: string | "main"; limit?: number } | null>(null);
   const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
@@ -1144,6 +1145,20 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [gemPickerQuery, setGemPickerQuery] = useState("");
   const [showBuildHelp, setShowBuildHelp] = useState(false);
   const [treeChoicesOpen, setTreeChoicesOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<BuildModalKind | null>(null);
+  const treeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const configBtnRef = useRef<HTMLButtonElement | null>(null);
+  const statsBtnRef = useRef<HTMLButtonElement | null>(null);
+  // Re-measure the passive tree canvas once its modal mounts and lays out.
+  useEffect(() => {
+    if (activeModal !== "tree") return;
+    const raf = window.requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+    const timer = window.setTimeout(() => window.dispatchEvent(new Event("resize")), 80);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+    };
+  }, [activeModal]);
   const [pobImportOpen, setPobImportOpen] = useState(false);
   const [pobCode, setPobCode] = useState("");
   const [pobImporting, setPobImporting] = useState(false);
@@ -1928,7 +1943,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const item = stash.find((row) => row.id === itemId);
     if (!item) return;
     if (isJewelText(item.rawText || "", item.baseName)) {
-      setCarriedJewelId((current) => (current === itemId ? null : itemId));
+      const nextCarried = carriedJewelId === itemId ? null : itemId;
+      setCarriedJewelId(nextCarried);
+      if (nextCarried) setActiveModal("tree");
       setTooltip((prev) => ({ ...prev, visible: false }));
       return;
     }
@@ -2267,11 +2284,26 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   const removeBuildSkill = (skillId: string) => {
     setBuildSkills((rows) => rows.filter((row) => row.id !== skillId));
+    setExpandedSkill((current) => (current === skillId ? null : current));
+    setGemStrip((current) => (current?.skillId === skillId ? null : current));
   };
 
   const addSupportSkill = (skillId: string) => {
     const support = newSupportSkillChoice();
-    setBuildSkills((rows) => rows.map((row) => row.id === skillId ? { ...row, supportSkills: [...row.supportSkills, support] } : row));
+    setBuildSkills((rows) => rows.map((row) => {
+      if (row.id !== skillId) return row;
+      const nextSupports = [...row.supportSkills, support];
+      const nonActiveCount = nextSupports.filter((item) => !item.active).length;
+      const currentSockets = effectiveSupportSockets(row);
+      const nextSockets = nonActiveCount > currentSockets && currentSockets < MAX_SUPPORT_SOCKETS
+        ? Math.min(MAX_SUPPORT_SOCKETS, nonActiveCount)
+        : row.supportSockets;
+      return {
+        ...row,
+        supportSkills: nextSupports,
+        ...(nextSockets !== undefined ? { supportSockets: nextSockets } : {})
+      };
+    }));
     setGemPickerQuery("");
     setActiveGemPicker(null);
     setGemStrip({ skillId, supportId: support.id });
@@ -2510,6 +2542,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setMainSocketGroup(1);
     applyLevel(DEFAULT_CHARACTER_LEVEL);
     setTreeChoicesOpen(false);
+    setActiveModal(null);
+    setExpandedSkill(null);
+    setGemStrip(null);
   };
 
   const newBuildDraft = () => askBeforeLeaving(() => {
@@ -2522,6 +2557,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setActiveSlotId(null);
     setActiveGemPicker(null);
     setTreeChoicesOpen(false);
+    setActiveModal(null);
   });
 
   const applyBuildProject = (project: BuildProject) => {
@@ -2542,6 +2578,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     } : null);
     setImportError("");
     setTreeChoicesOpen(false);
+    setActiveModal(null);
+    setExpandedSkill(null);
+    setGemStrip(null);
     applyLevel(buildCharacterLevel(project));
     setLiveStats(null);
     const msg = project.importedPayload?.mainSocketGroup || project.importedPayload?.build?.mainSocketGroup || 1;
@@ -3284,10 +3323,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   <span className="material-symbols-rounded" aria-hidden="true">save</span>
                   {localizedText(copy.saveBuild, "", locale)}
                 </button>
-                <button className="build-btn build-btn--import" type="button" onClick={openPobImport}>
-                  <span className="material-symbols-rounded" aria-hidden="true">data_object</span>
-                  {localizedText(copy.importPob, "", locale)}
-                </button>
                 <button
                   className="build-btn build-btn--export"
                   type="button"
@@ -3673,62 +3708,32 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               );
             })()}
           </section>
-
-          {/* The build's inventory: its own grid area, under the doll on narrow screens (never beside it). */}
-          <section className="nj-panel nj-inventory" aria-label={locale === "vi" ? "Kho đồ" : "Inventory"}>
-            <div className="nj-panel-body">
-              <BuildInventoryPanel
-                locale={locale}
-                items={stashViews}
-                selectedSlotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined}
-                selectedSlotFilled={Boolean(activeSlotId && inventoryBySlot.get(activeSlotId)?.itemName)}
-                onClearSlot={() => setActiveSlotId(null)}
-                onUnequipSelected={() => activeSlotId && unequipItem(activeSlotId)}
-                onItemClick={clickStashItem}
-                onItemEnter={enterStashItem}
-                onItemMove={handleMouseMove}
-                onItemLeave={handleMouseLeave}
-                onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
-                onEdit={editStashItem}
-                onDuplicate={(itemId) => setStash((rows) => duplicateStashItem(rows, itemId))}
-                onNewItem={openNewItem}
-                onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
-                onDropSlot={unequipItem}
-                onPasteText={pasteStashText}
-                slotChoice={slotChoice ? {
-                  itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
-                  slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
-                } : null}
-                onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
-                onCancelChoice={() => setSlotChoice(null)}
-                onItemDragStart={(itemId) => {
-                  const item = stash.find((row) => row.id === itemId);
-                  if (item && isJewelText(item.rawText || "", item.baseName)) setDraggedJewelId(itemId);
-                }}
-                onItemDragEnd={() => setDraggedJewelId(null)}
-              />
-            </div>
-          </section>
         </div>
 
-        {/* Row 2: Passive tree | Build info */}
-        <div className="nj-row nj-row--tree">
-          <section className="nj-panel nj-tree">
-            <header className="nj-panel-head">
-              <h2>{locale === "vi" ? "Cây thụ động" : "Passive tree"}</h2>
-              <span className="nj-badge">
-                <span className="material-symbols-rounded" aria-hidden="true">radio_button_checked</span>
-                {formatNumber(treePoints(buildTree), locale)}
-              </span>
-            </header>
-            <div className="nj-panel-body">
-              {linkedTreeCard}
-            </div>
-          </section>
+        {/* Compact button bar: Passive Tree, Conditions, Detailed Stats (each opens a modal) */}
+        {(() => {
+          const weaponSets = effectiveTree ? weaponSetPointCounts(effectiveTree.weaponSets, effectiveTree.allocatedIds) : { set1: 0, set2: 0 };
+          const treeOverLimit = warningList.some((w) => w.kind === "passive-points" || w.kind === "ascendancy-points" || w.kind === "weapon-set-points");
+          return (
+            <BuildDrawerBar
+              locale={locale}
+              activeModal={activeModal}
+              onOpenModal={setActiveModal}
+              treeBtnRef={treeBtnRef}
+              configBtnRef={configBtnRef}
+              statsBtnRef={statsBtnRef}
+              treeName={buildTree?.name || ""}
+              treePoints={treePoints(buildTree)}
+              weaponSet1Points={weaponSets.set1}
+              weaponSet2Points={weaponSets.set2}
+              treeOverLimit={treeOverLimit}
+              changedConditions={countChangedConditions(effectiveConfigInputs)}
+              isCalculating={isCalculating}
+            />
+          );
+        })()}
 
-        </div>
-
-        {/* Row 3: Skills (gem groups) */}
+        {/* Skills (in-game compact list + detail pane) */}
         <section className="nj-panel nj-skills">
           <header className="nj-panel-head">
             <h2>{localizedText(copy.skills, "", locale)}</h2>
@@ -3739,290 +3744,71 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             </button>
           </header>
           <div className="nj-panel-body">
-            {buildSkills.length ? (() => {
-              const vi = locale === "vi";
-              const arranged = arrangeSkillCards(buildSkills.map((skill, index) => ({
-                index,
-                hasSkill: Boolean(skill.skillId),
-                disabled: Boolean(skill.disabled),
-                dps: currentGroupDps?.[index],
-                isMain: index + 1 === mainSocketGroup,
-                // A Companion / Spectre gem without a monster deals 0: keep it in view to pick one.
-                hasChoices: hasGemChoices(gemOptionFor(index)) || Boolean(skill.skillId && monsterLibraryOf(skill))
-              })).filter((card) => !foldedGroups.has(card.index)));
-              const renderCard = (index: number, compact = false) => {
-                const skill = buildSkills[index];
-                const isMain = index + 1 === mainSocketGroup;
-                const dps = currentGroupDps?.[index];
-                const before = previousGroupDps?.[index];
-                const delta = dps !== undefined && before !== undefined && before > 0 && Math.abs(dps - before) / before >= 0.0005 ? (dps - before) / before : undefined;
-                const icon = skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "";
-                const triggered = skill.supportSkills.filter((support) => support.active && !support.disabled);
-                const supports = skill.supportSkills.filter((support) => !support.active);
-                const freeSockets = Math.max(0, 5 - supports.length);
-                const expanded = expandedSkill === skill.id;
-                // The skills the card's number belongs to, by PoB's names.
-                const damageLines = skill.disabled ? [] : groupDamageLines[index] ?? [];
-                // Companion / Spectre gems pick their monster on the card.
-                const monsterLibrary = skill.skillId ? monsterLibraryOf(skill) : null;
-                const pickMonster = (monsterId: string, gem: MonsterGemPatch) =>
-                  updateBuildSkill(skill.id, { ...gem, pobAttrs: withGemOption(skill.pobAttrs, { kind: "minion", value: monsterId }) });
-                // Two supports of one family on a skill: only one works (PoB counts the later one).
-                const supportName = (support: BuildSupportSkillChoice) => gemChoiceLabel(support.skillId, supportGemOptions, "SupportGem", locale, support.nameSpec || "");
-                const familyConflicts = supportFamilyConflicts(supports.map((support) => ({
-                  id: support.pobGemId || support.skillId,
-                  name: support.nameSpec || gemChoiceItem(support.skillId, supportGemOptions, "SupportGem")?.name,
-                  disabled: Boolean(support.disabled) || !support.skillId
-                })));
-                const supersededSupports = new Set(familyConflicts.flatMap((conflict) => conflict.gems.filter((gem) => gem !== conflict.kept).map((gem) => supports[gem].id)));
-                const details = isMain && activeStats ? activeStats : null;
-                const damageParts = details ? ([
-                  ["nj-dps-phys", vi ? "Vật lý" : "Physical", (Number(details.PhysicalMin) + Number(details.PhysicalMax)) / 2],
-                  ["nj-dps-fire", vi ? "Lửa" : "Fire", (Number(details.FireMin) + Number(details.FireMax)) / 2],
-                  ["nj-dps-cold", vi ? "Băng" : "Cold", (Number(details.ColdMin) + Number(details.ColdMax)) / 2],
-                  ["nj-dps-lightning", vi ? "Sét" : "Lightning", (Number(details.LightningMin) + Number(details.LightningMax)) / 2],
-                  ["nj-dps-chaos", vi ? "Hỗn mang" : "Chaos", (Number(details.ChaosMin) + Number(details.ChaosMax)) / 2]
-                ] as Array<[string, string, number]>).filter((part) => part[2] > 0) : [];
-                const damageTotal = damageParts.reduce((sum, part) => sum + part[2], 0);
-                return (
-                  <article className={`sk-card ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""} ${compact ? "is-compact" : ""}`} key={skill.id}>
-                    <div className="sk-top">
-                      <button
-                        type="button"
-                        className="sk-gem"
-                        onClick={() => (skill.skillId ? toggleGemStrip(skill.id, "main") : openSkillGemPicker(skill.id))}
-                        onMouseEnter={(event) => {
-                          if (!skill.skillId) return;
-                          const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
-                          if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
-                        }}
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={handleMouseLeave}
-                        title={vi ? "Bấm để đổi kỹ năng" : "Click to swap the skill"}
-                      >
-                        <span className="sk-gem-icon">
-                          {icon ? <img src={icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
-                        </span>
-                        <span className="sk-name">
-                          <strong className={skill.skillId ? "" : "is-empty"}>
-                            {skill.skillId ? monsterGemTitle(skill) || gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "Empty") : (vi ? "Chọn kỹ năng" : "Choose a skill")}
-                          </strong>
-                          {triggered.length ? <small>→ {triggered.map((support) => gemChoiceLabel(support.skillId, skillGemOptions, "SkillGem", locale, support.nameSpec || "")).join(", ")}</small> : null}
-                          <span className="sk-badges">
-                            {/* Full cards edit level/quality below; compact ones only show them. */}
-                            {compact && skill.skillId ? <span className="sk-badge">Lv {skill.gemLevel ?? 20}</span> : null}
-                            {compact && skill.gemQuality ? <span className="sk-badge">Q {skill.gemQuality}%</span> : null}
-                            {grantedSkillTag(skill)}
-                            {skill.skillId ? gemOptionBadges(gemOptionFor(index), skill.pobAttrs, locale).map((badge) => <span className="sk-badge sk-badge--option" key={badge}>{badge}</span>) : null}
-                          </span>
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        className="sk-dps"
-                        onClick={() => setMainSocketGroup(index + 1)}
-                        aria-pressed={isMain}
-                        title={vi ? (isMain ? "Kỹ năng chính: chỉ số chi tiết tính theo kỹ năng này" : "Bấm để chọn làm kỹ năng chính") : "Set as main skill"}
-                      >
-                        <span className="sk-star material-symbols-rounded" aria-hidden="true">{isMain ? "star" : "star_outline"}</span>
-                        <b>{skill.disabled ? (vi ? "Tắt" : "Off") : dps === undefined ? (isCalculating ? "…" : "—") : dps > 0 ? formatStat(dps, "short") : "0"}</b>
-                        <small>
-                          {delta !== undefined ? <em className={delta > 0 ? "is-better" : "is-worse"}>{`${delta > 0 ? "+" : "−"}${Math.abs(delta * 100).toFixed(Math.abs(delta) < 0.1 ? 1 : 0)}%`}</em> : null}
-                          {perHitGroups.has(index) ? (vi ? "/đòn" : "per hit") : "DPS"}
-                        </small>
-                      </button>
-                    </div>
-                    {/* The real reason first: the equipped weapon does not fit the skill. */}
-                    {!skill.disabled && skill.skillId && !(dps !== undefined && dps > 0) && weaponHintFor(skill) ? (
-                      <p className="sk-hint sk-hint--weapon">{weaponHintFor(skill)}</p>
-                    ) : !skill.disabled && skill.skillId && dps === 0 && !compact && (gemOptionFor(index)?.statSets || gemOptionFor(index)?.parts) ? (
-                      <p className="sk-hint">
-                        {vi
-                          ? "0 sát thương ở lựa chọn hiện tại — kỹ năng này có nhiều bộ chỉ số/phần, thử đổi trong «Chi tiết»."
-                          : "No damage with the current choice — this skill has other stat sets/parts, try another under Details."}
-                      </p>
-                    ) : null}
-
-                    {/* A card never shows another skill's damage under its own name: when the number
-                        is not (only) this gem's own skill, each skill is listed by PoB's name. */}
-                    {cardDamageNeedsNames(damageLines) ? (
-                      <ul className="sk-lines poe-no-tooltip" aria-label={vi ? "Sát thương của từng kỹ năng trong nhóm" : "Damage of each skill in the group"}>
-                        {damageLines.map((line, lineIndex) => (
-                          <li key={`${line.name}:${lineIndex}`}>
-                            <span>{line.name}{line.minion ? <small> · minion</small> : null}</span>
-                            <b>{formatStat(line.value, "short")}</b>
-                            <small>{line.perHit ? (vi ? "/đòn" : "per hit") : "DPS"}</small>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                    {monsterLibrary && !compact ? (
-                      <MonsterPicker library={monsterLibrary} value={skill.pobAttrs?.skillMinion} onPick={pickMonster} locale={locale} />
-                    ) : null}
-                    {!compact && !skill.disabled ? familyConflicts.map((conflict) => {
-                      const names = conflict.gems.map((gem) => supportName(supports[gem]));
-                      const kept = supportName(supports[conflict.kept]);
-                      return (
-                        <p className="sk-hint sk-hint--warn" role="alert" key={conflict.gems.join("-")}>
-                          {vi
-                            ? `${names.join(" và ")} cùng một họ gem hỗ trợ: trong game mỗi kỹ năng chỉ dùng được một gem của họ này. PoB chỉ tính ${kept}; hãy gỡ gem còn lại.`
-                            : `${names.join(" and ")} are the same support family: only one of them works on a skill. PoB counts ${kept} only; remove the other.`}
-                        </p>
-                      );
-                    }) : null}
-
-                    {gemStripFor(skill.id, "main")}
-
-                    {!compact ? (
-                      <div className="sk-supports" role="list" aria-label={vi ? "Gem hỗ trợ" : "Supports"}>
-                        {supports.map((support) => {
-                          const supportIcon = support.skillId ? gemChoiceIcon(support.skillId, supportGemOptions, "SupportGem") : "";
-                          const label = support.skillId ? gemChoiceLabel(support.skillId, supportGemOptions, "SupportGem", locale, support.nameSpec || "") : (vi ? "Ô trống" : "Empty");
-                          const hovered = hoveredSupport?.skillId === skill.id && hoveredSupport.supportId === support.id;
-                          const keys = hovered ? hoveredSupport.keys : null;
-                          return (
-                            <span className={`sk-support ${support.disabled ? "is-disabled" : ""} ${supersededSupports.has(support.id) ? "is-superseded" : ""} ${gemStrip?.supportId === support.id ? "is-open" : ""}`} role="listitem" key={support.id}
-                              title={supersededSupports.has(support.id) ? (vi ? "Không có tác dụng: nhóm đã có gem khác cùng họ" : "No effect: another support of the same family is socketed") : undefined}
-                              onMouseEnter={() => setHoveredSupport({
-                                skillId: skill.id,
-                                supportId: support.id,
-                                // Queues "this group with and without the support" (one at a time, cached).
-                                keys: support.skillId && !support.disabled && !skill.disabled ? supportValueKeys(skill.id, support.id) : null
-                              })}
-                              onMouseLeave={() => setHoveredSupport(null)}
-                            >
-                              <button type="button" className="sk-support-gem" onClick={() => toggleGemStrip(skill.id, support.id)} aria-label={`${label} — ${vi ? "bấm để đổi" : "click to swap"}`}>
-                                {/* Initials stay underneath: they show when the icon is missing or fails to load. */}
-                                {support.skillId ? <span className="sk-support-initial" aria-hidden="true">{label.replace(/[^A-Za-z0-9 ]/g, "").split(" ").filter(Boolean).slice(0, 2).map((word) => word[0]).join("").toUpperCase()}</span> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
-                                {supportIcon ? <img src={supportIcon} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
-                              </button>
-                              <button type="button" className="sk-support-remove" onClick={() => removeSupportSkill(skill.id, support.id)} aria-label={vi ? `Gỡ ${label}` : `Remove ${label}`} title={vi ? "Gỡ gem này" : "Remove"}>
-                                <span className="material-symbols-rounded" aria-hidden="true">close</span>
-                              </button>
-                              {hovered ? (
-                                <span className="sk-support-tip" role="tooltip">
-                                  <b>{label}</b>
-                                  {support.gemLevel ? <small> · Lv {support.gemLevel}</small> : null}
-                                  {support.disabled ? <span className="sk-value">{vi ? "Đang tắt" : "Disabled"}</span> : keys ? <SupportValue queue={compareQueue} withKey={keys.withKey} withoutKey={keys.withoutKey} locale={locale} /> : null}
-                                </span>
-                              ) : null}
-                            </span>
-                          );
-                        })}
-                        {freeSockets > 0 ? (
-                          <button type="button" className="sk-support-add" onClick={() => addSupportSkill(skill.id)} title={vi ? "Thêm gem hỗ trợ (gợi ý theo DPS tăng thêm)" : "Add a support (ranked by DPS gain)"}>
-                            <span className="material-symbols-rounded" aria-hidden="true">add</span>
-                            <small>{vi ? `còn ${freeSockets} ô` : `${freeSockets} free`}</small>
-                          </button>
-                        ) : null}
-                      </div>
-                    ) : null}
-
-                    {gemStrip && gemStrip.skillId === skill.id && gemStrip.supportId !== "main" ? gemStripFor(skill.id, gemStrip.supportId) : null}
-
-                    <div className="sk-actions">
-                      {skill.skillId ? (
-                        <button
-                          type="button"
-                          className={`sk-toggle ${skill.disabled ? "" : "is-on"}`}
-                          onClick={() => updateBuildSkill(skill.id, { disabled: !skill.disabled })}
-                          aria-pressed={!skill.disabled}
-                          title={vi ? (skill.disabled ? "Nhóm đang tắt — bấm để bật lại" : "Tắt nhóm này (không tính vào chỉ số)") : "Enable / disable"}
-                        >
-                          <span className="material-symbols-rounded" aria-hidden="true">{skill.disabled ? "toggle_off" : "toggle_on"}</span>
-                          {skill.disabled ? (vi ? "Đang tắt" : "Off") : (vi ? "Đang bật" : "On")}
-                        </button>
-                      ) : null}
-                      {skill.skillId && !compact ? gemLevelControls(skill, (patch) => updateBuildSkill(skill.id, patch)) : null}
-                      <span className="sk-gap" />
-                      {skill.skillId ? (
-                        <button type="button" className="sk-link" onClick={() => setExpandedSkill(expanded ? null : skill.id)} aria-expanded={expanded}>
-                          {vi ? "Chi tiết" : "Details"}
-                          <span className="material-symbols-rounded" aria-hidden="true">{expanded ? "expand_less" : "expand_more"}</span>
-                        </button>
-                      ) : null}
-                      <button type="button" className="nj-icon-btn nj-icon-btn--danger" onClick={() => removeBuildSkill(skill.id)} title={vi ? "Xóa nhóm kỹ năng" : "Remove group"}>
-                        <span className="material-symbols-rounded" aria-hidden="true">delete</span>
-                      </button>
-                    </div>
-
-                    {expanded ? (
-                      <div className="sk-details">
-                        {details ? (
-                          <>
-                            {damageTotal > 0 ? (
-                              <div className="sk-damage">
-                                <i className="sk-damage-bar">
-                                  {damageParts.map(([cls, , value]) => <b className={cls} style={{ width: `${(value / damageTotal) * 100}%` }} key={cls} />)}
-                                </i>
-                                <span>{damageParts.map(([cls, label, value]) => <span className={cls.replace("nj-dps-", "nj-c-")} key={cls}>{label} {Math.round((value / damageTotal) * 100)}%</span>)}</span>
-                              </div>
-                            ) : null}
-                            <dl className="sk-facts">
-                              {Number(details.Speed) > 0 ? <><dt>{vi ? "Tốc độ" : "Speed"}</dt><dd>{formatStat(Number(details.Speed), "speed")}</dd></> : null}
-                              {Number(details.CritChance) > 0 ? <><dt>{vi ? "Chí mạng" : "Crit"}</dt><dd>{formatStat(Number(details.CritChance), "pct1")}</dd></> : null}
-                              {details.HitChance !== undefined ? <><dt>{vi ? "Trúng" : "Hit"}</dt><dd>{formatStat(Number(details.HitChance), "pct")}</dd></> : null}
-                              {Number(details.AverageDamage) > 0 ? <><dt>{vi ? "Mỗi đòn" : "Per hit"}</dt><dd>{formatStat(Number(details.AverageDamage), "short")}</dd></> : null}
-                              {Number(details.ManaCost) > 0 ? <><dt>Mana</dt><dd>{formatStat(Number(details.ManaCost), "int")}</dd></> : null}
-                            </dl>
-                          </>
-                        ) : (
-                          <p className="sk-note">{vi ? "Bấm số DPS (ngôi sao) để chọn làm kỹ năng chính và xem chi tiết sát thương." : "Make it the main skill to see its damage breakdown."}</p>
-                        )}
-                        {/* Granted skills (from an item or passive) are not gems you can corrupt. */}
-                        {hasGemChoices(gemOptionFor(index)) || !(skill.itemSlot || skill.itemSource || gemOptionFor(index)?.grantedSkill) ? (
-                          <div className="gx-main">
-                            <span className="gx-title">
-                              {vi ? "Tuỳ chọn gem" : "Gem options"}
-                              <small>{vi ? " — như trong PoB, đổi là tính lại" : " — as in PoB, recalculates on change"}</small>
-                            </span>
-                            <GemOptionControls option={gemOptionFor(index)} attrs={skill.pobAttrs} locale={locale} corrupt={!(skill.itemSlot || skill.itemSource)} hideMinions={Boolean(monsterLibrary)}
-                              onChange={(change: GemOptionChange) => updateBuildSkill(skill.id, { pobAttrs: withGemOption(skill.pobAttrs, change) })} />
-                          </div>
-                        ) : null}
-                        {skill.supportSkills.length ? (
-                          <ul className="sk-gem-list">
-                            {skill.supportSkills.map((support) => {
-                              const options = support.active ? skillGemOptions : supportGemOptions;
-                              const prefix = support.active ? "SkillGem" : "SupportGem";
-                              return (
-                                <li key={support.id} className={support.disabled ? "is-disabled" : ""}>
-                                  <span>{support.skillId ? gemChoiceLabel(support.skillId, options, prefix, locale, support.nameSpec || "") : (vi ? "Ô trống" : "Empty")}{support.active ? <small> · {vi ? "kỹ năng" : "skill"}</small> : null}</span>
-                                  {support.skillId ? gemLevelControls(support, (patch) => updateSupportSkill(skill.id, support.id, patch)) : null}
-                                  {support.skillId ? (
-                                    <GemOptionControls option={gemOptionFor(index, support.id)} attrs={support.pobAttrs} locale={locale} corrupt={Boolean(support.active)}
-                                      onChange={(change: GemOptionChange) => updateSupportSkill(skill.id, support.id, { pobAttrs: withGemOption(support.pobAttrs, change) })} />
-                                  ) : null}
-                                  {support.skillId ? (
-                                    <button type="button" className={`nj-icon-btn ${support.disabled ? "" : "is-on"}`} onClick={() => updateSupportSkill(skill.id, support.id, { disabled: !support.disabled })} aria-pressed={!support.disabled} title={vi ? "Bật / tắt gem" : "Enable / disable"}>
-                                      <span className="material-symbols-rounded" aria-hidden="true">{support.disabled ? "toggle_off" : "toggle_on"}</span>
-                                    </button>
-                                  ) : null}
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </article>
-                );
-              };
-              return (
-                <>
-                  <div className="sk-grid">{arranged.primary.map((index) => renderCard(index))}</div>
-                  {arranged.secondary.length ? (
-                    <details className="sk-secondary">
-                      <summary>
-                        {vi ? `Kỹ năng phụ (${arranged.secondary.length})` : `Other skills (${arranged.secondary.length})`}
-                        <small>{vi ? " — aura, buff, kỹ năng không gây sát thương và nhóm đang tắt" : " — auras, buffs, no-damage and disabled groups"}</small>
-                      </summary>
-                      <div className="sk-grid sk-grid--compact">{arranged.secondary.map((index) => renderCard(index, true))}</div>
-                    </details>
-                  ) : null}
-                </>
-              );
-            })() : (
+            {buildSkills.length ? (
+              <BuildSkillPanel
+                buildSkills={buildSkills}
+                foldedGroups={foldedGroups}
+                currentGroupDps={currentGroupDps}
+                previousGroupDps={previousGroupDps}
+                perHitGroups={perHitGroups}
+                groupDamageLines={groupDamageLines}
+                mainSocketGroup={mainSocketGroup}
+                activeWeaponSet={activeWeaponSet}
+                activeStats={activeStats}
+                isCalculating={isCalculating}
+                locale={locale}
+                openSkillId={expandedSkill}
+                onOpenSkillChange={setExpandedSkill}
+                modalOpen={Boolean(activeModal || activeGemPicker || buildDialog || showBuildHelp || pobImportOpen || editorTarget || newItemOpen || explainStat)}
+                compareQueue={compareQueue}
+                activeGemStrip={gemStrip}
+                renderGemStrip={gemStripFor}
+                resolveSkillGem={(skill) => {
+                  const record = skill.skillId ? gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem") : undefined;
+                  return {
+                    label: skill.skillId
+                      ? monsterGemTitle(skill) || gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "Empty")
+                      : (locale === "vi" ? "Chọn kỹ năng" : "Choose a skill"),
+                    icon: skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "",
+                    description: record ? localizedText(record.i18n?.summary, record.summary_en ?? "", locale) : "",
+                    color: record?.color
+                  };
+                }}
+                resolveSupportGem={(support) => {
+                  const options = support.active ? skillGemOptions : supportGemOptions;
+                  const prefix = support.active ? "SkillGem" : "SupportGem";
+                  const record = support.skillId ? gemChoiceItem(support.skillId, options, prefix) : undefined;
+                  return {
+                    label: support.skillId
+                      ? gemChoiceLabel(support.skillId, options, prefix, locale, support.nameSpec || "")
+                      : (locale === "vi" ? "Ô trống" : "Empty"),
+                    icon: support.skillId ? gemChoiceIcon(support.skillId, options, prefix) : "",
+                    rawName: support.nameSpec || record?.name,
+                    color: record?.color
+                  };
+                }}
+                weaponHintFor={weaponHintFor}
+                grantedSkillTag={grantedSkillTag}
+                gemOptionFor={gemOptionFor}
+                gemLevelControls={gemLevelControls}
+                supportValueKeys={supportValueKeys}
+                onSelectMain={setMainSocketGroup}
+                onOpenSkillGemPicker={openSkillGemPicker}
+                onToggleGemStrip={toggleGemStrip}
+                onUpdateSkill={updateBuildSkill}
+                onRemoveSkill={removeBuildSkill}
+                onAddSupport={addSupportSkill}
+                onUpdateSupport={updateSupportSkill}
+                onRemoveSupport={removeSupportSkill}
+                onHoverMainGem={(skill, event) => {
+                  if (!skill.skillId) return;
+                  const html = getGemTooltipHtml(skill.skillId, skillGemOptions, "SkillGem", locale, skill.note);
+                  if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
+                }}
+                onMoveTooltip={handleMouseMove}
+                onLeaveTooltip={handleMouseLeave}
+              />
+            ) : (
               <div className="build-empty" style={{ padding: "24px" }}>
                 <span className="material-symbols-rounded" style={{ fontSize: "36px" }}>auto_awesome_motion</span>
                 <p>{localizedText(copy.noSkills, "", locale)}</p>
@@ -4035,33 +3821,43 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        {/* Row: detailed numbers from Path of Building | the conditions it assumes */}
-        <div className="nj-row nj-row--calc">
-          <section className="nj-panel nj-calc-details">
-            <header className="nj-panel-head">
-              <h2>{locale === "vi" ? "Chỉ số chi tiết" : "Detailed stats"}</h2>
-              <span className="nj-panel-aside">{isCalculating ? (locale === "vi" ? "Đang tính..." : "Calculating...") : (locale === "vi" ? "Tính bằng Path of Building" : "Calculated by Path of Building")}</span>
-            </header>
-            <div className="nj-panel-body">
-              <BuildSummonStats stats={activeStats} previous={previousStats} locale={locale} />
-              <BuildStatDetails stats={activeStats} previous={previousStats} locale={locale} calculating={isCalculating} onExplain={setExplainStat} />
-            </div>
-          </section>
-          <section className="nj-panel nj-calc-config">
-            <header className="nj-panel-head">
-              <h2>{locale === "vi" ? "Điều kiện tính" : "Conditions"}</h2>
-            </header>
-            <div className="nj-panel-body">
-              <BuildConfigPanel
-                inputs={effectiveConfigInputs}
-                onChange={setConfigInputs}
-                onReset={() => setConfigInputs(null)}
-                changed={configInputs !== null}
-                locale={locale}
-              />
-            </div>
+        {/* Build inventory ("Kho đồ") */}
+        <section className="nj-panel nj-inventory" aria-label={locale === "vi" ? "Kho đồ" : "Inventory"}>
+          <div className="nj-panel-body">
+            <BuildInventoryPanel
+              locale={locale}
+              items={stashViews}
+              selectedSlotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined}
+              selectedSlotFilled={Boolean(activeSlotId && inventoryBySlot.get(activeSlotId)?.itemName)}
+              onClearSlot={() => setActiveSlotId(null)}
+              onUnequipSelected={() => activeSlotId && unequipItem(activeSlotId)}
+              onItemClick={clickStashItem}
+              onItemEnter={enterStashItem}
+              onItemMove={handleMouseMove}
+              onItemLeave={handleMouseLeave}
+              onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
+              onEdit={editStashItem}
+              onDuplicate={(itemId) => setStash((rows) => duplicateStashItem(rows, itemId))}
+              onNewItem={openNewItem}
+              onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
+              onDropSlot={unequipItem}
+              onPasteText={pasteStashText}
+              slotChoice={slotChoice ? {
+                itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
+                slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
+              } : null}
+              onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
+              onCancelChoice={() => setSlotChoice(null)}
+              onItemDragStart={(itemId) => {
+                const item = stash.find((row) => row.id === itemId);
+                if (item && isJewelText(item.rawText || "", item.baseName)) setDraggedJewelId(itemId);
+              }}
+              onItemDragEnd={() => setDraggedJewelId(null)}
+            />
+          </div>
+        </section>
 
-        {/* Name and author: a slim full-width row at the end, so the tree above gets the whole width. */}
+        {/* Name and author: slim footer row */}
         <section className="nj-panel nj-info nj-info--row">
           <header className="nj-panel-head">
             <h2>{localizedText(copy.details, "", locale)}</h2>
@@ -4078,8 +3874,62 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             <p className="nj-info-hint">{localizedText(copy.howStepDownload, "", locale)} {localizedText(copy.howStepSave, "", locale)} <code>Documents\My Games\Path of Exile 2\BuildPlanner\</code></p>
           </div>
         </section>
-          </section>
-        </div>
+
+        {/* Popups: Passive Tree (only mounted while open), Conditions, Detailed Stats */}
+        <BuildModal
+          open={activeModal === "tree"}
+          size="large"
+          title={locale === "vi" ? "Cây thụ động" : "Passive tree"}
+          badge={`${formatNumber(treePoints(buildTree), locale)} ${locale === "vi" ? "điểm" : "pts"}`}
+          subtitle={buildTree ? `${buildTree.className}${buildTree.ascendancyName ? ` / ${buildTree.ascendancyName}` : ""}` : undefined}
+          onClose={() => setActiveModal(null)}
+          returnFocusRef={treeBtnRef}
+          bodyClassName="bm-body--tree"
+          locale={locale}
+        >
+          {activeModal === "tree" ? linkedTreeCard : null}
+        </BuildModal>
+
+        <BuildModal
+          open={activeModal === "config"}
+          size="wide"
+          title={locale === "vi" ? "Điều kiện tính" : "Conditions"}
+          subtitle={isCalculating ? (locale === "vi" ? "Đang tính..." : "Calculating...") : (locale === "vi" ? "Đổi là tính lại ngay" : "Recalculates live")}
+          onClose={() => setActiveModal(null)}
+          returnFocusRef={configBtnRef}
+          locale={locale}
+        >
+          {activeModal === "config" ? (
+            <BuildConfigPanel
+              inputs={effectiveConfigInputs}
+              onChange={setConfigInputs}
+              onReset={() => setConfigInputs(null)}
+              changed={configInputs !== null}
+              locale={locale}
+            />
+          ) : null}
+        </BuildModal>
+
+        <BuildModal
+          open={activeModal === "stats"}
+          size="wide"
+          title={locale === "vi" ? "Chỉ số chi tiết" : "Detailed stats"}
+          subtitle={isCalculating ? (locale === "vi" ? "Đang tính..." : "Calculating...") : (locale === "vi" ? "Tính bằng Path of Building" : "Calculated by Path of Building")}
+          disableEscape={Boolean(explainStat)}
+          onClose={() => {
+            setExplainStat(null);
+            setActiveModal(null);
+          }}
+          returnFocusRef={statsBtnRef}
+          locale={locale}
+        >
+          {activeModal === "stats" ? (
+            <>
+              <BuildSummonStats stats={activeStats} previous={previousStats} locale={locale} />
+              <BuildStatDetails stats={activeStats} previous={previousStats} locale={locale} calculating={isCalculating} onExplain={setExplainStat} />
+            </>
+          ) : null}
+        </BuildModal>
       </section>
       )}
 
