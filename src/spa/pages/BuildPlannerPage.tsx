@@ -49,7 +49,6 @@ import {
   readCurrentTreeSnapshot,
   readSavedBuildProjects,
   readSavedTreeSnapshots,
-  saveTreeSnapshot,
   saveBuildProject,
   skillChoicesFromBuildPayload,
   treePicksFromPobImport,
@@ -85,7 +84,6 @@ import {
   SLOT_DRAG_TYPE,
   SupportValue,
   STASH_DRAG_TYPE,
-  type CatalogEntry,
   type CompareSpec,
   type GemOptionView,
   type StashItemView
@@ -116,7 +114,6 @@ import { buildWarnings, freeAllocatedNames, itemLevelRequirement, type WarningGe
 import { isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
 import { skillWeaponHint } from "../lib/skillWeapon";
 import { treePointsSpent } from "../lib/treePoints";
-import { countMatches, searchItems } from "../lib/itemSearch";
 import { applyLocalMods } from "../lib/itemLocalStats";
 import { CalcQueue, calcKey } from "../lib/calcQueue";
 import { useNodePreview } from "../lib/useNodePreview";
@@ -430,10 +427,6 @@ function preferredWeaponSet(rows: BuildInventoryChoice[]): 1 | 2 {
   const hasSetOne = rows.some((row) => (row.inventoryId === "Weapon1" || row.inventoryId === "Weapon2") && row.itemName.trim());
   const hasSetTwo = rows.some((row) => (row.inventoryId === "Weapon3" || row.inventoryId === "Weapon4") && row.itemName.trim());
   return !hasSetOne && hasSetTwo ? 2 : 1;
-}
-
-function defaultBuildTree(currentTree: BuildTreeSnapshot | null): BuildTreeSnapshot | null {
-  return currentTree;
 }
 
 function itemTitle(item: ItemRecord, _locale: Locale | "en" = "en"): string {
@@ -1158,7 +1151,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [levelText, setLevelText] = useState(String(DEFAULT_CHARACTER_LEVEL));
   // Classes and start nodes, from the passive tree data the tree itself shows.
   const [classTree, setClassTree] = useState<PassiveTreeModel | null>(null);
-  const [classPickerOpen, setClassPickerOpen] = useState(false);
   const [pickedClass, setPickedClass] = useState("");
   const [pickedAscendancy, setPickedAscendancy] = useState("");
   const classPickerRef = useRef<HTMLDivElement | null>(null);
@@ -2534,7 +2526,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setLiveStats(null);
     setMainSocketGroup(1);
     applyLevel(DEFAULT_CHARACTER_LEVEL);
-    setClassPickerOpen(false);
     setTreeChoicesOpen(false);
   };
 
@@ -2568,7 +2559,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     } : null);
     setImportError("");
     setTreeChoicesOpen(false);
-    setClassPickerOpen(false);
     applyLevel(buildCharacterLevel(project));
     setLiveStats(null);
     const msg = project.importedPayload?.mainSocketGroup || project.importedPayload?.build?.mainSocketGroup || 1;
@@ -2692,7 +2682,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     if (!description.trim()) {
       setDescription(`${snapshot.className}${snapshot.ascendancyName ? ` - ${snapshot.ascendancyName}` : ""}`);
     }
-    setClassPickerOpen(false);
     setTreeChoicesOpen(false);
   };
 
@@ -2809,7 +2798,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setBuildSkills(nextSkills);
     setStash(nextStash);
     setTreeChoicesOpen(false);
-    setClassPickerOpen(false);
     // An imported build keeps its own level.
     applyLevel(characterLevel(payload.level) ?? DEFAULT_CHARACTER_LEVEL);
     moveTo(saved ? `/build/${encodeURIComponent(project.id)}` : "/build/new");
@@ -3462,11 +3450,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   const filled = Boolean(choice?.itemName);
                   const fitting = stashViews.filter((view) => view.fits).length;
                   // The slot stays selected (the inventory filters to it); only the menu closes.
-                  const toInventory = (focusSearch: boolean) => {
+                  const toInventory = () => {
                     setSlotMenuAt(null);
                     const panel = document.querySelector<HTMLElement>(".nj-inventory");
                     panel?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    if (focusSearch) window.setTimeout(() => panel?.querySelector<HTMLInputElement>(".pi-search input")?.focus({ preventScroll: true }), 350);
                   };
                   return (
                     <div className="build-slot-menu" role="menu" aria-label={slotLabel(activeSlotId)} style={{ left: slotMenuAt.left, top: slotMenuAt.top, minWidth: Math.max(180, slotMenuAt.width) }}>
@@ -3487,12 +3474,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                           </button>
                         </>
                       ) : null}
-                      <button type="button" role="menuitem" onClick={() => toInventory(false)} disabled={!fitting}>
+                      <button type="button" role="menuitem" onClick={toInventory} disabled={!fitting}>
                         <span className="material-symbols-rounded" aria-hidden="true">inventory_2</span>
                         {vi ? (fitting ? `Chọn từ kho (${fitting} món vừa ô này)` : "Kho chưa có món vừa ô này") : (fitting ? `Pick from inventory (${fitting})` : "Nothing in the inventory fits")}
                       </button>
-                      <button type="button" role="menuitem" onClick={() => toInventory(true)}>
-                        <span className="material-symbols-rounded" aria-hidden="true">search</span>{vi ? "Tìm đồ mới cho ô này" : "Find an item for this slot"}
+                      <button type="button" role="menuitem" onClick={() => { setSlotMenuAt(null); openNewItem(); }}>
+                        <span className="material-symbols-rounded" aria-hidden="true">add_box</span>{vi ? "Tạo đồ mới cho ô này" : "Create item for this slot"}
                       </button>
                     </div>
                   );
