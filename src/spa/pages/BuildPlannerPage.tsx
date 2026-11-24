@@ -63,12 +63,15 @@ import {
   type PobConfigInput,
   type BuildStashItem
 } from "../lib/buildPlanner";
-import { arrangeSkillCards, formatStat, groupDamageByRow, groupDamageValue, pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
+import { arrangeSkillCards, cardDamageLines, cardDamageNeedsNames, cardDamageOwners, foldedGrantedGroups, formatStat, groupDamageByRow, groupDamageValue, pobItemTextFromRecord, resistanceText, skillDpsByGroup, stampedStatsUsable, type PobSkillDps } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { pobGemId } from "../../server/pob-gem-ids.mjs";
+import { supportFamilyConflicts } from "../../server/pob-gem-families.mjs";
+import { monsterGemTitle, monsterLibraryOf } from "../../server/pob-monster-gems.mjs";
+import type { MonsterGemPatch } from "../../server/pob-monsters.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
-import { BuildSummonStats, GemOptionControls, gemOptionBadges } from "../components/BuildGemOptions";
+import { BuildSummonStats, GemOptionControls, MonsterPicker, gemOptionBadges } from "../components/BuildGemOptions";
 import { hasGemChoices, plannerGemTargets, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
 import { mainSkillDps } from "../lib/summonStats";
 import {
@@ -1360,6 +1363,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const currentGroupDps = useMemo(() => groupDpsIn(activeStats), [groupDpsIn, activeStats]);
   const previousGroupDps = useMemo(() => groupDpsIn(previousStats), [groupDpsIn, previousStats]);
   const groupSkillDps = useMemo(() => (currentGroupDps ?? []).map((value) => value ?? 0), [currentGroupDps]);
+  // Whose damage each card's number is (PoB's own skill names), and the item-granted
+  // groups PoB folds into the player's group for the same skill (one card for the two).
+  const groupDamage = useMemo(() => groupDamageByRow(activeStats?.GroupDPS, buildSkills), [activeStats, buildSkills]);
+  const groupDamageLines = useMemo(() => buildSkills.map((_, index) => cardDamageLines(groupDamage?.[index])), [groupDamage, buildSkills]);
+  const foldedGroups = useMemo(() => foldedGrantedGroups(buildSkills, mainSocketGroup - 1), [buildSkills, mainSocketGroup]);
   // Choices PoB offers per gem (stat set, skill part, minion...), from the last calculation.
   const gemTargets = useMemo(() => plannerGemTargets(activeStats?.GemOptions, buildSkills), [activeStats, buildSkills]);
   const gemOptionFor = (group: number, supportId?: string): PobGemOptions | undefined =>
@@ -2953,9 +2961,13 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <div>
                 <span>DPS</span>
                 <strong>
+                  {/* The main skill's card number (one source for header and card). The number stamped in
+                      a PoB code comes from another PoB version: it is only shown when ours gave no answer. */}
                   {activeStats && activeStats.CombinedDPS !== undefined
-                    ? Math.round(((activeStats.skillsDps && activeStats.skillsDps[mainSocketGroup - 1]) || mainSkillDps(activeStats))).toLocaleString("en-US")
-                    : (getBaseDps() ? Math.round(getBaseDps()).toLocaleString("en-US") : "—")}
+                    ? Math.round(groupSkillDps[mainSocketGroup - 1] || mainSkillDps(activeStats)).toLocaleString("en-US")
+                    : stampedStatsUsable({ calculated: Boolean(activeStats), calculating: isCalculating, failed: Boolean(calcError) }) && getBaseDps()
+                      ? Math.round(getBaseDps()).toLocaleString("en-US")
+                      : (importedBuild?.payload && !calcError ? "…" : "—")}
                 </strong>
               </div>
               <div>
@@ -3157,7 +3169,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               {!isCalculating && calcError ? <span className="nj-panel-aside nj-calc-error" role="alert">{calcError}</span> : null}
             </header>
             {(() => {
-              const payloadStats = importedBuild?.payload?.stats || [];
+              // Numbers stamped in the PoB code are a fallback for when the calculator gave no answer
+              // (they come from another PoB version and would change once ours arrives).
+              const payloadStats = stampedStatsUsable({ calculated: Boolean(activeStats), calculating: isCalculating, failed: Boolean(calcError) })
+                ? importedBuild?.payload?.stats || []
+                : [];
               const readStat = (key: string): number | undefined => {
                 if (activeStats && typeof activeStats[key] === "number") return activeStats[key];
                 const row = payloadStats.find((s) => s.stat === key);
@@ -3211,7 +3227,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               const esRecharge = readStat("EnergyShieldRecharge");
               const mainSkills = buildSkills
                 .map((skill, index) => ({ skill, index, dps: skillDps(index), details: activeStats?.skillsDetails?.[index] }))
-                .filter((entry) => entry.skill.skillId && (entry.dps > 0 || entry.index + 1 === mainSocketGroup))
+                .filter((entry) => entry.skill.skillId && !foldedGroups.has(entry.index) && (entry.dps > 0 || entry.index + 1 === mainSocketGroup))
                 // Main skill first, then the hardest hitting.
                 .sort((a, b) => Number(b.index + 1 === mainSocketGroup) - Number(a.index + 1 === mainSocketGroup) || b.dps - a.dps);
               return (
@@ -3238,7 +3254,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     { cls: "nj-c-fire", value: fire === undefined ? undefined : `${Math.round(fire)}%` },
                     { cls: "nj-c-cold", value: cold === undefined ? undefined : `${Math.round(cold)}%` },
                     { cls: "nj-c-lightning", value: lightning === undefined ? undefined : `${Math.round(lightning)}%` },
-                    { cls: "nj-c-chaos", value: chaos === undefined ? undefined : `${Math.round(chaos)}%` }
+                    // As PoB shows it: "Immune" with Chaos Inoculation.
+                    { cls: "nj-c-chaos", value: resistanceText(activeStats, "ChaosResist", locale, chaos) }
                   ]))}
                   {row(locale === "vi" ? "Máu hiệu dụng (EHP)" : "Effective Health Pool", readStat("TotalEHP") === undefined ? undefined : fmtShort(readStat("TotalEHP") as number))}
 
@@ -3281,9 +3298,13 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         </span>
                         <span className="nj-main-skill-copy">
                           <strong>
-                            {gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty")}
-                            {/* Meta gems (Cast on X): name the spell that does the damage. */}
-                            {skill.supportSkills.filter((support) => support.active && !support.disabled).slice(0, 1).map((support) => (
+                            {monsterGemTitle(skill) || gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, "Empty")}
+                            {/* Whose damage the number is, in PoB's names, when it is not this gem's own skill:
+                                the spells in Cast on X, a skill the gem or one of its supports grants. */}
+                            {cardDamageNeedsNames(groupDamageLines[index] ?? []) ? (
+                              <span className="nj-main-skill-sub"> → {cardDamageOwners(groupDamageLines[index])}</span>
+                            ) : groupDamage ? null : skill.supportSkills.filter((support) => support.active && !support.disabled).slice(0, 1).map((support) => (
+                              // Older calculator (no per-skill names): the first socketed spell.
                               <span className="nj-main-skill-sub" key={support.id}> → {gemChoiceLabel(support.skillId, skillGemOptions, "SkillGem", locale, support.nameSpec || "")}</span>
                             ))}
                           </strong>
@@ -3388,8 +3409,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 disabled: Boolean(skill.disabled),
                 dps: currentGroupDps?.[index],
                 isMain: index + 1 === mainSocketGroup,
-                hasChoices: hasGemChoices(gemOptionFor(index))
-              })));
+                // A Companion / Spectre gem without a monster deals 0: keep it in view to pick one.
+                hasChoices: hasGemChoices(gemOptionFor(index)) || Boolean(skill.skillId && monsterLibraryOf(skill))
+              })).filter((card) => !foldedGroups.has(card.index)));
               const renderCard = (index: number, compact = false) => {
                 const skill = buildSkills[index];
                 const isMain = index + 1 === mainSocketGroup;
@@ -3401,6 +3423,20 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 const supports = skill.supportSkills.filter((support) => !support.active);
                 const freeSockets = Math.max(0, 5 - supports.length);
                 const expanded = expandedSkill === skill.id;
+                // The skills the card's number belongs to, by PoB's names.
+                const damageLines = skill.disabled ? [] : groupDamageLines[index] ?? [];
+                // Companion / Spectre gems pick their monster on the card.
+                const monsterLibrary = skill.skillId ? monsterLibraryOf(skill) : null;
+                const pickMonster = (monsterId: string, gem: MonsterGemPatch) =>
+                  updateBuildSkill(skill.id, { ...gem, pobAttrs: withGemOption(skill.pobAttrs, { kind: "minion", value: monsterId }) });
+                // Two supports of one family on a skill: only one works (PoB counts the later one).
+                const supportName = (support: BuildSupportSkillChoice) => gemChoiceLabel(support.skillId, supportGemOptions, "SupportGem", locale, support.nameSpec || "");
+                const familyConflicts = supportFamilyConflicts(supports.map((support) => ({
+                  id: support.pobGemId || support.skillId,
+                  name: support.nameSpec || gemChoiceItem(support.skillId, supportGemOptions, "SupportGem")?.name,
+                  disabled: Boolean(support.disabled) || !support.skillId
+                })));
+                const supersededSupports = new Set(familyConflicts.flatMap((conflict) => conflict.gems.filter((gem) => gem !== conflict.kept).map((gem) => supports[gem].id)));
                 const details = isMain && activeStats ? activeStats : null;
                 const damageParts = details ? ([
                   ["nj-dps-phys", vi ? "Vật lý" : "Physical", (Number(details.PhysicalMin) + Number(details.PhysicalMax)) / 2],
@@ -3431,7 +3467,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         </span>
                         <span className="sk-name">
                           <strong className={skill.skillId ? "" : "is-empty"}>
-                            {skill.skillId ? gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "Empty") : (vi ? "Chọn kỹ năng" : "Choose a skill")}
+                            {skill.skillId ? monsterGemTitle(skill) || gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "Empty") : (vi ? "Chọn kỹ năng" : "Choose a skill")}
                           </strong>
                           {triggered.length ? <small>→ {triggered.map((support) => gemChoiceLabel(support.skillId, skillGemOptions, "SkillGem", locale, support.nameSpec || "")).join(", ")}</small> : null}
                           <span className="sk-badges">
@@ -3466,6 +3502,34 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       </p>
                     ) : null}
 
+                    {/* A card never shows another skill's damage under its own name: when the number
+                        is not (only) this gem's own skill, each skill is listed by PoB's name. */}
+                    {cardDamageNeedsNames(damageLines) ? (
+                      <ul className="sk-lines poe-no-tooltip" aria-label={vi ? "Sát thương của từng kỹ năng trong nhóm" : "Damage of each skill in the group"}>
+                        {damageLines.map((line, lineIndex) => (
+                          <li key={`${line.name}:${lineIndex}`}>
+                            <span>{line.name}{line.minion ? <small> · minion</small> : null}</span>
+                            <b>{formatStat(line.value, "short")}</b>
+                            <small>{line.perHit ? (vi ? "/đòn" : "per hit") : "DPS"}</small>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {monsterLibrary && !compact ? (
+                      <MonsterPicker library={monsterLibrary} value={skill.pobAttrs?.skillMinion} onPick={pickMonster} locale={locale} />
+                    ) : null}
+                    {!compact && !skill.disabled ? familyConflicts.map((conflict) => {
+                      const names = conflict.gems.map((gem) => supportName(supports[gem]));
+                      const kept = supportName(supports[conflict.kept]);
+                      return (
+                        <p className="sk-hint sk-hint--warn" role="alert" key={conflict.gems.join("-")}>
+                          {vi
+                            ? `${names.join(" và ")} cùng một họ gem hỗ trợ: trong game mỗi kỹ năng chỉ dùng được một gem của họ này. PoB chỉ tính ${kept}; hãy gỡ gem còn lại.`
+                            : `${names.join(" and ")} are the same support family: only one of them works on a skill. PoB counts ${kept} only; remove the other.`}
+                        </p>
+                      );
+                    }) : null}
+
                     {gemStripFor(skill.id, "main")}
 
                     {!compact ? (
@@ -3476,7 +3540,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                           const hovered = hoveredSupport?.skillId === skill.id && hoveredSupport.supportId === support.id;
                           const keys = hovered ? hoveredSupport.keys : null;
                           return (
-                            <span className={`sk-support ${support.disabled ? "is-disabled" : ""} ${gemStrip?.supportId === support.id ? "is-open" : ""}`} role="listitem" key={support.id}
+                            <span className={`sk-support ${support.disabled ? "is-disabled" : ""} ${supersededSupports.has(support.id) ? "is-superseded" : ""} ${gemStrip?.supportId === support.id ? "is-open" : ""}`} role="listitem" key={support.id}
+                              title={supersededSupports.has(support.id) ? (vi ? "Không có tác dụng: nhóm đã có gem khác cùng họ" : "No effect: another support of the same family is socketed") : undefined}
                               onMouseEnter={() => setHoveredSupport({
                                 skillId: skill.id,
                                 supportId: support.id,
@@ -3570,7 +3635,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                               {vi ? "Tuỳ chọn gem" : "Gem options"}
                               <small>{vi ? " — như trong PoB, đổi là tính lại" : " — as in PoB, recalculates on change"}</small>
                             </span>
-                            <GemOptionControls option={gemOptionFor(index)} attrs={skill.pobAttrs} locale={locale} corrupt={!(skill.itemSlot || skill.itemSource)}
+                            <GemOptionControls option={gemOptionFor(index)} attrs={skill.pobAttrs} locale={locale} corrupt={!(skill.itemSlot || skill.itemSource)} hideMinions={Boolean(monsterLibrary)}
                               onChange={(change: GemOptionChange) => updateBuildSkill(skill.id, { pobAttrs: withGemOption(skill.pobAttrs, change) })} />
                           </div>
                         ) : null}

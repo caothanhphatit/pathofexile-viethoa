@@ -1,6 +1,6 @@
 // Skill-card gem choices that Path of Building offers (stat set, skill part, stages,
 // minion type, minion skill, corruption) and the minion / totem stat sheet.
-import { Fragment } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 
 import { formatStat, statChange, formatStatChange } from "../lib/buildStats";
 import {
@@ -14,6 +14,8 @@ import {
   type PobGemOptions
 } from "../lib/gemOptions";
 import { MINION_RESISTANCES, summonSheets } from "../lib/summonStats";
+import type { MonsterLibrary } from "../../server/pob-monster-gems.mjs";
+import type { MonsterGemPatch } from "../../server/pob-monsters.mjs";
 import "../styles/planner-calc.css";
 import "../styles/planner-gems.css";
 
@@ -32,6 +34,8 @@ const HINTS = {
   part: "Kỹ năng gồm nhiều phần; PoB tính DPS theo phần được chọn.",
   stages: "Số tầng (stage) đang tích được; nhiều tầng thường mạnh hơn.",
   minion: "Loại minion kỹ năng gọi ra. PoB tính chỉ số minion theo loại này.",
+  beast: "Con thú đã thuần (Tame Beast) đi theo bạn. Sát thương, máu và Spirit giữ chỗ của companion tính theo đúng loài thú này.",
+  spectre: "Quái vật đã trói hồn (Bind Spectre). Sát thương, máu và Spirit giữ chỗ của spectre tính theo đúng loài quái này.",
   minionSkill: "Kỹ năng của minion mà PoB dùng để tính sát thương minion.",
   corrupt: "Gem đã corrupt bằng Vaal Orb: +1 hoặc −1 cấp gem, hoặc chỉ bị khoá không đổi cấp."
 };
@@ -53,16 +57,90 @@ function Select({ label, hint, value, options, onChange }: {
   );
 }
 
+type MonsterModule = typeof import("../../server/pob-monsters.mjs");
+let monsterModule: Promise<MonsterModule> | null = null;
+/** PoB's monster list, fetched the first time a selector is shown. */
+const loadMonsters = () => (monsterModule ??= import("../../server/pob-monsters.mjs").catch((error) => {
+  monsterModule = null;
+  throw error;
+}));
+
+/**
+ * The monster of a Companion / Spectre gem (Tame Beast, Bind Spectre): PoB's own list,
+ * its recommended picks first, with a name filter. Picking one hands back the monster id
+ * (the gem's skillMinion) and the gem fields that make it PoB's "Companion: <monster>" /
+ * "Spectre: <monster>" gem.
+ */
+export function MonsterPicker({ library, value, onPick, locale }: {
+  library: MonsterLibrary;
+  /** The picked monster id (pobAttrs.skillMinion), if any. */
+  value?: string;
+  onPick: (monsterId: string, gem: MonsterGemPatch) => void;
+  locale: string;
+}) {
+  const vi = locale === "vi";
+  const [data, setData] = useState<MonsterModule | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [query, setQuery] = useState("");
+  useEffect(() => {
+    let live = true;
+    loadMonsters().then((module) => { if (live) setData(module); }).catch(() => { if (live) setFailed(true); });
+    return () => { live = false; };
+  }, []);
+  const monsters = useMemo(() => (data ? data.monstersForLibrary(library) : []), [data, library]);
+  const current = data && value ? data.monsterById(value) : null;
+  const needle = query.trim().toLowerCase();
+  const shown = needle ? monsters.filter((monster) => monster.name.toLowerCase().includes(needle)) : monsters;
+  const recommended = data ? shown.filter((monster) => data.isRecommendedMonster(monster, library)) : [];
+  const others = data ? shown.filter((monster) => !data.isRecommendedMonster(monster, library)) : [];
+  const label = library === "beast" ? (vi ? "Thú đồng hành" : "Companion beast") : (vi ? "Quái spectre" : "Spectre monster");
+  const option = (monster: { id: string; name: string; category: string }) => (
+    <option value={monster.id} key={monster.id}>{library === "beast" ? monster.name : `${monster.name} (${monster.category})`}</option>
+  );
+  return (
+    <span className="gx-monster poe-no-tooltip">
+      <label className="gx-field">
+        <span>{label}<Hint text={library === "beast" ? HINTS.beast : HINTS.spectre} /></span>
+        <input type="search" className="gx-monster-search" value={query} onChange={(event) => setQuery(event.target.value)}
+          placeholder={vi ? "Lọc theo tên (tiếng Anh)" : "Filter by name"} aria-label={vi ? "Lọc danh sách quái" : "Filter monsters"} />
+        <select
+          value={current?.id ?? ""}
+          disabled={!data}
+          aria-label={label}
+          onChange={(event) => {
+            const gem = data?.monsterGemPatch(library, event.target.value);
+            if (gem) onPick(event.target.value, gem);
+          }}
+        >
+          <option value="">{failed ? (vi ? "Không tải được danh sách" : "List failed to load") : !data ? (vi ? "Đang tải..." : "Loading...") : (vi ? "— Chọn quái —" : "— Choose a monster —")}</option>
+          {current && !shown.some((monster) => monster.id === current.id) ? option(current) : null}
+          {recommended.length ? <optgroup label={vi ? "PoB gợi ý" : "Recommended by PoB"}>{recommended.map(option)}</optgroup> : null}
+          {others.length ? <optgroup label={vi ? `Tất cả (${others.length})` : `All (${others.length})`}>{others.map(option)}</optgroup> : null}
+        </select>
+      </label>
+      {data && !current ? (
+        <small className="gx-monster-note">
+          {value
+            ? (vi ? "Quái đã lưu không còn trong dữ liệu PoB — hãy chọn lại." : "The saved monster is not in PoB's data any more — pick again.")
+            : (vi ? "Chưa chọn quái: PoB tính 0 sát thương cho kỹ năng này." : "No monster picked: PoB calculates no damage for this skill.")}
+        </small>
+      ) : null}
+    </span>
+  );
+}
+
 /**
  * The choices of one gem: PoB's options for it (when it has any) and, for skill gems,
  * corruption (PoE2 support gems have no level to corrupt).
  */
-export function GemOptionControls({ option, attrs, onChange, locale, corrupt = true }: {
+export function GemOptionControls({ option, attrs, onChange, locale, corrupt = true, hideMinions = false }: {
   option?: PobGemOptions;
   attrs: Attrs;
   onChange: (change: GemOptionChange) => void;
   locale: string;
   corrupt?: boolean;
+  /** The card has its own monster selector (Companion / Spectre gems). */
+  hideMinions?: boolean;
 }) {
   // PoB resets corruption on skills it grants (item, tree, weapon).
   const showCorrupt = corrupt && !option?.grantedSkill;
@@ -90,7 +168,7 @@ export function GemOptionControls({ option, attrs, onChange, locale, corrupt = t
             }} />
         </label>
       ) : null}
-      {option?.minions ? (
+      {option?.minions && !hideMinions ? (
         <Select label="Minion" hint={HINTS.minion} value={attrs?.skillMinion || option.minion || option.minions[0]?.id || ""}
           options={option.minions.map((minion) => ({ value: minion.id, label: minion.name }))}
           onChange={(value) => onChange({ kind: "minion", value })} />

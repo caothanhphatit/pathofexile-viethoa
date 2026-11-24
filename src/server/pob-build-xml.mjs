@@ -7,6 +7,7 @@
 
 import { plannerRequestXml } from "./pob-breakdown.mjs";
 import { pobGemId } from "./pob-gem-ids.mjs";
+import { monsterLibraryOf } from "./pob-monster-gems.mjs";
 
 export const escapeXml = (value) => {
   if (value === undefined || value === null) return "";
@@ -112,8 +113,9 @@ export const configXml = (inputs) => {
     const kind = input.kind === "number" || input.kind === "string" ? input.kind : "boolean";
     let value;
     if (kind === "boolean") {
-      if (!isTrue(input.value, false)) continue;
-      value = "true";
+      // An explicit "false" is kept: some PoB options are on unless the build turns them
+      // off (a quest reward the character did not take), and dropping it turns them on.
+      value = isTrue(input.value, false) ? "true" : "false";
     } else if (kind === "number") {
       const n = Number(input.value);
       if (!Number.isFinite(n)) continue;
@@ -221,6 +223,34 @@ const skillGroupXml = (group, fullDps = false, slotItemIds = undefined) => {
   return `\t\t\t<Skill ${attrs.map(([key, value]) => `${key}="${escapeXml(value)}"`).join(" ")}>\n\t\t\t\t${gems.join("\n\t\t\t\t")}\n\t\t\t</Skill>`;
 };
 
+/**
+ * PoB gives a Spectre or Companion gem a minion only from the build's own monster
+ * library (<Spectre id> / <BeastCompanion id> under <Build>, see pob-monster-gems.mjs).
+ * The library is the one the build was imported with plus every monster picked on such
+ * a gem (its skillMinion).
+ */
+const monsterLibraryXml = (build) => {
+  const lists = { Spectre: [], BeastCompanion: [] };
+  const add = (tag, value) => {
+    const id = typeof value === "string" ? value.replace(/[^\w./ -]/g, "").slice(0, 200) : "";
+    if (id && !lists[tag].includes(id) && lists[tag].length < 60) lists[tag].push(id);
+  };
+  for (const id of Array.isArray(build.spectres) ? build.spectres.slice(0, 60) : []) add("Spectre", id);
+  for (const id of Array.isArray(build.beasts) ? build.beasts.slice(0, 60) : []) add("BeastCompanion", id);
+  for (const group of Array.isArray(build.skills) ? build.skills : []) {
+    for (const gem of [group, ...(Array.isArray(group?.support) ? group.support : [])]) {
+      const minion = gem?.pob_attrs && typeof gem.pob_attrs === "object" ? gem.pob_attrs.skillMinion : undefined;
+      if (typeof minion !== "string" || !minion) continue;
+      const library = monsterLibraryOf({ pobGemId: safeId(gem.pob_gem_id), skillId: String(gem.skill_id || ""), nameSpec: gem.name_spec ? String(gem.name_spec) : "" });
+      if (library === "spectre") add("Spectre", minion);
+      else if (library === "beast") add("BeastCompanion", minion);
+    }
+  }
+  return ["Spectre", "BeastCompanion"]
+    .flatMap((tag) => lists[tag].map((id) => `\n\t\t<${tag} id="${escapeXml(id)}"/>`))
+    .join("");
+};
+
 /** Item text for a slot the user picked by name (no imported text). */
 const syntheticItemText = (slot) => [
   `Rarity: ${slot.is_unique ? "Unique" : "Rare"}`,
@@ -285,7 +315,7 @@ export function buildPobXml(build = {}) {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <PathOfBuilding2>
-	<Build level="${level}" targetVersion="0_1" className="${escapeXml(className)}" ascendClassName="${escapeXml(ascendClassName)}" viewMode="ITEMS" mainSocketGroup="${mainSocketGroup}">
+	<Build level="${level}" targetVersion="0_1" className="${escapeXml(className)}" ascendClassName="${escapeXml(ascendClassName)}" viewMode="ITEMS" mainSocketGroup="${mainSocketGroup}">${monsterLibraryXml(build)}
 	</Build>
 	<Items activeItemSet="1" useSecondWeaponSet="${useSecondWeaponSet}">
 ${items.join("\n")}
