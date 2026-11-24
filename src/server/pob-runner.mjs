@@ -22,11 +22,16 @@ export function parsePobStdout(stdout) {
   return JSON.parse(jsonLine);
 }
 
-export function runPobLocal(xml, { coreDir, luajit = "luajit", timeoutMs = 20_000 } = {}) {
+/**
+ * `script`: the calculate script, relative to coreDir or absolute (default: the
+ * calculate.lua installed in coreDir). POB_CALC_SCRIPT points a dev server at another
+ * copy, e.g. this checkout's script, without touching the PoB directory.
+ */
+export function runPobLocal(xml, { coreDir, luajit = "luajit", timeoutMs = 20_000, script = "calculate.lua" } = {}) {
   const file = join(tmpdir(), `pob_temp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.xml`);
   writeFileSync(file, xml, "utf8");
   return new Promise((resolve, reject) => {
-    execFile(luajit, ["calculate.lua", file], { cwd: coreDir, timeout: timeoutMs, maxBuffer: 4 * 1024 * 1024 }, (error, stdout, stderr) => {
+    execFile(luajit, [script || "calculate.lua", file], { cwd: coreDir, timeout: timeoutMs, maxBuffer: 4 * 1024 * 1024 }, (error, stdout, stderr) => {
       try { unlinkSync(file); } catch { /* already gone */ }
       if (error) {
         const timedOut = error.killed || error.signal === "SIGTERM";
@@ -74,6 +79,6 @@ export function pobRunnerFromEnv(env = process.env) {
     const options = { url: env.POB_REMOTE_URL, token: env.POB_REMOTE_TOKEN || "", timeoutMs: timeoutMs + 5_000 };
     return { mode: "remote", run: (xml) => runPobRemote(xml, options) };
   }
-  const options = { coreDir: env.POB_CORE_DIR || "/root/pob-core/src", luajit: env.POB_LUAJIT || "luajit", timeoutMs };
+  const options = { coreDir: env.POB_CORE_DIR || "/root/pob-core/src", luajit: env.POB_LUAJIT || "luajit", timeoutMs, script: env.POB_CALC_SCRIPT || "calculate.lua" };
   return { mode: "local", run: (xml) => runPobLocal(xml, options) };
 }

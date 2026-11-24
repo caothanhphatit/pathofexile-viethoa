@@ -331,13 +331,43 @@ export function skillDpsByGroup(rows: PobSkillDps[] | undefined, groupNames: str
   return totals;
 }
 
+/** One skill PoB calculated in a group (GroupDPS[row].skills of scripts/pob-calculate.lua). */
+export interface GroupSkillDamage {
+  /** PoB's name for the skill ("Comet", "Gale Force", "Companion: Elephant Tortoise"). */
+  name: string;
+  /** Its damage: per second, or per hit when `average`. Already times `count`. */
+  value: number;
+  average?: boolean;
+  /** The number is its minion's. */
+  minion?: boolean;
+  /** Which gem of the group it comes from (1 = the group's first gem); undefined from an older calculator. */
+  gem?: number;
+  skillId?: string;
+}
+
 /** One group's damage from the calculator's GroupDPS (scripts/pob-calculate.lua). */
 export interface GroupDamage {
   /** Damage per second of the group's skills (with their minions), 0 when none. */
   dps: number;
   /** Average damage per hit, for skills PoB shows per hit and that have no rate. */
   average?: number;
+  /** Every skill PoB calculated for the group, in PoB's order, with or without damage. */
+  skills?: GroupSkillDamage[];
 }
+
+const groupSkills = (value: unknown): GroupSkillDamage[] => (Array.isArray(value) ? value : []).flatMap((row): GroupSkillDamage[] => {
+  if (!row || typeof row !== "object" || typeof row.name !== "string" || !row.name) return [];
+  const count = Number(row.count) > 1 ? Number(row.count) : 1;
+  const damage = Number(row.value) * count;
+  return [{
+    name: row.name,
+    value: Number.isFinite(damage) && damage > 0 ? damage : 0,
+    ...(row.average ? { average: true } : {}),
+    ...(row.minion ? { minion: true } : {}),
+    ...(Number(row.gem) > 0 ? { gem: Number(row.gem) } : {}),
+    ...(typeof row.skillId === "string" ? { skillId: row.skillId } : {})
+  }];
+});
 
 /**
  * Each planner group's damage from PoB's GroupDPS, keyed by the XML row its group was
@@ -347,7 +377,7 @@ export interface GroupDamage {
  */
 export function groupDamageByRow(groupDps: unknown, skills: Array<{ skillId: string }>): Array<GroupDamage | undefined> | undefined {
   if (!groupDps || typeof groupDps !== "object") return undefined;
-  const rows = groupDps as Record<string, { dps?: unknown; average?: unknown } | undefined>;
+  const rows = groupDps as Record<string, { dps?: unknown; average?: unknown; skills?: unknown } | undefined>;
   let row = 0;
   return skills.map((skill) => {
     if (!skill.skillId.trim()) return undefined;
@@ -356,12 +386,105 @@ export function groupDamageByRow(groupDps: unknown, skills: Array<{ skillId: str
     if (!entry || typeof entry !== "object") return undefined;
     const dps = Number(entry.dps);
     const average = Number(entry.average);
+    const skills = groupSkills(entry.skills);
     return {
       dps: Number.isFinite(dps) && dps > 0 ? dps : 0,
-      ...(Number.isFinite(average) && average > 0 ? { average } : {})
+      ...(Number.isFinite(average) && average > 0 ? { average } : {}),
+      ...(skills.length ? { skills } : {})
     };
   });
 }
+
+/** One line of a card's damage: which skill, how much. */
+export interface CardDamageLine {
+  name: string;
+  value: number;
+  /** An average hit (no rate per second), shown "/đòn". */
+  perHit: boolean;
+  minion: boolean;
+  /** The skill of the card's own (first) gem; false for a skill another gem of the group or a support grants. */
+  own: boolean;
+}
+
+/**
+ * Whose damage a card's number is. A group's number adds up every skill PoB calculated
+ * in it, and those are often not the card's own gem: the spells socketed in Cast on
+ * Critical, Vile Effusion from Dark Effigy, a damaging skill a support grants on a curse.
+ * Returns the skills that deal damage, highest first, each under PoB's name for it.
+ * `own` marks the first skill of the group's first gem (the card's title).
+ */
+export function cardDamageLines(damage: GroupDamage | undefined): CardDamageLine[] {
+  const skills = damage?.skills ?? [];
+  // The card's own skill: the first one PoB lists for the first gem (the group's first
+  // skill when the calculator does not say which gem each skill is from).
+  const tagged = skills.some((skill) => skill.gem !== undefined);
+  const ownIndex = tagged ? skills.findIndex((skill) => skill.gem === 1) : 0;
+  return skills
+    .map((skill, index) => ({ name: skill.name, value: skill.value, perHit: Boolean(skill.average), minion: Boolean(skill.minion), own: index === ownIndex }))
+    .filter((line) => line.value > 0)
+    .sort((a, b) => Number(a.perHit) - Number(b.perHit) || b.value - a.value);
+}
+
+/**
+ * Whether the card has to spell out whose damage its number is: more than one damaging
+ * skill, or one that is not the card's own gem (a card must not show another skill's
+ * damage under its own name).
+ */
+export const cardDamageNeedsNames = (lines: CardDamageLine[]): boolean =>
+  lines.length > 1 || (lines.length === 1 && !lines[0].own);
+
+/** "Comet, Arc": the skills the group's damage belongs to, for a one-line summary. */
+export const cardDamageOwners = (lines: CardDamageLine[], limit = 3): string => {
+  const names = [...new Set(lines.map((line) => line.name))];
+  return names.length > limit ? `${names.slice(0, limit).join(", ")}, +${names.length - limit}` : names.join(", ");
+};
+
+interface GrantedGroupLike {
+  skillId: string;
+  pobSkillId?: string;
+  itemSlot?: string;
+  itemSource?: string;
+  disabled?: boolean;
+  supportSkills: Array<{ skillId: string }>;
+}
+
+/**
+ * Item-granted groups PoB folds into the player's own group for the same skill, by
+ * index. An item grants its skill as a group of its own (Raise Shield from the shield,
+ * Purity of Fire from a sceptre); when the player also has a group for that skill (to
+ * give it supports), PoB calculates the two as one (CalcSetup), and a PoB code lists
+ * both. The planner shows one card for them: the player's. Groups are paired one to
+ * one in order; `keep` (the main group) is never hidden.
+ */
+export function foldedGrantedGroups(skills: GrantedGroupLike[], keep?: number): Set<number> {
+  const key = (skill: GrantedGroupLike) => (skill.pobSkillId || skill.skillId).trim().toLowerCase();
+  const granted = (skill: GrantedGroupLike) => /^Item:/i.test(skill.itemSource || "");
+  const owned = new Map<string, number>();
+  skills.forEach((skill) => {
+    if (!skill.skillId.trim() || skill.disabled || granted(skill) || skill.itemSlot) return;
+    owned.set(key(skill), (owned.get(key(skill)) ?? 0) + 1);
+  });
+  const hidden = new Set<number>();
+  skills.forEach((skill, index) => {
+    if (!skill.skillId.trim() || !granted(skill) || index === keep) return;
+    if (skill.supportSkills.some((support) => support.skillId.trim())) return;
+    const left = owned.get(key(skill)) ?? 0;
+    if (left <= 0) return;
+    owned.set(key(skill), left - 1);
+    hidden.add(index);
+  });
+  return hidden;
+}
+
+/**
+ * Whether the numbers stamped in a PoB code (<PlayerStat>) may be shown. They were
+ * calculated by the PoB version that wrote the code, which is rarely the one this site
+ * runs: showing them first and the site's own numbers a few seconds later makes DPS
+ * and defences "change by themselves" (180,730 -> 156,817 on a poe.ninja Titan).
+ * So they are only a fallback when the site's calculator gave no answer.
+ */
+export const stampedStatsUsable = (state: { calculated: boolean; calculating: boolean; failed: boolean }): boolean =>
+  !state.calculated && !state.calculating && state.failed;
 
 /** The number a card shows: its DPS, or its average hit when it deals damage only per hit. */
 export const groupDamageValue = (damage: GroupDamage | undefined): number | undefined =>
@@ -404,4 +527,16 @@ export function arrangeSkillCards(cards: SkillCardInput[]): { primary: number[];
       || a.index - b.index);
   }
   return { primary: primary.map((card) => card.index), secondary: secondary.map((card) => card.index) };
+}
+
+/**
+ * A resistance the way PoB's sidebar shows it: the capped percentage, except chaos with
+ * Chaos Inoculation, which PoB shows as "Immune" (BuildDisplayStats: ChaosResist is
+ * hidden and an "Immune" row shown when output.ChaosInoculation). undefined when the
+ * stats have no value for it.
+ */
+export function resistanceText(stats: Record<string, unknown> | null | undefined, stat: string, locale: string, fallback?: number): string | undefined {
+  if (stat === "ChaosResist" && stats?.ChaosInoculation === true) return locale === "vi" ? "Miễn nhiễm" : "Immune";
+  const value = typeof stats?.[stat] === "number" ? stats[stat] as number : fallback;
+  return typeof value === "number" && Number.isFinite(value) ? `${Math.round(value)}%` : undefined;
 }

@@ -75,3 +75,47 @@
   .gx-field select { width: 100%; max-width: 100%; }
   .gx-controls > .gx-field { flex: 1 1 140px; }
 }
+
+/* Whose damage a card's number is: one line per skill PoB calculated in the group. */
+.sk-lines {
+  list-style: none;
+  margin: 0;
+  padding: 6px 10px;
+  display: grid;
+  gap: 3px;
+  border-top: 1px solid var(--nj-line, rgba(255, 255, 255, 0.08));
+  font-size: 12.5px;
+}
+.sk-lines li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+.sk-lines li > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--nj-text, inherit);
+}
+.sk-lines li > span small { color: var(--nj-muted, #9aa3ad); }
+.sk-lines li > b { font-variant-numeric: tabular-nums; }
+.sk-lines li > small { color: var(--nj-muted, #9aa3ad); min-width: 30px; }
+
+/* Monster of a Companion / Spectre gem. */
+.gx-monster {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 10px;
+}
+.gx-monster .gx-field { flex-wrap: wrap; }
+.gx-monster .gx-field select { flex: 1 1 180px; min-width: 0; max-width: 100%; }
+.gx-monster .gx-field input.gx-monster-search { flex: 1 1 120px; width: auto; min-width: 0; }
+.gx-monster-note { color: #e0a64b; font-size: 12px; }
+
+/* Two supports of one family: the one that does nothing is dimmed and struck out. */
+.sk-support.is-superseded { opacity: 0.55; outline: 1px dashed #e0a64b; outline-offset: 1px; border-radius: 6px; }
+.sk-hint.sk-hint--warn { color: #e0a64b; }

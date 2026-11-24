@@ -238,6 +238,13 @@ export interface PobImportData {
     configInputs?: PobConfigInput[];
     /** PoB had weapon set II active (ItemSet useSecondWeaponSet). */
     useSecondWeaponSet?: boolean;
+    /**
+     * The build's monster libraries (<Spectre id> / <BeastCompanion id> under <Build>): the
+     * monsters its Spectre and Companion gems may summon. PoB only gives such a gem a
+     * minion that is in its library, so without them those skills deal no damage.
+     */
+    spectres?: string[];
+    beasts?: string[];
   };
   treeSpec: PobTreeSpec | null;
   skillGroups: PobSkillGroup[];
@@ -1013,6 +1020,13 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
     config,
     configInputs
   };
+  const monsterIds = (tag: string) => uniqueStrings([...(buildElement?.querySelectorAll(tag) ?? [])]
+    .map((row) => xmlAttribute(row, "id"))
+    .filter((id) => /^[\w/.:-]{1,200}$/.test(id)));
+  const spectres = monsterIds("Spectre");
+  const beasts = monsterIds("BeastCompanion");
+  if (spectres.length) build.spectres = spectres;
+  if (beasts.length) build.beasts = beasts;
 
   const skillsElement = doc.documentElement.querySelector("Skills");
   const skillGroups: PobSkillGroup[] = [];
@@ -1980,6 +1994,8 @@ export function buildPayloadFromPobImport(data: PobImportData, options: PobBuild
   if (Object.keys(weaponSetPassives).length) build.weapon_set_passives = weaponSetPassives;
   if (data.build.configInputs?.length) build.config_inputs = data.build.configInputs;
   if (data.build.useSecondWeaponSet) build.active_weapon_set = 2;
+  if (data.build.spectres?.length) build.pob_spectres = data.build.spectres;
+  if (data.build.beasts?.length) build.pob_beasts = data.build.beasts;
 
   const slotIds = options.inventorySlotIds && options.inventorySlotIds.length ? options.inventorySlotIds : DEFAULT_INVENTORY_SLOTS;
   const inventorySlots = inventoryChoicesFromPobImport(data, slotIds)
@@ -2094,6 +2110,9 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
       ? attributeOverridesBody(input.attributeChoices, input.passives)
       : payload.attribute_overrides,
     config_inputs: configInputs,
+    // Monster libraries of the imported build (Spectre / Companion gems pick from them).
+    spectres: Array.isArray(payload.pob_spectres) ? payload.pob_spectres : undefined,
+    beasts: Array.isArray(payload.pob_beasts) ? payload.pob_beasts : undefined,
     // Older payloads only carry the raw <Config> element.
     config: configInputs ? undefined : payload.config,
     main_socket_group: calculationMainGroup(input.skills, input.mainSocketGroup)

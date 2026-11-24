@@ -91,6 +91,12 @@ for (const fixture of fixtures) {
       }).sort();
     };
     assert.deepEqual(inputs(planner), inputs(original), "config inputs");
+
+    // Monster libraries (Spectre / Companion gems only summon a monster that is in them).
+    for (const tag of ["Spectre", "BeastCompanion"]) {
+      const library = (root) => root.querySelector("Build").querySelectorAll(tag).map((row) => row.getAttribute("id"));
+      assert.deepEqual(library(planner), library(original), `${tag} library`);
+    }
   });
 }
 
@@ -150,7 +156,8 @@ test("calculation XML escapes and whitelists what the browser sends", () => {
   assert.equal(support.getAttribute("gemId"), "Metadata/Items/Gems/SupportGemFoo");
   assert.equal(support.getAttribute("enabled"), "false");
   const inputs = root.querySelectorAll("Input").map((input) => [input.getAttribute("name"), input.getAttribute("boolean") ?? input.getAttribute("number") ?? input.getAttribute("string")]);
-  assert.deepEqual(inputs, [["conditionEnemyShocked", "true"], ["enemyLevel", "83"], ["bad\"name", "<x>"]]);
+  // A switched-off input is sent as "false": PoB's default for some inputs is on.
+  assert.deepEqual(inputs, [["conditionEnemyShocked", "true"], ["conditionOff", "false"], ["enemyLevel", "83"], ["bad\"name", "<x>"]]);
   assert.equal(configXml([]), "");
 });
 

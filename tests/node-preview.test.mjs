@@ -289,7 +289,11 @@ const EDGE_CASES = [
   { file: "lich-minions.json", ids: { 95: "minion DPS", 2995: "ascendancy node", 2254: "allocated notable" } }
 ];
 const DELTA_STATS = ["CombinedDPS", "MinionDPS", ...STATS.slice(1), "Str", "Dex", "Int"];
-const statOf = (output, stat) => (stat === "MinionDPS" ? output.Minion?.CombinedDPS : output[stat]) ?? 0;
+// The preview's "CombinedDPS" is the number the main skill's card shows (MainSkillDPS:
+// per second for a skill PoB shows per hit but has a rate for), not always PoB's CombinedDPS.
+const statOf = (output, stat) => (stat === "MinionDPS" ? output.Minion?.CombinedDPS
+  : stat === "CombinedDPS" ? output.MainSkillDPS ?? output.CombinedDPS
+  : output[stat]) ?? 0;
 
 for (const { file, ids } of EDGE_CASES) {
   test(`node deltas match full PoB runs on ${file}: paths, cut nodes, ascendancy and weapon sets`, {

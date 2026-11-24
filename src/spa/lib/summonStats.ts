@@ -71,9 +71,15 @@ export function summonSheets(stats: Record<string, unknown> | null | undefined, 
   return sheets;
 }
 
-/** DPS shown for the main group: PoB's main-skill DPS, or its minion's when the player deals none. */
+/**
+ * DPS shown for the main group: PoB's main-skill DPS, or its minion's when the player deals none.
+ * MainSkillDPS (scripts/pob-calculate.lua) is the number the skill's card shows: PoB's
+ * CombinedDPS, except for a skill PoB shows per hit but has a rate for (a triggered
+ * spell), where CombinedDPS is the average hit and the card shows damage per second.
+ * "What if" comparisons use it too, so they move the way the card will.
+ */
 export function mainSkillDps(stats: Record<string, unknown> | null | undefined): number {
-  const own = Number(stats?.CombinedDPS ?? stats?.TotalDPS ?? 0) || 0;
+  const own = Number(stats?.MainSkillDPS ?? stats?.CombinedDPS ?? stats?.TotalDPS ?? 0) || 0;
   if (own > 0) return own;
   const minion = stats?.Minion as Record<string, unknown> | undefined;
   return Number(minion?.CombinedDPS ?? 0) || 0;

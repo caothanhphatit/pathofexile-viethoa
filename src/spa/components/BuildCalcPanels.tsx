@@ -7,6 +7,7 @@ import type { PobConfigInput } from "../lib/buildPlanner";
 import {
   CONFIG_GROUPS,
   RESISTANCES,
+  resistanceText,
   STAT_SECTIONS,
   configInputValue,
   formatStat,
@@ -115,8 +116,9 @@ export function BuildStatDetails({ stats, previous, locale, calculating, onExpla
                     </span>
                     <strong>
                       {RESISTANCES.map((res, index) => {
-                        const value = num(stats, res.stat);
-                        const over = num(stats, res.overCap);
+                        // As PoB shows it: chaos is "Immune" with Chaos Inoculation.
+                        const text = resistanceText(stats, res.stat, locale) ?? "-";
+                        const over = text.endsWith("%") ? num(stats, res.overCap) : undefined;
                         return (
                           <Fragment key={res.stat}>
                             {index ? <span className="nj-stat-sep">/</span> : null}
@@ -124,10 +126,10 @@ export function BuildStatDetails({ stats, previous, locale, calculating, onExpla
                               type="button"
                               className={`pc-explain pc-explain--res ${res.cls}`}
                               disabled={!onExplain}
-                              onClick={() => onExplain?.({ stat: res.stat, label: vi ? `Kháng ${res.vi.toLowerCase()}` : `${res.en} resistance`, valueText: value === undefined ? "-" : `${Math.round(value)}%` })}
+                              onClick={() => onExplain?.({ stat: res.stat, label: vi ? `Kháng ${res.vi.toLowerCase()}` : `${res.en} resistance`, valueText: text })}
                               title={vi ? `Kháng ${res.vi.toLowerCase()} — bấm để xem từ đâu ra` : res.en}
                             >
-                              {value === undefined ? "-" : `${Math.round(value)}%`}
+                              {text}
                               {over ? <small className="pc-over">({Math.round(over)})</small> : null}
                             </button>
                           </Fragment>

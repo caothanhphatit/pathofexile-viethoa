@@ -47,11 +47,27 @@ end)
 -- skills a gem grants besides its first one, DoT-only skills, average-hit skills.
 -- calcs is PoB's shared Modules/CalcBase table; perform, calcFullDPS and buildOutput are wrapped where
 -- they are now and again whenever they are (re)defined.
+--
+-- calcs.buildOutput runs the Full DPS pass in every mode. Only the MAIN output is read here,
+-- so the pass is skipped for the CALCS output (an empty result, which buildOutput only copies
+-- into that output's SkillDPS / FullDPS / FullDotDPS). The MAIN passes stay as PoB runs them:
+-- they also settle the socket groups' skill lists that GemOptions reads.
 local plannerGroupDps
 pcall(function()
     local calcsBase = require("Modules.CalcBase")
-    local recording, inFullDps
+    local recording, inFullDps, skipFull
     local shadow = {}
+    -- Each skill names itself the way PoB lists it; "Companion: {0}" / "Spectre: {0}" get
+    -- the chosen monster (as CalcActiveSkill does for their buff names).
+    local function skillName(skill)
+        local granted = skill.activeEffect and skill.activeEffect.grantedEffect
+        local name = calcsBase.getActiveSkillDisplayName and calcsBase.getActiveSkillDisplayName(skill) or (granted and granted.name) or ""
+        if name:find("{0}", 1, true) then
+            local monster = skill.minion and skill.minion.minionData and skill.minion.minionData.name
+            if monster then name = name:gsub("{0}", function() return monster end) else name = name:gsub(":?%s*{0}%s*", "") end
+        end
+        return name
+    end
     local wrap = {
         perform = function(perform)
             return function(env, skipEHP, ...)
@@ -83,9 +99,20 @@ pcall(function()
                         local okCount, count = pcall(calcsBase.getActiveSkillCount, skill)
                         local entry = recording[row] or { skills = {} }
                         recording[row] = entry
+                        -- gem: which gem of the group the skill belongs to (1 = the group's first),
+                        -- so a card can tell its own skill from one a socketed gem or a support
+                        -- grants. trigger: the gem that triggers it (Cast on Critical...).
+                        local src = skill.activeEffect and skill.activeEffect.srcInstance
+                        local gemIndex
+                        for index, gem in ipairs(group.gemList or {}) do
+                            if gem == src then gemIndex = index end
+                        end
+                        local trigger = skill.triggeredBy and skill.triggeredBy.grantedEffect and skill.triggeredBy.grantedEffect.name
                         entry.skills[#entry.skills + 1] = {
-                            name = calcsBase.getActiveSkillDisplayName and calcsBase.getActiveSkillDisplayName(skill)
-                                or (skill.activeEffect and skill.activeEffect.grantedEffect.name),
+                            name = skillName(skill),
+                            skillId = skill.activeEffect and skill.activeEffect.grantedEffect.id,
+                            gem = gemIndex,
+                            trigger = trigger,
                             value = value,
                             average = average or nil,
                             minion = minion or nil,
@@ -98,6 +125,7 @@ pcall(function()
         end,
         calcFullDPS = function(calcFullDPS)
             return function(...)
+                if skipFull then return { combinedDPS = 0, TotalDotDPS = 0, skills = {} } end
                 if not recording or inFullDps then return calcFullDPS(...) end
                 inFullDps = true
                 local results = { pcall(calcFullDPS, ...) }
@@ -108,7 +136,14 @@ pcall(function()
         end,
         buildOutput = function(buildOutput)
             return function(build, mode, ...)
-                if mode ~= "MAIN" then return buildOutput(build, mode, ...) end
+                if mode ~= "MAIN" then
+                    local outerSkip = skipFull
+                    skipFull = true
+                    local results = { pcall(buildOutput, build, mode, ...) }
+                    skipFull = outerSkip
+                    if not results[1] then error(results[2], 0) end
+                    return select(2, unpack(results))
+                end
                 local outer = recording
                 recording = {}
                 local results = { pcall(buildOutput, build, mode, ...) }
@@ -151,6 +186,17 @@ if output then
             cleanOutput[k] = v
         end
     end
+    -- MainSkillDPS: the main skill's damage as its card shows it (the GroupDPS rule above).
+    -- PoB shows some skills per hit (CombinedDPS is then the average hit); when it has a rate
+    -- for them this is damage per second. The node preview prices the same number.
+    pcall(function()
+        local mainSkill = build.calcsTab.mainEnv.player.mainSkill
+        local value = tonumber(output.CombinedDPS) or 0
+        if mainSkill.skillData and mainSkill.skillData.showAverage and (tonumber(output.TotalDPS) or 0) > 0 then
+            value = output.TotalDPS + (tonumber(output.TotalDot) or 0)
+        end
+        cleanOutput.MainSkillDPS = value
+    end)
     -- One row per skill of the groups marked "include in Full DPS" (the planner marks
     -- every enabled group), so the planner can show each skill's own damage.
     if type(output.SkillDPS) == "table" then
@@ -420,10 +466,21 @@ local nodeIds = {}
 for item in ((nodeDeltaRequest and nodeDeltaRequest:match('nodes="([^"]*)"')) or ""):gmatch("[^,]+") do nodeIds[#nodeIds + 1] = item end
 if output and #nodeIds > 0 and build.calcsTab.GetMiscCalculator then
     local calcFunc, calcBase = build.calcsTab:GetMiscCalculator(build)
+    -- CombinedDPS: the number the main skill's card shows (GroupDPS above). PoB shows some
+    -- skills per hit (CombinedDPS is then the average hit); when it has a rate for them the
+    -- card shows damage per second, and so must the preview: a node that raises the hit and
+    -- lowers the rate (Eldritch Battery on a triggered spell) otherwise promises DPS the
+    -- card never gains.
     -- MinionDPS: the main skill's minion (what the planner shows as DPS for summoners).
+    local deltaSkill = build.calcsTab.mainEnv and build.calcsTab.mainEnv.player and build.calcsTab.mainEnv.player.mainSkill
+    local perSecondMain = deltaSkill and deltaSkill.skillData and deltaSkill.skillData.showAverage
+        and (tonumber(calcBase and calcBase.TotalDPS) or 0) > 0
     local function statOf(out, stat)
         if not out then return nil end
         if stat == "MinionDPS" then return type(out.Minion) == "table" and out.Minion.CombinedDPS or nil end
+        if stat == "CombinedDPS" and perSecondMain then
+            return (tonumber(out.TotalDPS) or 0) + (tonumber(out.TotalDot) or 0)
+        end
         return out[stat]
     end
     local function diff(after)
