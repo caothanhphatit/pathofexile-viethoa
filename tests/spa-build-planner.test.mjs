@@ -699,11 +699,11 @@ test("Build slot categories do not leak passive or wrong equipment records", asy
   assert.ok(categorized.length > 0, "expected categorized equipment rows");
   for (const item of categorized) {
     const icon = item.icon_url || "";
-    assert.match(icon, /\/2DItems\//, `${item.name} must be an actual item icon`);
-    if (item.build_slot_categories.includes("belt")) assert.match(icon, /\/2DItems\/Belts\//, `${item.name} must use a belt icon`);
-    if (item.build_slot_categories.includes("charm")) assert.match(icon, /\/2DItems\/Charms\//, `${item.name} must use a charm icon`);
-    if (item.build_slot_categories.includes("life-flask")) assert.match(icon, /\/2DItems\/Flasks\//, `${item.name} must use a flask icon`);
-    if (item.build_slot_categories.includes("mana-flask")) assert.match(icon, /\/2DItems\/Flasks\//, `${item.name} must use a flask icon`);
+    assert.match(icon, /\/2DItems\//i, `${item.name} must be an actual item icon`);
+    if (item.build_slot_categories.includes("belt")) assert.match(icon, /\/2DItems\/Belts\//i, `${item.name} must use a belt icon`);
+    if (item.build_slot_categories.includes("charm")) assert.match(icon, /\/2DItems\/Charms\//i, `${item.name} must use a charm icon`);
+    if (item.build_slot_categories.includes("life-flask")) assert.match(icon, /\/2DItems\/Flasks\//i, `${item.name} must use a flask icon`);
+    if (item.build_slot_categories.includes("mana-flask")) assert.match(icon, /\/2DItems\/Flasks\//i, `${item.name} must use a flask icon`);
   }
 });
 

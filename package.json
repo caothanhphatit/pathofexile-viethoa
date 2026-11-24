@@ -44,6 +44,10 @@
     "refresh:pob-gem-ids": "node scripts/refresh-pob-gem-ids.mjs",
     "refresh:pob-planner-data": "node scripts/refresh-pob-planner-data.mjs",
     "extract:game-base-items": "node scripts/ggpk/extract-base-items.mjs",
+    "extract:game-misc-items": "node scripts/ggpk/extract-misc-items.mjs",
+    "sync:icons": "node scripts/ggpk/sync-site-icons.mjs",
+    "sync:sot": "node scripts/sot/sync-from-sot.mjs --apply",
+    "update:season": "node scripts/update-season.mjs",
     "poevh:publish": "node scripts/publish-poevh.mjs"
   },
   "keywords": [],

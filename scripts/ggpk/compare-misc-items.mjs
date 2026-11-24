@@ -36,8 +36,12 @@ export const siteStackSize = (row) => {
   return match ? Number(match[1].replace(/,/g, "")) : null;
 };
 
-/** Art path of a poe2db icon URL, lower case, without extension. */
-export const iconKey = (value) => String(value || "").replace(/^https?:\/\/[^/]+\/image\//i, "").replace(/\.(webp|png|dds)$/i, "").toLowerCase();
+/** Art path of a poe2db or self-hosted icon URL, lower case, without extension. */
+export const iconKey = (value) => String(value || "")
+  .replace(/^https?:\/\/[^/]+\/image\//i, "")
+  .replace(/^\/assets\/ggpk-icons\//i, "")
+  .replace(/\.(webp|png|dds)$/i, "")
+  .toLowerCase();
 
 /** The text lines the game extract would put in the site's `mods` field. */
 export const gameModLines = (record) => [record.description, ...record.effect_lines].filter(Boolean);
