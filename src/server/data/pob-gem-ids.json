@@ -1,5 +1,5 @@
 {
-  "source": "PathOfBuilding-PoE2 bb52d6b src/Data/Gems.lua",
+  "source": "PathOfBuilding-PoE2 601768b src/Data/Gems.lua",
   "gems": [
     ["Metadata/Items/Gems/SkillGemIceNova","Ice Nova"],
     ["Metadata/Items/Gems/SkillGemLeapSlam","Leap Slam"],

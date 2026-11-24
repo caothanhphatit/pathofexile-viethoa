@@ -1,5 +1,5 @@
 window.POE2_SKILL_GEMS = {
-  "generated_at": "2026-11-24T08:15:22.963Z",
+  "generated_at": "2026-11-24T12:01:53.453Z",
   "source_url": "https://poe2db.tw/us/Skill_Gems",
   "latest_run": {
     "id": "1",

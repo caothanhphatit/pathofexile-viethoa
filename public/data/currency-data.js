@@ -1,5 +1,5 @@
 window.POE2_CURRENCY = {
-  "generated_at": "2026-11-24T08:15:23.037Z",
+  "generated_at": "2026-11-24T12:01:53.525Z",
   "source_url": "https://poe2db.tw/us/Stackable_Currency",
   "latest_run": {
     "id": "13",
@@ -16,8 +16,8 @@ window.POE2_CURRENCY = {
     "failed_count": 0,
     "metadata": {}
   },
-  "total": 182,
-  "active_total": 182,
+  "total": 200,
+  "active_total": 200,
   "categories": [
     {
       "id": "StackableCurrencyItem",
@@ -5361,7 +5361,7 @@ window.POE2_CURRENCY = {
       "subtype": "corruption-currency",
       "subtype_label": "Corruption Currency",
       "source_url": "https://poe2db.tw/us/Vaal_Infuser",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Currency/IncursionCraftingOrbs/IncursionVaalInfuser.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/incursioncraftingorbs/incursionvaalinfuser.webp",
       "icon_alt": "IncursionVaalInfuser",
       "hover_url": "https://poe2db.tw/us/Stackable_Currency?s=Data%5CBaseItemTypes%2FMetadata%2FItems%2FCurrency%2FCurrencyIncursionWeaponOrArmourQualityHigh",
       "stack_size": "1 / 10",
@@ -11511,6 +11511,937 @@ window.POE2_CURRENCY = {
       "source_hash": "920266e20377377449d480cc672fa36664a73873486bca0aa5fda722ee788ff9",
       "status": "active",
       "updated_at": "2026-05-23T11:20:50.248Z"
+    },
+    {
+      "slug": "Kamasas_Orb_of_Sacrifice",
+      "name": "Kamasa's Orb of Sacrifice",
+      "category": "StackableCurrencyItem",
+      "category_label": "Currency",
+      "family": "crafting-orb",
+      "family_label": "Crafting Orb",
+      "subtype": "currency",
+      "subtype_label": "Currency",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/incursioncraftingorbs/incursioncorruptionorb3.webp",
+      "icon_alt": "Kamasa's Orb of Sacrifice",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Upgrades a Corruption Enchantment on a Rare Amulet, Ring or Belt\nand removes a random Modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Upgrades a Corruption Enchantment on a Rare Amulet, Ring or Belt\nand removes a random Modifier"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Kamasa's Orb of Sacrifice",
+          "vi": "Kamasa's Orb of Sacrifice"
+        },
+        "description": {
+          "en": "Upgrades a Corruption Enchantment on a Rare Amulet, Ring or Belt\nand removes a random Modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Upgrades a Corruption Enchantment on a Rare Amulet, Ring or Belt\nand removes a random Modifier",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyIncursionMutateCorruptionEnchantJewellery",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Kopecs_Orb_of_Sacrifice",
+      "name": "Kopec's Orb of Sacrifice",
+      "category": "StackableCurrencyItem",
+      "category_label": "Currency",
+      "family": "crafting-orb",
+      "family_label": "Crafting Orb",
+      "subtype": "currency",
+      "subtype_label": "Currency",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/incursioncraftingorbs/incursioncorruptionorb2.webp",
+      "icon_alt": "Kopec's Orb of Sacrifice",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Upgrades a Corruption Enchantment on a Rare Armour\nand removes a random Modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Upgrades a Corruption Enchantment on a Rare Armour\nand removes a random Modifier"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Kopec's Orb of Sacrifice",
+          "vi": "Kopec's Orb of Sacrifice"
+        },
+        "description": {
+          "en": "Upgrades a Corruption Enchantment on a Rare Armour\nand removes a random Modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Upgrades a Corruption Enchantment on a Rare Armour\nand removes a random Modifier",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyIncursionMutateCorruptionEnchantArmour",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Yaomacs_Orb_of_Sacrifice",
+      "name": "Yaomac's Orb of Sacrifice",
+      "category": "StackableCurrencyItem",
+      "category_label": "Currency",
+      "family": "crafting-orb",
+      "family_label": "Crafting Orb",
+      "subtype": "currency",
+      "subtype_label": "Currency",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/incursioncraftingorbs/incursioncorruptionorb1.webp",
+      "icon_alt": "Yaomac's Orb of Sacrifice",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Upgrades a Corruption Enchantment on a Rare Weapon or Quiver\nand removes a random Modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Upgrades a Corruption Enchantment on a Rare Weapon or Quiver\nand removes a random Modifier"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Yaomac's Orb of Sacrifice",
+          "vi": "Yaomac's Orb of Sacrifice"
+        },
+        "description": {
+          "en": "Upgrades a Corruption Enchantment on a Rare Weapon or Quiver\nand removes a random Modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Upgrades a Corruption Enchantment on a Rare Weapon or Quiver\nand removes a random Modifier",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyIncursionMutateCorruptionEnchantWeapon",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Yuguls_Orb_of_Sacrifice",
+      "name": "Yugul's Orb of Sacrifice",
+      "category": "StackableCurrencyItem",
+      "category_label": "Currency",
+      "family": "crafting-orb",
+      "family_label": "Crafting Orb",
+      "subtype": "currency",
+      "subtype_label": "Currency",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/incursioncraftingorbs/incursioncorruptionorb4.webp",
+      "icon_alt": "Yugul's Orb of Sacrifice",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Upgrades a Corruption Enchantment on a Rare Jewel\nand removes a random Modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Upgrades a Corruption Enchantment on a Rare Jewel\nand removes a random Modifier"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Yugul's Orb of Sacrifice",
+          "vi": "Yugul's Orb of Sacrifice"
+        },
+        "description": {
+          "en": "Upgrades a Corruption Enchantment on a Rare Jewel\nand removes a random Modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Upgrades a Corruption Enchantment on a Rare Jewel\nand removes a random Modifier",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyIncursionMutateCorruptionEnchantJewel",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Adaptive_Alloy",
+      "name": "Adaptive Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/chippedverisium.webp",
+      "icon_alt": "Adaptive Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Staff: Gain (42—52)% of Damage as Extra Fire Damage while you are missing Runic Ward",
+        "Wand: Gain (21—26)% of Damage as Extra Fire Damage while you are missing Runic Ward",
+        "Sceptre: (30—50)% Surpassing Chance to gain a Puppet Master stack whenever you use a Command Skill",
+        "Gloves: (10—15)% increased Attack Speed while missing Runic Ward"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Adaptive Alloy",
+          "vi": "Adaptive Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Staff: Gain (42—52)% of Damage as Extra Fire Damage while you are missing Runic Ward",
+            "vi": ""
+          },
+          {
+            "en": "Wand: Gain (21—26)% of Damage as Extra Fire Damage while you are missing Runic Ward",
+            "vi": ""
+          },
+          {
+            "en": "Sceptre: (30—50)% Surpassing Chance to gain a Puppet Master stack whenever you use a Command Skill",
+            "vi": ""
+          },
+          {
+            "en": "Gloves: (10—15)% increased Attack Speed while missing Runic Ward",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy2",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Celestial_Alloy",
+      "name": "Celestial Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/alloy4.webp",
+      "icon_alt": "Celestial Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Staff or Wand: +(142—188) to maximum Mana\n+1 to Level of all Spell Skills",
+        "Martial Weapon: +(327—427) to Accuracy Rating\n(5—8)% increased Attack Speed"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Celestial Alloy",
+          "vi": "Celestial Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Staff or Wand: +(142—188) to maximum Mana\n+1 to Level of all Spell Skills",
+            "vi": ""
+          },
+          {
+            "en": "Martial Weapon: +(327—427) to Accuracy Rating\n(5—8)% increased Attack Speed",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy10",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Cyclonic_Alloy",
+      "name": "Cyclonic Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/imbuedverisium.webp",
+      "icon_alt": "Cyclonic Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Body Armour: (30—15)% reduced Slowing Potency of Debuffs on You",
+        "Boots: (15—19)% increased Skill Effect Duration",
+        "Gloves: (20—25)% increased Duration of Damaging Ailments on Enemies",
+        "Helmet: (35—42)% increased Archon Buff duration"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Cyclonic Alloy",
+          "vi": "Cyclonic Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Body Armour: (30—15)% reduced Slowing Potency of Debuffs on You",
+            "vi": ""
+          },
+          {
+            "en": "Boots: (15—19)% increased Skill Effect Duration",
+            "vi": ""
+          },
+          {
+            "en": "Gloves: (20—25)% increased Duration of Damaging Ailments on Enemies",
+            "vi": ""
+          },
+          {
+            "en": "Helmet: (35—42)% increased Archon Buff duration",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy6",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Essence_of_the_Breach",
+      "name": "Essence of the Breach",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/essence/breachessence.webp",
+      "icon_alt": "Essence of the Breach",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Jewellery: +20% to Maximum Quality"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Essence of the Breach",
+          "vi": "Essence of the Breach"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Jewellery: +20% to Maximum Quality",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyCorruptedEssenceBreach",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Expansive_Alloy",
+      "name": "Expansive Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/standardverisium.webp",
+      "icon_alt": "Expansive Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Gloves: Remnants can be collected from (35—50)% further away",
+        "Body Armour: (35—50)% increased Presence Area of Effect",
+        "Helmet: (18—29)% increased Mana Cost Efficiency",
+        "Boots: Temporary Minion Skills have +(1—2) to Limit of Minions summoned"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Expansive Alloy",
+          "vi": "Expansive Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Gloves: Remnants can be collected from (35—50)% further away",
+            "vi": ""
+          },
+          {
+            "en": "Body Armour: (35—50)% increased Presence Area of Effect",
+            "vi": ""
+          },
+          {
+            "en": "Helmet: (18—29)% increased Mana Cost Efficiency",
+            "vi": ""
+          },
+          {
+            "en": "Boots: Temporary Minion Skills have +(1—2) to Limit of Minions summoned",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy4",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Mystic_Alloy",
+      "name": "Mystic Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/celestialverisium.webp",
+      "icon_alt": "Mystic Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Helmet: Spell Skills have (10—15)% increased Area of Effect",
+        "Gloves: (10—15)% increased Area of Effect for Attacks",
+        "Boots: +(10—15) to Spirit",
+        "Quiver: (25—35)% chance to Chain an additional time",
+        "Caster Weapon: +1 to maximum number of Elemental Infusions"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Mystic Alloy",
+          "vi": "Mystic Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Helmet: Spell Skills have (10—15)% increased Area of Effect",
+            "vi": ""
+          },
+          {
+            "en": "Gloves: (10—15)% increased Area of Effect for Attacks",
+            "vi": ""
+          },
+          {
+            "en": "Boots: +(10—15) to Spirit",
+            "vi": ""
+          },
+          {
+            "en": "Quiver: (25—35)% chance to Chain an additional time",
+            "vi": ""
+          },
+          {
+            "en": "Caster Weapon: +1 to maximum number of Elemental Infusions",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy8",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Prismatic_Alloy",
+      "name": "Prismatic Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/sovereignverisium.webp",
+      "icon_alt": "Prismatic Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Gloves: Damage Penetrates (9—15)% Elemental Resistances",
+        "Martial Weapon: (20—30)% increased Magnitude of Ailments you inflict",
+        "Focus, Staff or Wand: (40—50)% increased Exposure Effect",
+        "Sceptre: Minions have (40—49)% increased Magnitude of Damaging Ailments"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Prismatic Alloy",
+          "vi": "Prismatic Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Gloves: Damage Penetrates (9—15)% Elemental Resistances",
+            "vi": ""
+          },
+          {
+            "en": "Martial Weapon: (20—30)% increased Magnitude of Ailments you inflict",
+            "vi": ""
+          },
+          {
+            "en": "Focus, Staff or Wand: (40—50)% increased Exposure Effect",
+            "vi": ""
+          },
+          {
+            "en": "Sceptre: Minions have (40—49)% increased Magnitude of Damaging Ailments",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy7",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Protective_Alloy",
+      "name": "Protective Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/impureverisium.webp",
+      "icon_alt": "Protective Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Belt: Recover (32—45) Runic Ward when a Charm is used",
+        "Weapons: +(51—74) to maximum Runic Ward",
+        "Shield: Recover (10—15) Runic Ward when you Block"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Protective Alloy",
+          "vi": "Protective Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Belt: Recover (32—45) Runic Ward when a Charm is used",
+            "vi": ""
+          },
+          {
+            "en": "Weapons: +(51—74) to maximum Runic Ward",
+            "vi": ""
+          },
+          {
+            "en": "Shield: Recover (10—15) Runic Ward when you Block",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy3",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Runic_Alloy",
+      "name": "Runic Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/scrapverisium.webp",
+      "icon_alt": "Runic Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Ring: +(37—49) to maximum Runic Ward",
+        "Amulet: (6—10)% increased maximum Runic Ward",
+        "Belt: (15—20)% increased Runic Ward Regeneration Rate"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Runic Alloy",
+          "vi": "Runic Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Ring: +(37—49) to maximum Runic Ward",
+            "vi": ""
+          },
+          {
+            "en": "Amulet: (6—10)% increased maximum Runic Ward",
+            "vi": ""
+          },
+          {
+            "en": "Belt: (15—20)% increased Runic Ward Regeneration Rate",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy1",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Sovereign_Alloy",
+      "name": "Sovereign Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/alloy1.webp",
+      "icon_alt": "Sovereign Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Weapons: (20—30)% increased effect of Socketed Augment Items",
+        "Armour: (24—30)% increased Runic Ward",
+        "Jewellery or Belt: (20—30)% increased Explicit Resistance Modifier magnitudes"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Sovereign Alloy",
+          "vi": "Sovereign Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Weapons: (20—30)% increased effect of Socketed Augment Items",
+            "vi": ""
+          },
+          {
+            "en": "Armour: (24—30)% increased Runic Ward",
+            "vi": ""
+          },
+          {
+            "en": "Jewellery or Belt: (20—30)% increased Explicit Resistance Modifier magnitudes",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy9",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Swift_Alloy",
+      "name": "Swift Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/pureverisium.webp",
+      "icon_alt": "Swift Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Gloves: (9—12)% increased Cast Speed",
+        "Ring: (7—9)% increased Attack Speed",
+        "Belt: Flasks gain (0.75—1) charges per Second",
+        "Shield or Focus: (30—49)% increased Totem Placement speed"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Swift Alloy",
+          "vi": "Swift Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Gloves: (9—12)% increased Cast Speed",
+            "vi": ""
+          },
+          {
+            "en": "Ring: (7—9)% increased Attack Speed",
+            "vi": ""
+          },
+          {
+            "en": "Belt: Flasks gain (0.75—1) charges per Second",
+            "vi": ""
+          },
+          {
+            "en": "Shield or Focus: (30—49)% increased Totem Placement speed",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy5",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "The_Runebinders_Alloy",
+      "name": "The Runebinder's Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/alloy2.webp",
+      "icon_alt": "The Runebinder's Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Staff: (25—50)% chance to gain Nature's Archon when your Plants Overgrow",
+        "Wand: +1 to Limit for Elemental Skills",
+        "Sceptre: +(4—5) maximum stacks of Puppet Master",
+        "Crossbow: +2 to maximum number of Summoned Ballista Totems",
+        "Bow: (40—50)% increased Effect of your Mark Skills"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "The Runebinder's Alloy",
+          "vi": "The Runebinder's Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Staff: (25—50)% chance to gain Nature's Archon when your Plants Overgrow",
+            "vi": ""
+          },
+          {
+            "en": "Wand: +1 to Limit for Elemental Skills",
+            "vi": ""
+          },
+          {
+            "en": "Sceptre: +(4—5) maximum stacks of Puppet Master",
+            "vi": ""
+          },
+          {
+            "en": "Crossbow: +2 to maximum number of Summoned Ballista Totems",
+            "vi": ""
+          },
+          {
+            "en": "Bow: (40—50)% increased Effect of your Mark Skills",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy12",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "The_Runefathers_Alloy",
+      "name": "The Runefather's Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/alloy3.webp",
+      "icon_alt": "The Runefather's Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Mace: (60—75)% chance for Skills to retain 40% of Glory on use",
+        "Quarterstaff: Tempest Bells are destroyed after an additional (4—5) Hits",
+        "Spear: +(8—10) to Weapon Range",
+        "Talisman: Lightning Damage from Hits also Contributes to Flammability and Ignite Magnitudes"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "The Runefather's Alloy",
+          "vi": "The Runefather's Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Mace: (60—75)% chance for Skills to retain 40% of Glory on use",
+            "vi": ""
+          },
+          {
+            "en": "Quarterstaff: Tempest Bells are destroyed after an additional (4—5) Hits",
+            "vi": ""
+          },
+          {
+            "en": "Spear: +(8—10) to Weapon Range",
+            "vi": ""
+          },
+          {
+            "en": "Talisman: Lightning Damage from Hits also Contributes to Flammability and Ignite Magnitudes",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy13",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
+    },
+    {
+      "slug": "Transcendent_Alloy",
+      "name": "Transcendent Alloy",
+      "category": "Essence",
+      "category_label": "Essence",
+      "family": "essence",
+      "family_label": "Essence",
+      "subtype": "essence",
+      "subtype_label": "Essence",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/currency/expedition2/alloy5.webp",
+      "icon_alt": "Transcendent Alloy",
+      "hover_url": "",
+      "stack_size": "1 / 10",
+      "description_en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+      "properties": [
+        "Stack Size: 1 / 10"
+      ],
+      "mods": [
+        "Staff: (39—47)% increased Cast Speed\nGain (11—16)% of Elemental Damage as Extra Cold Damage",
+        "Focus or Wand: (26—31)% increased Cast Speed\nGain (7—11)% of Elemental Damage as Extra Cold Damage",
+        "Martial Weapon: +(7—10) to all Attributes\n(15—20)% increased Physical Damage"
+      ],
+      "related_items": [],
+      "i18n": {
+        "name": {
+          "en": "Transcendent Alloy",
+          "vi": "Transcendent Alloy"
+        },
+        "description": {
+          "en": "Removes a random modifier and augments a Rare item with a new guaranteed modifier",
+          "vi": ""
+        },
+        "mods": [
+          {
+            "en": "Staff: (39—47)% increased Cast Speed\nGain (11—16)% of Elemental Damage as Extra Cold Damage",
+            "vi": ""
+          },
+          {
+            "en": "Focus or Wand: (26—31)% increased Cast Speed\nGain (7—11)% of Elemental Damage as Extra Cold Damage",
+            "vi": ""
+          },
+          {
+            "en": "Martial Weapon: +(7—10) to all Attributes\n(15—20)% increased Physical Damage",
+            "vi": ""
+          }
+        ]
+      },
+      "source_hash": "ggpk:currency:Metadata/Items/Currency/CurrencyVerisiumAlloy11",
+      "status": "active",
+      "updated_at": "2026-11-24T12:01:53.525Z"
     }
   ]
 };
