@@ -138,3 +138,198 @@
   opacity: .5;
   cursor: default;
 }
+
+/* Mandatory class-selection gate when creating a brand-new build (/build/new). */
+.build-create-gate {
+  display: grid;
+  place-items: start center;
+  padding: 20px 0 40px;
+}
+
+.build-create-gate-card {
+  width: 100%;
+  max-width: 780px;
+  display: grid;
+  gap: 14px;
+  padding: 22px 24px;
+  border: 1px solid var(--nj-line);
+  border-radius: 6px;
+  background: var(--nj-panel);
+}
+
+.build-create-gate-card h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--nj-text-strong);
+}
+
+.build-create-gate-hint {
+  margin: 0;
+  color: var(--nj-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.build-create-class-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.build-create-class-btn {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--nj-line);
+  border-radius: 4px;
+  background: var(--nj-well);
+  color: var(--nj-text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+
+.build-create-class-btn:hover {
+  border-color: var(--nj-muted);
+  background: rgba(255, 255, 255, .04);
+}
+
+.build-create-class-btn.is-selected {
+  border-color: var(--nj-green);
+  background: rgba(74, 222, 128, .08);
+  box-shadow: inset 0 0 0 1px var(--nj-green);
+}
+
+.build-create-class-btn strong {
+  font-size: 14px;
+  color: var(--nj-text-strong);
+}
+
+.build-create-class-btn small {
+  font-size: 11px;
+  color: var(--nj-muted);
+  line-height: 1.35;
+}
+
+.build-class-picker-row input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: var(--nj-slot);
+  color: var(--nj-text-strong);
+  font-size: 14px;
+}
+
+.build-create-gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.build-create-gate-actions button,
+.build-create-gate-actions .build-import-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--nj-line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--nj-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.build-create-gate-actions .build-class-picker-create {
+  border-color: var(--nj-green);
+  background: var(--nj-green);
+  color: var(--nj-bg);
+}
+
+.build-create-gate-actions .build-class-picker-create:hover {
+  background: var(--nj-green-deep);
+}
+
+/* Locked class badge + inline ascendancy picker in the workbench header. */
+.build-locked-class {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--nj-line-soft);
+  border-radius: 3px;
+  background: var(--nj-well);
+  color: var(--nj-text-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.build-locked-class .material-symbols-rounded {
+  font-size: 15px;
+  color: var(--nj-muted);
+}
+
+.build-ascendancy-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--nj-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.build-ascendancy-field select {
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: var(--nj-slot);
+  color: var(--nj-text-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Same-class copy bar in the build's passive tree card. */
+.build-mini-head .build-tree-copy-btn,
+.build-tree-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: auto;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--nj-text);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.build-tree-copy-btn:hover {
+  border-color: var(--nj-muted);
+  background: rgba(255, 255, 255, .04);
+}
+
+.build-tree-copy-btn .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.build-tree-copy-note,
+.build-tree-copy-empty {
+  margin: 0 0 8px;
+  color: var(--nj-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}

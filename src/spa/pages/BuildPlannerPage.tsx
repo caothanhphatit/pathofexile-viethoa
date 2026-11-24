@@ -17,8 +17,10 @@ import {
   MAX_CHARACTER_LEVEL,
   MIN_CHARACTER_LEVEL,
   buildCharacterLevel,
+  canCopyTreeToBuild,
   characterLevel,
   classBuildPayload,
+  copyPlannerTreeForBuild,
   createClassTreeSnapshot,
   dedupeTreeSnapshots,
   officialAscendancyId,
@@ -1074,7 +1076,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [savedBuilds, setSavedBuilds] = useState<BuildProject[]>(() => readSavedBuildProjects());
   const [activeBuildId, setActiveBuildId] = useState("");
   const [buildPath, setBuildPath] = useState(() => window.location.pathname);
-  const [buildTree, setBuildTree] = useState<BuildTreeSnapshot | null>(() => defaultBuildTree(readCurrentTreeSnapshot()));
+  const [buildTree, setBuildTree] = useState<BuildTreeSnapshot | null>(null);
   const [itemsData, setItemsData] = useState<ItemRecord[]>([]);
   const [gemsData, setGemsData] = useState<ItemRecord[]>([]);
   const [plannerData, setPlannerData] = useState<BuildPlannerData | null>(null);
@@ -2518,14 +2520,13 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   };
 
   const resetBuildDraft = () => {
-    const tree = defaultBuildTree(currentTree);
     setActiveBuildId("");
-    setBuildTree(tree);
+    setBuildTree(null);
     setImportedBuild(null);
     setImportError("");
-    setName(tree?.name ?? "");
+    setName("");
     setAuthor("");
-    setDescription(tree ? `${tree.className}${tree.ascendancyName ? ` - ${tree.ascendancyName}` : ""}` : "");
+    setDescription("");
     setActiveWeaponSet(1);
     setInventory(emptyEquipmentChoices());
     setBuildSkills([]);
@@ -2534,6 +2535,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setMainSocketGroup(1);
     applyLevel(DEFAULT_CHARACTER_LEVEL);
     setClassPickerOpen(false);
+    setTreeChoicesOpen(false);
   };
 
   const newBuildDraft = () => askBeforeLeaving(() => {
@@ -2644,10 +2646,18 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   };
 
   const chooseTreeForBuild = (option: SnapshotOption) => {
+    if (!buildTree) return;
+    const copied = copyPlannerTreeForBuild(buildTree, option.snapshot);
+    if (!copied) {
+      setImportError(
+        locale === "vi"
+          ? `Chỉ chép được cây cùng class ${buildTree.className} (cây đã chọn là ${option.snapshot.className}).`
+          : `Only ${buildTree.className} trees can be copied into this build (selected tree is ${option.snapshot.className}).`
+      );
+      return;
+    }
     setImportError("");
-    setBuildTree(option.snapshot);
-    if (!name) setName(option.snapshot.name);
-    if (!description) setDescription(`${option.snapshot.className}${option.snapshot.ascendancyName ? ` - ${option.snapshot.ascendancyName}` : ""}`);
+    setBuildTree(copied);
     setTreeChoicesOpen(false);
   };
 
@@ -2658,7 +2668,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setPickedAscendancy(classAscendancies(className)[0] ?? "");
   };
 
-  // Without a tree the picker is always there; start it on the first class.
+  // Without a tree the mandatory class picker starts on the first class.
   useEffect(() => {
     if (!classTree || pickedClass) return;
     const first = classTree.classes[0] ?? "";
@@ -2666,44 +2676,73 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setPickedAscendancy(classTree.classByName.get(first)?.ascendancies[0]?.name ?? "");
   }, [classTree, pickedClass]);
 
-  const openClassPicker = () => {
-    if (buildTree && classTree?.classByName.has(buildTree.className)) {
-      setPickedClass(buildTree.className);
-      setPickedAscendancy(buildTree.ascendancyName);
+  /** Start a new build from the chosen class & ascendancy. Class is locked once created. */
+  const createTreeFromClass = () => {
+    if (!classTree || !pickedClass || buildTree) return;
+    const snapshot = createClassTreeSnapshot({
+      className: pickedClass,
+      ascendancyName: pickedAscendancy,
+      startIds: selectedStartNodeIds(classTree, pickedClass, pickedAscendancy),
+      treeVersion: plannerData?.version || "0.5",
+      name: name.trim() || `${pickedClass} ${pickedAscendancy}`.trim()
+    });
+    setImportError("");
+    setBuildTree(snapshot);
+    if (!name.trim()) setName(snapshot.name);
+    if (!description.trim()) {
+      setDescription(`${snapshot.className}${snapshot.ascendancyName ? ` - ${snapshot.ascendancyName}` : ""}`);
     }
+    setClassPickerOpen(false);
     setTreeChoicesOpen(false);
-    setClassPickerOpen(true);
-    window.setTimeout(() => classPickerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
   };
 
-  /** A new tree for the picked class and ascendancy: only its start nodes, ready for points. */
-  const createTreeFromClass = () => {
-    if (!classTree || !pickedClass) return;
+  /** Change ascendancy within the build's locked class (never changes the class). */
+  const changeBuildAscendancy = (nextAscendancy: string) => {
+    if (!buildTree || !classTree) return;
+    const allowed = classAscendancies(buildTree.className);
+    if (nextAscendancy && !allowed.includes(nextAscendancy)) return;
+    const nextStarts = [...selectedStartNodeIds(classTree, buildTree.className, nextAscendancy)];
+    const oldStarts = new Set(buildTree.startIds || []);
+    const keepNodes = (buildTree.allocatedIds || []).filter((id) => {
+      if (oldStarts.has(id)) return false;
+      const node = classTree.nodeById.get(id);
+      if (node?.ascendancyName && node.ascendancyName !== nextAscendancy) return false;
+      return true;
+    });
+    const nextAllocated = [...new Set([...nextStarts, ...keepNodes])];
+    setBuildTree({
+      ...buildTree,
+      ascendancyName: nextAscendancy,
+      startIds: nextStarts,
+      allocatedIds: nextAllocated,
+      updatedAt: new Date().toISOString()
+    });
+  };
+
+  /** Clear allocated passive points while keeping the build's locked class & ascendancy. */
+  const resetBuildTreePoints = () => {
+    if (!buildTree || !classTree) return;
     const apply = () => {
-      const snapshot = createClassTreeSnapshot({
-        className: pickedClass,
-        ascendancyName: pickedAscendancy,
-        startIds: selectedStartNodeIds(classTree, pickedClass, pickedAscendancy),
-        treeVersion: plannerData?.version || "0.5"
+      const starts = [...selectedStartNodeIds(classTree, buildTree.className, buildTree.ascendancyName)];
+      setBuildTree({
+        ...buildTree,
+        startIds: starts,
+        allocatedIds: starts,
+        weaponSets: {},
+        attributeChoices: {},
+        updatedAt: new Date().toISOString()
       });
-      const autoDescription = buildTree ? `${buildTree.className}${buildTree.ascendancyName ? ` - ${buildTree.ascendancyName}` : ""}` : "";
-      setImportError("");
-      setBuildTree(snapshot);
-      if (!importedBuild && (!name.trim() || name === buildTree?.name)) setName(snapshot.name);
-      if (!description.trim() || description === autoDescription) {
-        setDescription(`${snapshot.className}${snapshot.ascendancyName ? ` - ${snapshot.ascendancyName}` : ""}`);
-      }
-      setClassPickerOpen(false);
-      setTreeChoicesOpen(false);
       closeBuildDialog();
     };
-    if (buildTree && passiveCount(buildTree) > 0) {
+    if (passiveCount(buildTree) > 0) {
       setBuildDialog({
-        title: localizedText(copy.confirmChangeClass, "", locale),
-        body: localizedText(copy.confirmChangeClassBody, "", locale),
+        title: locale === "vi" ? "Đặt lại điểm cây thụ động?" : "Reset passive tree points?",
+        body: locale === "vi"
+          ? `Xóa toàn bộ điểm đã cộng trên cây của build (giữ nguyên class ${buildTree.className}).`
+          : `Clear all allocated nodes on this build's tree (keeps locked class ${buildTree.className}).`,
         actions: [
           { label: localizedText(copy.cancel, "", locale), tone: "neutral", onClick: closeBuildDialog },
-          { label: localizedText(copy.changeClass, "", locale), tone: "danger", onClick: apply }
+          { label: locale === "vi" ? "Đặt lại điểm" : "Reset points", tone: "danger", onClick: apply }
         ]
       });
       return;
@@ -2711,20 +2750,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     apply();
   };
 
-  const clearBuildTree = () => {
-    setBuildTree(null);
-    setTreeChoicesOpen(true);
-  };
-
   const updateBuildTreeFromEditor = useCallback((snapshot: BuildTreeSnapshot) => {
-    setBuildTree(snapshot);
+    setBuildTree((prev) => (prev ? { ...snapshot, id: prev.id, className: prev.className } : snapshot));
   }, []);
 
+  // Build trees are separate from the standalone Passive Planner: saving here only keeps
+  // the tree on this build and never writes into /passive-tree's saved tree list.
   const saveBuildTreeFromEditor = useCallback((snapshot: BuildTreeSnapshot) => {
-    setBuildTree(snapshot);
-    setSavedTrees(saveTreeSnapshot(snapshot));
+    setBuildTree((prev) => (prev ? { ...snapshot, id: prev.id, className: prev.className } : snapshot));
     showInfoDialog(localizedText(copy.savedTreeTitle, "", locale));
-    window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "build-editor", id: snapshot.id } }));
   }, [locale]);
 
   const applyImportedBuild = (
@@ -2736,10 +2770,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   ) => {
     const nextStash = importedStash.map(withStashIcon);
     const importedTree = treeOverride === undefined ? treeSnapshotFromImportedBuild(payload, fileName, data) : treeOverride;
-    if (importedTree) {
-      setSavedTrees(saveTreeSnapshot(importedTree));
-      window.dispatchEvent(new CustomEvent("poe-build-tree-saved", { detail: { source: "build-import", id: importedTree.id } }));
-    }
     const nextName = payloadText(payload, "name") || fileName.replace(/\.build$/i, "");
     const nextAuthor = payloadText(payload, "author");
     const nextDescription = payloadText(payload, "description");
@@ -2897,115 +2927,100 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     writeBuildHelpSeen();
   }, [editorOpen]);
 
-  const showTreeChoices = options.length > 0 && (treeChoicesOpen || !buildTree);
+  // Only standalone Passive Planner trees matching this build's locked class can be copied in.
+  const matchingPlannerTrees = buildTree
+    ? options.filter((option) => canCopyTreeToBuild(buildTree.className, option.snapshot))
+    : [];
+  const otherClassPlannerCount = buildTree ? options.length - matchingPlannerTrees.length : 0;
 
-  const linkedTreeCard = (
+  const linkedTreeCard = buildTree ? (
     <section className="build-card build-tree-card build-linked-trees">
       <div className="build-mini-head">
-        <h3>{localizedText(copy.linkedTrees, "", locale)}</h3>
+        <h3>{locale === "vi" ? "Cây thụ động của build" : "Build passive tree"}</h3>
         <div className="build-tree-head-actions">
-          <span>{formatNumber(buildTree ? 1 : 0, locale)}</span>
-          {buildTree ? (
-            <button type="button" onClick={() => (classPickerOpen ? setClassPickerOpen(false) : openClassPicker())} aria-expanded={classPickerOpen} aria-label={localizedText(copy.changeClass, "", locale)} title={localizedText(copy.changeClass, "", locale)}>
-              <span className="material-symbols-rounded" aria-hidden="true">person</span>
-            </button>
-          ) : null}
-          {options.length ? (
-            <button type="button" onClick={() => setTreeChoicesOpen((open) => !open)} aria-expanded={treeChoicesOpen} aria-label={localizedText(copy.availableTrees, "", locale)} title={localizedText(copy.availableTrees, "", locale)}>
-              <span className="material-symbols-rounded" aria-hidden="true">swap_horiz</span>
-            </button>
-          ) : null}
+          <button
+            type="button"
+            className="build-tree-copy-btn"
+            onClick={() => setTreeChoicesOpen((open) => !open)}
+            aria-expanded={treeChoicesOpen}
+          >
+            <span className="material-symbols-rounded" aria-hidden="true">content_copy</span>
+            {locale === "vi" ? "Chép từ Passive Planner" : "Copy from Passive Planner"}
+          </button>
+          <button
+            type="button"
+            className="build-tree-copy-btn"
+            onClick={resetBuildTreePoints}
+            title={locale === "vi" ? "Đặt lại điểm đã cộng (giữ nguyên class)" : "Reset allocated points"}
+          >
+            <span className="material-symbols-rounded" aria-hidden="true">restart_alt</span>
+            {locale === "vi" ? "Reset điểm" : "Reset points"}
+          </button>
         </div>
       </div>
-      {buildTree ? (
-        <div className="build-tree-list">
-          <article
-            className="is-active"
-            key={buildTree.id}
-          >
-            <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
-            <span>
-              <strong>{buildTree.name}</strong>
-              <small>{buildTree.className}{buildTree.ascendancyName ? ` / ${buildTree.ascendancyName}` : ""}</small>
-            </span>
-            <em>{formatNumber(treePoints(buildTree), locale)}</em>
-            <button className="build-tree-icon-action build-tree-clear" type="button" onClick={(event) => {
-              event.stopPropagation();
-              clearBuildTree();
-            }} aria-label={localizedText(copy.clearTree, "", locale)}>
-              <span className="material-symbols-rounded" aria-hidden="true">close</span>
-            </button>
-          </article>
-        </div>
-      ) : null}
-      {!buildTree || classPickerOpen ? (
-        <div className="build-class-picker" ref={classPickerRef}>
-          <p>{localizedText(copy.startFromClass, "", locale)}</p>
-          {classTree ? (
-            <div className="build-class-picker-row">
-              <label>
-                <span>{localizedText(copy.pickClass, "", locale)}</span>
-                <select value={pickedClass} onChange={(event) => pickClass(event.target.value)}>
-                  {classTree.classes.map((className) => <option value={className} key={className}>{className}</option>)}
-                </select>
-              </label>
-              <label>
-                <span>{localizedText(copy.pickAscendancy, "", locale)}</span>
-                <select value={pickedAscendancy} onChange={(event) => setPickedAscendancy(event.target.value)}>
-                  <option value="">{localizedText(copy.noAscendancyChoice, "", locale)}</option>
-                  {classAscendancies(pickedClass).map((ascendancy) => <option value={ascendancy} key={ascendancy}>{ascendancy}</option>)}
-                </select>
-              </label>
-              <div className="build-class-picker-actions">
-                <button className="build-class-picker-create" type="button" onClick={createTreeFromClass} disabled={!pickedClass}>
-                  <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
-                  {localizedText(copy.createClassTree, "", locale)}
+      <div className="build-tree-list">
+        <article className="is-active" key={buildTree.id}>
+          <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
+          <span>
+            <strong>{buildTree.name}</strong>
+            <small>
+              {buildTree.className}{buildTree.ascendancyName ? ` / ${buildTree.ascendancyName}` : ""}
+              {" · "}
+              {locale === "vi" ? "Cây riêng của build (độc lập với Passive Planner)" : "Owned by this build (separate from Passive Planner)"}
+            </small>
+          </span>
+          <em>{formatNumber(treePoints(buildTree), locale)}</em>
+        </article>
+      </div>
+      {treeChoicesOpen ? (
+        <div className="build-tree-source build-tree-source--inline">
+          <p className="build-tree-copy-note">
+            {locale === "vi"
+              ? `Chọn một cây bên Passive Planner để sao chép sang build (chỉ nhận đúng class ${buildTree.className}).`
+              : `Copy a tree from the standalone Passive Planner into this build (must be ${buildTree.className}).`}
+            {otherClassPlannerCount > 0
+              ? (locale === "vi" ? ` Đang ẩn ${otherClassPlannerCount} cây khác class.` : ` ${otherClassPlannerCount} tree(s) of other classes hidden.`)
+              : ""}
+          </p>
+          {matchingPlannerTrees.length ? (
+            <div className="build-tree-list build-tree-choice-list">
+              {matchingPlannerTrees.map((option) => (
+                <button type="button" onClick={() => chooseTreeForBuild(option)} key={option.key}>
+                  <span>
+                    <strong>{option.snapshot.name}</strong>
+                    <small>{option.label} · {option.snapshot.className}{option.snapshot.ascendancyName ? ` / ${option.snapshot.ascendancyName}` : ""}</small>
+                  </span>
+                  <em>{formatNumber(treePoints(option.snapshot), locale)}</em>
+                  <b>{locale === "vi" ? "Chép sang build" : "Copy to build"}</b>
                 </button>
-                {buildTree ? (
-                  <button type="button" onClick={() => setClassPickerOpen(false)}>{localizedText(copy.cancel, "", locale)}</button>
-                ) : null}
-              </div>
+              ))}
             </div>
           ) : (
-            <p className="build-class-picker-loading">{localizedText(copy.loadingClasses, "", locale)}</p>
+            <p className="build-tree-copy-empty">
+              {locale === "vi"
+                ? `Chưa có cây nào của class ${buildTree.className} bên Passive Planner.`
+                : `No ${buildTree.className} trees saved in the Passive Planner yet.`}
+            </p>
           )}
-          {!buildTree && options.length ? <h4>{localizedText(copy.orSavedTree, "", locale)}</h4> : null}
         </div>
       ) : null}
-      {showTreeChoices ? (
-        <div className="build-tree-source build-tree-source--inline">
-          <div className="build-tree-list build-tree-choice-list">
-            {options.map((option) => (
-              <button className={buildTree?.id === option.snapshot.id ? "is-active" : ""} type="button" onClick={() => chooseTreeForBuild(option)} key={option.key}>
-                <span>
-                  <strong>{option.snapshot.name}</strong>
-                  <small>{option.label} - {option.snapshot.className}{option.snapshot.ascendancyName ? ` / ${option.snapshot.ascendancyName}` : ""}</small>
-                </span>
-                <em>{formatNumber(treePoints(option.snapshot), locale)}</em>
-                <b>{localizedText(buildTree?.id === option.snapshot.id ? copy.selectedTree : copy.addTree, "", locale)}</b>
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
-      {buildTree ? (
-        <div className="build-tree-mini" aria-label={localizedText(copy.linkedTrees, "", locale)}>
-          <PassiveTreeWorkspace
-            key={`${buildTree.id}:${buildTree.className}:${buildTree.ascendancyName}`}
-            locale={locale}
-            embedded
-            initialSnapshot={effectiveTree}
-            jewels={treeJewelHooks}
-            onSnapshotChange={updateBuildTreeFromEditor}
-            onSaveSnapshot={saveBuildTreeFromEditor}
-            renderNodeExtra={nodePreview.renderNodeExtra}
-            onNodeHover={nodePreview.onNodeHover}
-            onTreeReady={nodePreview.onTreeReady}
-          />
-        </div>
-      ) : null}
+      <div className="build-tree-mini" aria-label={localizedText(copy.linkedTrees, "", locale)}>
+        <PassiveTreeWorkspace
+          key={`${buildTree.id}:${buildTree.className}:${buildTree.ascendancyName}`}
+          locale={locale}
+          embedded
+          lockedClass={buildTree.className}
+          initialSnapshot={effectiveTree}
+          jewels={treeJewelHooks}
+          onSnapshotChange={updateBuildTreeFromEditor}
+          onSaveSnapshot={saveBuildTreeFromEditor}
+          renderNodeExtra={nodePreview.renderNodeExtra}
+          onNodeHover={nodePreview.onNodeHover}
+          onTreeReady={nodePreview.onTreeReady}
+        />
+      </div>
     </section>
-  );
+  ) : null;
 
   return (
     <main className="page-shell build-page">
@@ -3096,6 +3111,88 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             </section>
           )}
         </section>
+      ) : !buildTree ? (
+        <section className="build-create-gate" aria-label={locale === "vi" ? "Chọn Class để tạo build mới" : "Choose a Class to start a new build"}>
+          <div className="build-create-gate-card" ref={classPickerRef}>
+            <button className="build-back-btn" type="button" onClick={openBuildLibrary}>
+              <span className="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+              {localizedText(copy.backToBuilds, "", locale)}
+            </button>
+            <p className="nj-hero-eyebrow">Build Planner · POE2 Việt hóa</p>
+            <h1>{locale === "vi" ? "Chọn Class để tạo build mới" : "Choose a Class to start your build"}</h1>
+            <p className="build-create-gate-hint">
+              {locale === "vi"
+                ? "Bắt buộc chọn Class trước khi tạo build. Sau khi tạo, Class sẽ cố định không thể đổi (vẫn đổi được Ascendancy trong cùng Class, và có thể chép cây cùng Class từ Passive Planner)."
+                : "A Class is required before creating a build. Once created, the Class is locked permanently (you can still switch Ascendancy within the same Class and copy same-class trees from the Passive Planner)."}
+            </p>
+            {classTree ? (
+              <>
+                <div className="build-create-class-grid" role="radiogroup" aria-label={localizedText(copy.pickClass, "", locale)}>
+                  {classTree.classes.map((className) => {
+                    const ascList = classAscendancies(className);
+                    const selected = pickedClass === className;
+                    return (
+                      <button
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        className={`build-create-class-btn ${selected ? "is-selected" : ""}`}
+                        key={className}
+                        onClick={() => pickClass(className)}
+                      >
+                        <strong>{className}</strong>
+                        <small>{ascList.join(" · ")}</small>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="build-class-picker-row">
+                  <label>
+                    <span>{localizedText(copy.pickAscendancy, "", locale)}</span>
+                    <select value={pickedAscendancy} onChange={(event) => setPickedAscendancy(event.target.value)}>
+                      <option value="">{localizedText(copy.noAscendancyChoice, "", locale)}</option>
+                      {classAscendancies(pickedClass).map((ascendancy) => <option value={ascendancy} key={ascendancy}>{ascendancy}</option>)}
+                    </select>
+                  </label>
+                  <label>
+                    <span>{localizedText(copy.buildName, "", locale)}</span>
+                    <input
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      placeholder={pickedClass ? `${pickedClass}${pickedAscendancy ? ` ${pickedAscendancy}` : ""}` : "Tên Build..."}
+                    />
+                  </label>
+                </div>
+                <div className="build-create-gate-actions">
+                  <button className="build-class-picker-create" type="button" onClick={createTreeFromClass} disabled={!pickedClass}>
+                    <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
+                    {locale === "vi" ? `Bắt đầu với ${pickedClass || "..."}` : `Start with ${pickedClass || "..."}`}
+                  </button>
+                  <button type="button" onClick={openPobImport}>
+                    <span className="material-symbols-rounded" aria-hidden="true">data_object</span>
+                    {localizedText(copy.importPob, "", locale)}
+                  </button>
+                  <label className="build-import-button">
+                    <span className="material-symbols-rounded" aria-hidden="true">upload_file</span>
+                    {localizedText(copy.importBuild, "", locale)}
+                    <input
+                      type="file"
+                      accept=".build,.json,application/json"
+                      onChange={(event) => {
+                        const file = event.currentTarget.files?.[0] ?? null;
+                        event.currentTarget.value = "";
+                        importBuildFile(file);
+                      }}
+                    />
+                  </label>
+                </div>
+              </>
+            ) : (
+              <p className="build-class-picker-loading">{localizedText(copy.loadingClasses, "", locale)}</p>
+            )}
+            {importError ? <p className="build-import-error">{importError}</p> : null}
+          </div>
+        </section>
       ) : (
       <section className="build-workbench nj-page">
         {/* Hero header: name, class, actions (poe.ninja character header) */}
@@ -3150,10 +3247,25 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   aria-label={localizedText(copy.characterLevel, "", locale)}
                 />
               </label>
-              <button className="build-change-class" type="button" onClick={openClassPicker}>
-                <span className="material-symbols-rounded" aria-hidden="true">person</span>
-                {buildTree ? localizedText(copy.changeClass, "", locale) : (locale === "vi" ? "Chọn class" : "Pick a class")}
-              </button>
+              <span className="build-locked-class" title={locale === "vi" ? "Class của build đã cố định, không thể đổi" : "Class is permanently locked for this build"}>
+                <span className="material-symbols-rounded" aria-hidden="true">lock</span>
+                {buildTree.className}
+              </span>
+              {classTree && classAscendancies(buildTree.className).length ? (
+                <label className="build-ascendancy-field">
+                  <span>Ascendancy</span>
+                  <select
+                    value={buildTree.ascendancyName || ""}
+                    onChange={(event) => changeBuildAscendancy(event.target.value)}
+                    aria-label={localizedText(copy.pickAscendancy, "", locale)}
+                  >
+                    <option value="">{localizedText(copy.noAscendancyChoice, "", locale)}</option>
+                    {classAscendancies(buildTree.className).map((ascendancy) => (
+                      <option value={ascendancy} key={ascendancy}>{ascendancy}</option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
               {/* Stays in this row: the list itself is at the top of the stats panel. */}
               {warningList.length ? (
                 <button

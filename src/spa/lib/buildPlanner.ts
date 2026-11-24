@@ -638,6 +638,7 @@ export function createClassTreeSnapshot({
 }): BuildTreeSnapshot {
   const starts = uniqueStrings(startIds);
   return createTreeSnapshot({
+    id: `build-tree-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
     name: name || `${className} ${ascendancyName}`.trim(),
     className,
     ascendancyName,
@@ -647,6 +648,43 @@ export function createClassTreeSnapshot({
     weaponSets: {},
     attributeChoices: {}
   });
+}
+
+/** True when two class names refer to the same non-empty PoE2 class. */
+export function sameTreeClass(a?: string, b?: string): boolean {
+  const left = String(a || "").trim().toLowerCase();
+  const right = String(b || "").trim().toLowerCase();
+  return Boolean(left && right && left === right);
+}
+
+/** A standalone Passive Planner tree can be copied into a build only if it has the same class. */
+export function canCopyTreeToBuild(buildClassName: string, plannerSnapshot: BuildTreeSnapshot | null | undefined): boolean {
+  return Boolean(plannerSnapshot && sameTreeClass(buildClassName, plannerSnapshot.className));
+}
+
+/**
+ * Copy a same-class tree from the standalone Passive Planner into a build's own tree.
+ * Returns null if the classes differ; otherwise returns an independent clone keeping the
+ * build tree's own id and locked className.
+ */
+export function copyPlannerTreeForBuild(
+  buildTree: BuildTreeSnapshot,
+  plannerSnapshot: BuildTreeSnapshot
+): BuildTreeSnapshot | null {
+  if (!canCopyTreeToBuild(buildTree.className, plannerSnapshot)) return null;
+  const now = new Date().toISOString();
+  const snapshot = createTreeSnapshot({
+    id: buildTree.id || `build-tree-${Date.now().toString(36)}`,
+    name: buildTree.name || plannerSnapshot.name,
+    className: buildTree.className,
+    ascendancyName: plannerSnapshot.ascendancyName || "",
+    allocatedIds: [...(plannerSnapshot.allocatedIds || [])],
+    startIds: [...(plannerSnapshot.startIds || [])],
+    treeVersion: plannerSnapshot.treeVersion || buildTree.treeVersion,
+    weaponSets: plannerSnapshot.weaponSets ? { ...plannerSnapshot.weaponSets } : {},
+    attributeChoices: plannerSnapshot.attributeChoices ? { ...plannerSnapshot.attributeChoices } : {}
+  });
+  return { ...snapshot, createdAt: buildTree.createdAt || now, updatedAt: now };
 }
 
 /** The same tree saved several times (same name, class, ascendancy and nodes) shows once: the newest. */

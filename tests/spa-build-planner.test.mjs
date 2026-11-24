@@ -107,10 +107,12 @@ test("Build planner page lets users choose saved trees and item hints", async ()
   assert.match(page, /editorOpen/);
   assert.match(page, /buildTree/);
   assert.match(page, /treeChoicesOpen/);
-  assert.match(page, /setTreeChoicesOpen\(true\)/);
   assert.match(page, /chooseTreeForBuild/);
-  assert.match(page, /clearBuildTree/);
-  assert.match(page, /selectedTree/);
+  assert.match(page, /copyPlannerTreeForBuild/);
+  assert.match(page, /canCopyTreeToBuild/);
+  assert.match(page, /lockedClass=\{buildTree\.className\}/);
+  assert.match(page, /build-create-gate/);
+  assert.doesNotMatch(page, /clearBuildTree/);
   assert.doesNotMatch(page, /setActiveTreeId/);
   assert.match(page, /equipmentSlots/);
   assert.match(page, /build-equipment-frame/);
@@ -364,14 +366,13 @@ test("Build planner can import another .build file and export it again", async (
 
   assert.match(page, /ImportedBuild/);
   assert.match(page, /createTreeSnapshot/);
-  assert.match(page, /saveTreeSnapshot/);
   assert.match(page, /treeSnapshotFromImportedBuild/);
   assert.match(page, /payloadReferenceIds/);
   assert.match(page, /importedPassiveIds/);
   assert.match(page, /importBuildFile/);
   assert.match(page, /applyImportedBuild/);
   assert.match(page, /setBuildTree\(importedTree\)/);
-  assert.match(page, /setSavedTrees\(saveTreeSnapshot\(importedTree\)\)/);
+  assert.doesNotMatch(page, /setSavedTrees\(saveTreeSnapshot\(/, "build trees stay separate from standalone Passive Planner saved trees");
   assert.match(page, /setImportedBuild/);
   assert.match(page, /inventoryChoicesFromBuildPayload\(payload,\s*equipmentSlotIds\)/);
   assert.match(page, /const nextSkills = skillChoicesFromBuildPayload\(payload\)/);

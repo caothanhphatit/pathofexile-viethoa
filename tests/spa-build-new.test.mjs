@@ -159,3 +159,52 @@ test("saved tree list: the same tree saved twice shows once", async () => {
   ];
   assert.deepEqual(lib.dedupeTreeSnapshots(rows).map((row) => row.id), ["a", "c", "d", "e"]);
 });
+
+test("build tree copy from Passive Planner: requires matching class and returns an independent clone", async () => {
+  const lib = await loadPlannerLib();
+  const buildTree = lib.createTreeSnapshot({
+    id: "build-tree-own",
+    name: "My Witch Build",
+    className: "Witch",
+    ascendancyName: "Lich",
+    allocatedIds: ["10"],
+    startIds: ["10"],
+    treeVersion: "0.5"
+  });
+  const sameClassPlanner = lib.createTreeSnapshot({
+    id: "planner-saved-1",
+    name: "Lich Endgame",
+    className: "Witch",
+    ascendancyName: "Infernalist",
+    allocatedIds: ["10", "20", "30"],
+    startIds: ["10"],
+    weaponSets: { "20": 1 },
+    attributeChoices: { "30": "int" },
+    treeVersion: "0.5"
+  });
+  const otherClassPlanner = lib.createTreeSnapshot({
+    id: "planner-saved-2",
+    name: "Ranger Lightning",
+    className: "Ranger",
+    ascendancyName: "Deadeye",
+    allocatedIds: ["100", "200"],
+    startIds: ["100"],
+    treeVersion: "0.5"
+  });
+
+  assert.equal(lib.canCopyTreeToBuild("Witch", sameClassPlanner), true);
+  assert.equal(lib.canCopyTreeToBuild("Witch", otherClassPlanner), false);
+  assert.equal(lib.copyPlannerTreeForBuild(buildTree, otherClassPlanner), null);
+
+  const copied = lib.copyPlannerTreeForBuild(buildTree, sameClassPlanner);
+  assert.ok(copied);
+  assert.equal(copied.id, "build-tree-own", "keeps the build's own tree id (separate from planner)");
+  assert.equal(copied.className, "Witch", "keeps the locked class");
+  assert.equal(copied.ascendancyName, "Infernalist");
+  assert.deepEqual(plain(copied.allocatedIds), ["10", "20", "30"]);
+  assert.deepEqual(plain(copied.weaponSets), { "20": 1 });
+  assert.deepEqual(plain(copied.attributeChoices), { "30": "int" });
+  // Mutating the copied tree never mutates the standalone planner tree.
+  copied.allocatedIds.push("999");
+  assert.deepEqual(plain(sameClassPlanner.allocatedIds), ["10", "20", "30"]);
+});

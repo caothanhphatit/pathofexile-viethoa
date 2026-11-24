@@ -54,6 +54,8 @@ export interface PassiveTreeWorkspaceProps {
   locale: Locale;
   embedded?: boolean;
   readOnly?: boolean;
+  /** When set (e.g. inside Build Planner), the tree's class is permanently locked to this class. */
+  lockedClass?: string;
   initialSnapshot?: BuildTreeSnapshot | null;
   onSnapshotChange?: (snapshot: BuildTreeSnapshot) => void;
   onSaveSnapshot?: (snapshot: BuildTreeSnapshot) => void;
@@ -202,7 +204,7 @@ function treeSnapshotSignature(snapshot: BuildTreeSnapshot | null | undefined): 
   });
 }
 
-export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, initialSnapshot = null, onSnapshotChange, onSaveSnapshot, jewels, renderNodeExtra, onNodeHover, onTreeReady }: PassiveTreeWorkspaceProps) {
+export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = false, lockedClass, initialSnapshot = null, onSnapshotChange, onSaveSnapshot, jewels, renderNodeExtra, onNodeHover, onTreeReady }: PassiveTreeWorkspaceProps) {
   const [tree, setTree] = useState<PassiveTreeModel | null>(null);
   const [error, setError] = useState("");
   const [classFilter, setClassFilter] = useState("");
@@ -454,6 +456,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   };
 
   const selectClass = (name: string) => {
+    if (lockedClass && name.toLowerCase() !== lockedClass.toLowerCase()) return;
     setBuildLimitWarning("");
     setHistory(createHistory());
     resetTreeEdits();
@@ -710,6 +713,13 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       if (!build.nodeIds.length && !build.items.length && !build.skills.length) {
         throw new Error("Build rỗng — không có cây/item/gem nào");
       }
+      if (lockedClass && build.className && build.className.toLowerCase() !== lockedClass.toLowerCase()) {
+        throw new Error(
+          locale === "vi"
+            ? `Code PoB này thuộc class ${build.className}, không khớp với class ${lockedClass} của build.`
+            : `This PoB code is for ${build.className}, which does not match this build's locked class (${lockedClass}).`
+        );
+      }
       applyPob(build);
       setImportOpen(false);
       setImportText("");
@@ -864,6 +874,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             {pob ? <strong>{formatNumber(pob.items.length, locale)}</strong> : null}
           </button>
         </div>
+        {!embedded ? (
         <div className="passive-tree-library" ref={treeLibraryRef}>
           <button className="passive-tree-library-toggle" type="button" onClick={() => setTreeLibraryOpen((open) => !open)} aria-expanded={treeLibraryOpen} aria-label={localizedText(passiveCopy.savedTrees, "", locale)}>
             <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
@@ -893,10 +904,11 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             </div>
           ) : null}
         </div>
-        <label>
+        ) : null}
+        <label title={lockedClass ? (vi ? "Class của build đã cố định, không thể đổi" : "Build class is locked and cannot be changed") : undefined}>
           <span>{localizedText(passiveCopy.class, "", locale)}</span>
-          <select value={classFilter} onChange={(event) => selectClass(event.target.value)} aria-label="classFilter">
-            <option value="">{localizedText(passiveCopy.all, "", locale)}</option>
+          <select value={classFilter} disabled={Boolean(lockedClass)} onChange={(event) => selectClass(event.target.value)} aria-label="classFilter">
+            {!lockedClass ? <option value="">{localizedText(passiveCopy.all, "", locale)}</option> : null}
             {tree.classes.map((name) => <option key={name} value={name}>{name}</option>)}
           </select>
         </label>
