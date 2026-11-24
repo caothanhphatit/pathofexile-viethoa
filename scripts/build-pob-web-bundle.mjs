@@ -208,7 +208,19 @@ export async function buildPobWebBundle({
   }
 
   const sha256 = createHash("sha256").update(gzipped).digest("hex");
-  const outDir = path.join(outBaseDir, shortCommit);
+  // Version = PoB commit + hash of the packed files and the VM: a change of our calculate
+  // script or of wasmoon gives a new URL too, so a browser never reuses a stale cached bundle.
+  const contentHash = createHash("sha256").update(packed).update(wasmRaw).digest("hex").slice(0, 8);
+  const version = `${shortCommit}-${contentHash}`;
+  const outDir = path.join(outBaseDir, version);
+  // Older builds of the bundle are generated output: keep only the current one.
+  if (fs.existsSync(outBaseDir)) {
+    for (const entry of fs.readdirSync(outBaseDir, { withFileTypes: true })) {
+      if (entry.isDirectory() && entry.name !== version && fs.existsSync(path.join(outBaseDir, entry.name, "pob-vfs.bin.gz"))) {
+        fs.rmSync(path.join(outBaseDir, entry.name), { recursive: true, force: true });
+      }
+    }
+  }
   fs.mkdirSync(outDir, { recursive: true });
 
   fs.writeFileSync(path.join(outDir, "pob-vfs.bin.gz"), gzipped);
@@ -216,11 +228,11 @@ export async function buildPobWebBundle({
   fs.copyFileSync(licenseSrc, path.join(outDir, "LICENSE.md"));
 
   const manifest = {
-    version: shortCommit,
+    version,
     commit: fullCommit,
     pobVersion,
     builtAt: new Date().toISOString(),
-    baseUrl: `/pob-web/${shortCommit}/`,
+    baseUrl: `/pob-web/${version}/`,
     treeVersions: includedTreeVersions,
     fileCount: entries.length,
     desugaredCount,
@@ -257,7 +269,7 @@ if (isMain) {
     const mb = (n) => `${(n / (1024 * 1024)).toFixed(2)} MB`;
     const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
     console.log(`Built PoB web bundle at ${outDir}`);
-    console.log(`  PoB version : ${manifest.pobVersion} (commit ${manifest.version})`);
+    console.log(`  PoB version : ${manifest.pobVersion} (bundle ${manifest.version})`);
     console.log(`  Tree versions: ${manifest.treeVersions.join(", ")}`);
     console.log(`  Files       : ${manifest.fileCount} (${manifest.desugaredCount} desugared for Lua 5.4)`);
     console.log(`  VFS raw     : ${mb(manifest.rawBytes)} (${manifest.rawBytes.toLocaleString()} B)`);

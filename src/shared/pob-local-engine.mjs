@@ -271,36 +271,91 @@ arg = {}
 `;
 
 /**
- * Turns scripts/pob-calculate.lua (which runs once per CLI process) into a persistent
- * Lua function `pobCalculateXml(xmlText) -> jsonString` that resets per-build state
- * (GlobalCache and planner XML row counters) between calls while keeping PoB loaded.
+ * Replaces PoB's global copyTableSafe (Modules/Common.lua) with one that writes the copy
+ * with rawset. Same result for the caller, without a side effect that Lua 5.4 cannot take:
+ *
+ * PassiveSpec:SwitchAttributeNode deep-copies a tree node with its metatables. A node's
+ * modList is a class object whose parent proxy has `__newindex = object`. PoB's version
+ * gives the proxy's copy that metatable first and then assigns its fields, so the fields
+ * land in the ORIGINAL modList of the shared tree data, while that very table is being
+ * traversed with pairs(). Adding keys during a traversal is undefined in Lua: LuaJIT happens
+ * to survive it, Lua 5.4 (hash seed differs per VM) sometimes revisits keys, and the shared
+ * node then keeps every earlier copy alive. Measured before this shim: in about one VM out
+ * of five the heap doubled with each build that picks attribute nodes and reached the 2 GB
+ * WebAssembly limit after some 15 builds.
+ */
+const COPY_TABLE_SAFE_SHIM = `
+do
+  local subTableMap = {}
+  function copyTableSafe(tbl, noRecurse, preserveMeta, isSubTable)
+    local out = {}
+    if not noRecurse then subTableMap[tbl] = out end
+    for k, v in next, tbl do
+      if not noRecurse and type(v) == "table" then
+        rawset(out, k, subTableMap[v] or copyTableSafe(v, false, preserveMeta, true))
+      else
+        rawset(out, k, v)
+      end
+    end
+    if preserveMeta then setmetatable(out, getmetatable(tbl)) end
+    if not noRecurse and not isSubTable then
+      for k in next, subTableMap do subTableMap[k] = nil end
+    end
+    return out
+  end
+end
+`;
+
+/**
+ * Turns scripts/pob-calculate.lua into a persistent Lua function
+ * `pobCalculateXml(xmlText) -> jsonString`.
+ *
+ * The script is used as is up to its "One-shot mode" section: everything before it only
+ * defines hooks and the local functions `calculateBuild`, `resetBetweenBuilds`,
+ * `restoreSharedSkillCosts` and `resetGroupDpsHooks`. Instead of the CLI tail (read a
+ * file, print, os.exit) or the stdin loop of `--worker`, each call does what one worker
+ * request does: reset the per-build state, then run the same `calculateBuild` the
+ * one-shot path runs. The returned JSON is `{"ok":true,"data":...}` or
+ * `{"ok":false,"error":...,"fatal":bool}`.
  */
 export function buildPersistentCalculateScript(calculateLuaSource) {
-  const hookStart = calculateLuaSource.indexOf("-- ── Planner: remember which XML");
-  const loadCall = calculateLuaSource.indexOf("loadBuildFromXML(xmlText)");
-  const exitCall = calculateLuaSource.lastIndexOf("local jsonStr = dkjson.encode(cleanOutput)");
-  if (hookStart < 0 || loadCall < 0 || exitCall < 0) {
-    throw new Error("Could not slice scripts/pob-calculate.lua for persistent runner");
+  const oneShot = calculateLuaSource.indexOf("-- ── One-shot mode");
+  const wrapper = 'dofile("HeadlessWrapper.lua")';
+  if (oneShot < 0 || !calculateLuaSource.includes(wrapper) || !calculateLuaSource.includes("local function calculateBuild(xmlText)") || !calculateLuaSource.includes("local function resetBetweenBuilds()")) {
+    throw new Error("scripts/pob-calculate.lua changed shape: cannot build the persistent local runner");
   }
-  const hooks = calculateLuaSource
-    .slice(hookStart, loadCall)
-    .replace("local rows = {}", "__plannerXmlRows = {}\n    local rows = __plannerXmlRows");
-  const body = calculateLuaSource.slice(loadCall, exitCall);
+  // HeadlessWrapper is loaded by the engine itself (before this chunk), not twice.
+  const head = calculateLuaSource.slice(0, oneShot).replace(wrapper, "");
   return `
-local dkjson = require("dkjson")
-${hooks}
+${head}
+-- Same settings as the script's --worker mode: no background item DB load, no dev autosave.
+if main then
+  main.disableDevAutoSave = true
+  if main.onFrameFuncs then main.onFrameFuncs["LoadItems"] = nil end
+end
 function pobCalculateXml(xmlText)
-  if __plannerXmlRows then
-    for k in pairs(__plannerXmlRows) do __plannerXmlRows[k] = nil end
+  resetBetweenBuilds()
+  local okCall, cleanOutput, errMsg, isFatal = xpcall(function()
+    return calculateBuild(xmlText)
+  end, debug.traceback)
+  restoreSharedSkillCosts()
+  resetGroupDpsHooks()
+  local encoded
+  if not okCall then
+    encoded = dkjson.encode({ ok = false, error = stripColorCodes(tostring(cleanOutput)), fatal = true })
+  elseif not cleanOutput then
+    encoded = dkjson.encode({ ok = false, error = errMsg or "Calculation failed", fatal = isFatal == true })
+  else
+    encoded = dkjson.encode({ ok = true, data = cleanOutput })
   end
-  if GlobalCache and GlobalCache.cachedData then
-    wipeGlobalCache()
-  end
-  plannerGroupDps = nil
-  ${body}
-  local encoded = dkjson.encode(cleanOutput)
-  collectgarbage("step", 200)
+  cleanOutput = nil
   return encoded
+end
+-- Frees the finished build (the next request would do the same reset first).
+function pobReleaseBuild()
+  resetBetweenBuilds()
+  collectgarbage("collect")
+  return collectgarbage("count")
 end
 `;
 }
@@ -354,10 +409,20 @@ export async function createPobLocalEngine({ vfs, calculateScript, wasmUri, infl
       if __mainObject__ and __mainObject__.promptMsg then
         error("PoB startup failed: " .. tostring(__mainObject__.promptMsg))
       end
+      ${COPY_TABLE_SAFE_SHIM}
       if __pob_inflate then Inflate = __pob_inflate end
       if __pob_deflate then Deflate = __pob_deflate end
       ${persistentRunner}
+      -- Launch.lua sets a 400% GC pause for LuaJIT. On Lua 5.4 that lets garbage pile up to
+      -- four times the live data (~90 MB static + the build) before a cycle starts, and
+      -- WebAssembly memory never shrinks: 430-515 MB after a few builds. Generational mode
+      -- collects each build's short-lived tables without re-walking the static data, for
+      -- about the same calculation time (scripts/bench-pob-local.mjs). The pause is put back
+      -- to Lua's default first: generational mode falls back on it after a "bad" major
+      -- collection, and 400% there would again mean waiting for 4x the heap.
       collectgarbage("collect")
+      collectgarbage("incremental", 200, 200)
+      collectgarbage("generational")
     `);
   } catch (error) {
     try { lua.global.close(); } catch { /* ignore */ }
@@ -392,10 +457,14 @@ export async function createPobLocalEngine({ vfs, calculateScript, wasmUri, infl
         throw new Error("Local PoB engine returned invalid JSON output");
       }
       const parsed = JSON.parse(jsonStr);
-      if (parsed && typeof parsed.error === "string") {
-        throw new Error(parsed.error);
+      if (!parsed || parsed.ok !== true || !parsed.data) {
+        const error = new Error(String(parsed?.error || "Calculation failed"));
+        // fatal: a Lua error escaped PoB, so this VM can no longer be trusted (the server
+        // pool restarts its worker in the same case). Otherwise PoB only rejected this build.
+        error.fatal = parsed?.fatal === true;
+        throw error;
       }
-      return parsed;
+      return parsed.data;
     },
 
     /** Returns Lua VM memory (KB) and Emscripten WASM linear memory size (bytes). */
