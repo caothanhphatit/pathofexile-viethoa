@@ -624,7 +624,7 @@ test("Build equipment picker filters slots, unique items, icons, and base lines"
   assert.match(page, /isUniqueItem/);
   assert.match(page, /uniqueItemIconPattern/);
   assert.match(page, /displayImageUrl/);
-  assert.match(page, /slot \? recordFitsSlot\(item, slot\)/, "inventory search only offers items that fit the selected slot");
+  assert.match(page, /recordFitsSlot\([^,]+,\s*activeSlot\)/, "new item picker only offers items that fit the selected slot");
   assert.match(page, /itemSummaryLines/);
   assert.match(page, /itemBaseName/);
   assert.match(page, /unique \? "" : base/);

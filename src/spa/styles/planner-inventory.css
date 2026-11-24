@@ -130,9 +130,9 @@
 
 .pi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(52px, 60px));
-  gap: 3px;
-  padding: 4px;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 92px));
+  gap: 4px;
+  padding: 5px;
   border: 1px solid #2b2418;
   background:
     linear-gradient(rgba(0, 0, 0, .35), rgba(0, 0, 0, .35)),
@@ -145,21 +145,37 @@
 
 .pi-cell {
   display: grid;
+  grid-template-rows: 46px auto;
   place-items: center;
+  gap: 3px;
   width: 100%;
-  aspect-ratio: 1;
-  padding: 3px;
+  padding: 5px 4px 4px;
   border: 1px solid #262119;
-  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, .05), transparent 70%), #15130f;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, .05), transparent 70%), #15130f;
   cursor: grab;
 }
 
 .pi-cell img {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 44px;
+  max-height: 44px;
   object-fit: contain;
   pointer-events: none;
 }
+
+.pi-cell-label {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.25;
+  color: var(--nj-text);
+}
+
+.pi-cell.is-unique .pi-cell-label { color: var(--poe-unique); }
+.pi-cell.is-rare .pi-cell-label { color: var(--poe-rare); }
+.pi-cell.is-magic .pi-cell-label { color: var(--poe-magic); }
 
 .pi-cell:hover,
 .pi-cell:focus-visible {
@@ -250,6 +266,19 @@
 .pi-results button:hover { background: var(--nj-panel-head); }
 .pi-results small { color: var(--nj-muted); }
 .pi-add { margin-left: auto; color: var(--nj-muted); font-size: 18px; }
+.pi-add-tag {
+  margin-left: auto;
+  padding: 1px 7px;
+  border: 1px solid var(--nj-line);
+  border-radius: 999px;
+  color: var(--nj-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.pi-results button:hover .pi-add-tag {
+  border-color: #6b5a3a;
+  color: var(--nj-text);
+}
 
 .pi-result-icon {
   display: grid;

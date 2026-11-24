@@ -1220,44 +1220,45 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   }>({ visible: false, x: 0, y: 0, content: "" });
 
   // Place the tooltip above the cursor, or below it when there is no room above, and
-  // keep it inside the viewport (it used to run off the top for the upper slots).
+  // keep it inside the viewport. Position updates move the DOM node directly via a ref
+  // so moving the mouse never re-renders the entire planner page.
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const tooltipPosRef = useRef({ x: 0, y: 0 });
+  const placeTooltip = useCallback(() => {
+    const el = tooltipRef.current;
+    if (!el) return;
+    const { x, y } = tooltipPosRef.current;
+    const margin = 8;
+    const gap = 14;
+    const { width, height } = el.getBoundingClientRect();
+    const left = Math.min(Math.max(x - width / 2, margin), window.innerWidth - width - margin);
+    let top = y - height - gap;
+    if (top < margin) top = y + gap + 6;
+    if (top + height > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - height - margin);
+    el.style.left = `${Math.max(margin, left)}px`;
+    el.style.top = `${top}px`;
+  }, []);
+
   useLayoutEffect(() => {
     const el = tooltipRef.current;
     if (!el || !tooltip.visible) return;
-    const place = () => {
-      const margin = 8;
-      const gap = 14;
-      const { width, height } = el.getBoundingClientRect();
-      const left = Math.min(Math.max(tooltip.x - width / 2, margin), window.innerWidth - width - margin);
-      let top = tooltip.y - height - gap;
-      if (top < margin) top = tooltip.y + gap + 6;
-      if (top + height > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - height - margin);
-      el.style.left = `${Math.max(margin, left)}px`;
-      el.style.top = `${top}px`;
-    };
-    place();
+    tooltipPosRef.current = { x: tooltip.x, y: tooltip.y };
+    placeTooltip();
     // The "Nếu mặc vào" block grows when its numbers arrive: keep the card on screen.
     if (typeof ResizeObserver !== "function") return;
-    const observer = new ResizeObserver(place);
+    const observer = new ResizeObserver(placeTooltip);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [tooltip]);
+  }, [tooltip, placeTooltip]);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setTooltip(prev => ({
-      ...prev,
-      x: e.clientX,
-      y: e.clientY
-    }));
-  };
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    tooltipPosRef.current = { x: e.clientX, y: e.clientY };
+    placeTooltip();
+  }, [placeTooltip]);
 
-  const handleMouseLeave = () => {
-    setTooltip(prev => ({
-      ...prev,
-      visible: false
-    }));
-  };
+  const handleMouseLeave = useCallback(() => {
+    setTooltip((prev) => (prev.visible ? { ...prev, visible: false } : prev));
+  }, []);
 
   const buildRoute = useMemo(() => buildRouteState(buildPath), [buildPath]);
   const editorOpen = buildRoute.screen !== "library";
@@ -1979,43 +1980,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     addStashItems(items);
     return items.length;
   };
-  // What the search box can add: with a slot selected, only what fits it. A whole word or
-  // the item class ranks first, so "wand" lists wands before "Wanderer Armour".
-  const describeForSearch = (item: ItemRecord) => ({ title: itemTitle(item, locale), base: itemBaseName(item, locale), itemClass: item.menu_label });
   /** A catalogue item fits a slot: weapons and off-hands by PoB's rule (a wand is no off-hand), the rest by the site's data. */
-  const recordFitsSlot = (item: ItemRecord, slot: EquipmentSlot): boolean => {
+  const recordFitsSlot = useCallback((item: ItemRecord, slot: EquipmentSlot): boolean => {
     const name = itemTitle(item, "en");
     const byRule = weaponSlotCategories({ itemName: name, baseName: isUniqueItem(item) ? item.properties?.[0] : name, isUnique: isUniqueItem(item) }, weaponFlagState);
     return byRule ? hasActualIcon(item) && slot.slotCategories.some((category) => byRule.includes(category)) : itemFitsSlot(item, slot);
-  };
-  const catalogPool = (slot: EquipmentSlot | null) => itemsData.filter((item) => hasActualIcon(item) && (slot ? recordFitsSlot(item, slot) : buildSlotCategories(item).length > 0));
-  /** Matches the slot filter leaves out (0 when no slot is selected). */
-  const catalogHiddenCount = (query: string): number => (activeSlot ? countMatches(catalogPool(null), query, describeForSearch) - countMatches(catalogPool(activeSlot), query, describeForSearch) : 0);
-  const catalogSearch = (query: string): CatalogEntry[] => searchItems(catalogPool(activeSlot), query, describeForSearch, 12)
-    .map((item) => ({
-      key: item.slug || itemTitle(item, "en"),
-      name: itemTitle(item, locale),
-      baseName: itemBaseName(item, locale),
-      rarity: itemRarity(item),
-      iconUrl: displayImageUrl(item.icon_url)
-    }));
-  const addCatalogItem = (entry: CatalogEntry) => {
-    const record = itemsData.find((item) => (item.slug || itemTitle(item, "en")) === entry.key);
-    if (!record) return;
-    const unique = isUniqueItem(record);
-    const item = stashItemFromText(pobItemTextFromRecord({ name: itemTitle(record, "en"), rarity: record.rarity, baseName: record.properties?.[0], mods: record.mods }), "search", {
-      itemSlug: record.slug,
-      iconUrl: displayImageUrl(record.icon_url)
-    }) ?? {
-      id: `stash-${Date.now().toString(36)}`, itemName: itemTitle(record, "en"), isUnique: unique, itemSlug: record.slug, iconUrl: displayImageUrl(record.icon_url), source: "search" as const
-    };
-    // A slot is selected and the item fits it: the player wants it there.
-    if (activeSlot && recordFitsSlot(record, activeSlot) && slotIdsForCategories(stashCategories(item)).includes(activeSlot.id)) {
-      // Refused by the weapon-set rule (a quiver without a bow): it still lands in the inventory.
-      if (equipFrom({ inventory, stash: [item, ...stash] }, item.id, activeSlot.id)) return;
-    }
-    addStashItems([item]);
-  };
+  }, [weaponFlagState]);
   const nameFields = (text: string) => {
     const details = parsePobItemDetails(text);
     const isUnique = details.rarity === "unique";
@@ -2074,26 +2044,38 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const newItemChoices = useMemo<NewItemChoice[]>(() => {
     if (!modPool || !newItemOpen) return [];
     const byName = new Map(itemsData.map((item) => [itemTitle(item, "en").toLowerCase(), item]));
-    const bases = [...modPool.bases.values()].map((base): NewItemChoice => ({
-      key: `base:${base.name}`,
-      name: base.name,
-      baseName: base.name,
-      itemClass: base.itemClass,
-      unique: false,
-      iconUrl: byName.get(base.name.toLowerCase()) ? displayImageUrl(byName.get(base.name.toLowerCase())!.icon_url) : undefined,
-      text: `Rarity: RARE\n${locale === "vi" ? "Đồ tự tạo" : "New Item"}\n${base.name}\nItem Level: 82`
-    }));
-    const uniques = itemsData.filter((item) => isUniqueItem(item) && buildSlotCategories(item).length).map((item): NewItemChoice => ({
-      key: `unique:${item.slug || itemTitle(item, "en")}`,
-      name: itemTitle(item, "en"),
-      baseName: item.properties?.[0] ?? "",
-      itemClass: item.menu_label ?? "",
-      unique: true,
-      iconUrl: displayImageUrl(item.icon_url),
-      text: pobItemTextFromRecord({ name: itemTitle(item, "en"), rarity: item.rarity, baseName: item.properties?.[0], mods: item.mods })
-    }));
+    const baseFitsActive = (baseName: string): boolean => {
+      if (!activeSlot) return true;
+      const rec = byName.get(baseName.toLowerCase());
+      if (rec) return recordFitsSlot(rec, activeSlot);
+      const byRule = weaponSlotCategories({ itemName: baseName, baseName, isUnique: false }, weaponFlagState);
+      if (byRule) return activeSlot.slotCategories.some((category) => byRule.includes(category));
+      return false;
+    };
+    const bases = [...modPool.bases.values()]
+      .filter((base) => baseFitsActive(base.name))
+      .map((base): NewItemChoice => ({
+        key: `base:${base.name}`,
+        name: base.name,
+        baseName: base.name,
+        itemClass: base.itemClass,
+        unique: false,
+        iconUrl: byName.get(base.name.toLowerCase()) ? displayImageUrl(byName.get(base.name.toLowerCase())!.icon_url) : undefined,
+        text: `Rarity: RARE\n${locale === "vi" ? "Đồ tự tạo" : "New Item"}\n${base.name}\nItem Level: 82`
+      }));
+    const uniques = itemsData
+      .filter((item) => isUniqueItem(item) && buildSlotCategories(item).length && (!activeSlot || recordFitsSlot(item, activeSlot)))
+      .map((item): NewItemChoice => ({
+        key: `unique:${item.slug || itemTitle(item, "en")}`,
+        name: itemTitle(item, "en"),
+        baseName: item.properties?.[0] ?? "",
+        itemClass: item.menu_label ?? "",
+        unique: true,
+        iconUrl: displayImageUrl(item.icon_url),
+        text: pobItemTextFromRecord({ name: itemTitle(item, "en"), rarity: item.rarity, baseName: item.properties?.[0], mods: item.mods })
+      }));
     return [...bases, ...uniques].sort((a, b) => a.name.localeCompare(b.name));
-  }, [modPool, newItemOpen, itemsData, locale]);
+  }, [modPool, newItemOpen, itemsData, locale, activeSlot, recordFitsSlot, weaponFlagState]);
   const pickNewItem = (choice: NewItemChoice) => {
     setNewItemOpen(false);
     // A unique starts as the game makes it (its own lines are the original); a base is built from scratch.
@@ -2138,6 +2120,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       const item = stashItemFromText(text, "search", editorTarget.built ? { edited: true, iconUrl: editorTarget.iconUrl } : { originalText: editorTarget.text, iconUrl: editorTarget.iconUrl });
       if (item) {
         const final = editorTarget.built ? item : withItemText({ ...item, rawText: editorTarget.text }, text);
+        if (activeSlot && slotIdsForCategories(stashCategories(final)).includes(activeSlot.id)) {
+          if (equipFrom({ inventory, stash: [final, ...stash] }, final.id, activeSlot.id)) {
+            setEditorTarget(null);
+            return;
+          }
+        }
         addStashItems([final]);
       }
     }
@@ -3624,9 +3612,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
                 onDropSlot={unequipItem}
                 onPasteText={pasteStashText}
-                search={catalogSearch}
-                searchHiddenCount={catalogHiddenCount}
-                onAddCatalog={addCatalogItem}
                 slotChoice={slotChoice ? {
                   itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
                   slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
@@ -4208,7 +4193,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         />
       ) : null}
       {explainStat ? <StatBreakdownDialog queue={compareQueue} body={currentCalculationBody()} target={explainStat} locale={locale} onClose={() => setExplainStat(null)} /> : null}
-      {newItemOpen ? <NewItemDialog choices={newItemChoices} locale={locale} onPick={pickNewItem} onCancel={() => setNewItemOpen(false)} /> : null}
+      {newItemOpen ? <NewItemDialog choices={newItemChoices} slotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined} locale={locale} onPick={pickNewItem} onCancel={() => setNewItemOpen(false)} /> : null}
 
       {tooltip.visible && (
         <div ref={tooltipRef} className="poe-tooltip-float poe-no-tooltip" style={{

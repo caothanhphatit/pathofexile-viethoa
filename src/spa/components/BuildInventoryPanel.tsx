@@ -41,8 +41,10 @@ export interface CatalogEntry {
 const RARITY_LABEL: Record<string, string> = { unique: "Độc nhất", rare: "Hiếm", magic: "Ma thuật", normal: "Thường" };
 
 function ItemIcon({ iconUrl, name, rarity }: { iconUrl?: string; name: string; rarity: string }) {
-  return iconUrl
-    ? <img src={iconUrl} alt="" loading="lazy" draggable={false} />
+  const [failed, setFailed] = useState(false);
+  useEffect(() => { setFailed(false); }, [iconUrl]);
+  return iconUrl && !failed
+    ? <img src={iconUrl} alt="" loading="lazy" draggable={false} onError={() => setFailed(true)} />
     : <span className={`pi-initial is-${rarity}`} aria-hidden="true">{name.slice(0, 1).toUpperCase() || "?"}</span>;
 }
 
@@ -68,10 +70,6 @@ export function BuildInventoryPanel(props: {
   onDropSlot: (slotId: string) => void;
   /** Returns how many items were added, or an error message. */
   onPasteText: (text: string) => number | string;
-  search: (query: string) => CatalogEntry[];
-  /** How many more items match the query outside the selected slot. */
-  searchHiddenCount?: (query: string) => number;
-  onAddCatalog: (entry: CatalogEntry) => void;
   /** An item waiting for the player to pick one of several slots. */
   slotChoice?: { itemName: string; slots: Array<{ id: string; label: string }> } | null;
   onChooseSlot: (slotId: string) => void;
@@ -81,15 +79,11 @@ export function BuildInventoryPanel(props: {
   onItemDragEnd?: () => void;
 }) {
   const vi = props.locale === "vi";
-  const [query, setQuery] = useState("");
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
   const [message, setMessage] = useState("");
   const [dropActive, setDropActive] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
-  const searching = query.trim().length >= 2;
-  const results = searching ? props.search(query) : [];
-  const hiddenResults = searching && props.selectedSlotLabel ? props.searchHiddenCount?.(query) ?? 0 : 0;
   const shown = props.selectedSlotLabel ? props.items.filter((row) => row.fits) : props.items;
   const hiddenItems = props.items.length - shown.length;
   // "Đã thêm…" is about the last action: it goes away by itself and when the search changes.
@@ -146,9 +140,11 @@ export function BuildInventoryPanel(props: {
       <header className="pi-head">
         <h3>{vi ? "Kho đồ" : "Inventory"}</h3>
         <span className="pi-count">{props.items.length}</span>
-        <button type="button" className="pi-btn" onClick={props.onNewItem}>
+        <button type="button" className="pi-btn pi-btn--primary" onClick={props.onNewItem}>
           <span className="material-symbols-rounded" aria-hidden="true">add_box</span>
-          {vi ? "Tạo đồ mới" : "New item"}
+          {props.selectedSlotLabel
+            ? (vi ? `Tạo đồ cho ${props.selectedSlotLabel}` : `New item for ${props.selectedSlotLabel}`)
+            : (vi ? "Tạo đồ mới" : "New item")}
         </button>
         <button type="button" className="pi-btn pi-btn--paste" onClick={() => setPasteOpen((open) => !open)} aria-expanded={pasteOpen}>
           <span className="material-symbols-rounded" aria-hidden="true">content_paste</span>
@@ -233,6 +229,7 @@ export function BuildInventoryPanel(props: {
                 aria-label={`${row.name} (${vi ? RARITY_LABEL[row.rarity] ?? row.rarity : row.rarity}) — ${row.clickHint ?? (vi ? "bấm để mặc" : "click to equip")}`}
               >
                 <ItemIcon iconUrl={row.iconUrl} name={row.name} rarity={row.rarity} />
+                <span className="pi-cell-label">{row.name}</span>
                 {row.edited ? <span className="pi-edited">{vi ? "Đã sửa" : "Edited"}</span> : null}
               </button>
               <span className="pi-cell-actions">
@@ -252,49 +249,15 @@ export function BuildInventoryPanel(props: {
       ) : (
         <p className="pi-empty">
           {props.selectedSlotLabel
-            ? (vi ? "Kho chưa có món nào vừa ô này. Tìm đồ bên dưới hoặc dán đồ từ game." : "Nothing in the inventory fits this slot.")
-            : (vi ? "Kho đồ trống. Đồ dự phòng trong PoB code, đồ bạn tháo ra, đồ dán từ game và đồ tìm bên dưới sẽ nằm ở đây." : "Empty. Spare items from the PoB code, unequipped items, pasted and searched items go here.")}
+            ? (vi ? `Kho chưa có món nào vừa ô ${props.selectedSlotLabel}. Bấm «Tạo đồ cho ${props.selectedSlotLabel}» hoặc dán đồ từ game.` : `Nothing in the inventory fits ${props.selectedSlotLabel}. Click "New item" or paste an item from the game.`)
+            : (vi ? "Kho đồ trống. Bấm «Tạo đồ mới» để tự tạo trang bị, hoặc dán đồ từ game / PoB." : "Empty. Click \"New item\" to craft equipment, or paste items from the game / PoB.")}
         </p>
       )}
       {helpOpen ? <p className="pi-help">
         {vi
-          ? "Bấm một món để mặc vào (hoặc kéo thả lên ô đồ). Rê chuột để xem nếu mặc vào thì sát thương, máu, kháng đổi bao nhiêu. Nút bút để sửa chỉ số, nút copy để nhân bản. Bấm chuột phải vào ô đồ để tháo ra."
-          : "Click an item to equip it (or drag it onto a slot). Hover to see how damage, life and resistances would change. Right-click a slot to unequip."}
+          ? "Bấm «Tạo đồ mới» để chọn base/unique rồi gắn mod, chọn Tier và chỉ số. Bấm một món trong kho để mặc vào (hoặc kéo thả lên ô đồ). Rê chuột để xem chỉ số đổi bao nhiêu. Bấm chuột phải vào ô đồ để tháo ra."
+          : "Click \"New item\" to craft a base or unique item with tiers and rolls. Click an item to equip it (or drag it onto a slot). Right-click a slot to unequip."}
       </p> : null}
-
-      <label className="pi-search">
-        <span className="material-symbols-rounded" aria-hidden="true">search</span>
-        <input value={query} onChange={(event) => { setQuery(event.target.value); setMessage(""); }} placeholder={vi ? (props.selectedSlotLabel ? `Tìm đồ cho ô ${props.selectedSlotLabel}...` : "Tìm đồ (base hoặc unique) để thêm vào kho...") : "Search items to add..."} />
-      </label>
-      {searching && (props.selectedSlotLabel || !results.length) ? (
-        <p className="pi-search-note" role="status">
-          {results.length
-            ? (vi ? `Đang tìm đồ vừa ô ${props.selectedSlotLabel}.` : `Searching items for ${props.selectedSlotLabel}.`)
-            : props.selectedSlotLabel
-              ? (vi ? `Không có món nào vừa ô ${props.selectedSlotLabel} khớp «${query.trim()}».` : `Nothing for ${props.selectedSlotLabel} matches "${query.trim()}".`)
-              : (vi ? `Không tìm thấy món nào khớp «${query.trim()}».` : `Nothing matches "${query.trim()}".`)}
-          {hiddenResults > 0 ? (
-            <>
-              {" "}{vi ? `Có ${hiddenResults} món loại khác bị ẩn vì đang lọc theo ô.` : `${hiddenResults} match(es) of other kinds are hidden by the slot filter.`}{" "}
-              <button type="button" className="pi-link" onClick={props.onClearSlot}>{vi ? "Tìm mọi loại đồ" : "Search every kind"}</button>
-            </>
-          ) : null}
-        </p>
-      ) : null}
-      {results.length ? (
-        <ul className="pi-results">
-          {results.map((entry) => (
-            <li key={entry.key}>
-              <button type="button" onClick={() => { props.onAddCatalog(entry); setMessage(vi ? `Đã thêm ${entry.name}.` : `Added ${entry.name}.`); }}>
-                <span className={`pi-result-icon is-${entry.rarity}`}><ItemIcon iconUrl={entry.iconUrl} name={entry.name} rarity={entry.rarity} /></span>
-                <span className={`pi-result-name is-${entry.rarity}`}>{entry.name}</span>
-                {entry.baseName && entry.baseName !== entry.name ? <small>{entry.baseName}</small> : null}
-                <span className="material-symbols-rounded pi-add" aria-hidden="true">add</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
     </section>
   );
 }

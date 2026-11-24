@@ -499,8 +499,9 @@ export interface NewItemChoice {
 }
 
 /** "Tạo đồ mới": pick a base (to roll mods on) or a unique (to set its rolls). */
-export function NewItemDialog({ choices, locale, onPick, onCancel }: {
+export function NewItemDialog({ choices, slotLabel, locale, onPick, onCancel }: {
   choices: NewItemChoice[];
+  slotLabel?: string;
   locale: Locale;
   onPick: (choice: NewItemChoice) => void;
   onCancel: () => void;
@@ -518,7 +519,7 @@ export function NewItemDialog({ choices, locale, onPick, onCancel }: {
       <section className="ie-dialog ie-dialog--small poe-no-tooltip" role="dialog" aria-modal="true" aria-label={vi ? "Tạo đồ mới" : "New item"}>
         <header className="ie-head">
           <div>
-            <p className="ie-eyebrow">{vi ? "Tạo đồ mới" : "New item"}</p>
+            <p className="ie-eyebrow">{slotLabel ? (vi ? `Tạo đồ mới · ${slotLabel}` : `New item · ${slotLabel}`) : (vi ? "Tạo đồ mới" : "New item")}</p>
             <h2>{vi ? "Chọn loại đồ để bắt đầu" : "Pick a base to start from"}</h2>
           </div>
           <button type="button" className="pi-btn pi-btn--ghost" onClick={onCancel} aria-label={vi ? "Đóng" : "Close"}>
