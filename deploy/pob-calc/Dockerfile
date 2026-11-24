@@ -3,8 +3,10 @@
 # PoE2 run by LuaJIT built from the commit PoB's own runtime uses
 # (PathOfBuilding-SimpleGraphic vcpkg-ports/ports/luajit: LuaJIT/LuaJIT 2460b3ff, 2026-07-20).
 #
-# Build on the dev PC (never on the server), from the repo root:
+# Build from the repo root, on the dev PC or (owner-approved 2026-11-24) on fosta-srv itself:
 #   docker build -f deploy/pob-calc/Dockerfile --build-context pob=../pob-core -t poe-pob-calc:<tag> .
+# On fosta-srv: git archive this repo's needed files into /srv/fosta/poeviethoa/build-pob/repo and
+# pob-core's src + runtime/lua into build-pob/pob, then `nice -n 15 docker build ... --build-context pob=../pob`.
 # The pob context is a PathOfBuilding-PoE2 checkout; its src/ and runtime/lua/ are copied in.
 
 FROM debian:bookworm-slim AS luajit
