@@ -430,9 +430,20 @@ export function canonicalPath(route: AppRoute): string {
   return route.path;
 }
 
+/**
+ * A page with unsaved work (the Build Planner) registers a guard; navigateTo asks it
+ * before leaving and stays when it answers false. Returns the function that removes it.
+ */
+let leaveGuard: ((next: string) => boolean) | null = null;
+export function setLeaveGuard(guard: ((next: string) => boolean) | null): () => void {
+  leaveGuard = guard;
+  return () => { if (leaveGuard === guard) leaveGuard = null; };
+}
+
 export function navigateTo(path: string): void {
   const next = path || "/";
   if (`${window.location.pathname}${window.location.search}${window.location.hash}` === next) return;
+  if (leaveGuard && !leaveGuard(next)) return;
   window.history.pushState({}, "", next);
   window.dispatchEvent(new PopStateEvent("popstate"));
 }

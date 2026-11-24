@@ -4,7 +4,7 @@ import { buildModPool, type ModPool } from "../../shared/item-mods.mjs";
 import { ItemEditor, NewItemDialog, type NewItemChoice } from "../components/ItemEditor";
 import { displayImageUrl } from "../lib/image";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
-import { navigateTo } from "../lib/routes";
+import { navigateTo, setLeaveGuard } from "../lib/routes";
 import { matchesQuery } from "../lib/text";
 import { PassiveTreeWorkspace, type TreeJewelHooks } from "./PassiveTreePage";
 import { SocketJewelMenu } from "../components/SocketJewelMenu";
@@ -824,8 +824,10 @@ function treeSignature(snapshot: BuildTreeSnapshot | null | undefined): unknown 
     className: snapshot.className || "",
     ascendancyName: snapshot.ascendancyName || "",
     allocatedIds: [...new Set(snapshot.allocatedIds)].sort(),
-    startIds: [...new Set(snapshot.startIds)].sort(),
-    treeVersion: snapshot.treeVersion || "",
+    // startIds are the class's start nodes, filled in by the tree once it loads, and the
+    // version is written "0_5" by PoB codes and "0.5" by the tree: neither is an edit, so
+    // a build just imported or reopened does not read as "Chưa lưu".
+    treeVersion: String(snapshot.treeVersion || "").replace(/_/g, "."),
     weaponSets: snapshot.weaponSets ?? {},
     attributeChoices: snapshot.attributeChoices ?? {}
   };
@@ -1021,7 +1023,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [importedBuild, setImportedBuild] = useState<ImportedBuild | null>(null);
   const [buildDialog, setBuildDialog] = useState<BuildDialogState | null>(null);
   const [name, setName] = useState("");
-  const [author, setAuthor] = useState("POE2 Viet Hoa");
+  // Empty by default: the user's own build is not by "POE2 Viet Hoa", and a build saved with
+  // no author must reopen with none (otherwise it reads as "Chưa lưu" right away).
+  const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
   const [inventory, setInventory] = useState<BuildInventoryChoice[]>(() => emptyEquipmentChoices());
   const [buildSkills, setBuildSkills] = useState<BuildSkillChoice[]>([]);
@@ -1052,6 +1056,24 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
   const [gemStrip, setGemStrip] = useState<{ skillId: string; supportId: string | "main"; limit?: number } | null>(null);
   const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
+  // Where the clicked slot sits in the doll, so its menu opens right next to it.
+  const [slotMenuAt, setSlotMenuAt] = useState<{ left: number; top: number; width: number } | null>(null);
+  // The slot menu closes on Escape or a click outside it and outside the slots.
+  useEffect(() => {
+    if (!slotMenuAt) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setSlotMenuAt(null); };
+    const onDown = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest(".build-slot-menu, .build-equip-slot")) return;
+      setSlotMenuAt(null);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+    };
+  }, [slotMenuAt]);
   const [activeWeaponSet, setActiveWeaponSet] = useState<1 | 2>(1);
   const [activeGemPicker, setActiveGemPicker] = useState<GemPickerTarget | null>(null);
   const [gemPickerQuery, setGemPickerQuery] = useState("");
@@ -1559,6 +1581,32 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const hasBuildChanges = activeBuildProject
     ? currentBuildSignature !== savedBuildSignature
     : hasDraftContent({ name, description, tree: buildTree, inventoryCount: selectedInventoryCount, skillCount: selectedSkillCount, importedBuild });
+
+  // Unsaved work: the browser asks before a reload or closing the tab, and the site's own
+  // links ask before leaving the build (saving stays one click: "Lưu build"). The planner's
+  // own moves after a save, delete or import go through moveTo, which skips the question.
+  const leaveQuestion = locale === "vi"
+    ? "Build này còn thay đổi chưa lưu. Rời trang thì mất các thay đổi đó.\n\nVẫn rời trang?"
+    : "This build has unsaved changes that will be lost.\n\nLeave anyway?";
+  const skipLeaveGuard = useRef(false);
+  const moveTo = (path: string) => {
+    skipLeaveGuard.current = true;
+    try { navigateTo(path); } finally { skipLeaveGuard.current = false; }
+  };
+  const confirmDiscard = () => !hasBuildChanges || window.confirm(leaveQuestion);
+  useEffect(() => {
+    if (!hasBuildChanges) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    const removeGuard = setLeaveGuard((next) => skipLeaveGuard.current || next === window.location.pathname || window.confirm(leaveQuestion));
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      removeGuard();
+    };
+  }, [hasBuildChanges, leaveQuestion]);
 
   const closeBuildDialog = () => setBuildDialog(null);
   const showInfoDialog = (title: string, body = "") => setBuildDialog({
@@ -2198,7 +2246,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setImportedBuild(null);
     setImportError("");
     setName(tree?.name ?? "");
-    setAuthor("POE2 Viet Hoa");
+    setAuthor("");
     setDescription(tree ? `${tree.className}${tree.ascendancyName ? ` - ${tree.ascendancyName}` : ""}` : "");
     setActiveWeaponSet(1);
     setInventory(emptyEquipmentChoices());
@@ -2209,12 +2257,14 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   };
 
   const newBuildDraft = () => {
+    if (!confirmDiscard()) return;
     resetBuildDraft();
-    navigateTo("/build/new");
+    moveTo("/build/new");
   };
 
   const openBuildLibrary = () => {
-    navigateTo("/build");
+    if (!confirmDiscard()) return;
+    moveTo("/build");
     setActiveSlotId(null);
     setActiveGemPicker(null);
     setTreeChoicesOpen(false);
@@ -2223,7 +2273,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const applyBuildProject = (project: BuildProject) => {
     setActiveBuildId(project.id);
     setName(project.name);
-    setAuthor(project.author || "POE2 Viet Hoa");
+    setAuthor(project.author || "");
     setDescription(project.description);
     setBuildTree(project.treeSnapshots[0] ?? null);
     const nextInventory = enrichInventoryChoices(inventoryWithEmptySlots(project.inventory), itemsData, locale);
@@ -2245,7 +2295,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   const loadBuildProject = (project: BuildProject) => {
     applyBuildProject(project);
-    navigateTo(`/build/${encodeURIComponent(project.id)}`);
+    moveTo(`/build/${encodeURIComponent(project.id)}`);
   };
 
   const buildDetailPath = (projectId = activeBuildId || buildRoute.projectId) => projectId ? `/build/${encodeURIComponent(projectId)}` : "/build/new";
@@ -2272,7 +2322,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setSavedBuilds(saveBuildProject(project));
     setActiveBuildId(project.id);
     setName(project.name);
-    setAuthor(project.author || "POE2 Viet Hoa");
+    setAuthor(project.author || "");
     setDescription(project.description);
     setBuildTree(project.treeSnapshots[0] ?? null);
     const nextInventory = inventoryWithEmptySlots(project.inventory);
@@ -2280,7 +2330,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setInventory(nextInventory);
     setBuildSkills(project.skills ?? []);
     setStash(project.stash ?? []);
-    if (navigateAfterSave && (buildRoute.isNew || !buildRoute.projectId)) navigateTo(`/build/${encodeURIComponent(project.id)}`);
+    if (navigateAfterSave && (buildRoute.isNew || !buildRoute.projectId)) moveTo(`/build/${encodeURIComponent(project.id)}`);
     if (showDialog) showInfoDialog(localizedText(copy.savedBuildTitle, "", locale));
     return project;
   };
@@ -2289,7 +2339,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setSavedBuilds(deleteBuildProject(projectId));
     if (activeBuildId === projectId) {
       resetBuildDraft();
-      navigateTo("/build");
+      moveTo("/build");
     }
     closeBuildDialog();
   };
@@ -2380,7 +2430,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setBuildSkills(nextSkills);
     setStash(nextStash);
     setTreeChoicesOpen(false);
-    navigateTo(saved ? `/build/${encodeURIComponent(project.id)}` : "/build/new");
+    moveTo(saved ? `/build/${encodeURIComponent(project.id)}` : "/build/new");
   };
 
   const importBuildFile = async (file: File | null) => {
@@ -2624,7 +2674,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     <span className="material-symbols-rounded" aria-hidden="true">inventory</span>
                     <div>
                       <h2>{project.name}</h2>
-                      <p>{project.author || "POE2 Viet Hoa"}</p>
+                      {project.author ? <p>{project.author}</p> : null}
                     </div>
                   </div>
                   <div className="build-library-stats">
@@ -2789,8 +2839,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     <button
                       className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""} ${activeSlotId === slot.id ? "is-selected" : ""} ${dropSlotId === slot.id ? "is-drop-target" : ""}`}
                       type="button"
-                      onClick={() => openPicker(slot.id)}
+                      onClick={(event) => {
+                        const button = event.currentTarget;
+                        // Kept inside the doll: a slot on the right edge opens its menu leftwards.
+                        const frameWidth = (button.offsetParent as HTMLElement | null)?.clientWidth ?? 320;
+                        const menuWidth = Math.min(260, frameWidth);
+                        setSlotMenuAt({ left: Math.max(0, Math.min(button.offsetLeft, frameWidth - menuWidth)), top: button.offsetTop + button.offsetHeight + 6, width: button.offsetWidth });
+                        openPicker(slot.id);
+                      }}
                       aria-pressed={activeSlotId === slot.id}
+                      aria-haspopup="menu"
                       draggable={hasItem}
                       onDragStart={(event) => {
                         event.dataTransfer.setData(SLOT_DRAG_TYPE, slot.id);
@@ -2846,6 +2904,47 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     </button>
                   );
                 })}
+                {activeSlotId && slotMenuAt ? (() => {
+                  const vi = locale === "vi";
+                  const choice = inventoryBySlot.get(activeSlotId);
+                  const filled = Boolean(choice?.itemName);
+                  const fitting = stashViews.filter((view) => view.fits).length;
+                  // The slot stays selected (the inventory filters to it); only the menu closes.
+                  const toInventory = (focusSearch: boolean) => {
+                    setSlotMenuAt(null);
+                    const panel = document.querySelector<HTMLElement>(".nj-inventory");
+                    panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    if (focusSearch) window.setTimeout(() => panel?.querySelector<HTMLInputElement>(".pi-search input")?.focus({ preventScroll: true }), 350);
+                  };
+                  return (
+                    <div className="build-slot-menu" role="menu" aria-label={slotLabel(activeSlotId)} style={{ left: slotMenuAt.left, top: slotMenuAt.top, minWidth: Math.max(180, slotMenuAt.width) }}>
+                      <div className="build-slot-menu-head">
+                        <strong>{slotLabel(activeSlotId)}</strong>
+                        {filled ? <small>{choice?.rareName || choice?.itemName}</small> : <small>{vi ? "Ô trống" : "Empty"}</small>}
+                        <button type="button" className="build-slot-menu-close" aria-label={vi ? "Đóng" : "Close"} onClick={() => setSlotMenuAt(null)}>
+                          <span className="material-symbols-rounded" aria-hidden="true">close</span>
+                        </button>
+                      </div>
+                      {filled ? (
+                        <>
+                          <button type="button" role="menuitem" onClick={() => { editSlotItem(activeSlotId); setActiveSlotId(null); }}>
+                            <span className="material-symbols-rounded" aria-hidden="true">edit</span>{vi ? "Sửa chỉ số món này" : "Edit this item"}
+                          </button>
+                          <button type="button" role="menuitem" onClick={() => { unequipItem(activeSlotId); setActiveSlotId(null); }}>
+                            <span className="material-symbols-rounded" aria-hidden="true">move_to_inbox</span>{vi ? "Tháo ra (cất vào kho)" : "Unequip to inventory"}
+                          </button>
+                        </>
+                      ) : null}
+                      <button type="button" role="menuitem" onClick={() => toInventory(false)} disabled={!fitting}>
+                        <span className="material-symbols-rounded" aria-hidden="true">inventory_2</span>
+                        {vi ? (fitting ? `Chọn từ kho (${fitting} món vừa ô này)` : "Kho chưa có món vừa ô này") : (fitting ? `Pick from inventory (${fitting})` : "Nothing in the inventory fits")}
+                      </button>
+                      <button type="button" role="menuitem" onClick={() => toInventory(true)}>
+                        <span className="material-symbols-rounded" aria-hidden="true">search</span>{vi ? "Tìm đồ mới cho ô này" : "Find an item for this slot"}
+                      </button>
+                    </div>
+                  );
+                })() : null}
               </div>
             </div>
           </section>
@@ -3067,22 +3166,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             </div>
           </section>
 
-          <section className="nj-panel nj-info">
-            <header className="nj-panel-head">
-              <h2>{localizedText(copy.details, "", locale)}</h2>
-            </header>
-            <div className="nj-panel-body">
-              <label className="nj-field">
-                <span>{localizedText(copy.buildName, "", locale)}</span>
-                <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Titan Slam Leveling" />
-              </label>
-              <label className="nj-field">
-                <span>{localizedText(copy.author, "", locale)}</span>
-                <input value={author} onChange={(event) => setAuthor(event.target.value)} placeholder="POE2 Viet Hoa" />
-              </label>
-              <p className="nj-info-hint">{localizedText(copy.howStepDownload, "", locale)} {localizedText(copy.howStepSave, "", locale)} <code>Documents\My Games\Path of Exile 2\BuildPlanner\</code></p>
-            </div>
-          </section>
         </div>
 
         {/* Row 3: Skills (gem groups) */}
@@ -3370,6 +3453,24 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 locale={locale}
               />
             </div>
+
+        {/* Name and author: a slim full-width row at the end, so the tree above gets the whole width. */}
+        <section className="nj-panel nj-info nj-info--row">
+          <header className="nj-panel-head">
+            <h2>{localizedText(copy.details, "", locale)}</h2>
+          </header>
+          <div className="nj-panel-body">
+            <label className="nj-field">
+              <span>{localizedText(copy.buildName, "", locale)}</span>
+              <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Titan Slam Leveling" />
+            </label>
+            <label className="nj-field">
+              <span>{localizedText(copy.author, "", locale)}</span>
+              <input value={author} onChange={(event) => setAuthor(event.target.value)} placeholder={locale === "vi" ? "Tên bạn (không bắt buộc)" : "Your name (optional)"} />
+            </label>
+            <p className="nj-info-hint">{localizedText(copy.howStepDownload, "", locale)} {localizedText(copy.howStepSave, "", locale)} <code>Documents\My Games\Path of Exile 2\BuildPlanner\</code></p>
+          </div>
+        </section>
           </section>
         </div>
       </section>

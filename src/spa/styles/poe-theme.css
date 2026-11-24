@@ -1658,3 +1658,26 @@ body:has(.build-page) {
 .tooltip-mod-line.is-mutated { color: #d7a6c8; }
 .tooltip-item-level { color: var(--poe-grey); font-size: 13px; }
 .tooltip-corrupted { padding: 4px 14px; color: #d20000; font-weight: 700; }
+
+/* The tree has its row to itself (name/author moved to a slim row at the end). */
+.nj-row--tree {
+  grid-template-columns: minmax(0, 1fr);
+}
+.nj-row--tree .nj-tree .build-tree-mini {
+  height: clamp(480px, 56vw, 760px);
+}
+.nj-info--row .nj-panel-body {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+}
+.nj-info--row .nj-info-hint {
+  grid-column: 1 / -1;
+}
+@media (max-width: 720px) {
+  .nj-row--tree .nj-tree .build-tree-mini {
+    height: 420px;
+  }
+  .nj-info--row .nj-panel-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

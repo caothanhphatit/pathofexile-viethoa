@@ -1,8 +1,11 @@
 /* Build Planner: detailed stat sheet and calculation conditions (BuildCalcPanels.tsx). */
 
+/* minmax(0, 1fr): the sheet takes its panel's width instead of its longest row's, so a
+   long label wraps rather than widening the page on a phone. */
 .pc-sheet,
 .pc-config {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 
@@ -45,6 +48,7 @@
 
 .pc-rows {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1px;
   padding: 0 12px 10px;
 }
@@ -60,10 +64,12 @@
 
 .pc-label {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
   color: #dedcd7;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .pc-row > strong {
@@ -124,14 +130,30 @@
   white-space: normal;
   box-shadow: 0 6px 18px rgba(0, 0, 0, .5);
   transform: translateX(-50%);
-  opacity: 0;
   pointer-events: none;
-  transition: opacity .12s;
+  /* Not laid out until shown: a hidden tip still widened the page on phones. */
+  display: none;
 }
 
 .pc-hint:hover::after,
-.pc-hint:focus-visible::after {
-  opacity: 1;
+.pc-hint:focus-visible::after,
+.pc-hint:focus::after {
+  display: block;
+}
+
+/* On a phone the tip shows as a strip at the bottom of the screen, whole and readable
+   wherever the "?" sits. */
+@media (max-width: 720px) {
+  .pc-hint::after {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+    max-width: none;
+    transform: none;
+    font-size: 13px;
+  }
 }
 
 .pc-config-group {
