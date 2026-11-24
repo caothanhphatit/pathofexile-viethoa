@@ -63,6 +63,6 @@ export function nodeDeltasFromOutput(output) {
 }
 
 /** Prices a batch of passive nodes with one PoB run (local or remote runner). */
-export async function runNodeDeltas(runner, xml) {
-  return nodeDeltasFromOutput(await runner.run(xml));
+export async function runNodeDeltas(runner, xml, options) {
+  return nodeDeltasFromOutput(await runner.run(xml, options));
 }
