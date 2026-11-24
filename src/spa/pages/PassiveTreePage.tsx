@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { loadPassiveTreeData } from "../lib/data";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
 import { matchesQuery } from "../lib/text";
@@ -218,6 +218,24 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   const [zoom, setZoom] = useState(0.035);
   const [pob, setPob] = useState<PobBuild | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
+  // The tooltip's height depends on the node's lines and the planner's preview (which
+  // arrives later), so it is measured after each render: when it would run past the
+  // bottom it goes above the cursor, or as low as still fits.
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const el = tooltipRef.current;
+    if (!el) return;
+    const room = (el.offsetParent as HTMLElement | null)?.clientHeight ?? window.innerHeight;
+    const top = Number(el.dataset.top);
+    const cursorY = Number(el.dataset.cursorY);
+    const tall = el.offsetHeight;
+    let next = top;
+    if (top + tall > room - 4) {
+      const above = cursorY - tall - 12;
+      next = above >= 4 ? above : Math.max(4, room - tall - 4);
+    }
+    el.style.top = `${next}px`;
+  });
   const onTreeReadyRef = useRef(onTreeReady);
   onTreeReadyRef.current = onTreeReady;
   useEffect(() => {
@@ -1050,13 +1068,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           // The tooltip is placed inside the stage; embedded trees do not start at the window's corner.
           const box = embedded ? stageRef.current?.getBoundingClientRect() : null;
           const width = box?.width ?? window.innerWidth;
-          const height = box?.height ?? window.innerHeight;
           const x = shown.x - (box?.left ?? 0);
           const y = shown.y - (box?.top ?? 0);
           // On a phone the stage is narrower than the tooltip's usual 360px: keep it inside.
           const tipWidth = Math.min(360, width - 8);
           return (
-            <div className={`passive-tooltip ${!dragHover && hover.held ? "is-held" : ""} ${extra ? "has-node-extra" : ""} ${picks ? "has-tree-pick" : ""}`} style={{ left: Math.max(4, Math.min(x + 18, width - tipWidth - 20)), top: Math.max(4, Math.min(y + 18, height - (extra ? 300 : 220))), maxWidth: tipWidth }}>
+            <div className={`passive-tooltip ${!dragHover && hover.held ? "is-held" : ""} ${extra ? "has-node-extra" : ""} ${picks ? "has-tree-pick" : ""}`} ref={tooltipRef} data-top={Math.max(4, y + 18)} data-cursor-y={y} style={{ left: Math.max(4, Math.min(x + 18, width - tipWidth - 20)), top: Math.max(4, y + 18), maxWidth: tipWidth }}>
               <strong translate="no">{node.name || `Node ${node.id}`}</strong>
               <span>{node.type}</span>
               {node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}
