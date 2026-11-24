@@ -37,6 +37,7 @@
     "crawl:item-mods": "node scripts/crawl-item-mods.mjs",
     "build:craft-index": "node scripts/build-craft-index.mjs",
     "crawl:craft": "node scripts/crawl-item-mods.mjs && node scripts/build-craft-index.mjs",
+    "build:item-mods": "node scripts/build-item-mod-pool.mjs",
     "check:game-data": "node scripts/check-game-data.mjs",
     "extract:game-gems": "node scripts/ggpk/extract-gems.mjs",
     "fill:missing": "node scripts/fill-missing-from-poe2db.mjs",
