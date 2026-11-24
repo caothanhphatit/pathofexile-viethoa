@@ -1080,7 +1080,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "95c0b16269af30142b484ed943000cf716f01de7a23f0f31e869306ef7626ede",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemAnimusSplinters"
     },
     {
       "slug": "Apocalypse",
@@ -3978,7 +3979,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "0cc43820eefd64db754a970825ecb4667bc0dc565e5aa034ec7c85a507f5b358",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemBlink"
     },
     {
       "slug": "Blood_Boil",
@@ -5289,7 +5291,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "40f300434a49b709eec2eee6cbbcb928c94a000214467b734c21fb89dbdf818d",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemAscendanyMetaDeadeyeMarks"
     },
     {
       "slug": "Cast_on_Block",
@@ -5444,7 +5447,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "419b7e56667524b50d35cb59f3472a5f2a5bbc75333b77f9bc70472ccdec3e45",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnBlock"
     },
     {
       "slug": "Cast_on_Charm_Use",
@@ -5594,7 +5598,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "fde4edca39dda8796763adda74ce6a27e3f0f2efa3d58164317ca10451e9e8d1",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnCharmUse"
     },
     {
       "slug": "Chaos_Bolt",
@@ -8800,7 +8805,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "7e6ae3e5d5cdf8a4a2a0bf2088033f3dd74084d707c3ab2939f7671babafe282",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCorpseCloud"
     },
     {
       "slug": "Decompose__2",
@@ -9045,7 +9051,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "7e6ae3e5d5cdf8a4a2a0bf2088033f3dd74084d707c3ab2939f7671babafe282",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCorpseCloud"
     },
     {
       "slug": "Demon_Form",
@@ -11359,7 +11366,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "1532300892c8d79f91c1bb37fadfbdef588151bb8139bfbc042c12c25d70a4c9",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemEmberFusillade"
     },
     {
       "slug": "Encase_in_Jade",
@@ -14805,7 +14813,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "ebb23456947f2ced98c67d61f0987853b5741c3d90174c1dc897beb89d5a18a5",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemAscendancyFireSpellOnHit"
     },
     {
       "slug": "Firebolt",
@@ -19777,7 +19786,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8597af98f76d700257969c5569245fccbe179e54c6f90ca801aeae2a99f10cc4",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfAsh"
     },
     {
       "slug": "Herald_of_Ice__3",
@@ -19977,7 +19987,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "681cd05e11a637549b8799325f6522380cdaecdde7254f100ce19a5b69eb3d57",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfIce"
     },
     {
       "slug": "Herald_of_the_Royal_Queen",
@@ -20358,7 +20369,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "c23be7b61be835aff9c08f1c1e931d9bd2a876216691876daa841c8529f61a6d",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfThunder"
     },
     {
       "slug": "Hollow_Focus",
@@ -20799,7 +20811,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "ab2fe670f0c3acc19a8dd4ca43850466595360226eb806516bb68937e74245b3",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemAscendancyHollowForm"
     },
     {
       "slug": "Hollow_Resonance",
@@ -24431,7 +24444,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8dda341e23cf8e8bf0057a8ddd48fdaf58a764ce96da13a51cfe80da1fe8afeb",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemLightningBolt"
     },
     {
       "slug": "Lightning_Bolt",
@@ -24630,7 +24644,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8dda341e23cf8e8bf0057a8ddd48fdaf58a764ce96da13a51cfe80da1fe8afeb",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemLightningBolt"
     },
     {
       "slug": "Lightning_Rod",
@@ -25249,7 +25264,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "95f170e00deff985dcb6752619d35de8eb9f3b151187fa1ed5d39f1bb1f2647a",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemPlayerDefault1HMace"
     },
     {
       "slug": "Mace_Strike__2",
@@ -25393,7 +25409,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "95f170e00deff985dcb6752619d35de8eb9f3b151187fa1ed5d39f1bb1f2647a",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemPlayerDefault1HMace"
     },
     {
       "slug": "Mace_Strike__3",
@@ -25537,7 +25554,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "95f170e00deff985dcb6752619d35de8eb9f3b151187fa1ed5d39f1bb1f2647a",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemPlayerDefault1HMace"
     },
     {
       "slug": "Malice",
@@ -26756,7 +26774,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "d8ccf2f299a195af9d9e9e0b619fbb1ea7ca7577455755068fde873bd8b255b4",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemAscendancyMirageDeadeye"
     },
     {
       "slug": "Mirror_of_Refraction",
@@ -38012,7 +38031,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8dade3349e1020b833ecd46c973a770f00f138cb9ecfc06f7f01f18b3f8b2032",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemSkeletalSniper"
     },
     {
       "slug": "Skeletal_Warrior",
@@ -39666,7 +39686,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "80de223f29328a4f79f1c2d940adb049029d6a5b7fcd033bff093303d71cdbe0",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemSpark"
     },
     {
       "slug": "Spark__2",
@@ -39986,7 +40007,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "80de223f29328a4f79f1c2d940adb049029d6a5b7fcd033bff093303d71cdbe0",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemSpark"
     },
     {
       "slug": "Spear_Stab__2",
@@ -40140,7 +40162,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "fc1c1257835c75c60771ed73ace235892ac667e64a5ac659a9b2d807980c0057",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemPlayerDefaultSpear"
     },
     {
       "slug": "Spear_Stab",
@@ -40294,7 +40317,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "fc1c1257835c75c60771ed73ace235892ac667e64a5ac659a9b2d807980c0057",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemPlayerDefaultSpear"
     },
     {
       "slug": "Spear_Throw",
@@ -40578,7 +40602,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "d25a5e40d3527d7c8e0f2c151287d793f03af2c59f4f07aecfe9f88863ad2de7",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemSpellslinger"
     },
     {
       "slug": "Spiraling_Conspiracy",
@@ -40949,7 +40974,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "17fa653aa0511d1c05d6517c7c3a6d87c722d82eaca34db54da0c56b973a383f",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemSpiritVessel"
     },
     {
       "slug": "Starborn_Onslaught",
@@ -42780,7 +42806,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "c3dc85ceca916e748ece52916e8f528a3406a3a97e9d534d7c886cb6707b103a",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemLightningSpellOnHit"
     },
     {
       "slug": "Time_Freeze",
@@ -44219,7 +44246,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "000c82e10ed65248c02bbe1eed52770203a1694a3a42821411006c1e103b622e",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/items/Gems/SkillGemStaffUnleash"
     },
     {
       "slug": "Unleash__2",
@@ -44368,7 +44396,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "000c82e10ed65248c02bbe1eed52770203a1694a3a42821411006c1e103b622e",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/items/Gems/SkillGemStaffUnleash"
     },
     {
       "slug": "Untether",
@@ -47735,7 +47764,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "e8ed10ceeb044d5ec3dbabf025716eabc8c787f971612c5c9f4b51a6a1d0eac5",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemWitheringPresence"
     },
     {
       "slug": "Armour_Breaker",
@@ -53176,7 +53206,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8e928942211ca3f46169c264deb8cfd60b000c821a9eff185a3279f5a9c32e75",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemWolfPounce"
     },
     {
       "slug": "Rake",
@@ -58769,7 +58800,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8597af98f76d700257969c5569245fccbe179e54c6f90ca801aeae2a99f10cc4",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfAsh"
     },
     {
       "slug": "Herald_of_Ash__2",
@@ -58934,7 +58966,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8597af98f76d700257969c5569245fccbe179e54c6f90ca801aeae2a99f10cc4",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfAsh"
     },
     {
       "slug": "Herald_of_Blood",
@@ -59345,7 +59378,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "681cd05e11a637549b8799325f6522380cdaecdde7254f100ce19a5b69eb3d57",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfIce"
     },
     {
       "slug": "Herald_of_Ice",
@@ -59545,7 +59579,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "681cd05e11a637549b8799325f6522380cdaecdde7254f100ce19a5b69eb3d57",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfIce"
     },
     {
       "slug": "Herald_of_Thunder__3",
@@ -59730,7 +59765,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "c23be7b61be835aff9c08f1c1e931d9bd2a876216691876daa841c8529f61a6d",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfThunder"
     },
     {
       "slug": "Herald_of_Thunder__4",
@@ -59915,7 +59951,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "c23be7b61be835aff9c08f1c1e931d9bd2a876216691876daa841c8529f61a6d",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfThunder"
     },
     {
       "slug": "Herald_of_Thunder__2",
@@ -60100,7 +60137,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "c23be7b61be835aff9c08f1c1e931d9bd2a876216691876daa841c8529f61a6d",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfThunder"
     },
     {
       "slug": "Herald_of_Thunder",
@@ -60285,7 +60323,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "c23be7b61be835aff9c08f1c1e931d9bd2a876216691876daa841c8529f61a6d",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemHeraldOfThunder"
     },
     {
       "slug": "Iron_Ward",
@@ -62541,7 +62580,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "e8ed10ceeb044d5ec3dbabf025716eabc8c787f971612c5c9f4b51a6a1d0eac5",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemWitheringPresence"
     },
     {
       "slug": "Arc",
@@ -64950,7 +64990,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "1532300892c8d79f91c1bb37fadfbdef588151bb8139bfbc042c12c25d70a4c9",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemEmberFusillade"
     },
     {
       "slug": "Frostbolt",
@@ -74352,7 +74393,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "d8846dbd4b8f995c1c369456a44bee8c421717cd111775cea4e870044fe951d3",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemFerociousRoar"
     },
     {
       "slug": "Freezing_Mark__2",
@@ -77792,7 +77834,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "e43d418d1dae584c382b34b2d51da6be0e0eac11d31a7a6b2c7a2610736a2508",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemSpellTotem"
     },
     {
       "slug": "Storm_Wave",
@@ -80057,7 +80100,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "48b45a34afbbf4d6b28e7bd7f69f7d7c49012a65a1f0d12fba9890293118e418",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemBarrierInvocation"
     },
     {
       "slug": "Barrier_Invocation",
@@ -80222,7 +80266,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "48b45a34afbbf4d6b28e7bd7f69f7d7c49012a65a1f0d12fba9890293118e418",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemBarrierInvocation"
     },
     {
       "slug": "Barrier_Invocation__2",
@@ -80387,7 +80432,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "48b45a34afbbf4d6b28e7bd7f69f7d7c49012a65a1f0d12fba9890293118e418",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemBarrierInvocation"
     },
     {
       "slug": "Blasphemy",
@@ -80532,7 +80578,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "6ac595110ca4406b97866b42432048edbbcc58ee418837d115c9b83d1a63fda0",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemBlasphemy"
     },
     {
       "slug": "Blink",
@@ -80707,7 +80754,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "0cc43820eefd64db754a970825ecb4667bc0dc565e5aa034ec7c85a507f5b358",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemBlink"
     },
     {
       "slug": "Cast_on_Minion_Death",
@@ -80867,7 +80915,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "8243310c157dce5e76cad57a1d6c80e2a6ff7cf66961052863f2a9b8348340d0",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnMinionDeath"
     },
     {
       "slug": "Combat_Frenzy__2",
@@ -81493,7 +81542,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "a65ee3dbea4d06f110da3f759cb3f3e37968a91a4840ac4e81ee1687ae036219",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemElementalInvocation"
     },
     {
       "slug": "Elemental_Invocation",
@@ -81683,7 +81733,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "a65ee3dbea4d06f110da3f759cb3f3e37968a91a4840ac4e81ee1687ae036219",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemElementalInvocation"
     },
     {
       "slug": "Herald_of_Plague",
@@ -82185,7 +82236,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "3b300031bb065a2aa49c925d90dc794593ab2bbaf3f3860d8ab9e919a066b948",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemMirageArcher"
     },
     {
       "slug": "Mirage_Archer__2",
@@ -82371,7 +82423,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "3b300031bb065a2aa49c925d90dc794593ab2bbaf3f3860d8ab9e919a066b948",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemMirageArcher"
     },
     {
       "slug": "Overwhelming_Presence__2",
@@ -86262,7 +86315,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "c071e6ee49f886278e4910dcb9a9546abf1f9be3047d4757daa04a7b130fa608",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemHandOfChayula"
     },
     {
       "slug": "Ice_Shot",
@@ -93476,7 +93530,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "315f9fc56978e0d847ce8f2adb2b017a93d5828f893616f9e6866c706d3a9899",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemMortarCannon"
     },
     {
       "slug": "Rampage",
@@ -97757,7 +97812,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "7887caede3e334fe06b80f3b31cf89891d9b9f5534bd01a789be794a122c011e",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemAncestralWarriorTotem"
     },
     {
       "slug": "Cluster_Grenade",
@@ -104151,7 +104207,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "467bb19d9feab41dd3919f2775fa2733b39e5538b1cf4fefb69441f89c420130",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnCritical"
     },
     {
       "slug": "Cast_on_Dodge",
@@ -104306,7 +104363,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "5da2c31b4bbeeb968e6916732bde3a2b23b3ed64662ceb6e6a08f2778c185186",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnDodge"
     },
     {
       "slug": "Cast_on_Elemental_Ailment",
@@ -104486,7 +104544,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "ee2e099155b54d7ae72bb171fefbc4ca79057c01ed4c36e5af257eb138e48ba2",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnElementalAilment"
     },
     {
       "slug": "Charge_Regulation",
@@ -105673,7 +105732,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "d6bd598bda4722b5af5c15d6178fe3fd8bcea796f833d6a942c944d09bf4b659",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemFeralInvocation"
     },
     {
       "slug": "Reapers_Invocation",
@@ -105838,7 +105898,8 @@ window.POE2_SKILL_GEMS = {
       },
       "detail_hash": "3410a763af39bce50918573776b5b392ef41873467f40a91e6ab06922046b6b1",
       "updated_at": "2026-11-07T10:33:07.827Z",
-      "gem_type": "skill"
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gem/SkillGemReapersInvocation"
     },
     {
       "slug": "Rhoa_Mount",
