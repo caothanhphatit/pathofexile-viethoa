@@ -9,9 +9,12 @@
 //            runtime reached through an SSH tunnel. Set POB_REMOTE_URL and
 //            POB_REMOTE_TOKEN on the caller and POB_CALC_TOKEN on that machine.
 import { execFile } from "node:child_process";
-import { unlinkSync, writeFileSync } from "node:fs";
+import { existsSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 /** The JSON line calculate.lua prints among PoB's own log output. */
 export function parsePobStdout(stdout) {
@@ -79,6 +82,12 @@ export function pobRunnerFromEnv(env = process.env) {
     const options = { url: env.POB_REMOTE_URL, token: env.POB_REMOTE_TOKEN || "", timeoutMs: timeoutMs + 5_000 };
     return { mode: "remote", run: (xml) => runPobRemote(xml, options) };
   }
-  const options = { coreDir: env.POB_CORE_DIR || "/root/pob-core/src", luajit: env.POB_LUAJIT || "luajit", timeoutMs, script: env.POB_CALC_SCRIPT || "calculate.lua" };
+  const devCoreDir = resolve(REPO_ROOT, "..", "pob-core", "src");
+  const coreDir = env.POB_CORE_DIR || (existsSync(devCoreDir) ? devCoreDir : "/root/pob-core/src");
+  const devLuajit = resolve(coreDir, "..", "runtime", "pob-luajit-bin", process.platform === "win32" ? "pob-luajit.exe" : "luajit");
+  const luajit = env.POB_LUAJIT || (existsSync(devLuajit) ? devLuajit : "luajit");
+  const devScript = resolve(REPO_ROOT, "scripts", "pob-calculate.lua");
+  const script = env.POB_CALC_SCRIPT || (existsSync(devCoreDir) && !env.POB_CORE_DIR && existsSync(devScript) ? devScript : "calculate.lua");
+  const options = { coreDir, luajit, timeoutMs, script };
   return { mode: "local", run: (xml) => runPobLocal(xml, options) };
 }

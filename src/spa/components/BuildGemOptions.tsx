@@ -94,8 +94,33 @@ export function MonsterPicker({ library, value, onPick, locale }: {
   const recommended = data ? shown.filter((monster) => data.isRecommendedMonster(monster, library)) : [];
   const others = data ? shown.filter((monster) => !data.isRecommendedMonster(monster, library)) : [];
   const label = library === "beast" ? (vi ? "Thú đồng hành" : "Companion beast") : (vi ? "Quái spectre" : "Spectre monster");
+  const baseLabel = (monster: { name: string; category: string }) => (library === "beast" ? monster.name : `${monster.name} (${monster.category})`);
+  const optionLabels = useMemo(() => {
+    const groups = new Map<string, Array<{ id: string; base: string }>>();
+    for (const m of monsters) {
+      const base = library === "beast" ? m.name : `${m.name} (${m.category})`;
+      const list = groups.get(base) || [];
+      list.push({ id: m.id, base });
+      groups.set(base, list);
+    }
+    const labels = new Map<string, string>();
+    for (const [base, list] of groups) {
+      if (list.length === 1) {
+        labels.set(list[0].id, base);
+        continue;
+      }
+      const tails = list.map((item) => item.id.split("/").pop() || item.id);
+      const uniqueTails = new Set(tails).size === list.length;
+      for (let i = 0; i < list.length; i += 1) {
+        const parts = list[i].id.split("/");
+        const suffix = uniqueTails ? tails[i] : parts.slice(-2).join("/");
+        labels.set(list[i].id, `${base} · ${suffix}`);
+      }
+    }
+    return labels;
+  }, [monsters, library]);
   const option = (monster: { id: string; name: string; category: string }) => (
-    <option value={monster.id} key={monster.id}>{library === "beast" ? monster.name : `${monster.name} (${monster.category})`}</option>
+    <option value={monster.id} key={monster.id}>{optionLabels.get(monster.id) || baseLabel(monster)}</option>
   );
   return (
     <span className="gx-monster poe-no-tooltip">

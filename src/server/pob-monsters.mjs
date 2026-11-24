@@ -10,11 +10,19 @@ export { MONSTER_GEMS, monsterGemTitle, monsterLibraryOf } from "./pob-monster-g
 /** @typedef {{ id: string, name: string, category: string, recommendedSpectre: boolean, recommendedBeast: boolean }} PobMonster */
 
 /** @type {PobMonster[]} */
-export const POB_MONSTERS = data.monsters.map(([id, name, category, flags = ""]) => ({
-  id, name, category, recommendedSpectre: flags.includes("s"), recommendedBeast: flags.includes("b")
-}));
-
-const byId = new Map(POB_MONSTERS.map((monster) => [monster.id, monster]));
+const byId = new Map();
+for (const [id, name, category, flags = ""] of data.monsters) {
+  const prev = byId.get(id);
+  const recommendedSpectre = flags.includes("s");
+  const recommendedBeast = flags.includes("b");
+  if (prev) {
+    prev.recommendedSpectre ||= recommendedSpectre;
+    prev.recommendedBeast ||= recommendedBeast;
+  } else {
+    byId.set(id, { id, name, category, recommendedSpectre, recommendedBeast });
+  }
+}
+export const POB_MONSTERS = [...byId.values()];
 
 /** Whether PoB marks the monster as a recommended pick for that library. */
 export const isRecommendedMonster = (monster, library) => (library === "beast" ? monster.recommendedBeast : monster.recommendedSpectre);

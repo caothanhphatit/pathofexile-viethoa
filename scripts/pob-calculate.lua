@@ -1,6 +1,7 @@
 local xmlPath = (arg and arg[1]) or ...
 
-package.path = "/root/pob-core/runtime/lua/?.lua;/root/pob-core/runtime/lua/?/init.lua;/root/pob-core/src/?.lua;" .. package.path
+package.path = "../runtime/lua/?.lua;../runtime/lua/?/init.lua;./?.lua;/root/pob-core/runtime/lua/?.lua;/root/pob-core/runtime/lua/?/init.lua;/root/pob-core/src/?.lua;" .. package.path
+package.cpath = "../runtime/?.dll;../runtime/?.so;" .. package.cpath
 
 dofile("HeadlessWrapper.lua")
 
