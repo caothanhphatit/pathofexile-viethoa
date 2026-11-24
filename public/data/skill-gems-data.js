@@ -1,5 +1,5 @@
 window.POE2_SKILL_GEMS = {
-  "generated_at": "2026-11-07T10:42:22.348Z",
+  "generated_at": "2026-11-24T08:15:22.963Z",
   "source_url": "https://poe2db.tw/us/Skill_Gems",
   "latest_run": {
     "id": "1",
@@ -16,7 +16,7 @@ window.POE2_SKILL_GEMS = {
     "failed_count": 0,
     "metadata": {}
   },
-  "total": 1069,
+  "total": 1072,
   "gems": [
     {
       "slug": "Abyssal_Pact",
@@ -24,7 +24,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Abyssal_Pact",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AbyssDeathPactSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/abyssdeathpactskill.webp",
       "icon_alt": "AbyssDeathPactSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ac725c1172c1a869f6462f781816d0d275b66123288845c4aa52850a05cd46e9",
       "tags": [
@@ -166,10 +166,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Acidic_Concoction",
       "name": "Acidic Concoction",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Acidic_Concoction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerBrewConcoctionPoisonSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerbrewconcoctionpoisonskill.webp",
       "icon_alt": "RangerBrewConcoctionPoisonSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aa4d92aff54f67aed61c120ce8cea3f9ce4f27ccd1adbe0284fe36e992d25e35",
       "tags": [
@@ -457,10 +457,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Align_Fate",
       "name": "Align Fate",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Align_Fate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidOracleSpellfluxSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidoraclespellfluxskill.webp",
       "icon_alt": "DruidOracleSpellfluxSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/01f0e0690ebd8b0b73217fe0d80c345eff9aa9da8362314628ced0d8b08b6926",
       "tags": [
@@ -632,10 +632,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Ancestral_Spirits",
       "name": "Ancestral Spirits",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ancestral_Spirits",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteWarbringerDefenders.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutewarbringerdefenders.webp",
       "icon_alt": "BruteWarbringerDefenders",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a7e1075653f90956760b956cd10d68fa83b77f006c8546139c6d02f22463d668",
       "tags": [
@@ -792,10 +792,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Animus_Exchange",
       "name": "Animus Exchange",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Animus_Exchange",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionAnimusExhange.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionanimusexhange.webp",
       "icon_alt": "ExpeditionAnimusExhange",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2be9d4b7ca7c99f9a6201684904705182a23d2f19b995bff7369546e9bdb80d4",
       "tags": [
@@ -962,10 +962,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Animus_Splinters",
       "name": "Animus Splinters",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Animus_Splinters",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionFalseLife.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionfalselife.webp",
       "icon_alt": "ExpeditionFalseLife",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ed6f458aa87a368e605999c1f1fdad573aa98c4039c90c80031332ec34a964f7",
       "tags": [
@@ -1086,10 +1086,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Apocalypse",
       "name": "Apocalypse",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Apocalypse",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidShamanUnleashtheElementsSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidshamanunleashtheelementsskill.webp",
       "icon_alt": "DruidShamanUnleashtheElementsSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c3227d00e40a5fc43f95b6983f4029cd3b30d9a56d88a10b74ec30fb577b525d",
       "tags": [
@@ -1526,10 +1526,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Archon_of_Chayula",
       "name": "Archon of Chayula",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Archon_of_Chayula",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AcolyteOfChayulaSpecialNodeSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/acolyteofchayulaspecialnodeskill.webp",
       "icon_alt": "AcolyteOfChayulaSpecialNodeSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/228fd2db2a5771b196e3229acc6d0587ee1b76615610d7db00be7275416fada3",
       "tags": [
@@ -1805,7 +1805,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Armour_Piercing_Rounds",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RapidShotPhysical.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rapidshotphysical.webp",
       "icon_alt": "RapidShotPhysical",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b1464f20fefa3f6e3a2320f6844c6b1951664a0fbea9be0a4f175ac843ca27bc",
       "tags": [
@@ -2101,7 +2101,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Axe_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TwoHandAxeDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/twohandaxedefaultskill.webp",
       "icon_alt": "TwoHandAxeDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/edee80196c950e6a1368063a53bb34036f29f95e8c8e852d266f135865099fb1",
       "tags": [
@@ -2245,7 +2245,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Axe_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OneHandAxeDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/onehandaxedefaultskill.webp",
       "icon_alt": "OneHandAxeDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5000b95459c5daac1cad3994d18e30a1e16a736d4716f4e03559555c2e44ebbb",
       "tags": [
@@ -2389,7 +2389,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Axe_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DualWieldAxeDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/dualwieldaxedefaultskill.webp",
       "icon_alt": "DualWieldAxeDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/91ec61702891a826dd1c549966f884e9bfea52daa1748c9649b4f10680855a4e",
       "tags": [
@@ -2530,10 +2530,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Azmerian_Swarms",
       "name": "Azmerian Swarms",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Azmerian_Swarms",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FluttermothSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/fluttermothskillicon.webp",
       "icon_alt": "FluttermothSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fe0d5f1d18b2b394b80f3cceef6d72a073ea6e1bf7982626510d5caf472b025b",
       "tags": [
@@ -2765,10 +2765,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Azmerian_Wolf",
       "name": "Azmerian Wolf",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Azmerian_Wolf",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ThePackLeaderBaseMinionSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/thepackleaderbaseminionskill.webp",
       "icon_alt": "ThePackLeaderBaseMinionSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/741986166717a047bafb7513e86477954a9c526d29a09943007105782123ecc2",
       "tags": [
@@ -2951,10 +2951,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Bitter_Dead",
       "name": "Bitter Dead",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Bitter_Dead",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionBitterDead.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionbitterdead.webp",
       "icon_alt": "ExpeditionBitterDead",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7a71d336aead63107ea61b1be36f8a6345e7d0eac06be64dccfae5bdc61fe104",
       "tags": [
@@ -3293,10 +3293,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Black_Powder_Blitz",
       "name": "Black Powder Blitz",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Black_Powder_Blitz",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ShankgonneSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/shankgonneskill.webp",
       "icon_alt": "ShankgonneSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cbc65ea28656e6107d49784c76b4a5e8c69aea7f6999b0bd9d9b0869db5f05ed",
       "tags": [
@@ -3519,10 +3519,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Bleeding_Concoction",
       "name": "Bleeding Concoction",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Bleeding_Concoction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerBrewConcoctionBleedSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerbrewconcoctionbleedskill.webp",
       "icon_alt": "RangerBrewConcoctionBleedSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d7e3cb445e2627ea862ce0ba8c2471de245ffb3f20d6df38d0d1c584c38deded",
       "tags": [
@@ -3814,15 +3814,16 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Blink__2",
       "name": "Blink",
-      "tier": 1,
-      "color": "item",
+      "tier": 8,
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/Blink",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBlinkReservation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressblinkreservation.webp",
       "icon_alt": "SorceressBlinkReservation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bc617a63b0a41b109d699eb9a9b9dd6836ef84dac221a07ea8034edd788a54f0",
       "tags": [
         "Buff",
         "Spell",
+        "Persistent",
         "Travel"
       ],
       "source_hash": "267178150f9b4ea4c89d13ee6cb5bb6879210f06ab0e6f84356ad2541c10857c",
@@ -3875,6 +3876,10 @@ window.POE2_SKILL_GEMS = {
           {
             "en": "Spell",
             "vi": "Spell"
+          },
+          {
+            "en": "Persistent",
+            "vi": "Persistent"
           },
           {
             "en": "Travel",
@@ -3985,10 +3990,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Blood_Boil",
       "name": "Blood Boil",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Blood_Boil",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PrimalistBloodBoilsSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/primalistbloodboilsskillicon.webp",
       "icon_alt": "PrimalistBloodBoilsSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/99abb75ca3a72c180bd75353fb2cdbfd85a565381a7a90ae5cd21212ad7cab69",
       "tags": [
@@ -4165,10 +4170,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Bone_Blast",
       "name": "Bone Blast",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bone_Blast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BoneBlastWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/boneblastweaponskill.webp",
       "icon_alt": "BoneBlastWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3b633353519adfa13ec71f8b8770f135333a0fb9505dc8766ffb83b3c514f61e",
       "tags": [
@@ -4383,7 +4388,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Boneshatter",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteBoneshatter.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteboneshatter.webp",
       "icon_alt": "BruteBoneshatter",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/79fc087b7179ababc11fe1cd65551fbdae00ef54e6785999d74078acbd9347fa",
       "tags": [
@@ -4601,10 +4606,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Bow_Shot",
       "name": "Bow Shot",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Bow_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BowDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bowdefaultskill.webp",
       "icon_alt": "BowDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2fe567c8721bf97713f13d71f11cd76b3ca0db69b519ec73d76af30d541a91d2",
       "tags": [
@@ -4821,10 +4826,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Bursting_Fen_Toad",
       "name": "Bursting Fen Toad",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Bursting_Fen_Toad",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MurkshaftToads.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/murkshafttoads.webp",
       "icon_alt": "MurkshaftToads",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/562fcddb94c36ef581d7addf146d807a8eaa3f9cc24c4946c4e4f44c063f0d86",
       "tags": [
@@ -4996,10 +5001,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Cackling_Companions",
       "name": "Cackling Companions",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Cackling_Companions",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HandoftheClanSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/handoftheclanskill.webp",
       "icon_alt": "HandoftheClanSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fd3e976226ec0cf901fbb966cb94f72c6aa7c4691c76b7b6c419ed17a8b145f1",
       "tags": [
@@ -5151,10 +5156,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Called_Shots",
       "name": "Called Shots",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Called_Shots",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DeadeyeMarkMetagemSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/deadeyemarkmetagemskill.webp",
       "icon_alt": "DeadeyeMarkMetagemSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4b94e2564e4a4e50676fe90e7fdcefa9ca728070f95898ec3bc9d2a2b829bfe0",
       "tags": [
@@ -5297,10 +5302,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Cast_on_Block",
       "name": "Cast on Block",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Cast_on_Block",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CastOnMeleeBlockSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castonmeleeblockskill.webp",
       "icon_alt": "CastOnMeleeBlockSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4dece14330c057f2114cd23b3ad16ee23fcddc9643f8b2769d7dd2d656349558",
       "tags": [
@@ -5453,10 +5458,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Cast_on_Charm_Use",
       "name": "Cast on Charm Use",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Cast_on_Charm_Use",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CastOnCharm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castoncharm.webp",
       "icon_alt": "CastOnCharm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e97227043347243388999af685a2819cc50902b10718d9d650d565559057170c",
       "tags": [
@@ -5604,10 +5609,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Chaos_Bolt",
       "name": "Chaos Bolt",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Chaos_Bolt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ChaosBoltWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/chaosboltweaponskill.webp",
       "icon_alt": "ChaosBoltWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/519b22b349ba46ca38b05a8fabb0b45127a735eb61e55e84797b333167c9a8e1",
       "tags": [
@@ -5869,10 +5874,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Chaotic_Surge",
       "name": "Chaotic Surge",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Chaotic_Surge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SpireofIreSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/spireofireskillicon.webp",
       "icon_alt": "SpireofIreSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d721f874c2550c8e00c838b2ccad3af23634d08d540fa46e9f69b54d723e193b",
       "tags": [
@@ -6052,7 +6057,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Claw_Stab",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DualWieldClawDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/dualwieldclawdefaultskill.webp",
       "icon_alt": "DualWieldClawDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6e524dd308cf94228dd8f98e249f1a86b1d7db01d3e7e5a769d44c5ddec353c6",
       "tags": [
@@ -6196,7 +6201,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Claw_Stab",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OneHandClawDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/onehandclawdefaultskill.webp",
       "icon_alt": "OneHandClawDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/45f1be1c042d715fa0a9c5dd1ca34ca5a55f2c6447e34befb00e0358959ad7f6",
       "tags": [
@@ -6337,10 +6342,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Coiling_Bolts",
       "name": "Coiling Bolts",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Coiling_Bolts",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CoilOfUndoingSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/coilofundoingskill.webp",
       "icon_alt": "CoilOfUndoingSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/01a93ebd8e10b02dac701c351f670725491f67d4014b5a1ec836c96aedbe0775",
       "tags": [
@@ -6628,10 +6633,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Conductive_Runes",
       "name": "Conductive Runes",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Conductive_Runes",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionRunewordHazard.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionrunewordhazard.webp",
       "icon_alt": "ExpeditionRunewordHazard",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d4930f5e1e8d28dd11e078dc31cd9caa26477511d7ed5e04ef65eeebac56ba63",
       "tags": [
@@ -6934,10 +6939,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Consecrate",
       "name": "Consecrate",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Consecrate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/BuffIcons/consecrated.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/bufficons/consecrated.webp",
       "icon_alt": "consecrated",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/699c6c22ade19895fed1fa7022723345104238b8b52b349f70a79e14aa17ce3c",
       "tags": [
@@ -7122,7 +7127,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Contagion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchContagion.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchcontagion.webp",
       "icon_alt": "WitchContagion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f3fe19b7ae1101a0817d93de1bfb1b7c4aa0bbaa08025c02875e166f5dc015a7",
       "tags": [
@@ -7344,10 +7349,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Crackling_Palm",
       "name": "Crackling Palm",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Crackling_Palm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ThunderfistUniqueSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/thunderfistuniqueskill.webp",
       "icon_alt": "ThunderfistUniqueSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/97b7571d5fe966f7fb91a3936c6273aae93e71fde765a654c177e9907dad90ac",
       "tags": [
@@ -7515,10 +7520,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Crossbow_Shot",
       "name": "Crossbow Shot",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Crossbow_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PowerShot.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/powershot.webp",
       "icon_alt": "PowerShot",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/712b1940425a1d07a9679220a3b42573c108b4cc75ad1ccdb1e944a15258b859",
       "tags": [
@@ -7771,10 +7776,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Crushing_Fear",
       "name": "Crushing Fear",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Crushing_Fear",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ChokingMistsSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/chokingmistsskillicon.webp",
       "icon_alt": "ChokingMistsSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6937ed0c564cc05cbd77dde9a0173da05b7fc58e4ca643ce40a548c8a6723ceb",
       "tags": [
@@ -8045,7 +8050,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Dagger_Stab",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TwoHandDaggerDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/twohanddaggerdefaultskill.webp",
       "icon_alt": "TwoHandDaggerDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ec70b5453c9a26a9147aa2c51fca098e63390645e9eac70384e75b8b3ee789d2",
       "tags": [
@@ -8189,7 +8194,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Dagger_Stab",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OneHandDaggerDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/onehanddaggerdefaultskill.webp",
       "icon_alt": "OneHandDaggerDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/14c351782d461b360a57441bf04ffed6d8c7b335b6e952c87ab80e0e675a1e0b",
       "tags": [
@@ -8333,7 +8338,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Dark_Pact",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DeathPactSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/deathpactskill.webp",
       "icon_alt": "DeathPactSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c39b13ac4b318f2653761ea9d8572722188ec53fc9481b0e246a83832c1df495",
       "tags": [
@@ -8570,10 +8575,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Decompose",
       "name": "Decompose",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Decompose",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DecomposeSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/decomposeskill.webp",
       "icon_alt": "DecomposeSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/82130546e5c8f3fbb886ffb8e5f272a0de6eb4de6ec2697523d8b16b556f05d6",
       "tags": [
@@ -8811,16 +8816,15 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Decompose__2",
       "name": "Decompose",
-      "tier": 1,
-      "color": "item",
+      "tier": null,
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/Decompose",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DecomposeSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/decomposeskill.webp",
       "icon_alt": "DecomposeSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/89fe3b4b954bb1e09f04086e8db0a802d3af98230b7164ad9c3123ccbda36447",
       "tags": [
         "Spell",
         "AoE",
-        "Trigger",
         "Fire",
         "Chaos",
         "Duration"
@@ -8887,10 +8891,6 @@ window.POE2_SKILL_GEMS = {
           {
             "en": "AoE",
             "vi": "AoE"
-          },
-          {
-            "en": "Trigger",
-            "vi": "Trigger"
           },
           {
             "en": "Fire",
@@ -9057,10 +9057,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Demon_Form",
       "name": "Demon Form",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Demon_Form",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchTransformDemon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchtransformdemon.webp",
       "icon_alt": "WitchTransformDemon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/85f34d7491766d2c685186d4fa122804198f73af57ed10fa674098314da17bfb",
       "tags": [
@@ -9212,10 +9212,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Detonate_Living",
       "name": "Detonate Living",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Detonate_Living",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionDetonateLiving.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditiondetonateliving.webp",
       "icon_alt": "ExpeditionDetonateLiving",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/372364a672d4f89e456c278b067f732bf771eec7b1b11d03eb78ae7c39519d7f",
       "tags": [
@@ -9418,10 +9418,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Discipline",
       "name": "Discipline",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Discipline",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DisciplineWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/disciplineweaponskill.webp",
       "icon_alt": "DisciplineWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4a248c2e5ffaaa9dc28079d40c620f24455d83da020348387ce72154314116f7",
       "tags": [
@@ -9551,7 +9551,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Disengage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ImpaleSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/impaleskillicon.webp",
       "icon_alt": "ImpaleSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f8d675dad05b6c1af97da37592473e67645ff3a7dceb4121809cdb9563f1daa7",
       "tags": [
@@ -9817,7 +9817,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Earthquake",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteEarthquake.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteearthquake.webp",
       "icon_alt": "BruteEarthquake",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9fdae2050a853f4d5f77c924efca76d018ddd8ef49b3ad8f729c0852d0b4324e",
       "tags": [
@@ -10060,10 +10060,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Elemental_Expression",
       "name": "Elemental Expression",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Elemental_Expression",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkInvokerWildStrike.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkinvokerwildstrike.webp",
       "icon_alt": "MonkInvokerWildStrike",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/42abecfcf6f08f66b4e293412278bbc39987c427e723fee483c1a701b6c5e1d8",
       "tags": [
@@ -10322,10 +10322,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Elemental_Storm",
       "name": "Elemental Storm",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Elemental_Storm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressElementalStorm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresselementalstorm.webp",
       "icon_alt": "SorceressElementalStorm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a7c82bc40e370b34e2d6551fe98dbd7d1320b20aac06e5313aaafd6958808fc2",
       "tags": [
@@ -10729,10 +10729,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Elemental_Surge",
       "name": "Elemental Surge",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Elemental_Surge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AmazonElementalInfusionSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/amazonelementalinfusionskillicon.webp",
       "icon_alt": "AmazonElementalInfusionSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6d3bec2dec0aafa1ac56d3a301e81d53a46f00efbdce58df2210d43ac21cf655",
       "tags": [
@@ -11003,17 +11003,16 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Ember_Fusillade__2",
       "name": "Ember Fusillade",
-      "tier": 1,
+      "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ember_Fusillade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBlazingCluster.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressblazingcluster.webp",
       "icon_alt": "SorceressBlazingCluster",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/931a9730237bd0efe58be3055c3caf4854b5b03bb65acc09f3fd4e17781acce1",
       "tags": [
         "Spell",
         "AoE",
         "Projectile",
-        "Trigger",
         "Fire",
         "Duration",
         "Repeatable"
@@ -11110,10 +11109,6 @@ window.POE2_SKILL_GEMS = {
           {
             "en": "Projectile",
             "vi": "Projectile"
-          },
-          {
-            "en": "Trigger",
-            "vi": "Trigger"
           },
           {
             "en": "Fire",
@@ -11372,10 +11367,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Encase_in_Jade",
       "name": "Encase in Jade",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Encase_in_Jade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteWarbringerEncasedJade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutewarbringerencasedjade.webp",
       "icon_alt": "BruteWarbringerEncasedJade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d3298b0b7931370ef640ba750129ecdeecb1bae5f72c768729d5d8955404f444",
       "tags": [
@@ -11517,10 +11512,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Enervating_Nova",
       "name": "Enervating Nova",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Enervating_Nova",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/EnervatingNovaWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/enervatingnovaweaponskill.webp",
       "icon_alt": "EnervatingNovaWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2dfc9e2fba998e3bc450398feca15a5741d11f7e3834bad2390fc936747da1ff",
       "tags": [
@@ -11770,7 +11765,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Entangle",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidEntangle.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidentangle.webp",
       "icon_alt": "DruidEntangle",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5f753391e395eaeeedeaa3f77e5397bbe970571e384ea14f0d467e6f982034b1",
       "tags": [
@@ -12056,7 +12051,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Escape_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerFrostEscapeShot.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerfrostescapeshot.webp",
       "icon_alt": "RangerFrostEscapeShot",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/be37b5a33121a0cdfe0424a0c7b5a3313af33d934962785edc86372ab78cddc3",
       "tags": [
@@ -12354,10 +12349,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Eternal_March",
       "name": "Eternal March",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Eternal_March",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionWardforgedMinions.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionwardforgedminions.webp",
       "icon_alt": "ExpeditionWardforgedMinions",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4114335d9f105f54792cb5cb15684c8b27538a7164a2c9a5d7cd267dcc43cd3e",
       "tags": [
@@ -12489,10 +12484,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Explosive_Concoction",
       "name": "Explosive Concoction",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Explosive_Concoction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerBrewConcoctionFireSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerbrewconcoctionfireskill.webp",
       "icon_alt": "RangerBrewConcoctionFireSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e81096fd9e42bbdd52e743d1f2a347acf2a7b4c1e77a5964906aa35794613fae",
       "tags": [
@@ -12773,7 +12768,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Explosive_Grenade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExplosiveGrenade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/explosivegrenade.webp",
       "icon_alt": "ExplosiveGrenade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8991c0e5aab4b592d2414fc94416139d7d7e503c175ab3bde96d96f34137e402",
       "tags": [
@@ -13143,7 +13138,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Explosive_Spear",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressRemoteMineSpear.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressremoteminespear.webp",
       "icon_alt": "HuntressRemoteMineSpear",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3c2ebb40e511a4612a856b7183dbbe190aa86dd27545812e475a7ff8f7a765f9",
       "tags": [
@@ -13599,10 +13594,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Explosive_Transmutation",
       "name": "Explosive Transmutation",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Explosive_Transmutation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionExplosiveTransmutation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionexplosivetransmutation.webp",
       "icon_alt": "ExpeditionExplosiveTransmutation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/11dfa921d1974f7727521e3e913f634fc415d5099b8dd620ac3178db3e6f1903",
       "tags": [
@@ -13977,10 +13972,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Exsanguinate",
       "name": "Exsanguinate",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Exsanguinate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BloodTendrilsSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bloodtendrilsskill.webp",
       "icon_alt": "BloodTendrilsSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5003956c418f842499271851efe0f979e2423be217c611d586734b8bd9827625",
       "tags": [
@@ -14195,7 +14190,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Falling_Thunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkLightningStrike.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monklightningstrike.webp",
       "icon_alt": "MonkLightningStrike",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5be1d4ed84a425236b383b8e953e9bae75c7e65852d149e52d9be00217f071c4",
       "tags": [
@@ -14458,10 +14453,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Feast_of_Flesh",
       "name": "Feast of Flesh",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Feast_of_Flesh",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WeaponFeastofFlesh.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/weaponfeastofflesh.webp",
       "icon_alt": "WeaponFeastofFlesh",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cb3164080a1c4e85b10ed0201e987fcef2f84421fe744e23ce5cc3fa7c3cf764",
       "tags": [
@@ -14658,10 +14653,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Fire_Spell_on_Hit",
       "name": "Fire Spell on Hit",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Fire_Spell_on_Hit",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SmithOfKitavaTriggerFireballsSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/smithofkitavatriggerfireballsskillicon.webp",
       "icon_alt": "SmithOfKitavaTriggerFireballsSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a308ad37378f5e30cb5c1a2d1409d1a45ceb8fdae9502120926e5895bf62a1f6",
       "tags": [
@@ -14819,10 +14814,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Firebolt",
       "name": "Firebolt",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Firebolt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FireballSkillStaff.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/fireballskillstaff.webp",
       "icon_alt": "FireballSkillStaff",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f18efd76154ccf526509d9b98e1de6d484042a7418c80ac67c6f82dbeec4182d",
       "tags": [
@@ -15098,7 +15093,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Flail_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FlailDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/flaildefaultskill.webp",
       "icon_alt": "FlailDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c4b28bb2272fbbeb3aed5d88a0631297edb1e5f8d8c685de6b8097b89a38b061",
       "tags": [
@@ -15243,7 +15238,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Flame_Wall",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressFlameWall.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressflamewall.webp",
       "icon_alt": "SorceressFlameWall",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/552d26b3e299c527295ec111af85a4b69d98dabebed7b9dcd70244688ad43424",
       "tags": [
@@ -15592,7 +15587,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Fragmentation_Rounds",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BurstShotPhysical.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/burstshotphysical.webp",
       "icon_alt": "BurstShotPhysical",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3d69ec19d3db50a566e78d215a9da0ba2d2a802304cecf6386b9820302cc0de0",
       "tags": [
@@ -16088,10 +16083,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Fragments_Of_The_Past",
       "name": "Fragments Of The Past",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Fragments_Of_The_Past",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionFragmentsofthePast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionfragmentsofthepast.webp",
       "icon_alt": "ExpeditionFragmentsofthePast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a635efcf994b656af03b23c6e34c2ba4c3bab3ebc7a8a4c35b648a4308e5a3c9",
       "tags": [
@@ -16379,10 +16374,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Freezing_Shards",
       "name": "Freezing Shards",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Freezing_Shards",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FreezingShardsStaff.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/freezingshardsstaff.webp",
       "icon_alt": "FreezingShardsStaff",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7035e08fcf2432b5e179cc3287b695f6d17e2d78b87d935d7ea5e92ded8abb35",
       "tags": [
@@ -16627,7 +16622,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Frost_Bomb",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressFrostBomb.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressfrostbomb.webp",
       "icon_alt": "SorceressFrostBomb",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/85ff509f5b2e6635c6b989b9339f272edad64992973e28717f6415408d8de98f",
       "tags": [
@@ -16924,10 +16919,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Frostflame_Nova",
       "name": "Frostflame Nova",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Frostflame_Nova",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionFrostfireNova.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionfrostfirenova.webp",
       "icon_alt": "ExpeditionFrostfireNova",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f4d3efa082740caafc699c041bb1f07e1dcddbd1d630c1820e7bfc144ddb72e",
       "tags": [
@@ -17138,7 +17133,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Frozen_Locus",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkIceAmbush.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkiceambush.webp",
       "icon_alt": "MonkIceAmbush",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/59f4b0f08527281316f5287c73864015d5eb7e2cbaa9a0904de235ea322e2ed3",
       "tags": [
@@ -17391,10 +17386,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Fulminating_Concoction",
       "name": "Fulminating Concoction",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Fulminating_Concoction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerBrewConcoctionLightningSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerbrewconcoctionlightningskill.webp",
       "icon_alt": "RangerBrewConcoctionLightningSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cca5e7f51576ee27317d25204d10f5bf29e1f5483ff21b75d801112b756ba0ec",
       "tags": [
@@ -17686,10 +17681,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Fulmination",
       "name": "Fulmination",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Fulmination",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WrathAuraWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/wrathauraweaponskill.webp",
       "icon_alt": "WrathAuraWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/df0493acf22d79944f40bb9fd29f7395a68a117164c6ddbf4646c9b3da60a56f",
       "tags": [
@@ -17834,7 +17829,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Furious_Slam",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidBearSlam.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidbearslam.webp",
       "icon_alt": "DruidBearSlam",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e5625b4f5a54b81aaf6eaf08643ec72d0c5effbf49ce81c6bf9f6bde9526b404",
       "tags": [
@@ -18087,10 +18082,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Future-Past",
       "name": "Future-Past",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Future-Past",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HinekorasSightUnique.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/hinekorassightunique.webp",
       "icon_alt": "HinekorasSightUnique",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/554528a5a4c7f0eed8905157edb48c3bbde77705939b0641e6dc56774c7ad863",
       "tags": [
@@ -18237,10 +18232,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Galvanic_Field",
       "name": "Galvanic Field",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Galvanic_Field",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/GalvanicFieldWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/galvanicfieldweaponskill.webp",
       "icon_alt": "GalvanicFieldWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0b127e532056bffa336d680907c706ecad7574a0ece02081cb50050b038628e3",
       "tags": [
@@ -18493,10 +18488,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Gemini_Surge",
       "name": "Gemini Surge",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Gemini_Surge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AmazonElementalInfusionSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/amazonelementalinfusionskillicon.webp",
       "icon_alt": "AmazonElementalInfusionSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/622b620512e82578fdb58bd7e35532b3a108b091b187be9c4fdd5b957063343b",
       "tags": [
@@ -18712,7 +18707,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Glacial_Cascade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkGlacialCascade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkglacialcascade.webp",
       "icon_alt": "MonkGlacialCascade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7ca1ee016f05082793efa024eeddac1695cb38d4b9121c29fbc982d3f38722c2",
       "tags": [
@@ -19005,10 +19000,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Grim_Pillars",
       "name": "Grim Pillars",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Grim_Pillars",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionGrimPillars.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditiongrimpillars.webp",
       "icon_alt": "ExpeditionGrimPillars",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/953a316215649143a2dd5cc158f935ecafead7e5bf4cc817164bdf5e3ac16210",
       "tags": [
@@ -19281,10 +19276,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Harbinger_of_Madness",
       "name": "Harbinger of Madness",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Harbinger_of_Madness",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Murkmaw.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/murkmaw.webp",
       "icon_alt": "Murkmaw",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/60ad36a05ec8959f14ef4761e171b8cf5e6b5615013acf4ff23a14e61dd9a5bd",
       "tags": [
@@ -19466,10 +19461,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Heart_of_Ice",
       "name": "Heart of Ice",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Heart_of_Ice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ChillingAuraSkillStaff.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/chillingauraskillstaff.webp",
       "icon_alt": "ChillingAuraSkillStaff",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/478d6b71434b66055b7758cb79ed4a5376efd5b6bbac0aacf616205d63babd9b",
       "tags": [
@@ -19626,10 +19621,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Herald_of_Ash__3",
       "name": "Herald of Ash",
-      "tier": 1,
-      "color": "item",
+      "tier": 4,
+      "color": "red",
       "source_url": "https://poe2db.tw/us/Herald_of_Ash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfAshSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofashskill.webp",
       "icon_alt": "HeraldOfAshSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f526484dbabd855429ea218df51d28d2a3baceced4c93548156f04601c9c0e9",
       "tags": [
@@ -19792,10 +19787,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Herald_of_Ice__3",
       "name": "Herald of Ice",
-      "tier": 1,
+      "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Herald_of_Ice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfIceSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldoficeskill.webp",
       "icon_alt": "HeraldOfIceSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b004bebf4d2d4301fb84dfbb3e144c69ca91c5d89240e5fe76f67ef1347ffb13",
       "tags": [
@@ -19993,10 +19988,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Herald_of_the_Royal_Queen",
       "name": "Herald of the Royal Queen",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Herald_of_the_Royal_Queen",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AtziriHeraldOfBlood.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/atziriheraldofblood.webp",
       "icon_alt": "AtziriHeraldOfBlood",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5083e6644e47a4dd80ec50ebe583cc6c7dd5253268692fe56ab3fc5861b1b9b7",
       "tags": [
@@ -20189,10 +20184,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Herald_of_Thunder__5",
       "name": "Herald of Thunder",
-      "tier": 1,
-      "color": "item",
+      "tier": 4,
+      "color": "green",
       "source_url": "https://poe2db.tw/us/Herald_of_Thunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfThunderSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofthunderskill.webp",
       "icon_alt": "HeraldOfThunderSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c1c4eb311a1c3097643903a18e9ab8b90005d1fd855562f0ecd5466e80d3fe9e",
       "tags": [
@@ -20375,10 +20370,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Hollow_Focus",
       "name": "Hollow Focus",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Hollow_Focus",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MartialArtistSpectralBellSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/martialartistspectralbellskill.webp",
       "icon_alt": "MartialArtistSpectralBellSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ec67c24c6ad4717517dc50f52274195e694a0ccfcdd78991d4708c3a8be38b99",
       "tags": [
@@ -20606,10 +20601,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Hollow_Form",
       "name": "Hollow Form",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Hollow_Form",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MartialArtistMantraofIllusionsSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/martialartistmantraofillusionsskill.webp",
       "icon_alt": "MartialArtistMantraofIllusionsSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d58f92584d29b41c1797edb409724c2d5a91ae0c5a59907d30aba16b3c71b308",
       "tags": [
@@ -20817,10 +20812,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Hollow_Resonance",
       "name": "Hollow Resonance",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Hollow_Resonance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MartialArtistCarrySpectralBellSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/martialartistcarryspectralbellskill.webp",
       "icon_alt": "MartialArtistCarrySpectralBellSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d0174995c2f7cce943d07ae0b9b8407c8e19c77bf01e5743366fc407ee5665d1",
       "tags": [
@@ -20992,10 +20987,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Hollow_Shell",
       "name": "Hollow Shell",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Hollow_Shell",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionHollowShell.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionhollowshell.webp",
       "icon_alt": "ExpeditionHollowShell",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/369e0e45f4fed6d031169639101177cb323554c96c00beabef14e675f02d9cba",
       "tags": [
@@ -21200,7 +21195,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ice_Nova",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressIceNova.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressicenova.webp",
       "icon_alt": "SorceressIceNova",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d9dc166934b9177140faf3bc4b4f62b5ca9742a17565daa4dd273b2c6a630f55",
       "tags": [
@@ -21576,10 +21571,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Icestorm",
       "name": "Icestorm",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Icestorm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/IceStormSkillStaff.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/icestormskillstaff.webp",
       "icon_alt": "IceStormSkillStaff",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8f79b609a354709ab3c23a9297e17885d9603b7640cd2ee9cc148e09db2fe498",
       "tags": [
@@ -21872,10 +21867,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Impurity",
       "name": "Impurity",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Impurity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PurityofChaosWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/purityofchaosweaponskill.webp",
       "icon_alt": "PurityofChaosWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1aa33101ad025afca029f0eff65c6d869c978439c31ab6675842f5ab2502e3c5",
       "tags": [
@@ -22007,10 +22002,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Inevitable_Agony",
       "name": "Inevitable Agony",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Inevitable_Agony",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TemporalistSynchronisationofPainSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/temporalistsynchronisationofpainskill.webp",
       "icon_alt": "TemporalistSynchronisationofPainSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6d5618673b38be13f39b8f8861cb3147acf29620a30ac387fe4dfde095498696",
       "tags": [
@@ -22197,10 +22192,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Into_the_Breach",
       "name": "Into the Breach",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Into_the_Breach",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkBreachWalk.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkbreachwalk.webp",
       "icon_alt": "MonkBreachWalk",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c3432edd5b5fa7e875dd6f6b1dad55f28ee26d180f11700fa1aeeaa89b226331",
       "tags": [
@@ -22387,10 +22382,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Kelari,_the_Tainted_Sands",
       "name": "Kelari, the Tainted Sands",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Kelari%2C_the_Tainted_Sands",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressSummonSandDjinn.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresssummonsanddjinn.webp",
       "icon_alt": "SorceressSummonSandDjinn",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f0c383a2f105da76804c9ff423448af4ff71144babff9ccdb9899523a1357775",
       "tags": [
@@ -22571,7 +22566,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Kelaris_Deception",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/77344818c34977b3c46e2d179c0aba0fb94a346690ffb6f0394efc127788e138",
       "tags": [
@@ -22860,7 +22855,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Kelaris_Judgment",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1a215f3fffd19a21b431993090b53da2f29f10c6c463e45d93fa03bc411fa5e4",
       "tags": [
@@ -23108,10 +23103,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Kelaris_Malediction",
       "name": "Kelari's Malediction",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Kelaris_Malediction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressSandDjinnCorpseBeetles.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresssanddjinncorpsebeetles.webp",
       "icon_alt": "SorceressSandDjinnCorpseBeetles",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/762a80601aec8fa4cc89d112102b372ff5023aad2a2aca9016b03da7acfffa23",
       "tags": [
@@ -23302,7 +23297,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Killing_Palm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkKillingPalm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkkillingpalm.webp",
       "icon_alt": "MonkKillingPalm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/108a8794c267e0445e4972a66d1894ff7505fb3a18b9f804714e34c58e23a2f2",
       "tags": [
@@ -23564,10 +23559,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Leylines",
       "name": "Leylines",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Leylines",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionLeylines.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionleylines.webp",
       "icon_alt": "ExpeditionLeylines",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e09b78c25c769709b3975c619e2ab056de5444f0bb83b8fb0f8a296a2ecb9078",
       "tags": [
@@ -23764,10 +23759,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Life_Remnants",
       "name": "Life Remnants",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Life_Remnants",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BloodChannel.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bloodchannel.webp",
       "icon_alt": "BloodChannel",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/95007508d2ebd27b7a7b8efac5668b98316e6b8ae79040773e5ce130160bfc31",
       "tags": [
@@ -23937,7 +23932,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lightning_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerLightningArrow.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerlightningarrow.webp",
       "icon_alt": "RangerLightningArrow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3a2830899d8d85302f5b17263962cbe9ba1db3b809fa5a4dbaef7c85a5cffe20",
       "tags": [
@@ -24245,16 +24240,15 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Lightning_Bolt__2",
       "name": "Lightning Bolt",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Lightning_Bolt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/LightningBoltSkillStaff.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/lightningboltskillstaff.webp",
       "icon_alt": "LightningBoltSkillStaff",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/12a120cbfd11a78676d9d22bc8a3900a79c4bd74fb839cf811eca494f079149a",
       "tags": [
         "Spell",
         "AoE",
-        "Trigger",
         "Lightning",
         "Repeatable"
       ],
@@ -24311,10 +24305,6 @@ window.POE2_SKILL_GEMS = {
           {
             "en": "AoE",
             "vi": "AoE"
-          },
-          {
-            "en": "Trigger",
-            "vi": "Trigger"
           },
           {
             "en": "Lightning",
@@ -24450,10 +24440,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Lightning_Bolt",
       "name": "Lightning Bolt",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Lightning_Bolt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/LightningBoltSkillStaff.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/lightningboltskillstaff.webp",
       "icon_alt": "LightningBoltSkillStaff",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2eb358169d7e3ca8c9d4654c4e21250f6df33f295059d14051bf3e485b26660f",
       "tags": [
@@ -24653,7 +24643,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lightning_Rod",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerLightningRodRainSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerlightningrodrainskill.webp",
       "icon_alt": "RangerLightningRodRainSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1fbb3c4f3bd05ac27f652f87111182b938a4f44dfa9bcce536d0a754b40603a6",
       "tags": [
@@ -24933,7 +24923,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Lunar_Assault",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidLunarAssault.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidlunarassault.webp",
       "icon_alt": "DruidLunarAssault",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4ec7065e6d4642fcdd61acdaf9970cacfb0c78b29191e0ab08e6de43a5af7ff0",
       "tags": [
@@ -25125,10 +25115,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Mace_Strike",
       "name": "Mace Strike",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Mace_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OneHandMaceDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/onehandmacedefaultskill.webp",
       "icon_alt": "OneHandMaceDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/330601bb9eea2465d1c0e98ea6c529013ab8c37c0aabc98db3ccf3095893208a",
       "tags": [
@@ -25270,10 +25260,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Mace_Strike__2",
       "name": "Mace Strike",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Mace_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TwoHandMaceDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/twohandmacedefaultskill.webp",
       "icon_alt": "TwoHandMaceDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6aa617067f92a076a3256fea5f91135b8ace623dab781203787215e70f0a5a19",
       "tags": [
@@ -25415,10 +25405,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Mace_Strike__3",
       "name": "Mace Strike",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Mace_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DualWieldMaceDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/dualwieldmacedefaultskill.webp",
       "icon_alt": "DualWieldMaceDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cd20d863ce51e20c3c3f2385f979c0cd1e4d87749c1d5b2f81fe8ef4799d6e53",
       "tags": [
@@ -25560,10 +25550,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Malice",
       "name": "Malice",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Malice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MaliceWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/maliceweaponskill.webp",
       "icon_alt": "MaliceWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f8fd81d12eedcf752e8731d73f394bccbbe3ebf0edfac16a134511e2b6f70b50",
       "tags": [
@@ -25705,10 +25695,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Mana_Drain",
       "name": "Mana Drain",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mana_Drain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ManaDrainWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/manadrainweaponskill.webp",
       "icon_alt": "ManaDrainWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fb09d28e8e7e9871c28f8534382baa685da895cfb6912e6c2d0fa3ae5a2945db",
       "tags": [
@@ -25860,10 +25850,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Manifest_Weapon",
       "name": "Manifest Weapon",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Manifest_Weapon",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SmithOfKitavaCreateWeaponSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/smithofkitavacreateweaponskillicon.webp",
       "icon_alt": "SmithOfKitavaCreateWeaponSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eb7f5ff0df016f5a8675b98ca8dc764c90e97dc796ad79d79152985b071bc4e8",
       "tags": [
@@ -26005,10 +25995,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Maul",
       "name": "Maul",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Maul",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidBearMaul.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidbearmaul.webp",
       "icon_alt": "DruidBearMaul",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b4efd74aeb9e3b0872772d4bc445467ef0c9b3eeb36763c7c5299ec444ed1e5f",
       "tags": [
@@ -26195,10 +26185,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Meditate",
       "name": "Meditate",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Meditate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkInvokerMeditate.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkinvokermeditate.webp",
       "icon_alt": "MonkInvokerMeditate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2ef5a853554886871e2e4b220f8a7090941f613e52ae3f254bf6f76de5d80c3d",
       "tags": [
@@ -26360,10 +26350,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Midnight_Zenith",
       "name": "Midnight Zenith",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Midnight_Zenith",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/NattblomSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/nattblomskillicon.webp",
       "icon_alt": "NattblomSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e80f1f49bb4864ef7f306b8c32c68f7e939f4787d59fd8bcbf6885b00c97afd7",
       "tags": [
@@ -26596,10 +26586,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Mirage_Deadeye",
       "name": "Mirage Deadeye",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Mirage_Deadeye",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerDeadeyeMirageSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerdeadeyemirageskill.webp",
       "icon_alt": "RangerDeadeyeMirageSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a557692119e19539335500323d35f13f2853d5c8f8e30f8aa2b38116e09c0e6f",
       "tags": [
@@ -26780,10 +26770,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Mirror_of_Refraction",
       "name": "Mirror of Refraction",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mirror_of_Refraction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AtzirisRule.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/atzirisrule.webp",
       "icon_alt": "AtzirisRule",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/030a8b6b39afeb3acbd786895d8a82fee29cd271adb1b2a672d557b7a535b99d",
       "tags": [
@@ -26950,10 +26940,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Mist_Raven",
       "name": "Mist Raven",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Mist_Raven",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MistRavenSummon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/mistravensummon.webp",
       "icon_alt": "MistRavenSummon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ff5c0a64b2978b4eb30b5c0c726f9923a32f92cb690fddffe10dcb55282ab4af",
       "tags": [
@@ -27151,10 +27141,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Molten_Crash",
       "name": "Molten Crash",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Molten_Crash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/VesselofWrath.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/vesselofwrath.webp",
       "icon_alt": "VesselofWrath",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e9ba84c17672ae1b66723f9770287eb227539fa4a6bbe7c0618093859dac6097",
       "tags": [
@@ -27392,10 +27382,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Molten_Shower",
       "name": "Molten Shower",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Molten_Shower",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/VolcanicEruptionSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/volcaniceruptionskillicon.webp",
       "icon_alt": "VolcanicEruptionSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ddf14e65a8bfe360a3ae752dc4721571505fe50e5d6d94bc39dfc24ecf9fe4c5",
       "tags": [
@@ -27602,10 +27592,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Moment_of_Vulnerability",
       "name": "Moment of Vulnerability",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Moment_of_Vulnerability",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/passives/DruidOracleRipFromTimeSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/passives/druidoracleripfromtimeskill.webp",
       "icon_alt": "DruidOracleRipFromTimeSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0d1b84beac9b6e905bbc28a965d205655b88d5777387e9e7dad52fa5dee4c58d",
       "tags": [
@@ -27827,10 +27817,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Navira,_the_Last_Mirage",
       "name": "Navira, the Last Mirage",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Navira%2C_the_Last_Mirage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressSummonWaterDjinn.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresssummonwaterdjinn.webp",
       "icon_alt": "SorceressSummonWaterDjinn",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b7ff33dc05da23098db4e0ca28de04f340b5f16ceaec30da04208dcf6c3108fa",
       "tags": [
@@ -28011,7 +28001,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Naviras_Fracturing",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/56fdf2df814c3fa2223eda0136c327dd3a008a860273cd9690b4192027a31a5a",
       "tags": [
@@ -28227,7 +28217,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Naviras_Oasis",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d7217f06142872619ffd0b183143aded5258bd805a2c330ded0403083059faaa",
       "tags": [
@@ -28443,7 +28433,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Naviras_Well",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2e58e5cb188e1923890e0827d1aa1192c69b4c08f783c4ad7701fae60f2be83c",
       "tags": [
@@ -28636,10 +28626,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Parry",
       "name": "Parry",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Parry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressBucklerParry.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressbucklerparry.webp",
       "icon_alt": "HuntressBucklerParry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/82e2b673853afe220201af9da22e291af7773f429e55b9b7ca2629348cae2c0d",
       "tags": [
@@ -28979,7 +28969,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Permafrost_Bolts",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BurstShotPermafrost.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/burstshotpermafrost.webp",
       "icon_alt": "BurstShotPermafrost",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/06f75e03b97891213b21e62649c417d11b9dbbcc22165b86fc46e9bcc1aa8dea",
       "tags": [
@@ -29470,10 +29460,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Phantasmal_Arrow",
       "name": "Phantasmal Arrow",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Phantasmal_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/GhostfuseArrow.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/ghostfusearrow.webp",
       "icon_alt": "GhostfuseArrow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/86dbe3c604d8937a881ec17611602854523a5b01a3d74f30baa87dcf124cff49",
       "tags": [
@@ -29776,10 +29766,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Pinnacle_of_Power",
       "name": "Pinnacle of Power",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Pinnacle_of_Power",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ElementalPowerSkillWand.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/elementalpowerskillwand.webp",
       "icon_alt": "ElementalPowerSkillWand",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ff16c4bca8c3e1eaa0e669b343fc4f8ea1f397b13cf705ca04652b407812c69c",
       "tags": [
@@ -29947,7 +29937,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Poisonburst_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerPoisonBurstArrow.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerpoisonburstarrow.webp",
       "icon_alt": "RangerPoisonBurstArrow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/045ad9ebbbcc901af96b5e39a07ca15f6d6ec80f93a7d71c5982148f867c8123",
       "tags": [
@@ -30250,10 +30240,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Power_Siphon",
       "name": "Power Siphon",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Power_Siphon",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PowerSiphonWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/powersiphonweaponskill.webp",
       "icon_alt": "PowerSiphonWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/26b3937cd6dfbc365aa66ccea577236a4cfce887ea3a92f25dd901a7602d7eac",
       "tags": [
@@ -30440,10 +30430,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Powered_by_Verisium",
       "name": "Powered by Verisium",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Powered_by_Verisium",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionVerisiumInfusion.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionverisiuminfusion.webp",
       "icon_alt": "ExpeditionVerisiumInfusion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3c44ace3d3f73b706ace38bcea386a0f5f37354a2f856e2cacba37e6d01640e5",
       "tags": [
@@ -30560,10 +30550,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Primal_Bounty",
       "name": "Primal Bounty",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Primal_Bounty",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WildspeakerOwlFeathersSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/wildspeakerowlfeathersskill.webp",
       "icon_alt": "WildspeakerOwlFeathersSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7c30f8d50ff7ae14f7f35c4ddad18cdb9fe86037633ceb356623a20fa20de580",
       "tags": [
@@ -30718,7 +30708,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Punch",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/UnarmedDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/unarmeddefaultskill.webp",
       "icon_alt": "UnarmedDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/99efc261f94de2880c01180841300fbe2a95716d7408d801a8a0ef36ef952844",
       "tags": [
@@ -30855,10 +30845,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Purity_of_Fire",
       "name": "Purity of Fire",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Purity_of_Fire",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PurityofFireWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/purityoffireweaponskill.webp",
       "icon_alt": "PurityofFireWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/906680ec324870009060751f0790ea1ad2657a1e5dea1e3953910e3a2690a6ce",
       "tags": [
@@ -30990,10 +30980,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Purity_of_Ice",
       "name": "Purity of Ice",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Purity_of_Ice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PurityofColdWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/purityofcoldweaponskill.webp",
       "icon_alt": "PurityofColdWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bad72150d2fc493eaff7f812a5375beaa98d625c16ef73acdbfdd69603d52de5",
       "tags": [
@@ -31125,10 +31115,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Purity_of_Lightning",
       "name": "Purity of Lightning",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Purity_of_Lightning",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PurityofLightningWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/purityoflightningweaponskill.webp",
       "icon_alt": "PurityofLightningWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/387ad2e53ba4bb74ce7dc992541f1f1bbbfa5cbfac04840a5dc83d48fd68749c",
       "tags": [
@@ -31260,10 +31250,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Quarterstaff_Strike",
       "name": "Quarterstaff Strike",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Quarterstaff_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/QuarterstaffDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/quarterstaffdefaultskill.webp",
       "icon_alt": "QuarterstaffDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a240ac2b553af7b88b5af852b296147c679281d975efd04590ceef02346bf08f",
       "tags": [
@@ -31408,7 +31398,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Queens_Procession",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RitualistQueenInTheMistsSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/ritualistqueeninthemistsskill.webp",
       "icon_alt": "RitualistQueenInTheMistsSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/59b48adeba732bb02919e6baf0dfe130c141f190dfa4f9cc67027f2260c0d58e",
       "tags": [
@@ -31665,10 +31655,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Rain_of_Blades",
       "name": "Rain of Blades",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Rain_of_Blades",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionRainofBlades.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionrainofblades.webp",
       "icon_alt": "ExpeditionRainofBlades",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6a9f47af9a7e07a6f4db27e545f6e86ae1f12f00c76a8efc6e68c55d3edb3e0b",
       "tags": [
@@ -31876,10 +31866,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Raise_Shield",
       "name": "Raise Shield",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Raise_Shield",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteShieldBlock.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteshieldblock.webp",
       "icon_alt": "BruteShieldBlock",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e2c81981e2d9d9a47478ba098a604855d24567ed4ea9ff8dc7221ebb1dca30b5",
       "tags": [
@@ -32216,10 +32206,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Reap",
       "name": "Reap",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Reap",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ReapWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/reapweaponskill.webp",
       "icon_alt": "ReapWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/67d0b50871b7c4a251e5d52a1ff13e4c18eac9837d418909dd1d91c42b74fd27",
       "tags": [
@@ -32426,10 +32416,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Refutation",
       "name": "Refutation",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Refutation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionRunicFortress.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionrunicfortress.webp",
       "icon_alt": "ExpeditionRunicFortress",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aa6fef03c59477270e63703b5abe5428168652b491d8607ef3f02214153a3de1",
       "tags": [
@@ -32666,10 +32656,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Remnants_of_Kalguur",
       "name": "Remnants of Kalguur",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Remnants_of_Kalguur",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionRemnantsofKalguur.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionremnantsofkalguur.webp",
       "icon_alt": "ExpeditionRemnantsofKalguur",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8e830347196784e2baf8960faeb9dd58f1d9e21e3971a93d7dbcbe404e0fb849",
       "tags": [
@@ -32831,10 +32821,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Rend",
       "name": "Rend",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Rend",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidWyvernSwipe.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidwyvernswipe.webp",
       "icon_alt": "DruidWyvernSwipe",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9cce01ffe220e822baa2fe20991747b54bd3a23bfb9918efb588132f401827a6",
       "tags": [
@@ -33042,10 +33032,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Repulsion",
       "name": "Repulsion",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Repulsion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionMarkofRepulsion.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionmarkofrepulsion.webp",
       "icon_alt": "ExpeditionMarkofRepulsion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9fb9863c4614870bc9f14ada19d0119cd10cbecfdfb09ded211b9e3686df5684",
       "tags": [
@@ -33323,10 +33313,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Requiem",
       "name": "Requiem",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Requiem",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RequiemChargeSkillCrossbow.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/requiemchargeskillcrossbow.webp",
       "icon_alt": "RequiemChargeSkillCrossbow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1511db0084e293a8d61fdf3e2dfbe100c1ae97b5e294e37e2fcedcc960d08a30",
       "tags": [
@@ -33604,10 +33594,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Righteous_Descent",
       "name": "Righteous Descent",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Righteous_Descent",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ChallengersAscentSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/challengersascentskill.webp",
       "icon_alt": "ChallengersAscentSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c3855eb9bec48100feec2181433d575df4562006c880e438eb9cdec6d9e87fc1",
       "tags": [
@@ -33840,10 +33830,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Rite_of_Restoration",
       "name": "Rite of Restoration",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Rite_of_Restoration",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuskofDreamsSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huskofdreamsskill.webp",
       "icon_alt": "HuskofDreamsSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e75de971c443aa45fe9268c3f2f6470912a317d152100f44cd3e086cf06accdd",
       "tags": [
@@ -34090,10 +34080,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Ritual_Sacrifice",
       "name": "Ritual Sacrifice",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ritual_Sacrifice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PrimalistStabCorpseSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/primaliststabcorpseskillicon.webp",
       "icon_alt": "PrimalistStabCorpseSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c7e1558b77ec5ef83d2d405168e6e63c29f6c60627e9b3bbc9e3c7fd94f47714",
       "tags": [
@@ -34263,7 +34253,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rolling_Slam",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteDoubleSlam.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutedoubleslam.webp",
       "icon_alt": "BruteDoubleSlam",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/22197879c2889214ff5f688cec5a1546115678c66dbda1b5148b77a4c8a1b3c2",
       "tags": [
@@ -34609,10 +34599,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Runic_Reprieve",
       "name": "Runic Reprieve",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Runic_Reprieve",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionKalguuranWard.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionkalguuranward.webp",
       "icon_alt": "ExpeditionKalguuranWard",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/02485ad532a8d044269879cc3882e3f80fa78050d72cf785e52515838205d4ea",
       "tags": [
@@ -34894,10 +34884,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Runic_Tempering",
       "name": "Runic Tempering",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Runic_Tempering",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SerlesMasterwork.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/serlesmasterwork.webp",
       "icon_alt": "SerlesMasterwork",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5931d22f50ab882d8f1809f6c773374ed40f48b591cae0f2dc9cc373908f55b8",
       "tags": [
@@ -35059,10 +35049,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Ruzhan,_the_Blazing_Sword",
       "name": "Ruzhan, the Blazing Sword",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ruzhan%2C_the_Blazing_Sword",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressSummonFireDjinn.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresssummonfiredjinn.webp",
       "icon_alt": "SorceressSummonFireDjinn",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7bf385b40d566f802e0099dc8aa4163dff24b2cbac3d1776ca9b94502bcf6079",
       "tags": [
@@ -35248,7 +35238,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ruzhans_Fury",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/72663c9df66e0fc606f7a6f0b2268e3790ddb23c0e47cf8a25435398a8c0d098",
       "tags": [
@@ -35537,7 +35527,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ruzhans_Reckoning",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f4b2aa7c34fc5385f9e04731b7d15f0b8a52aa6fa7e964e80d9e17ac5e4d434d",
       "tags": [
@@ -35796,7 +35786,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ruzhans_Trap",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Rolldodge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rolldodge.webp",
       "icon_alt": "Rolldodge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/be2366a13e250d5060ee922720b7238dcc8c9aaf5f2f4f7869a8b5aaf3308273",
       "tags": [
@@ -36185,10 +36175,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Sanguine_Revelry",
       "name": "Sanguine Revelry",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Sanguine_Revelry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CrimsonChrysalis.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/crimsonchrysalis.webp",
       "icon_alt": "CrimsonChrysalis",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f64c34a429e1a97c13700dd9b31c4519f2ab64b1e1ec338288221db3610cbd82",
       "tags": [
@@ -36365,10 +36355,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Shattering_Concoction",
       "name": "Shattering Concoction",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Shattering_Concoction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerBrewConcoctionColdSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerbrewconcoctioncoldskill.webp",
       "icon_alt": "RangerBrewConcoctionColdSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b4bd5aabcbc96490af84faa5bce6958be763500d420bdbae90a05a1227bfba09",
       "tags": [
@@ -36670,10 +36660,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Shattering_Spite",
       "name": "Shattering Spite",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Shattering_Spite",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AtzirisContempt.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/atziriscontempt.webp",
       "icon_alt": "AtzirisContempt",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c990d3f7632ac30f39c0b5b0d01d2a5146d42b733585606d66e86a8d41838667",
       "tags": [
@@ -36905,10 +36895,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Shred",
       "name": "Shred",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Shred",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidFrozenClaws.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidfrozenclaws.webp",
       "icon_alt": "DruidFrozenClaws",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0ff0695fb7b2892753b02352980aa5f8fa3b6fadcadbc3fd5ceadaf5757207a3",
       "tags": [
@@ -37372,10 +37362,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Sigil_of_Power",
       "name": "Sigil of Power",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Sigil_of_Power",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SigilofPowerWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sigilofpowerweaponskill.webp",
       "icon_alt": "SigilofPowerWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9b36f8a79c35a9a6b43ad8ce1efbceac76de79e0cad08444f50e16a3156ec2ff",
       "tags": [
@@ -37605,7 +37595,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Sniper",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchArcherSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witcharcherskeleton.webp",
       "icon_alt": "WitchArcherSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c47b3754d96607f6028b41d9a08567538ea1bb528aa087e4937ce6d5e99b9c99",
       "tags": [
@@ -38037,10 +38027,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Skeletal_Warrior",
       "name": "Skeletal Warrior",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Warrior",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchWarriorSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchwarriorskeleton.webp",
       "icon_alt": "WitchWarriorSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/05e5a4e98a0bb7a7f44d3ff101f75c6a3133e07ba775263ae2d32d6fe1a21910",
       "tags": [
@@ -38142,10 +38132,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Skyfall",
       "name": "Skyfall",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Skyfall",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionVerisiumComet.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionverisiumcomet.webp",
       "icon_alt": "ExpeditionVerisiumComet",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e57dd41698d473316c6ba3838a3cd730fe958e4e74b4a20549b3d2e07df3b41a",
       "tags": [
@@ -38428,10 +38418,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Soaring_Midnight",
       "name": "Soaring Midnight",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Soaring_Midnight",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ShieldNightfall1.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/shieldnightfall1.webp",
       "icon_alt": "ShieldNightfall1",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/22e11c84028c1fed094ba062b388231f6b014c2a2ce8211d90b89c0456da5355",
       "tags": [
@@ -38729,10 +38719,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Solar_Orb",
       "name": "Solar Orb",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Solar_Orb",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressSolarOrb.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresssolarorb.webp",
       "icon_alt": "SorceressSolarOrb",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0d96883e2cc4dff2733d4fce8650ae7e8cff23f43799d5019a67ac94f6092062",
       "tags": [
@@ -38965,10 +38955,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Sorcery_Ward",
       "name": "Sorcery Ward",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Sorcery_Ward",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchunterSpellAegis.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchunterspellaegis.webp",
       "icon_alt": "WitchunterSpellAegis",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9c4359ab7175de048c79f7d78d7746dfdbbe2820482366143d022391a6c45cec",
       "tags": [
@@ -39145,10 +39135,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Soulrend",
       "name": "Soulrend",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Soulrend",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Soulrend.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/soulrend.webp",
       "icon_alt": "Soulrend",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f270a736135147e5d5bed8b0a4be4396048bece4745eaf9622bc138b84403ba5",
       "tags": [
@@ -39384,7 +39374,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Spark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressSpark.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressspark.webp",
       "icon_alt": "SorceressSpark",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/df675699bd2fdc8d684208e9b4be3484ab33ddd54c9e440f5a4a18dbfc0fd685",
       "tags": [
@@ -39695,15 +39685,13 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Spark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressSpark.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressspark.webp",
       "icon_alt": "SorceressSpark",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/530684c4a217d5915e37a92739945096aeb2b9b4a96f5fd5d53b59714954be63",
       "tags": [
         "Spell",
         "Projectile",
-        "Trigger",
         "Lightning",
-        "Cold",
         "Duration",
         "Repeatable"
       ],
@@ -39785,16 +39773,8 @@ window.POE2_SKILL_GEMS = {
             "vi": "Projectile"
           },
           {
-            "en": "Trigger",
-            "vi": "Trigger"
-          },
-          {
             "en": "Lightning",
             "vi": "Lightning"
-          },
-          {
-            "en": "Cold",
-            "vi": "Cold"
           },
           {
             "en": "Duration",
@@ -40013,10 +39993,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Spear_Stab__2",
       "name": "Spear Stab",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Spear_Stab",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SpearDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/speardefaultskill.webp",
       "icon_alt": "SpearDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1d476b8da5e9845f7e017151cf0183c5677c4f76ac4d32735cb9e1b3164eb506",
       "tags": [
@@ -40168,10 +40148,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Spear_Stab",
       "name": "Spear Stab",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Spear_Stab",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TwoHandSpearDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/twohandspeardefaultskill.webp",
       "icon_alt": "TwoHandSpearDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e56be8e0716084783edb76556ecc7aae5e275ab433e904fdee4917693c76e101",
       "tags": [
@@ -40323,10 +40303,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Spear_Throw",
       "name": "Spear Throw",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Spear_Throw",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressIceSpear.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressicespear.webp",
       "icon_alt": "HuntressIceSpear",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dda2f4b567ca94ba2f329ccf70f912ee00115374fa6fd1cb7838dade2123f61b",
       "tags": [
@@ -40447,10 +40427,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Spellslinger",
       "name": "Spellslinger",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Spellslinger",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SpellslingerWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/spellslingerweaponskill.webp",
       "icon_alt": "SpellslingerWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2b069687bd9a6ba89b1e605662c7e1699887fdceb997fece966f8e9928079de4",
       "tags": [
@@ -40608,10 +40588,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Spiraling_Conspiracy",
       "name": "Spiraling Conspiracy",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Spiraling_Conspiracy",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RoostOfTheRavenKingSwarm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/roostoftheravenkingswarm.webp",
       "icon_alt": "RoostOfTheRavenKingSwarm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0fbe59845c524a9da1cae45a79ede7d1562ee67d40370d0d8eef09536077f6f0",
       "tags": [
@@ -40824,10 +40804,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Spirit_Vessel",
       "name": "Spirit Vessel",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Spirit_Vessel",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TheAncientOrder.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/theancientorder.webp",
       "icon_alt": "TheAncientOrder",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cdcd473c0d79dcf8cb2005f6b1603b9e297aeca7a45bf66cf2c4e5267a7e118b",
       "tags": [
@@ -40980,10 +40960,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Starborn_Onslaught",
       "name": "Starborn Onslaught",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Starborn_Onslaught",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HimindrygrSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/himindrygrskillicon.webp",
       "icon_alt": "HimindrygrSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/955fa89b1ef9a7736ed67ea711a4bb87fb2617e4da56e76bd92642fd4c72f12f",
       "tags": [
@@ -41286,10 +41266,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Summon_Infernal_Hound",
       "name": "Summon Infernal Hound",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Summon_Infernal_Hound",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchSummonInfernalFamiliar.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchsummoninfernalfamiliar.webp",
       "icon_alt": "WitchSummonInfernalFamiliar",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/02d30258d48e4691338ba9f4dc4d528abe44a8e23cc65311d3949ae91f202b12",
       "tags": [
@@ -41431,10 +41411,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Supporting_Fire",
       "name": "Supporting Fire",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Supporting_Fire",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TacticianDeathFromAboveSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/tacticiandeathfromaboveskillicon.webp",
       "icon_alt": "TacticianDeathFromAboveSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e273db3f23e33245efff420ebac00aba7471cafc06001cd6f83831fddbec3694",
       "tags": [
@@ -41605,7 +41585,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Sword_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OneHandSwordDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/onehandsworddefaultskill.webp",
       "icon_alt": "OneHandSwordDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4d8977a379c9f035e2c0cf30e6dfe1734852844c1de54cac13534581d5206464",
       "tags": [
@@ -41728,7 +41708,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Sword_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DualWieldSwordDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/dualwieldsworddefaultskill.webp",
       "icon_alt": "DualWieldSwordDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/53e5d83a00cda62f80e2c7c2777cee362ccad19cd344e89fbdfbe08a729d1180",
       "tags": [
@@ -41851,7 +41831,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Sword_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TwoHandSwordDefaultSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/twohandsworddefaultskill.webp",
       "icon_alt": "TwoHandSwordDefaultSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9a5cfa6fbe577f7d5dc1eae163caa8346fec5956223fe7a96d32c1e7c05f5c8c",
       "tags": [
@@ -41971,10 +41951,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Temper_Weapon",
       "name": "Temper Weapon",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Temper_Weapon",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SmithOfKitavaImbueWeaponSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/smithofkitavaimbueweaponskillicon.webp",
       "icon_alt": "SmithOfKitavaImbueWeaponSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/735749ccabdf6066b16ef0ad4bf48218a286ebc1d50ec8e6b22430dd8b2d09b1",
       "tags": [
@@ -42172,10 +42152,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Temporal_Rift",
       "name": "Temporal Rift",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Temporal_Rift",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressTemporalistTemporalRift.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresstemporalisttemporalrift.webp",
       "icon_alt": "SorceressTemporalistTemporalRift",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6272a6251eee9adea816d38cd2f4ef92e13a2e590e3a082725dcd868f4d88a12",
       "tags": [
@@ -42342,10 +42322,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "The_Stars_Answer",
       "name": "The Stars Answer",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/The_Stars_Answer",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Runeseeker.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/runeseeker.webp",
       "icon_alt": "Runeseeker",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bf199bf457ddefb79883ec1cfd8b28b7c5eff1eddc96216b34a90d77d8ffcf89",
       "tags": [
@@ -42651,10 +42631,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Thundergods_Wrath",
       "name": "Thundergod's Wrath",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Thundergods_Wrath",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CastLightningSpellOnHitSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castlightningspellonhitskill.webp",
       "icon_alt": "CastLightningSpellOnHitSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/93020bcc899fd7d7768c5362a3a15716d04adb2b94c61e6d0a75d02995bddce4",
       "tags": [
@@ -42812,10 +42792,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Time_Freeze",
       "name": "Time Freeze",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Time_Freeze",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressTemporalistTimeStop.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresstemporalisttimestop.webp",
       "icon_alt": "SorceressTemporalistTimeStop",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/15b534121fbdfe893dba79cede279af3537d91e82774f04a08042a18efd9d9d6",
       "tags": [
@@ -42967,10 +42947,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Time_Snap",
       "name": "Time Snap",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Time_Snap",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressTemporalistReloadCooldown.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresstemporalistreloadcooldown.webp",
       "icon_alt": "SorceressTemporalistReloadCooldown",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0797c89afb304e2260c0ed3d470ac84ab5c704a31fe504efa020526e523658ea",
       "tags": [
@@ -43067,10 +43047,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Triskelion_Cascade",
       "name": "Triskelion Cascade",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Triskelion_Cascade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionTriskelionCascade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditiontriskelioncascade.webp",
       "icon_alt": "ExpeditionTriskelionCascade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d41d53512d7ec321e91bc2c7b1bd2f0e0de09c3865415f05fba288235871cf89",
       "tags": [
@@ -43285,7 +43265,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Twister",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TwisterSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/twisterskillicon.webp",
       "icon_alt": "TwisterSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a34b14ca0b22f568ad9d072c99357106c0977910d81e0bd0e1f2e1b50750d7c8",
       "tags": [
@@ -43637,10 +43617,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Unbound_Avatar",
       "name": "Unbound Avatar",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Unbound_Avatar",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkInvokerUnboundAvatar.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkinvokerunboundavatar.webp",
       "icon_alt": "MonkInvokerUnboundAvatar",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a7dba7946a52d84604d164aecaed4500ec3ad0c3790cc7e764db68494d724534",
       "tags": [
@@ -43840,7 +43820,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Unearth",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchUnearth.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchunearth.webp",
       "icon_alt": "WitchUnearth",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e649f55f0212dcee466bc7bde8b7c53e402a6bc4c2d541d0a1efd9e1973bdc8c",
       "tags": [
@@ -44102,10 +44082,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Unleash",
       "name": "Unleash",
-      "tier": 1,
-      "color": "item",
+      "tier": null,
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/Unleash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressTemporalistUnleash.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresstemporalistunleash.webp",
       "icon_alt": "SorceressTemporalistUnleash",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4230a1574511c3d3f1146535c3acc138c5df6e9982a6b9fc561248dfb5c5d11d",
       "tags": [
@@ -44252,10 +44232,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Unleash__2",
       "name": "Unleash",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Unleash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressTemporalistUnleash.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresstemporalistunleash.webp",
       "icon_alt": "SorceressTemporalistUnleash",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f0acf9715b497a6662071f7678afcc5e42379babc6c869401b130cd5d2103c83",
       "tags": [
@@ -44405,7 +44385,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Untether",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AbyssalLivingBomb.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/abyssallivingbomb.webp",
       "icon_alt": "AbyssalLivingBomb",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e57acf0f1f8aefb6188991a0acfd88bbfa7d4fd1501ae49367675d36a3c867e7",
       "tags": [
@@ -44632,10 +44612,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Valakos_Charge",
       "name": "Valako's Charge",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Valakos_Charge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ValakosLuckLightningCoilSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/valakoslucklightningcoilskill.webp",
       "icon_alt": "ValakosLuckLightningCoilSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/51ae032f15a1567357537c6cf8f82f2dadba7bec7c73bb94ee2b51339d17498f",
       "tags": [
@@ -44833,10 +44813,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Verisium_Manifestations",
       "name": "Verisium Manifestations",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Verisium_Manifestations",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionRunewordManifest.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionrunewordmanifest.webp",
       "icon_alt": "ExpeditionRunewordManifest",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/683f0e05bfdfc426021cf7af64d4a20c657774b84c56bc5968097f647c4131bb",
       "tags": [
@@ -44994,10 +44974,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Virtuous_Barrier",
       "name": "Virtuous Barrier",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Virtuous_Barrier",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/GemBarrier.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/gembarrier.webp",
       "icon_alt": "GemBarrier",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/afcaacd773941e0f6cb4e097faffdbd69bb9334ac662cef0176579eb1d5491aa",
       "tags": [
@@ -45189,10 +45169,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Vivid_Stampede",
       "name": "Vivid Stampede",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Vivid_Stampede",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WildspeakerVividStagsSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/wildspeakervividstagsskill.webp",
       "icon_alt": "WildspeakerVividStagsSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fb641af715a571fa0d8ae247ed94ca227505ae17b4d8f1c3e3ded336c60fcbc4",
       "tags": [
@@ -45414,10 +45394,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Void_Illusion",
       "name": "Void Illusion",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Void_Illusion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkVoidIllusion.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkvoidillusion.webp",
       "icon_alt": "MonkVoidIllusion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/be4d1e70574431d3325c1e6587acbc588f9fde36e7327f5f73c208c31b95915a",
       "tags": [
@@ -45585,10 +45565,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Volatile_Dead",
       "name": "Volatile Dead",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Volatile_Dead",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/VolatileDeadWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/volatiledeadweaponskill.webp",
       "icon_alt": "VolatileDeadWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b139d0b83555c32fdd13d65e6f013920a20735522603db6d3abc2c3d27d990ca",
       "tags": [
@@ -45867,7 +45847,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Volcano",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidVolcano.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidvolcano.webp",
       "icon_alt": "DruidVolcano",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/637ee5e4aea1f14e94b987db58ca119498741c404a4aaa6eaf995d51e0dc4bad",
       "tags": [
@@ -46418,10 +46398,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Voltaic_Barrier",
       "name": "Voltaic Barrier",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Voltaic_Barrier",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionCracklingBarrier.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditioncracklingbarrier.webp",
       "icon_alt": "ExpeditionCracklingBarrier",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c075e3f27561e00937e57ceb9a73ce253f3edcb9d4759f1024b08d4478991521",
       "tags": [
@@ -46664,10 +46644,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Wardbound_Minions",
       "name": "Wardbound Minions",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Wardbound_Minions",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ExpeditionWardboundMinions.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/expeditionwardboundminions.webp",
       "icon_alt": "ExpeditionWardboundMinions",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a6fec553b15e1441951533a050b394dc28c4c408e33592700e359fa04e2a5553",
       "tags": [
@@ -46862,7 +46842,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 1,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Whirling_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressWhirlingSlash.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntresswhirlingslash.webp",
       "icon_alt": "HuntressWhirlingSlash",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/006f746be940b3e21d0d40fb56f6a1ba7a16d5e5022c569e11b54b51555959a3",
       "tags": [
@@ -47135,10 +47115,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Wild_Protector",
       "name": "Wild Protector",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Wild_Protector",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WildspeakerBearSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/wildspeakerbearskill.webp",
       "icon_alt": "WildspeakerBearSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/83c7eeaa17d35a538661643a866bc28bcbfc3ab8a559598b0e3954c8a9292e45",
       "tags": [
@@ -47260,10 +47240,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Wildwoods_Gifts",
       "name": "Wildwood's Gifts",
-      "tier": 1,
+      "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Wildwoods_Gifts",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TheHollowMaskSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/thehollowmaskskill.webp",
       "icon_alt": "TheHollowMaskSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d0d98be271ebf93ed5e9870432dbb99a352118864fcf077f5f2f490842e2e01f",
       "tags": [
@@ -47450,10 +47430,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Wither",
       "name": "Wither",
-      "tier": 1,
+      "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Wither",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Wither.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/wither.webp",
       "icon_alt": "Wither",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a8123ee4bcce1b64e65bac7fbe2b80c04dbcb258c82376bce87bbcbd55b08f5a",
       "tags": [
@@ -47630,10 +47610,10 @@ window.POE2_SKILL_GEMS = {
     {
       "slug": "Withering_Presence__2",
       "name": "Withering Presence",
-      "tier": 1,
-      "color": "item",
+      "tier": 4,
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/Withering_Presence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchWitheringPresence.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchwitheringpresence.webp",
       "icon_alt": "WitchWitheringPresence",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/13472c242267331bab5ed495196eaccbcfc1699908c28b6195086ebf7945a5be",
       "tags": [
@@ -47773,7 +47753,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Armour_Breaker",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteHeavyStrike.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteheavystrike.webp",
       "icon_alt": "BruteHeavyStrike",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0e64add2e173325741317149a3d34d3ae3c7f30bc7fc9bafea25152009324698",
       "tags": [
@@ -47988,7 +47968,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bone_Cage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchBoneCage.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchbonecage.webp",
       "icon_alt": "WitchBoneCage",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7e3dcb9d4336da291c70c1474409c854da79a069a3109ddc49e690bd3e528f68",
       "tags": [
@@ -48268,7 +48248,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Cull_The_Weak",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FrenziedLungeSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/frenziedlungeskillicon.webp",
       "icon_alt": "FrenziedLungeSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2d0aab3602692b53f5449ba4eb015581d1c7c966ea4ff5a00cf16c0dc62cb5b9",
       "tags": [
@@ -48488,7 +48468,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Enfeeble",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/enfeeble.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/enfeeble.webp",
       "icon_alt": "enfeeble",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2d8e9a10c9dc7dc307e1e8fba80621f726e885cc599b73b51b1f31af7fb8f3f5",
       "tags": [
@@ -48713,7 +48693,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Essence_Drain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchEssenceDrain.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchessencedrain.webp",
       "icon_alt": "WitchEssenceDrain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1cf5621ff96b57cb8def546929ee1ab558e95508d2d7705dde6b4cede21d2469",
       "tags": [
@@ -48999,7 +48979,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Fangs_of_Frost",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FangsofFrostSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/fangsoffrostskillicon.webp",
       "icon_alt": "FangsofFrostSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6a8b412c63eb11469a896b7bc5ae3d781a903a8f06189aad849c93cd1c54bb95",
       "tags": [
@@ -49270,7 +49250,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Fireball",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressGreaterFireball.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressgreaterfireball.webp",
       "icon_alt": "SorceressGreaterFireball",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3616fc3ac460e47459bc499bd764d749b07ef2ab0da2f9d418226377069882a7",
       "tags": [
@@ -49624,7 +49604,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Flash_Grenade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FlashbangGrenade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/flashbanggrenade.webp",
       "icon_alt": "FlashbangGrenade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d65c1fff5485c732511cc7854a8b60ec5d4f3c0f983aab34bde120de6a184071",
       "tags": [
@@ -49984,7 +49964,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Freezing_Salvo",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerFreezingSalvoSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerfreezingsalvoskill.webp",
       "icon_alt": "RangerFreezingSalvoSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/906f59b5128df131d9a4404ce1d95258da8e0f86876619368ac0dd250398bbbf",
       "tags": [
@@ -50279,7 +50259,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Frost_Darts",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FrostDartsSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/frostdartsskillicon.webp",
       "icon_alt": "FrostDartsSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/809ee08914f139060a0344f50d7a092f892551e3deceba7f49e64c4186774c9c",
       "tags": [
@@ -50658,7 +50638,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/High_Velocity_Rounds",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PowerShotPhysical.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/powershotphysical.webp",
       "icon_alt": "PowerShotPhysical",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6e3bb34bde16d70b5ef3545945d1f53099d111dab9d8ff8514b1aec1dbfcffdb",
       "tags": [
@@ -51147,7 +51127,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Incendiary_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BurstShotIncendiary.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/burstshotincendiary.webp",
       "icon_alt": "BurstShotIncendiary",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4933cb242f94d931853e5f42db5f92b273d334d4084b206d2c334be7bc731204",
       "tags": [
@@ -51691,7 +51671,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Infernal_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteInfernalCry.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteinfernalcry.webp",
       "icon_alt": "BruteInfernalCry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a203db5bf3a683815908d2e16ff178e8264be773cbf69c74fec24009eacd1d28",
       "tags": [
@@ -51957,7 +51937,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lightning_Spear",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressStormSpear.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressstormspear.webp",
       "icon_alt": "HuntressStormSpear",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/121d010aa35769ec8989ee2f488f0e39c09ea154e09dad716d52f5cee0b189ec",
       "tags": [
@@ -52313,7 +52293,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Living_Bomb",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/LivingBombWeaponSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/livingbombweaponskill.webp",
       "icon_alt": "LivingBombWeaponSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cf1878b1edbbe842c08e7b6e22f02601103999c06a311e304f629892c6d60edf",
       "tags": [
@@ -52553,7 +52533,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Orb_of_Storms",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressOrbOfStorms.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressorbofstorms.webp",
       "icon_alt": "SorceressOrbOfStorms",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8435943566f6de3fc7c1b841d2e00aa5363faa9aabdc4836ea7d220b06decba4",
       "tags": [
@@ -52883,7 +52863,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Pounce",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidWolfLeapAttack.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidwolfleapattack.webp",
       "icon_alt": "DruidWolfLeapAttack",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9215996ad18bd78a297149c51a1e072fb6671a0c11c9a950e289e866d15b5ee6",
       "tags": [
@@ -53215,7 +53195,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rake",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressBloodHunt.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressbloodhunt.webp",
       "icon_alt": "HuntressBloodHunt",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/144d46fe6d244f619e4597279a033df4e0550dea6fa81ab8bc9f32dbf845a0ee",
       "tags": [
@@ -53465,7 +53445,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Rolling_Magma",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidRollingMagma.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidrollingmagma.webp",
       "icon_alt": "DruidRollingMagma",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/462b46cd2884cac7ddc27994c2c14c95806e2b0712f0c2bfe9bcd0721e6f04dd",
       "tags": [
@@ -53835,7 +53815,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Shield_Charge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteShieldCharge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteshieldcharge.webp",
       "icon_alt": "BruteShieldCharge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e37471f40cbe47b2fc0b5df8901be8003c67882ea5210953516bc460d17b0f78",
       "tags": [
@@ -54176,7 +54156,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Shockwave_Totem",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteShockwaveTotem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteshockwavetotem.webp",
       "icon_alt": "BruteShockwaveTotem",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a57a311269b85c943d804292361814a83cb28b8a3af51c54153c4fb4e8f48454",
       "tags": [
@@ -54465,7 +54445,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Shockwave_Totem",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteShockwaveTotem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteshockwavetotem.webp",
       "icon_alt": "BruteShockwaveTotem",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a57a311269b85c943d804292361814a83cb28b8a3af51c54153c4fb4e8f48454",
       "tags": [
@@ -54754,7 +54734,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Arsonist",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchArsonistSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witcharsonistskeleton.webp",
       "icon_alt": "WitchArsonistSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5d37ef637e63c376470190a1a2c33f7da9eb01f00eab7f6ab02b57c6f81ad1cc",
       "tags": [
@@ -55038,7 +55018,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Snipe",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerSnipeShotArrow.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangersnipeshotarrow.webp",
       "icon_alt": "RangerSnipeShotArrow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/de972b6b33d86169907e6f794fac64637e32ffb0d8692de7ba888472427e9969",
       "tags": [
@@ -55522,7 +55502,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Staggering_Palm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkWindPalm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkwindpalm.webp",
       "icon_alt": "MonkWindPalm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/51c0b7b4150f26934366499bfb42b7150cee87e6e2a50d5ef61c8953043915d2",
       "tags": [
@@ -55788,7 +55768,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Stormcaller_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerShockingArrow.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangershockingarrow.webp",
       "icon_alt": "RangerShockingArrow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7daed8b4783fe2196e1fde960267e068d75886b96b4658038679ddcfb022543a",
       "tags": [
@@ -56104,7 +56084,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Tempest_Bell",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkTempestBell.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monktempestbell.webp",
       "icon_alt": "MonkTempestBell",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eb457b1ac12bf81baf5f8316b7a9f5c22728126dfc8af65870ae6cac6734af7d",
       "tags": [
@@ -56488,7 +56468,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Vine_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerPoisonVineArrowSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerpoisonvinearrowskill.webp",
       "icon_alt": "RangerPoisonVineArrowSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/546e2e30d77520fd10f182b2d249034ae015af3f9c91916d0e7d4264e10bf9a6",
       "tags": [
@@ -56789,7 +56769,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Wind_Blast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkGaleStrikeSwing.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkgalestrikeswing.webp",
       "icon_alt": "MonkGaleStrikeSwing",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b0c5e27f677d0d6795a829cdc9e318c1e70954aa69e991a4bf33e8e6c9003ec6",
       "tags": [
@@ -57074,7 +57054,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 3,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Wing_Blast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidWingBlast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidwingblast.webp",
       "icon_alt": "DruidWingBlast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/51bd68e30f132e4c48fa2c80da07f196938b3175078694b043979b4b8d3acce7",
       "tags": [
@@ -57380,7 +57360,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Arctic_Armour",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressArcticArmour.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressarcticarmour.webp",
       "icon_alt": "SorceressArcticArmour",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b6fa5b328fbda4ef22211a53ce967c486a7979b4c3563c9a2fc5a1b62e8df569",
       "tags": [
@@ -57560,7 +57540,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Attrition",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AttritionSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/attritionskill.webp",
       "icon_alt": "AttritionSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/44b2757e28f47985b36d399a406224764da550e82fcdba7a1bda26c24576e0e7",
       "tags": [
@@ -57695,7 +57675,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Briarpatch",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidBriarpatch.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidbriarpatch.webp",
       "icon_alt": "DruidBriarpatch",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c898ec00617933a908754f73994c4841768b004f1b9fdf51d42a5e88abf70cbc",
       "tags": [
@@ -57920,7 +57900,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Convalescence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ConvalescenceSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/convalescenceskillicon.webp",
       "icon_alt": "ConvalescenceSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c77c26e36b1d5a6d76e07ef8afdf39b249d10e3f9a783fa016e669b2a2f75635",
       "tags": [
@@ -58106,7 +58086,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Convalescence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ConvalescenceSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/convalescenceskillicon.webp",
       "icon_alt": "ConvalescenceSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c77c26e36b1d5a6d76e07ef8afdf39b249d10e3f9a783fa016e669b2a2f75635",
       "tags": [
@@ -58292,7 +58272,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ghost_Dance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkGhostDance.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkghostdance.webp",
       "icon_alt": "MonkGhostDance",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bd5d82201396dd4e9f4572b31ea561c94b4ca6db4f972ce1c947f9ab3af57d9a",
       "tags": [
@@ -58457,7 +58437,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Grim_Feast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchGrimFeast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchgrimfeast.webp",
       "icon_alt": "WitchGrimFeast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e145bba616cf5453aff8b1f038b1f05e382ff57b4e1860885c42b292fb0f71d0",
       "tags": [
@@ -58643,7 +58623,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Herald_of_Ash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfAshSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofashskill.webp",
       "icon_alt": "HeraldOfAshSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b11d3a0dc80b7ae7ed58d45d2efdb774d3c5613aa94254011f7e0395d25fe578",
       "tags": [
@@ -58809,7 +58789,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Herald_of_Ash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfAshSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofashskill.webp",
       "icon_alt": "HeraldOfAshSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b11d3a0dc80b7ae7ed58d45d2efdb774d3c5613aa94254011f7e0395d25fe578",
       "tags": [
@@ -58975,7 +58955,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Herald_of_Blood",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfBloodSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofbloodskill.webp",
       "icon_alt": "HeraldOfBloodSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/71b6324de626f58dbf758bcfe9950d12ce2a1be3724106da4341fde20a33173d",
       "tags": [
@@ -59186,7 +59166,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Herald_of_Ice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfIceSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldoficeskill.webp",
       "icon_alt": "HeraldOfIceSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f623f99ede0b595051004043a2b810af514903e465fd53572461f8e6d3fb919f",
       "tags": [
@@ -59387,7 +59367,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Herald_of_Ice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfIceSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldoficeskill.webp",
       "icon_alt": "HeraldOfIceSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f623f99ede0b595051004043a2b810af514903e465fd53572461f8e6d3fb919f",
       "tags": [
@@ -59588,7 +59568,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Herald_of_Thunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfThunderSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofthunderskill.webp",
       "icon_alt": "HeraldOfThunderSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f1872713e2af32eb014452710cb6561a1ff06014d36d82139a0e5760ffacf47",
       "tags": [
@@ -59774,7 +59754,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Herald_of_Thunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfThunderSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofthunderskill.webp",
       "icon_alt": "HeraldOfThunderSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f1872713e2af32eb014452710cb6561a1ff06014d36d82139a0e5760ffacf47",
       "tags": [
@@ -59960,7 +59940,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Herald_of_Thunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfThunderSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofthunderskill.webp",
       "icon_alt": "HeraldOfThunderSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f1872713e2af32eb014452710cb6561a1ff06014d36d82139a0e5760ffacf47",
       "tags": [
@@ -60146,7 +60126,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Herald_of_Thunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfThunderSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofthunderskill.webp",
       "icon_alt": "HeraldOfThunderSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f1872713e2af32eb014452710cb6561a1ff06014d36d82139a0e5760ffacf47",
       "tags": [
@@ -60332,7 +60312,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Iron_Ward",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WardingSteel.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/wardingsteel.webp",
       "icon_alt": "WardingSteel",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f8b346a13d5ed4cd37700a86b9ccd15c582fd012017c0ab0ad19704b6a504393",
       "tags": [
@@ -60518,7 +60498,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Magma_Barrier",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteMagmaBarrier.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutemagmabarrier.webp",
       "icon_alt": "BruteMagmaBarrier",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fb900875272bc5432002bef3d287f8e35cc5fe80df9ed582a98bbd8610837f17",
       "tags": [
@@ -60739,7 +60719,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mana_Remnants",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressEnergyRemnants.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressenergyremnants.webp",
       "icon_alt": "SorceressEnergyRemnants",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/511f7d721f8ed3521b4ccd6ca7d6e8eed752b14572f781019ab296e6be169a1a",
       "tags": [
@@ -60899,7 +60879,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Plague_Bearer",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerPlagueBearerSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerplaguebearerskill.webp",
       "icon_alt": "RangerPlagueBearerSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0abc205efab03857ef7143cd2e1a27523483227fc628324462295319565ebd00",
       "tags": [
@@ -61110,7 +61090,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Raging_Spirits",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchReservationRaginSpirits.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchreservationraginspirits.webp",
       "icon_alt": "WitchReservationRaginSpirits",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d732fdddf4accea4de16ddfe1d9631b9aa99ab881dc986bbe66dbe0d05911db8",
       "tags": [
@@ -61300,7 +61280,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ravenous_Swarm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchRavenousSwarm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchravenousswarm.webp",
       "icon_alt": "WitchRavenousSwarm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2e8e69a6651238862793fd1bb6edfc658836f94a611dabcefcf09eef60a0dff1",
       "tags": [
@@ -61485,7 +61465,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Savage_Fury",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidWildBeast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidwildbeast.webp",
       "icon_alt": "DruidWildBeast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/05cd6ce408a33cb1d11f5321cb60e5c3ebfb8ab354664b32ebc34b84af150058",
       "tags": [
@@ -61651,7 +61631,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Scavenged_Plating",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteScavengedPlating.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutescavengedplating.webp",
       "icon_alt": "BruteScavengedPlating",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dde21eff51cfce813e4e10d365ca62b06b072498128c333b38d2cee06d73fa9c",
       "tags": [
@@ -61816,7 +61796,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "item",
       "source_url": "https://poe2db.tw/us/War_Banner",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WarBannerSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/warbannerskill.webp",
       "icon_alt": "WarBannerSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5d2fd223b7ff168dd42309be90936e68225c35571d88d5bcde9acca43165f79a",
       "tags": [
@@ -62007,7 +61987,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Wind_Dancer",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerWindDancerSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerwinddancerskill.webp",
       "icon_alt": "RangerWindDancerSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ebd440484c19b46eb21f85c2e4800721478065abd49fd798815d681e881098f5",
       "tags": [
@@ -62228,7 +62208,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Wind_Dancer",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerWindDancerSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerwinddancerskill.webp",
       "icon_alt": "RangerWindDancerSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ebd440484c19b46eb21f85c2e4800721478065abd49fd798815d681e881098f5",
       "tags": [
@@ -62449,7 +62429,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 4,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Withering_Presence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchWitheringPresence.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchwitheringpresence.webp",
       "icon_alt": "WitchWitheringPresence",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/681fbb8e1a182d1f19450bea29fe7f1d48c22dd18cff47adc7b56ab6a03be96d",
       "tags": [
@@ -62589,7 +62569,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Arc",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressArc.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressarc.webp",
       "icon_alt": "SorceressArc",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4837e5153520af34b9b1073200424ba4246777d3cfc997bd71cee2fa24be37c8",
       "tags": [
@@ -62894,7 +62874,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Arctic_Howl",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidTundraHunter.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidtundrahunter.webp",
       "icon_alt": "DruidTundraHunter",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/422dc056b11ef8cf6ba13775bc25bee06d855f66fea20e4b9fc88acd6dcca08f",
       "tags": [
@@ -63249,7 +63229,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Barrage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerBarrageSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerbarrageskill.webp",
       "icon_alt": "RangerBarrageSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/718b3eebbdca9286dcffe95cae4d6ddb07e7c8afe27426cfea2a729a40eb3180",
       "tags": [
@@ -63474,7 +63454,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Barrage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerBarrageSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerbarrageskill.webp",
       "icon_alt": "RangerBarrageSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/718b3eebbdca9286dcffe95cae4d6ddb07e7c8afe27426cfea2a729a40eb3180",
       "tags": [
@@ -63699,7 +63679,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bonestorm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchBoneStorm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchbonestorm.webp",
       "icon_alt": "WitchBoneStorm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a61866c31c88c77a9d2402ed78c19fd14f7a5e7ba5943d6ae201255c12110b54",
       "tags": [
@@ -64040,7 +64020,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Devour",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidDevourShock.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druiddevourshock.webp",
       "icon_alt": "DruidDevourShock",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4fb9d54bcb880e09091929d0ee06be724e7c2574a6f55ce9fefb7a5cf781479f",
       "tags": [
@@ -64330,7 +64310,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Electrocuting_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerElectrocutingRodSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerelectrocutingrodskill.webp",
       "icon_alt": "RangerElectrocutingRodSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f64ea2cd98c1ed67780f7965ff31527ad5f7c922cf03a48759f912200875d0a6",
       "tags": [
@@ -64635,7 +64615,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ember_Fusillade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBlazingCluster.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressblazingcluster.webp",
       "icon_alt": "SorceressBlazingCluster",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e83b7889c73da1fe80fff1c830c6c2cfe8d2efafc1cee83aa78ce6cd7272eb89",
       "tags": [
@@ -64999,7 +64979,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Frostbolt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressFrostbolt.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressfrostbolt.webp",
       "icon_alt": "SorceressFrostbolt",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/49a684f5b41545a640129154d9f53ceef71fa6354aa414a4d25165661fad8951",
       "tags": [
@@ -65255,7 +65235,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Fury_of_the_Mountain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidFuryoftheMountain.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidfuryofthemountain.webp",
       "icon_alt": "DruidFuryoftheMountain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6af57428c3ebae40750920c7be294f9844cb94b895d3a58df7fabf81ae6a3912",
       "tags": [
@@ -65550,7 +65530,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Galvanic_Shards",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BurstShotStormblast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/burstshotstormblast.webp",
       "icon_alt": "BurstShotStormblast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/76b65816960c1ec2461a13654c3bc759f7766e90484262153afc4c3ea0bdf385",
       "tags": [
@@ -65989,7 +65969,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Gas_Grenade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ToxicGrenade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/toxicgrenade.webp",
       "icon_alt": "ToxicGrenade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/74dc913dab45aef6b02d7400acb997219a0e8987ad954c8e25477c4b788f4d63",
       "tags": [
@@ -66498,7 +66478,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ice_Shards",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RapidShotPermafrost.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rapidshotpermafrost.webp",
       "icon_alt": "RapidShotPermafrost",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ba5007a7fcdc3b01e6500f96405f513bc65e944ad2a6add9ffb1afd6da3a3fb8",
       "tags": [
@@ -66982,7 +66962,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ice_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkComboAttack.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkcomboattack.webp",
       "icon_alt": "MonkComboAttack",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/30c7d2e712f3cabc1482b7b4b8b06906e49f2c8ed03eb68d854b4a50ad0d7fd7",
       "tags": [
@@ -67203,7 +67183,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ice-Tipped_Arrows",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerShearingBolts.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangershearingbolts.webp",
       "icon_alt": "RangerShearingBolts",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ad4176e46cc49da75388be685926694c1c48d8f2f6469bce0dc8faa4d900d16c",
       "tags": [
@@ -67484,7 +67464,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Molten_Blast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteMoltenBlast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutemoltenblast.webp",
       "icon_alt": "BruteMoltenBlast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/39bef67d9ef0fe01c084e654c47df1e58d87b73b949465a1b05488d5291cb4d8",
       "tags": [
@@ -67785,7 +67765,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Pain_Offering",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchPainOffering.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchpainoffering.webp",
       "icon_alt": "WitchPainOffering",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fd6f5813fa68399a2ed6fc864808f04178b514ddbe6fe92e2a9784dd99a611a9",
       "tags": [
@@ -68010,7 +67990,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Perfect_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BrutePerfectStrike.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteperfectstrike.webp",
       "icon_alt": "BrutePerfectStrike",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/658e290ca9d0e52e38d3f5f2affe741a097006b0928c151b319867f4067318c8",
       "tags": [
@@ -68256,7 +68236,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Raise_Zombie",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchRaiseZombie.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchraisezombie.webp",
       "icon_alt": "WitchRaiseZombie",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/db3c1335d24c04fe5db91d9ecc08dbbbf55664378e350765cd1b1d5011ae303d",
       "tags": [
@@ -68496,7 +68476,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rapid_Assault",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressRapidAssault.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressrapidassault.webp",
       "icon_alt": "HuntressRapidAssault",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8dca7e3ed876d127674b44947b30fb301dba1904ff51d51094d04518fe4b890d",
       "tags": [
@@ -68790,7 +68770,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Rapid_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RapidShotIncendiary.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rapidshotincendiary.webp",
       "icon_alt": "RapidShotIncendiary",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/908097be23e54cfae2f53c2441126c2e60f3ffab2f9fdca767f21fdf9bc4a5e4",
       "tags": [
@@ -69091,7 +69071,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Resonating_Shield",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteResonatingShield.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteresonatingshield.webp",
       "icon_alt": "BruteResonatingShield",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3591b479ac47c2b2ca7974ecc80ba3032a441f47c376ea0d215ac9021bee1839",
       "tags": [
@@ -69386,7 +69366,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Frost_Mage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchFrostSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchfrostskeleton.webp",
       "icon_alt": "WitchFrostSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e0adb734ca1ff635343d950e7e20befcde3b686c6f849b2061a99c9a957ef750",
       "tags": [
@@ -69635,7 +69615,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Snap",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressColdSnap.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresscoldsnap.webp",
       "icon_alt": "SorceressColdSnap",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d715939c05855d7573ef5a995e1e59de248cffe6c70a74a224a8821145dafff1",
       "tags": [
@@ -70049,7 +70029,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Spearfield",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressSpearField.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressspearfield.webp",
       "icon_alt": "HuntressSpearField",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0fded2a41d7b3cf0973b62c074478f6aede8959209fd44542ec12039bf4bfd24",
       "tags": [
@@ -70300,7 +70280,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Storm_Lance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressOverchargedSpear.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressoverchargedspear.webp",
       "icon_alt": "HuntressOverchargedSpear",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ba2392569d8b2972f6aa522602085665361e5c104278aad7b83d714152f55421",
       "tags": [
@@ -70927,7 +70907,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Tempest_Flurry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkTempestFlurry.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monktempestflurry.webp",
       "icon_alt": "MonkTempestFlurry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3540fcc754b9539820ea11a2be592531c7697a3fc1a045ecc553ed5ecae3a73e",
       "tags": [
@@ -71236,7 +71216,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Thunderstorm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/LightningStormSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/lightningstormskill.webp",
       "icon_alt": "LightningStormSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4ea488a7a542bebe8bae5d13c07207d9811453eaeadcea16e58308bcf877af60",
       "tags": [
@@ -71561,7 +71541,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Toxic_Growth",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerPoisonBloomSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerpoisonbloomskill.webp",
       "icon_alt": "RangerPoisonBloomSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b38c63e3d0a24f819d9436a89049b8c6c240aeded8ca640056cbf5c7b7fed245",
       "tags": [
@@ -71922,7 +71902,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 5,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Vaulting_Impact",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkVaultingImpact.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkvaultingimpact.webp",
       "icon_alt": "MonkVaultingImpact",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/35e652d16fe808241e41ff6e66714a996008d09b4081af019561aba3b717d9ac",
       "tags": [
@@ -72168,7 +72148,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Artillery_Ballista",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MercRipwireBallista.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/mercripwireballista.webp",
       "icon_alt": "MercRipwireBallista",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ff9d39a8dc5f256ca9d66909d984e292bcc8d55d51437c679608202753921b7e",
       "tags": [
@@ -72459,7 +72439,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bind_Spectre",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchBindSpectre.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchbindspectre.webp",
       "icon_alt": "WitchBindSpectre",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d0b9e1f821f112850bfe49e031a779d66e303fc9c2bf25d873d8821a425ee0ae",
       "tags": [
@@ -72594,7 +72574,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Blood_Hunt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressBloodHuntSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressbloodhuntskillicon.webp",
       "icon_alt": "HuntressBloodHuntSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3af204cc7cd5d09023a57b8530ec67dc500860ff4a6bbc8978d36ec6d51e80cb",
       "tags": [
@@ -72820,7 +72800,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Cross_Slash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidCrossSlash.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidcrossslash.webp",
       "icon_alt": "DruidCrossSlash",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bf2c2cafe3804b305b29aae61297739b41ade8416005da514e5cf50f7dfd2599",
       "tags": [
@@ -73061,7 +73041,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Detonate_Dead",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchDetonateDead.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchdetonatedead.webp",
       "icon_alt": "WitchDetonateDead",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/31acddb06ce7a07cde89745a90c5f5004d2e1b674d4db0ce169e2dd23b7d38af",
       "tags": [
@@ -73296,7 +73276,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Earthshatter",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteEarthshatter.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteearthshatter.webp",
       "icon_alt": "BruteEarthshatter",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1843a9eac70bd6faa3742c7a4f15ed257ba06555181f00e146c6d19b4c87d79f",
       "tags": [
@@ -73497,7 +73477,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Elemental_Weakness",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/elementalweakness.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/elementalweakness.webp",
       "icon_alt": "elementalweakness",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8d31f3435db7e7df29c370acd1a69349611f487f8c8d573777f0e86e49377437",
       "tags": [
@@ -73737,7 +73717,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Explosive_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PowerShotIncendiary.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/powershotincendiary.webp",
       "icon_alt": "PowerShotIncendiary",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c5a846b6459451d02d5d089eb7b0190c81f30fddddf4283d90b8782e9790fa99",
       "tags": [
@@ -74191,7 +74171,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Ferocious_Roar",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidBearWarcry.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidbearwarcry.webp",
       "icon_alt": "DruidBearWarcry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/65195250be1b3c2e6865186a0e4c8a194fb3911693a93b5c1f2829cd1662da7f",
       "tags": [
@@ -74402,7 +74382,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Freezing_Mark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FreezingMarkSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/freezingmarkskill.webp",
       "icon_alt": "FreezingMarkSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c07d9f93a303c2a7e6d275ac3c1677d93b00c3f44e09cd404300d3b59caa3af8",
       "tags": [
@@ -74632,7 +74612,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Freezing_Mark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/FreezingMarkSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/freezingmarkskill.webp",
       "icon_alt": "FreezingMarkSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c07d9f93a303c2a7e6d275ac3c1677d93b00c3f44e09cd404300d3b59caa3af8",
       "tags": [
@@ -74862,7 +74842,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Gas_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerGasCloudSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangergascloudskill.webp",
       "icon_alt": "RangerGasCloudSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dba595fbfaf5387bcea4cacc36b77ec3884efd962f3e1414156cdb71a0bcb6c1",
       "tags": [
@@ -75281,7 +75261,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Glacial_Bolt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PowerShotPermafrost.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/powershotpermafrost.webp",
       "icon_alt": "PowerShotPermafrost",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8a4988f9c94998f1e59f7d38d4269fb62900c32165cc05e0c7154000724a0094",
       "tags": [
@@ -75765,7 +75745,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Glacial_Lance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressGlacialLance.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressglaciallance.webp",
       "icon_alt": "HuntressGlacialLance",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3d55a7e25fa9bac5aff0956d5ee301879cea7e47c98b58b6993205ce226ec203",
       "tags": [
@@ -76156,7 +76136,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Leap_Slam",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteLeapSlam.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteleapslam.webp",
       "icon_alt": "BruteLeapSlam",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9d1de5170f05a425ae3fed9fa5d92191a6cafadee447446f322832a0c7ab647b",
       "tags": [
@@ -76421,7 +76401,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mana_Tempest",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressManaTempest.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressmanatempest.webp",
       "icon_alt": "SorceressManaTempest",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/865d92da6025274325212bb7eb4ccfb868252f95e1453b71ff4ffe8098a5e788",
       "tags": [
@@ -76666,7 +76646,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Profane_Ritual",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchProfaneRitual.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchprofaneritual.webp",
       "icon_alt": "WitchProfaneRitual",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/945baf01e448b002fb20f689341c47c95fc83ff3d27094e3582c352163787e7e",
       "tags": [
@@ -76881,7 +76861,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Shield_Wall",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteShieldWall.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteshieldwall.webp",
       "icon_alt": "BruteShieldWall",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5f764767ac179d747ca27b8909dbc603db8498138ea86640a67cf9aabf266fda",
       "tags": [
@@ -77171,7 +77151,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Siphoning_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkSiphoningStrike.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monksiphoningstrike.webp",
       "icon_alt": "MonkSiphoningStrike",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/53a9db4f9a039c49e7cdb12c32586ea656e6b06b441833d02bfefb808c0e2e6d",
       "tags": [
@@ -77422,7 +77402,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Snipers_Mark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/projectileweakness.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/projectileweakness.webp",
       "icon_alt": "projectileweakness",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/add31eb59d042e49b65ce96d52bf97c5214c85ca429aea7302ffe0a9f10cf6bf",
       "tags": [
@@ -77612,7 +77592,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Spell_Totem",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidSpellTotem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidspelltotem.webp",
       "icon_alt": "DruidSpellTotem",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/738851ca162008e898164a64723bc9bbf4777a410cd88d742d1013857b6c32c7",
       "tags": [
@@ -77843,7 +77823,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Storm_Wave",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkStormWave.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkstormwave.webp",
       "icon_alt": "MonkStormWave",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bc45ff3b4dc4397ae7c3fe26e5714b9121edd4cb3924e85b4ea8089a7f80dc39",
       "tags": [
@@ -78073,7 +78053,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Tame_Beast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressTameBeast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntresstamebeast.webp",
       "icon_alt": "HuntressTameBeast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e97cc78e98c7dbb8f7c1902e9a8de608a4b83b8725d9a663816ae468754124e8",
       "tags": [
@@ -78298,7 +78278,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Temporal_Chains",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/temporalchains.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/temporalchains.webp",
       "icon_alt": "temporalchains",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d58f0e4bd195c30d5645de1697d2f4116981f2c7c9fe9e7fe052eb44baf025d3",
       "tags": [
@@ -78533,7 +78513,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Volcanic_Fissure",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteVolcanicFissure.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutevolcanicfissure.webp",
       "icon_alt": "BruteVolcanicFissure",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1f91fdf4c112c2d4b54ab10d51b554678ff68124571fda0a943aedd3511ce33f",
       "tags": [
@@ -78753,7 +78733,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Voltaic_Grenade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ShockGrenade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/shockgrenade.webp",
       "icon_alt": "ShockGrenade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8c899716cd1cb2ebdd32f32129dec9db10c38d2adf87941e49fc3c8a26e9fcde",
       "tags": [
@@ -79133,7 +79113,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Voltaic_Mark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ShockingMarkSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/shockingmarkskill.webp",
       "icon_alt": "ShockingMarkSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fb90c71aef5ad480fbc8574073c45588e9f375f4d13702fcbda0fe9cd294bc28",
       "tags": [
@@ -79363,7 +79343,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Vulnerability",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/vulnerability.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/vulnerability.webp",
       "icon_alt": "vulnerability",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e7e8350f62b508f49b61de7e4f947525fed9b1063905c8800e27f2e9aacfe7a8",
       "tags": [
@@ -79593,7 +79573,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 7,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Wave_of_Frost",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkFreezingBackflip.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkfreezingbackflip.webp",
       "icon_alt": "MonkFreezingBackflip",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6bbc66c8fb1f4f269514610b42dc6944fcfd9d68bf5b74cd675468aa3ea13d57",
       "tags": [
@@ -79803,7 +79783,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Barkskin",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidBarkSkin.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidbarkskin.webp",
       "icon_alt": "DruidBarkSkin",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/59533abd1e26b8a74a9458fb9747a78708d68d4f963e646ddba47b8978d18710",
       "tags": [
@@ -79943,7 +79923,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Barrier_Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBarrierInvocation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressbarrierinvocation.webp",
       "icon_alt": "SorceressBarrierInvocation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aee7a00225e80421893765371371f2305df3e19330c4c4cbab79bb7f5376024c",
       "tags": [
@@ -80109,7 +80089,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Barrier_Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBarrierInvocation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressbarrierinvocation.webp",
       "icon_alt": "SorceressBarrierInvocation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aee7a00225e80421893765371371f2305df3e19330c4c4cbab79bb7f5376024c",
       "tags": [
@@ -80275,7 +80255,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Barrier_Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBarrierInvocation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressbarrierinvocation.webp",
       "icon_alt": "SorceressBarrierInvocation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aee7a00225e80421893765371371f2305df3e19330c4c4cbab79bb7f5376024c",
       "tags": [
@@ -80441,7 +80421,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Blasphemy",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchBlasphemy.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchblasphemy.webp",
       "icon_alt": "WitchBlasphemy",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d1346b6b00789a3b78e21c335c6a1c4760689f01cf5c9d9af4e2b6aa98a71118",
       "tags": [
@@ -80587,7 +80567,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Blink",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBlinkReservation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressblinkreservation.webp",
       "icon_alt": "SorceressBlinkReservation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/07632e190311940ae3edca792d529795e5d1d5dec6f4d416a23813f709c52381",
       "tags": [
@@ -80763,7 +80743,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cast_on_Minion_Death",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CastOnMinionDeath.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castonminiondeath.webp",
       "icon_alt": "CastOnMinionDeath",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/92c2264b2aaa6737b4ec057ca7fdb336ee01c3a8a86585230ba66a8d66b79bdc",
       "tags": [
@@ -80924,7 +80904,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Combat_Frenzy",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerCombatFrenzySkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangercombatfrenzyskill.webp",
       "icon_alt": "RangerCombatFrenzySkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7e78fe7a8b7ffdeada89b74dcbbb17b92b78f4ca733ebd89fefd8a0456dfc4a0",
       "tags": [
@@ -81049,7 +81029,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Combat_Frenzy",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerCombatFrenzySkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangercombatfrenzyskill.webp",
       "icon_alt": "RangerCombatFrenzySkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7e78fe7a8b7ffdeada89b74dcbbb17b92b78f4ca733ebd89fefd8a0456dfc4a0",
       "tags": [
@@ -81174,7 +81154,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Defiance_Banner",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DefianceBannerSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/defiancebannerskill.webp",
       "icon_alt": "DefianceBannerSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9ad8be378fc6ded957510e4ae70c8fa8aa186836a8ee8b310ce0a796ea46eb14",
       "tags": [
@@ -81360,7 +81340,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Elemental_Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ElementalInvocationSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/elementalinvocationskill.webp",
       "icon_alt": "ElementalInvocationSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/67c15bd259fc070b2ed3167a4917a5b42b387b766bc16f2ede4363c9a61ea1b4",
       "tags": [
@@ -81551,7 +81531,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Elemental_Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ElementalInvocationSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/elementalinvocationskill.webp",
       "icon_alt": "ElementalInvocationSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/67c15bd259fc070b2ed3167a4917a5b42b387b766bc16f2ede4363c9a61ea1b4",
       "tags": [
@@ -81742,7 +81722,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Herald_of_Plague",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HeraldOfAgonySkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/heraldofagonyskill.webp",
       "icon_alt": "HeraldOfAgonySkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/58bb48a179e35d6cc6a301cd2c8aec676fb8b3fff1a75a086e63c9a077b0e477",
       "tags": [
@@ -81892,7 +81872,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Lingering_Illusion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkLingeringIllusion.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monklingeringillusion.webp",
       "icon_alt": "MonkLingeringIllusion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9bb1f8fa7c0c8321a5238c6c8917ee7856f732d8c135bd2d20454776ba187f47",
       "tags": [
@@ -82058,7 +82038,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Mirage_Archer",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/LingeringMirageSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/lingeringmirageskill.webp",
       "icon_alt": "LingeringMirageSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9ddb6dd1928b713bf3a7b92bcf1a5b40490638e78bb41d1feede6485b02f6884",
       "tags": [
@@ -82245,7 +82225,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Mirage_Archer",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/LingeringMirageSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/lingeringmirageskill.webp",
       "icon_alt": "LingeringMirageSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9ddb6dd1928b713bf3a7b92bcf1a5b40490638e78bb41d1feede6485b02f6884",
       "tags": [
@@ -82432,7 +82412,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Overwhelming_Presence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OverwhelmingPressureSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/overwhelmingpressureskill.webp",
       "icon_alt": "OverwhelmingPressureSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9f34c9c66c2afd1af3b25cf1975f252e34577dd08069b6098330f44a973576cc",
       "tags": [
@@ -82572,7 +82552,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Overwhelming_Presence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OverwhelmingPressureSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/overwhelmingpressureskill.webp",
       "icon_alt": "OverwhelmingPressureSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9f34c9c66c2afd1af3b25cf1975f252e34577dd08069b6098330f44a973576cc",
       "tags": [
@@ -82712,7 +82692,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Overwhelming_Presence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OverwhelmingPressureSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/overwhelmingpressureskill.webp",
       "icon_alt": "OverwhelmingPressureSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9f34c9c66c2afd1af3b25cf1975f252e34577dd08069b6098330f44a973576cc",
       "tags": [
@@ -82852,7 +82832,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Shard_Scavenger",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MercShardDespoiler.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/mercsharddespoiler.webp",
       "icon_alt": "MercShardDespoiler",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4908263ec469705a6e73313be82984c32ff7e6ad035243af10252f47d83528c2",
       "tags": [
@@ -83017,7 +82997,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Siphon_Elements",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SiphonElements.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/siphonelements.webp",
       "icon_alt": "SiphonElements",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4bcf992ebd9240116ed2ab74b1205f34586a67e0728329c520cd74e2e54ee5c3",
       "tags": [
@@ -83192,7 +83172,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Time_of_Need",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TimeOfNeedSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/timeofneedskill.webp",
       "icon_alt": "TimeOfNeedSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/932043c29a79c423f750c1544127eafded2e3451ff6cf3a390a9e3457e39806b",
       "tags": [
@@ -83337,7 +83317,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Time_of_Need",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/TimeOfNeedSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/timeofneedskill.webp",
       "icon_alt": "TimeOfNeedSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/932043c29a79c423f750c1544127eafded2e3451ff6cf3a390a9e3457e39806b",
       "tags": [
@@ -83482,7 +83462,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Trail_of_Caltrops",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CaltropsOnDodgeSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/caltropsondodgeskillicon.webp",
       "icon_alt": "CaltropsOnDodgeSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ee5b31f7aa34604739749a7acc1279c693082847c7f79e2eb8529a2b413f4a47",
       "tags": [
@@ -83743,7 +83723,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 8,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Wolf_Pack",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidSummonWolf.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidsummonwolf.webp",
       "icon_alt": "DruidSummonWolf",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c38349a0432b45632d25cbf35c42bcb97d71fed7ac9fcc12e41d7bbf2b70853f",
       "tags": [
@@ -83898,7 +83878,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Bloodhounds_Mark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MarkoftheBloodhoundSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/markofthebloodhoundskillicon.webp",
       "icon_alt": "MarkoftheBloodhoundSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/73ab0153a4c4885fade88bb6412c3dfa6cd2043e34d0aa71c00f82704093f769",
       "tags": [
@@ -84149,7 +84129,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Charged_Staff",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkChargedStaff.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkchargedstaff.webp",
       "icon_alt": "MonkChargedStaff",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b8ac30340cb865e5c52870965ed0dcc87f158ec13a4b1cb4334bb6dc64a7b1ed",
       "tags": [
@@ -84355,7 +84335,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Dark_Effigy",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchDarkEffigy.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchdarkeffigy.webp",
       "icon_alt": "WitchDarkEffigy",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/079fb4c761304b0eab913bfcc4f84fe420bc5bbba7f0eb6b403bedfe2d2a3a5e",
       "tags": [
@@ -84601,7 +84581,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Despair",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Despair.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/despair.webp",
       "icon_alt": "Despair",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9cd3284396dddc989903b7a3e44e44a031fef43df8ba93ee2b0cbf8e48f3f76f",
       "tags": [
@@ -84831,7 +84811,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Detonating_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerDetonatingArrowSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerdetonatingarrowskill.webp",
       "icon_alt": "RangerDetonatingArrowSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c11fc95aa425f176508989faa86b0b358a54fe86573682ff8b860a81710a3aea",
       "tags": [
@@ -85097,7 +85077,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Forge_Hammer",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WarriorForgeHammer.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/warriorforgehammer.webp",
       "icon_alt": "WarriorForgeHammer",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/05d0eaa9ce3ec141789e37afd718a0ff6d5a3e2697a20704af45aa4bfab3db61",
       "tags": [
@@ -85491,7 +85471,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fortifying_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WarriorShieldingCry.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/warriorshieldingcry.webp",
       "icon_alt": "WarriorShieldingCry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/819be4e85cef7e564a9b62e77d53d4a541456d1cddf4cda61f0c56e779907aa3",
       "tags": [
@@ -85787,7 +85767,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Frost_Wall",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressFrostWall.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressfrostwall.webp",
       "icon_alt": "SorceressFrostWall",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/92b7240e12399a4386cff37f85a33bfb37e73f0482539f54c56e99493e30989c",
       "tags": [
@@ -86123,7 +86103,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Hand_of_Chayula",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkHandOfChayula.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkhandofchayula.webp",
       "icon_alt": "MonkHandOfChayula",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4f4fda0188862b092df7c0edce07a725dc5752f0e581fccbd769dd618218f1e8",
       "tags": [
@@ -86324,7 +86304,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ice_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerIceShot.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangericeshot.webp",
       "icon_alt": "RangerIceShot",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/129f7c480d1a9a47ffb6da25b3d67278772e41c1b420e780303593c8f1a63597",
       "tags": [
@@ -86610,7 +86590,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Incinerate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressIncinerate.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressincinerate.webp",
       "icon_alt": "SorceressIncinerate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/db841120afbf872dd15280a92cc544ebd85aa570b4290a88d5f6f7a0f4571d2f",
       "tags": [
@@ -86966,7 +86946,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Lightning_Warp",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressLightningWarp.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresslightningwarp.webp",
       "icon_alt": "SorceressLightningWarp",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dd649c40c4290e449e4a4bb58010817b54f651d731e550b8bd13fce4abbd2797",
       "tags": [
@@ -87211,7 +87191,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Mantra_of_Destruction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkMantraofDestruction.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkmantraofdestruction.webp",
       "icon_alt": "MonkMantraofDestruction",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/86935f1baa0887c4fcb351893f65672efd43632cea1b04ea209c90e27b5ed7e2",
       "tags": [
@@ -87461,7 +87441,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Oil_Barrage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidElectricSpittle.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidelectricspittle.webp",
       "icon_alt": "DruidElectricSpittle",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2b1672c2d6c8e68cac9a5696ec5f464c58d652b0cd3ca20cbb4667015f11f62e",
       "tags": [
@@ -87945,7 +87925,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Oil_Grenade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/OilGrenade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/oilgrenade.webp",
       "icon_alt": "OilGrenade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f4cc6f2b741bc080971487509a477183b651e7dc641f2c8b6d699b1246b09098",
       "tags": [
@@ -88341,7 +88321,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Primal_Strikes",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PrimalStrikesSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/primalstrikesskillicon.webp",
       "icon_alt": "PrimalStrikesSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e684e0d34546900bc1b52b46a9f13d493134e2f33650470d227908d0b1fed8aa",
       "tags": [
@@ -88838,7 +88818,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rain_of_Arrows",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerRainOfArrowsSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerrainofarrowsskill.webp",
       "icon_alt": "RangerRainOfArrowsSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/29b58ef380c6486c89cb2665b84047d5ff6d6e5e3e66253fbec650f6d787f155",
       "tags": [
@@ -89123,7 +89103,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Siege_Ballista",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MercArtilleryBallista.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/mercartilleryballista.webp",
       "icon_alt": "MercArtilleryBallista",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/245fb300b2ff99f916d1f61a36fa844a7a7513268c1d70c06417c51b0935527e",
       "tags": [
@@ -89527,7 +89507,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Reaver",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchReaverSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchreaverskeleton.webp",
       "icon_alt": "WitchReaverSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1c2c7c9ab6c62705dfc55d118f0c3b022b2dc2777806bd13cef73bd7b50f8506",
       "tags": [
@@ -89781,7 +89761,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Stormblast_Bolts",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SiegeCascadeStormblast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/siegecascadestormblast.webp",
       "icon_alt": "SiegeCascadeStormblast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4719bd8feba73c0357b9b56b69c72e10342e7cd799391cba290a5a0dbbf2a96b",
       "tags": [
@@ -90145,7 +90125,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Sunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteSunder.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutesunder.webp",
       "icon_alt": "BruteSunder",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8d9bf22a1eab0910a6beab65ddeffa74f27861f4d3c4f01a37266928c15c3eff",
       "tags": [
@@ -90451,7 +90431,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Thrashing_Vines",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidAwakenedForest.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidawakenedforest.webp",
       "icon_alt": "DruidAwakenedForest",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/082676820cf72afd529da570b5fd1402c2ef32c8b267d6b80ab7d4ac56ffe395",
       "tags": [
@@ -90756,7 +90736,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 9,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Thunderous_Leap",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ThunderousLeapSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/thunderousleapskillicon.webp",
       "icon_alt": "ThunderousLeapSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/67a98e927660841809a9a47d03d40c6952e474714cc3cf1e8628d713803364d5",
       "tags": [
@@ -90976,7 +90956,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ball_Lightning",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressBallLightning.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressballlightning.webp",
       "icon_alt": "SorceressBallLightning",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ee0aeedeccf5f6c0eb30d8d8d19888c69f8b4ffab2894fa23a1bf3067d80d3ed",
       "tags": [
@@ -91360,7 +91340,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bone_Offering",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchBoneOffering.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchboneoffering.webp",
       "icon_alt": "WitchBoneOffering",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4efc0864a526233cd188f7df2e6890d2fd7dac40a30e4725a7e3607e08aa7eee",
       "tags": [
@@ -91580,7 +91560,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Comet",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressComet.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresscomet.webp",
       "icon_alt": "SorceressComet",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/319dac99cccbc3d8660bef39e97de7f52c449e6c956050090d5a253677e5e296",
       "tags": [
@@ -91796,7 +91776,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Elemental_Sundering",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressExtraElements.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntressextraelements.webp",
       "icon_alt": "HuntressExtraElements",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eabb822d79d0c7cf224c75cbf6a989f5e482e6ac142fac6c3f2e1de12c11ae0a",
       "tags": [
@@ -92103,7 +92083,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Emergency_Reload",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MercEmergencyReload.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/mercemergencyreload.webp",
       "icon_alt": "MercEmergencyReload",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4531028b39bf16ab6f51b3d0c0c334efbf673bd9c0a2d26664e63fc35af08413",
       "tags": [
@@ -92288,7 +92268,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Firestorm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchFirestorm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchfirestorm.webp",
       "icon_alt": "WitchFirestorm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fe4d5fe764c1ee1931ea692354a460a96ae71500d22c76e85b7878fbac7269f7",
       "tags": [
@@ -92767,7 +92747,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Hailstorm_Rounds",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SiegeCascadePermafrost.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/siegecascadepermafrost.webp",
       "icon_alt": "SiegeCascadePermafrost",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/76caeef340fd9ce3fd5028fc5b80b7eeeee9725ea268e501ab36dd6d0aa9eb9b",
       "tags": [
@@ -93068,7 +93048,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Hexblast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchHexBlast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchhexblast.webp",
       "icon_alt": "WitchHexBlast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/75147bfbdf2e70db6198fa8a29b6bf0f173358ad58e4bbd96debf62b038a855b",
       "tags": [
@@ -93298,7 +93278,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Mortar_Cannon",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/GrenadeBallistaSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/grenadeballistaskillicon.webp",
       "icon_alt": "GrenadeBallistaSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ec746c9c3f38e70ad00c7bbb7fcbcfa0233223fa262c1e0c013b6fdeb5cbb480",
       "tags": [
@@ -93539,7 +93519,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Rampage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidBearRampage.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidbearrampage.webp",
       "icon_alt": "DruidBearRampage",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4024a774b538575b991ffa5f8ee9f21241709c1cbb98633c7c92641b28a175ff",
       "tags": [
@@ -93824,7 +93804,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Seismic_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteSeismicCry.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteseismiccry.webp",
       "icon_alt": "BruteSeismicCry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/672dbd4f41ce9629ff89686f410abfe25f94b5e91a805e7e02206d08794c5e61",
       "tags": [
@@ -94099,7 +94079,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Shattering_Palm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkShatteringPalm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkshatteringpalm.webp",
       "icon_alt": "MonkShatteringPalm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ccbfbc9ab2904c0cb18b5a6d7553408c7b5cfdf1470754be0ec03944cbc47456",
       "tags": [
@@ -94340,7 +94320,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Shockburst_Rounds",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RapidShotStormblast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rapidshotstormblast.webp",
       "icon_alt": "RapidShotStormblast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d8d45677c774bf957e3ffd692e680776c51f0009bbb44043634f2e5102d974c7",
       "tags": [
@@ -94794,7 +94774,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Shockchain_Arrow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerShockchainSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangershockchainskill.webp",
       "icon_alt": "RangerShockchainSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ced4383370925da120d6bee3b8da0d0bc04bdf0245d7615ac47da45add21779b",
       "tags": [
@@ -95130,7 +95110,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Storm_Mage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchStormSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchstormskeleton.webp",
       "icon_alt": "WitchStormSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bc622b41821d4634a3c446f1b3c59074bd45036edcea9b905b042d9a57899f56",
       "tags": [
@@ -95389,7 +95369,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Stampede",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteStampede.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutestampede.webp",
       "icon_alt": "BruteStampede",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/30aeccaa8f6b252f528f03c75bea81508d5287e9fc88620e557899a7bb2dce2b",
       "tags": [
@@ -95763,7 +95743,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Supercharged_Slam",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteSuperchargedSlam.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutesuperchargedslam.webp",
       "icon_alt": "BruteSuperchargedSlam",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ca3499bfd434657c7a96c6a0873b0bc2d49e185dd347d43f7a594e4f2f0aca1f",
       "tags": [
@@ -96019,7 +95999,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Tornado",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidTornado.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidtornado.webp",
       "icon_alt": "DruidTornado",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cf260605e64368805efeba9a3c55b8fba315d91f0c9bb85a2db1e33c0b33c6ef",
       "tags": [
@@ -96329,7 +96309,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Tornado_Shot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerTornadoShotSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangertornadoshotskill.webp",
       "icon_alt": "RangerTornadoShotSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e41132005df313bbd15c101ff68270c23e5c1ffea1f339fa9f35a4b4028d0618",
       "tags": [
@@ -96650,7 +96630,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Whirling_Assault",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkWhirlingAssault.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkwhirlingassault.webp",
       "icon_alt": "MonkWhirlingAssault",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d9c246e596af846bc8919d7d3c65d3e6acb3d0466cb04c3ab4c5b5813b22b5d2",
       "tags": [
@@ -96885,7 +96865,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 11,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Whirlwind_Lance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WindstormLanceSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/windstormlanceskillicon.webp",
       "icon_alt": "WindstormLanceSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1ad32d430d22f3fcf4db81a82ffa599d93ba7ed4055acf221b6275c3c186322d",
       "tags": [
@@ -97216,7 +97196,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ancestral_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WarriorAncestralCry.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/warriorancestralcry.webp",
       "icon_alt": "WarriorAncestralCry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/66adc2243b906a309f719e6fc55ab80b04ddee4308976c82fd8f90dabddc5c4d",
       "tags": [
@@ -97610,7 +97590,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ancestral_Warrior_Totem",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteAncestralWarriorTotem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/bruteancestralwarriortotem.webp",
       "icon_alt": "BruteAncestralWarriorTotem",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f0f78fd037ad17745e18d28f1861e70946c0389567b21fce0a929f2b8be40d19",
       "tags": [
@@ -97821,7 +97801,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Cluster_Grenade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MercClusterGrenade.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/mercclustergrenade.webp",
       "icon_alt": "MercClusterGrenade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1fcc79b1b080db8349047e47b6acd076843ba92b8685762d5fe027f75eb40c22",
       "tags": [
@@ -98247,7 +98227,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Eye_of_Winter",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressEyeofWinter.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresseyeofwinter.webp",
       "icon_alt": "SorceressEyeofWinter",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/04b4103e374ab5ac6782ca409659dd49a2a17d02f828a64870fd3314a8be45db",
       "tags": [
@@ -98497,7 +98477,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Flame_Breath",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidFlameBreath.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidflamebreath.webp",
       "icon_alt": "DruidFlameBreath",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ff1a54c081997cc701caf6e2d8de4b0763793217f50b828b0229df2002bbfac1",
       "tags": [
@@ -98857,7 +98837,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Flameblast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressFlameblast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceressflameblast.webp",
       "icon_alt": "SorceressFlameblast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/87a551f1ae5816298fac7967388f7847f938ecc066237472e51e96f68cc803c7",
       "tags": [
@@ -99127,7 +99107,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Flicker_Strike",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkFlickerStrikeTeleport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkflickerstriketeleport.webp",
       "icon_alt": "MonkFlickerStrikeTeleport",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d8845066dc42576bac218f9f17a1260fcd1e12eac07cbc49046dfc2fe3ef5f68",
       "tags": [
@@ -99307,7 +99287,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Gathering_Storm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MonkGatheringStorm.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/monkgatheringstorm.webp",
       "icon_alt": "MonkGatheringStorm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c9a04d036df5c8cf844526d3453f24a659ab49224d3a915783024ee0004dd2e8",
       "tags": [
@@ -99814,7 +99794,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Hammer_of_the_Gods",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BruteHammerOfTheGods.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/brutehammerofthegods.webp",
       "icon_alt": "BruteHammerOfTheGods",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6d591c13a1c4db13ac6327e8be27b85cebbfeba40d7227813274c7ccca2b8304",
       "tags": [
@@ -100064,7 +100044,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Lightning_Conduit",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SorceressLightningConduit.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/sorceresslightningconduit.webp",
       "icon_alt": "SorceressLightningConduit",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/87d01bcfbc7877e6d0cf163888dfcf58cf9fecd00c5e906139a19c4625cba97d",
       "tags": [
@@ -100259,7 +100239,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Lunar_Blessing",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidLunarBlessing.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidlunarblessing.webp",
       "icon_alt": "DruidLunarBlessing",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9e1fbde65cd4fc3dac0e30858a9317766b453030360fd8a92005c21f8c85b3b3",
       "tags": [
@@ -100515,7 +100495,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Magnetic_Salvo",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerMagneticSalvo.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangermagneticsalvo.webp",
       "icon_alt": "RangerMagneticSalvo",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a295e8c369b7b437e8da4f45ebdaa156effeb90ab920a7833d8b2c5d1b646ca6",
       "tags": [
@@ -100711,7 +100691,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Plasma_Blast",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/PowerShotStormblast.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/powershotstormblast.webp",
       "icon_alt": "PowerShotStormblast",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/185cf7d7a7851f1607f8c3ee5f08708b16b431156d8dc973f438e120d9e17e0f",
       "tags": [
@@ -101140,7 +101120,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Siege_Cascade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SiegeCascadePhysical.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/siegecascadephysical.webp",
       "icon_alt": "SiegeCascadePhysical",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5025f7789e11be03b1fec9e7b1285abe09432752d239e73b523c1da53e8235df",
       "tags": [
@@ -101514,7 +101494,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Brute",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchBruteSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchbruteskeleton.webp",
       "icon_alt": "WitchBruteSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ec4ee8d2f5884c6b027193ec98879347fd94a7bacbd492312c40ea817c5b83bc",
       "tags": [
@@ -101796,7 +101776,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Skeletal_Cleric",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchClericSkeleton.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchclericskeleton.webp",
       "icon_alt": "WitchClericSkeleton",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/180c118882844d77efbcb637c88af5890fd5630b6ed707f482d047c7f04fc45b",
       "tags": [
@@ -101975,7 +101955,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Soul_Offering",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WitchPowerOffering.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/witchpoweroffering.webp",
       "icon_alt": "WitchPowerOffering",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/430584460f82ab11a9a7fa7a1934ac68426c83af10c77b3ea776b7031eaa98e3",
       "tags": [
@@ -102165,7 +102145,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Spear_of_Solaris",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/SolarisSpearSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/solarisspearskillicon.webp",
       "icon_alt": "SolarisSpearSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eb476cfbbf5fb740277bb6bc2601b6e6cd9cb03e54699f04c7abd68113b2a214",
       "tags": [
@@ -102524,7 +102504,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Spiral_Volley",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerSpiralVolleySkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangerspiralvolleyskill.webp",
       "icon_alt": "RangerSpiralVolleySkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2ed70edcb03d8092b91a0aea193145affbc54f6a66682a6f0ea61920baf82fea",
       "tags": [
@@ -102769,7 +102749,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Toxic_Domain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RangerToxicDomain.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rangertoxicdomain.webp",
       "icon_alt": "RangerToxicDomain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d27b081111dfb1b9bebbd4bf57dd80812a3e6bfeb7a51fcaff8b6c71289a495f",
       "tags": [
@@ -103070,7 +103050,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Walking_Calamity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidWalkingCalamity.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidwalkingcalamity.webp",
       "icon_alt": "DruidWalkingCalamity",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9c33859bb5a046faf71ea4f1156ef96a7e4e702425418f8eeb35afdd4885e710",
       "tags": [
@@ -103409,7 +103389,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 13,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Wind_Serpents_Fury",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/WindSerpentsFurySkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/windserpentsfuryskillicon.webp",
       "icon_alt": "WindSerpentsFurySkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6d579506c0b744b833bbc8801fdf7b92ba95f9a08feb2d8f4c16172e06f3eb1d",
       "tags": [
@@ -103650,7 +103630,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Alchemists_Boon",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/AlchemistsBoonSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/alchemistsboonskill.webp",
       "icon_alt": "AlchemistsBoonSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4ec57c413541767e0f1731f126fb32844e04052d6fd1ffcdf8f4bf8af18ece84",
       "tags": [
@@ -103790,7 +103770,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Archmage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ArchmageSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/archmageskill.webp",
       "icon_alt": "ArchmageSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cacf6bae36abc6be4a6e44a0b911135e4cf2ee376f300d21cd16613e7b009157",
       "tags": [
@@ -103930,7 +103910,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Berserk",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/BeserkSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/beserkskill.webp",
       "icon_alt": "BeserkSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3ff86a58ee57e87724a4f21c45706f4f7454afe19939c082488892a27cc85187",
       "tags": [
@@ -104055,7 +104035,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cast_on_Critical",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CastOnCritSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castoncritskill.webp",
       "icon_alt": "CastOnCritSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3ae3fa45f40069a1455746645ce6579cd93f2e86cb44352941a3b46420dad915",
       "tags": [
@@ -104216,7 +104196,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Cast_on_Dodge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CastOnDodgeRollSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castondodgerollskill.webp",
       "icon_alt": "CastOnDodgeRollSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/db1d00acc86bdf711717460f65a996448dd9a909cd05797cdc20efbf6b0b1315",
       "tags": [
@@ -104372,7 +104352,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cast_on_Elemental_Ailment",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CastonFreezeShockIgnite.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castonfreezeshockignite.webp",
       "icon_alt": "CastonFreezeShockIgnite",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b73094e957aa696bf706c0139d1ba994da6c934eace8031f1660f95eea004f65",
       "tags": [
@@ -104553,7 +104533,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Charge_Regulation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ChargeMasteryDeath.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/chargemasterydeath.webp",
       "icon_alt": "ChargeMasteryDeath",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/723dfed756e65021ac521770fa4a0e64c85d175868924b7f483898188e0a42c6",
       "tags": [
@@ -104708,7 +104688,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Charge_Regulation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ChargeMasteryDeath.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/chargemasterydeath.webp",
       "icon_alt": "ChargeMasteryDeath",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/723dfed756e65021ac521770fa4a0e64c85d175868924b7f483898188e0a42c6",
       "tags": [
@@ -104863,7 +104843,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Dread_Banner",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DreadBannerSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/dreadbannerskill.webp",
       "icon_alt": "DreadBannerSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/31172e41b559fe858aee2dfc85896b9a4325d5e95f9fe4010d6e6fba6e68bf75",
       "tags": [
@@ -105054,7 +105034,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Dread_Banner",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DreadBannerSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/dreadbannerskill.webp",
       "icon_alt": "DreadBannerSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/31172e41b559fe858aee2dfc85896b9a4325d5e95f9fe4010d6e6fba6e68bf75",
       "tags": [
@@ -105245,7 +105225,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Elemental_Conflux",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/ElementalConfluxSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/elementalconfluxskill.webp",
       "icon_alt": "ElementalConfluxSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e9ae611048a7deae1aae852d3854819b045b489a9d0ffc5dae6c91a44070937b",
       "tags": [
@@ -105400,7 +105380,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Eternal_Rage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/CeaselessRageSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/ceaselessrageskill.webp",
       "icon_alt": "CeaselessRageSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cf8476abd90eb4341887f3309173618d2dbc8efced27ef9cb995af77466c2897",
       "tags": [
@@ -105535,7 +105515,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Feral_Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/DruidFeralInvocation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/druidferalinvocation.webp",
       "icon_alt": "DruidFeralInvocation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a3fbb51d727552a4ac18cbf049927f1dc32efbe531d49e488bb1ef7c9a5a1d7e",
       "tags": [
@@ -105741,7 +105721,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Reapers_Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/MeleeInvocationSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/meleeinvocationskill.webp",
       "icon_alt": "MeleeInvocationSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/40437bf8943033580c4706d4204dfdecfb29c90e18c38deb79ffaa97a1479742",
       "tags": [
@@ -105907,7 +105887,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rhoa_Mount",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RhoaMountSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rhoamountskillicon.webp",
       "icon_alt": "RhoaMountSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/358e36fadfee02609d4a1b56fa47749ce55bbc0d9716bd139270d215cbe6674b",
       "tags": [
@@ -106072,7 +106052,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rhoa_Mount",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/RhoaMountSkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/rhoamountskillicon.webp",
       "icon_alt": "RhoaMountSkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/358e36fadfee02609d4a1b56fa47749ce55bbc0d9716bd139270d215cbe6674b",
       "tags": [
@@ -106237,7 +106217,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Sacrifice",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HarvesterSkill.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/harvesterskill.webp",
       "icon_alt": "HarvesterSkill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/85dfeaf734ef289af42148fe08c4588e62e56dfbddc23513ff093ba5fa913286",
       "tags": [
@@ -106377,7 +106357,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Trinity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressTrinitySkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntresstrinityskillicon.webp",
       "icon_alt": "HuntressTrinitySkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d40f4a7ae7edcb3bdeb16387ff67cfef190918d293b0428c2e5287a962d6bc67",
       "tags": [
@@ -106537,7 +106517,7 @@ window.POE2_SKILL_GEMS = {
       "tier": 14,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Trinity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/HuntressTrinitySkillIcon.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/huntresstrinityskillicon.webp",
       "icon_alt": "HuntressTrinitySkillIcon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d40f4a7ae7edcb3bdeb16387ff67cfef190918d293b0428c2e5287a962d6bc67",
       "tags": [
@@ -106703,6 +106683,7 @@ window.POE2_SKILL_GEMS = {
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SkillGemTriggeredAbyssalApparition",
       "tags": [
+        "Spell",
         "Trigger"
       ],
       "source": "poe2db-detail",
@@ -106737,6 +106718,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Vực Sâu Apparition"
         },
         "tags": [
+          {
+            "en": "Spell",
+            "vi": "Spell"
+          },
           {
             "en": "Trigger",
             "vi": "Trigger"
@@ -106812,9 +106797,9 @@ window.POE2_SKILL_GEMS = {
       "name": "Conductivity",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/Conductivity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/ConductivitySkillGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/conductivityskillgem.webp",
       "icon_alt": "Conductivity",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemConductivity",
@@ -107023,13 +107008,14 @@ window.POE2_SKILL_GEMS = {
       "name": "Detonate Minion",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "green",
       "source_url": "https://poe2db.tw/us/Detonate_Minion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/WitchReservationRagingSpiritsSkillGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/witchreservationragingspiritsskillgem.webp",
       "icon_alt": "Detonate Minion",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SkillGemDetonateMinion",
       "tags": [
+        "Attack",
         "AoE",
         "Fire"
       ],
@@ -107081,6 +107067,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Kích Nổ Đệ Tử"
         },
         "tags": [
+          {
+            "en": "Attack",
+            "vi": "Attack"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -107224,9 +107214,9 @@ window.POE2_SKILL_GEMS = {
       "name": "Elemental Siphon",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "green",
       "source_url": "https://poe2db.tw/us/Elemental_Siphon",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/ElementalSiphonSkillGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/elementalsiphonskillgem.webp",
       "icon_alt": "Elemental Siphon",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SkillGemElementalSiphon",
@@ -107567,9 +107557,9 @@ window.POE2_SKILL_GEMS = {
       "name": "Flammability",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/Flammability",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/FlammabilitySkillGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/flammabilityskillgem.webp",
       "icon_alt": "Flammability",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemFlammability",
@@ -107785,6 +107775,7 @@ window.POE2_SKILL_GEMS = {
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemGelidPalm",
       "tags": [
+        "Buff",
         "Attack",
         "Persistent",
         "AoE",
@@ -107832,6 +107823,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Gelid Chưởng"
         },
         "tags": [
+          {
+            "en": "Buff",
+            "vi": "Buff"
+          },
           {
             "en": "Attack",
             "vi": "Attack"
@@ -107957,6 +107952,7 @@ window.POE2_SKILL_GEMS = {
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SkillGemPlayerDefaultGrenadeLauncher",
       "tags": [
+        "Attack",
         "AoE",
         "Projectile",
         "Grenade",
@@ -108031,6 +108027,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Lựu Đạn"
         },
         "tags": [
+          {
+            "en": "Attack",
+            "vi": "Attack"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -108273,6 +108273,7 @@ window.POE2_SKILL_GEMS = {
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7360dc339b23571e19af5f18c10a385987a15f8005d5cb0ee09b8d4f840093eb",
       "official_id": "Metadata/Items/Gems/SkillGemHisFoulEmergence",
       "tags": [
+        "Spell",
         "AoE",
         "Physical",
         "Chaos",
@@ -108330,6 +108331,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "His Foul Emergence"
         },
         "tags": [
+          {
+            "en": "Spell",
+            "vi": "Spell"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -108708,13 +108713,14 @@ window.POE2_SKILL_GEMS = {
       "name": "His Scattering Calamity",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/His_Scattering_Calamity",
       "icon_url": "",
       "icon_alt": "His Scattering Calamity",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemScatteringCalamity",
       "tags": [
+        "Spell",
         "AoE",
         "Projectile",
         "Lightning",
@@ -108779,6 +108785,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "His Scattering Tai Ương"
         },
         "tags": [
+          {
+            "en": "Spell",
+            "vi": "Spell"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -108965,13 +108975,14 @@ window.POE2_SKILL_GEMS = {
       "name": "His Vile Intrusion",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/His_Vile_Intrusion",
       "icon_url": "",
       "icon_alt": "His Vile Intrusion",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemVileDisruption",
       "tags": [
+        "Spell",
         "AoE",
         "Physical",
         "Duration",
@@ -109035,6 +109046,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "His Vile Intrusion"
         },
         "tags": [
+          {
+            "en": "Spell",
+            "vi": "Spell"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -109233,6 +109248,7 @@ window.POE2_SKILL_GEMS = {
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b93432bd3e5d4ecf9215bbc5dc3f81989506226b418549f8aca7b1caa263177d",
       "official_id": "Metadata/Items/Gems/SkillGemHisWinnowingFlame",
       "tags": [
+        "Spell",
         "AoE",
         "Trigger",
         "Fire",
@@ -109290,6 +109306,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "His Winnowing Lửa"
         },
         "tags": [
+          {
+            "en": "Spell",
+            "vi": "Spell"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -109448,9 +109468,9 @@ window.POE2_SKILL_GEMS = {
       "name": "Hypothermia",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "blue",
       "source_url": "https://poe2db.tw/us/Hypothermia",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/FrostbiteSkillGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/frostbiteskillgem.webp",
       "icon_alt": "Hypothermia",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemHypothermia",
@@ -109666,6 +109686,7 @@ window.POE2_SKILL_GEMS = {
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SkillGemIceFragments",
       "tags": [
+        "Attack",
         "AoE",
         "Projectile",
         "Trigger",
@@ -109728,6 +109749,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Băng Fragments"
         },
         "tags": [
+          {
+            "en": "Attack",
+            "vi": "Attack"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -109917,7 +109942,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Primal_Avatar",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/DruidPrimalAvatarSkillGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/druidprimalavatarskillgem.webp",
       "icon_alt": "Primal Avatar",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SkillGemPrimalAvatar",
@@ -110091,7 +110116,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Shroud",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/Backstab.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/backstab.webp",
       "icon_alt": "Shroud",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemShroud",
@@ -110263,6 +110288,7 @@ window.POE2_SKILL_GEMS = {
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemSmashToSmithereens",
       "tags": [
+        "Attack",
         "AoE",
         "Trigger",
         "Fire"
@@ -110312,6 +110338,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Smash to Smithereens"
         },
         "tags": [
+          {
+            "en": "Attack",
+            "vi": "Attack"
+          },
           {
             "en": "AoE",
             "vi": "AoE"
@@ -110447,9 +110477,9 @@ window.POE2_SKILL_GEMS = {
       "name": "Spinning Inferno",
       "gem_type": "skill",
       "tier": null,
-      "color": "item",
+      "color": "red",
       "source_url": "https://poe2db.tw/us/Spinning_Inferno",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/MagmaBarrierSkillGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/magmabarrierskillgem.webp",
       "icon_alt": "Spinning Inferno",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SkillGemSpinningInferno",
@@ -110630,7 +110660,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Abiding_Hex",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PowerChargetogiveCurseDurationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/powerchargetogivecursedurationsupport.webp",
       "icon_alt": "Abiding Hex",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/55dc29d7b02d78b2561cfd998de0afd5f06f3aec583399544a2a94dd585ed8d9",
       "official_id": "Metadata/Items/Gem/SupportGemAbidingHex",
@@ -110730,7 +110760,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Accelerated_Growth",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExplosiveGrowth.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/explosivegrowth.webp",
       "icon_alt": "Accelerated Growth",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4070df6e9a589b24d0af861cae3f22af9c9fe122b48cd570dc0a6b1471a6018d",
       "official_id": "Metadata/Items/Gems/SupportGemExplosiveGrowth",
@@ -110906,7 +110936,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Accelerated_Growth_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExplosiveGrowth.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/explosivegrowth.webp",
       "icon_alt": "Accelerated Growth II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b26c755fb65e0bdf7f157e153800180a7f50dcfe22d7560f38832dc15d299f16",
       "official_id": "Metadata/Items/Gems/SupportGemExplosiveGrowthTwo",
@@ -111087,7 +111117,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Acrimony",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AcrimonySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/acrimonysupport.webp",
       "icon_alt": "Acrimony",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c49cca32095ca469f35068950fd83722d46ed156049ab0487a02030af98d1fb5",
       "official_id": "Metadata/Items/Gem/SupportGemAcrimony",
@@ -111182,7 +111212,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Adhesive_Grenades_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StickyBombSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stickybombsupport.webp",
       "icon_alt": "Adhesive Grenades I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6a51a90815f1d5c29a79de981e69fd40aeea4a21892cb66772486785f15fb37b",
       "official_id": "Metadata/Items/Gem/SupportGemAdhere",
@@ -111292,7 +111322,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Adhesive_Grenades_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StickyBombSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stickybombsupport.webp",
       "icon_alt": "Adhesive Grenades II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8740df142a544ebccfa7ab8524b8772256891fc5fde53c6a3b0bd567cac14fa6",
       "official_id": "Metadata/Items/Gem/SupportGemAdhereTwo",
@@ -111392,7 +111422,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Adhesive_Grenades_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StickyBombSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stickybombsupport.webp",
       "icon_alt": "Adhesive Grenades III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cd10af4944baeead4aea6ed4eb829f67d90f373e1a8ca67be0f276880db8455a",
       "official_id": "Metadata/Items/Gem/SupportGemAdhereThree",
@@ -111507,7 +111537,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Admixture",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MixedMaladiesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/mixedmaladiessupport.webp",
       "icon_alt": "Admixture",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f0d347a704c321b0aa4f46f6d59de71f04bbd615f55bc00db2fda93ef2049445",
       "official_id": "Metadata/Items/Gem/SupportGemAdmixture",
@@ -111627,7 +111657,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Advancing_Storm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MovingStorms.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/movingstorms.webp",
       "icon_alt": "Advancing Storm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2d8d1919ec5966e7b6703198530d23c8df43154f6d32a5ba3d5de9f1e1f457e3",
       "official_id": "Metadata/Items/Gem/SupportGemAdvancingStorm",
@@ -111747,7 +111777,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Aftershock_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AftershockSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/aftershocksupport.webp",
       "icon_alt": "Aftershock I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/941038dfec13d0a682bb832a971fe6dc55d8fbab1760417654eba776f4e8daf8",
       "official_id": "Metadata/Items/Gems/SupportGemAftershock",
@@ -111857,7 +111887,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Aftershock_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AftershockSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/aftershocksupport.webp",
       "icon_alt": "Aftershock II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a45e33864a91c6c19f3081573e51c6011a55cf35c37b7e4f2bb05953b9510de8",
       "official_id": "Metadata/Items/Gems/SupportGemAftershockTwo",
@@ -111967,7 +111997,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Aftershock_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AftershockSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/aftershocksupport.webp",
       "icon_alt": "Aftershock III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dbab4c0f4a454584c3de6300a616e8091accbbd6c8f5f9fcc4608427dd33d6bd",
       "official_id": "Metadata/Items/Gems/SupportGemAftershockThree",
@@ -112082,7 +112112,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ahns_Citadel",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageAhnChisel.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageahnchisel.webp",
       "icon_alt": "Ahn's Citadel",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b0e41385207bf294e0696ed0b6c8c4e8cad0831157849d2d96698ba88a25210b",
       "official_id": "Metadata/Items/Gems/SupportGemAhnsCitadel",
@@ -112183,7 +112213,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "44923572e09485bd5a6d7f7d22fbb48497ec4b2277a9c79d654abe4728090ce0",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "As possessed golems ravaged the land, Aul - crowned Ahn",
+        "by blood and tyranny - began the last ritual, causing azurite",
+        "crystals to rupture and grow throughout his doomed citadel."
+      ]
     },
     {
       "slug": "Ailiths_Chimes",
@@ -112192,7 +112227,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ailiths_Chimes",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Monastic.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/monastic.webp",
       "icon_alt": "Ailith's Chimes",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/14c6d041e9cb80cc18b7ebf0303e272ca7890393bd3ebc29cac885652b912690",
       "official_id": "Metadata/Items/Gems/SupportGemAilithLineage",
@@ -112283,7 +112318,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "fd44d73376ea8f4d39f89717cb978bacd0fe58459ad227f81a57e2bb32ce1a0c",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Ailith awoke to find her fire iridescent, and her mind alive",
+        "with visions. By morning, she began teaching what she'd",
+        "seen... thus was born the Keepers of the Pale Vision."
+      ]
     },
     {
       "slug": "Alignment_I",
@@ -112292,7 +112332,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Alignment_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AlignmentSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/alignmentsupport.webp",
       "icon_alt": "Alignment I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b97bfccb8fa330ea4f918c250dd9012094d8a464705b119cdec3e2a4c32b5ae9",
       "official_id": "Metadata/Items/Gem/SupportGemAlignment",
@@ -112432,7 +112472,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Alignment_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AlignmentSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/alignmentsupport.webp",
       "icon_alt": "Alignment II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4dedde506c31f1a3884c28c9af3f8737a1934ab8ed28dee18aedb3ca9bedbeb0",
       "official_id": "Metadata/Items/Gem/SupportGemAlignmentTwo",
@@ -112572,7 +112612,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Alignment_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AlignmentSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/alignmentsupport.webp",
       "icon_alt": "Alignment III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a465126847fd19ecc2318d52d9901f2dc1759d0e4bb8e80933dcfc46c1bffb90",
       "official_id": "Metadata/Items/Gem/SupportGemAlignmentThree",
@@ -112712,7 +112752,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Amanamus_Tithe",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageAmanamu.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageamanamu.webp",
       "icon_alt": "Amanamu's Tithe",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0b1bafe61009cfcfaf41cad168fa0017b1433f4c5d308ccf39d91b80c93624d9",
       "official_id": "Metadata/Items/Gem/SupportGemAmanamusTithe",
@@ -112813,7 +112853,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "08282694c0f0bc8b31c9154f2ce91d6bf92cb75376e1adaef19148bb95398b82",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Those that serve the Liege of the Lightless are his, utterly.",
+        "Blood, flesh, and soul are fodder to bend to his will.",
+        "Under a Lich Lord, not even death is an escape."
+      ]
     },
     {
       "slug": "Ambrosia",
@@ -112822,7 +112867,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ambrosia",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AmbrosiaSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ambrosiasupport.webp",
       "icon_alt": "Ambrosia",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a6c6d35aef5f7024475961adb93ca1d05ccf21bd3e00afd820a6a5f727b23b83",
       "official_id": "Metadata/Items/Gem/SupportGemAmbrosia",
@@ -112912,7 +112957,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ambrosia_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AmbrosiaSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ambrosiasupport.webp",
       "icon_alt": "Ambrosia II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/53dfe968b251bc30b40c089f4e6af4ebcf359b48f094c4024834da3dad9a23c4",
       "official_id": "Metadata/Items/Gem/SupportGemAmbrosiaTwo",
@@ -113002,7 +113047,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ambush",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AmbushSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ambushsupport.webp",
       "icon_alt": "Ambush",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1670f98eb4bee655aa8557e2125c7432b1181a8be0bd8ab5ba24ca3f99cf6439",
       "official_id": "Metadata/Items/Gems/SupportGemAmbush",
@@ -113092,7 +113137,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ammo_Conservation_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToNotConsumeAmmoSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetonotconsumeammosupport.webp",
       "icon_alt": "Ammo Conservation I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/37c990800266d4a9dbfafa442027c95599c50d22842075e4d0dc841614eb794d",
       "official_id": "Metadata/Items/Gem/SupportGemAmmoConservation",
@@ -113197,7 +113242,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ammo_Conservation_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToNotConsumeAmmoSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetonotconsumeammosupport.webp",
       "icon_alt": "Ammo Conservation II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/addd3f0f396e3e9e41e9bd1fbb99b243fb793eb42af91eab33e2e5e25518d99d",
       "official_id": "Metadata/Items/Gem/SupportGemAmmoConservationTwo",
@@ -113302,7 +113347,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ammo_Conservation_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToNotConsumeAmmoSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetonotconsumeammosupport.webp",
       "icon_alt": "Ammo Conservation III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/54a00ca883b8e22d4ee2746bed7009efae02661295b2175b0219e433a22dcf12",
       "official_id": "Metadata/Items/Gem/SupportGemAmmoConservationThree",
@@ -113417,7 +113462,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ancestral_Aid",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AncestralAidSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ancestralaidsupport.webp",
       "icon_alt": "Ancestral Aid",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4d3e6b4025f4154711736eb9fe6ffaf1fdba2c6d4389a0294abcae7058c7df3f",
       "official_id": "Metadata/Items/Gem/SupportGemAncestralAid",
@@ -113537,7 +113582,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ancestral_Call_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AncestralCallSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ancestralcallsupport.webp",
       "icon_alt": "Ancestral Call I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/13e33b5dd8461fd6c74e8af7bc634982b23b3f202dd948eba756d61dd672d160",
       "official_id": "Metadata/Items/Gem/SupportGemAncestralCall",
@@ -113662,7 +113707,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ancestral_Call_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AncestralCallSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ancestralcallsupport.webp",
       "icon_alt": "Ancestral Call II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6dce7cf0b4a09957e020408503a74e92b299fbf02f4d2d65d734a01e1cd3e9b8",
       "official_id": "Metadata/Items/Gem/SupportGemAncestralCallTwo",
@@ -113787,7 +113832,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ancestral_Call_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AncestralCallSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ancestralcallsupport.webp",
       "icon_alt": "Ancestral Call III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7956c4a816c8df423bfe0e4709172bcf09cd2ec57182b92f3a991d08beaee1c1",
       "official_id": "Metadata/Items/Gem/SupportGemAncestralCallThree",
@@ -113917,7 +113962,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Arakaalis_Lust",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageArakaali.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagearakaali.webp",
       "icon_alt": "Arakaali's Lust",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1e7db12bd34710cde2e620c1f0be590f523e042adf62a99ae6ea73e56b0c478b",
       "official_id": "Metadata/Items/Gem/SupportGemArakaalisLust",
@@ -114008,7 +114053,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "06062f8713f2c99da09ece81766893ece194d5cf0c9283da35d137ad9064eb91",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "She flashed a smile full of wicked teeth. \"Sin, my darling.",
+        "Forget your Maraketh woes.\" She bit and tore and reveled;",
+        "he lay trapped in silk, wrought with despair and ecstasy."
+      ]
     },
     {
       "slug": "Arbiters_Ignition",
@@ -114017,7 +114067,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Arbiters_Ignition",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageArbiter.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagearbiter.webp",
       "icon_alt": "Arbiter's Ignition",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6ee4e998d5eb95ec10257de050b122d39733e725b412699a728dad37831917f7",
       "official_id": "Metadata/Items/Gem/SupportGemArbitersIgnition",
@@ -114118,7 +114168,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "a8e3ba7348debd5d6d9b209cb19afb75161a3dd1497e1192532e41ea8045fc63",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"This carving seems to depict curled bodies floating in vats...",
+        "the next shows all but one of them dying. What were they",
+        "trying to do? It seems they kept trying... kept experimenting...\""
+      ]
     },
     {
       "slug": "Arbiter's_Reach",
@@ -114127,11 +114182,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Arbiter's_Reach",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/MothersWard.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/mothersward.webp",
       "icon_alt": "Arbiter's Reach",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemArbitersReach",
       "tags": [
+        "Support",
         "Lineage",
         "Buff",
         "Persistent",
@@ -114165,6 +114221,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Arbiter's Reach"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -114229,7 +114289,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "7b1306de856f08470f3b417d6a9b1a05a535b003cedcfa029bc48c2390b9e4d0",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"They designed our salvation. No longer shall",
+        "our people's grief be in vain. From their hands,",
+        "perfection is wrought. Within His reach, we are safe.\""
+      ]
     },
     {
       "slug": "Arcane_Surge",
@@ -114238,7 +114303,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Arcane_Surge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ArcaneSurgeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/arcanesurgesupport.webp",
       "icon_alt": "Arcane Surge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/52d7e4306e2be9a2e0c2417a5499dcafb72efa3f8383efbf6d11717d6cd570a6",
       "official_id": "Metadata/Items/Gems/SupportGemArcaneSurge",
@@ -114343,7 +114408,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Arjuns_Medal",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/AmmoConservation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/ammoconservation.webp",
       "icon_alt": "Arjun's Medal",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/db7e8d9255edcc9ca7bb27142958713c8d92ad72715b639139ddd58286150656",
       "official_id": "Metadata/Items/Gem/SupportGemAmmoConservationFour",
@@ -114444,7 +114509,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "68820cf9f08963c24446f98c9e005c1d5def91662155cf595c3f07d86ecd177f",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Confident their enemy was defenseless, the Keitans brazenly",
+        "charged the walls - but Arjun's ammunition supply reports",
+        "had been... 'inaccurate'... just like everything else Bardiyan."
+      ]
     },
     {
       "slug": "Armour_Break_I",
@@ -114453,7 +114523,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Armour_Break_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ArmourBreakSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/armourbreaksupport.webp",
       "icon_alt": "Armour Break I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b60591f5cc6a62811230a5756f23e78286be3d81a326c32ef8e3233bd907f1ec",
       "official_id": "Metadata/Items/Gems/SupportGemSplinter",
@@ -114553,7 +114623,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Armour_Break_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ArmourBreakSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/armourbreaksupport.webp",
       "icon_alt": "Armour Break II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/75631646c68213a5d493e4bfa6b029a113d8a00b33e128b4cf265462cd3ed2f2",
       "official_id": "Metadata/Items/Gems/SupportGemSplinterTwo",
@@ -114663,7 +114733,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Armour_Break_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ArmourBreakSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/armourbreaksupport.webp",
       "icon_alt": "Armour Break III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3ac83ba54c357dc15cd4da248e5814023cc807c77e0825a9d2d97e22ba33e14f",
       "official_id": "Metadata/Items/Gems/SupportGemSplinterThree",
@@ -114773,7 +114843,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Armour_Demolisher_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreasedArmourBreakSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increasedarmourbreaksupport.webp",
       "icon_alt": "Armour Demolisher I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f63afd66296119a13c9048f3366d2e8136aed34b37246d03229b3f49ba90e341",
       "official_id": "Metadata/Items/Gems/SupportGemDemolisher",
@@ -114863,7 +114933,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Armour_Demolisher_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreasedArmourBreakSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increasedarmourbreaksupport.webp",
       "icon_alt": "Armour Demolisher II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ac10ca4a4857bed8c86a1603f08ee034c0ec46562f70cb8f792de017f6bd29f2",
       "official_id": "Metadata/Items/Gems/SupportGemDemolisherTwo",
@@ -114953,7 +115023,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Armour_Explosion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ArmourExplosionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/armourexplosionsupport.webp",
       "icon_alt": "Armour Explosion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ed94a2510face67c79f56b2a4982aab1a6499960a67e6ca60eebce6f16e4139d",
       "official_id": "Metadata/Items/Gem/SupportGemArmourExplosion",
@@ -115119,7 +115189,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Arms_Length",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ArmsLengthSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/armslengthsupport.webp",
       "icon_alt": "Arms Length",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f2c05f1da083d7d8d36b1c9c61652aa2c8e9d12238d16e64d83e844226d7007",
       "official_id": "Metadata/Items/Gem/SupportGemArmsLength",
@@ -115209,7 +115279,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Astral_Projection",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AstralProjectionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/astralprojectionsupport.webp",
       "icon_alt": "Astral Projection",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4ee10746546cad30c36c9082c8956863895b39e241706b429040af6649d20fd9",
       "official_id": "Metadata/Items/Gem/SupportGemAstralProjection",
@@ -115309,7 +115379,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ataluis_Bloodletting",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageLifetap.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagelifetap.webp",
       "icon_alt": "Atalui's Bloodletting",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bfc57a2f9f300eab5ff13ea191ffde7528a73d92f55ff288efc38c387b1d27cb",
       "official_id": "Metadata/Items/Gems/SupportGemAtaluiBloodletting",
@@ -115415,7 +115485,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "18b4f43c07696012d8fb406ec7cf3a9f6cdbd0f5e308e734f593f4b76da6d646",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Atazek and Atalui rose, battered and dark, bleeding from a hundred",
+        "different wounds. She gave her brother a sinister grin. \"Shall we",
+        "show them what happens to those who challenge the Vaal?\""
+      ]
     },
     {
       "slug": "Atziris_Allure",
@@ -115424,7 +115499,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Atziris_Allure",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageAtziri.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageatziri.webp",
       "icon_alt": "Atziri's Allure",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2fea98180243a9ceea5b68fc343d77f3f722c1d6463e5cc618388e68760d52d0",
       "official_id": "Metadata/Items/Gem/SupportGemAtzirisAllure",
@@ -115540,7 +115615,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "e210adbc61bd93834781b0e307853c1d69f16a2f2f1c90054379596d8d8fc638",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Such was her seductive power, every noble in the court fell",
+        "over themselves to do her bidding. Winning a single glance",
+        "away from her mirror meant more than their lives."
+      ]
     },
     {
       "slug": "Atziris_Call",
@@ -115549,7 +115629,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Atziris_Call",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BlankBlueSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/blankbluesupport.webp",
       "icon_alt": "Atziri's Call",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dbd6d11f72575f88b0d4fc485e1f0aa77c11b6b307e1d76718e032e7ba0d14ce",
       "official_id": "Metadata/Items/Gem/SupportGemAtzirisCall",
@@ -115668,7 +115748,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Atziris_Communion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/AtziriCommunion.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/atziricommunion.webp",
       "icon_alt": "Atziri's Communion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/61e8b25958d3d416c8aa430f9f5d802e3513a1a27f04cdc6c12a0eff9c38c4a8",
       "official_id": "Metadata/Items/Gem/SupportGemAtzirisCommunion",
@@ -115764,7 +115844,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "6c540433ca10ec64ef25570205f1c2caac78cb6dee125a6e8eee28eff0d86e40",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The Red Communion was meant to transcend the limits",
+        "of the soul, to transfigure the flesh, to bestow immortality.",
+        "It accomplished all of these things... most horribly."
+      ]
     },
     {
       "slug": "Atziris_Impatience",
@@ -115773,7 +115858,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Atziris_Impatience",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/AtziriImpatience.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/atziriimpatience.webp",
       "icon_alt": "Atziri's Impatience",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d0a35f9c06d381c09b6b5169ecf92069e70ad32db8b9d4785faecb0ec135ac15",
       "official_id": "Metadata/Items/Gem/SupportGemAtzirisImpatience",
@@ -115874,7 +115959,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "853af1dab6bff29acfa928571e6de17ea16976984548940cb4e5ee1ac03e687b",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"Those who bored the Queen suffered an excessive punishment:",
+        "everyone they had ever known would be killed, effectively",
+        "erasing their life. So, no matter the cost... none kept her waiting.\""
+      ]
     },
     {
       "slug": "Auto_Reload",
@@ -115883,7 +115973,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Auto_Reload",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AutoReloadSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/autoreloadsupport.webp",
       "icon_alt": "Auto Reload",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/29eddb25a4c876f83a57465380b566f4ae1a35a43ab3232f39777c2a00e30b7c",
       "official_id": "Metadata/Items/Gem/SupportGemAutoReload",
@@ -115983,7 +116073,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Barbs_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BarbsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/barbssupport.webp",
       "icon_alt": "Barbs I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/02b3b269c7e5c62a014c4f6ef18cf3f63f2bf880726c8031ac443c3e5954ef3f",
       "official_id": "Metadata/Items/Gem/SupportGemBarbs",
@@ -116098,7 +116188,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Barbs_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BarbsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/barbssupport.webp",
       "icon_alt": "Barbs II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/03f4df0ac9e942eb2a77e4acd4c6dc754680aaf0b1333c9d091778676e9c58ea",
       "official_id": "Metadata/Items/Gem/SupportGemBarbsTwo",
@@ -116213,7 +116303,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Barbs_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BarbsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/barbssupport.webp",
       "icon_alt": "Barbs III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d937461f432f9e731188f248d02ee1743b52d2b633951bcd7144cccf311924d3",
       "official_id": "Metadata/Items/Gem/SupportGemBarbsThree",
@@ -116328,7 +116418,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Battershout",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BattershoutSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/battershoutsupport.webp",
       "icon_alt": "Battershout",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e90f09b8268182a3303a8c67b4355de0953980e87580612b8def052dc862c12f",
       "official_id": "Metadata/Items/Gem/SupportGemBattershout",
@@ -116509,7 +116599,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Behead_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BeheadSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/beheadsupport.webp",
       "icon_alt": "Behead I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b0e374233bde339430e085db28c23d65b9421b35e1eb68f865b270fc28f5ecc7",
       "official_id": "Metadata/Items/Gems/SupportGemBehead",
@@ -116619,7 +116709,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Behead_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BeheadSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/beheadsupport.webp",
       "icon_alt": "Behead II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d273bcff688b25f4617cf45df77e5448e3837f0ea084f70d43b6af4b3bb97882",
       "official_id": "Metadata/Items/Gems/SupportGemBeheadTwo",
@@ -116729,7 +116819,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bhatairs_Vengeance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/ShatteredFang.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/shatteredfang.webp",
       "icon_alt": "Bhatair's Vengeance",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0d60b8c2da93f81d84fe9f323495f9f4d7f1cd8d59d7fb05e4e14c5aa4e738da",
       "official_id": "Metadata/Items/Gems/SupportGemBhatairsVengeance",
@@ -116840,7 +116930,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "b841e70f448d39184f526b6ee4464c3c5d99f38e9885c3d05d69a21503def828",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "It is said that the Steward of Tales roams Wraeclast still,",
+        "lost in the form of a Wyvern, full of sorrow and fury at",
+        "the loss of his beloved pupils to the King in the Mists..."
+      ]
     },
     {
       "slug": "Bidding_I",
@@ -116849,7 +116944,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bidding_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BiddingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/biddingsupport.webp",
       "icon_alt": "Bidding I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/808a36e724eec9420a6dcd34a94f4b439fc91a307b4e3ae38d3e8e792bf653aa",
       "official_id": "Metadata/Items/Gem/SupportGemBidding",
@@ -116969,7 +117064,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bidding_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BiddingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/biddingsupport.webp",
       "icon_alt": "Bidding II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c8b1fa6e4d3992ae5cced37b783181a8b9e03f15c8234af62dfc995846ad13e6",
       "official_id": "Metadata/Items/Gem/SupportGemBiddingTwo",
@@ -117084,7 +117179,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bidding_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BiddingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/biddingsupport.webp",
       "icon_alt": "Bidding III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f7cc15d9f9513094a6ae066d2a05751e21a20cfad5250e91bc795559e53a3df9",
       "official_id": "Metadata/Items/Gem/SupportGemBiddingThree",
@@ -117189,7 +117284,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Biting_Frost_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BitingFrostSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/bitingfrostsupport.webp",
       "icon_alt": "Biting Frost I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f31e4e08e96676d9a1b94ec1dc5f1443a833ccb63488bc8ab9a4e7f68e305946",
       "official_id": "Metadata/Items/Gems/SupportGemBitingFrost",
@@ -117319,7 +117414,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Biting_Frost_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BitingFrostSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/bitingfrostsupport.webp",
       "icon_alt": "Biting Frost II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/166879c58c1f709471621b3a2c4c9634468e6ac4c1774186eea0653287c30e69",
       "official_id": "Metadata/Items/Gems/SupportGemBitingFrostTwo",
@@ -117459,7 +117554,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Blazing_Critical",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BlazingCritsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/blazingcritssupport.webp",
       "icon_alt": "Blazing Critical",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c75b140b5a5a8cc68bd15b03e04b0f64a6d6fb8a582daaf6e23dbb44af8708ae",
       "official_id": "Metadata/Items/Gems/SupportGemBlazingCritical",
@@ -117569,7 +117664,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Bleed_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToBleedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetobleedsupport.webp",
       "icon_alt": "Bleed I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5a2e8e06ab2c9488b33a388d4aa3e1f66f48c72e1752996d0aabda5598fbf399",
       "official_id": "Metadata/Items/Gems/SupportGemLacerate",
@@ -117674,7 +117769,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Bleed_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToBleedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetobleedsupport.webp",
       "icon_alt": "Bleed II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b1ce5613f3282c2f9010b34fb87e0dd5ac34df8ec5ba03c185f56285d7bd45f1",
       "official_id": "Metadata/Items/Gems/SupportGemLacerateTwo",
@@ -117774,7 +117869,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Bleed_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToBleedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetobleedsupport.webp",
       "icon_alt": "Bleed III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b9b08e10a2f925a658c8dc3f1ea68b61b4ea89c1d749adfffab89d1e1fe800d0",
       "official_id": "Metadata/Items/Gems/SupportGemLacerateThree",
@@ -117874,7 +117969,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Bleed_IV",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToBleedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetobleedsupport.webp",
       "icon_alt": "Bleed IV",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a5bfadf63575713db39461b5d4c76246952be555827f0a4114ab7f1f6e080c20",
       "official_id": "Metadata/Items/Gems/SupportGemLacerateFour",
@@ -117994,7 +118089,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Blind_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BlindSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/blindsupport.webp",
       "icon_alt": "Blind I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e8b09ebb22eb253905dc3cde95e5be43550904ac8182482056f7ab39976c0b8f",
       "official_id": "Metadata/Items/Gems/SupportGemBlind",
@@ -118089,7 +118184,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Blind_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BlindSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/blindsupport.webp",
       "icon_alt": "Blind II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8eb59a8037dff952dc3b2f2354507ade64531babd128ecbdfb7a31f6cca9f109",
       "official_id": "Metadata/Items/Gems/SupportGemBlindTwo",
@@ -118194,7 +118289,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Blindside",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BlindsideSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/blindsidesupport.webp",
       "icon_alt": "Blindside",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d7d86c2272c8652c09b985e719fb3efab822c9b6c7a86cdc86243f7e7195ebba",
       "official_id": "Metadata/Items/Gem/SupportGemBlindside",
@@ -118309,7 +118404,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Bloodlust",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BloodlustSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/bloodlustsupport.webp",
       "icon_alt": "Bloodlust",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bd28e534f915d6850cb6f525e31a502fb462dbd420e3d72e5966185581188334",
       "official_id": "Metadata/Items/Gems/SupportGemBloodlust",
@@ -118424,7 +118519,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Bone_Shrapnel",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BoneShrapnelSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/boneshrapnelsupport.webp",
       "icon_alt": "Bone Shrapnel",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/475a7206687dbde3aac7b8b4fd98369d5adc9c4499b69d3cd33353100fed6ada",
       "official_id": "Metadata/Items/Gem/SupportGemBoneShrapnel",
@@ -118580,7 +118675,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Boundless_Energy_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ImpetusSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/impetussupport.webp",
       "icon_alt": "Boundless Energy I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4555697671af0f2dd5436785c2d600f800fd517cf5c8bda9cf25eaa23e763349",
       "official_id": "Metadata/Items/Gem/SupportGemImpetus",
@@ -118675,7 +118770,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Boundless_Energy_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ImpetusSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/impetussupport.webp",
       "icon_alt": "Boundless Energy II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c077e80c45c06142976baade0f77b4ab98557f3289e0c7526f05adc989e1fb3a",
       "official_id": "Metadata/Items/Gem/SupportGemImpetusTwo",
@@ -118770,7 +118865,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Bounty_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LifeFlaskSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lifeflasksupport.webp",
       "icon_alt": "Bounty I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/34657a147f3e1b725c4f3697d6dc9fd7164de70725866af2992a9e30fee344b7",
       "official_id": "Metadata/Items/Gems/SupportGemBounty",
@@ -118880,7 +118975,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Bounty_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LifeFlaskSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lifeflasksupport.webp",
       "icon_alt": "Bounty II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ee50a62d96c46ddeade74458c70a21d226445ac36f2aec87ea7cb32f3ed6b575",
       "official_id": "Metadata/Items/Gems/SupportGemBountyTwo",
@@ -118990,7 +119085,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Brambleslam",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BriarpatchSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/briarpatchsupport.webp",
       "icon_alt": "Brambleslam",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a638b657a3e1ea1e7cfd8a8ffc55e0d86bd02fdd5a6b65e6d88c64fd799f3b2b",
       "official_id": "Metadata/Items/Gem/SupportGemBrambleslam",
@@ -119191,7 +119286,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Branching_Fissures_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BranchingFissuresSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/branchingfissuressupport.webp",
       "icon_alt": "Branching Fissures I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fcfa9ad6a3908361da3cfcbba9998253fb1efccf7a693101c8b03f597e78f36e",
       "official_id": "Metadata/Items/Gem/SupportGemBranchingFissures",
@@ -119306,7 +119401,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Branching_Fissures_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BranchingFissuresSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/branchingfissuressupport.webp",
       "icon_alt": "Branching Fissures II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dfb4ef753e9e63ba5245851924fa4e0f90cedfede7884ac72de8e60220185d00",
       "official_id": "Metadata/Items/Gem/SupportGemBranchingFissuresTwo",
@@ -119421,11 +119516,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Breachlord's_Amalgam",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/BreachlordsAmalgam.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/breachlordsamalgam.webp",
       "icon_alt": "Breachlord's Amalgam",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemBreachlordsAmalgam",
       "tags": [
+        "Support",
         "Lineage",
         "Projectile",
         "Lightning",
@@ -119461,6 +119557,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Breachlord's Amalgam"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -119533,7 +119633,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "a44a350915ea79a5c14be267a8a5d96dad30a6bc03d046642f1f2a399d121879",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "The flesh rejoiced. The melding began.",
+        "Then, fear. Something foreign within.",
+        "It was cast out too late. The unity was broken."
+      ]
     },
     {
       "slug": "Breachlord's_Rift",
@@ -119542,11 +119647,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Breachlord's_Rift",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/BreachlordsRemorse.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/breachlordsremorse.webp",
       "icon_alt": "Breachlord's Rift",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemBreachlordsRift",
       "tags": [
+        "Support",
         "Lineage",
         "Lightning",
         "Cold"
@@ -119580,6 +119686,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Breachlord's Khe Nứt"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -119644,7 +119754,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "c2d17f4637f2bf49449e974bfe717489dbc161d70b4cb4a27d89a292703dcebf",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "Our Broken Sun... it is no mere allegory. It is",
+        "the consequence of insolent disharmony.",
+        "For now, it is contained, but time is against us."
+      ]
     },
     {
       "slug": "Break_Endurance",
@@ -119653,7 +119768,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Break_Endurance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BreakEndurance.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/breakendurance.webp",
       "icon_alt": "Break Endurance",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/30d08191327686096ad6b08b1f346a55ef38c572250533cd691436d53a3e4235",
       "official_id": "Metadata/Items/Gem/SupportGemBreakEndurance",
@@ -119738,7 +119853,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Break_Posture",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DazedBreakSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/dazedbreaksupport.webp",
       "icon_alt": "Break Posture",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/85a38d7103fe8d7a7268250f6bb7ca40801fe9f19b7f1d55755a15a484292529",
       "official_id": "Metadata/Items/Gems/SupportGemBreakPosture",
@@ -119843,7 +119958,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Brink_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BrinkSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/brinksupport.webp",
       "icon_alt": "Brink I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6623d1ad7fa62707e4ec73bac6deacaf1094be61f5d64148355c7e3cc0d9eac9",
       "official_id": "Metadata/Items/Gem/SupportGemBrink",
@@ -119958,7 +120073,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Brink_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BrinkSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/brinksupport.webp",
       "icon_alt": "Brink II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f97cb578a0bdd311e7396ad2bbdfc1df3557d07fddb5dc3b65b1a25443367210",
       "official_id": "Metadata/Items/Gem/SupportGemBrinkTwo",
@@ -120073,7 +120188,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Brittle_Armour",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BrittleArmour.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/brittlearmour.webp",
       "icon_alt": "Brittle Armour",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/12dc233c9b0c9df84076a2b32c34065e81ae7fcd235cf889bd1a85b544475f6a",
       "official_id": "Metadata/Items/Gems/SupportGemBrittleArmour",
@@ -120178,7 +120293,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Brutality_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BrutalitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/brutalitysupport.webp",
       "icon_alt": "Brutality I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/708a998ab69963027142c52574ef88f51d6c0fe3b120b7beb63112dce64f8dcf",
       "official_id": "Metadata/Items/Gems/SupportGemBrutality",
@@ -120303,7 +120418,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Brutality_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BrutalitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/brutalitysupport.webp",
       "icon_alt": "Brutality II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9b3a4524e8e0cbdf9388b71c1b1bbc64b231cb2f80a77afb3f18dc9919a3844d",
       "official_id": "Metadata/Items/Gems/SupportGemBrutalityTwo",
@@ -120428,7 +120543,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Brutality_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BrutalitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/brutalitysupport.webp",
       "icon_alt": "Brutality III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/58893443c295dfbde7d3a439b1c23707cedab8c1b10683e07e9ba5d206ede0da",
       "official_id": "Metadata/Items/Gems/SupportGemBrutalityThree",
@@ -120563,7 +120678,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Brutus_Brain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageMeatshield.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagemeatshield.webp",
       "icon_alt": "Brutus' Brain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/129a101bddf73c06eddde1941aa403a1ee9a6c62fe60a7805db8ee28df35b425",
       "official_id": "Metadata/Items/Gems/SupportGemBrutusBrain",
@@ -120669,7 +120784,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "f8882624278b84e4040e08fee76c47c2df4f905ab116685979bd27282f7eec08",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Shavronne gleefully raised her arms to the sky as lightning",
+        "flashed. She'd done it! Her creation was perfect! Invincible.",
+        "Immortal! But she soon realized there was one piece missing..."
+      ]
     },
     {
       "slug": "Burgeon_I",
@@ -120678,7 +120798,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Burgeon_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChannellingDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/channellingdamagesupport.webp",
       "icon_alt": "Burgeon I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7b0f322a7e1de45c516039233473770da015b64251b2432907a21dc91990e415",
       "official_id": "Metadata/Items/Gem/SupportGemBurgeon",
@@ -120783,7 +120903,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Burgeon_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChannellingDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/channellingdamagesupport.webp",
       "icon_alt": "Burgeon II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/05b242b55554941ec1bb1d4f67c9b0d11533f5a2a4a2e1e71c84292a25ad0909",
       "official_id": "Metadata/Items/Gem/SupportGemBurgeonTwo",
@@ -120888,7 +121008,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Burning_Inscription",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BurningRunesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/burningrunessupport.webp",
       "icon_alt": "Burning Inscription",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a2938311491089cd06d5f78ae79a3adcfdcabcb4125270c724fb3fb7b4114415",
       "official_id": "Metadata/Items/Gems/SupportGemBurningInscription",
@@ -121039,7 +121159,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Bursting_Plague",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BurstingPlagueSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/burstingplaguesupport.webp",
       "icon_alt": "Bursting Plague",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0cd1b3e338bb1b148721d23fc5a6427fa2e963562afd7e6100b357a9c35dc6f0",
       "official_id": "Metadata/Items/Gems/SupportGemBurstingPlague",
@@ -121205,7 +121325,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Cadence",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MeasuredSpeedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/measuredspeedsupport.webp",
       "icon_alt": "Cadence",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a33fa73d886d4c804afe5e5fb16d6edd87b35da0362c2e46b113f964ca1649e0",
       "official_id": "Metadata/Items/Gem/SupportGemCadence",
@@ -121315,7 +121435,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Caltrops",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CaltropsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/caltropssupport.webp",
       "icon_alt": "Caltrops",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bcc7ab94498715cd779af773eb9c597058f0cc482cbe8cd734bbc5c25c4974d8",
       "official_id": "Metadata/Items/Gem/SupportGemCaltrops",
@@ -121536,7 +121656,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Cannibalism_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CannibalismSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cannibalismsupport.webp",
       "icon_alt": "Cannibalism I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/81b43adcedc5e7109094965839a6a5d8c2c653a9dc849e622bce5d72a4064e0b",
       "official_id": "Metadata/Items/Gems/SupportGemCannibalism",
@@ -121646,7 +121766,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Cannibalism_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CannibalismSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cannibalismsupport.webp",
       "icon_alt": "Cannibalism II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/db180ea212681f364ad706c08523ce63d143138b257e5d666024feac17689198",
       "official_id": "Metadata/Items/Gems/SupportGemCannibalismTwo",
@@ -121756,7 +121876,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Catalysing_Elements",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CatalysingElementsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/catalysingelementssupport.webp",
       "icon_alt": "Catalysing Elements",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7559aa4ab8eb5bfbfa8bfa09d2229a082f405a6fbf5ae5caf4fed675d95274e6",
       "official_id": "Metadata/Items/Gems/SupportGemCatalysingElements",
@@ -122026,11 +122146,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Catha's_Brilliance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/CathasBrilliance.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/cathasbrilliance.webp",
       "icon_alt": "Catha's Brilliance",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemCathasBrilliance",
       "tags": [
+        "Support",
         "Lineage",
         "Minion",
         "AoE",
@@ -122066,6 +122187,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Catha's Brilliance"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -122138,7 +122263,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "950c558101ccc4117ce0d9be8990af10480a799ab4440fceed1953730f9ce6b0",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"The yellow sap... the Vivid flow... it is the energy of",
+        "harmony between disparate forces. They call it the",
+        "Catha, an aspect of the Goddess. It is so much more.\""
+      ]
     },
     {
       "slug": "Catharsis",
@@ -122147,7 +122277,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Catharsis",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CleanseSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cleansesupport.webp",
       "icon_alt": "Catharsis",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/45bbb3f0cb55f4bfc85b38562c7678db0442e7c8154701facd4e77b32a006b9b",
       "official_id": "Metadata/Items/Gem/SupportGemCatharsis",
@@ -122267,7 +122397,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Chain_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chainsupport.webp",
       "icon_alt": "Chain I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a625f89bbb1dde210673f3c755d7efd933bdfbdf84e182ad2d651a3de9303f60",
       "official_id": "Metadata/Items/Gems/SupportGemChain",
@@ -122382,7 +122512,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Chain_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chainsupport.webp",
       "icon_alt": "Chain II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0a77f7a95969d134bc69e67bbebf53172058fc286ed120082d8e154e53870e4c",
       "official_id": "Metadata/Items/Gems/SupportGemChainTwo",
@@ -122497,7 +122627,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Chain_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chainsupport.webp",
       "icon_alt": "Chain III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7e6c7d67997bf7cabf84ff9acd55a424b0a78e3b9c40cbdd7d70bf1aa617a99f",
       "official_id": "Metadata/Items/Gems/SupportGemChainThree",
@@ -122612,7 +122742,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Chance_to_Freeze",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/Support/ChancetoFlee.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/support/chancetoflee.webp",
       "icon_alt": "Chance to Freeze",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1f002d408f184c11c013d28b503fbac9530ee16b94456525c3cc755487edfbd1",
       "official_id": "Metadata/Items/Gems/SupportGemChanceToFreeze",
@@ -122702,7 +122832,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Chaos_Attunement",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AddedChaosDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/addedchaosdamagesupport.webp",
       "icon_alt": "Chaos Attunement",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ffa1006f9f67d027879547ea5199e2dfbc90acd09eb8da2f9476f9bfd14ff5e5",
       "official_id": "Metadata/Items/Gems/SupportGemChaosInfusion",
@@ -122817,7 +122947,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Chaos_Mastery",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChaosMasterySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chaosmasterysupport.webp",
       "icon_alt": "Chaos Mastery",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/37e8af0d31bbb35b26a38cb3a9c0fd15fbad28934ea6a2c45778d82f8ae272aa",
       "official_id": "Metadata/Items/Gems/SupportGemChaosMastery",
@@ -122917,7 +123047,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Chaotic_Freeze",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChaoticFreezeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chaoticfreezesupport.webp",
       "icon_alt": "Chaotic Freeze",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7d082c35fc5bd0e80cacdef5db797f425905c665b7949585c96f33af8851d6f2",
       "official_id": "Metadata/Items/Gem/SupportGemChaoticFreeze",
@@ -123022,7 +123152,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Charge_Profusion_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MultipleChargesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/multiplechargessupport.webp",
       "icon_alt": "Charge Profusion I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/581d7cbeeea0f631e4f1b5985b2be758a06d0a433072d8be726281a646228d3e",
       "official_id": "Metadata/Items/Gems/SupportGemProfusion",
@@ -123117,7 +123247,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Charge_Profusion_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MultipleChargesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/multiplechargessupport.webp",
       "icon_alt": "Charge Profusion II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/218b94728ba8e27fc7c94fe369e7fb0230b7cf7f29fae9bd7b13ad2f2af6f22b",
       "official_id": "Metadata/Items/Gems/SupportGemProfusionTwo",
@@ -123222,7 +123352,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Charged_Mark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChargedMark.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chargedmark.webp",
       "icon_alt": "Charged Mark",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d57ad1162474adba7cc021165668a6a4cff81a910c10130725c6483bc3f46046",
       "official_id": "Metadata/Items/Gems/SupportGemChargedMark",
@@ -123383,7 +123513,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Charged_Shots_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChargedShotsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chargedshotssupport.webp",
       "icon_alt": "Charged Shots I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cbf70262b985a17d5ee50998ac8c56fa724f70ef6f53e51c1f4bb2967d43dcbb",
       "official_id": "Metadata/Items/Gem/SupportGemChargedShots",
@@ -123513,7 +123643,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Charged_Shots_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChargedShotsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chargedshotssupport.webp",
       "icon_alt": "Charged Shots II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c1791b91ffe57132670ba539a95be520b9891d865d9fd37326cba384978af797",
       "official_id": "Metadata/Items/Gem/SupportGemChargedShotsTwo",
@@ -123633,7 +123763,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Charm_Bounty",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CharmBountySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/charmbountysupport.webp",
       "icon_alt": "Charm Bounty",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eff599970140f237bb0cb66709fab2c478f923dcd84d6235606ef546e2af334a",
       "official_id": "Metadata/Items/Gem/SupportGemCharmBounty",
@@ -123718,7 +123848,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Cirels_Cultivation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Greatwood.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/greatwood.webp",
       "icon_alt": "Cirel's Cultivation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cea007784bcbdedded42f4e9e794699d012d8609e04231e02d21520c1eac6041",
       "official_id": "Metadata/Items/Gem/SupportGemGreatwood",
@@ -123879,7 +124009,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "6a7886cbb001e46b4e7361717341f9c22e7bc64856db6e56b56d71e850bd92b3",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The oldest and greatest fortress on Wraeclast was grown, not built.",
+        "She Who Waited planted their seeds in a time of ash and snow.",
+        "Now, the gate of the Taisce is unassailable, yet open to all."
+      ]
     },
     {
       "slug": "Clarity_I",
@@ -123888,7 +124023,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Clarity_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ClaritySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/claritysupport.webp",
       "icon_alt": "Clarity I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f4695a875899eb9b6e2482706a38f9b226624e23db903a2f5ac93b748e7ce1e2",
       "official_id": "Metadata/Items/Gems/SupportGemClarity",
@@ -123998,7 +124133,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Clarity_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ClaritySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/claritysupport.webp",
       "icon_alt": "Clarity II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4eb5ce00062563d2bc741c6491c986bce0fbab01f6ffac038db514b1ba7d1505",
       "official_id": "Metadata/Items/Gems/SupportGemClarityTwo",
@@ -124108,7 +124243,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Clash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ClashSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/clashsupport.webp",
       "icon_alt": "Clash",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9914228666d2f212c8ecbe7d300187faeb7a8d2440890875a0bddbdcde8e5d83",
       "official_id": "Metadata/Items/Gem/SupportGemClash",
@@ -124218,7 +124353,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Close_Combat_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CloseCombatSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/closecombatsupport.webp",
       "icon_alt": "Close Combat I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4cb3d4e521623c96630aee7fac22a059026e55a1b5302b9507c777fadeb6f0e8",
       "official_id": "Metadata/Items/Gems/SupportGemCloseCombat",
@@ -124323,7 +124458,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Close_Combat_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CloseCombatSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/closecombatsupport.webp",
       "icon_alt": "Close Combat II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8a39c30199b3b64e0c8229454e99bd94aca2d8e9f794d752a7e80b485fc5145c",
       "official_id": "Metadata/Items/Gems/SupportGemCloseCombatTwo",
@@ -124428,7 +124563,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cold_Attunement",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AddedColdDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/addedcolddamagesupport.webp",
       "icon_alt": "Cold Attunement",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/510b75d6daaa859b16d6529e675caecdd58b4c26d680d1d4372416bb6750a31a",
       "official_id": "Metadata/Items/Gems/SupportGemColdInfusion",
@@ -124538,7 +124673,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cold_Exposure",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ColdExposureSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/coldexposuresupport.webp",
       "icon_alt": "Cold Exposure",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/95f9bfd6ab03092ea06e6192f7c5eef5a85625eeb107606755ef34052366c092",
       "official_id": "Metadata/Items/Gems/SupportGemColdExposure",
@@ -124648,7 +124783,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cold_Mastery",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ColdMasterySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/coldmasterysupport.webp",
       "icon_alt": "Cold Mastery",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/44296fcf02a8a6bc9079ad2b863f4c212ea47b5a29ad5a55f54b7f67fc3209f8",
       "official_id": "Metadata/Items/Gems/SupportGemColdMastery",
@@ -124748,7 +124883,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cold_Penetration",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ColdPenetrationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/coldpenetrationsupport.webp",
       "icon_alt": "Cold Penetration",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9c79c30af927546f5302bf4ec999abb8c0bd1bba882e3b3ce5ec36039651f151",
       "official_id": "Metadata/Items/Gems/SupportGemColdPenetration",
@@ -124853,7 +124988,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Combo_Finisher_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ComboFinisherSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/combofinishersupport.webp",
       "icon_alt": "Combo Finisher I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fc681466bbaa7e26511b64563ba31f3ad1d699ec67fcbb0c5a53c8a170899146",
       "official_id": "Metadata/Items/Gems/SupportGemComboFinisher",
@@ -124988,7 +125123,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Combo_Finisher_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ComboFinisherSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/combofinishersupport.webp",
       "icon_alt": "Combo Finisher II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/60c8bec1ec935540ddf292a66c36e1997abc387cf0b5d1f9204237e53101a7bf",
       "official_id": "Metadata/Items/Gems/SupportGemComboFinisherTwo",
@@ -125123,7 +125258,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Commandment",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PureCommandSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/purecommandsupport.webp",
       "icon_alt": "Commandment",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/775d839094e3c16a8ce91a2cc40e464eb2b26428e8b2f85c0307d3c1a9321e8b",
       "official_id": "Metadata/Items/Gem/SupportGemCommandment",
@@ -125233,7 +125368,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Commiserate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CommiserateSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/commiseratesupport.webp",
       "icon_alt": "Commiserate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/008022e3271a5a536bffffde43a11c791d327ab6996e06ffb85bdefa3a647588",
       "official_id": "Metadata/Items/Gem/SupportGemCommiserate",
@@ -125333,7 +125468,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Compressed_Duration_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LessDurationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lessdurationsupport.webp",
       "icon_alt": "Compressed Duration I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/df5e6a0200aa341b344888c25b44af620653c93bf8694a2bc0d136524a9d1927",
       "official_id": "Metadata/Items/Gems/SupportGemFastForward",
@@ -125433,7 +125568,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Compressed_Duration_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LessDurationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lessdurationsupport.webp",
       "icon_alt": "Compressed Duration II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c6b8a484a6dbb00556b6f17511777e4a3081ae91fcaccbeb210545cfc0ee8339",
       "official_id": "Metadata/Items/Gems/SupportGemFastForwardTwo",
@@ -125533,7 +125668,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Concentrated_Area",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ConcentratedEffectSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/concentratedeffectsupport.webp",
       "icon_alt": "Concentrated Area",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6f0198fe7ae7cff7b9605291f4f9ff45387a9522fac2652b38ec7201a19b7e7f",
       "official_id": "Metadata/Items/Gems/SupportGemConcentratedEffect",
@@ -125643,7 +125778,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Concoct_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ConcoctSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/concoctsupport.webp",
       "icon_alt": "Concoct I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/45b5b29f79efc67a4a6502d2595c00fde0772457c049c5bc9cd0d543d0c51fe0",
       "official_id": "Metadata/Items/Gem/SupportGemConcoct",
@@ -125733,7 +125868,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Concoct_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ConcoctSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/concoctsupport.webp",
       "icon_alt": "Concoct II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3a2b91e4d656f5249391adf3ab02b7939f86636ae95052ade52516a6cf93b05b",
       "official_id": "Metadata/Items/Gem/SupportGemConcoctTwo",
@@ -125823,11 +125958,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Concussive_Runes",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/ExpeditionPummelGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/expeditionpummelgem.webp",
       "icon_alt": "Concussive Runes",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemConcussiveRunes",
       "tags": [
+        "Support",
         "Attack",
         "AoE",
         "Melee",
@@ -125871,6 +126007,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Concussive Runes"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Attack",
             "vi": "Attack"
@@ -125978,7 +126118,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Concussive_Spells",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DazeonCrit.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/dazeoncrit.webp",
       "icon_alt": "Concussive Spells",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8e8d965398d6b92a195fb339473077dc3a2772f702338c1c5d77d5750c67efe0",
       "official_id": "Metadata/Items/Gems/SupportGemConcussiveSpells",
@@ -126083,7 +126223,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Considered_Casting",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ConsideredCastingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/consideredcastingsupport.webp",
       "icon_alt": "Considered Casting",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f0a93f21b56906e55a31b737b50aaa3345160e7c0f6eaa84155ca7beae9e0e74",
       "official_id": "Metadata/Items/Gem/SupportGemConsideredCasting",
@@ -126198,7 +126338,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Controlled_Destruction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ControlledDestructionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/controlleddestructionsupport.webp",
       "icon_alt": "Controlled Destruction",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/410419a88c82abce8b351846938dfc19cf542d7c4c0fc0124b9b075ee58e98e2",
       "official_id": "Metadata/Items/Gems/SupportGemControlledDestruction",
@@ -126308,7 +126448,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Controlled_Hazard",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ControlledHazard.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/controlledhazard.webp",
       "icon_alt": "Controlled Hazard",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/51dfaaf8a5bd5240f1466b0cc1a367f3a9732178738770b54211bcc9ffdca156",
       "official_id": "Metadata/Items/Gems/SupportGemControlledHazard",
@@ -126408,7 +126548,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Cool_Headed",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CoolHeadedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/coolheadedsupport.webp",
       "icon_alt": "Cool Headed",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/abb7f3af47b251bebf52a7e9ecc7bcce55adabce631471b85f932a9f008b45dd",
       "official_id": "Metadata/Items/Gem/SupportGemCoolHeaded",
@@ -126518,7 +126658,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Cooldown_Recovery_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CooldownReductionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cooldownreductionsupport.webp",
       "icon_alt": "Cooldown Recovery I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f9c3f89f61762164529e815d7e959a535ae321ec61ad164ea051626511a112e1",
       "official_id": "Metadata/Items/Gems/SupportGemIngenuity",
@@ -126613,7 +126753,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Cooldown_Recovery_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CooldownReductionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cooldownreductionsupport.webp",
       "icon_alt": "Cooldown Recovery II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ce34af4c681b8b07578cde3f651dccf692dec5b8e2ee1deb679d485a9c563866",
       "official_id": "Metadata/Items/Gems/SupportGemIngenuityTwo",
@@ -126708,7 +126848,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Corpse_Conservation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CorpseConservationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/corpseconservationsupport.webp",
       "icon_alt": "Corpse Conservation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/44666b5f5a4226231ede2bd6f18a08b02067202a38e52f594ae3e5bee704c0b1",
       "official_id": "Metadata/Items/Gem/SupportGemCorpseConservation",
@@ -126798,7 +126938,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Corrosion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CorrosionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/corrosionsupport.webp",
       "icon_alt": "Corrosion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cdd03047e92e51781a1ed7b40e9bea2d1854f3bdfd11f059095f5c4664fb941c",
       "official_id": "Metadata/Items/Gems/SupportGemCorrosion",
@@ -126908,7 +127048,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Corrupting_Cry_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CorruptingCrySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/corruptingcrysupport.webp",
       "icon_alt": "Corrupting Cry I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/db3ea5618d90573ed5cf23c3ae3408da092fa4dd6d354cbcb7942896e3e01b24",
       "official_id": "Metadata/Items/Gems/SupportGemCorruptingCry",
@@ -127069,7 +127209,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Corrupting_Cry_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CorruptingCrySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/corruptingcrysupport.webp",
       "icon_alt": "Corrupting Cry II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/45b280ced82a0d078fe457b19a903ce5dd01e5483e560f52e62a542145cb94be",
       "official_id": "Metadata/Items/Gems/SupportGemCorruptingCryTwo",
@@ -127225,7 +127365,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Coursing_Current",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DeadlyCurrent.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/deadlycurrent.webp",
       "icon_alt": "Coursing Current",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aa6c203817c087612451f4f258a791fb367f1710aabb1868cc7bc90134fb7c5a",
       "official_id": "Metadata/Items/Gems/SupportGemDeadlyCurrent",
@@ -127416,7 +127556,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Crackling_Barrier",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LightningThornsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lightningthornssupport.webp",
       "icon_alt": "Crackling Barrier",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5ebb40f0f3b31bad3458f1cb2f0249e5a216cdaa24ad1d9eedccfacbe83c6c27",
       "official_id": "Metadata/Items/Gem/SupportGemCracklingBarrier",
@@ -127521,7 +127661,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Crater",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FissureOnLandingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fissureonlandingsupport.webp",
       "icon_alt": "Crater",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a8d5e747e92de288c2451af1f21d8fc8a471b1f7223b48749f7e283eed741bba",
       "official_id": "Metadata/Items/Gem/SupportGemCrater",
@@ -127702,7 +127842,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Crazed_Minions",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CrazedMinionsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/crazedminionssupport.webp",
       "icon_alt": "Crazed Minions",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cca81f7366b08a3d82f6f16755bd4d0df1830197e048653e7ead28a3c1e9013b",
       "official_id": "Metadata/Items/Gem/SupportGemCrazedMinions",
@@ -127812,7 +127952,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Creeping_Chill",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CreepingChillSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/creepingchillsupport.webp",
       "icon_alt": "Creeping Chill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3d60faf54c610b4a431a64020d3296997ecf043677052667f9534b554f6fc504",
       "official_id": "Metadata/Items/Gems/SupportGemCreepingChill",
@@ -127958,7 +128098,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Crescendo_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExtendedCombo.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/extendedcombo.webp",
       "icon_alt": "Crescendo I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aa31b9698700ec793e14fe44887c52cb74e7141212a88726d23dab9d9f3c69c6",
       "official_id": "Metadata/Items/Gems/SupportGemCrescendo",
@@ -128073,7 +128213,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Crescendo_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExtendedCombo.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/extendedcombo.webp",
       "icon_alt": "Crescendo II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/303fb9536d54681374a253e142f08ba64dea25dd182e73bb05f01cbdbbffb9c7",
       "official_id": "Metadata/Items/Gems/SupportGemCrescendoTwo",
@@ -128198,7 +128338,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Crescendo_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExtendedCombo.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/extendedcombo.webp",
       "icon_alt": "Crescendo III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c65589081f860fb5d2bd773c88f5ba9af8f94656e2ca566082a50aa2c20cdcb1",
       "official_id": "Metadata/Items/Gems/SupportGemCrescendoThree",
@@ -128313,7 +128453,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Crystalline_Shards",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CrystallineShardsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/crystallineshardssupport.webp",
       "icon_alt": "Crystalline Shards",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aea3f2548142d90535913c63ee6ca702cc96b7670ff0f94be50af234b1fe899e",
       "official_id": "Metadata/Items/Gem/SupportGemCrystallineShards",
@@ -128428,7 +128568,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Culling_Strike_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CullingStrikeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cullingstrikesupport.webp",
       "icon_alt": "Culling Strike I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eeb004874bf0ca832e2f058d0e3e7618cd560f254f8f1905be84aff3bc82d18d",
       "official_id": "Metadata/Items/Gem/SupportGemCullingStrike",
@@ -128528,7 +128668,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Culling_Strike_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CullingStrikeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cullingstrikesupport.webp",
       "icon_alt": "Culling Strike II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/96755f0882e6b934fe1fc2fa239e387e089cdfe842f83ece340e3ef570735494",
       "official_id": "Metadata/Items/Gem/SupportGemCullingStrikeTwo",
@@ -128638,7 +128778,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Culmination_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CulminationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/culminationsupport.webp",
       "icon_alt": "Culmination I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9ae3a73a4d0883828b504aef11a04a6e39af54ca13a05490df367626f894e7dd",
       "official_id": "Metadata/Items/Gem/SupportGemCulmination",
@@ -128768,7 +128908,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Culmination_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CulminationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/culminationsupport.webp",
       "icon_alt": "Culmination II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/298d8f15601e0f9295c7cd5356d6483009597af93a790ac202b02e7abe402311",
       "official_id": "Metadata/Items/Gem/SupportGemCulminationTwo",
@@ -128898,7 +129038,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Cursed_Ground",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CursedGroundSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cursedgroundsupport.webp",
       "icon_alt": "Cursed Ground",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dd2bf6aae1f434551220884feb93b1aeb42539f3555ef8ded18b491f5e2766dd",
       "official_id": "Metadata/Items/Gem/SupportGemCursedGround",
@@ -129008,7 +129148,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Danse_Macabre",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DanseMacabreSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/dansemacabresupport.webp",
       "icon_alt": "Danse Macabre",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a47eacd9ae4dd2813430ecb56ea2d3b2f2e25cb6a97105562ce1ba7634c70040",
       "official_id": "Metadata/Items/Gem/SupportGemDanseMacabre",
@@ -129118,7 +129258,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Daressos_Passion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageDaresso.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagedaresso.webp",
       "icon_alt": "Daresso's Passion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d87667414ff3fb54ef484d55fda2314c247d00dc856f7b6ef470823c9c2f84b9",
       "official_id": "Metadata/Items/Gem/SupportGemDaressosPassion",
@@ -129214,7 +129354,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "efb0b86fa19761171aa3f773802c7644a434ea9c7a1898782fa1b625ea5d67f3",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"I raised my eyes to look upon my death. Instead, I saw her.",
+        "Merveil. Fighting had always been about survival. Now the",
+        "fight became about something much greater... love.\""
+      ]
     },
     {
       "slug": "Dauntless",
@@ -129223,7 +129368,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Dauntless",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnmovingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unmovingsupport.webp",
       "icon_alt": "Dauntless",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cf7e9d6b1ebe1aa89a586bb783c451603cefc76f46cd31f15c7bda73023945b4",
       "official_id": "Metadata/Items/Gem/SupportGemDauntless",
@@ -129333,7 +129478,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Daze",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DazingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/dazingsupport.webp",
       "icon_alt": "Daze",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1083ebec464938152a4e8eb979ea8577120878c043555a1fc7d4a4afe0f2166f",
       "official_id": "Metadata/Items/Gems/SupportGemDiscombobulate",
@@ -129406,7 +129551,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Dazing_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DazingCrySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/dazingcrysupport.webp",
       "icon_alt": "Dazing Cry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/804aaadf4eca9754e712e643affe0d2b2aa53bb32d4fd35b7129d4752df8e80e",
       "official_id": "Metadata/Items/Gem/SupportGemDazingCry",
@@ -129516,7 +129661,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Dazzle",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DazzleSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/dazzlesupport.webp",
       "icon_alt": "Dazzle",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b862e83014991e445324ee90be0961e4c6b42cd50edb450a95415819a24734a6",
       "official_id": "Metadata/Items/Gem/SupportGemDazzle",
@@ -129621,7 +129766,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Deadly_Herald",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DeadlyHeraldsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/deadlyheraldssupport.webp",
       "icon_alt": "Deadly Herald",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/42db6fae6e6351284521ee2583227c2d88bdd7924fd14a7fa66134e6c9659971",
       "official_id": "Metadata/Items/Gems/SupportGemDeadlyHeralds",
@@ -129726,7 +129871,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Deadly_Poison_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DeadlyPoisonSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/deadlypoisonsupport.webp",
       "icon_alt": "Deadly Poison I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c4e52e3a0d526dcdef0216f5dae8ff2fbeca0579c9ced722db424b760df211fb",
       "official_id": "Metadata/Items/Gems/SupportGemDeadlyPoison",
@@ -129836,7 +129981,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Deadly_Poison_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DeadlyPoisonSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/deadlypoisonsupport.webp",
       "icon_alt": "Deadly Poison II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/96735cef301b4732191187a6a90d6239d6b991052857d43173a09fbe2f64029a",
       "official_id": "Metadata/Items/Gems/SupportGemDeadlyPoisonTwo",
@@ -129946,7 +130091,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Deadly_Resolve",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DangerousResolveSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/dangerousresolvesupport.webp",
       "icon_alt": "Deadly Resolve",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/50e3bdc6a6fdae84bd47d0b9cea20d7aac1536715278d224bb47ef846d90d279",
       "official_id": "Metadata/Items/Gem/SupportGemDeadlyResolve",
@@ -130172,7 +130317,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Deathmarch",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CleansingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cleansingsupport.webp",
       "icon_alt": "Deathmarch",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d540796b5f83a0206dab6041aa29f916ca735f371d0ec18618d01f2b29418f23",
       "official_id": "Metadata/Items/Gem/SupportGemDeathmarch",
@@ -130277,7 +130422,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Decaying_Hex",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DecayingHexSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/decayinghexsupport.webp",
       "icon_alt": "Decaying Hex",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fdfb811b094aca11ec1349c72ff6a5dcea2e73a7467cfb0c2364397d6a70c1f5",
       "official_id": "Metadata/Items/Gem/SupportGemDecayingHex",
@@ -130443,7 +130588,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Deep_Cuts_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DeepCutsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/deepcutssupport.webp",
       "icon_alt": "Deep Cuts I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/159cb12815e1d0f33fd4fb29cd3e26a6e374e7d322b6e6fb0e853429f87bc5e6",
       "official_id": "Metadata/Items/Gems/SupportGemDeepCuts",
@@ -130553,7 +130698,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Deep_Cuts_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DeepCutsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/deepcutssupport.webp",
       "icon_alt": "Deep Cuts II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8888c98ec38ab995eaee840bd2dc5b987f06d10b30cd492c51941828fd223a32",
       "official_id": "Metadata/Items/Gems/SupportGemDeepCutsTwo",
@@ -130663,7 +130808,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Deep_Freeze",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DeepFreezeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/deepfreezesupport.webp",
       "icon_alt": "Deep Freeze",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3e1060527e14519cbcf229082cb50c99b2a6846ee17553545714fc588597fb35",
       "official_id": "Metadata/Items/Gems/SupportGemDeepFreeze",
@@ -130768,7 +130913,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Defy_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DefySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/defysupport.webp",
       "icon_alt": "Defy I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f519c92330543b682f1a144e9ec833589ea9bf1d7bf38ed9a67115875cdd3d3f",
       "official_id": "Metadata/Items/Gem/SupportGemDefy",
@@ -130868,7 +131013,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Defy_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DefySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/defysupport.webp",
       "icon_alt": "Defy II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4b986d9f26f785cf5e9b02b35f79ae4d97c026ad4ce1ed855b0b406fae4f181a",
       "official_id": "Metadata/Items/Gem/SupportGemDefyTwo",
@@ -130978,7 +131123,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Delayed_Gratification",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AdversitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/adversitysupport.webp",
       "icon_alt": "Delayed Gratification",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/89f22256980b99cedc6db862f41a1fe261f7350bdf42b2828eb71ed75bf412eb",
       "official_id": "Metadata/Items/Gem/SupportGemDelayedGratification",
@@ -131078,7 +131223,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Delayed_Reaction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DelayedReactionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/delayedreactionsupport.webp",
       "icon_alt": "Delayed Reaction",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/48378cc52555d11fd8e95dab6dcf692ff696470d44aaf6cf6eece92439394e51",
       "official_id": "Metadata/Items/Gem/SupportGemDelayedReaction",
@@ -131198,7 +131343,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Deliberation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CessationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cessationsupport.webp",
       "icon_alt": "Deliberation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2831fcffcbf7a0cd2aa89049b672b21e87b14804ebaee00a4ff4daa53328261d",
       "official_id": "Metadata/Items/Gem/SupportGemDeliberation",
@@ -131298,7 +131443,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Derange",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DerangeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/derangesupport.webp",
       "icon_alt": "Derange",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e24b17c0f8a80b4654c8e2ffcf3330107d800265b6e919cad29ebb048f97e479",
       "official_id": "Metadata/Items/Gem/SupportGemDerange",
@@ -131398,7 +131543,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Desperation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DesperationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/desperationsupport.webp",
       "icon_alt": "Desperation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/80ea1951e5c1dd98cc79c50f036c51f2446a34902b500f817c8a0852c5d19510",
       "official_id": "Metadata/Items/Gem/SupportGemDesperation",
@@ -131498,7 +131643,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Devastate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DevastateSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/devastatesupport.webp",
       "icon_alt": "Devastate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d7305a5f1548dfd08b6aa81f3c4e57a32b32fed5fff85bec727f52abaea04f50",
       "official_id": "Metadata/Items/Gems/SupportGemDevastate",
@@ -131588,7 +131733,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Diallas_Desire",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Dialla.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/dialla.webp",
       "icon_alt": "Dialla's Desire",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/55247dad4f92ab93d84abb4e791074e5341a450340764a786b7b516f571b0f2f",
       "official_id": "Metadata/Items/Gem/SupportGemDiallasDesire",
@@ -131699,7 +131844,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "f8ef1c4b69023617423d542bf78f658fe101d48a4ccab6a4b2129c464ee0aac2",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"I will become your Gemling Queen, my love, but not",
+        "with such dull stones. I want to give myself to you",
+        "for eternity. Surely we can seek perfection together?\""
+      ]
     },
     {
       "slug": "Direstrike_I",
@@ -131708,7 +131858,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Direstrike_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DireStrikeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/direstrikesupport.webp",
       "icon_alt": "Direstrike I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/034264bf79d517af9c0b09b1fcff4120519c704ed950f3c893bb18f23c139431",
       "official_id": "Metadata/Items/Gem/SupportGemDireStrike",
@@ -131818,7 +131968,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Direstrike_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DireStrikeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/direstrikesupport.webp",
       "icon_alt": "Direstrike II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/924d6fda3bc072395fbc6f1f6d4dcd943f45ec157019cfbf09b390147e753e76",
       "official_id": "Metadata/Items/Gem/SupportGemDireStrikeTwo",
@@ -131928,7 +132078,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Doedres_Undoing",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageDoedre.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagedoedre.webp",
       "icon_alt": "Doedre's Undoing",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e1a46db36d488191699803cb34220259e369422cddeed9929e04675575d953f8",
       "official_id": "Metadata/Items/Gem/SupportGemDoedresUndoing",
@@ -132110,7 +132260,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "4ac50b3b17cdfe3c84348ff6124e8e46b3413c3a0c87f43ad264c0b424b35004",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Doedre's depravity knew no limits. She stretched and",
+        "broke and rebuilt herself until she forgot her own shape.",
+        "She reverted to a familiar form, and began anew."
+      ]
     },
     {
       "slug": "Dominus_Grasp",
@@ -132119,7 +132274,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Dominus_Grasp",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageMercy.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagemercy.webp",
       "icon_alt": "Dominus' Grasp",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/91fb9fd89316a61d8b59319ca8c5fac7ea0c07747811b44e6a042485ffbb0c6d",
       "official_id": "Metadata/Items/Gem/SupportGemPietysMercy",
@@ -132220,7 +132375,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "a9a9eba6f93a3a03f22dcddc35b0d58f42869f3843090766fdf8459466aec472",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The High Templar needed thousands of prisoners if his and",
+        "Piety's experiments were to succeed. Conspiring on the",
+        "matter, they decided to revive an age old tradition... exile."
+      ]
     },
     {
       "slug": "Double_Barrel_I",
@@ -132229,7 +132389,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Double_Barrel_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DoubleBarrelSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/doublebarrelsupport.webp",
       "icon_alt": "Double Barrel I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/80e9f8fd07bdfef213adb4d826077613d5824654cd71923d5990ea7dc9bc8248",
       "official_id": "Metadata/Items/Gem/SupportGemDoubleBarrel",
@@ -132349,7 +132509,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Double_Barrel_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DoubleBarrelSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/doublebarrelsupport.webp",
       "icon_alt": "Double Barrel II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/63dfbfcc07437c63b6d6ade96d630b9ee0ded755ff5a9d9574ebdc4c275051da",
       "official_id": "Metadata/Items/Gem/SupportGemDoubleBarrelTwo",
@@ -132469,7 +132629,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Double_Barrel_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DoubleBarrelSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/doublebarrelsupport.webp",
       "icon_alt": "Double Barrel III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1cde8ae24260b26444e9455239a1a4d8e12f771f231dc908930d63a2c0709601",
       "official_id": "Metadata/Items/Gem/SupportGemDoubleBarrelThree",
@@ -132599,7 +132759,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Drain_Ailments",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DrainedAilmentSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/drainedailmentsupport.webp",
       "icon_alt": "Drain Ailments",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/908cd73e56cfcf68df3b34d8de7ad9cc229027a32bd829d785af2bf0e0a2d7dd",
       "official_id": "Metadata/Items/Gems/SupportGemDrainAilments",
@@ -132699,7 +132859,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Dreamers_Knell",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageDreamer.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagedreamer.webp",
       "icon_alt": "Dreamer's Knell",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9fc1ba82388efa853e3220114114b1d557c6e6d2eea90c6d6036f8ac0b417a95",
       "official_id": "Metadata/Items/Gem/SupportGemDreamersKnell",
@@ -132865,7 +133025,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Durability",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DurabilitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/durabilitysupport.webp",
       "icon_alt": "Durability",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/94216eddb657ca413e5abc8d72bb29c53bc0c3fa1d81b1ab9996b4412db64774",
       "official_id": "Metadata/Items/Gem/SupportGemDurability",
@@ -132960,7 +133120,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Echoing_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EchoingCrySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/echoingcrysupport.webp",
       "icon_alt": "Echoing Cry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/22866a94db6042b3e4fd899da404acad2db38e32299880cabb2ea4ea343068bf",
       "official_id": "Metadata/Items/Gems/SupportGemEchoingCry",
@@ -133125,7 +133285,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Efficiency_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/Inspiration.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/inspiration.webp",
       "icon_alt": "Efficiency I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1df802cd3463fbb74805460ed86b69eb9b57208d877cddafa81a15f4901530f5",
       "official_id": "Metadata/Items/Gems/SupportGemInspiration",
@@ -133215,7 +133375,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Efficiency_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/Inspiration.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/inspiration.webp",
       "icon_alt": "Efficiency II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2e037c05ff8122bea5eb4056ecdd24adc6cfbb1d06cdcdb5a478e6e0f1a76fb9",
       "official_id": "Metadata/Items/Gems/SupportGemInspirationTwo",
@@ -133305,7 +133465,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Einhars_Beastrite",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageEinhar.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageeinhar.webp",
       "icon_alt": "Einhar's Beastrite",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a8bb662eb282b3d985724bd431734362e23b7e639591a64b5a62b81897e961fd",
       "official_id": "Metadata/Items/Gems/SupportGemEinharsBeastrite",
@@ -133421,7 +133581,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "9d6c78773055e93cbcaa8db272e910488615c76c2777ddf75b77d1e90105d057",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"You must cut the beast, like this,\" he told the wide-eyed",
+        "and forgetful woman. \"The juiciest parts are in the middle!\"",
+        "She nodded, and began relearning the way of the wilds."
+      ]
     },
     {
       "slug": "Electrocute",
@@ -133430,7 +133595,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Electrocute",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ElectrocuteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/electrocutesupport.webp",
       "icon_alt": "Electrocute",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6e6379eb511f771f27faed8ae94b3bde2f06224780f252a5f5168bddc7ba1fe2",
       "official_id": "Metadata/Items/Gems/SupportGemElectrocute",
@@ -133540,7 +133705,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Electromagnetism",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ShockingRiftSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/shockingriftsupport.webp",
       "icon_alt": "Electromagnetism",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2c2099f4b8318dc150c47deeb2014c45ac540da2e3e709388c59b7ac36fdda94",
       "official_id": "Metadata/Items/Gem/SupportGemShockingRift",
@@ -133789,7 +133954,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Elemental_Armament_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WeaponElementalDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/weaponelementaldamagesupport.webp",
       "icon_alt": "Elemental Armament I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c743d56e2625dfebe428824a5250818f5b32a9df6f878c3ca1cf3e62b55e152f",
       "official_id": "Metadata/Items/Gems/SupportGemPrimalArmament",
@@ -133894,7 +134059,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Elemental_Armament_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WeaponElementalDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/weaponelementaldamagesupport.webp",
       "icon_alt": "Elemental Armament II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c2f72a73036c31337a3cb08b686ec49cb067913acdb0e4cc2dae5196d87d5d03",
       "official_id": "Metadata/Items/Gems/SupportGemPrimalArmamentTwo",
@@ -133999,7 +134164,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Elemental_Armament_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WeaponElementalDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/weaponelementaldamagesupport.webp",
       "icon_alt": "Elemental Armament III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/28974bd680406a50deaaf691ef323ddd884a5f061328537f4fb40edd88337e63",
       "official_id": "Metadata/Items/Gems/SupportGemPrimalArmamentThree",
@@ -134114,7 +134279,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Elemental_Army",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ElementalArmySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/elementalarmysupport.webp",
       "icon_alt": "Elemental Army",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/acaa8dd960a53118907521f3f55d08d051b40944819a0aa2a2074a93ad686dee",
       "official_id": "Metadata/Items/Gems/SupportGemElementalArmy",
@@ -134214,7 +134379,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Elemental_Discharge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ElementalDischargeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/elementaldischargesupport.webp",
       "icon_alt": "Elemental Discharge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dfcfe2e059d95dd834faa0ce7dc6d6430fab14a3f6804568a98380157f96f862",
       "official_id": "Metadata/Items/Gems/SupportGemElementalDischarge",
@@ -134410,7 +134575,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Elemental_Focus",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ElementalFocusSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/elementalfocussupport.webp",
       "icon_alt": "Elemental Focus",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/243eb95d0014c54fdab4f9896909e4aada9f02b88a758c279dd9acae8b4adf65",
       "official_id": "Metadata/Items/Gems/SupportGemElementalFocus",
@@ -134510,7 +134675,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Embitter",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EmbitterSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/embittersupport.webp",
       "icon_alt": "Embitter",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a099ff4c318a71f42f8dcef3cc9a2c3ea0952c4fb2bc55e38de662ffa615bece",
       "official_id": "Metadata/Items/Gem/SupportGemEmbitter",
@@ -134615,7 +134780,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Empowered_Sparks_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EmpoweredSparks.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/empoweredsparks.webp",
       "icon_alt": "Empowered Sparks I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/48ef95815e6ab0638288d5da4e7d4d18d40f4bdc993ca1bb89eb07f4a25848dc",
       "official_id": "Metadata/Items/Gems/SupportGemEmpoweredSparks",
@@ -134942,7 +135107,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Empowered_Sparks_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EmpoweredSparks.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/empoweredsparks.webp",
       "icon_alt": "Empowered Sparks II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/88264dafa91033ae641964e26fd4b30cf068ba45e3cd7d6751bd1270a63252e2",
       "official_id": "Metadata/Items/Gems/SupportGemEmpoweredSparksTwo",
@@ -135269,7 +135434,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Encroaching_Ground",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExpandingGroundSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/expandinggroundsupport.webp",
       "icon_alt": "Encroaching Ground",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/90813b99e05f02a3cf1e0effafac392d618fe7df2f23abd87da97496005aee60",
       "official_id": "Metadata/Items/Gem/SupportGemSuffuse",
@@ -135374,7 +135539,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Enduring_Impact_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnduranceOnHeavyStunSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/enduranceonheavystunsupport.webp",
       "icon_alt": "Enduring Impact I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/54569e8f363fa99f5c6731815b6a3ddddd8972e7854c980bdc1020b680ed894b",
       "official_id": "Metadata/Items/Gem/SupportGemEnduringImpact",
@@ -135474,7 +135639,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Enduring_Impact_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnduranceOnHeavyStunSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/enduranceonheavystunsupport.webp",
       "icon_alt": "Enduring Impact II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0cedde068e64245dc92216d334c349c7739a965801fe9f4bbfdd1305c6a29ffc",
       "official_id": "Metadata/Items/Gem/SupportGemEnduringImpactTwo",
@@ -135574,7 +135739,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Energy_Barrier",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnergyBarrierSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/energybarriersupport.webp",
       "icon_alt": "Energy Barrier",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/385d9a57dfc8fe20318e82b1a07a1445080d61be549f3a144088d374dd8c6b2e",
       "official_id": "Metadata/Items/Gems/SupportGemEnergyBarrier",
@@ -135659,7 +135824,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Energy_Capacitor",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CapacitorSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/capacitorsupport.webp",
       "icon_alt": "Energy Capacitor",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/11bb09c8f76b7f490a460fe47bc20d152d470da02e7a7cd6d6308d7126891b6e",
       "official_id": "Metadata/Items/Gem/SupportGemCapacitor",
@@ -135754,7 +135919,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Energy_Retention",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnergyRetentionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/energyretentionsupport.webp",
       "icon_alt": "Energy Retention",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b1c4e700012c004fcdee43994e4f8625c7a8c30b6721180fbf7a6b56eb743897",
       "official_id": "Metadata/Items/Gem/SupportGemEnergyRetention",
@@ -135859,7 +136024,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Enervation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/EnervationSupportGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/enervationsupportgem.webp",
       "icon_alt": "Enervation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/94882effe79d68d14a6bb47d4ed65768264fd80ef530075447f607171127ce4e",
       "official_id": "Metadata/Items/Gems/SupportEnervation",
@@ -135949,7 +136114,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Enraged_Warcry_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnragedWarcrySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/enragedwarcrysupport.webp",
       "icon_alt": "Enraged Warcry I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/361ccec57bc03b2637435485e73d4f3d3bd0b765234980bccd8550b45d5599c2",
       "official_id": "Metadata/Items/Gems/SupportGemEnragedWarcry",
@@ -136049,7 +136214,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Enraged_Warcry_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnragedWarcrySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/enragedwarcrysupport.webp",
       "icon_alt": "Enraged Warcry II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fc27dbc972df4a5d4ecf7c150a695363e28f27432ad6e97ee518ac765cf6505c",
       "official_id": "Metadata/Items/Gems/SupportGemEnragedWarcryTwo",
@@ -136149,7 +136314,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Eonyrs_Thunder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/ScaleofEonyr.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/scaleofeonyr.webp",
       "icon_alt": "Eonyr's Thunder",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a36fe0b6fede061ce5d5b92d457fd2654b5be5f0d9aeb9228492ad56e69768e9",
       "official_id": "Metadata/Items/Gems/SupportGemEonyrsThunder",
@@ -136336,7 +136501,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "93d396003e441b993d1ef856c863daac2b33d4c58de2b31492bd0d20eab752e6",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"How? Well, the Great Wyvern granted her passage, of course.",
+        "Eonyr and his flock soar the winds between us and the Moon.",
+        "The roar of the storm... that's them, as they hunt and call.\""
+      ]
     },
     {
       "slug": "Escalating_Poison",
@@ -136345,7 +136515,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Escalating_Poison",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MultiplePoisonSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/multiplepoisonsupport.webp",
       "icon_alt": "Escalating Poison",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3a3019f41cfcfca07fa16ef186d6f57218d3838c18a16e58fbd549145638723f",
       "official_id": "Metadata/Items/Gems/SupportGemComorbidity",
@@ -136455,11 +136625,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Esh's_Prowess",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/EshsProwess.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/eshsprowess.webp",
       "icon_alt": "Esh's Prowess",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemEshsProwess",
       "tags": [
+        "Support",
         "Lineage",
         "Lightning"
       ],
@@ -136492,6 +136663,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Esh's Prowess"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -136552,7 +136727,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "00c095ab159a3367f7b227f850c2d2e38ec3194334724ec2f8fbdb84f1196789",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "Knowledge unending had transcended physical form.",
+        "Her minds raced through metal latticework as the",
+        "flesh of the melding reached up to contain her."
+      ]
     },
     {
       "slug": "Eshs_Radiance",
@@ -136561,7 +136741,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Eshs_Radiance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageEsh.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageesh.webp",
       "icon_alt": "Esh's Radiance",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0d11d1b11723aa87f4595cc7e2b9ac4a44358c3c329d3a866e4607923b664da0",
       "official_id": "Metadata/Items/Gem/SupportGemEshsRadiance",
@@ -136677,7 +136857,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "6bb4ffd04160cd8a8260f8abf44b4bcc34e3be3f32a93163d400238e1c55a417",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"Where life once thrived, now only metal grows, inching",
+        "like endless worms through the ash. Where silence fell,",
+        "now sourceless thought whispers numbers in the dark.\""
+      ]
     },
     {
       "slug": "Essence_Harvest",
@@ -136686,7 +136871,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Essence_Harvest",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EssenceHarvestSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/essenceharvestsupport.webp",
       "icon_alt": "Essence Harvest",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/073893da4329645714b3cb5f688f186dd5f187eb24be01d2e950a5f5ef89b0c3",
       "official_id": "Metadata/Items/Gems/SupportGemEssenceHarvest",
@@ -136796,7 +136981,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Eternal_Flame_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EternalFlameSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/eternalflamesupport.webp",
       "icon_alt": "Eternal Flame I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7c7d99671f98364ccbd99002c0f2d084800d2b5bbce6738a052e63a24ccf09c8",
       "official_id": "Metadata/Items/Gems/SupportGemEternalFlame",
@@ -136911,7 +137096,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Eternal_Flame_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EternalFlameSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/eternalflamesupport.webp",
       "icon_alt": "Eternal Flame II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/af5b26c079cb26834cda71fd370c84fad866ea0931d874456ad755e2c7fecf0d",
       "official_id": "Metadata/Items/Gems/SupportGemEternalFlameTwo",
@@ -137016,7 +137201,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Eternal_Flame_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EternalFlameSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/eternalflamesupport.webp",
       "icon_alt": "Eternal Flame III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d3ae8b7e14ff1538ecf93339aa191c025b4c514a2c23836afbe7a003f322c3e7",
       "official_id": "Metadata/Items/Gems/SupportGemEternalFlameThree",
@@ -137121,7 +137306,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Eternal_Mark",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/Undeterred.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/undeterred.webp",
       "icon_alt": "Eternal Mark",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0d1af88924e64f409b6264ce7ebbc509a783994839c7a7261935ca0591944e24",
       "official_id": "Metadata/Items/Gems/SupportGemEternalMark",
@@ -137226,7 +137411,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Excise",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExciseSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/excisesupport.webp",
       "icon_alt": "Excise",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d670f4db590668757e94d332861c14db0389979d47b9ef2c0119dbcce6bd9b56",
       "official_id": "Metadata/Items/Gem/SupportGemExcise",
@@ -137331,7 +137516,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Excoriate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ElementalAssaultSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/elementalassaultsupport.webp",
       "icon_alt": "Excoriate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3f8b219e77e7605a71d33d3a23b0f70e0529100a57ed0fef18dc4ec993d223ca",
       "official_id": "Metadata/Items/Gem/SupportGemExcoriate",
@@ -137446,7 +137631,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Execrate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExpanseSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/expansesupport.webp",
       "icon_alt": "Execrate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8bba48246d51dfc8dd683f2139fe496b4ad2a7a7811c377ada7c83c1f60eef05",
       "official_id": "Metadata/Items/Gem/SupportGemExecrate",
@@ -137551,7 +137736,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Execute_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExecuteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/executesupport.webp",
       "icon_alt": "Execute I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d9f8224b1fb7e92fd4cec2c19785eae6b1f39caefed56c040d9574ca689a6940",
       "official_id": "Metadata/Items/Gems/SupportGemExecute",
@@ -137646,7 +137831,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Execute_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExecuteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/executesupport.webp",
       "icon_alt": "Execute II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fc163bdddc2d490d4695091388ca5c16a4e97eb2502ec5342857b8ba5ff1dc7f",
       "official_id": "Metadata/Items/Gems/SupportGemExecuteTwo",
@@ -137741,7 +137926,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Execute_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExecuteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/executesupport.webp",
       "icon_alt": "Execute III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/30b9a50e4df51ee7d43aa95556985f2a75f55c05714928a28b2541fbff443f22",
       "official_id": "Metadata/Items/Gems/SupportGemExecuteThree",
@@ -137846,7 +138031,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Expand",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExpandSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/expandsupport.webp",
       "icon_alt": "Expand",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7d9c27f03de97c8e25c1ce3e668e607206a248c3eadd9801b17f0a5b2a4395ce",
       "official_id": "Metadata/Items/Gems/SupportGemExpand",
@@ -137986,7 +138171,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Expanse",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExecrateSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/execratesupport.webp",
       "icon_alt": "Expanse",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ffec81497f9b419bd376bc672896fe19fb2e8e8386d7a145362e7a7eba8e3d8d",
       "official_id": "Metadata/Items/Gem/SupportGemExpanse",
@@ -138101,7 +138286,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Exploit_Weakness",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExploitWeaknessSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/exploitweaknesssupport.webp",
       "icon_alt": "Exploit Weakness",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b31cdec92f35bd5f47dc2beaca57e89df34885ba60525a2479830eb8a81d281b",
       "official_id": "Metadata/Items/Gems/SupportGemExploitWeakness",
@@ -138216,7 +138401,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Exposing_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExpositionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/expositionsupport.webp",
       "icon_alt": "Exposing Cry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/02eab5aedc56c22d1c48a4b11f37eaa80e544cd5783af51bf2065c08c8800b4a",
       "official_id": "Metadata/Items/Gems/SupportGemExposingCry",
@@ -138326,7 +138511,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Extraction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExtractionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/extractionsupport.webp",
       "icon_alt": "Extraction",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/683d7d8f93e5e9a6f51cea074030d9de98d77592ee8dea80402d5a6a4b3e4f1e",
       "official_id": "Metadata/Items/Gem/SupportGemExtraction",
@@ -138441,7 +138626,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fan_The_Flames",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FanTheFlames.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fantheflames.webp",
       "icon_alt": "Fan The Flames",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4bf45249490e7556ae38a7b6f6b8f40dc32799e8a33fe5051eeeb0eafa386bf5",
       "official_id": "Metadata/Items/Gems/SupportGemFanTheFlames",
@@ -138622,7 +138807,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fan_The_Flames_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FanTheFlames.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fantheflames.webp",
       "icon_alt": "Fan The Flames II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/005ba809393991c8b73a9b3362dad99766307204c6c2b232f51d8bed3e575dca",
       "official_id": "Metadata/Items/Gems/SupportGemFanTheFlamesTwo",
@@ -138818,7 +139003,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Feeding_Frenzy_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FeedingFrenzySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/feedingfrenzysupport.webp",
       "icon_alt": "Feeding Frenzy I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f0c3cb73ffc6c1f91be17b36a9ede4c3225410dc9d8fc99e6d94953b676dd3d6",
       "official_id": "Metadata/Items/Gems/SupportGemFeedingFrenzy",
@@ -138928,7 +139113,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Feeding_Frenzy_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FeedingFrenzySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/feedingfrenzysupport.webp",
       "icon_alt": "Feeding Frenzy II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/19e4db65bdd5ff9141ab1d43fb2d541050b3e7d0ea555b69227d96fb6578589e",
       "official_id": "Metadata/Items/Gems/SupportGemFeedingFrenzyTwo",
@@ -139038,7 +139223,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ferocity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FerocitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ferocitysupport.webp",
       "icon_alt": "Ferocity",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/699de551aca3e016a44b8fbde623215e56212712783b6a7c8cf18f2b5de946e7",
       "official_id": "Metadata/Items/Gem/SupportGemFerocity",
@@ -139133,7 +139318,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Fiery_Death",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FieryDeathSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fierydeathsupport.webp",
       "icon_alt": "Fiery Death",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/aaea12655153492d28f434c59b7649c6d1543af36d7c1d96953eb0b1e2d3a68e",
       "official_id": "Metadata/Items/Gems/SupportGemFieryDeath",
@@ -139294,7 +139479,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fire_Attunement",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AddedFireDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/addedfiredamagesupport.webp",
       "icon_alt": "Fire Attunement",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/902131e50bf522787091202b7c5517068a18a527b64d803f2ea626aad71fb8af",
       "official_id": "Metadata/Items/Gems/SupportGemFireInfusion",
@@ -139404,7 +139589,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fire_Exposure",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FireExposureSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fireexposuresupport.webp",
       "icon_alt": "Fire Exposure",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/50c5506b50b274329b6397ce91de51d3e8f01dc6c3ebc693358678e4e8661687",
       "official_id": "Metadata/Items/Gems/SupportGemFireExposure",
@@ -139514,7 +139699,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Fire_Mastery",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FireMasterySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/firemasterysupport.webp",
       "icon_alt": "Fire Mastery",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f22980aae3b53e2755f90242d1fc971f63e815c3cbf751bbd1818007ac823bc2",
       "official_id": "Metadata/Items/Gems/SupportGemFireMastery",
@@ -139614,7 +139799,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fire_Penetration_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FirePenetrationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/firepenetrationsupport.webp",
       "icon_alt": "Fire Penetration I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a9fbccf627dc5d687a8abe6922fd1f93f0a75eecfcb2a925438a32305e19b679",
       "official_id": "Metadata/Items/Gems/SupportGemFirePenetration",
@@ -139719,7 +139904,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fire_Penetration_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FirePenetrationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/firepenetrationsupport.webp",
       "icon_alt": "Fire Penetration II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0d4f6c16c25ee9c133c499c8e7865bf1344481f0d7b8f30bb135f2428373634d",
       "official_id": "Metadata/Items/Gems/SupportGemFirePenetrationTwo",
@@ -139824,7 +140009,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/First_Blood",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FirstBloodSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/firstbloodsupport.webp",
       "icon_alt": "First Blood",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/db5f6eb8b9aca23f20153a4db3ac9943996a7eb77f44ce6393aee2409a475c52",
       "official_id": "Metadata/Items/Gem/SupportGemFirstBlood",
@@ -139929,11 +140114,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Fist_Of_Kalguur",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/ExpeditionFistofKalguurGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/expeditionfistofkalguurgem.webp",
       "icon_alt": "Fist Of Kalguur",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemFistOfKalguur",
       "tags": [
+        "Support",
         "Attack",
         "AoE",
         "Melee",
@@ -139980,6 +140166,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Fist của Kalguur"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Attack",
             "vi": "Attack"
@@ -140099,7 +140289,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fist_of_War_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FistOfWarSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fistofwarsupport.webp",
       "icon_alt": "Fist of War I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a8a9cbf56fa58391fd2e92deb1d45fe359c653f05f5ee05a1be1e494b73c63de",
       "official_id": "Metadata/Items/Gems/SupportGemFistOfWar",
@@ -140224,7 +140414,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fist_of_War_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FistOfWarSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fistofwarsupport.webp",
       "icon_alt": "Fist of War II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/07a14c955c27d03c1c948b419a52b1d9adeaa75e0ce67ea4c0b48cf259c8b140",
       "official_id": "Metadata/Items/Gems/SupportGemFistOfWarTwo",
@@ -140349,7 +140539,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fist_of_War_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FistOfWarSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fistofwarsupport.webp",
       "icon_alt": "Fist of War III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7d45f4de903c24417d521ff1a80b935a92189490132038ffa627aecd16b28205",
       "official_id": "Metadata/Items/Gems/SupportGemFistOfWarThree",
@@ -140484,7 +140674,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Flame_Pillar",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PillarofFireSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pillaroffiresupport.webp",
       "icon_alt": "Flame Pillar",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ae3f3d5c9ab7de732f80730e14070c370e0cd1e719acc7f2bd423d2dcae015bf",
       "official_id": "Metadata/Items/Gem/SupportGemFlamePillar",
@@ -140650,7 +140840,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Flamepierce",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FlamepierceSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/flamepiercesupport.webp",
       "icon_alt": "Flamepierce",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a35cf66ebf0cef4ca9ecd77826be37e8ae90c6ecc4ca817422d09508c0e42c7b",
       "official_id": "Metadata/Items/Gem/SupportGemFlamepierce",
@@ -140760,7 +140950,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Flow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LingeringComboSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lingeringcombosupport.webp",
       "icon_alt": "Flow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d5424ecd9a45837f5481b7e33b243983e0f339f69f8c9e66c1d055593baf9836",
       "official_id": "Metadata/Items/Gem/SupportGemFlow",
@@ -140845,7 +141035,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Fluke",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RandomisedTriggerSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/randomisedtriggersupport.webp",
       "icon_alt": "Fluke",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6a1d8df85e464a07e58a89b946c67e9673909ca3c092e54b6341282a50829b90",
       "official_id": "Metadata/Items/Gem/SupportGemFluke",
@@ -140960,7 +141150,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Focused_Curse",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FocusedHexSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/focusedhexsupport.webp",
       "icon_alt": "Focused Curse",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/00f5cbef4d7e3a1069d332ed77e6485b8d5ddfe134c1c728cb39c9af1671d987",
       "official_id": "Metadata/Items/Gem/SupportGemFocusedCurse",
@@ -141065,7 +141255,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Font_of_Blood",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FontOfBloodSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fontofbloodsupport.webp",
       "icon_alt": "Font of Blood",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f291367175acf35ddc9c668720f8ae0da0b7cd02a9ece295ee0ba1aed35d0f23",
       "official_id": "Metadata/Items/Gems/SupportGemFontofBlood",
@@ -141165,7 +141355,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Font_of_Mana",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ManaFountainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/manafountainsupport.webp",
       "icon_alt": "Font of Mana",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d0309efe6fc8b8d1ade24279f7b5f0a015f20edd3d97f7e8bb9746a76537b21b",
       "official_id": "Metadata/Items/Gems/SupportGemFontofMana",
@@ -141265,7 +141455,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Font_of_Rage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FontOfRageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fontofragesupport.webp",
       "icon_alt": "Font of Rage",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0ae026e42c79c0ca90a9622ebcc7f147b80ae900aa4d5d0529ad0f26dd8100ca",
       "official_id": "Metadata/Items/Gems/SupportGemFontofRage",
@@ -141360,7 +141550,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Fork",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ForkSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/forksupport.webp",
       "icon_alt": "Fork",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1fb572593fa2c2d60ec2ae0bbedcccbd4a5077dfa5db2bc6be75ad78c54c8fdc",
       "official_id": "Metadata/Items/Gems/SupportGemFork",
@@ -141485,7 +141675,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Fortress_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WallFortressSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/wallfortresssupport.webp",
       "icon_alt": "Fortress I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d41ffdaedfccea305b576eb7495ba9a40209bf62174901a47ecb301679674c1f",
       "official_id": "Metadata/Items/Gems/SupportGemFortress",
@@ -141595,7 +141785,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Fortress_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WallFortressSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/wallfortresssupport.webp",
       "icon_alt": "Fortress II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/55d9caaa7ed6769dffe70d776a3f6f7171523efd94220360be7af30c6bc8b717",
       "official_id": "Metadata/Items/Gems/SupportGemFortressTwo",
@@ -141715,7 +141905,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Freeze",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HypothermiaSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/hypothermiasupport.webp",
       "icon_alt": "Freeze",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8c0b100731d54b89bf09dda6f5a0ea2851892a27d9be99b08236cce00d748d53",
       "official_id": "Metadata/Items/Gems/SupportGemGlaciation",
@@ -141820,7 +142010,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Freezefork",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FreezeforkSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/freezeforksupport.webp",
       "icon_alt": "Freezefork",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f9b3c7e3a0f6b114b1f45b6b48fe214bacf7c9cee03cd2947a4b6717f467423d",
       "official_id": "Metadata/Items/Gem/SupportGemFreezefork",
@@ -141930,7 +142120,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Frenzied_Riposte",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RetortSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/retortsupport.webp",
       "icon_alt": "Frenzied Riposte",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/75e7e46d31af624baad84cb422c46b584605fa2fc36ddf726c3d5fdf647935b4",
       "official_id": "Metadata/Items/Gem/SupportGemRetort",
@@ -142030,7 +142220,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fresh_Clip_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DamagePerBoltReloadedRecentlySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/damageperboltreloadedrecentlysupport.webp",
       "icon_alt": "Fresh Clip I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5703e597603e21978335a7c0622454da16ef03871adc919698984ea1b1eb39eb",
       "official_id": "Metadata/Items/Gem/SupportGemFreshClip",
@@ -142120,7 +142310,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Fresh_Clip_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DamagePerBoltReloadedRecentlySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/damageperboltreloadedrecentlysupport.webp",
       "icon_alt": "Fresh Clip II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fbf7ab25fdbc1a54e4e594cac956c6957ff65bcbc17e2836ee7bfc54973265fb",
       "official_id": "Metadata/Items/Gem/SupportGemFreshClipTwo",
@@ -142210,7 +142400,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Frost_Nexus",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FrozenNexusSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/frozennexussupport.webp",
       "icon_alt": "Frost Nexus",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c0b3398c113afa7f5c1f56b5c18e07c0f93b6222d95ea9c2708ef1cc456914f5",
       "official_id": "Metadata/Items/Gems/SupportGemFrostNexus",
@@ -142330,7 +142520,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Frostfire",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FrostfireSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/frostfiresupport.webp",
       "icon_alt": "Frostfire",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5acbdc2b0be728d217e670c95ef65e2916b99ab501be16626491b782fd662f25",
       "official_id": "Metadata/Items/Gems/SupportGemFrostfire",
@@ -142470,7 +142660,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Frozen_Spite",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FrozenSpiteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/frozenspitesupport.webp",
       "icon_alt": "Frozen Spite",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2186480f24c852aa84cd1d6a39e6782c546ef1048d50d1b605511fecb9898820",
       "official_id": "Metadata/Items/Gem/SupportGemFrozenSpite",
@@ -142671,7 +142861,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Frozen_Vortex",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FrozenVortexSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/frozenvortexsupport.webp",
       "icon_alt": "Frozen Vortex",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e2b234ed99b620930158ed112ccf1ca00467491c471deb0fe9737b25ef3fc0cc",
       "official_id": "Metadata/Items/Gems/SupportGemFrozenVortex",
@@ -142817,7 +143007,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Gambleshot",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/GambleshotSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/gambleshotsupport.webp",
       "icon_alt": "Gambleshot",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1ded272f7279af1e7611259ca72f3de0107afab66cdc29bf18ed36a73e0c869a",
       "official_id": "Metadata/Items/Gem/SupportGemGambleshot",
@@ -142927,7 +143117,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Garukhans_Resolve",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Garukhan.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/garukhan.webp",
       "icon_alt": "Garukhan's Resolve",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c7af9e39c201d60f147525d50b8921b4ef6bc2344851d4d379358d38b15514b3",
       "official_id": "Metadata/Items/Gem/SupportGemGarukhansResolve",
@@ -143038,7 +143228,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "63bd6afd70466e57952c119be37064a46bb523991870061cadff7862c3f11dc5",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "At the last, her hope gone - but not her resolve - she threw her",
+        "beloved Tangletongue. That was the day a god bled. For this, the",
+        "Great Roc graced a Maraketh warrior with a feather for the first time."
+      ]
     },
     {
       "slug": "Glacier",
@@ -143047,7 +143242,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Glacier",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IceCrystalMoreLifeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/icecrystalmorelifesupport.webp",
       "icon_alt": "Glacier",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ab329adaeba5c6c326aacd348a2b809de9bb7bc51f7041d8e43a3788796330b4",
       "official_id": "Metadata/Items/Gem/SupportGemGlacier",
@@ -143137,7 +143332,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Gorge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/Mortuary.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/mortuary.webp",
       "icon_alt": "Gorge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/740a27da144952b4bf64cd2184dc8a8b5e04664e0757978e2ee4c6809aaa7abb",
       "official_id": "Metadata/Items/Gems/SupportGemGorge",
@@ -143237,7 +143432,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Guatelitzis_Ablation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Guatelitzi.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/guatelitzi.webp",
       "icon_alt": "Guatelitzi's Ablation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ebbd2e568f64ce01040af18e4f99dfe707a54ed887651e8ce3dc48369a6ec606",
       "official_id": "Metadata/Items/Gem/SupportGemGuatelitzi",
@@ -143348,7 +143543,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "7be201811de5d8e3c9d4f1312d086357d456987e883ca66065d722938f99142d",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Young Guatelitzi was found moving among the prisoners,",
+        "preparing their living bodies for sacrifice. The High Priests",
+        "recognised his inclinations, and gave him a higher calling."
+      ]
     },
     {
       "slug": "Haemocrystals",
@@ -143357,7 +143557,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Haemocrystals",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HaemocrystalsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/haemocrystalssupport.webp",
       "icon_alt": "Haemocrystals",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c06134ebe70fcbee9727a7414842d77fbaa7331bc6344da60bf5da9bed03cb2f",
       "official_id": "Metadata/Items/Gem/SupportGemHaemocrystals",
@@ -143533,7 +143733,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Hardy_Totems_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MoreTotemLifeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/moretotemlifesupport.webp",
       "icon_alt": "Hardy Totems I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/44fc8d4fefe95e28f61d7afa12460f0e396920b8bdd5e0cd2c07b9998083d630",
       "official_id": "Metadata/Items/Gem/SupportGemHardyTotems",
@@ -143638,7 +143838,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Hardy_Totems_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MoreTotemLifeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/moretotemlifesupport.webp",
       "icon_alt": "Hardy Totems II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dfd879a014a7914a10833dd01d52f412d7cbec4db6ce74a16df59de8768ec49c",
       "official_id": "Metadata/Items/Gem/SupportGemHardyTotemsTwo",
@@ -143743,7 +143943,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Harmonic_Remnants_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RushedRemnantsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rushedremnantssupport.webp",
       "icon_alt": "Harmonic Remnants I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ba379908a5c964cc4331cdade8c5be6b5a32f48db44413fb13270648864a4ed5",
       "official_id": "Metadata/Items/Gem/SupportGemDissipate",
@@ -143843,7 +144043,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Harmonic_Remnants_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RushedRemnantsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rushedremnantssupport.webp",
       "icon_alt": "Harmonic Remnants II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e5b54c60daaf0245b5b3ed3107990d2888a58fcabc4cd5cba5087d95c7334abf",
       "official_id": "Metadata/Items/Gem/SupportGemDissipateTwo",
@@ -143953,7 +144153,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Hayoxis_Fulmination",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Hayoxi.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/hayoxi.webp",
       "icon_alt": "Hayoxi's Fulmination",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/55c73b26911377449fd5351182cdae65688db2553d021ea602e6528a567fb74b",
       "official_id": "Metadata/Items/Gem/SupportGemHayoxisFulmination",
@@ -144165,7 +144365,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "55724d23ba0ceae0203f8ceee8ba1ea03ca49fa017cc404bb10ac6abd9a4f34d",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The Architect of Destruction slipped explosive powder",
+        "under the royal temple one pinch at a time. For years,",
+        "he clung to that, never finding the courage to light it."
+      ]
     },
     {
       "slug": "Healing_Runes",
@@ -144174,11 +144379,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Healing_Runes",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/ExpeditionHealingRunesGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/expeditionhealingrunesgem.webp",
       "icon_alt": "Healing Runes",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemHealingRunes",
       "tags": [
+        "Support",
         "Buff",
         "Persistent"
       ],
@@ -144208,6 +144414,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Healing Runes"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Buff",
             "vi": "Buff"
@@ -144268,7 +144478,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Heavy_Swing",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MeleePhysicalDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/meleephysicaldamagesupport.webp",
       "icon_alt": "Heavy Swing",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cddc6792923c93af571dd02c0382e90a3ec17c7c09c3a2f185b281a84dee6b5f",
       "official_id": "Metadata/Items/Gems/SupportGemHeavySwing",
@@ -144383,7 +144593,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Heft",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HeftSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/heftsupport.webp",
       "icon_alt": "Heft",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/403f166ebc9af03d1c5da7e518875fef4f6335c81b69c73888b1383cac100588",
       "official_id": "Metadata/Items/Gem/SupportGemHeft",
@@ -144488,7 +144698,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Heightened_Accuracy_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AdditionalAccuracy.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/additionalaccuracy.webp",
       "icon_alt": "Heightened Accuracy I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e11adb453db35fe559bf4fb0d0efb443805a43e9d2684ca237ef2323882d2e9f",
       "official_id": "Metadata/Items/Gems/SupportGemBullseye",
@@ -144593,7 +144803,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Heightened_Accuracy_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AdditionalAccuracy.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/additionalaccuracy.webp",
       "icon_alt": "Heightened Accuracy II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a7aebf5911162f42c46a9f6c56f2a0161e749d8f1cd3a6182ab283a48738d81d",
       "official_id": "Metadata/Items/Gems/SupportGemBullseyeTwo",
@@ -144708,7 +144918,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Heightened_Charges",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PotencySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/potencysupport.webp",
       "icon_alt": "Heightened Charges",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2b932acd8fb0c82d46a3a0e679040c88e95f62fb8d9c6157f7a1d8a17b8a61bf",
       "official_id": "Metadata/Items/Gem/SupportGemTwofold",
@@ -144803,7 +145013,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Heightened_Curse",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CurseEffectSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/curseeffectsupport.webp",
       "icon_alt": "Heightened Curse",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2b235f8664ccb87ee7c6f50507b2d9ae63ec4e1ae5c5844bca09c78e2c98c421",
       "official_id": "Metadata/Items/Gems/SupportGemHeightenedCurse",
@@ -144913,7 +145123,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Helbryms_Hide",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/HideofHelbrym.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/hideofhelbrym.webp",
       "icon_alt": "Helbrym's Hide",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dfc383f4be857a18bf61119e29cd23d4631efa415a1d12866b29c321c75a91bb",
       "official_id": "Metadata/Items/Gem/SupportGemHelbrymsHide",
@@ -145049,7 +145259,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "0b2f42f182ea8faba13ea6acc0458199698e67e6f5e61deb8b9c196bb29662e5",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Surrounded by abominations, Lysanda of Myr expected her",
+        "time had come to an end. Helbrym of Tarth charged from",
+        "the trees, breaking his oath, to save the Ezomyte Queen."
+      ]
     },
     {
       "slug": "Her_Declaration",
@@ -145058,11 +145273,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Her_Declaration",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/MothersDeclaration.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/mothersdeclaration.webp",
       "icon_alt": "Her Declaration",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemHerDeclaration",
       "tags": [
+        "Support",
         "Lineage",
         "Buff",
         "Persistent"
@@ -145095,6 +145311,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Her Declaration"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -145155,7 +145375,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "27caee85fe8481975b5aa21740302a8ae5f0fb6eab8dd49490d4504a6157b24b",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"The laws are binding. They are absolute. If they believe",
+        "it is their choice to enforce them, all the better.",
+        "Upholding our solemn duty is imperative.\""
+      ]
     },
     {
       "slug": "Herbalism_I",
@@ -145164,7 +145389,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Herbalism_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HerbalismSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/herbalismsupport.webp",
       "icon_alt": "Herbalism I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6341e8ab1950f07bc7ca9252ce771dacb9ca6961a4861f647a403aa16cf17ce7",
       "official_id": "Metadata/Items/Gems/SupportGemHerbalism",
@@ -145274,7 +145499,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Herbalism_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HerbalismSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/herbalismsupport.webp",
       "icon_alt": "Herbalism II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eab2e08ff680b82d5b5c6bdedef96581597f60d12af4b8dec9c14b03d6e3602b",
       "official_id": "Metadata/Items/Gems/SupportGemHerbalismTwo",
@@ -145384,7 +145609,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Hex_Bloom",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HexBloomSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/hexbloomsupport.webp",
       "icon_alt": "Hex Bloom",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/566d2c3d2ec4417a52231fa6b6eea804bd706989f83829359295740e935b0c5f",
       "official_id": "Metadata/Items/Gems/SupportGemHexBloom",
@@ -145494,7 +145719,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Hinder",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HinderSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/hindersupport.webp",
       "icon_alt": "Hinder",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6f2b626b11e0e409e4144d750c75673d632e98d9901f1705a47dd08fdb425952",
       "official_id": "Metadata/Items/Gem/SupportGemHinder",
@@ -145594,7 +145819,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Hit_and_Run",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MobileAssaultSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/mobileassaultsupport.webp",
       "icon_alt": "Hit and Run",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bf798f54f5a09883e052718e1e6425939cb7e3407ab3ebc779ae61024de06564",
       "official_id": "Metadata/Items/Gem/SupportGemHitAndRun",
@@ -145709,7 +145934,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Hoarfrost",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HoarfrostSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/hoarfrostsupport.webp",
       "icon_alt": "Hoarfrost",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e49af9e443bc77044f793cc73ea15cde6f73642c368c9c8c2a98596bd6114dde",
       "official_id": "Metadata/Items/Gem/SupportGemHoarfrost",
@@ -145840,7 +146065,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Hobble",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BloodintheEyesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/bloodintheeyessupport.webp",
       "icon_alt": "Hobble",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/54b3bf04b4cd833abc39340ba62d991ab65c69290dcafca8f620a231cc65da90",
       "official_id": "Metadata/Items/Gem/SupportGemBloodintheEyes",
@@ -145908,7 +146133,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Holy_Descent",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HolyDescentSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/holydescentsupport.webp",
       "icon_alt": "Holy Descent",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/39e3c44889d3e8f4b55f16063ad17422e344e816bac7347dac6ee5182a4ae79b",
       "official_id": "Metadata/Items/Gem/SupportGemHolyDescent",
@@ -146033,7 +146258,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Hourglass",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/HourglassSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/hourglasssupport.webp",
       "icon_alt": "Hourglass",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4547cb1b8629f67ed11e2679044b3db42af6780f9c582ef846c70d7349a0477b",
       "official_id": "Metadata/Items/Gems/SupportGemHourglass",
@@ -146138,7 +146363,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Hulking_Minions",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnormitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/enormitysupport.webp",
       "icon_alt": "Hulking Minions",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/573f603fe93d136153c5445aff92a96668e042e7b43d3e77c4f723e409d47df9",
       "official_id": "Metadata/Items/Gem/SupportGemEnormity",
@@ -146248,7 +146473,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ice_Bite_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IceBiteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/icebitesupport.webp",
       "icon_alt": "Ice Bite I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e5c55032950a9aef5f23b7004a90f30a4b1659a2484868b2839dd5134d3a08a2",
       "official_id": "Metadata/Items/Gems/SupportGemIceBite",
@@ -146358,7 +146583,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ice_Bite_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IceBiteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/icebitesupport.webp",
       "icon_alt": "Ice Bite II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cba0b3c8e26c4b76f5a1c0a58927527012c13964a495a6b936ca4e6d981397a8",
       "official_id": "Metadata/Items/Gems/SupportGemIceBiteTwo",
@@ -146468,7 +146693,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Icicle",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IceCrystalLessLifeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/icecrystallesslifesupport.webp",
       "icon_alt": "Icicle",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/875086a8ba6da6769295026de76c25af18b017411b1a2e08172a9ff6b6ac5144",
       "official_id": "Metadata/Items/Gem/SupportGemIcicle",
@@ -146558,7 +146783,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ignite_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IgnitionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ignitionsupport.webp",
       "icon_alt": "Ignite I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/31ff816c3549102ce7705a24374136692a4436358ac21bc302f1b3ad25c9a296",
       "official_id": "Metadata/Items/Gems/SupportGemIgnition",
@@ -146663,7 +146888,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ignite_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IgnitionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ignitionsupport.webp",
       "icon_alt": "Ignite II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1b5027908287eca804e41fc1eba33d9b0ae72993c382f74c81bb7db619a54182",
       "official_id": "Metadata/Items/Gems/SupportGemIgnitionTwo",
@@ -146768,7 +146993,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ignite_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IgnitionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ignitionsupport.webp",
       "icon_alt": "Ignite III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/153e729b13b555853d58ec9ea0c9467c3a0da0c8e826af543a410b3bc1141b34",
       "official_id": "Metadata/Items/Gems/SupportGemIgnitionThree",
@@ -146883,7 +147108,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Immolate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ImmolationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/immolationsupport.webp",
       "icon_alt": "Immolate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3c10c9e76bc32ae6ae0c42fb9986ffa856df565fa78d30c63d410fdcf594932a",
       "official_id": "Metadata/Items/Gems/SupportGemImmolate",
@@ -146998,7 +147223,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Impact_Shockwave",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ImpactShockwaveSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/impactshockwavesupport.webp",
       "icon_alt": "Impact Shockwave",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fe2ae26848b7e23bf160280c0de7c7f20a51f0d7fcce14050c7531f369c7590b",
       "official_id": "Metadata/Items/Gems/SupportGemImpactShockwave",
@@ -147113,7 +147338,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Impale",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ImpaleSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/impalesupport.webp",
       "icon_alt": "Impale",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/beadbe49a31c17a9f412315d7922af1fdceb4f57150455a10493d14c2329aca4",
       "official_id": "Metadata/Items/Gem/SupportGemImpale",
@@ -147233,7 +147458,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Impending_Doom",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ImpendingDoomSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/impendingdoomsupport.webp",
       "icon_alt": "Impending Doom",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c6a9f90a5f2ca7597d3a01ce3766078b53335ba599364b6e41e6e13110bef7d5",
       "official_id": "Metadata/Items/Gems/SupportGemImpendingDoom",
@@ -147404,7 +147629,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Incision",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncisionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/incisionsupport.webp",
       "icon_alt": "Incision",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5945b6f2a6694a98bc2c649979cfab349cc90a29ff34b5f9afafab8b5494786e",
       "official_id": "Metadata/Items/Gem/SupportGemIncision",
@@ -147524,7 +147749,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Inexorable_Critical_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InevitableCriticalsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/inevitablecriticalssupport.webp",
       "icon_alt": "Inexorable Critical I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/71e311f4a4d2c52cfd0d508b20604c20625027dd2310fee47997d084dfc0cb73",
       "official_id": "Metadata/Items/Gems/SupportGemInevitableCritical",
@@ -147629,7 +147854,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Inexorable_Critical_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InevitableCriticalsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/inevitablecriticalssupport.webp",
       "icon_alt": "Inexorable Critical II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fa8a59290f1ca5af0ce2929d7658a15842048642d6176bd3f4241e9d876d0f65",
       "official_id": "Metadata/Items/Gems/SupportGemInevitableCriticalTwo",
@@ -147744,7 +147969,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Infernal_Legion_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InfernalLegionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/infernallegionsupport.webp",
       "icon_alt": "Infernal Legion I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dbc6aa0c2bac046c14c572b6a58ba21915c7d59224c631567c2901faf9ab881f",
       "official_id": "Metadata/Items/Gems/SupportGemInfernalLegion",
@@ -147864,7 +148089,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Infernal_Legion_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InfernalLegionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/infernallegionsupport.webp",
       "icon_alt": "Infernal Legion II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ae36eb87f8670714fed89fab3d0bdf60f87f919203f653edb0774dd4f9152e80",
       "official_id": "Metadata/Items/Gems/SupportGemInfernalLegionTwo",
@@ -147994,7 +148219,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Infernal_Legion_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InfernalLegionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/infernallegionsupport.webp",
       "icon_alt": "Infernal Legion III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/95fe34a434e631af5661654099f2decf17e0f51fedec66d8983e7704ecd6d94a",
       "official_id": "Metadata/Items/Gems/SupportGemInfernalLegionThree",
@@ -148119,7 +148344,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Infusion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/BuffedHeraldSupportGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/buffedheraldsupportgem.webp",
       "icon_alt": "Infusion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/76fad6761085972fa63b29e6adae1bbc217976f98987fe452e367ef4c416b2b0",
       "official_id": "Metadata/Items/Gems/SupportGemInfusion",
@@ -148219,7 +148444,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Inhibitor",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InhibitorSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/inhibitorsupport.webp",
       "icon_alt": "Inhibitor",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2d4565c5f6870765631b366b964b33abb40ecffb3a2b9ee7c07d687a4d93ebf7",
       "official_id": "Metadata/Items/Gem/SupportGemInhibitor",
@@ -148339,7 +148564,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Innervate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/Innervate.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/innervate.webp",
       "icon_alt": "Innervate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/754c3029318384a004677bda01f854a5d8b6d9f826773a15a70562a3239ab0fe",
       "official_id": "Metadata/Items/Gem/SupportGemInnervate",
@@ -148444,7 +148669,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Intense_Agony",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IntenseAgonySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/intenseagonysupport.webp",
       "icon_alt": "Intense Agony",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a9910eb39e106a3b55c60712e1e3aa1c7db247d526f92541297c01d0b263ab6e",
       "official_id": "Metadata/Items/Gem/SupportGemIntenseAgony",
@@ -148559,7 +148784,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Invocation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/Support/UnleashSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/support/unleashsupport.webp",
       "icon_alt": "Invocation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a409e937b320fbbd318d8e21db0604785026f3730457541b5d861890c7ba0ec3",
       "official_id": "Metadata/Items/Gems/SupportGemInvocation",
@@ -148637,7 +148862,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ixchels_Torment",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Trialmaster.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/trialmaster.webp",
       "icon_alt": "Ixchel's Torment",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e3e5496c8c3d15c0d76b47bdc32fc0a1c9e0e15105cdedf8079282b6f1766d0f",
       "official_id": "Metadata/Items/Gem/SupportGemFlukeTwo",
@@ -148768,7 +148993,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "d9a8e52f8835f1c7386707cbd31256048b98c9fe28c269c292fe82a35a9c505c",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Few mortals can comprehend the horror of experiencing",
+        "every possibility. Chaos alone takes joy in the",
+        "unthinkable and the unimaginable made manifest."
+      ]
     },
     {
       "slug": "Jagged_Ground_I",
@@ -148777,7 +149007,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Jagged_Ground_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/JaggedGroundSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/jaggedgroundsupport.webp",
       "icon_alt": "Jagged Ground I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d0c40044ee4af7c39a20ee0b8f17c3ff5b3c7ed8e3fd44e289aa34ce0da1523e",
       "official_id": "Metadata/Items/Gems/SupportGemJaggedGround",
@@ -148932,7 +149162,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Jagged_Ground_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/JaggedGroundSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/jaggedgroundsupport.webp",
       "icon_alt": "Jagged Ground II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ba395ec63e6f163fe23797fb4fc53376c8ae60d29667b2ac5473b16b15a67d85",
       "official_id": "Metadata/Items/Gems/SupportGemJaggedGroundTwo",
@@ -149077,7 +149307,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Kalisas_Crescendo",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageKalisaChorus.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagekalisachorus.webp",
       "icon_alt": "Kalisa's Crescendo",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/06bf5d1c974a9de9343d89a250e4719c4a5dbe4b2551fee503412f987cadb645",
       "official_id": "Metadata/Items/Gem/SupportGemKalisasCrescendo",
@@ -149178,7 +149408,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "b4c74399a302d8ff2f2a059a8b6f9c37169d6cc8f485c7dd4bcaecda7c046eca",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"Her voice reached into my chest and plucked my beating",
+        "heart from its cage. By the wide, glistening eyes of my",
+        "fellow punters, I knew that they felt it, too.\""
+      ]
     },
     {
       "slug": "Kaoms_Madness",
@@ -149187,7 +149422,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Kaoms_Madness",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageKaom.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagekaom.webp",
       "icon_alt": "Kaom's Madness",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b8fd19baa7edd30031f14cae96f40ca87d9c63b9769a1b7005e937ce169a2c0d",
       "official_id": "Metadata/Items/Gem/SupportGemKaomsMadness",
@@ -149318,7 +149553,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "16a0a14ef87a44331d262471d2687fe50f81ecdb849464af64e0720e5ff6c27d",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "As King Kaom delved further into Wraeclast, so, too, did he",
+        "draw closer to the Beast. One night, in a nightmarish fit, he",
+        "swung his axe at his own men, slaughtering hundreds."
+      ]
     },
     {
       "slug": "Khatals_Rejuvenation",
@@ -149327,7 +149567,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Khatals_Rejuvenation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageKhatal.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagekhatal.webp",
       "icon_alt": "Khatal's Rejuvenation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/374cbe86987c8051c2f857399f01f8f0fcaa4bc379dc6302db8770c468e31aac",
       "official_id": "Metadata/Items/Gem/SupportGemKhatalsRejuvenation",
@@ -149433,7 +149673,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "253cc4869538422a1e81c080658d5d3a37597173af9ca92279c1dd00532bbf67",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The surging geysers flooded the tunnels of the ancient",
+        "enemy, destroying whole legions. His akhara turned to",
+        "praise the tale-man Khatal, but he was dust on the wind."
+      ]
     },
     {
       "slug": "Knockback",
@@ -149442,7 +149687,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Knockback",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/KnockbackSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/knockbacksupport.webp",
       "icon_alt": "Knockback",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4ceb3feaa65b55b2d96321326ecdbea3ada51b10ba7aefa7e6ff99242392bd2c",
       "official_id": "Metadata/Items/Gems/SupportGemBludgeon",
@@ -149552,7 +149797,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Kulemaks_Dominion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageKulemakSpire.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagekulemakspire.webp",
       "icon_alt": "Kulemak's Dominion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/43b98e98a760fcf65af51664ce3055a7fcbc47d92f12e6b2beb32fb5d4d60df1",
       "official_id": "Metadata/Items/Gem/SupportGemKulemaksDominion",
@@ -149648,7 +149893,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "ef7b4f370913c0cbc037ca71199c45c31d236ecb0478bd161eec6bcea4d5afa7",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Still a shadow of his former self, Kulemak turned to deception.",
+        "He promised Ahn untold power and mastery, in exchange for",
+        "a single golem. \"After all, what harm could one servant do?\""
+      ]
     },
     {
       "slug": "Kurgals_Leash",
@@ -149657,7 +149907,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Kurgals_Leash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/AbyssKurgal.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/abysskurgal.webp",
       "icon_alt": "Kurgal's Leash",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c65466458a4be04d267acd0d0b0fbcc1c6989b4526b21f308c4cca5a02f48622",
       "official_id": "Metadata/Items/Gem/SupportGemKurgalsLeash",
@@ -149773,7 +150023,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "a75fe98457cc8cc3fac45d427562b8979223f3d88ca2b58bc26b5ed8150d0769",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Kurgal's first body was a mere stone golem, enslaved by a",
+        "collar. He found such ecstasy in the power of dominion,",
+        "he clawed his way free... and soon, supplanted a Lich Lord."
+      ]
     },
     {
       "slug": "Last_Gasp",
@@ -149782,7 +150037,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Last_Gasp",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LastGaspSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lastgaspsupport.webp",
       "icon_alt": "Last Gasp",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6eab8034bafd13fa9aa5377cf091b6ef2223124a7ec0333ca3f2c450eca53ba8",
       "official_id": "Metadata/Items/Gem/SupportGemLastGasp",
@@ -149892,7 +150147,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Lasting_Ground",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/GroundEffectDurationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/groundeffectdurationsupport.webp",
       "icon_alt": "Lasting Ground",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3f0f62ceaaddc7cae8f636fdf90918185878b4fc330879d0260e3d4aa97ed0ae",
       "official_id": "Metadata/Items/Gems/SupportGemDespoiler",
@@ -149977,7 +150232,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lasting_Shock",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LastingShockSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lastingshocksupport.webp",
       "icon_alt": "Lasting Shock",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f0aa00fefda1d72f483270e8b1b75d8f54a04369845af0abda75d3e9ae720282",
       "official_id": "Metadata/Items/Gems/SupportGemLastingShock",
@@ -150087,7 +150342,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Leverage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LeverageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/leveragesupport.webp",
       "icon_alt": "Leverage",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b36daf73a57ac21d0b26f1f1ea40049cf30780709e5ebf2308d6006b0df3169d",
       "official_id": "Metadata/Items/Gem/SupportGemLeverage",
@@ -150172,7 +150427,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Life_Bounty",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LifeFlaskSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lifeflasksupport.webp",
       "icon_alt": "Life Bounty",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4dfa286edae2c91d5b0c6eb39a23b66a94566c079cbdc6c98ce962d65c6b1ff9",
       "official_id": "Metadata/Items/Gems/SupportGemLifeBounty",
@@ -150257,7 +150512,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Life_Drain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LifeOnCull.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lifeoncull.webp",
       "icon_alt": "Life Drain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f30928308a427d6251016a2e9ee8a74aac1400d67e62fa043bf55d91207ac093",
       "official_id": "Metadata/Items/Gems/SupportGemLifeDrain",
@@ -150347,7 +150602,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Life_Leech_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LifeLeechSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lifeleechsupport.webp",
       "icon_alt": "Life Leech I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9d0fc32073075784fef76f4b1b9a359d39d9fe294224501a8313ec9c93578f00",
       "official_id": "Metadata/Items/Gems/SupportGemLifeThief",
@@ -150452,7 +150707,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Life_Leech_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LifeLeechSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lifeleechsupport.webp",
       "icon_alt": "Life Leech II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6b223236090bcc1cd1101f6321ef5c3c94c95ee0a862be64a2b6dc30220c49be",
       "official_id": "Metadata/Items/Gems/SupportGemLifeThiefTwo",
@@ -150557,7 +150812,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Life_Leech_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LifeLeechSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lifeleechsupport.webp",
       "icon_alt": "Life Leech III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8dd1c9b7b1c1382faf54eab45e4df58c4465101272f0ce0aa73c910f4c6ff94c",
       "official_id": "Metadata/Items/Gems/SupportGemLifeThiefThree",
@@ -150672,7 +150927,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Lifetap",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/BloodMagicSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/bloodmagicsupport.webp",
       "icon_alt": "Lifetap",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/737c97b7a4141938f0927e81057f1f79f7e8dcd73cd49d2f89bf533f571722b8",
       "official_id": "Metadata/Items/Gems/SupportGemLifetap",
@@ -150762,7 +151017,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lightning_Attunement",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AddedLightningDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/addedlightningdamagesupport.webp",
       "icon_alt": "Lightning Attunement",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/97a4c59bf97492b66fddd2c7a7053bbfd025e825f5a62d4be8bd978a93b25acb",
       "official_id": "Metadata/Items/Gems/SupportGemLightningInfusion",
@@ -150872,7 +151127,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lightning_Exposure",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LightningExposureSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lightningexposuresupport.webp",
       "icon_alt": "Lightning Exposure",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d055b079a9619f3c98a1a770b3f110f54caca3d4d9a4526b6890ea57ef5e0d88",
       "official_id": "Metadata/Items/Gems/SupportGemLightningExposure",
@@ -150982,7 +151237,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Lightning_Mastery",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LightningMasterySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lightningmasterysupport.webp",
       "icon_alt": "Lightning Mastery",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6f6f910936d011f4826aee2893181eda92dafae054d85584edd78574abd7823d",
       "official_id": "Metadata/Items/Gems/SupportGemLightningMastery",
@@ -151082,7 +151337,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lightning_Penetration",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LightningPenetrationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lightningpenetrationsupport.webp",
       "icon_alt": "Lightning Penetration",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/50cf27fc328b4eac07f4108ce778b5f91e982a1be98a40cf320ab2e8f9b82a13",
       "official_id": "Metadata/Items/Gems/SupportGemLightningPenetration",
@@ -151187,7 +151442,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Living_Lightning",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LivingLightningSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/livinglightningsupport.webp",
       "icon_alt": "Living Lightning",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3e8fe85271079986904fdbcd98c51d6827cbaf25b849f1dceb6585ddf5cba655",
       "official_id": "Metadata/Items/Gem/SupportGemLivingLightning",
@@ -151373,7 +151628,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Living_Lightning_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LivingLightningSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/livinglightningsupport.webp",
       "icon_alt": "Living Lightning II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f03d36ae55b1bdf4b8e0b7eb4fd2ea26db236602d1d615a6894425ce88ad3138",
       "official_id": "Metadata/Items/Gem/SupportGemLivingLightningTwo",
@@ -151569,7 +151824,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Lockdown",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LockdownSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/lockdownsupport.webp",
       "icon_alt": "Lockdown",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fc6b8eba00e96d9977a35d7d7ea38c626d47c83dca3a60f057a8f8059a5608b1",
       "official_id": "Metadata/Items/Gems/SupportGemLockdown",
@@ -151654,7 +151909,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Long_Fuse_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LongFuseSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/longfusesupport.webp",
       "icon_alt": "Long Fuse I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/59356063134ae90d62a53a01e589f14eccb27e78b1722f967ade2e04499005a3",
       "official_id": "Metadata/Items/Gem/SupportGemLongFuse",
@@ -151764,7 +152019,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Long_Fuse_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/LongFuseSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/longfusesupport.webp",
       "icon_alt": "Long Fuse II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6bd0dc62476e3aa34649c201cefeaf8159edaf408185a7470f2808f5e4ee28e7",
       "official_id": "Metadata/Items/Gem/SupportGemLongFuseTwo",
@@ -151874,7 +152129,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Longshot_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FarCombatSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/farcombatsupport.webp",
       "icon_alt": "Longshot I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/17e656adb033e006f1b45b2c1fd84ae41beac57b22afb2ff138c2b6f8e4d164f",
       "official_id": "Metadata/Items/Gems/SupportGemLongshot",
@@ -151979,7 +152234,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Longshot_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FarCombatSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/farcombatsupport.webp",
       "icon_alt": "Longshot II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1a98d79f8bf9f31e68b46e816455978bdff6dd679fb0c6bfdf77695327987ddd",
       "official_id": "Metadata/Items/Gems/SupportGemLongshotTwo",
@@ -152084,7 +152339,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Loyalty",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TrustyCompanionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/trustycompanionsupport.webp",
       "icon_alt": "Loyalty",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7d969ca5e19d27d4344db302e8328d1d3b08330ad57005e3d7030a518a4c3998",
       "official_id": "Metadata/Items/Gem/SupportGemLoyalty",
@@ -152194,7 +152449,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Magnetic_Remnants",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RemnantReachSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/remnantreachsupport.webp",
       "icon_alt": "Magnetic Remnants",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/82c5e737a51326d93279f1d05161a69fb504a62d92cd035a076048ead9c89e95",
       "official_id": "Metadata/Items/Gem/SupportGemMagnetism",
@@ -152284,7 +152539,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Magnified_Area_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreasedAreaOfEffectSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increasedareaofeffectsupport.webp",
       "icon_alt": "Magnified Area I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7294fb7465bea4a13740fa733a4b405e92dd18addc2def5815c51e784f688a95",
       "official_id": "Metadata/Items/Gems/SupportGemMagnifiedEffect",
@@ -152389,7 +152644,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Magnified_Area_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreasedAreaOfEffectSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increasedareaofeffectsupport.webp",
       "icon_alt": "Magnified Area II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/89702e8b25d8cd53f71f12389c37ff6155bb426dabc51cddeb0c742a9efe2d1c",
       "official_id": "Metadata/Items/Gems/SupportGemMagnifiedEffectTwo",
@@ -152494,7 +152749,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Maim",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MaimSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/maimsupport.webp",
       "icon_alt": "Maim",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/48a4e8d8f332b241a10f07084af23af79dd9f17b58998a48e58d6842d0b45622",
       "official_id": "Metadata/Items/Gems/SupportGemMaim",
@@ -152594,7 +152849,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Malady",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MaladySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/maladysupport.webp",
       "icon_alt": "Malady",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c7759095e8960add2d612f9f594cb1e6391d3f8483ff586a75ee352f7178fa24",
       "official_id": "Metadata/Items/Gem/SupportGemMalady",
@@ -152689,7 +152944,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Mana_Bounty",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ManaFlaskSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/manaflasksupport.webp",
       "icon_alt": "Mana Bounty",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1510cd968750f1c826fb85e41652ba65d7d265e5a2e995f6f8ad379a38d10f3d",
       "official_id": "Metadata/Items/Gems/SupportGemManaBounty",
@@ -152774,7 +153029,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mana_Flare",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ManaFlareSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/manaflaresupport.webp",
       "icon_alt": "Mana Flare",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a40d4d7257da82e2b7e70956e3ba5788a187523124e230d77ff07205edeaa200",
       "official_id": "Metadata/Items/Gems/SupportGemManaFlare",
@@ -152935,7 +153190,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mana_Leech",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ManaLeechSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/manaleechsupport.webp",
       "icon_alt": "Mana Leech",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7dc607b3de1312b4cbaa1b092031a14f0f386e2946ef1c3c36cc1c3160ae59d5",
       "official_id": "Metadata/Items/Gems/SupportGemSoulThief",
@@ -153040,7 +153295,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Mark_for_Death",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SingleOutSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/singleoutsupport.webp",
       "icon_alt": "Mark for Death",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/28313489dd37e0ccdb136cf9720acdc89d75b60a697bab698b5ac06b54dafb17",
       "official_id": "Metadata/Items/Gem/SupportGemSingleOut",
@@ -153150,7 +153405,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Mark_for_Death_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SingleOutSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/singleoutsupport.webp",
       "icon_alt": "Mark for Death II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/884b299d55275c01fea510daa5a2791d888d8159a5bc201c50850f01cd27bbaf",
       "official_id": "Metadata/Items/Gem/SupportGemSingleOutTwo",
@@ -153260,7 +153515,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mark_of_Siphoning",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MarkedForDrain.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/markedfordrain.webp",
       "icon_alt": "Mark of Siphoning",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c818353835aed2f77d645843b16d546686ddd844725bb20b074a6f1e2b135c7b",
       "official_id": "Metadata/Items/Gems/SupportGemMarkOfSiphoning",
@@ -153365,7 +153620,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mark_of_Siphoning_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MarkedForDrain.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/markedfordrain.webp",
       "icon_alt": "Mark of Siphoning II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ad5f31c47abbbacb74cb99be261d395c62c02c91303c66a9802de0490af409a8",
       "official_id": "Metadata/Items/Gems/SupportGemMarkOfSiphoningTwo",
@@ -153480,7 +153735,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Meat_Shield_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MeatShield.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/meatshield.webp",
       "icon_alt": "Meat Shield I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9389918958de14f6dcdf9ae864d2b1950410ae2a973b140dbbf980be0df321f7",
       "official_id": "Metadata/Items/Gems/SupportGemMeatShield",
@@ -153590,7 +153845,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Meat_Shield_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MeatShield.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/meatshield.webp",
       "icon_alt": "Meat Shield II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f16d0c1c719b0d72826fcbfa26ed169218d8f08e1874e99691be9cfbbbca2deb",
       "official_id": "Metadata/Items/Gems/SupportGemMeatShieldTwo",
@@ -153700,11 +153955,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Medved's_Felling",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/MedvedsFelling.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/medvedsfelling.webp",
       "icon_alt": "Medved's Felling",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemMedvedsFelling",
       "tags": [
+        "Support",
         "Lineage",
         "Attack",
         "Melee"
@@ -153740,6 +153996,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Medved's Felling"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -153812,7 +154072,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "7be7eaeae03d0ec512f2d5f7d9549131c4a0719099921a38b354cb6e9b2a2711",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"There is no zealotry like that of a mystic roused",
+        "to battle. He broke his own code, wielding weapons",
+        "long forbidden, to defend that which he loved.\""
+      ]
     },
     {
       "slug": "Minion_Instability",
@@ -153821,7 +154086,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Minion_Instability",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MinionInstabilitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/minioninstabilitysupport.webp",
       "icon_alt": "Minion Instability",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e04da886d3c034a4ed2e2dc60b7ce18cd0be958084ff9cfb1435232044069990",
       "official_id": "Metadata/Items/Gem/SupportGemMinionInstability",
@@ -153926,7 +154191,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Minion_Mastery",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PhysicalMasterySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/physicalmasterysupport.webp",
       "icon_alt": "Minion Mastery",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1c8a47f9e897d963ff09ce1087dd5a5f8b58552df8635949b9ceeff1e1a0c5d0",
       "official_id": "Metadata/Items/Gems/SupportGemMinionMastery",
@@ -154026,7 +154291,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Minion_Pact_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MinionPactSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/minionpactsupport.webp",
       "icon_alt": "Minion Pact I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/68214050d4096097ae545de7ebda139dd5f1af326c93fa81ead9d2c7f484bb71",
       "official_id": "Metadata/Items/Gem/SupportGemMinionPact",
@@ -154126,7 +154391,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Minion_Pact_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MinionPactSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/minionpactsupport.webp",
       "icon_alt": "Minion Pact II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b72f69b93d73767c4f7063308e4dbf2e99f2f25e03d715c8fdb73cd5b070008b",
       "official_id": "Metadata/Items/Gem/SupportGemMinionPactTwo",
@@ -154226,7 +154491,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Minion_Splash_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MinionMeleeSplashSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/minionmeleesplashsupport.webp",
       "icon_alt": "Minion Splash I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/13558573ebd1d895c7bfcafb517ee38c663fa3c6568d74bcd1eaf5f77099d95e",
       "official_id": "Metadata/Items/Gems/SupportGemMinionMeleeSplash",
@@ -154346,7 +154611,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Minion_Splash_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MinionMeleeSplashSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/minionmeleesplashsupport.webp",
       "icon_alt": "Minion Splash II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/927d7a5b552649e68389be6479a1a47432f3f3b509a8a1ccb3e1d83807c99700",
       "official_id": "Metadata/Items/Gems/SupportGemMinionMeleeSplashTwo",
@@ -154476,7 +154741,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Mobility",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MobilitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/mobilitysupport.webp",
       "icon_alt": "Mobility",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d99d7707eed64ea7800e1f91ad977c7c2f6887e6ee850c3e1480df835e68165a",
       "official_id": "Metadata/Items/Gems/SupportGemMobility",
@@ -154566,7 +154831,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Momentum",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MomentumSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/momentumsupport.webp",
       "icon_alt": "Momentum",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5a37b4e1f08e241d25e6e3f8e4635a697d500d3ad340515c1fc1844b25ba3ce3",
       "official_id": "Metadata/Items/Gems/SupportGemMomentum",
@@ -154661,7 +154926,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Morganas_Tempest",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/MorganasTempest.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/morganastempest.webp",
       "icon_alt": "Morgana's Tempest",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9ac18852662176bc95f46c77ad5f7f0bf9198c92e3e6af8d43c94786a2f6e4f7",
       "official_id": "Metadata/Items/Gem/SupportGemMorganasTempest",
@@ -154817,7 +155082,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "7270015fa4ac222291a06ba7277fccbe446deb57549c269be74ba1f4871444a3",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "On the nights the fugue would come over her, the Ezomytes would",
+        "gather below, begging her to bring the rains. Atop the Taisce,",
+        "wailing with unknown sorrows, her cries made the skies rage."
+      ]
     },
     {
       "slug": "Mórrigan's_Insight",
@@ -154826,11 +155096,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/M%C3%B3rrigan's_Insight",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/MorrigansRefuge.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/morrigansrefuge.webp",
       "icon_alt": "Mórrigan's Insight",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemMorrigansInsight",
       "tags": [
+        "Support",
         "Lineage",
         "Trigger",
         "Cold",
@@ -154877,6 +155148,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Mórrigan's Insight"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -154984,7 +155259,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "7fe259d6f7072c3349bfb86853499fa905d121813bc4b2cad8a8d52a51a6d07d",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"Wild energy is as misunderstood as the Mórrigan",
+        "itself. Many revere life, yet revile death. What is dead",
+        "feeds the living. Death is but one aspect of the whole.\""
+      ]
     },
     {
       "slug": "Multishot_I",
@@ -154993,7 +155273,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Multishot_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MultipleProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/multipleprojectilessupport.webp",
       "icon_alt": "Multishot I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2034e67ec898a2aa3e4f62d942256feef0a76e89dda310d8fa5c6193c55dceb0",
       "official_id": "Metadata/Items/Gems/SupportGemScattershot",
@@ -155123,7 +155403,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Multishot_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MultipleProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/multipleprojectilessupport.webp",
       "icon_alt": "Multishot II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e213904a80dc18280c9cc2a3e05abe27040cb18735cde27e441b0fd94eac7899",
       "official_id": "Metadata/Items/Gems/SupportGemScattershotTwo",
@@ -155253,7 +155533,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Murderous_Intent",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EmpoweredCullSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/empoweredcullsupport.webp",
       "icon_alt": "Murderous Intent",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bba83eb4d4b82bc3f378f4da5d45330559c488f9c6ba1f9eb8727baf528e0521",
       "official_id": "Metadata/Items/Gems/SupportGemMurderousIntent",
@@ -155343,7 +155623,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Muster",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/VariedTroopsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/variedtroopssupport.webp",
       "icon_alt": "Muster",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3a43e171fcf0bd164c95201333cabd2a6ef146d40542a8d9818b2c5fcac7f837",
       "official_id": "Metadata/Items/Gem/SupportGemMuster",
@@ -155443,7 +155723,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mysticism_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MysticismSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/mysticismsupport.webp",
       "icon_alt": "Mysticism I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/51c016fa7694ec659ebd6ec1b5a2353718819bc381f5270f2a1f76c69fc8863f",
       "official_id": "Metadata/Items/Gem/SupportGemMysticism",
@@ -155553,7 +155833,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Mysticism_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MysticismSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/mysticismsupport.webp",
       "icon_alt": "Mysticism II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2fd12cb77d0708a32270fb4314a34456baa0ad1344ff15d5968e5dafecd4b91e",
       "official_id": "Metadata/Items/Gem/SupportGemMysticismTwo",
@@ -155663,7 +155943,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Neural_Overload",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/NeuralOverloadSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/neuraloverloadsupport.webp",
       "icon_alt": "Neural Overload",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f5ee3a9f7b25e3dc7e3ba8c26d5f434cf4a3d64b43db52fac139a6e851217ac3",
       "official_id": "Metadata/Items/Gems/SupportGemNeuralOverload",
@@ -155773,7 +156053,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Nimble_Reload",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ReloadSpeedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/reloadspeedsupport.webp",
       "icon_alt": "Nimble Reload",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b966bec9720c6eb8023b6ec14bcf412907dd43eed04f29e1f30709e98637a666",
       "official_id": "Metadata/Items/Gem/SupportGemNimbleReload",
@@ -155878,7 +156158,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Nova_Projectiles_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/NovaProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/novaprojectilessupport.webp",
       "icon_alt": "Nova Projectiles I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bc8b7ac41395959003d3326c4fe26f021267f9d074a1ed6b4d79d22c5d9239f9",
       "official_id": "Metadata/Items/Gems/SupportGemNovaProjectiles",
@@ -155978,7 +156258,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Nova_Projectiles_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/NovaProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/novaprojectilessupport.webp",
       "icon_alt": "Nova Projectiles II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4ea08c9885946e7654262b5f6035a69e8c02cf9587f79c8ee9e55826e6cb2d78",
       "official_id": "Metadata/Items/Gems/SupportGemNovaProjectilesTwo",
@@ -156103,7 +156383,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ois%C3%ADns_Oath",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/WalkeroftheWilds.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/walkerofthewilds.webp",
       "icon_alt": "Oisín's Oath",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dde68b3eadc97acfd9792ce997d7a6a10fe848580f8b08fec5ff919e4fabf790",
       "official_id": "Metadata/Items/Gems/SupportGemOisinsOath",
@@ -156199,7 +156479,10 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "aff4599469e7204e5657c11551f9f2947ffcd97d17959a76cbeac09e3cff4073",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The first Warden of Eaves swore to patrol the border twixt the worlds forevermore, so that the tragedy of Gruthkul's stampede would never recur. In time, his vigil on the edge began to... change him."
+      ]
     },
     {
       "slug": "Olroth's_Conviction",
@@ -156208,11 +156491,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Olroth's_Conviction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/OlrothsConviction.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/olrothsconviction.webp",
       "icon_alt": "Olroth's Conviction",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportOlrothsConviction",
       "tags": [
+        "Support",
         "Lineage"
       ],
       "source": "poe2db-detail",
@@ -156244,6 +156528,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Olroth's Conviction"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -156300,7 +156588,13 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "50956cac8216ca03cdc0159b5097b2f5b6379117584a42bcc8b62752b4130941",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "The Empty-Eyed Fiend emerged from darkness.",
+        "Olroth raised his sword, gem in its pommel.",
+        "The Fiend smiled. Olroth swung.",
+        "Its head rolled, sockets ablaze with delight."
+      ]
     },
     {
       "slug": "Olroth's_Hubris",
@@ -156309,11 +156603,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Olroth's_Hubris",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/OlrothsHubris.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/olrothshubris.webp",
       "icon_alt": "Olroth's Hubris",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemOlrothsHubris",
       "tags": [
+        "Support",
         "Lineage"
       ],
       "source": "poe2db-detail",
@@ -156349,6 +156644,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Olroth's Hubris"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -156421,7 +156720,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "72e588aa515d6fb6776f2925006527514c78c266d8c37ec1b3a7a139954e2faa",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "The gem warmed his palm. \"Our fear of this",
+        "power cost many lives. No longer!\" With his own",
+        "hands, Olroth sealed that expedition's demise."
+      ]
     },
     {
       "slug": "Opening_Move",
@@ -156430,7 +156734,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Opening_Move",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/OpeningMoveSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/openingmovesupport.webp",
       "icon_alt": "Opening Move",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e73e4d46f25f6f85cf1a200e29699b3061b02a1e27b3c6f6c01c2be48e6ee0d9",
       "official_id": "Metadata/Items/Gems/SupportGemOpeningMove",
@@ -156520,7 +156824,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Outmaneuver",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/OutmaneuverSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/outmaneuversupport.webp",
       "icon_alt": "Outmaneuver",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/797e98854d745fd989f7a5091e2f854fa1df51e298e80df9e1392c993a370d43",
       "official_id": "Metadata/Items/Gem/SupportGemOutmaneuver",
@@ -156620,7 +156924,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Overabundance_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreaseLimitSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increaselimitsupport.webp",
       "icon_alt": "Overabundance I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7738387ebac9c8b05e0fab6679a5a6261b422fe395d6696d617ed8465e1ae9c0",
       "official_id": "Metadata/Items/Gems/SupportGemOverabundance",
@@ -156720,7 +157024,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Overabundance_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreaseLimitSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increaselimitsupport.webp",
       "icon_alt": "Overabundance II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/27b5bc864386a94402d99c5dca72d062f1a6bdf60beb67abe13bf405328a0a3b",
       "official_id": "Metadata/Items/Gems/SupportGemOverabundanceTwo",
@@ -156820,7 +157124,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Overabundance_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreaseLimitSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increaselimitsupport.webp",
       "icon_alt": "Overabundance III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/999117aff771692359fa508e4bd22996c8e7d650949fd72e7af389fb9d43e8a4",
       "official_id": "Metadata/Items/Gems/SupportGemOverabundanceThree",
@@ -156925,7 +157229,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Overcharge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/OverchargeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/overchargesupport.webp",
       "icon_alt": "Overcharge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/930b5ddd9bd247727d6c31c1fee5ed58b28d78d115d189c50020efa81fd27676",
       "official_id": "Metadata/Items/Gems/SupportGemOvercharge",
@@ -157035,7 +157339,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Overextend",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/OverextendSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/overextendsupport.webp",
       "icon_alt": "Overextend",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/89aabbf1ea5d8c885cf7e8f91275e2bcbfd822925592f3678f2d83c8540d69d3",
       "official_id": "Metadata/Items/Gem/SupportGemOverextend",
@@ -157145,7 +157449,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Overreach",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ReachSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/reachsupport.webp",
       "icon_alt": "Overreach",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c163e8ea762eec345503cd696daa1a8beeea0682474329269ea88352c650bc06",
       "official_id": "Metadata/Items/Gem/SupportGemReach",
@@ -157260,7 +157564,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Paquates_Pact",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Paquate.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/paquate.webp",
       "icon_alt": "Paquate's Pact",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8d70b9f1e3dbbf8a3247d274bf10d65fa9d7241bf09fe3763551840e4b28362e",
       "official_id": "Metadata/Items/Gems/SupportGemCorruptingCryThree",
@@ -157422,7 +157726,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "cdb30466b48691ea9c90611ac99487895199aed2582d247bfb677eaa2e658cbe",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The water used to cool the Locus of Corruption ran red",
+        "as blood, bright as flame, and bubbled with strange heat.",
+        "\"Drink,\" he offered. \"Suffuse your flesh with power!\""
+      ]
     },
     {
       "slug": "Payload",
@@ -157431,7 +157740,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Payload",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PayloadSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/payloadsupport.webp",
       "icon_alt": "Payload",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c84de0185c7ee2c7ad39ac6d4f220b017df342dae2d9417b69aea7dd469d8419",
       "official_id": "Metadata/Items/Gem/SupportGemPayload",
@@ -157541,7 +157850,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Perfected_Endurance",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EnduranceChargeonPerfectTimingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/endurancechargeonperfecttimingsupport.webp",
       "icon_alt": "Perfected Endurance",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b380463fb028fc506b50f4b43172ffe03daf47abbf57396bb0179b38c6c05043",
       "official_id": "Metadata/Items/Gem/SupportGemPerfectedEndurance",
@@ -157641,7 +157950,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Perfection",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PerfectionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/perfectionsupport.webp",
       "icon_alt": "Perfection",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a1796186b04d8a9d8d5253c5af33c930b789f976c14c0ace5e205d1be07df3c0",
       "official_id": "Metadata/Items/Gem/SupportGemPerfection",
@@ -157731,7 +158040,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Perpetual_Charge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PerpetualChargeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/perpetualchargesupport.webp",
       "icon_alt": "Perpetual Charge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6ebc6f5c8a461695d8f649d5fe6f6be67f893de1bed5d08c980883d07a4eba57",
       "official_id": "Metadata/Items/Gems/SupportGemPerpetualCharge",
@@ -157826,7 +158135,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Persistent_Ground_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DomainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/domainsupport.webp",
       "icon_alt": "Persistent Ground I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8d15e0d4767074548492eae7e860c17d197838028dc765c102e086875a0c3f6d",
       "official_id": "Metadata/Items/Gem/SupportGemDomain",
@@ -157916,7 +158225,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Persistent_Ground_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DomainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/domainsupport.webp",
       "icon_alt": "Persistent Ground II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e694ca86bcec4ac5f525fe5c57ebc01914b5277a23370f2fd27b71a88642cfe8",
       "official_id": "Metadata/Items/Gem/SupportGemDomainTwo",
@@ -158016,7 +158325,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Persistent_Ground_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DomainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/domainsupport.webp",
       "icon_alt": "Persistent Ground III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/80cb8889a152e9a468d8d6afc32c5ededa35b1d1cb983b812e3b5482294be3d7",
       "official_id": "Metadata/Items/Gem/SupportGemDomainThree",
@@ -158126,7 +158435,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Physical_Mastery",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PhysicalMasterySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/physicalmasterysupport.webp",
       "icon_alt": "Physical Mastery",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/11c0c284895ed197ea26a10b3c642bf0b4f492bf3a8be04022fe819c85e772ad",
       "official_id": "Metadata/Items/Gems/SupportGemPhysicalMastery",
@@ -158226,7 +158535,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pierce_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PierceSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/piercesupport.webp",
       "icon_alt": "Pierce I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3ac1a027cf2457718bcdc73370d2c42ddb28d0816c177a888d0c02c1644f43bd",
       "official_id": "Metadata/Items/Gems/SupportGemPierce",
@@ -158336,7 +158645,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pierce_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PierceSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/piercesupport.webp",
       "icon_alt": "Pierce II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/707bff38d8d765d5cef1345e045f6813895ece3c6ea9f08ca4a275a183fc65e4",
       "official_id": "Metadata/Items/Gems/SupportGemPierceTwo",
@@ -158436,7 +158745,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pierce_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PierceSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/piercesupport.webp",
       "icon_alt": "Pierce III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b2c7cbce45eac56e82adee6eb6decb05b0e54b6eebb76c25896a44cb1284a09d",
       "official_id": "Metadata/Items/Gems/SupportGemPierceThree",
@@ -158546,7 +158855,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pin_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PinSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pinsupport.webp",
       "icon_alt": "Pin I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9ba7ae45008bab946d9b460583a8c30c83c7cbb98a7b43f9062da86a45465734",
       "official_id": "Metadata/Items/Gems/SupportGemPin",
@@ -158666,7 +158975,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pin_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PinSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pinsupport.webp",
       "icon_alt": "Pin II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a11f6eeb21175f1564e91995d56fafb6cbf359ac03f22140c9b920be51993d17",
       "official_id": "Metadata/Items/Gems/SupportGemPinTwo",
@@ -158796,7 +159105,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pin_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PinSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pinsupport.webp",
       "icon_alt": "Pin III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/88ebbed21ae826efd172fbfd1cf9a33d83b4c2b25246f2c878e4eed7ff14b6e4",
       "official_id": "Metadata/Items/Gems/SupportGemPinThree",
@@ -158936,7 +159245,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Pinpoint_Critical",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PinpointCriticalSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pinpointcriticalsupport.webp",
       "icon_alt": "Pinpoint Critical",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c43e5ba38256f713a8bbdfc8c1b3b7e5bda60a353aabbbdb6051f78d0cf70df0",
       "official_id": "Metadata/Items/Gems/SupportGemPinpointCritical",
@@ -159036,7 +159345,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Poison_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToPoisonSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetopoisonsupport.webp",
       "icon_alt": "Poison I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1590c69d355408da1315983d2cabc734e871ec0b7f11ff72d4da51f2043b81e9",
       "official_id": "Metadata/Items/Gems/SupportGemEnvenom",
@@ -159141,7 +159450,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Poison_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToPoisonSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetopoisonsupport.webp",
       "icon_alt": "Poison II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c0175a649f48c75ce6bb9091b06e00350a7d21bd33e910459e6211fd0e9daaf1",
       "official_id": "Metadata/Items/Gems/SupportGemEnvenomTwo",
@@ -159246,7 +159555,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Poison_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChanceToPoisonSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/chancetopoisonsupport.webp",
       "icon_alt": "Poison III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0fe9d1020bdb9a578f998197a987692e40f43adbdb04f64cc5a294967bf849c1",
       "official_id": "Metadata/Items/Gems/SupportGemEnvenomThree",
@@ -159361,7 +159670,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Poison_Spores",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PoisonSporesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/poisonsporessupport.webp",
       "icon_alt": "Poison Spores",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/605c0ec26d3c5c8c22c5430d92d09de2ebd894d9c12ce2ef6cf32230e4ddf359",
       "official_id": "Metadata/Items/Gem/SupportGemPoisonSpores",
@@ -159615,7 +159924,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Potent_Exposure",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StripAwaySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stripawaysupport.webp",
       "icon_alt": "Potent Exposure",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b65b7a4a07b404ccc2f0ed69097f3c18691dfbc47d46dbe8568ee5cffbbc8328",
       "official_id": "Metadata/Items/Gem/SupportGemStripAway",
@@ -159715,7 +160024,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Potential",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PotentialSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/potentialsupport.webp",
       "icon_alt": "Potential",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cabe7590f77ad2cde861f244c9fb7d7fc215158fdf7089c8e03909bbb0496e7e",
       "official_id": "Metadata/Items/Gem/SupportGemPotential",
@@ -159810,7 +160119,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Practical_Magic_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StunningMagic.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stunningmagic.webp",
       "icon_alt": "Practical Magic I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/880ac9a161840f7ca48ede6c9151ded7475860bfb512e74d02a8a4a8a730d7cb",
       "official_id": "Metadata/Items/Gems/SupportGemPracticalMagic",
@@ -159915,7 +160224,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Practical_Magic_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StunningMagic.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stunningmagic.webp",
       "icon_alt": "Practical Magic II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d41add6a0e29c40a950655cd33115b29942528cf658c0109aa9fda9b49bb70b2",
       "official_id": "Metadata/Items/Gems/SupportGemPracticalMagicTwo",
@@ -160020,7 +160329,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Practiced_Combo",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PracticedComboSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/practicedcombosupport.webp",
       "icon_alt": "Practiced Combo",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4d63dddabc14af1c37a6f8836b22c97cef3defacd92d205062609a9c53db6582",
       "official_id": "Metadata/Items/Gem/SupportGemPracticedCombo",
@@ -160130,7 +160439,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Precision_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PrecisionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/precisionsupport.webp",
       "icon_alt": "Precision I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8996904872432527b8712119f345e7453840fd04425f4cb0b368f0cd422ef3f2",
       "official_id": "Metadata/Items/Gems/SupportGemPrecision",
@@ -160240,7 +160549,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Precision_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PrecisionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/precisionsupport.webp",
       "icon_alt": "Precision II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e1bb1874c4689c74eaed3b4193e318623c32482a02b0f271c0426bdbbe91b643",
       "official_id": "Metadata/Items/Gems/SupportGemPrecisionTwo",
@@ -160350,7 +160659,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Premeditation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EmpoweredDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/empowereddamagesupport.webp",
       "icon_alt": "Premeditation",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/43c12c2eb99ab49b036a8fb769a017f3cd86d6e0d6942a94bd498e43dd939708",
       "official_id": "Metadata/Items/Gems/SupportGemPremeditation",
@@ -160440,7 +160749,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Profanity_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ProfanitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/profanitysupport.webp",
       "icon_alt": "Profanity I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/44b9870ab15ade0a5050e2d415c3a7777c7609531f41c08fdd0d3a3dc1d3de38",
       "official_id": "Metadata/Items/Gem/SupportGemProfanity",
@@ -160550,7 +160859,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Profanity_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ProfanitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/profanitysupport.webp",
       "icon_alt": "Profanity II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/184ada1f876c940a0025c24059967e6a5c5b492171135328444a8a91aaa2e87c",
       "official_id": "Metadata/Items/Gem/SupportGemProfanityTwo",
@@ -160660,7 +160969,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Projectile_Acceleration_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fasterprojectilessupport.webp",
       "icon_alt": "Projectile Acceleration I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ef8a6643f97f04ae465defdf9fe8360de6a27c0a77c882c21a2ba1323f262836",
       "official_id": "Metadata/Items/Gems/SupportGemAcceleration",
@@ -160765,7 +161074,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Projectile_Acceleration_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fasterprojectilessupport.webp",
       "icon_alt": "Projectile Acceleration II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/334cd4534c7a4d9b5f367030dd0cb1aa6c2f0bb2c6073fae756ee26c0e383c15",
       "official_id": "Metadata/Items/Gems/SupportGemAccelerationTwo",
@@ -160880,7 +161189,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Projectile_Acceleration_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fasterprojectilessupport.webp",
       "icon_alt": "Projectile Acceleration III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4c3404727fcf4a4d3f7e08be81913210e5fccfc14de8261ba2edaef8446c4885",
       "official_id": "Metadata/Items/Gems/SupportGemAccelerationThree",
@@ -160995,7 +161304,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Projectile_Deceleration_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SlowerProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/slowerprojectilessupport.webp",
       "icon_alt": "Projectile Deceleration I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/811120fb4d69a49159331fbad38fdc46e3862bf383e232d374419176af79854d",
       "official_id": "Metadata/Items/Gems/SupportGemDeceleration",
@@ -161095,7 +161404,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Projectile_Deceleration_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SlowerProjectilesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/slowerprojectilessupport.webp",
       "icon_alt": "Projectile Deceleration II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2dbe4eb375cc560149dca3431310ea13921da275bc99e18a912b237a7d68fdc5",
       "official_id": "Metadata/Items/Gems/SupportGemDecelerationTwo",
@@ -161195,7 +161504,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Prolonged_Duration_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MoreDurationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/moredurationsupport.webp",
       "icon_alt": "Prolonged Duration I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/45a081657ffdfdb2e5a8bac24ef207dc445eb24f018a67a6e394e58c2834e04a",
       "official_id": "Metadata/Items/Gems/SupportGemPersistence",
@@ -161300,7 +161609,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Prolonged_Duration_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MoreDurationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/moredurationsupport.webp",
       "icon_alt": "Prolonged Duration II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e4217f2b13eb8cce4c1bbc16ed174bd1e3e9529f0785e99bd52c6a7db41d7e33",
       "official_id": "Metadata/Items/Gems/SupportGemPersistenceTwo",
@@ -161405,7 +161714,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Prolonged_Duration_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/MoreDurationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/moredurationsupport.webp",
       "icon_alt": "Prolonged Duration III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/744c158e0e00323ec2a6a3b8ca921417ddde00c9a1f18c309fd7fa3302c0a26b",
       "official_id": "Metadata/Items/Gems/SupportGemPersistenceThree",
@@ -161505,7 +161814,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Punch_Through",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PunchThroughSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/punchthroughsupport.webp",
       "icon_alt": "Punch Through",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4218787a89544c3d5dc4dfde2381d7951d6c23bf6a46f8070f61633586bc28d4",
       "official_id": "Metadata/Items/Gem/SupportGemPunchThrough",
@@ -161615,7 +161924,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pursuit_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PursuitSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pursuitsupport.webp",
       "icon_alt": "Pursuit I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/89cbd70fd87162d8c11545bc2011435d0a63d52ca2bceaa427f3bf8b0ebdaa0c",
       "official_id": "Metadata/Items/Gem/SupportGemPursuit",
@@ -161735,7 +162044,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pursuit_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PursuitSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pursuitsupport.webp",
       "icon_alt": "Pursuit II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8ef4a57d902312aae0d08a9050001b7db4625984fc6e7ade9b4fa30c53bb9e2f",
       "official_id": "Metadata/Items/Gem/SupportGemPursuitTwo",
@@ -161855,7 +162164,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Pursuit_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/PursuitSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/pursuitsupport.webp",
       "icon_alt": "Pursuit III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4279f15f4d34c16654ffc6619e80eba1094f9cd9d7613d1190c2c9d6b6072887",
       "official_id": "Metadata/Items/Gem/SupportGemPursuitThree",
@@ -161975,7 +162284,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Quill_Burst",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SpikedGauntletsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/spikedgauntletssupport.webp",
       "icon_alt": "Quill Burst",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c3945b0fa2a03b52281aab05f9358f66edce2f7891ebe6aa14d9a1870291ccbe",
       "official_id": "Metadata/Items/Gem/SupportGemQuillBurst",
@@ -162131,7 +162440,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rage_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ragesupport.webp",
       "icon_alt": "Rage I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7f46ce24eb2c3d214c993d97b11271193c279639e644eb5d9a11242bb08d2f4e",
       "official_id": "Metadata/Items/Gems/SupportGemRage",
@@ -162236,7 +162545,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rage_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ragesupport.webp",
       "icon_alt": "Rage II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ffb922b6c942184f24b07c5cd1530f598889c0f1a2b3d6ec28db4e6326b1bf5e",
       "official_id": "Metadata/Items/Gems/SupportGemRageTwo",
@@ -162341,7 +162650,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rage_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ragesupport.webp",
       "icon_alt": "Rage III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9516adf0ecf644852f7ae0a51bede727a51e1323cbb39d8f0f0419bbbd28367d",
       "official_id": "Metadata/Items/Gems/SupportGemRageThree",
@@ -162456,7 +162765,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rageforged_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RageforgedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rageforgedsupport.webp",
       "icon_alt": "Rageforged I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/13487bb818ad7619b7cecb07f60c0020c4edab6cd4e8951b75fe049f78ef1f36",
       "official_id": "Metadata/Items/Gem/SupportGemRageforged",
@@ -162546,7 +162855,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rageforged_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RageforgedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rageforgedsupport.webp",
       "icon_alt": "Rageforged II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/89db92ecd4636f5855759110910353bb9b0d21a5604aa466750b1e756f43e244",
       "official_id": "Metadata/Items/Gem/SupportGemRageforgedTwo",
@@ -162646,7 +162955,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Raging_Cry",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RagingCrySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ragingcrysupport.webp",
       "icon_alt": "Raging Cry",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6a417a14ab99c50261c0671bab95e78d2a351e13d8217ab39fd633a7f8e1e9ab",
       "official_id": "Metadata/Items/Gem/SupportGemRagingCry",
@@ -162746,7 +163055,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rakiatas_Flow",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Rakiata.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/rakiata.webp",
       "icon_alt": "Rakiata's Flow",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d9ebecc0b0e9c9df6a884e59c7a5745a862c8ae42d743f7478e89fda11c66f1b",
       "official_id": "Metadata/Items/Gem/SupportGemRakiatasFlow",
@@ -162842,7 +163151,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "8d2f9f68408f33b3f3f1878c20b86b26a12582f03d59bc4c7dd27b6d5eb34058",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The Tasalio Tribe developed their own Way, seeing",
+        "the world not as it is, but as it should be, given its",
+        "roiling and endless grace of constant motion."
+      ]
     },
     {
       "slug": "Rally",
@@ -162851,7 +163165,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rally",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RallySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rallysupport.webp",
       "icon_alt": "Rally",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/51ae33f1437d6afaac356e8901201ef7b862af16ed0cc1619591ea6e702cf7c8",
       "official_id": "Metadata/Items/Gem/SupportGemRally",
@@ -162961,7 +163275,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rapid_Attacks_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterAttack.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fasterattack.webp",
       "icon_alt": "Rapid Attacks I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3addfd1d994b16d4af39f65bf1c7d52666a1d9ecebbafd59edfeda0a2a24215e",
       "official_id": "Metadata/Items/Gems/SupportGemMartialTempo",
@@ -163061,7 +163375,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rapid_Attacks_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterAttack.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fasterattack.webp",
       "icon_alt": "Rapid Attacks II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b624f994a816d57d7db9b14ee46dee568d392d28a71473821f63632fb9a558a7",
       "official_id": "Metadata/Items/Gems/SupportGemMartialTempoTwo",
@@ -163161,7 +163475,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rapid_Attacks_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterAttack.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fasterattack.webp",
       "icon_alt": "Rapid Attacks III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/be4bc5e5856cfe9a1f0a9470c548414feb1e3c3aae815eedea45d8625ecb7e3c",
       "official_id": "Metadata/Items/Gems/SupportGemMartialTempoThree",
@@ -163271,7 +163585,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Rapid_Casting_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterCastSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fastercastsupport.webp",
       "icon_alt": "Rapid Casting I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/887b4a9836037b1f5cbf1d45bee6658d9b5f9cf81c7ba5837294a4f81cd2d4a5",
       "official_id": "Metadata/Items/Gems/SupportGemArcaneTempo",
@@ -163371,7 +163685,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Rapid_Casting_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterCastSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fastercastsupport.webp",
       "icon_alt": "Rapid Casting II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ce4ad833ad09cfc4deefb7cd8357752b0cfb28c4285091717d82057d22b671e5",
       "official_id": "Metadata/Items/Gems/SupportGemArcaneTempoTwo",
@@ -163471,7 +163785,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Rapid_Casting_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FasterCastSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/fastercastsupport.webp",
       "icon_alt": "Rapid Casting III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1b066f29db0660ddfe846f647017dd38cb604d7c010d3cd0b5f428fd8a96dd46",
       "official_id": "Metadata/Items/Gems/SupportGemArcaneTempoThree",
@@ -163571,7 +163885,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rathas_Assault",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Azadian.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/azadian.webp",
       "icon_alt": "Ratha's Assault",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ce6345eaf380a6de6c4f635f09f2219e7033aaeacdc3562f42f9f9c3daef1a53",
       "official_id": "Metadata/Items/Gem/SupportGemCombatReload",
@@ -163707,7 +164021,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "3ad525f967987e3bb73f65b200312ce8573bdd6915756e4991877dbaf48f402b",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"No plan. No stealth. I want shock. Awe. I want them to",
+        "know who did it, and I want them telling tales. That's the",
+        "only way for us to earn their respect... and their fear.\""
+      ]
     },
     {
       "slug": "Rearm_I",
@@ -163716,7 +164035,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rearm_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RearmSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rearmsupport.webp",
       "icon_alt": "Rearm I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/de56d27320771d536b4d66b1b712601433bde832b753fb00e91ca30e7d143091",
       "official_id": "Metadata/Items/Gem/SupportGemRearm",
@@ -163821,7 +164140,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rearm_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RearmSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rearmsupport.webp",
       "icon_alt": "Rearm II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0bd44c986c3a3a6454a0849a1cdbf7caecddae20146bd93cce9f9b622b1b9239",
       "official_id": "Metadata/Items/Gem/SupportGemRearmTwo",
@@ -163926,7 +164245,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Refraction_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TemperedValourSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/temperedvaloursupport.webp",
       "icon_alt": "Refraction I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c72590ef161c2e05cb7fa4b20ebdd7f3f60b62f544646c4ab2788840f63b2006",
       "official_id": "Metadata/Items/Gem/SupportGemRefraction",
@@ -164046,7 +164365,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Refraction_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TemperedValourSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/temperedvaloursupport.webp",
       "icon_alt": "Refraction II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a8afdf6917062333aa5e8952b94db67e872615aa521bdd47c274c37be1b8d331",
       "official_id": "Metadata/Items/Gem/SupportGemRefractionTwo",
@@ -164166,7 +164485,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Refraction_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TemperedValourSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/temperedvaloursupport.webp",
       "icon_alt": "Refraction III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c9fe3bfff0382820cf3b0ce6cb74b282d266e23e52d4c13e66d75c24a7c053eb",
       "official_id": "Metadata/Items/Gem/SupportGemRefractionThree",
@@ -164276,7 +164595,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Reinforced_Totems_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IronwoodSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ironwoodsupport.webp",
       "icon_alt": "Reinforced Totems I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a34465dc5ce6a21bb747bd0642ea61d9642364ef3ec6b0842eaf9f0b92699e9e",
       "official_id": "Metadata/Items/Gem/SupportGemIronwood",
@@ -164376,7 +164695,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Reinforced_Totems_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IronwoodSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ironwoodsupport.webp",
       "icon_alt": "Reinforced Totems II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cf444911db306eb8390faa643204e8d99db107f78142313ecdeb5786d2d8a2b4",
       "official_id": "Metadata/Items/Gem/SupportGemIronwoodTwo",
@@ -164486,7 +164805,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Relentless_Rage",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/GrudgeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/grudgesupport.webp",
       "icon_alt": "Relentless Rage",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1e5dba19a80a028a359c71ef009dce3c82884a04a10a8fa21205bcd5ed068a09",
       "official_id": "Metadata/Items/Gem/SupportGemGrudge",
@@ -164576,7 +164895,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Remnant_Potency_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InterludeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/interludesupport.webp",
       "icon_alt": "Remnant Potency I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2b822a4673433286dcb3441d681668b2707d89009e54b564eb3860502e565242",
       "official_id": "Metadata/Items/Gem/SupportGemInterlude",
@@ -164676,7 +164995,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Remnant_Potency_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InterludeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/interludesupport.webp",
       "icon_alt": "Remnant Potency II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b230e0dc0f485a69f507047652f69d709cb32d6afe353b8e66b8ce355aff3055",
       "official_id": "Metadata/Items/Gem/SupportGemInterludeTwo",
@@ -164786,7 +165105,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Remnant_Potency_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InterludeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/interludesupport.webp",
       "icon_alt": "Remnant Potency III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7153dd9bc7d0d705e7a114f1f1d8618433d199a18c089c423361f4af7e4d4292",
       "official_id": "Metadata/Items/Gem/SupportGemInterludeThree",
@@ -164896,7 +165215,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rending_Apex",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ApexBoostSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/apexboostsupport.webp",
       "icon_alt": "Rending Apex",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/04f62aeb56900b1a4ea6f244b36200fe0586cd3fad7447b29d0379c0db2d1632",
       "official_id": "Metadata/Items/Gems/SupportGemRendingApex",
@@ -165006,7 +165325,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Retaliate_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SteelyNerveSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/steelynervesupport.webp",
       "icon_alt": "Retaliate I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/70b264e7ea1caa7bc475184fe53a2b5dd4716d6f6d47c553f8788d5911ec26fe",
       "official_id": "Metadata/Items/Gem/SupportGemRetaliate",
@@ -165116,7 +165435,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Retaliate_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SteelyNerveSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/steelynervesupport.webp",
       "icon_alt": "Retaliate II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/183c2460c4c626e1c52d2da9319e7a88793cebb010a78bc1d1167864024819fd",
       "official_id": "Metadata/Items/Gem/SupportGemRetaliateTwo",
@@ -165236,7 +165555,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Retreat_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RetreatingAssaultSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/retreatingassaultsupport.webp",
       "icon_alt": "Retreat I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8a9d6efbb8d3d2087e5f4f786db10b0a1bc940e41004785575d7e3e411cc31cb",
       "official_id": "Metadata/Items/Gem/SupportGemRetreat",
@@ -165351,7 +165670,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Retreat_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RetreatingAssaultSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/retreatingassaultsupport.webp",
       "icon_alt": "Retreat II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/140a4bea1739ec3e5d019977ab955ea71e2c9711588217ea3021412c0837146c",
       "official_id": "Metadata/Items/Gem/SupportGemRetreatTwo",
@@ -165466,7 +165785,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Retreat_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RetreatingAssaultSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/retreatingassaultsupport.webp",
       "icon_alt": "Retreat III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6e56f95e0abfacee0137615b6f1166173164f369aceaf4f07e23479bb2f1431c",
       "official_id": "Metadata/Items/Gem/SupportGemRetreatThree",
@@ -165581,7 +165900,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Reverberate",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ReverberateSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/reverberatesupport.webp",
       "icon_alt": "Reverberate",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/82952adb9c4a6b8320a35bf2d7354483fa6dfa8212b8c7aaa46f65eb5570f0af",
       "official_id": "Metadata/Items/Gem/SupportGemReverberate",
@@ -165691,7 +166010,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ricochet_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TerrainChainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/terrainchainsupport.webp",
       "icon_alt": "Ricochet I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/76d5bceae00a589e751a77a4bcdcde975461427e7b1cf86177ba2a02911657c3",
       "official_id": "Metadata/Items/Gem/SupportGemRicochet",
@@ -165791,7 +166110,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ricochet_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TerrainChainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/terrainchainsupport.webp",
       "icon_alt": "Ricochet II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c68124373c1336e89368197cdc5a6bd974e2823d2f4378f64b3ba7efb9b071f8",
       "official_id": "Metadata/Items/Gem/SupportGemRicochetTwo",
@@ -165891,7 +166210,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Ricochet_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TerrainChainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/terrainchainsupport.webp",
       "icon_alt": "Ricochet III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ff829358b5b38254b3d7259d947762a69c7a32743dcfd3b2de5d118425d09742",
       "official_id": "Metadata/Items/Gem/SupportGemRicochetThree",
@@ -165996,7 +166315,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Rigwalds_Ferocity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Rigwald.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/rigwald.webp",
       "icon_alt": "Rigwald's Ferocity",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a470f86c7a36ec474aae7859cbb9c611034913953ef4a5a6197ebbf8c6713992",
       "official_id": "Metadata/Items/Gem/SupportGemRigwaldsFerocity",
@@ -166122,7 +166441,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "471df8ea80096d7c15401b7a8f0263032dc3f62d2570b867cbbf7dd51caa9518",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"Skothe kept us idle, sitting safe on these islands, while our",
+        "brethren remain slaves. We are one and the same! We must",
+        "fight! So, I bring you his head. I am now your Wolven King!\""
+      ]
     },
     {
       "slug": "Rime",
@@ -166131,7 +166455,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Rime",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WinterblastSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/winterblastsupport.webp",
       "icon_alt": "Rime",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7aa59b92a6b5f4069a33cd94bd3f2556404448af4c334cb04ee958ec4b1eb2d7",
       "official_id": "Metadata/Items/Gem/SupportGemRime",
@@ -166236,7 +166560,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rip",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RipSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ripsupport.webp",
       "icon_alt": "Rip",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1990dbbf1f3b3800b8c1fb6a5adc9bdcd338170e2460b1ee91fa24987610ac84",
       "official_id": "Metadata/Items/Gem/SupportGemRip",
@@ -166381,7 +166705,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Rising_Tempest",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TempestTempoSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/tempesttemposupport.webp",
       "icon_alt": "Rising Tempest",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8ebe11a65a618767a7f902273fa22fa42c9d82bb3e250b8f8ce3d8ddefe73790",
       "official_id": "Metadata/Items/Gems/SupportGemRisingTempest",
@@ -166476,7 +166800,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Ritualistic_Curse",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RitualisticCurseSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ritualisticcursesupport.webp",
       "icon_alt": "Ritualistic Curse",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a583d8036836aa6b9baef6f9f074a164fa851a2836dbc7d0b04c04c6b37f07bb",
       "official_id": "Metadata/Items/Gem/SupportGemRitualisticCurse",
@@ -166591,7 +166915,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Romiras_Requital",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageRomira.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageromira.webp",
       "icon_alt": "Romira's Requital",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3b5facde06e58b89a620f685e6e04083a074e0de7b8a9828a3e69fd7d3ce3c18",
       "official_id": "Metadata/Items/Gem/SupportGemRomirasRequital",
@@ -166707,7 +167031,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "dcb58df6aab77de177c45316bab4d1aa6ff98d6eb829a87598801b3a70cf46e1",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"Come, my faithful wife,\" he crooned. \"Sit. Eat. I wanted to",
+        "reward you for your loyalty. I even cooked this myself...\"",
+        "She looked 'round for her sons, but hers was the only chair."
+      ]
     },
     {
       "slug": "Runeforged_Blades",
@@ -166716,11 +167045,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Runeforged_Blades",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/ExpeditionRuneforgedBladesGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/expeditionruneforgedbladesgem.webp",
       "icon_alt": "Runeforged Blades",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemRuneforgedBlades",
       "tags": [
+        "Support",
         "Attack",
         "Projectile",
         "Trigger",
@@ -166768,6 +167098,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Runeforged Blades"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Attack",
             "vi": "Attack"
@@ -166891,11 +167225,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Runic_Extraction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/ExpeditionRunicExtractionGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/expeditionrunicextractiongem.webp",
       "icon_alt": "Runic Extraction",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemRunicExtraction",
       "tags": [
+        "Support",
         "Remnant"
       ],
       "source": "poe2db-detail",
@@ -166927,6 +167262,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Runic Extraction"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Remnant",
             "vi": "Remnant"
@@ -166995,11 +167334,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Runic_Infusion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/ExpeditionRunicInfusionGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/expeditionrunicinfusiongem.webp",
       "icon_alt": "Runic Infusion",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemRunicInfusion",
       "tags": [
+        "Support",
         "Attack",
         "Physical"
       ],
@@ -167030,6 +167370,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Runic Infusion"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Attack",
             "vi": "Attack"
@@ -167094,7 +167438,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rupture",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RuptureSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rupturesupport.webp",
       "icon_alt": "Rupture",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/94156b3bcc458fd3ec18a16aa3e41bec3082fff340aa244134415d69c8bf2b7f",
       "official_id": "Metadata/Items/Gem/SupportGemRupture",
@@ -167194,7 +167538,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Rusted_Spikes",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RustedSpikesSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/rustedspikessupport.webp",
       "icon_alt": "Rusted Spikes",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c8381c7d7111e2a234d0cae43bb638e916690886db9afdd052bc16a6b149bfc1",
       "official_id": "Metadata/Items/Gem/SupportGemRustedSpikes",
@@ -167284,7 +167628,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Ruthless",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/RuthlessSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ruthlesssupport.webp",
       "icon_alt": "Ruthless",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/428490d66b0719e3a9b91221d9fb01f79bb0d12b8def492ca6c64fc757622edd",
       "official_id": "Metadata/Items/Gems/SupportGemRuthless",
@@ -167369,7 +167713,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Sacrificial_Lamb_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SacrificalLambSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/sacrificallambsupport.webp",
       "icon_alt": "Sacrificial Lamb I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/52a941e854ebc74120b8c20176979819f380d7c51f942c9e901ff0a6ad980327",
       "official_id": "Metadata/Items/Gem/SupportGemSacrificialLamb",
@@ -167479,7 +167823,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Sacrificial_Lamb_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SacrificalLambSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/sacrificallambsupport.webp",
       "icon_alt": "Sacrificial Lamb II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5840c27ac7cebc67cf5f1061eb261c40e0223721e555d0d3d756e3e217cd1f86",
       "official_id": "Metadata/Items/Gem/SupportGemSacrificialLambTwo",
@@ -167599,7 +167943,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Sacrificial_Offering",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AblationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/ablationsupport.webp",
       "icon_alt": "Sacrificial Offering",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/101ca215021ce39468e5205485fed258d2854f6fc57b9b9eb429db844d4313cb",
       "official_id": "Metadata/Items/Gem/SupportGemAblation",
@@ -167709,7 +168053,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Salvo",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SalvoSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/salvosupport.webp",
       "icon_alt": "Salvo",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/383be5bd6c82e618827b59c8b4748e8d7d1364a929e54abfbb89f8cb0d25338d",
       "official_id": "Metadata/Items/Gem/SupportGemSalvo",
@@ -167854,11 +168198,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Scouring_Flame",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/ExpeditionScouringFlameGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/expeditionscouringflamegem.webp",
       "icon_alt": "Scouring Flame",
       "hover_url": "",
       "official_id": "Metadata/Items/Gems/SupportGemScouringFlame",
       "tags": [
+        "Support",
         "Fire"
       ],
       "source": "poe2db-detail",
@@ -167890,6 +168235,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Scouring Lửa"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Fire",
             "vi": "Fire"
@@ -167958,7 +168307,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Searing_Flame_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SearingFlameSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/searingflamesupport.webp",
       "icon_alt": "Searing Flame I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0d4694932fffe667af0738fd92fe9c740713e6e8e743124f63f08b1b3cfa5422",
       "official_id": "Metadata/Items/Gems/SupportGemSearingFlame",
@@ -168068,7 +168417,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Searing_Flame_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SearingFlameSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/searingflamesupport.webp",
       "icon_alt": "Searing Flame II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/181271d7ab6de6324527e374186c2f9f3e25bc71e05a884cd96caa93741e994e",
       "official_id": "Metadata/Items/Gems/SupportGemSearingFlameTwo",
@@ -168178,7 +168527,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Second_Wind_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SecondWindSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/secondwindsupport.webp",
       "icon_alt": "Second Wind I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ffe417c8f5bc2a41cb9ca26cbcb69836c47d39de3d1b997269f68de14dae04e0",
       "official_id": "Metadata/Items/Gems/SupportGemSecondWind",
@@ -168283,7 +168632,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Second_Wind_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SecondWindSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/secondwindsupport.webp",
       "icon_alt": "Second Wind II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7d1cdb64dcc2025cff3b1e57b1ecadff308a4d01aee6203dd96cd2de2fe8fbc0",
       "official_id": "Metadata/Items/Gems/SupportGemSecondWindTwo",
@@ -168388,7 +168737,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Second_Wind_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SecondWindSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/secondwindsupport.webp",
       "icon_alt": "Second Wind III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fa307c16fabf54b4bd6d4a614e348be5fd6174f6c6a05c40ac5047096facba35",
       "official_id": "Metadata/Items/Gems/SupportGemSecondWindThree",
@@ -168503,7 +168852,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/See_Red",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SeeRedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/seeredsupport.webp",
       "icon_alt": "See Red",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5ceb0dd2d652a667b563f0697e5f0051069529a2a4db5f44bef0d99cf850b14f",
       "official_id": "Metadata/Items/Gem/SupportGemSeeRed",
@@ -168623,7 +168972,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Selfless_Remnants",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/FigureheadSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/figureheadsupport.webp",
       "icon_alt": "Selfless Remnants",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3313d69b51d7f257f4f1f21ae516847f3f8dc320fdd68d67f28aaac13d41c169",
       "official_id": "Metadata/Items/Gem/SupportGemFigurehead",
@@ -168723,11 +169072,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Seraph's_Heart",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/SeraphsHeart.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/seraphsheart.webp",
       "icon_alt": "Seraph's Heart",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemSeraphsHeart",
       "tags": [
+        "Support",
         "Lineage",
         "Buff",
         "Persistent"
@@ -168760,6 +169110,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Seraph's Trái Tim"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -168820,7 +169174,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "eba1169d49186b7efe6f331334908a9e5516aecb01ebbc7ce836227ee94af0dd",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "Intricate machinery imperceptibly woven into a",
+        "biological foundation. It felt delicate in her hands.",
+        "In him, it would be her greatest achievement."
+      ]
     },
     {
       "slug": "Shock",
@@ -168829,7 +169188,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Shock",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ConductionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/conductionsupport.webp",
       "icon_alt": "Shock",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/01b3b87ea2f6265f81c6320257978ea8573ff4fe4041a673e2f957617dbd91a1",
       "official_id": "Metadata/Items/Gems/SupportGemConduction",
@@ -168934,7 +169293,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Shock_Conduction",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ShockingProliferationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/shockingproliferationsupport.webp",
       "icon_alt": "Shock Conduction",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c37f9aabde5a2b8f70d0eb07bc90200a394083ee21b9bd284cbe7a5521b280de",
       "official_id": "Metadata/Items/Gems/SupportGemCoursingCurrent",
@@ -169044,7 +169403,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Shock_Conduction_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ShockingProliferationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/shockingproliferationsupport.webp",
       "icon_alt": "Shock Conduction II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7cbfa01148f018a9257ebdf0d3f699fef3bc14a944eb2bd617ffc1a0d8fa83db",
       "official_id": "Metadata/Items/Gems/SupportGemCoursingCurrentTwo",
@@ -169159,7 +169518,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Shock_Siphon",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ShockSiphonSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/shocksiphonsupport.webp",
       "icon_alt": "Shock Siphon",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/214835aa04d1de51a7c061bca79b1a481cca09d3e34661417917309104aa2cc0",
       "official_id": "Metadata/Items/Gems/SupportGemShockSiphon",
@@ -169259,7 +169618,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Shocking_Leap",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ShockingLeapSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/shockingleapsupport.webp",
       "icon_alt": "Shocking Leap",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/66a0ee5863cb44e9b764b877e89dd9ec170cb79f0de8b173dc8898333aee2962",
       "official_id": "Metadata/Items/Gem/SupportGemShockingLeap",
@@ -169374,7 +169733,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Short_Fuse_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExpediteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/expeditesupport.webp",
       "icon_alt": "Short Fuse I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c8f8b7d139c8dd4994dd87d53de830393b33a93771acd6b7920f2d88709bde52",
       "official_id": "Metadata/Items/Gem/SupportGemExpedite",
@@ -169469,7 +169828,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Short_Fuse_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ExpediteSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/expeditesupport.webp",
       "icon_alt": "Short Fuse II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/90f25a55385a3253743c896d2abf43d03946dfe6f743ae42869a70492c122b6a",
       "official_id": "Metadata/Items/Gem/SupportGemExpediteTwo",
@@ -169574,7 +169933,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Siones_Temper",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Wildshards.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/wildshards.webp",
       "icon_alt": "Sione's Temper",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/607e35b9e73938c7a62d47961c05ee2b98d9e0508c800e7332d18cf1d7b61691",
       "official_id": "Metadata/Items/Gem/SupportGemWildshardsThree",
@@ -169685,7 +170044,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "be714064a08abfb153ca321bd559a144246695fcbc59636d925ea6b89aaeda71",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "She holds in her hand a shattered crystal, a vision of her desire: to",
+        "see her sister's silver palace obliterated, to see it cast across the",
+        "heavens. One cross word, and the sky will rain down her fury."
+      ]
     },
     {
       "slug": "Skittering_Stone_I",
@@ -169694,7 +170058,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Skittering_Stone_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SkitteringStone.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/skitteringstone.webp",
       "icon_alt": "Skittering Stone I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7ef9a87ffd4dd26390ab49823c7759398cd38589f708b6bdd5ad82df583b5b3c",
       "official_id": "Metadata/Items/Gem/SupportGemSkitteringStone",
@@ -169855,7 +170219,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Skittering_Stone_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SkitteringStone.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/skitteringstone.webp",
       "icon_alt": "Skittering Stone II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/09b70cc4217dc1311cd0e54bd4caf16b7ca190916bb5efd349994ddbd19bfa4f",
       "official_id": "Metadata/Items/Gem/SupportGemSkitteringStoneTwo",
@@ -170016,7 +170380,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Slow_Potency",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/EncumberanceSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/encumberancesupport.webp",
       "icon_alt": "Slow Potency",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/cf27f7bdef7b4d172b95b55a3dbae4dcf7f6b5deb3cbe7505c6cab436f5ccc91",
       "official_id": "Metadata/Items/Gems/SupportGemEncumbrance",
@@ -170116,7 +170480,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Soul_Drain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ManaOnCull.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/manaoncull.webp",
       "icon_alt": "Soul Drain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/713b1c44511f995b5f360f83ed9b73ac084f68a63a16a8ded111aa35d78115a9",
       "official_id": "Metadata/Items/Gems/SupportGemSoulDrain",
@@ -170206,7 +170570,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Soulbreaker",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SoulbreakerSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/soulbreakersupport.webp",
       "icon_alt": "Soulbreaker",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/ad715e4af01b6c52875752755b1757af9e73a832739fc5256ac1442de5e066ef",
       "official_id": "Metadata/Items/Gem/SupportGemSoulbreaker",
@@ -170332,7 +170696,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Spar",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SparSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/sparsupport.webp",
       "icon_alt": "Spar",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9139c0540d54dc8338f35586c523408ba022377f23b09bb712d4b643dcdff705",
       "official_id": "Metadata/Items/Gem/SupportGemSpar",
@@ -170432,7 +170796,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Spectral_Volley",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SpectralArrowsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/spectralarrowssupport.webp",
       "icon_alt": "Spectral Volley",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/811610547395d758663c81ef5675b9ed99f4eb2230a521027ef7fd7e9c657379",
       "official_id": "Metadata/Items/Gem/SupportGemSpectralVolley",
@@ -170592,7 +170956,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Spell_Cascade",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SpellCascadeSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/spellcascadesupport.webp",
       "icon_alt": "Spell Cascade",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dc68be1c25d54ad1f3446eb1199784fd7e0bf27d131fc1d8c30c15265ad6d193",
       "official_id": "Metadata/Items/Gem/SupportGemSpellCascade",
@@ -170722,7 +171086,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Spell_Echo",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SpellEchoSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/spellechosupport.webp",
       "icon_alt": "Spell Echo",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a3df6cdae930518b4847268cf948cb1e9b588ca9b588dd29a182b8f43ffea31f",
       "official_id": "Metadata/Items/Gems/SupportGemSpellEcho",
@@ -170852,7 +171216,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Splinter_Totem_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SplinterTotemSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/splintertotemsupport.webp",
       "icon_alt": "Splinter Totem I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6f03c53ddd58169fa2e4a375d742c7968076e7d496cc5a5a3980ba98dec16396",
       "official_id": "Metadata/Items/Gem/SupportGemSplinteringTotem",
@@ -171017,7 +171381,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Splinter_Totem_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SplinterTotemSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/splintertotemsupport.webp",
       "icon_alt": "Splinter Totem II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/6918f51035f13d24f0f8e6d1753c2e080fc90e53938f09a9fdd2fea05b0c7bff",
       "official_id": "Metadata/Items/Gem/SupportGemSplinteringTotemTwo",
@@ -171182,7 +171546,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Spreading_Frost",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/BlankBlueSupportGem.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/blankbluesupportgem.webp",
       "icon_alt": "Spreading Frost",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3eb03f7dc51d70dbc62e13e381ee604c99c5472622703e94db4c600a7cfc652b",
       "official_id": "Metadata/Items/Gems/SupportGemSpreadingFrost",
@@ -171282,7 +171646,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Static_Shocks",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/GroundingShocksSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/groundingshockssupport.webp",
       "icon_alt": "Static Shocks",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/31b187771642634b910cffbb3a3c08a0f509d4d792a6916bf5376a6726443f6e",
       "official_id": "Metadata/Items/Gem/SupportGemStaticShocks",
@@ -171493,7 +171857,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Steadfast_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChannellingAilmentThresholdSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/channellingailmentthresholdsupport.webp",
       "icon_alt": "Steadfast I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/489ec0f7562e0de0ad1fdb5c5cd63adca713e4911ca9122a44a3e494438477fd",
       "official_id": "Metadata/Items/Gem/SupportGemSteadfast",
@@ -171598,7 +171962,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Steadfast_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ChannellingAilmentThresholdSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/channellingailmentthresholdsupport.webp",
       "icon_alt": "Steadfast II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9334f7c8189b13dc7a5ee9e9a1f7ab8d58f517738efd5c3fa996df98d8f99f1c",
       "official_id": "Metadata/Items/Gem/SupportGemSteadfastTwo",
@@ -171713,7 +172077,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Stoicism_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/NoFearSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/nofearsupport.webp",
       "icon_alt": "Stoicism I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/88137b5e876881f47c6b8ca4ff1434985c00546ebaa08d66f9389f912d96551a",
       "official_id": "Metadata/Items/Gem/SupportGemStoicism",
@@ -171813,7 +172177,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Stoicism_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/NoFearSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/nofearsupport.webp",
       "icon_alt": "Stoicism II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c5f289516a3b09f45092776fe2c2678fdb50216a93d242b2cbc76ee2e34691d5",
       "official_id": "Metadata/Items/Gem/SupportGemStoicismTwo",
@@ -171913,7 +172277,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Stomping_Ground",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StompingGroundSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stompinggroundsupport.webp",
       "icon_alt": "Stomping Ground",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2ff31d59f067ab6f4553f48497f00fd0ee82b5dd2a9d0efec980a6d4a40439ab",
       "official_id": "Metadata/Items/Gem/SupportGemStompingGround",
@@ -172049,7 +172413,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Stormchain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StormchainSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stormchainsupport.webp",
       "icon_alt": "Stormchain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e7ece8e2d9654d7a7f8d3ea9b9323684d405bbb9964092d17ea0a8706a05fade",
       "official_id": "Metadata/Items/Gem/SupportGemStormchain",
@@ -172164,7 +172528,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Stormfire",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StormfireSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/stormfiresupport.webp",
       "icon_alt": "Stormfire",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/7e72da0c64ddb1898669db3c85d7f29ce27df09f75c4ada8305e99edec494c64",
       "official_id": "Metadata/Items/Gems/SupportGemStormfire",
@@ -172269,7 +172633,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Streamlined_Rounds",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/AutoShotgunSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/autoshotgunsupport.webp",
       "icon_alt": "Streamlined Rounds",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0ed1c15a1b283de097e340b0960160facbf51dbecfbc10524ba3b236e3d9894e",
       "official_id": "Metadata/Items/Gem/SupportGemStreamlinedRounds",
@@ -172409,7 +172773,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Strong_Hearted",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/StrongHeartedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/strongheartedsupport.webp",
       "icon_alt": "Strong Hearted",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/be82e1fa1617e50abb4141ba1f97e1265ef5ad1569421f3a25232b6ea548ce8e",
       "official_id": "Metadata/Items/Gem/SupportGemStrongHearted",
@@ -172519,7 +172883,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Stun_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/OverpowerSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/overpowersupport.webp",
       "icon_alt": "Stun I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f633812b9aab6a388699589806bc8deb8150a48aecece670c2c70d4de0a8002a",
       "official_id": "Metadata/Items/Gems/SupportGemOverpower",
@@ -172614,7 +172978,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Stun_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/OverpowerSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/overpowersupport.webp",
       "icon_alt": "Stun II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/55d9b46507e5c1436da906a098af0ea7d8f54e64fc825bad3a488218b864380a",
       "official_id": "Metadata/Items/Gems/SupportGemOverpowerTwo",
@@ -172709,7 +173073,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Stun_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/OverpowerSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/overpowersupport.webp",
       "icon_alt": "Stun III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2e4e841cd9193b5fb706248c35b279f98aec33a56d450475be18cc4ac5174c42",
       "official_id": "Metadata/Items/Gems/SupportGemOverpowerThree",
@@ -172814,11 +173178,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Styrn's_Ferocity",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/KnightsFerocity.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/knightsferocity.webp",
       "icon_alt": "Styrn's Ferocity",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemStyrnsFerocity",
       "tags": [
+        "Support",
         "Lineage",
         "Physical"
       ],
@@ -172851,6 +173216,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Styrn's Ferocity"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -172911,7 +173280,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "21a547b2e2b5328157adfe7ec6a22d36d2bd5e8ba949b2badd2a996f4caa40be",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "Each knight who encountered Styrn challenged",
+        "him to the traditional duel. One by one, he fought",
+        "his way across all of Middengard... and beyond."
+      ]
     },
     {
       "slug": "Styrn's_Mountain",
@@ -172920,11 +173294,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Styrn's_Mountain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/KnightsLegacy.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/knightslegacy.webp",
       "icon_alt": "Styrn's Mountain",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemStyrnsMountain",
       "tags": [
+        "Support",
         "Lineage"
       ],
       "source": "poe2db-detail",
@@ -172956,6 +173331,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Styrn's Núi"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -173012,7 +173391,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "ef30289af94e984693e7316b69a4592c69470c2977baa2eb150e9267135ced72",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "Bound by his oath to the Runefathers, Styrn the",
+        "Indomitable refused to bow to Cadigan the First.",
+        "His resistance laid the seeds for future defiance."
+      ]
     },
     {
       "slug": "Supercritical",
@@ -173021,7 +173405,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Supercritical",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IncreasedCritDamageSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/increasedcritdamagesupport.webp",
       "icon_alt": "Supercritical",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/76432d78932c176bdc16e9ee3bc83f81fbb7c9c5879f24bb263237727f11cac1",
       "official_id": "Metadata/Items/Gems/SupportGemSupercritical",
@@ -173121,7 +173505,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Swift_Affliction_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SwiftAfflictionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/swiftafflictionsupport.webp",
       "icon_alt": "Swift Affliction I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c8a89177ab7735d426479d18067111a1697afa03b2298e66193bd8922529017e",
       "official_id": "Metadata/Items/Gem/SupportGemSwiftAffliction",
@@ -173231,7 +173615,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Swift_Affliction_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SwiftAfflictionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/swiftafflictionsupport.webp",
       "icon_alt": "Swift Affliction II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fe892be99d9f69d84382a59f9f4d74c8a9c394a8c4d3298b8c2c23b4f41f3ee6",
       "official_id": "Metadata/Items/Gem/SupportGemSwiftAfflictionTwo",
@@ -173341,7 +173725,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Swift_Affliction_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SwiftAfflictionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/swiftafflictionsupport.webp",
       "icon_alt": "Swift Affliction III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/8107b8e9e57a498805063abeeb7d3df40c5836997394f221928da59f09f10a15",
       "official_id": "Metadata/Items/Gem/SupportGemSwiftAfflictionThree",
@@ -173451,7 +173835,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Syzygy",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/SyzygySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/syzygysupport.webp",
       "icon_alt": "Syzygy",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/94fec0b42ecc8cdd3d70c57bbef17a9832cbd71e2c523e2549914088238c412b",
       "official_id": "Metadata/Items/Gem/SupportGemSyzygy",
@@ -173586,7 +173970,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Tacatis_Ire",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageTacati.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagetacati.webp",
       "icon_alt": "Tacati's Ire",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2b5d46e980ba884893faa91ddd4af84b6e6e9278c81079fc05e485e04ff6d483",
       "official_id": "Metadata/Items/Gem/SupportGemTacatisIre",
@@ -173682,7 +174066,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "2f1e92d679421b4acc9cfa08fb1fd00b6fb2590e47386e00f4667c5b2c0b907d",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "He almost saved the Vaal. His unique poison made it past",
+        "the Queen's cupbearers; he had only to direct his anger...",
+        "but in her presence, he could feel naught but lust."
+      ]
     },
     {
       "slug": "Tangmazu's_Thurible",
@@ -173691,11 +174080,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Tangmazu's_Thurible",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/TangmazusThurible.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/tangmazusthurible.webp",
       "icon_alt": "Tangmazu's Thurible",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemTangmazusThurible",
       "tags": [
+        "Support",
         "Lineage",
         "Minion",
         "Persistent"
@@ -173734,6 +174124,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Tangmazu's Thurible"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -173818,7 +174212,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "470c056d544becc08a7d25d257c47bceaeff34f3ad11c4f97059e3df980835dc",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "In his roiling fog, their fear becomes form.",
+        "Dark truths unveiled by a shroud. They see only",
+        "their perception of him, and thus, he is remade."
+      ]
     },
     {
       "slug": "Tasalios_Rhythm",
@@ -173827,7 +174226,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Tasalios_Rhythm",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageTasalio.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagetasalio.webp",
       "icon_alt": "Tasalio's Rhythm",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b6d01ebb0df6bd552163f21d4b67572fc75cdce025fe31ce9cbab03bffd87675",
       "official_id": "Metadata/Items/Gem/SupportGemTasaliosRhythm",
@@ -173928,7 +174327,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "a333ce55c7cfbb3470f156a9d97fdb23b43ce9307c8a1215ca00d04ded8ca73e",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The Chieftain built a grand waikoama, and boasted that",
+        "it could never be sunk. Tasalio grinned, and the waves",
+        "rolled in, tilting the ship, cresting higher and higher..."
+      ]
     },
     {
       "slug": "Tawhoas_Tending",
@@ -173937,7 +174341,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Tawhoas_Tending",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Tukohama.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/tukohama.webp",
       "icon_alt": "Tawhoa's Tending",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9740ef7534e02f93ec34eb2d51c4c6682b2b654cb940679c2f80c3922ef18d50",
       "official_id": "Metadata/Items/Gem/SupportGemHardyTotemsThree",
@@ -174104,7 +174508,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "57bf70179817d59f188ed3390846fd3d46444f88f38cce0be016ae3e5246f471",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "A scavenging warrior found Tawhoa meditating in a grove.",
+        "\"There is only so much jade in this world,\" intoned the god.",
+        "\"Take my gift to your tribe. Ironwood will grow for all time.\""
+      ]
     },
     {
       "slug": "Tear",
@@ -174113,7 +174522,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Tear",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TearSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/tearsupport.webp",
       "icon_alt": "Tear",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/9c9c7638e5bade5598e47e3872b1ab7ee6ee34e199208e29e11910fcc59b3f28",
       "official_id": "Metadata/Items/Gem/SupportGemTear",
@@ -174228,7 +174637,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Tecrods_Revenge",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageTecrod.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagetecrod.webp",
       "icon_alt": "Tecrod's Revenge",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/bd62a08b0c5b27ff1b6556cbac482d4c8cb253818a8b61ec28dcadbc7b3dee6b",
       "official_id": "Metadata/Items/Gem/SupportGemTecrodsRevenge",
@@ -174354,7 +174763,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "1ae95aecd0aa34e4fecf7a33bc6c11341a241dc7d0d647565947afadf7255b77",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The Lich Lords destroyed his body, but with his dying fury,",
+        "Tecrod found a way. He lurks deep, in the blood, in the flesh,",
+        "in the Well... perhaps walking among them even now, unseen."
+      ]
     },
     {
       "slug": "Tectonic_Slams",
@@ -174363,7 +174777,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Tectonic_Slams",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/CascadingSlams.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/cascadingslams.webp",
       "icon_alt": "Tectonic Slams",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e76194f046177c4399bc6deb47df4b820c14352ddcf14f86b5eb93bf968234bf",
       "official_id": "Metadata/Items/Gems/SupportGemSlamAftershocks",
@@ -174508,7 +174922,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Thornskin_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ThornskinSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/thornskinsupport.webp",
       "icon_alt": "Thornskin I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0f633c425594b04878edc0f2abc52de178d9758498e0ffa34af458b23be3607a",
       "official_id": "Metadata/Items/Gem/SupportGemThornskin",
@@ -174618,7 +175032,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Thornskin_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ThornskinSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/thornskinsupport.webp",
       "icon_alt": "Thornskin II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a8e4e6e56040c719a74b82ad227c6596619a7d1a18a6d98dfcc98b29f0378e76",
       "official_id": "Metadata/Items/Gem/SupportGemThornskinTwo",
@@ -174728,7 +175142,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Thrill_of_the_Kill",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ThrilloftheKillSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/thrillofthekillsupport.webp",
       "icon_alt": "Thrill of the Kill",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4008d10607e79c1d1fb1c3ce71bda4a58cc332795f8afaf0215dc32bf45e12c1",
       "official_id": "Metadata/Items/Gems/SupportGemThrillOfTheKill",
@@ -174838,7 +175252,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Thrill_of_the_Kill_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ThrilloftheKillSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/thrillofthekillsupport.webp",
       "icon_alt": "Thrill of the Kill II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/683958cd521d19c06743bbf884eb6aef84ff8609487e290a9828437c72dd4ecc",
       "official_id": "Metadata/Items/Gems/SupportGemThrillOfTheKillTwo",
@@ -174958,7 +175372,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Tireless",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TirelessSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/tirelesssupport.webp",
       "icon_alt": "Tireless",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/2c4d16b9ac35f229df6ffedc9319a9faa25cdf1d24851c34cdf9b1ab6e10a30c",
       "official_id": "Metadata/Items/Gem/SupportGemTireless",
@@ -175063,7 +175477,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Tremors",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnstableEarthSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unstableearthsupport.webp",
       "icon_alt": "Tremors",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/73104828f4384b6b7daa230a1f4449224ccf561e660a7e9621cfcacdd9762813",
       "official_id": "Metadata/Items/Gem/SupportGemTremors",
@@ -175198,11 +175612,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Trickster's_Shard",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/TrickstersShard.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/trickstersshard.webp",
       "icon_alt": "Trickster's Shard",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemTrickstersShard",
       "tags": [
+        "Support",
         "Lineage",
         "Spell",
         "AoE",
@@ -175245,6 +175660,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Trickster's Shard"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -175336,7 +175755,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "964e7bda5bec504ca27871d6e34e7462b760d5d2692429447c8b97bfef127f57",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "They'd cast him out, declared him a dark omen. Their judgement",
+        "rattled in his head. He'd no control over crops, or herds, but",
+        "that mattered little. Upon his return, their fear was his weapon."
+      ]
     },
     {
       "slug": "Tul's_Avalanche",
@@ -175345,11 +175769,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Tul's_Avalanche",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/TulsProgeny.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/tulsprogeny.webp",
       "icon_alt": "Tul's Avalanche",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemTulsAvalanche",
       "tags": [
+        "Support",
         "Lineage",
         "Spell",
         "AoE"
@@ -175387,6 +175812,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Tul's Avalanche"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -175467,7 +175896,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "9aade638261b7d687a7fdb4852abe35a4c9fb6e54e6f40b3fdc78c51a0d2b3fe",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "Then, there was movement. What once preserved them",
+        "now pulled them free from their silence. In the",
+        "absence of stillness, their screams echoed."
+      ]
     },
     {
       "slug": "Tuls_Stillness",
@@ -175476,7 +175910,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Tuls_Stillness",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageTul.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagetul.webp",
       "icon_alt": "Tul's Stillness",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b2671f9a5d6b0692a88b7c5f2be78af43357893e0ea3abd4eb02deaae45002db",
       "official_id": "Metadata/Items/Gem/SupportGemTulsStillness",
@@ -175592,7 +176026,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "5747c5a2db05e695da4329226b79a224d38ab07ca59bca6e8c64250a5a6f039c",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"Countless graves glow silently in endless rows that stretch",
+        "on unseen. The living lie within, but do not decay, do not",
+        "die. Their eyes remain open, their essence stilled, waiting.\""
+      ]
     },
     {
       "slug": "Tumult",
@@ -175601,7 +176040,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Tumult",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TumultSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/tumultsupport.webp",
       "icon_alt": "Tumult",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/fe59500afea7e91a8f354c7f7b2e66191d9d3cc684470fb9a9591b91c255c623",
       "official_id": "Metadata/Items/Gem/SupportGemTumult",
@@ -175696,7 +176135,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Uhtreds_Augury",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageUhtredGreater.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageuhtredgreater.webp",
       "icon_alt": "Uhtred's Augury",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d9b6c765209bfbae685d6988168b9feea7b9445e00200b4d3209ed87f8841719",
       "official_id": "Metadata/Items/Gem/SupportGemUhtredsAugury",
@@ -175787,7 +176226,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "bdc30b9e89c8158d38eadc747b3d50a88f10351a854ec872804e42a1fe352aac",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Studying the ill omens of the stars, Uhtred came to suspect",
+        "something was very wrong among the first Kalguurans.",
+        "Olroth, Vorana, Medved... three there were. Three dangers."
+      ]
     },
     {
       "slug": "Uhtred's_Constellation",
@@ -175796,11 +176240,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Uhtred's_Constellation",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/UhtredsConstellation.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/uhtredsconstellation.webp",
       "icon_alt": "Uhtred's Constellation",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemUhtredsConstellation",
       "tags": [
+        "Support",
         "Lineage"
       ],
       "source": "poe2db-detail",
@@ -175834,6 +176279,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Uhtred's Constellation"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -175898,7 +176347,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "04cc001585748a5fa25a40d1c5ce97915e56e556c7f3ff1ba938213d6b9c7db5",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"In the stars, I see our future. My plans are laid,",
+        "lines tracing a constellation. You may only see",
+        "pieces, but I see the whole, and it will be glorious.\""
+      ]
     },
     {
       "slug": "Uhtreds_Exodus",
@@ -175907,7 +176361,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Uhtreds_Exodus",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageUhtredLesser.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageuhtredlesser.webp",
       "icon_alt": "Uhtred's Exodus",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/83f4af38bf8ecbf3ab59975906669070832d4696784783fcdd5926a1c11e6622",
       "official_id": "Metadata/Items/Gem/SupportGemUhtredsExodus",
@@ -175998,7 +176452,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "6498d1db4eb26cc4e966d6a06da65562c15a25d89857f15bf632ac379a1f01b9",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "By the time Uhtred realised the truth, only Vorana remained",
+        "to defend them. While the rest fled, she implanted her flesh",
+        "with gems and set forth alone to face the endless hordes."
+      ]
     },
     {
       "slug": "Uhtreds_Omen",
@@ -176007,7 +176466,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Uhtreds_Omen",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageUhtredStandard.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageuhtredstandard.webp",
       "icon_alt": "Uhtred's Omen",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0aaffd8120d4666cf71b6db32620191eb8fb1c7c29f97345654f69a09fb6cc77",
       "official_id": "Metadata/Items/Gem/SupportGemUhtredsOmen",
@@ -176098,7 +176557,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "f30412192d6752660ebaef377a590d92a2657b32b3dbc0dedbe5dccdbae94f91",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Day and night, his priests followed each of the Kalguuran",
+        "heroes. When Medved disappeared, Uhtred grew even more",
+        "paranoid. Now, only two remained... Olroth and Vorana."
+      ]
     },
     {
       "slug": "Uhtred's_Rite",
@@ -176107,11 +176571,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Uhtred's_Rite",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/UthredsChalice.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/uthredschalice.webp",
       "icon_alt": "Uhtred's Rite",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemUhtredsRite",
       "tags": [
+        "Support",
         "Lineage",
         "Duration"
       ],
@@ -176146,6 +176611,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Uhtred's Rite"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -176214,7 +176683,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "4834032f2c4d23a7a76c91d8ebd75873e1423eb2fc95c369414b5e259234e0b7",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"To control the stars, we swallow the firmament.",
+        "We imbibe the truth. We are filled with the void.",
+        "We embrace the vast emptiness, or we die.\""
+      ]
     },
     {
       "slug": "Unabating",
@@ -176223,7 +176697,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Unabating",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnabatingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unabatingsupport.webp",
       "icon_alt": "Unabating",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/38097ab1a8405602841d3965324db6f1978b5912d6716587037525ab773a4cb1",
       "official_id": "Metadata/Items/Gem/SupportGemUnabating",
@@ -176323,7 +176797,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Unbending",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnbendingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unbendingsupport.webp",
       "icon_alt": "Unbending",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eb9b94c64a1d1f3b0a74c6226fecb2a9b04c47d609e434de52c9ef8df6ec7ec8",
       "official_id": "Metadata/Items/Gem/SupportGemUnbending",
@@ -176423,7 +176897,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Unbreakable",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnbreakableSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unbreakablesupport.webp",
       "icon_alt": "Unbreakable",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1a2db00f2e73cbffe3a8764ae298e193f9c47ab9ef74ada46f50a510175f0b29",
       "official_id": "Metadata/Items/Gems/SupportGemUnbreakable",
@@ -176523,7 +176997,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Undermine",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UndermineSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/underminesupport.webp",
       "icon_alt": "Undermine",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d4780651bc21a374936e19397e8800a8bdf16cdedd3e7224353dfec6787b9455",
       "official_id": "Metadata/Items/Gem/SupportGemUndermine",
@@ -176628,7 +177102,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Unerring_Power",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/DiscountSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/discountsupport.webp",
       "icon_alt": "Unerring Power",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/eed6af279971ba51870ae4c6e088311200634cd8507bfa534d60d6b685713c9c",
       "official_id": "Metadata/Items/Gem/SupportGemUnerringPower",
@@ -176733,7 +177207,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Unleash",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnleashSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unleashsupport.webp",
       "icon_alt": "Unleash",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/21e26216cca97f49da3021fc22d67a5322c636f80c90e0f9a59332b1fd09c4e9",
       "official_id": "Metadata/Items/Gems/SupportGemUnleash",
@@ -176878,7 +177352,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Unsteady_Tempo",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnsteadyTempoSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unsteadytemposupport.webp",
       "icon_alt": "Unsteady Tempo",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/160b7ddc6125088b6d9c47db6000d254f0e961518eb69d530434a5f183f6be7f",
       "official_id": "Metadata/Items/Gem/SupportGemUnsteadyTempo",
@@ -176956,7 +177430,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Untouchable",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UntouchableSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/untouchablesupport.webp",
       "icon_alt": "Untouchable",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/5040fe5d57e921b469dd7a5163601d454a19eceffe898f653351b6de61ca1b3e",
       "official_id": "Metadata/Items/Gem/SupportGemUntouchable",
@@ -177056,7 +177530,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Unyielding",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UnyieldingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/unyieldingsupport.webp",
       "icon_alt": "Unyielding",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4dfd21f515da2614574ac8729e43c72bcf6e0847e01213b477850033be8bf23b",
       "official_id": "Metadata/Items/Gem/SupportGemUnyielding",
@@ -177161,7 +177635,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Upheaval_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UpheavalSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/upheavalsupport.webp",
       "icon_alt": "Upheaval I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/60ffab94fc1a4f1386111f3fc7baaadc9c09917fa2a7b5c5a92f034339f5ff79",
       "official_id": "Metadata/Items/Gem/SupportGemUpheaval",
@@ -177271,7 +177745,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Upheaval_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UpheavalSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/upheavalsupport.webp",
       "icon_alt": "Upheaval II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/73f487c5eef901a56e1771f189bbdf41967cdb5f733fce890bc874e513ec8b03",
       "official_id": "Metadata/Items/Gem/SupportGemUpheavalTwo",
@@ -177381,7 +177855,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Upwelling_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UpwellingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/upwellingsupport.webp",
       "icon_alt": "Upwelling I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/1a27640056bffbcda4b027cecf8310a7490d507dc770c3e7d59d4c14590a5374",
       "official_id": "Metadata/Items/Gem/SupportGemUpwelling",
@@ -177491,7 +177965,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Upwelling_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/UpwellingSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/upwellingsupport.webp",
       "icon_alt": "Upwelling II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/df83af1566fc8838bf07ac68062f0cb439be65b52df0daebb14dd9b714a93ec6",
       "official_id": "Metadata/Items/Gem/SupportGemUpwellingTwo",
@@ -177601,7 +178075,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Urgent_Totems_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TotemPlacementSpeedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/totemplacementspeedsupport.webp",
       "icon_alt": "Urgent Totems I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/170db8e2902ef74e67c92e2dbb25feb89cb043f5c864a1aceeaaa15fd4c66e41",
       "official_id": "Metadata/Items/Gem/SupportGemAncestralUrgency",
@@ -177701,7 +178175,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Urgent_Totems_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TotemPlacementSpeedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/totemplacementspeedsupport.webp",
       "icon_alt": "Urgent Totems II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4d410bdcf759ef0b59f4ff2395cf0a27fa3b32894ca5bb97d0a064ca90747d85",
       "official_id": "Metadata/Items/Gem/SupportGemAncestralUrgencyTwo",
@@ -177801,7 +178275,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Urgent_Totems_III",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/TotemPlacementSpeedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/totemplacementspeedsupport.webp",
       "icon_alt": "Urgent Totems III",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3d071caa45d696b8eb41d9447cde71a094f397653aa62aec2c364a1cc69b211f",
       "official_id": "Metadata/Items/Gem/SupportGemAncestralUrgencyThree",
@@ -177921,7 +178395,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Uruks_Smelting",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageArmourBreak.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagearmourbreak.webp",
       "icon_alt": "Uruk's Smelting",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0c57ca6e3e91bd7f2ece524589787795d6eaef4f49ba25e103b4c61887681757",
       "official_id": "Metadata/Items/Gems/SupportGemUruksSmelting",
@@ -178027,7 +178501,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "002cd7f35d399e780e1582a8bee4197499518f6355737235b3d7eaabcebeeae2",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "The volcano roared, but there was no thunder, only the boom",
+        "of Uruk's hammer. Wraeclast had forgotten the old alliance,",
+        "but by the Molten One's will, the fires would rage again."
+      ]
     },
     {
       "slug": "Uul-Netols_Embrace",
@@ -178036,7 +178515,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Uul-Netols_Embrace",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageUulNetol.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineageuulnetol.webp",
       "icon_alt": "Uul-Netol's Embrace",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/84ea08533bc276a1ee466ba17b2b2ac4cf68a3dd98527f8100e74b39b034017e",
       "official_id": "Metadata/Items/Gem/SupportGemUulNetolsEmbrace",
@@ -178152,7 +178631,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "a3b6da51e3732e6e412b46f7aa462bb1cfe41f9b8cc42c73653744c4958eff81",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"The Lords could not breathe, so they grew new lungs.",
+        "The Lords could not venture, so they grew new skin.",
+        "The Lords were alone, so they grew us, to serve them.\""
+      ]
     },
     {
       "slug": "Vanguard_I",
@@ -178161,7 +178645,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Vanguard_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/GuardonStunSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/guardonstunsupport.webp",
       "icon_alt": "Vanguard I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/816e0ad0b5e4cb5d3025dddbaecd3d2f4f72164e1784ef7dd26db496772901de",
       "official_id": "Metadata/Items/Gem/SupportGemVanguard",
@@ -178256,7 +178740,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Vanguard_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/GuardonStunSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/guardonstunsupport.webp",
       "icon_alt": "Vanguard II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/b80ed09a2492c7dd400c912c5e76106e8d1ea53bc40e4c07adaba0af7c356b9a",
       "official_id": "Metadata/Items/Gem/SupportGemVanguardTwo",
@@ -178351,7 +178835,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Varashtas_Blessing",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageDjinn.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagedjinn.webp",
       "icon_alt": "Varashta's Blessing",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/f8ff718061b2a35cb841d90784ada73e0f5f955bd4f631e8dd3727ac3b02af83",
       "official_id": "Metadata/Items/Gem/SupportGemVarashtasBlessing",
@@ -178447,7 +178931,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "1b76a5bda4fc3c0464eb928021d3a3df63bbd403ed41ed5096db305231748839",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"These traditions we shall set forth, so that we may remain",
+        "strong, so that we may endure throughout the ages. Not to",
+        "bind, not to dominate, but to protect... and guide.\""
+      ]
     },
     {
       "slug": "Verglas",
@@ -178456,7 +178945,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Verglas",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/VerglasSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/verglassupport.webp",
       "icon_alt": "Verglas",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4e335efa92d63649cc39f4f1631b2da3a492352d1595efdcfb86094b7e786a24",
       "official_id": "Metadata/Items/Gem/SupportGemVerglas",
@@ -178561,7 +179050,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Vilentas_Propulsion",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageVilenta.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagevilenta.webp",
       "icon_alt": "Vilenta's Propulsion",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a0685f62242f22a6ac26282a63f532bff2c58d4d8c8ec6896f1d14e107357c53",
       "official_id": "Metadata/Items/Gems/SupportGemVilentasPropulsion",
@@ -178662,7 +179151,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "12af46768d2818ab53045ba173614709925bd011496a2db44d4aa9c80796f757",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Day and night, she hammered away, obsessed with proving it",
+        "could be done; a vast ring of artifice under the earth, pushing",
+        "energy to speeds never before seen - all to prove Qotra wrong."
+      ]
     },
     {
       "slug": "Vitality_I",
@@ -178671,7 +179165,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Vitality_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/VitalitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/vitalitysupport.webp",
       "icon_alt": "Vitality I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/70d10c676a59293f63091d336416568df71f501462ebb8baa3e9c65e3d846451",
       "official_id": "Metadata/Items/Gems/SupportGemVitality",
@@ -178781,7 +179275,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Vitality_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/VitalitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/vitalitysupport.webp",
       "icon_alt": "Vitality II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/36b0e6dd070a89137b09e4c78d9cf0c7a98518fc3b095a3d703cb2930ed5d33c",
       "official_id": "Metadata/Items/Gems/SupportGemVitalityTwo",
@@ -178891,7 +179385,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Volatile_Power",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/VolatilePowerSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/volatilepowersupport.webp",
       "icon_alt": "Volatile Power",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d6f750f3d8e42aa57113c482c8054283b91bfe24f14291bdc278fea98bfcd392",
       "official_id": "Metadata/Items/Gem/SupportGemVolatilePower",
@@ -178991,7 +179485,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Volatility",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/InstabilitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/instabilitysupport.webp",
       "icon_alt": "Volatility",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/4201f92f7cb0cba1808bc1da4f46efd048e074bca5740d8dfcd40acdf0020ab8",
       "official_id": "Metadata/Items/Gem/SupportGemVolatility",
@@ -179096,7 +179590,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Volcanic_Eruption",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/VolcanicEruptionSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/volcaniceruptionsupport.webp",
       "icon_alt": "Volcanic Eruption",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/68fad2bc60a305c7d426239f2c8555994183fe1b24dee88267fecffafb0afbf8",
       "official_id": "Metadata/Items/Gem/SupportGemVolcanicEruption",
@@ -179297,7 +179791,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Volt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/VoltSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/voltsupport.webp",
       "icon_alt": "Volt",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e15cb93d4631ce62b7841e3e7c0155b1cdedde5a1803ef4916ff63d78d97c873",
       "official_id": "Metadata/Items/Gem/SupportGemVolt",
@@ -179432,11 +179926,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Vorana's_Siege",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/VoranasSiege.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/voranassiege.webp",
       "icon_alt": "Vorana's Siege",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemVoranasSiege",
       "tags": [
+        "Support",
         "Lineage",
         "AoE"
       ],
@@ -179469,6 +179964,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Vorana's Công Thành"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -179529,7 +180028,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "110670417d46feb8dfaa905607736e3e7188f887739a5047ee22cdd0c971f58d",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "\"Your laws of war are asinine. I shall prevail!",
+        "I'll crush every pawn you put before me.",
+        "Face me, coward! Play by my rules.\""
+      ]
     },
     {
       "slug": "Vruun's_Aftermath",
@@ -179538,11 +180042,12 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "item",
       "source_url": "https://poe2db.tw/us/Vruun's_Aftermath",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/VruunsAftermath.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/vruunsaftermath.webp",
       "icon_alt": "Vruun's Aftermath",
       "hover_url": "",
       "official_id": "Metadata/Items/Gem/SupportGemVruunsAftermath",
       "tags": [
+        "Support",
         "Lineage",
         "Warcry"
       ],
@@ -179577,6 +180082,10 @@ window.POE2_SKILL_GEMS = {
           "vi": "Vruun's Aftermath"
         },
         "tags": [
+          {
+            "en": "Support",
+            "vi": "Support"
+          },
           {
             "en": "Lineage",
             "vi": "Lineage"
@@ -179645,7 +180154,12 @@ window.POE2_SKILL_GEMS = {
       },
       "source_hash": null,
       "detail_hash": "d25e8035c062ac54fbaecad635f1b7d51431a78336592fc4c725e74dcdccbc92",
-      "updated_at": "2026-11-07T10:56:35.795Z"
+      "updated_at": "2026-11-07T10:56:35.795Z",
+      "flavour_text": [
+        "Vruun tore through Tul's preserved, shattering their",
+        "bodies with reckless malice. \"The will of the Lords!\"",
+        "he roared over his decimation. \"All broods must serve.\""
+      ]
     },
     {
       "slug": "Vruuns_Inevitability",
@@ -179654,7 +180168,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Vruuns_Inevitability",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/VruunsSpike.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/vruunsspike.webp",
       "icon_alt": "Vruun's Inevitability",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/c2f9fb41952783fd83462820a01c7d37e09afa9260596378a066374d0bf7c874",
       "official_id": "Metadata/Items/Gem/SupportGemVruunsInevitability",
@@ -179780,7 +180294,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "490a3723927829cf73bfebf5e805736bcb16e0458b67b9b4934e1d5b05bf6b0e",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"If you think you've won, it's only because you don't",
+        "understand their strategy. Each Vruun you kill only",
+        "teaches the next one how to endure against you.\""
+      ]
     },
     {
       "slug": "Warm_Blooded",
@@ -179789,7 +180308,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Warm_Blooded",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WarmBloodedSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/warmbloodedsupport.webp",
       "icon_alt": "Warm Blooded",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/60bdde51ea26956b8de3166ff5868bade2a4d47b23bec51cc6e2e1bb03659e3a",
       "official_id": "Metadata/Items/Gem/SupportGemWarmBlooded",
@@ -179899,7 +180418,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Wildfire",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/IgniteProliferationSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/igniteproliferationsupport.webp",
       "icon_alt": "Wildfire",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/dd2050f332978c6f812465ff3435d480addf63feea7e8a8d6cb91748ad7b4d5e",
       "official_id": "Metadata/Items/Gems/SupportGemWildfire",
@@ -180009,7 +180528,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Wildshards_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WildshardsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/wildshardssupport.webp",
       "icon_alt": "Wildshards I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/a198f077ee0d4a4b042e99daea5d87d672261070bfeb4e634f075019d73ee040",
       "official_id": "Metadata/Items/Gem/SupportGemWildshards",
@@ -180119,7 +180638,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Wildshards_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WildshardsSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/wildshardssupport.webp",
       "icon_alt": "Wildshards II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/3db3eb2b166c5e186710b6cb76d42022a43bb56ba915cd529d35fcd0ddc6880a",
       "official_id": "Metadata/Items/Gem/SupportGemWildshardsTwo",
@@ -180224,7 +180743,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Wind_Wave",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/KnockbackWaveSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/knockbackwavesupport.webp",
       "icon_alt": "Wind Wave",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e50fe7c7078470d7cfc56f60e9a7df5c931985647f4320d2e358f421126769bf",
       "official_id": "Metadata/Items/Gems/SupportGemWindWave",
@@ -180370,7 +180889,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Window_of_Opportunity_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WindowOfOpportunitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/windowofopportunitysupport.webp",
       "icon_alt": "Window of Opportunity I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/e9ad0cf22dd2d243ee128d3d7461c8682eb946753422adbcec25bbfe7838662a",
       "official_id": "Metadata/Items/Gems/SupportGemWindowOfOpportunity",
@@ -180480,7 +180999,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "green",
       "source_url": "https://poe2db.tw/us/Window_of_Opportunity_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WindowOfOpportunitySupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/windowofopportunitysupport.webp",
       "icon_alt": "Window of Opportunity II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/0fc2a03f909fae89cf155e0560a58ec5253a9e4cfffb0f0274bcf2cf790e2b0e",
       "official_id": "Metadata/Items/Gems/SupportGemWindowOfOpportunityTwo",
@@ -180600,7 +181119,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Withering_Touch",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/WitheringTouchSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/witheringtouchsupport.webp",
       "icon_alt": "Withering Touch",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/82b05a752752da26cf388a31319495b46c7777c300a0613dc98ed912b5cc6ace",
       "official_id": "Metadata/Items/Gems/SupportGemWitheringTouch",
@@ -180735,7 +181254,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Xibaquas_Rending",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageXibaqua.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagexibaqua.webp",
       "icon_alt": "Xibaqua's Rending",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/092835ebf0cf869d23ddb76effc4a345cb7e62030cb79b86d699b8d97f7f438e",
       "official_id": "Metadata/Items/Gem/SupportGemXibaquasRending",
@@ -180892,7 +181411,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "6e222a7ba5837548ac70cd5c4f2d22bb2537eed896a287176b8f0c7d32d133b4",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Born of the gods, his treachery was met with divine fury.",
+        "One by one, the gods reclaimed their flesh, until all that",
+        "remained was a droplet of pure light: the first Vaal."
+      ]
     },
     {
       "slug": "Xophs_Pyre",
@@ -180901,7 +181425,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Xophs_Pyre",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/LineageXoph.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/lineagexoph.webp",
       "icon_alt": "Xoph's Pyre",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/07990b032cc4e3be615ed5b844ffae7dbbbaf02f11f8bce5f5fcfdc38eb8a97f",
       "official_id": "Metadata/Items/Gem/SupportGemXophsPyre",
@@ -181017,7 +181541,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "30302dbdb7f957332b1c2a93175e72f20371c3348659bb71b3e60c7ada3c5780",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"They drank until only dust remained. Ate until their gums",
+        "bled rust. Such was their greed, the only thing that remains",
+        "of the Broken Sun... is the Red Pyre, the Torus Eternal.\""
+      ]
     },
     {
       "slug": "Zarokhs_Refrain",
@@ -181026,7 +181555,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Zarokhs_Refrain",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/Zarokh.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/zarokh.webp",
       "icon_alt": "Zarokh's Refrain",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/47904a16bb0e9ba33c9a1074f104326d9c9bc4bfba4ac1d1b3b07910edcbb363",
       "official_id": "Metadata/Items/Gem/SupportGemZarokhsRefrain",
@@ -181147,7 +181676,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "b248139a985b605f1913ae8b978bea2563c3e364f895c7a42ae1f5f24253b8fe",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Reliving the same day for all time, Zarokh raged against",
+        "the moments that made up his prison. There would be",
+        "no redemption, for he had broken his only barya."
+      ]
     },
     {
       "slug": "Zarokhs_Revolt",
@@ -181156,7 +181690,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Zarokhs_Revolt",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/ZarokhsRevolt.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/zarokhsrevolt.webp",
       "icon_alt": "Zarokh's Revolt",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/733b72f3ea553658ceda66193bb42554d577777dfbf7c8a4b2d58cf1b9167011",
       "official_id": "Metadata/Items/Gems/SupportGemZarokhsRevolt",
@@ -181292,7 +181826,12 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "7adf9648e79f8bb21012f3137d8dc6262657762ac23cf5bea9999e80a3ceb52b",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "Zarokh's ire built over the centuries as he planned his escape.",
+        "The Afarud would find what he sought, and then... the",
+        "Weeping Black would break the chains of his prison."
+      ]
     },
     {
       "slug": "Zenith_I",
@@ -181301,7 +181840,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Zenith_I",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ManatenanceSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/manatenancesupport.webp",
       "icon_alt": "Zenith I",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/48362ab6892c358ec2a6073654694cb9ae20ac40386087a568bd3b14fddf4d77",
       "official_id": "Metadata/Items/Gem/SupportGemZenith",
@@ -181406,7 +181945,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "blue",
       "source_url": "https://poe2db.tw/us/Zenith_II",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DArt/SkillIcons/Support/ManatenanceSupport.webp",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/support/manatenancesupport.webp",
       "icon_alt": "Zenith II",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/579e8f61b28c7463bf5aaaf73e8749d2aca4c2485e1cb27f2075028b6fafa36c",
       "official_id": "Metadata/Items/Gem/SupportGemZenithTwo",
@@ -181516,7 +182055,7 @@ window.POE2_SKILL_GEMS = {
       "tier": null,
       "color": "red",
       "source_url": "https://poe2db.tw/us/Zerphis_Infamy",
-      "icon_url": "https://cdn.poe2db.tw/image/Art/2DItems/Gems/New/NewSupport/Lineage/ZerphisLegacy.webp",
+      "icon_url": "/assets/ggpk-icons/art/2ditems/gems/new/newsupport/lineage/zerphislegacy.webp",
       "icon_alt": "Zerphi's Infamy",
       "hover_url": "https://cdn.poe2db.tw/cache2/us/Poe_Data_GemEffects_hover/d0c1a136f5fd398de8a0fcca13785787e7b363712118318e1e56fd304c1c2e7c",
       "official_id": "Metadata/Items/Gem/SupportGemZerphisLegacy",
@@ -181642,10 +182181,443 @@ window.POE2_SKILL_GEMS = {
         ]
       },
       "detail_hash": "ae3f5212c530fec5c3e8c0fa34df71fabd077b14e4fa4d65f06a38c2542d3e7f",
-      "updated_at": "2026-11-07T10:35:30.350Z"
+      "updated_at": "2026-11-07T10:35:30.350Z",
+      "flavour_text": [
+        "\"It was the quality of his heinous acts that set him apart, not",
+        "the quantity... all of the physical trauma inflicted occurred",
+        "while the victim was still alive. Perhaps this was the key.\""
+      ]
+    },
+    {
+      "slug": "Curse_on_Block",
+      "name": "Curse on Block",
+      "tier": null,
+      "color": "item",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castonmeleeblockskill.webp",
+      "icon_alt": "Curse on Block",
+      "hover_url": "",
+      "tags": [
+        "Buff",
+        "Persistent",
+        "Trigger",
+        "Meta"
+      ],
+      "source_hash": "pob:Metadata/Items/Gems/SkillGemCastCurseOnBlock",
+      "status": "active",
+      "summary_en": "While active, gains Energy when you Block and triggers socketed Curses on reaching maximum Energy.",
+      "properties": [
+        "Persistent, Trigger, Meta",
+        "Level: (1—20)"
+      ],
+      "requirements": [
+        "Requires: Level (1—90), (4—86) Dex, (4—86) Int"
+      ],
+      "mods": [],
+      "sections": [
+        {
+          "title": "Curse on Block",
+          "lines": [
+            "Gains 25 Energy when you Block",
+            "(0—57)% increased Energy gained",
+            "Triggers all Socketed Spells and loses all Energy on reaching maximum Energy",
+            "base deal no damage [1]",
+            "generic ongoing trigger maximum energy is total of socketed skills [1]",
+            "skill desired amount override [1]"
+          ]
+        },
+        {
+          "title": "Support",
+          "lines": [
+            "Has 10 maximum Energy per 0.1 seconds of base cast time of Socketed Spells",
+            "triggered by generic ongoing trigger [1]"
+          ]
+        }
+      ],
+      "i18n": {
+        "name": {
+          "en": "Curse on Block",
+          "vi": "Curse on Block"
+        },
+        "tags": [
+          {
+            "en": "Buff",
+            "vi": "Buff"
+          },
+          {
+            "en": "Persistent",
+            "vi": "Persistent"
+          },
+          {
+            "en": "Trigger",
+            "vi": "Trigger"
+          },
+          {
+            "en": "Meta",
+            "vi": "Meta"
+          }
+        ],
+        "summary": {
+          "en": "While active, gains Energy when you Block and triggers socketed Curses on reaching maximum Energy.",
+          "vi": "While active, gains Energy when you Block and triggers socketed Curses on reaching maximum Energy."
+        },
+        "properties": [
+          {
+            "en": "Persistent, Trigger, Meta",
+            "vi": "Persistent, Trigger, Meta"
+          },
+          {
+            "en": "Level: (1—20)",
+            "vi": "Cấp: (1—20)"
+          }
+        ],
+        "requirements": [
+          {
+            "en": "Requires: Level (1—90), (4—86) Dex, (4—86) Int",
+            "vi": "Yêu cầu: Cấp (1—90), (4—86) Dex, (4—86) Int"
+          }
+        ],
+        "mods": [],
+        "sections": [
+          {
+            "title": {
+              "en": "Curse on Block",
+              "vi": "Curse on Block"
+            },
+            "lines": [
+              {
+                "en": "Gains 25 Energy when you Block",
+                "vi": "Nhận 25 Energy khi bạn Block"
+              },
+              {
+                "en": "(0—57)% increased Energy gained",
+                "vi": "(0—57)% tăng Energy gained"
+              },
+              {
+                "en": "Triggers all Socketed Spells and loses all Energy on reaching maximum Energy",
+                "vi": "Trigger tất cả Socketed Spells và mất toàn bộ Energy khi đạt Energy tối đa"
+              },
+              {
+                "en": "base deal no damage [1]",
+                "vi": "base gây no Damage [1]"
+              },
+              {
+                "en": "generic ongoing trigger maximum energy is total of socketed skills [1]",
+                "vi": "generic ongoing Trigger Energy tối đa là total của Skills được socket [1]"
+              },
+              {
+                "en": "skill desired amount override [1]",
+                "vi": "skill desired amount override [1]"
+              }
+            ]
+          },
+          {
+            "title": {
+              "en": "Support",
+              "vi": "Support"
+            },
+            "lines": [
+              {
+                "en": "Has 10 maximum Energy per 0.1 seconds of base cast time of Socketed Spells",
+                "vi": "Có 10 Energy tối đa cho mỗi 0.1 giây Cast Time cơ bản của Socketed Spells"
+              },
+              {
+                "en": "triggered by generic ongoing trigger [1]",
+                "vi": "Trigger bởi generic ongoing Trigger [1]"
+              }
+            ]
+          }
+        ]
+      },
+      "detail_hash": "pob:Metadata/Items/Gems/SkillGemCastCurseOnBlock",
+      "updated_at": "2026-11-24T08:15:22.963Z",
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastCurseOnBlock"
+    },
+    {
+      "slug": "Cast_on_Melee_Kill",
+      "name": "Cast on Melee Kill",
+      "tier": null,
+      "color": "item",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castonmeleekillskill.webp",
+      "icon_alt": "Cast on Melee Kill",
+      "hover_url": "",
+      "tags": [
+        "Buff",
+        "Persistent",
+        "Trigger",
+        "Meta"
+      ],
+      "source_hash": "pob:Metadata/Items/Gems/SkillGemCastOnMeleeKill",
+      "status": "active",
+      "summary_en": "While active, gains Energy when you kill enemies with Melee Attacks and triggers socketed spells on reaching maximum Energy.",
+      "properties": [
+        "Persistent, Trigger, Meta",
+        "Level: 1"
+      ],
+      "requirements": [
+        "Requires: Level 1, 5 Str, 5 Int"
+      ],
+      "mods": [],
+      "sections": [
+        {
+          "title": "Cast on Melee Kill",
+          "lines": [
+            "Gains 300 Energy when you kill an enemy with a Melee Hit",
+            "Triggers all Socketed Spells and loses all Energy on reaching maximum Energy",
+            "base deal no damage [1]",
+            "generic ongoing trigger maximum energy is total of socketed skills [1]"
+          ]
+        },
+        {
+          "title": "Support",
+          "lines": [
+            "Has 10 maximum Energy per 0.1 seconds of base cast time of Socketed Spells",
+            "Socketed Skills deal 50% more Damage",
+            "triggered by generic ongoing trigger [1]"
+          ]
+        }
+      ],
+      "i18n": {
+        "name": {
+          "en": "Cast on Melee Kill",
+          "vi": "Cast on Melee Kill"
+        },
+        "tags": [
+          {
+            "en": "Buff",
+            "vi": "Buff"
+          },
+          {
+            "en": "Persistent",
+            "vi": "Persistent"
+          },
+          {
+            "en": "Trigger",
+            "vi": "Trigger"
+          },
+          {
+            "en": "Meta",
+            "vi": "Meta"
+          }
+        ],
+        "summary": {
+          "en": "While active, gains Energy when you kill enemies with Melee Attacks and triggers socketed spells on reaching maximum Energy.",
+          "vi": "While active, gains Energy when you kill enemies with Melee Attacks and triggers socketed spells on reaching maximum Energy."
+        },
+        "properties": [
+          {
+            "en": "Persistent, Trigger, Meta",
+            "vi": "Persistent, Trigger, Meta"
+          },
+          {
+            "en": "Level: 1",
+            "vi": "Cấp: 1"
+          }
+        ],
+        "requirements": [
+          {
+            "en": "Requires: Level 1, 5 Str, 5 Int",
+            "vi": "Requires: Level 1, 5 Str, 5 Int"
+          }
+        ],
+        "mods": [],
+        "sections": [
+          {
+            "title": {
+              "en": "Cast on Melee Kill",
+              "vi": "Cast on Melee Kill"
+            },
+            "lines": [
+              {
+                "en": "Gains 300 Energy when you kill an enemy with a Melee Hit",
+                "vi": "Gains 300 Energy when you kill an enemy with a Melee Hit"
+              },
+              {
+                "en": "Triggers all Socketed Spells and loses all Energy on reaching maximum Energy",
+                "vi": "Trigger tất cả Socketed Spells và mất toàn bộ Energy khi đạt Energy tối đa"
+              },
+              {
+                "en": "base deal no damage [1]",
+                "vi": "base gây no Damage [1]"
+              },
+              {
+                "en": "generic ongoing trigger maximum energy is total of socketed skills [1]",
+                "vi": "generic ongoing Trigger Energy tối đa là total của Skills được socket [1]"
+              }
+            ]
+          },
+          {
+            "title": {
+              "en": "Support",
+              "vi": "Support"
+            },
+            "lines": [
+              {
+                "en": "Has 10 maximum Energy per 0.1 seconds of base cast time of Socketed Spells",
+                "vi": "Có 10 Energy tối đa cho mỗi 0.1 giây Cast Time cơ bản của Socketed Spells"
+              },
+              {
+                "en": "Socketed Skills deal 50% more Damage",
+                "vi": "Socketed Skills deal 50% more Damage"
+              },
+              {
+                "en": "triggered by generic ongoing trigger [1]",
+                "vi": "Trigger bởi generic ongoing Trigger [1]"
+              }
+            ]
+          }
+        ]
+      },
+      "detail_hash": "pob:Metadata/Items/Gems/SkillGemCastOnMeleeKill",
+      "updated_at": "2026-11-24T08:15:22.963Z",
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnMeleeKill"
+    },
+    {
+      "slug": "Cast_on_Melee_Stun",
+      "name": "Cast on Melee Stun",
+      "tier": null,
+      "color": "red",
+      "source_url": "",
+      "icon_url": "/assets/ggpk-icons/art/2dart/skillicons/castonmeleestunskill.webp",
+      "icon_alt": "Cast on Melee Stun",
+      "hover_url": "",
+      "tags": [
+        "Buff",
+        "Persistent",
+        "Trigger",
+        "Meta"
+      ],
+      "source_hash": "pob:Metadata/Items/Gems/SkillGemCastOnMeleeStun",
+      "status": "active",
+      "summary_en": "While active, gains Energy when you Stun enemies with Melee Attacks and triggers socketed spells on reaching maximum Energy.",
+      "properties": [
+        "Persistent, Trigger, Meta",
+        "Level: 1"
+      ],
+      "requirements": [
+        "Requires: Level 1, 6 Str"
+      ],
+      "mods": [],
+      "sections": [
+        {
+          "title": "Cast on Melee Stun",
+          "lines": [
+            "Gains 1000 Energy per enemy Power when you Heavy Stun an enemy with a Melee Hit",
+            "Gains 200 Energy per enemy Power when you Stun an enemy with a Melee Hit",
+            "Triggers all Socketed Spells and loses all Energy on reaching maximum Energy",
+            "base deal no damage [1]",
+            "generic ongoing trigger maximum energy is total of socketed skills [1]"
+          ]
+        },
+        {
+          "title": "Support",
+          "lines": [
+            "Has 10 maximum Energy per 0.1 seconds of base cast time of Socketed Spells",
+            "triggered by generic ongoing trigger [1]"
+          ]
+        }
+      ],
+      "i18n": {
+        "name": {
+          "en": "Cast on Melee Stun",
+          "vi": "Cast on Melee Stun"
+        },
+        "tags": [
+          {
+            "en": "Buff",
+            "vi": "Buff"
+          },
+          {
+            "en": "Persistent",
+            "vi": "Persistent"
+          },
+          {
+            "en": "Trigger",
+            "vi": "Trigger"
+          },
+          {
+            "en": "Meta",
+            "vi": "Meta"
+          }
+        ],
+        "summary": {
+          "en": "While active, gains Energy when you Stun enemies with Melee Attacks and triggers socketed spells on reaching maximum Energy.",
+          "vi": "While active, gains Energy when you Stun enemies with Melee Attacks and triggers socketed spells on reaching maximum Energy."
+        },
+        "properties": [
+          {
+            "en": "Persistent, Trigger, Meta",
+            "vi": "Persistent, Trigger, Meta"
+          },
+          {
+            "en": "Level: 1",
+            "vi": "Cấp: 1"
+          }
+        ],
+        "requirements": [
+          {
+            "en": "Requires: Level 1, 6 Str",
+            "vi": "Requires: Level 1, 6 Str"
+          }
+        ],
+        "mods": [],
+        "sections": [
+          {
+            "title": {
+              "en": "Cast on Melee Stun",
+              "vi": "Cast on Melee Stun"
+            },
+            "lines": [
+              {
+                "en": "Gains 1000 Energy per enemy Power when you Heavy Stun an enemy with a Melee Hit",
+                "vi": "Gains 1000 Energy per enemy Power when you Heavy Stun an enemy with a Melee Hit"
+              },
+              {
+                "en": "Gains 200 Energy per enemy Power when you Stun an enemy with a Melee Hit",
+                "vi": "Gains 200 Energy per enemy Power when you Stun an enemy with a Melee Hit"
+              },
+              {
+                "en": "Triggers all Socketed Spells and loses all Energy on reaching maximum Energy",
+                "vi": "Trigger tất cả Socketed Spells và mất toàn bộ Energy khi đạt Energy tối đa"
+              },
+              {
+                "en": "base deal no damage [1]",
+                "vi": "base gây no Damage [1]"
+              },
+              {
+                "en": "generic ongoing trigger maximum energy is total of socketed skills [1]",
+                "vi": "generic ongoing Trigger Energy tối đa là total của Skills được socket [1]"
+              }
+            ]
+          },
+          {
+            "title": {
+              "en": "Support",
+              "vi": "Support"
+            },
+            "lines": [
+              {
+                "en": "Has 10 maximum Energy per 0.1 seconds of base cast time of Socketed Spells",
+                "vi": "Có 10 Energy tối đa cho mỗi 0.1 giây Cast Time cơ bản của Socketed Spells"
+              },
+              {
+                "en": "triggered by generic ongoing trigger [1]",
+                "vi": "Trigger bởi generic ongoing Trigger [1]"
+              }
+            ]
+          }
+        ]
+      },
+      "detail_hash": "pob:Metadata/Items/Gems/SkillGemCastOnMeleeStun",
+      "updated_at": "2026-11-24T08:15:22.963Z",
+      "gem_type": "skill",
+      "official_id": "Metadata/Items/Gems/SkillGemCastOnMeleeStun"
     }
   ],
   "support_source_url": "https://poe2db.tw/us/Support_Gems",
-  "active_total": 458,
+  "active_total": 461,
   "support_total": 611
 };
