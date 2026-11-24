@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useRef } from "react";
-import { createCamera, fitCameraToBounds, panCamera, screenToWorld, zoomCameraAt, type Camera } from "./camera";
+import { createCamera, fitCameraToBounds, panCamera, screenToWorld, zoomCameraAt, type Bounds, type Camera } from "./camera";
+import { fitViewToBounds } from "./fit";
 import { renderPassiveTree, type RenderOptions } from "./draw";
 import { boundsForNodes, filteredTreeNodes, hitTestNode, type PassiveNode, type PassiveTreeModel } from "./tree";
 
@@ -23,14 +24,16 @@ interface Props {
   onToggle: (node: PassiveNode) => void;
   onZoomChange?: (zoom: number) => void;
   /** Tree edits drawn on the nodes (see RenderOptions). */
-  marks?: Pick<RenderOptions, "weaponSets" | "attributeChoices" | "socketedJewels" | "dropSocketIds" | "dropTargetId">;
+  marks?: Pick<RenderOptions, "weaponSets" | "attributeChoices" | "socketedJewels" | "dropSocketIds" | "dropTargetId" | "focusId">;
+  /** What "fit" shows (the build's allocated nodes); null or absent: the whole visible tree. */
+  fitBounds?: Bounds | null;
   /** Drag and drop of something carrying this data type (a jewel from the inventory). */
   dropType?: string;
   /** "over": return true when the node takes the drop. "drop" carries the dragged data. */
   onNodeDrop?: (phase: "over" | "leave" | "drop", node: PassiveNode | null, x: number, y: number, data?: string) => boolean | void;
 }
 
-function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle, onZoomChange, marks, dropType, onNodeDrop }: Props) {
+function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, classFilter, ascendancyFilter, command, onHover, onToggle, onZoomChange, marks, dropType, onNodeDrop, fitBounds }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraRef = useRef<Camera>(createCamera());
   const dragging = useRef(false);
@@ -47,6 +50,10 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
   const commandNonce = useRef(-1);
   const commandRef = useRef<CanvasCommand | null>(command);
   const onZoomChangeRef = useRef(onZoomChange);
+  // Read only when the view is fitted (open, resize, the Fit button), so allocating a
+  // node does not move the camera.
+  const fitBoundsRef = useRef(fitBounds);
+  fitBoundsRef.current = fitBounds;
 
   useEffect(() => {
     onZoomChangeRef.current = onZoomChange;
@@ -84,7 +91,16 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
       canvas.style.height = `${camera.height}px`;
     };
 
-    const fitCurrentView = (padding = 72) => {
+    const fitCurrentView = (padding = 72, wholeTree = false) => {
+      const build = wholeTree ? null : fitBoundsRef.current;
+      if (build) {
+        const minZoom = camera.width < 600 ? 0.016 : 0.012;
+        const view = fitViewToBounds(build, camera.width, camera.height, { padding: Math.min(padding, camera.width / 8, camera.height / 8), minZoom });
+        camera.x = view.x;
+        camera.y = view.y;
+        camera.zoom = view.zoom;
+        return;
+      }
       const opts = renderOptsRef.current;
       const rows = filteredTreeNodes(tree, opts.classFilter, opts.ascendancyFilter);
       fitCameraToBounds(camera, boundsForNodes(rows, tree.bounds), padding);
@@ -112,7 +128,7 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
           camera.y = Number(nextCommand.y);
           camera.zoom = Math.min(Math.max(Number(nextCommand.zoom ?? 0.28), minZoom), 1.8);
         } else {
-          fitCurrentView(nextCommand.type === "reset" ? 96 : 64);
+          fitCurrentView(nextCommand.type === "reset" ? 96 : 64, nextCommand.type === "reset");
         }
       }
       const nextDpr = targetDpr();
@@ -131,13 +147,18 @@ function TreeCanvasImpl({ tree, searchIds, allocatedIds, allocationEnabled, clas
       if (!raf) raf = requestAnimationFrame(renderFrame);
     };
 
+    let fittedWidth = 0;
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect();
       camera.width = Math.max(Math.floor(rect?.width ?? window.innerWidth), 1);
       camera.height = Math.max(Math.floor(rect?.height ?? window.innerHeight), 1);
       camera.dpr = targetDpr();
       applyCanvasSize();
-      fitCurrentView();
+      // A phone's address bar showing or hiding changes only the height: keep the view.
+      if (camera.width !== fittedWidth) {
+        fittedWidth = camera.width;
+        fitCurrentView();
+      }
       scheduleDraw();
     };
 

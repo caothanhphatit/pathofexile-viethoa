@@ -21,6 +21,8 @@ export interface PassiveNode {
   /** Jewel socket and its PoB rule: "sinister" takes no unique, "basic" only a basic non-unique jewel. */
   jewelSocket?: "normal" | "sinister" | "basic";
   viewProjection?: PassiveViewProjection;
+  /** Stat text in the other language (English on a Vietnamese tree), for the node search. */
+  searchText?: string;
 }
 
 export interface PassiveViewProjection {
@@ -191,6 +193,7 @@ export function parsePassiveTree(raw: any, locale: "vi" | "en" = "vi"): PassiveT
       x: finite(node.x),
       y: finite(node.y),
       stats: activeLocale === "en" ? rawStats : translatedStats,
+      searchText: translatedStats === rawStats ? "" : (activeLocale === "en" ? translatedStats : rawStats).join(" "),
       classNames,
       ascendancyName: String(node.ascendancy_name ?? node.ascendancyName ?? ""),
       iconPath: String(node.icon_path ?? ""),
