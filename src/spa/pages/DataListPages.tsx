@@ -131,6 +131,7 @@ export function SkillGemsPage({ locale }: LocaleProps) {
               image={gem.icon_url}
               badges={[gem.gem_type === "support" ? "Support" : "Skill", gem.tier ? `Tier ${gem.tier}` : "", ...tags].filter(Boolean)}
               href={`/skill-gem?slug=${encodeURIComponent(gem.slug)}`}
+              showArrow={false}
             />
           );
         })}

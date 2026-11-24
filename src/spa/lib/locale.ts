@@ -71,6 +71,8 @@ const uiCopy = {
   brand: { vi: "POE2 Việt hóa", en: "POE2 Reference" },
   language: { vi: "Ngôn ngữ", en: "Language" },
   mainNav: { vi: "Điều hướng chính", en: "Main navigation" },
+  openMenu: { vi: "Mở menu điều hướng", en: "Open navigation menu" },
+  closeMenu: { vi: "Đóng menu điều hướng", en: "Close navigation menu" },
   toggleTheme: { vi: "Đổi theme", en: "Toggle theme" },
   loadingData: { vi: "Đang tải dữ liệu...", en: "Loading data..." },
   loadingChecklist: { vi: "Đang tải checklist...", en: "Loading checklist..." },

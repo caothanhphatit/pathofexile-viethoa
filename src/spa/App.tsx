@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   activeNavKey,
   navRoutes,
@@ -47,6 +47,8 @@ export function App() {
   const route = useRoute();
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
   const [locale, setLocale] = useState<Locale>(() => normalizeLocale(localStorage.getItem("poe-locale") || document.documentElement.lang));
+  const [menuOpen, setMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const activeNav = activeNavKey(route);
   const isPassive = route.key === "passiveTree";
   const currentRouteText = routeText(route, locale);
@@ -56,6 +58,28 @@ export function App() {
   useEffect(() => {
     updateSeo(route, locale);
   }, [route, locale]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [route]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    const onPointerDown = (event: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [menuOpen]);
 
   // On narrow screens the nav scrolls sideways; bring the current page into view.
   useEffect(() => {
@@ -99,7 +123,7 @@ export function App() {
 
   return (
     <div className={isPassive ? "app app--passive" : "app"}>
-      <header className="app-header">
+      <header className="app-header" ref={headerRef}>
         <a className="brand" href="/">
           <BrandMark size={30} />
           <span>
@@ -107,11 +131,21 @@ export function App() {
             <small>{currentRouteText.shortTitle}</small>
           </span>
         </a>
-        <nav className="nav-rail" aria-label={uiText("mainNav", locale)}>
+        <nav
+          id="main-nav-rail"
+          className={menuOpen ? "nav-rail is-open" : "nav-rail"}
+          aria-label={uiText("mainNav", locale)}
+        >
           {navRoutes.map((item) => {
             const itemText = routeText(item, locale);
             return (
-              <a className={activeNav === item.key ? "is-active" : ""} href={item.path} key={item.key} title={itemText.shortTitle}>
+              <a
+                className={activeNav === item.key ? "is-active" : ""}
+                href={item.path}
+                key={item.key}
+                title={itemText.shortTitle}
+                onClick={() => setMenuOpen(false)}
+              >
                 <span className="material-symbols-rounded" aria-hidden="true">{item.icon}</span>
                 <span className="nav-label">{itemText.shortTitle}</span>
               </a>
@@ -128,6 +162,16 @@ export function App() {
           </div>
           <button className="icon-button" type="button" onClick={() => setIsDark((value) => !value)} aria-label={uiText("toggleTheme", locale)}>
             <span className="material-symbols-rounded" aria-hidden="true">{isDark ? "light_mode" : "dark_mode"}</span>
+          </button>
+          <button
+            className={menuOpen ? "icon-button nav-menu-toggle is-open" : "icon-button nav-menu-toggle"}
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="main-nav-rail"
+            aria-label={uiText(menuOpen ? "closeMenu" : "openMenu", locale)}
+            onClick={() => setMenuOpen((value) => !value)}
+          >
+            <span className="material-symbols-rounded" aria-hidden="true">{menuOpen ? "close" : "menu"}</span>
           </button>
         </div>
       </header>

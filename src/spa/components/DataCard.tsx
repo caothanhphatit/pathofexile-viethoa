@@ -9,9 +9,10 @@ interface Props {
   body?: React.ReactNode;
   href?: string;
   onOpen?: () => void;
+  showArrow?: boolean;
 }
 
-export function DataCard({ title, subtitle, image, badges = [], body, href, onOpen }: Props) {
+export function DataCard({ title, subtitle, image, badges = [], body, href, onOpen, showArrow = true }: Props) {
   const [imageFailed, setImageFailed] = useState(false);
   const imageUrl = displayImageUrl(image);
   const showImage = Boolean(imageUrl && !imageFailed);
@@ -25,7 +26,7 @@ export function DataCard({ title, subtitle, image, badges = [], body, href, onOp
       <div className="data-card__body">
         <div className="data-card__title-row">
           <h3 translate="no">{title}</h3>
-          {href ? <span className="material-symbols-rounded" aria-hidden="true">arrow_forward</span> : null}
+          {href && showArrow ? <span className="material-symbols-rounded" aria-hidden="true">arrow_forward</span> : null}
         </div>
         {subtitle ? <p>{subtitle}</p> : null}
         {badges.length ? (
@@ -38,6 +39,6 @@ export function DataCard({ title, subtitle, image, badges = [], body, href, onOp
     </>
   );
 
-  if (href) return <a className="data-card" href={href} onClick={onOpen}>{content}</a>;
+  if (href) return <a className="data-card data-card--interactive" href={href} onClick={onOpen}>{content}</a>;
   return <article className="data-card">{content}</article>;
 }
