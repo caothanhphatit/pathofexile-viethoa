@@ -22,6 +22,9 @@ const contentTypes = {
   ".svg": "image/svg+xml",
   ".txt": "text/plain; charset=utf-8",
   ".webp": "image/webp",
+  ".wasm": "application/wasm",
+  ".gz": "application/octet-stream",
+  ".md": "text/markdown; charset=utf-8",
   ".xml": "application/xml; charset=utf-8",
   ".woff2": "font/woff2"
 };

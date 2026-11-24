@@ -4,6 +4,7 @@
 // the hovered node.
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { PassiveNode, PassiveTreeModel } from "../passive/tree";
+import { calcBackend, serverCalculateNodeDeltas } from "./calcBackend";
 import {
   NodePreviewStore,
   formatNodeDelta,
@@ -14,18 +15,7 @@ import {
 
 /** POST /api/builds/node-deltas, waiting and retrying while the calculator is busy. */
 export async function fetchNodeDeltas(body: Record<string, unknown>, nodeIds: string[]): Promise<NodeDeltaBatch> {
-  const request = JSON.stringify({ ...body, node_ids: nodeIds });
-  for (let attempt = 0; ; attempt += 1) {
-    const response = await fetch("/api/builds/node-deltas", { method: "POST", headers: { "Content-Type": "application/json" }, body: request });
-    const json = await response.json().catch(() => null);
-    if (response.status === 503 && attempt < 5) {
-      const wait = Math.min(Number(response.headers.get("retry-after")) || 2, 10) * 1000 * (attempt + 1);
-      await new Promise((resolve) => window.setTimeout(resolve, wait));
-      continue;
-    }
-    if (!response.ok || !json?.ok || !json.data) throw new Error(json?.error || `HTTP ${response.status}`);
-    return json.data as NodeDeltaBatch;
-  }
+  return serverCalculateNodeDeltas(body, nodeIds);
 }
 
 interface Options {
@@ -38,7 +28,10 @@ interface Options {
 }
 
 export function useNodePreview({ body, allocatedIds, paused, locale }: Options) {
-  const store = useMemo(() => new NodePreviewStore(fetchNodeDeltas, { batchSize: 40 }), []);
+  const store = useMemo(
+    () => new NodePreviewStore((reqBody, ids) => calcBackend.calculateNodeDeltas(reqBody, ids), { batchSize: 40 }),
+    []
+  );
   useSyncExternalStore(
     useCallback((listener: () => void) => store.subscribe(listener), [store]),
     () => store.snapshot
