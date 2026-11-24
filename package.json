@@ -29,6 +29,7 @@
     "dev:spa": "vite --config vite.spa.config.mjs",
     "build:spa": "vite build --config vite.spa.config.mjs",
     "build:pob-web": "node scripts/build-pob-web-bundle.mjs",
+    "bench:pob-local": "node --expose-gc scripts/bench-pob-local.mjs",
     "build:css": "tailwindcss -c tailwind.config.cjs -i ./src/styles/app.css -o ./public/dist/app.css --minify",
     "build": "npm run build:css && npm run build:spa",
     "poevh:check": "cargo check --manifest-path apps/poevh-desktop/Cargo.toml --workspace",
