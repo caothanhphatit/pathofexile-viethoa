@@ -2,7 +2,7 @@
 // increases and "more" multipliers, grouped by item / passive / gem / quest),
 // in plain Vietnamese. All explainable stats come from one queued PoB run per build
 // (src/server/pob-breakdown.mjs), so opening another stat is instant.
-import { useEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 
 import { BREAKDOWN_STATS } from "../../server/pob-breakdown.mjs";
 import { calcKey, type CalcQueue } from "../lib/calcQueue";
@@ -34,15 +34,36 @@ export function StatBreakdownDialog({ queue, body, target, locale, onClose }: {
   // Every explainable stat in one run: switching stats needs no new calculation.
   const request = useMemo(() => (body ? { ...body, full_dps: false, analysis: { breakdown: BREAKDOWN_STATS } } : null), [body]);
   const key = useMemo(() => (request ? calcKey(request) : ""), [request]);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const backdropDownRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Move focus into the breakdown dialog on open and synchronously restore it on close.
+  useLayoutEffect(() => {
+    const prevActive = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus({ preventScroll: true });
+    return () => {
+      if (prevActive && typeof prevActive.focus === "function" && prevActive.isConnected) {
+        prevActive.focus({ preventScroll: true });
+      }
+    };
+  }, []);
+
   // Queued after render (queue updates re-render other components).
   useEffect(() => {
     if (request) queue.request(request, 9);
   }, [queue, request]);
   useEffect(() => {
-    const close = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
-    window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
-  }, [onClose]);
+    const close = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      onCloseRef.current();
+    };
+    window.addEventListener("keydown", close, true);
+    return () => window.removeEventListener("keydown", close, true);
+  }, []);
 
   const entry = key ? queue.get(key) : undefined;
   const breakdown = (entry?.status === "done" ? (entry.result?.Breakdown as Record<string, StatBreakdownEntry> | undefined)?.[target.stat] : undefined);
@@ -52,14 +73,26 @@ export function StatBreakdownDialog({ queue, body, target, locale, onClose }: {
   const totals = breakdown && singleKind ? breakdownTotals(breakdown.sources) : null;
 
   return (
-    <div className="sb-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <div
+      className="sb-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        backdropDownRef.current = event.target === event.currentTarget;
+      }}
+      onClick={(event) => {
+        if (backdropDownRef.current && event.target === event.currentTarget) {
+          backdropDownRef.current = false;
+          onClose();
+        }
+      }}
+    >
       <section className="sb-dialog poe-no-tooltip" role="dialog" aria-modal="true" aria-label={vi ? `${target.label} từ đâu ra` : `Where ${target.label} comes from`}>
         <header className="sb-head">
           <div>
             <p className="sb-eyebrow">{vi ? "Chỉ số này từ đâu ra?" : "Where does this come from?"}</p>
             <h2>{target.label} <b>{target.valueText}</b></h2>
           </div>
-          <button type="button" className="pi-btn pi-btn--ghost" onClick={onClose} aria-label={vi ? "Đóng" : "Close"}>
+          <button ref={closeBtnRef} type="button" className="pi-btn pi-btn--ghost" onClick={onClose} aria-label={vi ? "Đóng" : "Close"}>
             <span className="material-symbols-rounded" aria-hidden="true">close</span>
           </button>
         </header>

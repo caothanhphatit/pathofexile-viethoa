@@ -1,0 +1,1361 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Build Planner: in-game PoE2 Skills panel & detail pane drawn purely in CSS
+   at the game's real base-art proportions (BuildSkillPanel.tsx, BuildSkillDetail.tsx).
+
+   List side (970 x 1172): block width W = 86.6% of list panel width (840 / 970),
+   centred via 6.7% side padding on .sk-list-col. All block ratios in cqw of W:
+     header 9.52cqw (80 / 840) + socket bar 13.1cqw (110 / 840) = 22.62cqw (190 / 840),
+     flush with zero seam; block gap 4.4cqw; badge 21.667cqw x 4.762cqw (182 x 40);
+     active socket 11.7cqw (98); support socket 8.7cqw (73), pitch 14.1cqw;
+     ring thickness 0.55cqw (~3px at W=565).
+
+   Detail popup (890 x 1233, list:detail = 52.2:47.8): all ratios in cqw of P:
+     title/tab strip 90cqw x 5.6cqw (800 x 50); medallion 17.4cqw (155) with
+     11.0cqw icon inside; frame inset 3.5cqw; stat rows #8888ff, pitch 3.6cqw.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.sk-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .sk-layout {
+    grid-template-columns: minmax(0, 52.2fr) minmax(0, 47.8fr);
+    gap: 12px;
+  }
+}
+
+/* List frame: 6.7% side padding centres the 86.6%-wide skill blocks (840 / 970). */
+.sk-list-col {
+  box-sizing: border-box;
+  padding: 0 6.7%;
+  min-width: 0;
+}
+
+@media (max-width: 520px) {
+  .sk-list-col {
+    padding: 0 2%;
+  }
+}
+
+.sk-list-stage {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+}
+
+.sk-detail-col,
+.sk-list,
+.sk-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.sk-list {
+  gap: max(12px, 4.4cqw);
+}
+
+.sk-list--secondary {
+  margin-top: max(10px, 2.4cqw);
+}
+
+/* ── One list block (840 x 190 = 22.62cqw total, header + socket bar flush) ─ */
+
+.sk-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  transition: opacity .12s ease;
+}
+
+.sk-row.is-disabled {
+  opacity: .5;
+}
+
+/* ── Header bar: 840 x 80 = 9.52cqw (min 44px on phones) ─────────────────── */
+
+.sk-row-head {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: max(44px, 9.52cqw);
+  border: 1px solid #5b4a2f;
+  border-radius: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(138, 116, 72, .12), transparent 55%),
+    linear-gradient(180deg, #1e1913 0%, #16120e 58%, #100e0b 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(138, 116, 72, .18),
+    inset 0 -1px 0 rgba(0, 0, 0, .75);
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+
+.sk-row:hover .sk-row-head {
+  border-color: #826c45;
+}
+
+.sk-row.is-main .sk-row-head {
+  border-color: #9e7b3f;
+  box-shadow:
+    inset 3px 0 0 #d9a043,
+    inset 0 0 0 1px rgba(138, 116, 72, .24);
+}
+
+.sk-row.is-open .sk-row-head {
+  border-color: #bfa062;
+  box-shadow:
+    inset 0 0 0 1px rgba(200, 170, 100, .28),
+    0 2px 12px rgba(0, 0, 0, .45);
+}
+
+.sk-row.is-main.is-open .sk-row-head {
+  box-shadow:
+    inset 3px 0 0 #e9b44c,
+    inset 0 0 0 1px rgba(200, 170, 100, .28),
+    0 2px 12px rgba(0, 0, 0, .45);
+}
+
+/* Reserved left square (game collapse/reorder slot) */
+.sk-collapse-stub {
+  position: absolute;
+  left: 1.24cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4.4cqw;
+  height: 4.4cqw;
+  border: 1px solid rgba(91, 74, 47, .35);
+  background: rgba(10, 9, 7, .45);
+  pointer-events: none;
+}
+
+/* Clickable left/middle zone: flex row spanning from 20.4cqw right up to LEVEL (66cqw).
+   Icon is positioned independently at 8.7cqw with exact 7.6cqw size. */
+.sk-head-main {
+  position: absolute;
+  inset: 0 34cqw 0 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: max(4px, 1.2cqw);
+  padding: 0 0 0 20.4cqw;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sk-head-main:focus-visible {
+  outline: 1px solid #d9a043;
+  outline-offset: -2px;
+}
+
+/* Skill icon: exact 7.6cqw square (phone min 32px), left edge 8.7cqw */
+.sk-row-icon {
+  position: absolute;
+  left: 8.7cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: max(32px, 7.6cqw);
+  height: max(32px, 7.6cqw);
+  border: 1px solid #5b4a2f;
+  background: #0c0a08;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, .85);
+  color: var(--nj-muted);
+  overflow: hidden;
+}
+
+.sk-row-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sk-row-icon .material-symbols-rounded {
+  font-size: max(16px, 3.6cqw);
+}
+
+/* Skill name area: spans from 20.4cqw up to the start of LEVEL minus gap */
+.sk-row-name-wrap {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: baseline;
+  gap: max(4px, 0.9cqw);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sk-row-name {
+  color: #c8b68c;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: max(12px, 3.0cqw);
+  font-weight: 400;
+  letter-spacing: .02em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+/* Gem name gets full priority while the granted-skill suffix is shown */
+.sk-row-name.is-priority {
+  flex: 0 0 auto;
+}
+
+/* Once the suffix is hidden, the gem name takes full width and ellipsizes only if needed */
+.sk-row-name.is-ellipsis {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sk-row-name-probe {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+}
+
+.sk-row-name.is-empty {
+  color: var(--nj-muted);
+  font-family: var(--poe-chrome, inherit);
+}
+
+.sk-row-owner {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: #8c7e64;
+  font-family: var(--font-body);
+  font-size: max(10px, 1.95cqw);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-row-warn {
+  flex: none;
+  color: #e0a64b;
+  font-size: max(13px, 2.5cqw);
+}
+
+/* "LEVEL:" in dim gold, number in periwinkle blue (#8888ff); right edge at 66cqw */
+.sk-row-lvl {
+  flex: none;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: max(11px, 3.0cqw);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sk-lvl-label {
+  color: #8f7c58;
+}
+
+.sk-lvl-short {
+  display: none;
+}
+
+.sk-lvl-num {
+  color: var(--poe-magic, #8888ff);
+  font-weight: 400;
+}
+
+/* Main-skill star between level (66cqw) and damage badge */
+.sk-star-btn {
+  position: absolute;
+  left: 66.0cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: max(16px, 2.7cqw);
+  height: max(16px, 2.7cqw);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #6b5d44;
+  cursor: pointer;
+  transition: color .12s ease;
+}
+
+.sk-star-btn .material-symbols-rounded {
+  font-size: max(14px, 2.7cqw);
+}
+
+.sk-star-btn:hover,
+.sk-star-btn.is-main {
+  color: #e9b44c;
+}
+
+/* Damage badge: 182 x 40 = 21.667cqw x 4.762cqw (131 x 29 @ W=606), right edge 9.6cqw */
+.sk-dmg-badge {
+  position: absolute;
+  right: 9.6cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 3.1cqw minmax(0, 1fr) 4.1cqw;
+  align-items: center;
+  width: calc(182 / 840 * 100cqw);
+  height: max(22px, calc(40 / 840 * 100cqw));
+  padding: 0;
+  border: 1px solid #5b4a2f;
+  border-radius: 0;
+  background: linear-gradient(180deg, #12100d, #0a0907);
+  box-shadow:
+    inset 0 0 0 1px rgba(138, 116, 72, .14),
+    inset 0 1px 2px rgba(0, 0, 0, .85);
+  color: #f2ead8;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  cursor: pointer;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+
+.sk-dmg-badge:hover {
+  border-color: #8a7448;
+}
+
+.sk-dmg-badge.is-open {
+  border-color: #c7a25c;
+  background: linear-gradient(180deg, #1b1710, #100e0a);
+}
+
+.sk-dmg-set {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  border-right: 1px solid #443824;
+  color: #8a7856;
+  font-size: max(10px, 2.05cqw);
+  line-height: 1;
+}
+
+.sk-dmg-val {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25cqw;
+  min-width: 0;
+  padding: 0 0.4cqw;
+  overflow: hidden;
+  color: #f2ead8;
+  font-family: var(--font-body);
+  font-size: max(10px, 2.05cqw);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Shrink text slightly for 7+ digit numbers ("DPS: 2,656,065") instead of abbreviating */
+.sk-dmg-val.is-med {
+  font-size: max(9.5px, 1.85cqw);
+}
+
+.sk-dmg-val.is-long {
+  font-size: max(8.5px, 1.55cqw);
+}
+
+.sk-dmg-kind {
+  color: #b5a687;
+  font-family: var(--poe-game, inherit);
+  font-size: 0.92em;
+}
+
+.sk-dmg-val b {
+  font-weight: 600;
+}
+
+.sk-dmg-arrow {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  border-left: 1px solid #352b1c;
+  background: linear-gradient(180deg, rgba(255, 240, 200, .06), rgba(0, 0, 0, .28));
+  color: #d6c59f;
+}
+
+.sk-dmg-badge.is-open .sk-dmg-arrow {
+  background: linear-gradient(180deg, rgba(217, 168, 78, .22), rgba(110, 82, 34, .18));
+  color: #f6e4bc;
+}
+
+.sk-badge-arrow-svg {
+  width: max(8px, 1.75cqw);
+  height: max(8px, 1.75cqw);
+  display: block;
+}
+
+/* ── Socket bar: 840 x 110 = 13.1cqw (min 48px), flush under header ──────── */
+
+.sk-sockets-bar {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: max(48px, 13.1cqw);
+  padding: 0;
+  border: 1px solid #5b4a2f;
+  border-top: 0;
+  border-radius: 0;
+  /* Pure-CSS low-contrast diamond/chain pattern on warm near-black */
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(138, 116, 72, .07), rgba(0, 0, 0, .55) 85%),
+    repeating-linear-gradient(45deg, transparent 0 11px, rgba(138, 116, 72, .08) 11px 12px, transparent 12px 24px),
+    repeating-linear-gradient(-45deg, transparent 0 11px, rgba(138, 116, 72, .08) 11px 12px, transparent 12px 24px),
+    linear-gradient(180deg, #0d0b09 0%, #14110d 50%, #0b0a08 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(138, 116, 72, .10),
+    inset 0 2px 6px rgba(0, 0, 0, .85),
+    inset 0 -2px 6px rgba(0, 0, 0, .85);
+}
+
+.sk-row.is-open .sk-sockets-bar {
+  border-color: #bfa062;
+}
+
+/* Metallic ring sockets (conic/radial metal bevel, thickness 0.55cqw, near-black inner disc) */
+.sk-socket {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  flex: none;
+  place-items: center;
+  padding: max(2.5px, 0.55cqw);
+  border: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 215deg, #4b4130, #9a8866 22%, #5a4e39 48%, #b39f78 72%, #3f3627 92%, #4b4130);
+  box-shadow:
+    0 0 0 1px #14110d,
+    0 2px 6px rgba(0, 0, 0, .85);
+  color: var(--nj-muted);
+  cursor: pointer;
+  transition: filter .12s ease, box-shadow .12s ease;
+}
+
+.sk-socket-disc {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 42%, #191611, #070605 80%);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .92);
+  overflow: hidden;
+}
+
+.sk-socket-disc img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Active gem socket: ~98 = 11.7cqw (71px @ W=606), fits cleanly inside 13.1cqw bar without overlapping above */
+.sk-socket--active {
+  position: absolute;
+  left: 12.9cqw;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: max(48px, 11.7cqw);
+  height: max(48px, 11.7cqw);
+  padding: max(3.5px, 0.72cqw);
+  box-shadow:
+    0 0 0 1.5px #18140f,
+    0 0 0 3px #5b4a2f,
+    0 3px 10px rgba(0, 0, 0, .85);
+}
+
+.sk-socket--active:hover,
+.sk-socket--active.is-open {
+  box-shadow:
+    0 0 0 1.5px #141a19,
+    0 0 0 3px var(--poe-gem, #1ba29b),
+    0 3px 10px rgba(0, 0, 0, .85);
+}
+
+/* Five support sockets: 8.7cqw (53px @ W=606), pitch 14.1cqw (85px @ W=606). Wraps cleanly if >5. */
+.sk-socket-group {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(5, 14.1cqw);
+  row-gap: max(6px, 1.4cqw);
+  justify-items: center;
+  align-items: center;
+  padding: max(4px, 0.8cqw) 0 max(4px, 0.8cqw) 21.75cqw;
+  width: 100%;
+  min-width: 0;
+}
+
+.sk-socket-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sk-socket--support,
+.sk-socket--empty {
+  width: max(36px, 8.7cqw);
+  height: max(36px, 8.7cqw);
+}
+
+/* Thin attribute colour ring inside the metallic ring when gem colour is known */
+.sk-socket--support.is-color-red .sk-socket-disc {
+  box-shadow: inset 0 0 0 2px rgba(208, 66, 54, .85), inset 0 2px 5px rgba(0, 0, 0, .9);
+}
+
+.sk-socket--support.is-color-green .sk-socket-disc {
+  box-shadow: inset 0 0 0 2px rgba(56, 178, 96, .85), inset 0 2px 5px rgba(0, 0, 0, .9);
+}
+
+.sk-socket--support.is-color-blue .sk-socket-disc {
+  box-shadow: inset 0 0 0 2px rgba(78, 134, 232, .88), inset 0 2px 5px rgba(0, 0, 0, .9);
+}
+
+.sk-socket--support .sk-support-initial {
+  font-size: max(11px, 2.2cqw);
+  color: #8fd3cf;
+  font-weight: 700;
+}
+
+/* Empty socket: metallic ring with dark centre; faint "+" only on hover/focus */
+.sk-socket--empty .sk-socket-plus {
+  opacity: 0;
+  color: #c8b68c;
+  font-size: max(16px, 3.4cqw);
+  transition: opacity .12s ease;
+}
+
+.sk-socket--empty:hover .sk-socket-plus,
+.sk-socket--empty:focus-visible .sk-socket-plus {
+  opacity: .8;
+}
+
+/* Dark hollow recess (no metallic ring) for locked positions up to 5; clickable to add a socket */
+.sk-socket-recess {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: max(36px, 8.7cqw);
+  height: max(36px, 8.7cqw);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #070605 64%, #16130f 100%);
+  box-shadow:
+    inset 0 2px 7px rgba(0, 0, 0, .94),
+    0 1px 0 rgba(138, 116, 72, .08);
+  color: #8a7448;
+  cursor: pointer;
+  transition: box-shadow .12s ease;
+}
+
+.sk-recess-plus {
+  opacity: 0;
+  font-size: max(14px, 3.0cqw);
+  transition: opacity .12s ease;
+}
+
+.sk-socket-recess:hover,
+.sk-socket-recess:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px rgba(138, 116, 72, .55),
+    inset 0 2px 7px rgba(0, 0, 0, .94);
+  outline: none;
+}
+
+.sk-socket-recess:hover .sk-recess-plus,
+.sk-socket-recess:focus-visible .sk-recess-plus {
+  opacity: .75;
+}
+
+.sk-socket--support:hover,
+.sk-socket--empty:hover,
+.sk-socket--support:focus-visible,
+.sk-socket--empty:focus-visible,
+.sk-socket-wrap.is-open .sk-socket {
+  box-shadow:
+    0 0 0 1px #141a19,
+    0 0 0 2.5px var(--poe-gem, #1ba29b),
+    0 2px 6px rgba(0, 0, 0, .85);
+  outline: none;
+}
+
+.sk-socket-wrap.is-disabled .sk-socket {
+  opacity: .35;
+  filter: grayscale(.7);
+}
+
+.sk-socket-wrap.is-superseded .sk-socket {
+  opacity: .55;
+  outline: 2px dashed #e0a64b;
+  outline-offset: 1px;
+}
+
+.sk-row-strip {
+  margin-top: 6px;
+}
+
+.sk-inline-detail {
+  margin-top: 8px;
+}
+
+/* Compact phone containers (< 420px / < 360px) */
+@container (max-width: 419px) {
+  .sk-collapse-stub {
+    display: none;
+  }
+
+  .sk-head-main {
+    right: 35cqw;
+    padding-left: 13.5cqw;
+    gap: 4px;
+  }
+
+  .sk-row-icon {
+    left: 2.0cqw;
+  }
+
+  .sk-star-btn {
+    left: 65.0cqw;
+  }
+
+  .sk-dmg-badge {
+    right: 1.5cqw;
+    width: 28cqw;
+    min-width: 96px;
+    grid-template-columns: 16px minmax(0, 1fr) 20px;
+  }
+}
+
+@container (max-width: 360px) {
+  .sk-lvl-full {
+    display: none;
+  }
+
+  .sk-lvl-short {
+    display: inline;
+  }
+}
+
+/* ── Detail panel (890 x 1233 base art; container-query scaled in cqw of P) ─ */
+
+.sk-detail-empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 220px;
+  padding: 28px 20px;
+  border: 1px dashed #3d3324;
+  border-radius: 0;
+  background: rgba(15, 13, 11, .55);
+  color: var(--nj-muted);
+  text-align: center;
+}
+
+.sk-detail-empty .material-symbols-rounded {
+  font-size: 26px;
+  color: #847254;
+}
+
+.sk-detail-empty p {
+  margin: 0;
+  max-width: 320px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sk-detail {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid #5b4a2f;
+  border-radius: 0;
+  background: #0f0d0b;
+  box-shadow:
+    inset 0 0 0 1px rgba(138, 116, 72, .16),
+    0 12px 32px rgba(0, 0, 0, .6);
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .sk-detail-col {
+    position: sticky;
+    top: 12px;
+  }
+
+  .sk-detail {
+    max-height: calc(100vh - 24px);
+  }
+}
+
+/* Title strip: 90% P width x 5.6% P height (576 x 36 @ P=640) */
+.sk-detail-titlebar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: max(34px, 5.6cqw);
+  padding: 0;
+  border-bottom: 1px solid #5b4a2f;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(138, 116, 72, .14), transparent 70%),
+    linear-gradient(180deg, #211c15 0%, #16130f 65%, #110f0c 100%);
+  box-shadow: inset 0 1px 0 rgba(138, 116, 72, .22);
+}
+
+.sk-detail-strip-inner {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90cqw;
+  min-height: max(34px, 5.6cqw);
+  padding: 2px max(34px, 6.5cqw);
+}
+
+.sk-detail-title {
+  margin: 0;
+  color: #f2ead8;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: max(16px, 3.4cqw);
+  font-weight: 400;
+  letter-spacing: .04em;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.sk-detail-title.is-empty {
+  color: var(--nj-muted);
+  font-family: var(--poe-chrome, inherit);
+}
+
+.sk-detail-close {
+  position: absolute;
+  right: max(6px, 1.4cqw);
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: max(24px, 4.2cqw);
+  height: max(24px, 4.2cqw);
+  padding: 0;
+  border: 1px solid #7d4a34;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #5b2619, #240f0a);
+  color: #f2ead8;
+  font-size: max(12px, 2.1cqw);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sk-detail-close:hover {
+  border-color: #b56547;
+  color: #fff;
+}
+
+/* Icon band: medallion 17.4cqw (111px @ P=640) framing 11.0cqw (70px @ P=640) circular icon */
+.sk-detail-band {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: max(5px, 1.1cqw);
+  padding: max(10px, 2.0cqw) max(12px, 3.5cqw);
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(138, 116, 72, .09), transparent 60%),
+    linear-gradient(180deg, #1b1814 0%, #14120f 55%, #0f0d0b 100%);
+}
+
+.sk-detail-medallion {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: max(74px, 17.4cqw);
+  height: max(74px, 17.4cqw);
+  padding: 0;
+  border: 1px solid #5b4a2f;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, #262119 0%, #15120e 58%, #0d0b09 75%, #2b241a 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(138, 116, 72, .22),
+    inset 0 0 12px rgba(0, 0, 0, .9),
+    0 6px 18px rgba(0, 0, 0, .85);
+  color: var(--nj-muted);
+  cursor: pointer;
+}
+
+.sk-detail-medallion:hover {
+  border-color: var(--poe-gem, #1ba29b);
+}
+
+.sk-detail-orb-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: max(46px, 11.0cqw);
+  height: max(46px, 11.0cqw);
+  border: 2px solid #8a7448;
+  border-radius: 50%;
+  background: #0a0907;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, .9);
+  overflow: hidden;
+}
+
+.sk-detail-orb-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sk-detail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.sk-chip-btn {
+  padding: 1px 7px;
+  border: 1px solid #5b4a2f;
+  border-radius: 0;
+  background: #171410;
+  color: #c8b68c;
+  font-family: var(--poe-chrome, inherit);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.sk-chip-btn:hover {
+  border-color: var(--poe-gem, #1ba29b);
+  color: #f2ead8;
+}
+
+.sk-detail-triggered {
+  margin: 0;
+  color: var(--nj-muted);
+  font-size: 11.5px;
+  text-align: center;
+}
+
+.sk-detail-strip {
+  flex: none;
+  padding: 8px max(10px, 3.5cqw) 4px;
+}
+
+/* Content frame: inset 3.5cqw from both sides, 1px bronze border, internal scroll */
+.sk-detail-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 max(10px, 3.5cqw) max(8px, 1.8cqw);
+  border: 1px solid #5b4a2f;
+  border-radius: 0;
+  background: #0b0a08;
+  box-shadow:
+    inset 0 0 0 1px rgba(138, 116, 72, .10),
+    inset 0 0 18px rgba(0, 0, 0, .75);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Stat-set / skill-part tabs centred at top of frame (strip width 90cqw, min-height 5.6cqw) */
+.sk-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: max(4px, 1.0cqw);
+  width: 90cqw;
+  max-width: 100%;
+  min-height: max(28px, 5.6cqw);
+  margin: 0 auto;
+  padding: max(4px, 0.8cqw) max(6px, 1.2cqw) 0;
+  border-bottom: 1px solid #5b4a2f;
+  background: #13110d;
+}
+
+.sk-tab {
+  min-width: max(84px, 21.0cqw);
+  min-height: max(24px, 4.2cqw);
+  padding: 3px max(8px, 1.6cqw);
+  margin-bottom: -1px;
+  border: 1px solid #453924;
+  border-bottom: 1px solid #5b4a2f;
+  border-radius: 3px 3px 0 0;
+  background: #100e0b;
+  color: #8f8064;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: max(11px, 2.05cqw);
+  letter-spacing: .03em;
+  cursor: pointer;
+  transition: color .12s ease, background-color .12s ease;
+}
+
+.sk-tab:hover {
+  color: #c8b68c;
+}
+
+.sk-tab.is-active {
+  border-color: #7d6742;
+  border-bottom-color: #0b0a08;
+  background: linear-gradient(180deg, #1f1a14, #0b0a08);
+  color: #f2ead8;
+}
+
+.sk-frame-inner {
+  padding: max(8px, 1.6cqw) 0 max(12px, 2.4cqw);
+}
+
+.sk-frame-pad {
+  padding-left: max(12px, 2.6cqw);
+  padding-right: max(12px, 5.0cqw);
+}
+
+.sk-detail-desc {
+  margin: 0 0 max(6px, 1.4cqw);
+  padding: 0 max(12px, 5.0cqw) 0 max(12px, 2.6cqw);
+  color: #c8b68c;
+  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
+  font-size: max(12px, 2.25cqw);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.sk-detail-desc .poe-term,
+.sk-detail-desc u {
+  text-decoration: underline dotted #8a7448;
+  text-underline-offset: 2px;
+}
+
+.sk-frame-divider {
+  height: 1px;
+  margin: max(6px, 1.2cqw) max(10px, 2.2cqw);
+  border: 0;
+  background: #352c1e;
+}
+
+/* Two-column stat rows: periwinkle (#8888ff) for primary stats, off-white for subsections */
+.sk-stat-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+}
+
+.sk-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: max(20px, 3.6cqw);
+  padding: 1px max(12px, 5.0cqw) 1px max(12px, 2.6cqw);
+  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
+  font-size: max(12px, 2.4cqw);
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.sk-stat-row:nth-child(even) {
+  background: rgba(255, 255, 255, .022);
+}
+
+.sk-stat-row dt {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sk-stat-row dd {
+  flex: none;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.sk-stat-list--primary .sk-stat-row dt,
+.sk-stat-list--primary .sk-stat-row dd {
+  color: var(--poe-magic, #8888ff);
+}
+
+.sk-stat-list--sub .sk-stat-row dt {
+  color: #c8b68c;
+}
+
+.sk-stat-list--sub .sk-stat-row dd {
+  color: #f2ead8;
+}
+
+.sk-stat-row em { font-style: normal; font-weight: 700; }
+.sk-stat-row em.is-better { color: #4ade80; }
+.sk-stat-row em.is-worse { color: var(--nj-red); }
+
+.sk-section {
+  margin-top: max(14px, 2.8cqw);
+}
+
+.sk-section-heading-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-right: max(12px, 5.0cqw);
+}
+
+.sk-section-heading {
+  margin: 0 0 max(4px, 1.0cqw);
+  padding: 0 max(12px, 5.0cqw) 0 max(12px, 2.6cqw);
+  color: #f2ead8;
+  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
+  font-size: max(16px, 3.8cqw);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.sk-section-heading-row .sk-section-heading {
+  padding-right: 0;
+  margin-bottom: 0;
+}
+
+.sk-detail .sk-damage {
+  margin: 4px 0 8px;
+}
+
+.sk-detail .sk-lines {
+  padding: 6px max(12px, 5.0cqw) 4px max(12px, 2.6cqw);
+  border-top: 0;
+}
+
+.sk-main-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sk-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border: 1px solid #5b4a2f;
+  border-radius: 0;
+  background: #1a1612;
+  color: #c8b68c;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sk-mini-btn:hover {
+  border-color: #8a7448;
+  color: #f2ead8;
+}
+
+.sk-mini-btn .material-symbols-rounded {
+  font-size: 15px;
+}
+
+.sk-options-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+}
+
+.sk-opt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: max(26px, 4.4cqw);
+  padding: 3px max(12px, 5.0cqw) 3px max(12px, 2.6cqw);
+}
+
+.sk-opt-label {
+  color: #c8b68c;
+  font-family: var(--poe-chrome, inherit);
+  font-size: max(12px, 2.3cqw);
+}
+
+.sk-opt-ctrl {
+  margin-left: auto;
+}
+
+.sk-opt-block {
+  padding: 4px max(12px, 5.0cqw) 4px max(12px, 2.6cqw);
+}
+
+.sk-detail .gx-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  width: 100%;
+}
+
+.sk-detail .gx-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: max(26px, 4.2cqw);
+  color: #c8b68c;
+  font-size: max(12px, 2.2cqw);
+}
+
+.sk-detail .gx-field select,
+.sk-detail .gx-field input {
+  margin-left: auto;
+  border-color: #5b4a2f;
+  border-radius: 0;
+  background: #14110e;
+}
+
+.sk-detail .gx-monster {
+  padding: 0;
+}
+
+.sk-detail .sk-gem-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  margin-top: 6px;
+}
+
+/* "Số ô support" 2-5 stepper inside detail panel */
+.sk-socket-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid #5b4a2f;
+  background: #14110e;
+}
+
+.sk-step-btn {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #c8b68c;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sk-step-btn:hover:not(:disabled) {
+  background: rgba(138, 116, 72, .18);
+  color: #f2ead8;
+}
+
+.sk-step-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+.sk-step-val {
+  min-width: 22px;
+  text-align: center;
+  color: #f2ead8;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-gem-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 4px max(12px, 5.0cqw) 4px max(12px, 2.6cqw);
+  min-width: 0;
+}
+
+.sk-gem-item:nth-child(even) {
+  background: rgba(255, 255, 255, .022);
+}
+
+.sk-gem-item.is-strip-open {
+  background: rgba(27, 162, 155, .08);
+}
+
+.sk-gem-item.is-superseded {
+  outline: 1px dashed rgba(224, 166, 75, .55);
+  outline-offset: -2px;
+}
+
+.sk-gem-item.is-disabled .sk-gem-item-swap {
+  opacity: .48;
+}
+
+.sk-gem-item-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sk-gem-item-swap {
+  display: inline-flex;
+  flex: 1 1 130px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f2ead8;
+  font: inherit;
+  font-size: max(12px, 2.25cqw);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sk-gem-item-swap:hover .sk-gem-item-name {
+  color: #fff;
+}
+
+.sk-gem-item-icon {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid #5b4a2f;
+  border-radius: 50%;
+  background: #090806;
+  color: var(--nj-muted);
+  overflow: hidden;
+}
+
+.sk-gem-item-icon.is-color-red { border-color: #c43e33; }
+.sk-gem-item-icon.is-color-green { border-color: #33a858; }
+.sk-gem-item-icon.is-color-blue { border-color: #4882e0; }
+
+.sk-gem-item-icon img {
+  position: absolute;
+  inset: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sk-gem-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-gem-item-warn {
+  color: #e0a64b;
+}
+
+.sk-gem-item-controls {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.sk-detail .sk-gem-list .gx-controls {
+  padding-left: 32px;
+}
+
+/* Bottom toggles bar */
+.sk-detail-foot {
+  flex: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 1px solid #5b4a2f;
+  background: #100e0b;
+}
+
+.sk-foot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: max(32px, 5.4cqw);
+  padding: 4px max(12px, 5.0cqw) 4px max(12px, 6.1cqw);
+  border-top: 1px solid #2b2419;
+}
+
+.sk-foot-row:first-child {
+  border-top: 0;
+}
+
+.sk-foot-label {
+  color: #c8b68c;
+  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
+  font-size: max(12px, 2.25cqw);
+  letter-spacing: .02em;
+}
+
+.sk-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 90, 90, .3);
+  border-radius: 0;
+  background: rgba(255, 90, 90, .06);
+  color: var(--nj-red);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.sk-delete-btn:hover {
+  border-color: rgba(255, 90, 90, .6);
+  background: rgba(255, 90, 90, .14);
+}
+
+.sk-delete-btn .material-symbols-rounded {
+  font-size: 15px;
+}
+
+@media (max-width: 640px) {
+  .sk-support-tip {
+    max-width: min(220px, calc(100vw - 48px));
+  }
+}

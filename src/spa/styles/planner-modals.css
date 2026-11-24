@@ -1,0 +1,338 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Build Planner: compact button bar (BuildDrawerBar.tsx) and shared popup
+   modal (BuildModal.tsx) for Passive Tree, Conditions, and Detailed Stats.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Compact button row between Equipment+Stats and Skills ───────────────── */
+
+.nj-drawer-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .nj-drawer-bar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+.nj-drawer-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid #3c3428;
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(255, 240, 200, .035), transparent 55%),
+    var(--nj-panel, #1e1e1d);
+  color: var(--nj-text, #e7e6e2);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+
+.nj-drawer-btn:hover,
+.nj-drawer-btn:focus-visible {
+  border-color: #7d6742;
+  background:
+    linear-gradient(180deg, rgba(217, 173, 88, .08), transparent 60%),
+    #23201c;
+  outline: none;
+}
+
+.nj-drawer-btn.is-active {
+  border-color: #c7a25c;
+  box-shadow: inset 0 0 0 1px rgba(200, 165, 92, .25);
+}
+
+.nj-drawer-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #4a3f2d;
+  border-radius: 3px;
+  background: #13110e;
+  color: #c8b68c;
+  font-size: 20px;
+}
+
+.nj-drawer-copy {
+  display: grid;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.nj-drawer-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.nj-drawer-title strong {
+  color: var(--poe-ui-title, #e4d4b0);
+  font-family: var(--poe-chrome, inherit);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+.nj-drawer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 7px;
+  border: 1px solid #3c3428;
+  border-radius: 2px;
+  background: #14120f;
+  color: #c8b68c;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nj-drawer-pill small {
+  color: var(--nj-muted);
+  font-weight: 500;
+}
+
+.nj-drawer-pill.is-accent {
+  border-color: rgba(136, 136, 255, .45);
+  color: #b4b4ff;
+}
+
+.nj-drawer-pill.is-warn {
+  border-color: rgba(224, 168, 58, .6);
+  color: #f0be55;
+}
+
+.nj-drawer-warn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e0a83a;
+  box-shadow: 0 0 0 2px rgba(224, 168, 58, .25);
+}
+
+.nj-drawer-sub {
+  overflow: hidden;
+  color: var(--nj-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nj-drawer-open {
+  flex: none;
+  color: var(--nj-muted);
+  font-size: 18px;
+}
+
+.nj-drawer-btn:hover .nj-drawer-open {
+  color: #e4d4b0;
+}
+
+/* ── Shared modal dialog (top-aligned with internal scroll) ──────────────── */
+
+.bm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 8800;
+  display: grid;
+  align-items: start;
+  justify-items: center;
+  padding: 20px 12px;
+  background: rgba(5, 6, 8, .78);
+  backdrop-filter: blur(2px);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.bm-backdrop--large {
+  padding: 2.5vh 2.5vw;
+}
+
+.bm-dialog {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: min(780px, calc(100vw - 24px));
+  max-height: calc(100dvh - 40px);
+  min-width: 0;
+  border: 1px solid #5b4a2f;
+  border-radius: 3px;
+  background: #131210;
+  color: var(--nj-text);
+  box-shadow:
+    inset 0 0 0 1px rgba(138, 116, 72, .15),
+    0 24px 60px rgba(0, 0, 0, .75);
+  overflow: hidden;
+}
+
+.bm-dialog--large {
+  width: min(95vw, 1560px);
+  height: 90dvh;
+  max-height: 90dvh;
+}
+
+.bm-dialog:focus {
+  outline: none;
+}
+
+.bm-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #493d29;
+  background: linear-gradient(180deg, #24201a, #171511);
+}
+
+.bm-head-copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+  min-width: 0;
+}
+
+.bm-head h2 {
+  margin: 0;
+  color: var(--poe-ui-title, #e6d8b9);
+  font-family: var(--poe-chrome, inherit);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.bm-head-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  border: 1px solid #493d29;
+  border-radius: 2px;
+  background: #14120e;
+  color: #c8b68c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.bm-head-sub {
+  color: var(--nj-muted);
+  font-size: 12px;
+}
+
+.bm-close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #4d402c;
+  border-radius: 3px;
+  background: #1d1a15;
+  color: var(--nj-text);
+  cursor: pointer;
+}
+
+.bm-close:hover {
+  border-color: #8a7448;
+  color: #fff;
+}
+
+.bm-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  padding: 14px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Tree modal body: fills 100% height so the passive tree canvas gets the full stage */
+.bm-body--tree {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px 12px;
+  overflow: hidden;
+}
+
+.bm-body--tree .build-linked-trees {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.bm-body--tree .build-tree-mini {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 300px;
+  border: 1px solid var(--nj-line);
+  border-radius: 3px;
+  background: #06080a;
+}
+
+.bm-body--tree .build-tree-source--inline {
+  flex: none;
+  max-height: 34vh;
+  overflow-y: auto;
+}
+
+/* Fullscreen on phones, zero horizontal overflow at 375px */
+@media (max-width: 720px) {
+  .bm-backdrop {
+    padding: 8px;
+  }
+
+  .bm-backdrop--large {
+    padding: 0;
+  }
+
+  .bm-dialog {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .bm-dialog--large {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .bm-head {
+    padding: 8px 10px;
+  }
+
+  .bm-body {
+    padding: 10px;
+  }
+
+  .bm-body--tree {
+    padding: 8px;
+  }
+}

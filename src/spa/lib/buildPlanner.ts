@@ -106,6 +106,8 @@ export interface BuildSkillChoice extends BuildGemDetails {
   levelStart: string;
   levelEnd: string;
   supportSkills: BuildSupportSkillChoice[];
+  /** Number of unlocked support sockets on this skill gem (2-5); absent in older builds / PoB imports. */
+  supportSockets?: number;
   /** Whole socket group switched off in PoB. */
   disabled?: boolean;
   /** The group's own active gem is switched off. */
@@ -115,6 +117,49 @@ export interface BuildSkillChoice extends BuildGemDetails {
   itemSource?: string;
   /** Which active gem of the group PoB calculates (1 = the first). */
   mainActiveSkill?: number;
+}
+
+export const MIN_SUPPORT_SOCKETS = 2;
+export const MAX_SUPPORT_SOCKETS = 5;
+
+/** Normalizes a stored supportSockets value to an integer in 2..5 (undefined when absent/invalid). */
+export function clampSupportSockets(value: unknown): number | undefined {
+  if (value === undefined || value === null || value === "") return undefined;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return undefined;
+  return Math.min(MAX_SUPPORT_SOCKETS, Math.max(MIN_SUPPORT_SOCKETS, Math.trunc(n)));
+}
+
+/**
+ * Real unlocked support socket count for a skill group:
+ * defaults to max(2, number of non-active supports socketed), capped at 5,
+ * and never drops below the number of supports already socketed (up to 5).
+ */
+export function effectiveSupportSockets(skill: { supportSockets?: number; supportSkills: Array<{ active?: boolean }> }): number {
+  const socketed = skill.supportSkills.filter((support) => !support.active).length;
+  const minAllowed = Math.min(MAX_SUPPORT_SOCKETS, Math.max(MIN_SUPPORT_SOCKETS, socketed));
+  const stored = clampSupportSockets(skill.supportSockets);
+  return stored === undefined ? minAllowed : Math.min(MAX_SUPPORT_SOCKETS, Math.max(minAllowed, stored));
+}
+
+/** Stepper bounds (2..5) for the "Số ô support" control in the skill detail panel. */
+export function supportSocketStepperBounds(skill: { supportSockets?: number; supportSkills: Array<{ active?: boolean }> }): {
+  current: number;
+  min: number;
+  max: number;
+  canDecrease: boolean;
+  canIncrease: boolean;
+} {
+  const socketed = skill.supportSkills.filter((support) => !support.active).length;
+  const min = Math.min(MAX_SUPPORT_SOCKETS, Math.max(MIN_SUPPORT_SOCKETS, socketed));
+  const current = effectiveSupportSockets(skill);
+  return {
+    current,
+    min,
+    max: MAX_SUPPORT_SOCKETS,
+    canDecrease: current > min,
+    canIncrease: current < MAX_SUPPORT_SOCKETS
+  };
 }
 
 /** One Input of PoB's Configuration tab (enemy is shocked, nearby enemies, ...). */
@@ -432,6 +477,7 @@ const normalizeSkillChoices = (rows: unknown): BuildSkillChoice[] => {
     levelStart: row.levelStart || "",
     levelEnd: row.levelEnd || "",
     supportSkills: normalizeSupportSkillChoices(row.supportSkills),
+    ...(clampSupportSockets(row.supportSockets) !== undefined ? { supportSockets: clampSupportSockets(row.supportSockets) } : {}),
     ...gemDetailsFromPayload(row),
     ...(row.disabled ? { disabled: true } : {}),
     ...(row.gemDisabled ? { gemDisabled: true } : {}),
@@ -1807,6 +1853,8 @@ export function skillChoiceFromBuildSkill(value: unknown): BuildSkillChoice | nu
     if (typeof value.item_source === "string" && value.item_source) choice.itemSource = value.item_source;
     const mainActive = Number(value.main_active_skill);
     if (Number.isInteger(mainActive) && mainActive > 1) choice.mainActiveSkill = mainActive;
+    const sockets = clampSupportSockets(value.support_sockets ?? value.supportSockets);
+    if (sockets !== undefined) choice.supportSockets = sockets;
   }
   return choice;
 }
@@ -1911,12 +1959,14 @@ export function buildSkill(choice: BuildSkillChoice): string | Record<string, un
   const levelInterval = buildLevelInterval(choice.levelStart, choice.levelEnd);
   const supportSkills = choice.supportSkills.map(buildSupportSkill).filter((row): row is string | Record<string, unknown> => Boolean(row));
   if (!skillId) return null;
-  const hasGroupDetails = choice.disabled || choice.gemDisabled || choice.itemSlot || choice.itemSource || (choice.mainActiveSkill ?? 1) > 1;
+  const sockets = clampSupportSockets(choice.supportSockets);
+  const hasGroupDetails = choice.disabled || choice.gemDisabled || choice.itemSlot || choice.itemSource || (choice.mainActiveSkill ?? 1) > 1 || sockets !== undefined;
   if (!note && levelInterval === undefined && !supportSkills.length && !hasGemDetails(choice) && !hasGroupDetails) return skillId;
   const row: Record<string, unknown> = { id: skillId };
   if (levelInterval !== undefined) row.level_interval = levelInterval;
   if (note) row.additional_text = note;
   if (supportSkills.length) row.support_skills = supportSkills;
+  if (sockets !== undefined) row.support_sockets = sockets;
   gemDetailsToPayload(choice, row);
   if (choice.disabled) row.disabled = true;
   if (choice.gemDisabled) row.gem_disabled = true;
