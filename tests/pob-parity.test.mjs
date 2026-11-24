@@ -140,7 +140,7 @@ test("calculation XML escapes and whitelists what the browser sends", () => {
   assert.equal(root.querySelector("Socket").getAttribute("nodeId"), "61419");
   const group = root.querySelector("Skill");
   assert.equal(group.getAttribute("enabled"), "false");
-  assert.equal(group.getAttribute("mainActiveSkill"), "2");
+  assert.equal(group.getAttribute("mainActiveSkill"), "9", "a gem can grant more skills than the group has gems");
   const [main, support] = group.querySelectorAll("Gem");
   assert.equal(main.getAttribute("gemId"), "Metadata/Items/Gem/SkillGemArc/", "quotes and brackets are stripped from ids");
   assert.equal(main.getAttribute("level"), "40");
@@ -308,4 +308,22 @@ test("the minion block names the minion and its skill (no stray globals in the L
   const out = await runPob(buildPobXml(body), runtime);
   assert.equal(out.Minion?.Name, "Skeletal Storm Mage");
   assert.equal(out.Minion?.Skill, "Arc");
+});
+
+test("GroupDPS gives every group its own damage: a gem's second skill, the main skill as PoB shows it", {
+  skip: runtime.available ? false : "PoB not installed locally",
+  timeout: 120_000
+}, async () => {
+  const { runPob } = await import("../scripts/check-pob-parity.mjs");
+  const [fixture] = readFixtures(["mercenary-gemling-2.json"]);
+  const { body } = await plannerCalculationRequest(fixture.code);
+  const out = await runPob(buildPobXml(body), runtime);
+  const rows = body.skills.filter((group) => group.skill_id);
+  const rowOf = (id) => String(rows.findIndex((group) => group.skill_id.endsWith(id)) + 1);
+  const stars = out.GroupDPS[rowOf("SkillGemTheStarsAnswer")];
+  assert.ok(stars.skills.some((skill) => skill.name === "Starfall" && skill.value > 0), "Starfall, granted by The Stars Answer, has damage");
+  assert.ok(stars.dps > 0);
+  const main = out.GroupDPS[String(Number(body.main_socket_group) || 1)];
+  assert.equal(Math.round(main.dps), Math.round(out.CombinedDPS), "the main group's number is PoB's main-skill DPS");
+  assert.equal(out.GroupDPS[rowOf("SkillGemSigilOfPower")].dps, 0, "a buff deals none");
 });

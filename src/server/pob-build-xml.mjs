@@ -199,7 +199,9 @@ const skillGroupXml = (group, fullDps = false, slotItemIds = undefined) => {
   const gems = [gemXml(group), ...(Array.isArray(group.support) ? group.support : [])
     .filter((support) => support && support.skill_id)
     .map(gemXml)];
-  const mainActive = clampInt(group.main_active_skill, 1, gems.length, 1);
+  // A gem can grant more than one skill (The Stars Answer -> Starfall), so PoB's skill
+  // number may be higher than the group's gem count.
+  const mainActive = clampInt(group.main_active_skill, 1, Math.max(gems.length, 10), 1);
   const attrs = [
     // group_enabled is the socket group; `enabled` on the same row is its own gem.
     ["enabled", isTrue(group.group_enabled ?? group.enabled) ? "true" : "false"],

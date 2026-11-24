@@ -52,7 +52,7 @@ import {
   type PobConfigInput,
   type BuildStashItem
 } from "../lib/buildPlanner";
-import { arrangeSkillCards, formatStat, pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
+import { arrangeSkillCards, formatStat, groupDamageByRow, groupDamageValue, pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
@@ -1256,17 +1256,32 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     ...skill.supportSkills.filter((support) => support.active && !support.disabled).map((support) => support.nameSpec || gemChoiceItem(support.skillId, skillGemOptions, "SkillGem")?.name || "")
   ]), [buildSkills, skillGemOptions]);
   /**
-   * DPS of each group in a stats object: the group that was main when it was
-   * calculated gets PoB's main-skill DPS, the others their per-skill row
-   * (undefined when the calculator did not send the per-skill list).
+   * DPS of each group in a stats object. With the calculator's GroupDPS every group gets
+   * its own skills' damage (all of them: a gem's second skill, DoT, per-hit skills), the
+   * main one included, so a card reads the same whether it is main or not. Without it
+   * (older calculator) the group that was main gets PoB's main-skill DPS and the others
+   * their per-skill row (undefined when the calculator did not send the per-skill list).
    */
   const groupDpsIn = useCallback((stats: any): Array<number | undefined> | undefined => {
     if (!stats) return undefined;
     const main = Number(stats.__mainGroup) || mainSocketGroup;
+    const damage = groupDamageByRow(stats.GroupDPS, buildSkills);
+    if (damage) {
+      return damage.map((entry, index) => {
+        const value = groupDamageValue(entry);
+        if (index + 1 === main && !value) return mainSkillDps(stats);
+        return value ?? 0;
+      });
+    }
     const rows = Array.isArray(stats.SkillDPS) ? skillDpsByGroup(stats.SkillDPS as PobSkillDps[], groupNames) : null;
     // A minion skill deals no damage itself: its card shows the minion's.
     return groupNames.map((_, index) => (index + 1 === main ? mainSkillDps(stats) : rows ? rows[index] : undefined));
-  }, [groupNames, mainSocketGroup]);
+  }, [buildSkills, groupNames, mainSocketGroup]);
+  // Groups whose number is an average hit (no rate per second), labelled "/đòn".
+  const perHitGroups = useMemo(() => {
+    const damage = groupDamageByRow(activeStats?.GroupDPS, buildSkills);
+    return new Set((damage ?? []).flatMap((entry, index) => (entry && !(entry.dps > 0) && entry.average ? [index] : [])));
+  }, [activeStats, buildSkills]);
   const currentGroupDps = useMemo(() => groupDpsIn(activeStats), [groupDpsIn, activeStats]);
   const previousGroupDps = useMemo(() => groupDpsIn(previousStats), [groupDpsIn, previousStats]);
   const groupSkillDps = useMemo(() => (currentGroupDps ?? []).map((value) => value ?? 0), [currentGroupDps]);
@@ -3085,7 +3100,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 hasSkill: Boolean(skill.skillId),
                 disabled: Boolean(skill.disabled),
                 dps: currentGroupDps?.[index],
-                isMain: index + 1 === mainSocketGroup
+                isMain: index + 1 === mainSocketGroup,
+                hasChoices: hasGemChoices(gemOptionFor(index))
               })));
               const renderCard = (index: number, compact = false) => {
                 const skill = buildSkills[index];
@@ -3151,10 +3167,17 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         <b>{skill.disabled ? (vi ? "Tắt" : "Off") : dps === undefined ? (isCalculating ? "…" : "—") : dps > 0 ? formatStat(dps, "short") : "0"}</b>
                         <small>
                           {delta !== undefined ? <em className={delta > 0 ? "is-better" : "is-worse"}>{`${delta > 0 ? "+" : "−"}${Math.abs(delta * 100).toFixed(Math.abs(delta) < 0.1 ? 1 : 0)}%`}</em> : null}
-                          DPS
+                          {perHitGroups.has(index) ? (vi ? "/đòn" : "per hit") : "DPS"}
                         </small>
                       </button>
                     </div>
+                    {!skill.disabled && skill.skillId && dps === 0 && !compact && (gemOptionFor(index)?.statSets || gemOptionFor(index)?.parts) ? (
+                      <p className="sk-hint">
+                        {vi
+                          ? "0 sát thương ở lựa chọn hiện tại — kỹ năng này có nhiều bộ chỉ số/phần, thử đổi trong «Chi tiết»."
+                          : "No damage with the current choice — this skill has other stat sets/parts, try another under Details."}
+                      </p>
+                    ) : null}
 
                     {gemStripFor(skill.id, "main")}
 

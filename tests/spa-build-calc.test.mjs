@@ -247,3 +247,19 @@ test("skills panel: groups whose DPS is unknown stay visible", async () => {
   ]);
   assert.deepEqual(plain(arranged), { primary: [0, 1], secondary: [] });
 });
+
+test("skills panel: GroupDPS rows map to the groups that have a gem, per hit kept apart", async () => {
+  const stats = await loadStatsLib();
+  const skills = [{ skillId: "A" }, { skillId: "" }, { skillId: "B" }, { skillId: "C" }];
+  const damage = stats.groupDamageByRow({ 1: { dps: 100 }, 2: { dps: 0, average: 40 }, 3: { dps: 0 } }, skills);
+  assert.deepEqual(plain(damage), [{ dps: 100 }, null, { dps: 0, average: 40 }, { dps: 0 }]);
+  assert.deepEqual(damage.map(stats.groupDamageValue), [100, undefined, 40, 0]);
+  assert.equal(stats.groupDamageByRow(undefined, skills), undefined, "older calculator: no GroupDPS");
+});
+
+test("skills panel: a 0-damage skill with stat-set choices stays among the main cards", async () => {
+  const stats = await loadStatsLib();
+  const card = (index, dps, extra = {}) => ({ index, hasSkill: true, disabled: false, dps, isMain: false, ...extra });
+  const arranged = stats.arrangeSkillCards([card(0, 0, { hasChoices: true }), card(1, 0), card(2, 50)]);
+  assert.deepEqual(plain(arranged), { primary: [2, 0], secondary: [1] });
+});

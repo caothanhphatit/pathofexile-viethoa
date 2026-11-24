@@ -39,6 +39,106 @@ pcall(function()
     end
 end)
 
+-- ── Planner: each group's own damage (GroupDPS) ────────────────────────────
+-- PoB's Full DPS pass calculates every skill of the groups marked "include in Full DPS"
+-- one by one (calcs.calcFullDPS -> calcs.perform(env, true)). Each pass is recorded here
+-- under the XML row of its group (plannerXmlRow, tagged above), with the same number the
+-- main card shows (CombinedDPS, or the minion's), so every card can show its group's damage:
+-- skills a gem grants besides its first one, DoT-only skills, average-hit skills.
+-- calcs is PoB's shared Modules/CalcBase table; perform, calcFullDPS and buildOutput are wrapped where
+-- they are now and again whenever they are (re)defined.
+local plannerGroupDps
+pcall(function()
+    local calcsBase = require("Modules.CalcBase")
+    local recording, inFullDps
+    local shadow = {}
+    local wrap = {
+        perform = function(perform)
+            return function(env, skipEHP, ...)
+                local result = perform(env, skipEHP, ...)
+                if recording and inFullDps and skipEHP == true then
+                    pcall(function()
+                        local skill = env.player.mainSkill
+                        local group = skill and skill.socketGroup
+                        local row = group and group.plannerXmlRow
+                        if not row then return end
+                        local out = env.player.output or {}
+                        local value = tonumber(out.CombinedDPS) or 0
+                        local average = false
+                        -- PoB shows some skills per hit (CombinedDPS = average damage); when it
+                        -- also has a rate for them (triggered, per second) that rate is used.
+                        if skill.skillData and skill.skillData.showAverage then
+                            local perSecond = tonumber(out.TotalDPS) or 0
+                            if perSecond > 0 then
+                                value = perSecond + (tonumber(out.TotalDot) or 0)
+                            else
+                                average = value > 0
+                            end
+                        end
+                        local minion = false
+                        if value <= 0 and env.minion and env.minion.output then
+                            value = tonumber(env.minion.output.CombinedDPS) or 0
+                            minion = value > 0
+                        end
+                        local okCount, count = pcall(calcsBase.getActiveSkillCount, skill)
+                        local entry = recording[row] or { skills = {} }
+                        recording[row] = entry
+                        entry.skills[#entry.skills + 1] = {
+                            name = calcsBase.getActiveSkillDisplayName and calcsBase.getActiveSkillDisplayName(skill)
+                                or (skill.activeEffect and skill.activeEffect.grantedEffect.name),
+                            value = value,
+                            average = average or nil,
+                            minion = minion or nil,
+                            count = (okCount and type(count) == "number" and count > 1) and count or nil
+                        }
+                    end)
+                end
+                return result
+            end
+        end,
+        calcFullDPS = function(calcFullDPS)
+            return function(...)
+                if not recording or inFullDps then return calcFullDPS(...) end
+                inFullDps = true
+                local results = { pcall(calcFullDPS, ...) }
+                inFullDps = false
+                if not results[1] then error(results[2], 0) end
+                return select(2, unpack(results))
+            end
+        end,
+        buildOutput = function(buildOutput)
+            return function(build, mode, ...)
+                if mode ~= "MAIN" then return buildOutput(build, mode, ...) end
+                local outer = recording
+                recording = {}
+                local results = { pcall(buildOutput, build, mode, ...) }
+                plannerGroupDps = recording
+                recording = outer
+                if not results[1] then error(results[2], 0) end
+                return select(2, unpack(results))
+            end
+        end
+    }
+    -- Already defined (the module may load before this script runs): wrap those now.
+    for key, make in pairs(wrap) do
+        local current = rawget(calcsBase, key)
+        if type(current) == "function" then
+            shadow[key] = make(current)
+            rawset(calcsBase, key, nil)
+        end
+    end
+    setmetatable(calcsBase, {
+        __index = shadow,
+        __newindex = function(t, key, value)
+            if wrap[key] and type(value) == "function" then
+                shadow[key] = wrap[key](value)
+            else
+                rawset(t, key, value)
+            end
+        end
+    })
+end)
+
 loadBuildFromXML(xmlText)
 
 local output = build.calcsTab and build.calcsTab.mainOutput
@@ -250,6 +350,21 @@ local function plannerGemOptions()
         if #skills > 0 then groups[tostring(groupIndex)] = skills end
     end
     return groups
+end
+
+if plannerGroupDps and next(plannerGroupDps) then
+    -- Per XML row: total damage of the group's skills (each times its count), and whether
+    -- the number is an average hit (skills PoB shows per hit, not per second).
+    local groupDps = {}
+    for row, entry in pairs(plannerGroupDps) do
+        local dps, average = 0, 0
+        for _, skill in ipairs(entry.skills) do
+            local value = (skill.value or 0) * (skill.count or 1)
+            if skill.average then average = math.max(average, value) else dps = dps + value end
+        end
+        groupDps[tostring(row)] = { dps = dps, average = average > 0 and average or nil, skills = entry.skills }
+    end
+    cleanOutput.GroupDPS = groupDps
 end
 
 local okOptions, gemOptions = pcall(plannerGemOptions)

@@ -1056,3 +1056,11 @@ button.nj-main-skill.is-main { box-shadow: inset 3px 0 0 var(--poe-unique, #af60
 .sk-support-gem { position: relative; }
 .sk-support-gem img { position: absolute; inset: 2px; width: calc(100% - 4px); height: calc(100% - 4px); object-fit: contain; }
 .sk-support-initial { color: #8fd3cf; font-size: 11px; font-weight: 700; }
+
+/* A skill with 0 damage in the stat set / part picked, while PoB offers others. */
+.sk-hint {
+  margin: 6px 0 0;
+  color: var(--nj-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}

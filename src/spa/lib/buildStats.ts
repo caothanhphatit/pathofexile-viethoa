@@ -331,6 +331,42 @@ export function skillDpsByGroup(rows: PobSkillDps[] | undefined, groupNames: str
   return totals;
 }
 
+/** One group's damage from the calculator's GroupDPS (scripts/pob-calculate.lua). */
+export interface GroupDamage {
+  /** Damage per second of the group's skills (with their minions), 0 when none. */
+  dps: number;
+  /** Average damage per hit, for skills PoB shows per hit and that have no rate. */
+  average?: number;
+}
+
+/**
+ * Each planner group's damage from PoB's GroupDPS, keyed by the XML row its group was
+ * sent as: the planner sends one row per group that has a gem, in order (as for
+ * GemOptions). undefined when the calculator sent no GroupDPS (older script); a group
+ * without an entry (not in PoB's Full DPS pass) gets undefined too.
+ */
+export function groupDamageByRow(groupDps: unknown, skills: Array<{ skillId: string }>): Array<GroupDamage | undefined> | undefined {
+  if (!groupDps || typeof groupDps !== "object") return undefined;
+  const rows = groupDps as Record<string, { dps?: unknown; average?: unknown } | undefined>;
+  let row = 0;
+  return skills.map((skill) => {
+    if (!skill.skillId.trim()) return undefined;
+    row += 1;
+    const entry = rows[String(row)];
+    if (!entry || typeof entry !== "object") return undefined;
+    const dps = Number(entry.dps);
+    const average = Number(entry.average);
+    return {
+      dps: Number.isFinite(dps) && dps > 0 ? dps : 0,
+      ...(Number.isFinite(average) && average > 0 ? { average } : {})
+    };
+  });
+}
+
+/** The number a card shows: its DPS, or its average hit when it deals damage only per hit. */
+export const groupDamageValue = (damage: GroupDamage | undefined): number | undefined =>
+  damage === undefined ? undefined : damage.dps > 0 ? damage.dps : damage.average ?? 0;
+
 export interface SkillCardInput {
   index: number;
   /** Group has an active gem picked. */
@@ -339,12 +375,15 @@ export interface SkillCardInput {
   /** Its DPS from the last calculation; undefined while unknown. */
   dps: number | undefined;
   isMain: boolean;
+  /** PoB offers a stat set / part / minion choice: its damage may be in another one. */
+  hasChoices?: boolean;
 }
 
 /**
  * Skills panel order: damaging skills first (highest DPS first, the main skill on
  * ties), then new empty groups; disabled groups and skills without damage (auras,
- * buffs, utility) go to "Kỹ năng phụ". Before the first calculation everything
+ * buffs, utility) go to "Kỹ năng phụ" — unless PoB offers a choice for them (stat set,
+ * part, minion): the damage may be in another choice, so they stay in view. Before the first calculation everything
  * stays in the build's own order.
  */
 export function arrangeSkillCards(cards: SkillCardInput[]): { primary: number[]; secondary: number[] } {
@@ -355,7 +394,7 @@ export function arrangeSkillCards(cards: SkillCardInput[]): { primary: number[];
     if (card.disabled) secondary.push(card);
     else if (!card.hasSkill) primary.push(card);
     // Unknown DPS (not calculated yet, or an older calculator) stays visible.
-    else if (card.dps === undefined || card.isMain || card.dps > 0) primary.push(card);
+    else if (card.dps === undefined || card.isMain || card.dps > 0 || card.hasChoices) primary.push(card);
     else secondary.push(card);
   }
   if (known) {
