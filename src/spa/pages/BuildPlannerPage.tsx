@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { loadBuildPlannerData, loadCraftData, loadCraftIndex, loadItemsData, loadSkillGemsData } from "../lib/data";
+import { loadBuildPlannerData, loadCraftData, loadCraftIndex, loadItemsData, loadPassiveTreeData, loadSkillGemsData } from "../lib/data";
 import { buildModPool, type ModPool } from "../../shared/item-mods.mjs";
 import { ItemEditor, NewItemDialog, type NewItemChoice } from "../components/ItemEditor";
 import { displayImageUrl } from "../lib/image";
@@ -8,8 +8,19 @@ import { navigateTo } from "../lib/routes";
 import { matchesQuery } from "../lib/text";
 import { PassiveTreeWorkspace, type TreeJewelHooks } from "./PassiveTreePage";
 import { SocketJewelMenu } from "../components/SocketJewelMenu";
-import type { PassiveNode } from "../passive/tree";
+import { parsePassiveTree, type PassiveNode, type PassiveTreeModel } from "../passive/tree";
+import { selectedStartNodeIds } from "../passive/planner";
+import "../styles/planner-new-build.css";
 import {
+  DEFAULT_CHARACTER_LEVEL,
+  MAX_CHARACTER_LEVEL,
+  MIN_CHARACTER_LEVEL,
+  buildCharacterLevel,
+  characterLevel,
+  classBuildPayload,
+  createClassTreeSnapshot,
+  dedupeTreeSnapshots,
+  officialAscendancyId,
   buildPayloadFromPobImport,
   calculationRequestBody,
   encodePobXmlText,
@@ -284,6 +295,17 @@ const copy = {
   linkedTrees: { vi: "Tree của build", en: "Build tree" },
   availableTrees: { vi: "Chọn tree cho build", en: "Choose build tree" },
   noBuildTrees: { vi: "Build này chưa chọn tree. Chọn current tree hoặc saved tree trước khi export.", en: "This build has no tree selected. Choose the current tree or a saved tree before exporting." },
+  startFromClass: { vi: "Bắt đầu build: chọn class và ascendancy, rồi chọn điểm trên cây.", en: "Start a build: pick a class and ascendancy, then allocate points on the tree." },
+  pickClass: { vi: "Class", en: "Class" },
+  pickAscendancy: { vi: "Ascendancy", en: "Ascendancy" },
+  noAscendancyChoice: { vi: "Chưa chọn ascendancy", en: "No ascendancy yet" },
+  createClassTree: { vi: "Tạo cây", en: "Create tree" },
+  changeClass: { vi: "Đổi class", en: "Change class" },
+  orSavedTree: { vi: "Hoặc dùng tree đã lưu", en: "Or use a saved tree" },
+  loadingClasses: { vi: "Đang tải danh sách class...", en: "Loading classes..." },
+  confirmChangeClass: { vi: "Đổi class?", en: "Change class?" },
+  confirmChangeClassBody: { vi: "Cây mới chỉ có điểm xuất phát của class này; các điểm thụ động đang chọn sẽ bị bỏ.", en: "The new tree only has this class's start; the passives allocated now are dropped." },
+  characterLevel: { vi: "Cấp nhân vật", en: "Character level" },
   addTree: { vi: "Chọn", en: "Choose" },
   clearTree: { vi: "Bỏ chọn tree", en: "Clear tree" },
   selectedTree: { vi: "Đang dùng", en: "Selected" },
@@ -751,7 +773,9 @@ function snapshotOptions(current: BuildTreeSnapshot | null, saved: BuildTreeSnap
   const rows: SnapshotOption[] = [];
   if (current) rows.push({ key: `current:${current.id}`, label: localizedText(copy.currentTree, "", locale), source: "current", snapshot: current });
   for (const row of saved) rows.push({ key: `saved:${row.id}`, label: localizedText(copy.savedTree, "", locale), source: "saved", snapshot: row });
-  return rows;
+  // A build imported twice saves the same tree twice: list it once.
+  const unique = new Set(dedupeTreeSnapshots(rows.map((row) => row.snapshot)));
+  return rows.filter((row) => unique.has(row.snapshot));
 }
 
 function payloadText(payload: BuildPayload | null | undefined, key: string): string {
@@ -867,8 +891,10 @@ function buildDraftSignature(input: {
   importedPayload?: BuildPayload | null;
   importedFileName?: string;
   stash?: BuildStashItem[];
+  level: number;
 }): string {
   return JSON.stringify({
+    level: input.level,
     stash: (input.stash ?? []).map((row) => row.id),
     name: input.name.trim(),
     author: input.author.trim(),
@@ -893,7 +919,8 @@ function buildProjectSignature(project: BuildProject | null): string {
     skills: project.skills ?? [],
     importedPayload: project.importedPayload ?? null,
     importedFileName: project.importedFileName || "",
-    stash: project.stash ?? []
+    stash: project.stash ?? [],
+    level: buildCharacterLevel(project)
   });
 }
 
@@ -1057,6 +1084,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [pobImportOpen, setPobImportOpen] = useState(false);
   const [pobCode, setPobCode] = useState("");
   const [pobImporting, setPobImporting] = useState(false);
+  // Character level the calculation runs at (the imported build's own until changed).
+  const [level, setLevel] = useState<number>(DEFAULT_CHARACTER_LEVEL);
+  // What the level box shows while it is being typed in (it may be empty or out of range).
+  const [levelText, setLevelText] = useState(String(DEFAULT_CHARACTER_LEVEL));
+  // Classes and start nodes, from the passive tree data the tree itself shows.
+  const [classTree, setClassTree] = useState<PassiveTreeModel | null>(null);
+  const [classPickerOpen, setClassPickerOpen] = useState(false);
+  const [pickedClass, setPickedClass] = useState("");
+  const [pickedAscendancy, setPickedAscendancy] = useState("");
+  const classPickerRef = useRef<HTMLDivElement | null>(null);
 
   const slotSilhouetteIcon = (area: string) => {
     switch (area) {
@@ -1171,6 +1208,19 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       alive = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!editorOpen || classTree) return;
+    let alive = true;
+    loadPassiveTreeData().then((raw) => {
+      if (alive) setClassTree(parsePassiveTree(raw, locale));
+    }).catch(() => {
+      // The tree panel shows its own load error.
+    });
+    return () => {
+      alive = false;
+    };
+  }, [editorOpen, classTree, locale]);
 
   useEffect(() => {
     setInventory((rows) => enrichInventoryChoices(rows, itemsData, locale));
@@ -1330,19 +1380,30 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   const selectedPassiveCount = passiveCount(selected);
   const exportSnapshot = selected && selectedPassiveCount > 0 ? selected : null;
+  // A tree whose class is one of the game's (picked in the planner, or read from a PoB code).
+  const treeHasKnownClass = Boolean(buildTree?.className && classTree?.classByName.has(buildTree.className));
+  // The imported payload with the tree's class when the player changed it in the planner.
+  const basePayload = useMemo<BuildPayload | undefined>(() => {
+    const base = importedBuild?.payload;
+    if (!base || !buildTree || !treeHasKnownClass) return base;
+    const ascendancy = officialAscendancyId(buildTree, plannerData) || "None";
+    if (base.className === buildTree.className && (base.ascendancy || "None") === ascendancy) return base;
+    return { ...base, className: buildTree.className, ascendancy };
+  }, [importedBuild, buildTree, treeHasKnownClass, plannerData]);
   const payload = useMemo(() => {
     if (!importedBuild && !exportSnapshot) return null;
     return buildPlannerPayload({
-      basePayload: importedBuild?.payload,
+      basePayload,
       snapshot: exportSnapshot,
       plannerData,
       name,
       author,
       description,
       inventory,
-      skills: buildSkills
+      skills: buildSkills,
+      level
     });
-  }, [exportSnapshot, importedBuild, plannerData, name, author, description, inventory, buildSkills]);
+  }, [exportSnapshot, importedBuild, basePayload, plannerData, name, author, description, inventory, buildSkills, level]);
 
   const canExport = Boolean(payload && (importedBuild || exportSnapshot));
   const exportDisabledHint = selected
@@ -1350,11 +1411,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     : localizedText(copy.noTree, "", locale);
 
   // Builds made from scratch have no imported payload: class, ascendancy and level come from the tree.
+  // A class picked in the planner is calculated right away, before any point is spent.
   const calcPayload = useMemo<BuildPayload | null>(() => {
-    if (importedBuild?.payload) return importedBuild.payload;
-    if (!buildTree || !buildTree.className || !passiveCount(buildTree)) return null;
-    return { className: buildTree.className, ascendancy: buildTree.ascendancyName || "None", level: 90 };
-  }, [importedBuild, buildTree]);
+    if (basePayload) return { ...basePayload, level };
+    if (!buildTree || !buildTree.className || (!passiveCount(buildTree) && !treeHasKnownClass)) return null;
+    return classBuildPayload(buildTree, level, plannerData);
+  }, [basePayload, buildTree, treeHasKnownClass, level, plannerData]);
   const importedConfigInputs = useMemo<PobConfigInput[]>(() => (
     Array.isArray(importedBuild?.payload?.config_inputs) ? importedBuild!.payload.config_inputs as PobConfigInput[] : []
   ), [importedBuild]);
@@ -1535,8 +1597,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     skills: buildSkills,
     importedPayload: importedBuild?.payload ?? null,
     importedFileName: importedBuild?.fileName || "",
-    stash
-  }), [name, author, description, buildTree, inventory, buildSkills, importedBuild, stash]);
+    stash,
+    level
+  }), [name, author, description, buildTree, inventory, buildSkills, importedBuild, stash, level]);
   const savedBuildSignature = useMemo(() => buildProjectSignature(activeBuildProject), [activeBuildProject]);
   const hasBuildChanges = activeBuildProject
     ? currentBuildSignature !== savedBuildSignature
@@ -2173,6 +2236,18 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setActiveGemPicker(null);
   };
 
+  const applyLevel = (value: number) => {
+    setLevel(value);
+    setLevelText(String(value));
+  };
+
+  // The level box: a whole number 1-100 updates the build (the calculation waits 350 ms).
+  const changeLevelText = (text: string) => {
+    setLevelText(text);
+    const next = /^\d+$/.test(text.trim()) ? characterLevel(text) : undefined;
+    if (next !== undefined) setLevel(next);
+  };
+
   const resetBuildDraft = () => {
     const tree = defaultBuildTree(currentTree);
     setActiveBuildId("");
@@ -2188,6 +2263,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setStash([]);
     setLiveStats(null);
     setMainSocketGroup(1);
+    applyLevel(DEFAULT_CHARACTER_LEVEL);
+    setClassPickerOpen(false);
   };
 
   const newBuildDraft = () => {
@@ -2220,6 +2297,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     } : null);
     setImportError("");
     setTreeChoicesOpen(false);
+    setClassPickerOpen(false);
+    applyLevel(buildCharacterLevel(project));
     setLiveStats(null);
     const msg = project.importedPayload?.mainSocketGroup || project.importedPayload?.build?.mainSocketGroup || 1;
     setMainSocketGroup(Number(msg));
@@ -2234,7 +2313,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   const saveCurrentBuild = ({ showDialog = false, navigateAfterSave = true } = {}) => {
     const updatedPayload = importedBuild?.payload ? {
-      ...importedBuild.payload,
+      // With the class picked in the planner, when it was changed.
+      ...(basePayload ?? importedBuild.payload),
       mainSocketGroup,
       planner_config_inputs: configInputs ?? undefined
     } : undefined;
@@ -2249,9 +2329,14 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       stash,
       importedPayload: updatedPayload,
       importedFileName: importedBuild?.fileName,
+      level,
       createdAt: activeBuildProject?.createdAt
     });
     setSavedBuilds(saveBuildProject(project));
+    // The class changed in the planner is now the build's own.
+    if (importedBuild && project.importedPayload && basePayload !== importedBuild.payload) {
+      setImportedBuild({ ...importedBuild, payload: project.importedPayload });
+    }
     setActiveBuildId(project.id);
     setName(project.name);
     setAuthor(project.author || "POE2 Viet Hoa");
@@ -2293,6 +2378,66 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     if (!name) setName(option.snapshot.name);
     if (!description) setDescription(`${option.snapshot.className}${option.snapshot.ascendancyName ? ` - ${option.snapshot.ascendancyName}` : ""}`);
     setTreeChoicesOpen(false);
+  };
+
+  const classAscendancies = (className: string) => classTree?.classByName.get(className)?.ascendancies.map((row) => row.name) ?? [];
+
+  const pickClass = (className: string) => {
+    setPickedClass(className);
+    setPickedAscendancy(classAscendancies(className)[0] ?? "");
+  };
+
+  // Without a tree the picker is always there; start it on the first class.
+  useEffect(() => {
+    if (!classTree || pickedClass) return;
+    const first = classTree.classes[0] ?? "";
+    setPickedClass(first);
+    setPickedAscendancy(classTree.classByName.get(first)?.ascendancies[0]?.name ?? "");
+  }, [classTree, pickedClass]);
+
+  const openClassPicker = () => {
+    if (buildTree && classTree?.classByName.has(buildTree.className)) {
+      setPickedClass(buildTree.className);
+      setPickedAscendancy(buildTree.ascendancyName);
+    }
+    setTreeChoicesOpen(false);
+    setClassPickerOpen(true);
+    window.setTimeout(() => classPickerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
+  };
+
+  /** A new tree for the picked class and ascendancy: only its start nodes, ready for points. */
+  const createTreeFromClass = () => {
+    if (!classTree || !pickedClass) return;
+    const apply = () => {
+      const snapshot = createClassTreeSnapshot({
+        className: pickedClass,
+        ascendancyName: pickedAscendancy,
+        startIds: selectedStartNodeIds(classTree, pickedClass, pickedAscendancy),
+        treeVersion: plannerData?.version || "0.5"
+      });
+      const autoDescription = buildTree ? `${buildTree.className}${buildTree.ascendancyName ? ` - ${buildTree.ascendancyName}` : ""}` : "";
+      setImportError("");
+      setBuildTree(snapshot);
+      if (!importedBuild && (!name.trim() || name === buildTree?.name)) setName(snapshot.name);
+      if (!description.trim() || description === autoDescription) {
+        setDescription(`${snapshot.className}${snapshot.ascendancyName ? ` - ${snapshot.ascendancyName}` : ""}`);
+      }
+      setClassPickerOpen(false);
+      setTreeChoicesOpen(false);
+      closeBuildDialog();
+    };
+    if (buildTree && passiveCount(buildTree) > 0) {
+      setBuildDialog({
+        title: localizedText(copy.confirmChangeClass, "", locale),
+        body: localizedText(copy.confirmChangeClassBody, "", locale),
+        actions: [
+          { label: localizedText(copy.cancel, "", locale), tone: "neutral", onClick: closeBuildDialog },
+          { label: localizedText(copy.changeClass, "", locale), tone: "danger", onClick: apply }
+        ]
+      });
+      return;
+    }
+    apply();
   };
 
   const clearBuildTree = () => {
@@ -2340,7 +2485,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       skills: nextSkills,
       stash: nextStash,
       importedPayload: payload,
-      importedFileName: fileName
+      importedFileName: fileName,
+      level: characterLevel(payload.level)
     });
     let saved = false;
     try {
@@ -2362,6 +2508,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setBuildSkills(nextSkills);
     setStash(nextStash);
     setTreeChoicesOpen(false);
+    setClassPickerOpen(false);
+    // An imported build keeps its own level.
+    applyLevel(characterLevel(payload.level) ?? DEFAULT_CHARACTER_LEVEL);
     navigateTo(saved ? `/build/${encodeURIComponent(project.id)}` : "/build/new");
   };
 
@@ -2485,6 +2634,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         <h3>{localizedText(copy.linkedTrees, "", locale)}</h3>
         <div className="build-tree-head-actions">
           <span>{formatNumber(buildTree ? 1 : 0, locale)}</span>
+          {buildTree ? (
+            <button type="button" onClick={() => (classPickerOpen ? setClassPickerOpen(false) : openClassPicker())} aria-expanded={classPickerOpen} aria-label={localizedText(copy.changeClass, "", locale)} title={localizedText(copy.changeClass, "", locale)}>
+              <span className="material-symbols-rounded" aria-hidden="true">person</span>
+            </button>
+          ) : null}
           {options.length ? (
             <button type="button" onClick={() => setTreeChoicesOpen((open) => !open)} aria-expanded={treeChoicesOpen} aria-label={localizedText(copy.availableTrees, "", locale)} title={localizedText(copy.availableTrees, "", locale)}>
               <span className="material-symbols-rounded" aria-hidden="true">swap_horiz</span>
@@ -2512,14 +2666,41 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             </button>
           </article>
         </div>
-      ) : (
-        <div className="build-empty">
-          <p>{localizedText(copy.noBuildTrees, "", locale)}</p>
-          {!options.length ? (
-            <a href="/passive-tree">{localizedText(copy.openTree, "", locale)}</a>
-          ) : null}
+      ) : null}
+      {!buildTree || classPickerOpen ? (
+        <div className="build-class-picker" ref={classPickerRef}>
+          <p>{localizedText(copy.startFromClass, "", locale)}</p>
+          {classTree ? (
+            <div className="build-class-picker-row">
+              <label>
+                <span>{localizedText(copy.pickClass, "", locale)}</span>
+                <select value={pickedClass} onChange={(event) => pickClass(event.target.value)}>
+                  {classTree.classes.map((className) => <option value={className} key={className}>{className}</option>)}
+                </select>
+              </label>
+              <label>
+                <span>{localizedText(copy.pickAscendancy, "", locale)}</span>
+                <select value={pickedAscendancy} onChange={(event) => setPickedAscendancy(event.target.value)}>
+                  <option value="">{localizedText(copy.noAscendancyChoice, "", locale)}</option>
+                  {classAscendancies(pickedClass).map((ascendancy) => <option value={ascendancy} key={ascendancy}>{ascendancy}</option>)}
+                </select>
+              </label>
+              <div className="build-class-picker-actions">
+                <button className="build-class-picker-create" type="button" onClick={createTreeFromClass} disabled={!pickedClass}>
+                  <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
+                  {localizedText(copy.createClassTree, "", locale)}
+                </button>
+                {buildTree ? (
+                  <button type="button" onClick={() => setClassPickerOpen(false)}>{localizedText(copy.cancel, "", locale)}</button>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <p className="build-class-picker-loading">{localizedText(copy.loadingClasses, "", locale)}</p>
+          )}
+          {!buildTree && options.length ? <h4>{localizedText(copy.orSavedTree, "", locale)}</h4> : null}
         </div>
-      )}
+      ) : null}
       {showTreeChoices ? (
         <div className="build-tree-source build-tree-source--inline">
           <div className="build-tree-list build-tree-choice-list">
@@ -2673,6 +2854,26 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 <span className="is-empty">{locale === "vi" ? "Chưa chọn class / cây thụ động" : "No class / passive tree yet"}</span>
               )}
             </p>
+            <div className="nj-hero-level-row">
+              <label className="build-level-field" title={`${localizedText(copy.characterLevel, "", locale)} (${MIN_CHARACTER_LEVEL}-${MAX_CHARACTER_LEVEL})`}>
+                <span>{localizedText(copy.characterLevel, "", locale)}</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={MIN_CHARACTER_LEVEL}
+                  max={MAX_CHARACTER_LEVEL}
+                  step={1}
+                  value={levelText}
+                  onChange={(event) => changeLevelText(event.target.value)}
+                  onBlur={() => setLevelText(String(level))}
+                  aria-label={localizedText(copy.characterLevel, "", locale)}
+                />
+              </label>
+              <button className="build-change-class" type="button" onClick={openClassPicker}>
+                <span className="material-symbols-rounded" aria-hidden="true">person</span>
+                {buildTree ? localizedText(copy.changeClass, "", locale) : (locale === "vi" ? "Chọn class" : "Pick a class")}
+              </button>
+            </div>
           </div>
 
           <div className="nj-hero-side">

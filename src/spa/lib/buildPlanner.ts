@@ -172,6 +172,8 @@ export interface BuildProject {
   stash: BuildStashItem[];
   importedPayload?: BuildPayload;
   importedFileName?: string;
+  /** Character level (1-100); unset = the imported payload's, else DEFAULT_CHARACTER_LEVEL. */
+  level?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -185,6 +187,8 @@ export interface BuildExportInput {
   description: string;
   inventory: BuildInventoryChoice[];
   skills?: BuildSkillChoice[];
+  /** Character level; replaces the base payload's. */
+  level?: number;
 }
 
 export interface PobGem {
@@ -290,6 +294,23 @@ const parseWholeNumber = (value: unknown, fallback = 0): number => {
   const parsed = Number.parseInt(String(value ?? ""), 10);
   return Number.isFinite(parsed) ? parsed : fallback;
 };
+
+export const DEFAULT_CHARACTER_LEVEL = 90;
+export const MIN_CHARACTER_LEVEL = 1;
+export const MAX_CHARACTER_LEVEL = 100;
+
+/** A character level clamped to 1-100, or undefined when the value is not a number. */
+export function characterLevel(value: unknown): number | undefined {
+  if (value === null || value === undefined || value === "") return undefined;
+  const parsed = Math.trunc(Number(value));
+  if (!Number.isFinite(parsed)) return undefined;
+  return Math.min(MAX_CHARACTER_LEVEL, Math.max(MIN_CHARACTER_LEVEL, parsed));
+}
+
+/** The level a build plays at: its own, else its imported payload's, else 90. */
+export function buildCharacterLevel(project: Pick<BuildProject, "level" | "importedPayload"> | null | undefined): number {
+  return characterLevel(project?.level) ?? characterLevel(project?.importedPayload?.level) ?? DEFAULT_CHARACTER_LEVEL;
+}
 
 export function selectedPassiveIds(snapshot: Pick<BuildTreeSnapshot, "allocatedIds" | "startIds">): string[] {
   const starts = new Set(snapshot.startIds);
@@ -463,6 +484,7 @@ export function normalizeBuildProject(value: unknown): BuildProject | null {
     stash: normalizeStash(value.stash),
     importedPayload,
     importedFileName: typeof value.importedFileName === "string" ? value.importedFileName : undefined,
+    ...(characterLevel(value.level) !== undefined ? { level: characterLevel(value.level) } : {}),
     createdAt: typeof value.createdAt === "string" ? value.createdAt : nowIso(),
     updatedAt: typeof value.updatedAt === "string" ? value.updatedAt : nowIso()
   };
@@ -492,6 +514,7 @@ export function createBuildProject({
   stash = [],
   importedPayload,
   importedFileName,
+  level,
   createdAt
 }: {
   id?: string;
@@ -506,6 +529,7 @@ export function createBuildProject({
   stash?: BuildStashItem[];
   importedPayload?: BuildPayload;
   importedFileName?: string;
+  level?: number;
   createdAt?: string;
 }): BuildProject {
   const timestamp = nowIso();
@@ -526,6 +550,7 @@ export function createBuildProject({
     stash: normalizeStash(stash),
     importedPayload,
     importedFileName,
+    ...(characterLevel(level) !== undefined ? { level: characterLevel(level) } : {}),
     createdAt: createdAt || timestamp,
     updatedAt: timestamp
   };
@@ -585,6 +610,64 @@ export function createTreeSnapshot({
   if (weaponSets) snapshot.weaponSets = pickAllocated(weaponSets, allocated, (value) => value === 1 || value === 2);
   if (attributeChoices) snapshot.attributeChoices = pickAllocated(attributeChoices, allocated, (value) => ATTRIBUTE_CHOICES.includes(value));
   return snapshot;
+}
+
+/**
+ * An empty tree for a class and ascendancy picked in the planner: only the start
+ * nodes (startIds, from selectedStartNodeIds of the passive tree) are allocated.
+ */
+export function createClassTreeSnapshot({
+  className,
+  ascendancyName,
+  startIds,
+  treeVersion,
+  name = ""
+}: {
+  className: string;
+  ascendancyName: string;
+  startIds: Iterable<string>;
+  treeVersion: string;
+  name?: string;
+}): BuildTreeSnapshot {
+  const starts = uniqueStrings(startIds);
+  return createTreeSnapshot({
+    name: name || `${className} ${ascendancyName}`.trim(),
+    className,
+    ascendancyName,
+    allocatedIds: starts,
+    startIds: starts,
+    treeVersion,
+    weaponSets: {},
+    attributeChoices: {}
+  });
+}
+
+/** The same tree saved several times (same name, class, ascendancy and nodes) shows once: the newest. */
+export function dedupeTreeSnapshots<T extends BuildTreeSnapshot>(rows: T[]): T[] {
+  const seen = new Set<string>();
+  return rows.filter((row) => {
+    const key = JSON.stringify([
+      String(row.name || "").trim().toLowerCase(),
+      row.className || "",
+      row.ascendancyName || "",
+      selectedPassiveIds(row).sort()
+    ]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * Calculation payload of a build made in the planner (no imported payload): class and
+ * ascendancy come from its tree, the level from the planner.
+ */
+export function classBuildPayload(snapshot: BuildTreeSnapshot, level: number | undefined, plannerData?: BuildPlannerData | null): BuildPayload {
+  return {
+    className: snapshot.className,
+    ascendancy: officialAscendancyId(snapshot, plannerData) || "None",
+    level: characterLevel(level) ?? DEFAULT_CHARACTER_LEVEL
+  };
 }
 
 function pickAllocated<T>(values: Record<string, T>, allocated: Iterable<string>, valid: (value: T) => boolean): Record<string, T> {
@@ -1819,6 +1902,10 @@ export function buildPlannerPayload(input: BuildExportInput): BuildPayload {
     })
     : [];
 
+  const level = characterLevel(input.level);
+  if (level !== undefined) build.level = level;
+  // A build made in the planner keeps its class (the calculator and a re-import need it).
+  if (input.snapshot?.className && !cleanText(build.className)) build.className = input.snapshot.className;
   if (author) build.author = author;
   else delete build.author;
   if (description) build.description = description;
@@ -1972,7 +2059,7 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
   return {
     className: text("className") || "Witch",
     ascendancy: text("ascendancy") || "None",
-    level: parseWholeNumber(payload.level, 90) || 90,
+    level: characterLevel(payload.level) ?? DEFAULT_CHARACTER_LEVEL,
     passives: input.passives.map((id) => parseWholeNumber(id, 0)).filter(Boolean),
     weapon_set_passives: input.weaponSets
       ? weaponSetPassivesBody(input.weaponSets, input.passives)
