@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { type Locale } from "../lib/locale";
-import { loadCraftData, loadCraftIndex, loadCurrencyData, useAsyncData } from "../lib/data";
+import { loadCurrencyData, loadItemModsData, loadItemsData, useAsyncData } from "../lib/data";
 import {
-  type CraftItem, type CraftPool, type Rarity,
-  CURRENCIES, findCurrency, applyCurrency, prefixCount, suffixCount
+  type CraftBaseEntry, type CraftItem, type Rarity,
+  CURRENCIES, buildCraftSimFromPob, findCurrency, applyCurrency, prefixCount, suffixCount
 } from "../lib/craftEngine";
-
-interface BaseEntry { name: string; slug: string; icon: string | null; attr: string | null; req_level: number; craft_key: string; }
-interface ClassEntry { label: string; attr_split: boolean; base_count: number; bases: BaseEntry[]; }
-interface GroupEntry { group: string; classes: ClassEntry[]; }
 
 interface CurrencyItem { name: string; icon_url: string | null; category_label: string; family_label: string; description_en?: string; }
 
@@ -23,17 +19,17 @@ const STASH_TABS: { key: string; label: string; cats: string[] }[] = [
 // Display order of currency families inside the Currency tab.
 const FAMILY_ORDER = ["Crafting Orb", "Socket Currency", "Quality Currency", "Corruption Currency", "Shard", "Utility Currency", "Omen", "Desecration Currency", "Delirium Liquid", "Gem Currency", "Expedition Artifact"];
 
-function makeItem(base: BaseEntry, ilvl: number): CraftItem {
+function makeItem(base: CraftBaseEntry, ilvl: number): CraftItem {
   return {
     baseName: base.name, icon: base.icon, attr: base.attr, itemClass: base.craft_key,
-    ilvl, implicit: null, rarity: "normal", corrupted: false, craftKey: base.craft_key, mods: []
+    ilvl, implicit: base.implicit || null, rarity: "normal", corrupted: false, craftKey: base.craft_key, mods: []
   };
 }
 
 export function CraftSimPage({ locale }: { locale: Locale }) {
   void locale;
-  const [index, setIndex] = useState<{ tree: GroupEntry[] } | null>(null);
-  const [craft, setCraft] = useState<{ classes: Record<string, CraftPool> } | null>(null);
+  const [itemModsRaw, setItemModsRaw] = useState<any>(null);
+  const [itemsRaw, setItemsRaw] = useState<any[]>([]);
   const [currency, setCurrency] = useState<CurrencyItem[]>([]);
   const [err, setErr] = useState("");
 
@@ -45,9 +41,13 @@ export function CraftSimPage({ locale }: { locale: Locale }) {
   const [flash, setFlash] = useState("");
   const [log, setLog] = useState<string[]>([]);
 
-  useEffect(() => useAsyncData(loadCraftIndex, (d) => setIndex(d), (e) => setErr(e.message)), []);
-  useEffect(() => useAsyncData(loadCraftData, (d) => setCraft(d), (e) => setErr(e.message)), []);
+  useEffect(() => useAsyncData(loadItemModsData, (d) => setItemModsRaw(d), (e) => setErr(e.message)), []);
+  useEffect(() => useAsyncData(loadItemsData, (d) => setItemsRaw(d.items || []), () => { /* icons optional */ }), []);
   useEffect(() => useAsyncData(loadCurrencyData, (d) => setCurrency(d.items || []), (e) => setErr(e.message)), []);
+
+  const craftSim = useMemo(() => (itemModsRaw ? buildCraftSimFromPob(itemModsRaw, itemsRaw) : null), [itemModsRaw, itemsRaw]);
+  const index = craftSim ? { tree: craftSim.tree } : null;
+  const craft = craftSim ? { classes: craftSim.classes } : null;
 
   const pool = item && craft ? craft.classes[item.craftKey] : null;
 
@@ -69,7 +69,7 @@ export function CraftSimPage({ locale }: { locale: Locale }) {
 
   const showFlash = (msg: string) => { setFlash(msg); window.setTimeout(() => setFlash(""), 1800); };
 
-  const pickBase = (base: BaseEntry) => {
+  const pickBase = (base: CraftBaseEntry) => {
     setItem(makeItem(base, ilvl));
     setPickerOpen(false);
     setLog([`Chọn base: ${base.name} (ilvl ${ilvl})`]);
@@ -87,7 +87,7 @@ export function CraftSimPage({ locale }: { locale: Locale }) {
     setLog((l) => [`${held.name} → ${next.rarity}${next.corrupted ? " (corrupted)" : ""}, ${next.mods.length} mod`, ...l].slice(0, 12));
   };
 
-  const reset = () => { if (item) setItem(makeItem({ name: item.baseName, slug: "", icon: item.icon, attr: item.attr, req_level: 0, craft_key: item.craftKey }, ilvl)); setHeld(null); setLog([]); };
+  const reset = () => { if (item) setItem(makeItem({ name: item.baseName, slug: "", icon: item.icon, attr: item.attr, req_level: 0, craft_key: item.craftKey, implicit: item.implicit }, ilvl)); setHeld(null); setLog([]); };
 
   const prefixes = item ? item.mods.filter((m) => m.gen === "prefix") : [];
   const suffixes = item ? item.mods.filter((m) => m.gen === "suffix") : [];
@@ -121,18 +121,19 @@ export function CraftSimPage({ locale }: { locale: Locale }) {
                   {item.icon ? <img src={item.icon} alt="" loading="lazy" /> : null}
                   <div>
                     <strong translate="no">{item.baseName}</strong>
-                    <small>{item.itemClass} · {item.corrupted ? "Corrupted" : item.rarity}</small>
+                    <small>{pool?.label || item.itemClass} · {item.corrupted ? "Corrupted" : item.rarity}</small>
                   </div>
                 </div>
                 <div className="craft-item__body">
                   <div className="craft-item__meta">Item Level: {item.ilvl}{item.attr ? ` · ${item.attr}` : ""}</div>
+                  {item.implicit ? <div className="craft-mod craft-mod--implicit"><span>{item.implicit}</span></div> : null}
                   {prefixes.length ? <div className="craft-item__group-label">Prefix ({prefixCount(item)}/3)</div> : null}
                   {prefixes.map((m, i) => (
-                    <div className="craft-mod" key={`p${i}`}><span className="craft-mod__tier">T{m.tierLabel}</span><span dangerouslySetInnerHTML={{ __html: m.text }} />{m.fractured ? <span className="craft-mod__frac">fractured</span> : null}</div>
+                    <div className="craft-mod" key={`p${i}`}><span className="craft-mod__tier">T{m.tierLabel}</span><span>{m.text}</span>{m.fractured ? <span className="craft-mod__frac">fractured</span> : null}</div>
                   ))}
                   {suffixes.length ? <div className="craft-item__group-label">Suffix ({suffixCount(item)}/3)</div> : null}
                   {suffixes.map((m, i) => (
-                    <div className="craft-mod" key={`s${i}`}><span className="craft-mod__tier">T{m.tierLabel}</span><span dangerouslySetInnerHTML={{ __html: m.text }} /></div>
+                    <div className="craft-mod" key={`s${i}`}><span className="craft-mod__tier">T{m.tierLabel}</span><span>{m.text}</span></div>
                   ))}
                   {!item.mods.length ? <div className="craft-item__empty">Item trắng — right-click một currency rồi bấm vào đây để craft.</div> : null}
                 </div>

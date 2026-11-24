@@ -46,6 +46,7 @@
     "extract:game-base-items": "node scripts/ggpk/extract-base-items.mjs",
     "extract:game-misc-items": "node scripts/ggpk/extract-misc-items.mjs",
     "sync:icons": "node scripts/ggpk/sync-site-icons.mjs",
+    "sync:passive-tree": "node scripts/sot/sync-passive-tree.mjs",
     "sync:sot": "node scripts/sot/sync-from-sot.mjs --apply",
     "update:season": "node scripts/update-season.mjs",
     "poevh:publish": "node scripts/publish-poevh.mjs"

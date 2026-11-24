@@ -20,7 +20,9 @@
 // GiantsBlood / InstrumentsOfPower / LordOfTheWilds mods (ModParser.lua): a passive node
 // or an equipped item carrying the stat line sets them. PoB loads a build's XML without
 // checking the pair, so the planner has to.
-import { GEM_LEVEL_REQUIREMENTS, MULTIPLE_CHOICE_OPTION_NODES, PASSIVE_POINT_ACTS, WEAPON_CLASSES, WEAPON_FLAG_LINES, WEAPON_FLAG_NODES } from "./equipment-rules-data.mjs";
+import { GEM_LEVEL_REQUIREMENTS, MULTIPLE_CHOICE_OPTION_NODES, PASSIVE_POINT_ACTS, TREE_VERSION, WEAPON_CLASSES, WEAPON_FLAG_LINES, WEAPON_FLAG_NODES } from "./equipment-rules-data.mjs";
+
+export { TREE_VERSION };
 
 /** The two weapon sets: [main-hand slot, off-hand slot] in the planner's slot ids. */
 export const WEAPON_SET_SLOTS = [["Weapon1", "Weapon2"], ["Weapon3", "Weapon4"]];

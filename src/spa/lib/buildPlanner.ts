@@ -2076,6 +2076,8 @@ export interface CalculationRequestInput {
   weaponSets?: Record<string, WeaponSetNumber>;
   /** Attribute picks edited on the tree; replaces the payload's attribute_overrides. */
   attributeChoices?: Record<string, AttributeChoice>;
+  /** Passive tree version from the loaded passive-tree dataset (e.g. "0_5"). */
+  treeVersion?: string;
 }
 
 const calculationGem = (choice: BuildSkillChoice | BuildSupportSkillChoice, enabled: boolean) => {
@@ -2114,6 +2116,7 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
     className: text("className") || "Witch",
     ascendancy: text("ascendancy") || "None",
     level: characterLevel(payload.level) ?? DEFAULT_CHARACTER_LEVEL,
+    ...(input.treeVersion ? { treeVersion: input.treeVersion } : {}),
     passives: input.passives.map((id) => parseWholeNumber(id, 0)).filter(Boolean),
     weapon_set_passives: input.weaponSets
       ? weaponSetPassivesBody(input.weaponSets, input.passives)

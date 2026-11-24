@@ -111,7 +111,7 @@ import {
 } from "../lib/buildInventory";
 import { buildWeaponFlags, enforceWeaponSets, equipWithWeaponRules, inventoryWithoutImpossibleOffHands, weaponNoticeText, weaponSlotCategories } from "../lib/weaponSets";
 import { buildWarnings, freeAllocatedNames, itemLevelRequirement, type WarningGem, type WarningItem, type WarningPoints } from "../lib/buildWarnings";
-import { isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
+import { TREE_VERSION, isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
 import { skillWeaponHint } from "../lib/skillWeapon";
 import { treePointsSpent } from "../lib/treePoints";
 import { applyLocalMods } from "../lib/itemLocalStats";
@@ -1566,6 +1566,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const calculationBodyFor = useCallback((overrides: { inventory?: BuildInventoryChoice[]; skills?: BuildSkillChoice[]; mainSocketGroup?: number } = {}) => calcPayload ? calculationRequestBody({
       payload: calcPayload,
       passives: effectiveTree?.allocatedIds || [],
+      treeVersion: effectiveTree?.treeVersion || plannerData?.version || TREE_VERSION,
       weaponSets: effectiveTree?.weaponSets,
       attributeChoices: effectiveTree?.attributeChoices,
       // Never an off-hand its main hand cannot hold (the server drops such a pair as well).
@@ -2673,7 +2674,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       className: pickedClass,
       ascendancyName: pickedAscendancy,
       startIds: selectedStartNodeIds(classTree, pickedClass, pickedAscendancy),
-      treeVersion: plannerData?.version || "0.5",
+      treeVersion: plannerData?.version || TREE_VERSION,
       name: name.trim() || `${pickedClass} ${pickedAscendancy}`.trim()
     });
     setImportError("");

@@ -58,6 +58,7 @@ export interface PassiveGroup {
 }
 
 export interface PassiveTreeModel {
+  version: string;
   nodes: PassiveNode[];
   edges: PassiveEdge[];
   nodeById: Map<string, PassiveNode>;
@@ -255,8 +256,9 @@ export function parsePassiveTree(raw: any, locale: "vi" | "en" = "vi"): PassiveT
 
   const classes = classMetas.map((row) => row.name);
   const ascendancies = [...ascendancyByName.keys()];
+  const version = String(raw?.version || "").trim();
 
-  return { nodes, edges, nodeById, bounds, classes, ascendancies, classByName, ascendancyByName, groupById, scaleImage, orbitRadii };
+  return { version, nodes, edges, nodeById, bounds, classes, ascendancies, classByName, ascendancyByName, groupById, scaleImage, orbitRadii };
 }
 
 export function nodeRadius(node: PassiveNode): number {

@@ -139,17 +139,21 @@ export function buildItemModData(pobDir = defaultPobDir()) {
     const table = tableOf(base);
     const extra = new Set([...craftTags].filter((tag) => !INFLUENCE_TAGS.has(tag)));
     for (const tag of influenceTags(base)) extra.add(tag);
-    const normal = [];
+    const normalPairs = [];
     const special = [];
     const excluded = [];
     for (const [id, mod] of Object.entries(tables[table])) {
       if (mod.type !== "Prefix" && mod.type !== "Suffix") continue;
-      if (spawnWeight(mod, base.tags) > 0) normal.push(addMod(table, id, mod));
-      else if (spawnWeight(mod, base.tags, extra) > 0) special.push(addMod(table, id, mod));
+      const weight = spawnWeight(mod, base.tags);
+      if (weight > 0) {
+        const idx = addMod(table, id, mod);
+        if (idx >= 0) normalPairs.push([idx, weight]);
+      } else if (spawnWeight(mod, base.tags, extra) > 0) special.push(addMod(table, id, mod));
       // A tag of the base takes away a weight it would otherwise have: the data rules
       // the mod out on this base.
       else if (ruledOutByTag(mod, base.tags)) excluded.push(addMod(table, id, mod));
     }
+    const normalIds = new Set(normalPairs.map(([idx]) => idx));
     for (const [id, mod] of Object.entries(desecrated)) {
       if (spawnWeight(mod, base.tags, extra) > 0) special.push(addMod("Desecrated", id, mod));
     }
@@ -160,18 +164,21 @@ export function buildItemModData(pobDir = defaultPobDir()) {
     for (const type of essenceTypes) {
       for (const id of essenceByType.get(type) ?? []) {
         const index = tables[table][id] ? addMod(table, id, tables[table][id]) : exclusive[id] ? addMod("Exclusive", id, exclusive[id]) : -1;
-        if (index >= 0 && !normal.includes(index)) special.push(index);
+        if (index >= 0 && !normalIds.has(index)) special.push(index);
       }
     }
     const corrupt = [];
     for (const [id, mod] of Object.entries(corrupted)) {
       if (mod.type === "Corrupted" && spawnWeight(mod, base.tags) > 0) corrupt.push(addMod("Corrupted", id, mod));
     }
+    normalPairs.sort((a, b) => a[0] - b[0]);
+    const normal = normalPairs.map(([idx]) => idx);
+    const normalWeights = normalPairs.map(([, weight]) => weight);
     const lists = [normal, [...new Set(special)].filter((index) => index >= 0), corrupt, excluded].map((list) => list.sort((a, b) => a - b));
-    const key = `${table}|${base.type}|${lists.map((list) => list.join(",")).join("|")}`;
+    const key = `${table}|${base.type}|${lists.map((list) => list.join(",")).join("|")}|${normalWeights.join(",")}`;
     if (!classIndex.has(key)) {
       classIndex.set(key, classes.length);
-      classes.push({ type: base.type, table, normal: lists[0], special: lists[1], corrupt: lists[2], excluded: lists[3] });
+      classes.push({ type: base.type, table, normal: lists[0], nw: normalWeights, special: lists[1], corrupt: lists[2], excluded: lists[3] });
     }
     const record = { n: name, c: classIndex.get(key), t: base.type };
     if (base.subType) record.st = base.subType;

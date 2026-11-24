@@ -64,32 +64,38 @@ function main() {
   checkPobStatus(pullPob);
 
   if (!skipGgpk) {
-    runStep("1/6 Check GGPK schema widths", process.execPath, ["scripts/ggpk/check-schema-widths.mjs", ...gameArg]);
-    runStep("2/6 Extract GGPK base items, gems, and misc items", process.execPath, ["scripts/ggpk/extract-base-items.mjs", ...gameArg]);
+    runStep("1/7 Check GGPK schema widths", process.execPath, ["scripts/ggpk/check-schema-widths.mjs", ...gameArg]);
+    runStep("2/7 Extract GGPK base items, gems, and misc items", process.execPath, ["scripts/ggpk/extract-base-items.mjs", ...gameArg]);
     runStep("    Extract GGPK gems", process.execPath, ["scripts/ggpk/extract-gems.mjs", ...gameArg]);
     runStep("    Extract GGPK misc items (currency, omens, augments, tablets, waystones)", process.execPath, ["scripts/ggpk/extract-misc-items.mjs", ...gameArg]);
   } else {
     console.log("\n==> Skipping GGPK extraction (--skip-ggpk)");
   }
 
-  runStep("3/6 Dump & generate PoB gems, skills, and uniques", process.execPath, ["scripts/pob-data/generate.mjs", "--dump"]);
+  runStep("3/7 Dump & generate PoB gems, skills, and uniques", process.execPath, ["scripts/pob-data/generate.mjs", "--dump"]);
 
-  runStep("4/6 Refresh Build Planner PoB datasets", process.execPath, ["scripts/refresh-pob-gem-ids.mjs"]);
+  runStep("4/7 Refresh Build Planner & Craft PoB datasets", process.execPath, ["scripts/refresh-pob-gem-ids.mjs"]);
   runStep("    Refresh PoB gem families & monsters", process.execPath, ["scripts/refresh-pob-planner-data.mjs"]);
-  runStep("    Rebuild PoB item mod pool", process.execPath, ["scripts/build-item-mod-pool.mjs"]);
+  runStep("    Rebuild PoB item mod pool (Build Planner + Craft Simulator)", process.execPath, ["scripts/build-item-mod-pool.mjs"]);
   runStep("    Rebuild PoB equipment rules", process.execPath, ["scripts/build-equipment-rules-data.mjs"]);
 
   runStep(
-    `5/6 Merge PoB + GGPK SOT into public/data/*.js (${dryRun ? "dry-run" : "apply"})`,
+    `5/7 Sync Passive Tree from PoB TreeData (${dryRun ? "dry-run" : "apply"})`,
     process.execPath,
-    ["scripts/sot/sync-from-sot.mjs", dryRun ? "--dry-run" : "--apply"]
+    ["scripts/sot/sync-passive-tree.mjs", ...(dryRun ? ["--dry-run"] : []), ...gameArg]
+  );
+
+  runStep(
+    `6/7 Merge PoB + GGPK SOT into public/data/*.js (${dryRun ? "dry-run" : "apply"})`,
+    process.execPath,
+    ["scripts/sot/sync-from-sot.mjs", dryRun ? "--dry-run" : "--apply", ...(args.has("overwrite-mods") ? ["--overwrite-mods"] : [])]
   );
 
   if (!skipIcons && !skipGgpk) {
     runStep(
-      "6/6 Sync self-hosted WebP icons from Content.ggpk",
+      "7/7 Sync self-hosted WebP icons from Content.ggpk",
       process.execPath,
-      ["scripts/ggpk/sync-site-icons.mjs", ...gameArg, ...(dryRun ? ["--no-rewrite"] : [])]
+      ["scripts/ggpk/sync-site-icons.mjs", ...gameArg, ...(dryRun ? ["--no-rewrite"] : []), ...(args.has("fetch-missing") ? ["--fetch-missing"] : [])]
     );
   } else {
     console.log("\n==> Skipping GGPK icon sync");

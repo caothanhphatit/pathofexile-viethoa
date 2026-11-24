@@ -617,6 +617,14 @@
   pointer-events: none;
 }
 
+/* On stash tiles, keep the edited badge in the top-right so it never overlaps the bottom item label. */
+.pi-cell .pi-edited {
+  top: 2px;
+  right: 2px;
+  left: auto;
+  bottom: auto;
+}
+
 .build-equip-slot { position: relative; }
 
 .pi-cell-actions {

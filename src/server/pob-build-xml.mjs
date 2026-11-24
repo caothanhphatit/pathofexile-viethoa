@@ -5,9 +5,15 @@
 // Everything here ends up inside XML attributes or text, and the request body
 // comes from the browser: every value is escaped, clamped or whitelisted.
 
+import { TREE_VERSION } from "../shared/equipment-rules-data.mjs";
 import { plannerRequestXml } from "./pob-breakdown.mjs";
 import { pobGemId } from "./pob-gem-ids.mjs";
 import { monsterLibraryOf } from "./pob-monster-gems.mjs";
+
+const normalizePobTreeVersion = (raw) => {
+  const s = String(raw || "").trim().replace(/\./g, "_");
+  return /^\d+_\d+$/.test(s) ? s : TREE_VERSION;
+};
 
 export const escapeXml = (value) => {
   if (value === undefined || value === null) return "";
@@ -313,6 +319,7 @@ export function buildPobXml(build = {}) {
     // Older clients send the raw <Config> element from the PoB code.
     || (typeof build.config === "string" && /^\s*<Config[\s>]/.test(build.config) ? build.config : "");
 
+  const treeVersion = normalizePobTreeVersion(build.treeVersion);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <PathOfBuilding2>
 	<Build level="${level}" targetVersion="0_1" className="${escapeXml(className)}" ascendClassName="${escapeXml(ascendClassName)}" viewMode="ITEMS" mainSocketGroup="${mainSocketGroup}">${monsterLibraryXml(build)}
@@ -329,7 +336,7 @@ ${skillGroups.join("\n")}
 		</SkillSet>
 	</Skills>
 	<Tree activeSpec="1">
-		<Spec treeVersion="0_5" nodes="${passives.join(",")}" classId="${cId}" classInternalId="${cId}" ascendClassId="${asc.id}" ascendancyInternalId="${asc.internalId}">${weaponSetXml}${overridesXml}
+		<Spec treeVersion="${escapeXml(treeVersion)}" nodes="${passives.join(",")}" classId="${cId}" classInternalId="${cId}" ascendClassId="${asc.id}" ascendancyInternalId="${asc.internalId}">${weaponSetXml}${overridesXml}
 			<Sockets>
 				${sockets.join("\n\t\t\t\t")}
 			</Sockets>

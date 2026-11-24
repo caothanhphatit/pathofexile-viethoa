@@ -139,6 +139,9 @@ function main() {
 // Sources: src/Data/Bases/*.lua (type, tags), src/TreeData/${treeVersion}/tree.json (nodes),
 // src/Data/Skills/act_*.lua (gem level requirements), src/Data/QuestRewards.lua (passive points).
 
+/** Active passive tree version from PoB's newest src/TreeData/<version>/ directory. */
+export const TREE_VERSION = ${JSON.stringify(treeVersion)};
+
 /** PoB's item type and the tags its slot rules read, per weapon / off-hand class. */
 export const WEAPON_CLASSES = {
 ${classLines}

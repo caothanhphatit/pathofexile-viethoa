@@ -17,7 +17,7 @@ import {
 } from "../passive/planner";
 import { WEAPON_SET_COLORS } from "../passive/draw";
 import "../styles/planner-tree-edit.css";
-import { isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
+import { TREE_VERSION, isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
 import { filteredTreeNodes, parsePassiveTree, projectNodeForView, type PassiveNode, type PassiveTreeModel } from "../passive/tree";
 import { parsePobBuild, type PobBuild } from "../passive/pob";
 
@@ -742,7 +742,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       ascendancyName: ascendancyFilter,
       allocatedIds,
       startIds: selectedStartIds,
-      treeVersion: "0.5",
+      treeVersion: tree.version || TREE_VERSION,
       weaponSets,
       attributeChoices
     });

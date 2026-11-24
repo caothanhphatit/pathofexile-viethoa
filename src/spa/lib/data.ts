@@ -15,14 +15,15 @@ type GlobalName =
   | "POE2_PRICES";
 
 const pendingScripts = new Map<string, Promise<unknown>>();
-const passiveTreeDataVersion = "20260528-pruned-nodes";
+const passiveTreeDataVersion = "20261124-pob-601768b";
 // Bump these whenever the matching public/data/*.js export is regenerated, or browsers
 // keep serving the cached copy.
-const itemsDataVersion = "20261107-recrawl";
-const skillGemsDataVersion = "20261124-pob-ids";
+const itemsDataVersion = "20261124-standalone";
+const currencyDataVersion = "20261124-standalone";
+const skillGemsDataVersion = "20261124-standalone";
 const dictionaryDataVersion = "20261107-recrawl";
 // item-mods-data.js is generated from Path of Building (scripts/build-item-mod-pool.mjs).
-const itemModsDataVersion = "20261124-pob-bb52d6b";
+const itemModsDataVersion = "20261124-pob-601768b";
 
 export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promise<T> {
   const current = window[globalName as keyof Window] as T | undefined;
@@ -66,14 +67,14 @@ export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promis
 }
 
 export const loadSkillGemsData = () => loadScriptGlobal<any>(`/data/skill-gems-data.js?v=${skillGemsDataVersion}`, "POE2_SKILL_GEMS");
-export const loadCurrencyData = () => loadScriptGlobal<any>("/data/currency-data.js", "POE2_CURRENCY");
+export const loadCurrencyData = () => loadScriptGlobal<any>(`/data/currency-data.js?v=${currencyDataVersion}`, "POE2_CURRENCY");
 export const loadItemsData = () => loadScriptGlobal<any>(`/data/items-data.js?v=${itemsDataVersion}`, "POE2_ITEMS");
 export const loadDictionaryData = () => loadScriptGlobal<any>(`/data/dictionary-data.js?v=${dictionaryDataVersion}`, "POE2_DICTIONARY_TERMS");
 export const loadBuildPlannerData = () => loadScriptGlobal<any>("/data/build-planner-data.js", "POE2_BUILD_PLANNER_DATA");
 export const loadPassiveTreeData = () => loadScriptGlobal<any>(`/data/passive-tree-data.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE");
 export const loadLevelingData = () => loadScriptGlobal<any[]>("/data/leveling-data.js", "levelingRouteZones");
 export const loadCraftData = () => loadScriptGlobal<any>("/data/craft-data.js?v=20260610", "POE2_CRAFT");
-/** The Build Planner item editor's mod pool (pass it to buildModPool). The craft simulator keeps craft-data.js. */
+/** PoB item mod pool used by both the Build Planner item editor and the Craft Simulator. */
 export const loadItemModsData = () => loadScriptGlobal<any>(`/data/item-mods-data.js?v=${itemModsDataVersion}`, "POE2_ITEM_MODS");
 export const loadCraftIndex = () => loadScriptGlobal<any>("/data/craft-index.js?v=20260610", "POE2_CRAFT_INDEX");
 

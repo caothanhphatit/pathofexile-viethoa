@@ -25,6 +25,12 @@ export const SITE_DATA_FILES = [
 const CDN_IMAGE_RE = /https?:\/\/cdn\.poe2db\.tw\/image\/([^"'\s\\]+?)\.(webp|png)/gi;
 const LOCAL_ICON_RE = /\/assets\/ggpk-icons\/([^"'\s\\]+?)\.webp/gi;
 
+// Legacy PoE1/poe2db art paths whose PoE2 GGPK texture lives at a moved path.
+const GGPK_ART_ALIASES = new Map([
+  ["art/2ditems/rings/blackflamechaos", "Art/2DItems/Rings/Uniques/Blackflame.dds"],
+  ["art/2ditems/weapons/onehandweapons/onehandspears/skysliver", "Art/2DItems/Weapons/OneHandWeapons/OneHandSpears/Uniques/Skysliver.dds"]
+]);
+
 /** Decode percent-encoding safely and normalize slashes. */
 export function normalizeArtPath(raw) {
   let value = String(raw || "").replace(/\\/g, "/").replace(/^\/+/, "");
@@ -72,7 +78,7 @@ export function collectSiteIconPaths(dataDir = DATA_DIR, files = SITE_DATA_FILES
 }
 
 /** Encode RGBA buffer directly to WebP using ffmpeg over stdin (no intermediate PNG). */
-function encodeRgbaToWebp(rgba, width, height, outPath, quality = 88) {
+export function encodeRgbaToWebp(rgba, width, height, outPath, quality = 88) {
   return new Promise((resolve, reject) => {
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     const proc = spawn("ffmpeg", [
@@ -93,7 +99,7 @@ function encodeRgbaToWebp(rgba, width, height, outPath, quality = 88) {
 }
 
 /** Fallback: let ffmpeg decode unusual DDS formats (e.g. BC3/BC7) directly from a temp file. */
-function encodeDdsFallbackToWebp(ddsBuffer, outPath, quality = 88) {
+export function encodeDdsFallbackToWebp(ddsBuffer, outPath, quality = 88) {
   return new Promise((resolve, reject) => {
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     const tmp = path.join(os.tmpdir(), `poevh-dds-${process.pid}-${Math.random().toString(36).slice(2)}.dds`);
@@ -172,31 +178,34 @@ export async function syncSiteIcons(args = new Map()) {
   const toExtract = [];
   let skippedExisting = 0;
 
-  for (const [, ddsPath] of iconMap) {
+  for (const [lowerKey, ddsPath] of iconMap) {
     const rel = localRelWebpPath(ddsPath);
     const outPath = path.join(ICONS_DIR, rel);
     if (!force && fs.existsSync(outPath)) {
       skippedExisting += 1;
     } else {
-      toExtract.push({ ddsPath, rel, outPath });
+      const ggpkPath = GGPK_ART_ALIASES.get(lowerKey) || ddsPath;
+      toExtract.push({ ddsPath, ggpkPath, rel, outPath });
     }
   }
 
   let extracted = 0;
   let converted = 0;
   let fallbackConverted = 0;
+  let fetchedMissing = 0;
   let webpBytes = 0;
   const missing = [];
   const failed = [];
+  const fetchMissing = args.has("fetch-missing");
 
   if (toExtract.length > 0) {
-    const extractResult = extractDds(ggpk, toExtract.map((item) => item.ddsPath), helper, 180);
+    const extractResult = extractDds(ggpk, toExtract.map((item) => item.ggpkPath), helper, 180);
     extracted = extractResult.files.size;
     missing.push(...extractResult.missing);
 
-    const workItems = toExtract.filter((item) => extractResult.files.has(item.ddsPath));
+    const workItems = toExtract.filter((item) => extractResult.files.has(item.ggpkPath));
     await runPool(workItems, concurrency, async (item) => {
-      const buf = extractResult.files.get(item.ddsPath);
+      const buf = extractResult.files.get(item.ggpkPath);
       try {
         const img = decodeDds(buf);
         const bytes = await encodeRgbaToWebp(img.rgba, img.width, img.height, item.outPath, quality);
@@ -213,6 +222,41 @@ export async function syncSiteIcons(args = new Map()) {
         }
       }
     });
+
+    if (fetchMissing && missing.length > 0) {
+      const missingItems = toExtract.filter((item) => !extractResult.files.has(item.ggpkPath));
+      const stillMissing = [];
+      await runPool(missingItems, Math.min(concurrency, 6), async (item) => {
+        const art = normalizeArtPath(item.ddsPath);
+        const url = `https://cdn.poe2db.tw/image/${art.split("/").map(encodeURIComponent).join("/")}.webp`;
+        try {
+          const res = await fetch(url, {
+            headers: {
+              accept: "image/webp,image/*,*/*;q=0.8",
+              referer: "https://poe2db.tw/us/Items",
+              "user-agent": "Mozilla/5.0 POE2 Viet Hoa icon sync"
+            }
+          });
+          if (!res.ok) {
+            stillMissing.push(item.ddsPath);
+            return;
+          }
+          const buf = Buffer.from(await res.arrayBuffer());
+          if (buf.length < 16) {
+            stillMissing.push(item.ddsPath);
+            return;
+          }
+          fs.mkdirSync(path.dirname(item.outPath), { recursive: true });
+          fs.writeFileSync(item.outPath, buf);
+          webpBytes += buf.length;
+          fetchedMissing += 1;
+        } catch {
+          stillMissing.push(item.ddsPath);
+        }
+      });
+      missing.length = 0;
+      missing.push(...stillMissing);
+    }
   }
 
   const rewrite = noRewrite ? null : rewriteSiteIconUrls({ dataDir: DATA_DIR, iconsDir: ICONS_DIR, files: SITE_DATA_FILES });
@@ -224,6 +268,7 @@ export async function syncSiteIcons(args = new Map()) {
     skipped_existing: skippedExisting,
     extracted_from_ggpk: extracted,
     converted_webp: converted,
+    fetched_non_ggpk_webp: fetchedMissing,
     ffmpeg_dds_fallback: fallbackConverted,
     webp_bytes_added: webpBytes,
     missing_in_game_count: missing.length,

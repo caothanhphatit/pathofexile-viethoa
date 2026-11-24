@@ -26,6 +26,7 @@ export interface EquipmentRow {
 }
 export interface WeaponSetProblem { slot: string; reason: OffHandConflict; mainSlot: string }
 
+export declare const TREE_VERSION: string;
 export declare const WEAPON_SET_SLOTS: Array<[string, string]>;
 export declare const NO_WEAPON_FLAGS: Readonly<WeaponFlags>;
 export declare function weaponInfoForBase(baseName: string): WeaponInfo | null;

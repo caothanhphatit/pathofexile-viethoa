@@ -3,6 +3,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import vm from "node:vm";
+import ts from "typescript";
 
 import {
   buildTranslationMemory,
@@ -18,6 +20,16 @@ import {
   normalizeArtPath,
   rewriteSiteIconUrls
 } from "../scripts/ggpk/sync-site-icons.mjs";
+import { compareTreeVersionDirs } from "../scripts/sot/sync-passive-tree.mjs";
+
+const ROOT_DIR = path.resolve(import.meta.dirname, "..");
+
+function loadWindowData(relPath, globalName) {
+  const full = path.join(ROOT_DIR, relPath);
+  const sandbox = {};
+  new Function("window", fs.readFileSync(full, "utf8"))(sandbox);
+  return sandbox[globalName];
+}
 
 test("preserveLineTranslations keeps existing Vietnamese lines across dash/whitespace formatting and memory fallback", () => {
   const memory = buildTranslationMemory([
@@ -40,7 +52,7 @@ test("preserveLineTranslations keeps existing Vietnamese lines across dash/white
   assert.deepEqual(result.vi, [
     "+(10-20) Máu tối đa",
     "Tăng 15% Tốc độ Thi triển (local)",
-    "Brand new season mod"
+    ""
   ]);
   assert.deepEqual(result.untranslated, ["Brand new season mod"]);
 });
@@ -241,5 +253,297 @@ test("sync-site-icons helpers normalize art paths and rewrite only locally prese
     assert.match(after, /https:\/\/cdn\.poe2db\.tw\/image\/Art\/2DItems\/Hideout\/Missing\.webp/);
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("mergeSkillGemsBundle adds brand-new GGPK gems ahead of PoB and supports --overwrite-mods", () => {
+  const siteBundle = {
+    total: 1,
+    active_total: 1,
+    support_total: 0,
+    gems: [
+      {
+        slug: "Fireball",
+        name: "Fireball",
+        gem_type: "skill",
+        color: "blue",
+        official_id: "Metadata/Items/Gems/SkillGemFireball",
+        tags: ["Spell"],
+        summary_en: "Old summary",
+        properties: ["Mana Cost: 10"],
+        requirements: ["Requires: Level 1"],
+        mods: ["Old mod"],
+        sections: [{ title: "Stats", lines: ["Old line"] }],
+        i18n: {
+          name: { en: "Fireball", vi: "Fireball" },
+          summary: { en: "Old summary", vi: "Tóm tắt cũ" },
+          tags: [{ en: "Spell", vi: "Phép" }],
+          mods: [{ en: "Old mod", vi: "Mod cũ" }],
+          sections: [{ title: "Stats", lines: [{ en: "Old line", vi: "Dòng cũ" }] }]
+        }
+      }
+    ]
+  };
+
+  const pobGems = [
+    {
+      slug: "Fireball",
+      name: "Fireball",
+      gem_type: "skill",
+      tier: null,
+      color: "blue",
+      official_id: "Metadata/Items/Gems/SkillGemFireball",
+      tags: ["Spell"],
+      summary_en: "New season summary",
+      properties: ["Mana Cost: 12"],
+      requirements: ["Requires: Level 1"],
+      mods: ["New season mod"],
+      sections: [{ title: "Stats", lines: ["Old line", "Brand new line"] }]
+    }
+  ];
+
+  const ggpkGems = [
+    { id: "Metadata/Items/Gems/SkillGemFireball", name: "Fireball", gem_type: "skill", color: "blue", tier: 3, excluded: null },
+    {
+      id: "Metadata/Items/Gems/SkillGemDayOne",
+      name: "Day One Nova",
+      gem_type: "skill",
+      color: "blue",
+      tier: 5,
+      tags: ["Spell", "Cold"],
+      active_skill: { description: "Releases a cold nova." },
+      excluded: null
+    },
+    {
+      id: "Metadata/Items/Gems/SkillGemCastOnFreeze",
+      name: "Cast on Freeze",
+      gem_type: "skill",
+      color: "blue",
+      tier: null,
+      tags: ["Meta"],
+      active_skill: { description: "Deprecated trigger." },
+      excluded: null
+    },
+    {
+      id: "Metadata/Items/Gems/SkillGemUnfinished",
+      name: "DNT Gem",
+      gem_type: "skill",
+      color: "red",
+      tier: 1,
+      excluded: "dnt"
+    }
+  ];
+
+  const { bundle, stats } = mergeSkillGemsBundle(siteBundle, pobGems, ggpkGems, {
+    iconsDir: os.tmpdir(),
+    overwriteMods: true
+  });
+
+  assert.equal(bundle.total, 2);
+  assert.equal(stats.added_from_ggpk.length, 1);
+  assert.equal(stats.added_from_ggpk[0].name, "Day One Nova");
+  assert.ok(stats.skipped_unreleased.includes("Cast on Freeze"));
+  assert.equal(bundle.gems[0].mods[0], "Old line");
+  assert.equal(bundle.gems[0].i18n.sections[0].lines[0].vi, "Dòng cũ");
+  assert.equal(bundle.gems[0].i18n.sections[0].lines[1].vi, "");
+});
+
+test("mergeItemsBundle adds brand-new PoB uniques, GGPK bases, and GGPK misc items cleanly", () => {
+  const siteBundle = {
+    items: [
+      {
+        slug: "Amethyst_Ring",
+        menu_key: "rings",
+        name: "Amethyst Ring",
+        rarity: "normal",
+        icon_url: "/assets/ggpk-icons/art/2ditems/rings/basetypes/amethystring.webp",
+        properties: [],
+        requirements: [],
+        mods: [],
+        i18n: {}
+      },
+      {
+        slug: "Guiding_Palm_of_the_Eye",
+        menu_key: "sceptres",
+        name: "Guiding Palm of the Eye",
+        rarity: "unique",
+        icon_url: "/assets/ggpk-icons/art/2ditems/weapons/onehandweapons/sceptres/sceptre.webp",
+        properties: ["Shrine Sceptre"],
+        requirements: [],
+        mods: [],
+        i18n: {}
+      }
+    ]
+  };
+
+  const { bundle, stats } = mergeItemsBundle(siteBundle, {
+    pobUniques: [
+      {
+        name: "Season Ring",
+        menu_key: "rings",
+        properties: ["Amethyst Ring"],
+        mods: ["+30 to maximum Life"],
+        pob: { league: "0.6", source: "World Drop" }
+      },
+      {
+        name: "The Road Warrior",
+        menu_key: "body-armours",
+        properties: ["Raider Plate"],
+        mods: ["+10 to all Attributes"],
+        pob: { source: "No longer obtainable" }
+      },
+      {
+        name: "Guiding Palm",
+        menu_key: "sceptres",
+        properties: ["Shrine Sceptre"],
+        mods: ["+5 to all Attributes"],
+        pob: { source: null }
+      }
+    ],
+    ggpkBaseItems: [
+      {
+        name: "Obsidian Ring",
+        item_class: "Rings",
+        icon_dds: "Art/2DItems/Rings/ObsidianRing.dds",
+        requirements: { level: 60, str: 0, dex: 0, int: 0 }
+      }
+    ],
+    ggpkMiscItems: [
+      {
+        name: "Season Omen",
+        category: "omen",
+        stack_size: 10,
+        description: "Consumed on craft."
+      }
+    ]
+  });
+
+  assert.equal(stats.added_uniques.length, 1);
+  assert.equal(stats.added_uniques[0].name, "Season Ring");
+  assert.equal(stats.added_bases.length, 1);
+  assert.equal(stats.added_misc.length, 1);
+  assert.equal(bundle.items.length, 5);
+  const newUnique = bundle.items.find((i) => i.name === "Season Ring");
+  assert.match(newUnique.icon_url, /\/2DItems\//i);
+});
+
+test("compareTreeVersionDirs sorts semantic underscore versions numerically", () => {
+  assert.deepEqual(
+    ["0_10", "0_4", "0_5", "1_0", "0_2"].sort(compareTreeVersionDirs),
+    ["0_2", "0_4", "0_5", "0_10", "1_0"]
+  );
+});
+
+test("standalone runtime audit: zero Google Fonts, zero external icon URLs, zero missing passive tree icons", () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT_DIR, "public", "index.html"), "utf8");
+  assert.doesNotMatch(indexHtml, /fonts\.googleapis\.com|fonts\.gstatic\.com/i);
+
+  for (const file of ["items-data.js", "currency-data.js", "skill-gems-data.js", "craft-index.js"]) {
+    const content = fs.readFileSync(path.join(ROOT_DIR, "public", "data", file), "utf8");
+    const matches = content.match(/cdn\.poe2db\.tw\/image\//gi) || [];
+    assert.equal(matches.length, 0, `${file} still contains ${matches.length} cdn.poe2db.tw/image/ URLs`);
+  }
+
+  for (const [relPath, globalName, listKey] of [
+    ["public/data/items-data.js", "POE2_ITEMS", "items"],
+    ["public/data/currency-data.js", "POE2_CURRENCY", "items"],
+    ["public/data/skill-gems-data.js", "POE2_SKILL_GEMS", "gems"]
+  ]) {
+    const data = loadWindowData(relPath, globalName);
+    const rows = data?.[listKey];
+    assert.ok(Array.isArray(rows) && rows.length > 0, `${relPath} (${globalName}.${listKey}) must be non-empty`);
+    const externalIcons = rows.filter((row) => /^https?:\/\//i.test(row.icon_url || ""));
+    assert.equal(externalIcons.length, 0, `${relPath} still has ${externalIcons.length} external icon_url(s)`);
+  }
+
+  const tree = loadWindowData("public/data/passive-tree-data.js", "POE2_PASSIVE_TREE");
+  const missingTreeIcons = [];
+  for (const node of tree.nodes || []) {
+    if (node.icon_path && !fs.existsSync(path.join(ROOT_DIR, "public", node.icon_path.replace(/^\/+/, "")))) {
+      missingTreeIcons.push(node.icon_path);
+    }
+  }
+  assert.deepEqual([...new Set(missingTreeIcons)], []);
+
+  const itemMods = loadWindowData("public/data/item-mods-data.js", "POE2_ITEM_MODS");
+  assert.ok(itemMods && itemMods.classes && Object.keys(itemMods.classes).length >= 50);
+  for (const [poolName, pool] of Object.entries(itemMods.classes)) {
+    assert.equal(pool.nw?.length, pool.normal?.length, `Pool ${poolName} missing matching nw spawn weights`);
+  }
+});
+
+test("Craft Simulator PoB adapter builds real base tree and rolls PoB currency workflow end-to-end", () => {
+  const src = fs.readFileSync(path.join(ROOT_DIR, "src", "spa", "lib", "craftEngine.ts"), "utf8");
+  const js = ts.transpileModule(src, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021 }
+  }).outputText;
+  const sandbox = { module: { exports: {} }, exports: {}, require: () => ({}) };
+  sandbox.exports = sandbox.module.exports;
+  vm.runInNewContext(js, sandbox);
+  const { buildCraftSimFromPob, applyCurrency, findCurrency } = sandbox.module.exports;
+
+  const itemMods = loadWindowData("public/data/item-mods-data.js", "POE2_ITEM_MODS");
+  const itemsData = loadWindowData("public/data/items-data.js", "POE2_ITEMS");
+  const { tree, classes } = buildCraftSimFromPob(itemMods, itemsData.items);
+
+  assert.ok(tree.length >= 4, "Expected at least 4 top-level equipment groups");
+  assert.ok(Object.keys(classes).length >= 50, "Expected at least 50 PoB craft classes");
+
+  const allBases = tree.flatMap((g) => g.classes.flatMap((c) => c.bases));
+  const amethystRing = allBases.find((b) => b.name === "Amethyst Ring");
+  assert.ok(amethystRing, "Amethyst Ring present in PoB craft tree");
+  assert.match(amethystRing.icon || "", /^\/assets\/ggpk-icons\//, "Amethyst Ring uses self-hosted GGPK icon");
+  assert.ok(amethystRing.implicit, "Amethyst Ring carries its PoB implicit");
+
+  const ringPool = classes[amethystRing.craft_key];
+  assert.ok(ringPool, "Ring craft pool exists");
+  assert.ok(ringPool.prefixes.length >= 10 && ringPool.suffixes.length >= 10, "Ring pool has PoB prefixes & suffixes");
+  for (const fam of [...ringPool.prefixes, ...ringPool.suffixes]) {
+    for (const tier of fam.tiers) {
+      assert.ok(Number.isFinite(tier.weight) && tier.weight > 0, `Mod ${tier.name} carries positive PoB weight`);
+    }
+  }
+
+  const item = {
+    baseName: amethystRing.name,
+    icon: amethystRing.icon,
+    attr: amethystRing.attr,
+    itemClass: amethystRing.craft_key,
+    ilvl: 82,
+    implicit: amethystRing.implicit || null,
+    rarity: "normal",
+    corrupted: false,
+    craftKey: amethystRing.craft_key,
+    mods: []
+  };
+  const runOrb = (orbName) => {
+    const spec = findCurrency(orbName);
+    assert.ok(spec, `Currency spec found for ${orbName}`);
+    const err = applyCurrency(spec, orbName, ringPool, item);
+    assert.equal(err, null, `${orbName} returned error: ${err}`);
+  };
+
+  runOrb("Orb of Transmutation");
+  assert.equal(item.rarity, "magic");
+  assert.equal(item.mods.length, 1);
+
+  runOrb("Orb of Augmentation");
+  assert.equal(item.mods.length, 2);
+
+  runOrb("Regal Orb");
+  assert.equal(item.rarity, "rare");
+  assert.equal(item.mods.length, 3);
+
+  runOrb("Exalted Orb");
+  assert.equal(item.mods.length, 4);
+
+  runOrb("Chaos Orb");
+  assert.equal(item.mods.length, 4);
+
+  runOrb("Divine Orb");
+
+  // Every rolled mod text must have all (min-max) ranges instantiated to concrete numbers.
+  for (const mod of item.mods) {
+    assert.doesNotMatch(mod.text, /\(\d+(?:\.\d+)?-\d+(?:\.\d+)?\)/, `Unrolled range left in "${mod.text}"`);
   }
 });

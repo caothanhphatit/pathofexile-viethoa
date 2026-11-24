@@ -31,6 +31,12 @@ export interface CraftItem {
 }
 
 const rint = (lo: number, hi: number) => Math.floor(lo + Math.random() * (hi - lo + 1));
+const rnum = (lo: number, hi: number) => {
+  const a = Math.min(lo, hi);
+  const b = Math.max(lo, hi);
+  if (Number.isInteger(a) && Number.isInteger(b)) return rint(a, b);
+  return Math.round((a + Math.random() * (b - a)) * 100) / 100;
+};
 const pickIndexWeighted = (weights: number[]): number => {
   const total = weights.reduce((a, b) => a + b, 0);
   if (total <= 0) return -1;
@@ -42,16 +48,29 @@ const pickIndexWeighted = (weights: number[]): number => {
 const countGen = (item: CraftItem, gen: Gen) => item.mods.filter((m) => m.gen === gen).length;
 const hasFamily = (item: CraftItem, family: string) => item.mods.some((m) => m.family === family);
 
+const RANGE_RE = /\(\s*(-?[\d.]+)\s*[—–-]\s*(-?[\d.]+)\s*\)/g;
+
 const substituteValue = (text: string, value: number | null): string => {
+  if (RANGE_RE.test(text)) {
+    RANGE_RE.lastIndex = 0;
+    let first = true;
+    return text.replace(RANGE_RE, (_match, loStr, hiStr) => {
+      if (first && value != null) {
+        first = false;
+        return String(value);
+      }
+      first = false;
+      return String(rnum(Number(loStr), Number(hiStr)));
+    });
+  }
   if (value == null) return text;
-  // Replace a "(a—b)" / "(a-b)" range with the rolled value.
   return text.replace(/\(?\s*[\d.]+\s*[—–-]\s*[\d.]+\s*\)?/, String(value));
 };
 
 // Build a rolled mod from a family + chosen tier.
 const rollFromFamily = (family: ModFamily, tierIndex: number): RolledMod => {
   const tier = family.tiers[tierIndex];
-  const value = tier.min != null && tier.max != null ? rint(tier.min, tier.max) : null;
+  const value = tier.min != null && tier.max != null ? rnum(tier.min, tier.max) : null;
   return {
     family: family.family, gen: family.gen, tags: family.tags,
     tierIndex,
@@ -221,3 +240,217 @@ export const applyCurrency = (spec: CurrencySpec, displayName: string, pool: Cra
 
 export const prefixCount = (item: CraftItem) => countGen(item, "prefix");
 export const suffixCount = (item: CraftItem) => countGen(item, "suffix");
+
+// ── PoB item-mods-data.js adapter (replaces poe2db craft-data.js + craft-index.js) ──
+
+export interface CraftBaseEntry {
+  name: string;
+  slug: string;
+  icon: string | null;
+  attr: string | null;
+  req_level: number;
+  craft_key: string;
+  implicit: string | null;
+}
+export interface CraftClassEntry {
+  label: string;
+  attr_split: boolean;
+  base_count: number;
+  bases: CraftBaseEntry[];
+}
+export interface CraftGroupEntry {
+  group: string;
+  classes: CraftClassEntry[];
+}
+
+const POB_CRAFT_GROUPS: Array<{ group: string; types: Array<{ type: string; subType?: string; label: string }> }> = [
+  {
+    group: "Armour",
+    types: [
+      { type: "Body Armour", label: "Body Armours" },
+      { type: "Helmet", label: "Helmets" },
+      { type: "Gloves", label: "Gloves" },
+      { type: "Boots", label: "Boots" }
+    ]
+  },
+  {
+    group: "Off-hand",
+    types: [
+      { type: "Shield", subType: "Evasion", label: "Bucklers" },
+      { type: "Shield", label: "Shields" },
+      { type: "Focus", label: "Foci" },
+      { type: "Quiver", label: "Quivers" }
+    ]
+  },
+  {
+    group: "One Handed Weapons",
+    types: [
+      { type: "Wand", label: "Wands" },
+      { type: "Sceptre", label: "Sceptres" },
+      { type: "One Handed Mace", label: "One Hand Maces" },
+      { type: "Spear", label: "Spears" },
+      { type: "One Handed Sword", label: "One Hand Swords" },
+      { type: "One Handed Axe", label: "One Hand Axes" },
+      { type: "Dagger", label: "Daggers" },
+      { type: "Claw", label: "Claws" },
+      { type: "Flail", label: "Flails" }
+    ]
+  },
+  {
+    group: "Two Handed Weapons",
+    types: [
+      { type: "Bow", label: "Bows" },
+      { type: "Crossbow", label: "Crossbows" },
+      { type: "Staff", subType: "Warstaff", label: "Quarterstaves" },
+      { type: "Staff", label: "Staves" },
+      { type: "Two Handed Mace", label: "Two Hand Maces" },
+      { type: "Two Handed Sword", label: "Two Hand Swords" },
+      { type: "Two Handed Axe", label: "Two Hand Axes" },
+      { type: "Talisman", label: "Talismans" }
+    ]
+  },
+  {
+    group: "Jewellery",
+    types: [
+      { type: "Amulet", label: "Amulets" },
+      { type: "Ring", label: "Rings" }
+    ]
+  },
+  { group: "Belt", types: [{ type: "Belt", label: "Belts" }] },
+  {
+    group: "Flasks",
+    types: [
+      { type: "Flask", subType: "Life", label: "Life Flasks" },
+      { type: "Flask", subType: "Mana", label: "Mana Flasks" },
+      { type: "Charm", label: "Charms" }
+    ]
+  },
+  { group: "Jewels", types: [{ type: "Jewel", label: "Jewels" }] }
+];
+
+const firstRange = (text: string): [number | null, number | null] => {
+  const m = text.match(/\(\s*(-?[\d.]+)\s*[—–-]\s*(-?[\d.]+)\s*\)/);
+  if (!m) return [null, null];
+  return [Number(m[1]), Number(m[2])];
+};
+
+const attrFromPobArmour = (armour?: Record<string, number>): string | null => {
+  if (!armour) return null;
+  const parts: string[] = [];
+  if (armour.Armour) parts.push("Str");
+  if (armour.Evasion) parts.push("Dex");
+  if (armour.EnergyShield) parts.push("Int");
+  return parts.length ? parts.join("/") : null;
+};
+
+/**
+ * Build CraftSimPage's category tree + CraftPool map straight from PoB's item-mods-data.js
+ * (window.POE2_ITEM_MODS) + items-data.js (for self-hosted base icons).
+ */
+export function buildCraftSimFromPob(
+  itemModsData: {
+    mods?: Array<[string, string, string, number, string[], string]>;
+    classes?: Array<{ type: string; table: string; normal: number[]; nw?: number[] }>;
+    bases?: Array<{
+      n: string; c: number; t: string; st?: string; i?: string[]; r?: number[]; a?: Record<string, number>; h?: number;
+    }>;
+  },
+  itemsData: Array<{ name?: string; slug?: string; icon_url?: string; rarity?: string }> = []
+): { tree: CraftGroupEntry[]; classes: Record<string, CraftPool> } {
+  const iconByName = new Map<string, { icon: string | null; slug: string }>();
+  for (const row of itemsData || []) {
+    if (!row?.name || String(row.rarity || "").toLowerCase() === "unique") continue;
+    const key = row.name.trim().toLowerCase();
+    if (!iconByName.has(key)) iconByName.set(key, { icon: row.icon_url || null, slug: row.slug || "" });
+  }
+
+  const classes: Record<string, CraftPool> = {};
+  const rawMods = itemModsData?.mods || [];
+  const rawClasses = itemModsData?.classes || [];
+
+  for (let classIdx = 0; classIdx < rawClasses.length; classIdx += 1) {
+    const cls = rawClasses[classIdx];
+    const normal = cls.normal || [];
+    const weights = cls.nw || [];
+    const prefixMap = new Map<string, ModFamily>();
+    const suffixMap = new Map<string, ModFamily>();
+
+    for (let i = 0; i < normal.length; i += 1) {
+      const modIdx = normal[i];
+      const mod = rawMods[modIdx];
+      if (!mod) continue;
+      const [id, genCode, group, ilvl, lines, tagsCsv] = mod;
+      if (genCode !== "P" && genCode !== "S") continue;
+      const gen: Gen = genCode === "P" ? "prefix" : "suffix";
+      const text = (lines || []).join(" / ");
+      if (!text) continue;
+      const weight = Number(weights[i] ?? 1000) || 1000;
+      const [min, max] = firstRange(text);
+      const targetMap = gen === "prefix" ? prefixMap : suffixMap;
+      const famKey = `${gen}:${group}`;
+      let fam = targetMap.get(famKey);
+      if (!fam) {
+        fam = {
+          family: group,
+          gen,
+          tags: tagsCsv ? tagsCsv.split(",").filter(Boolean) : [],
+          spawn: [],
+          tiers: []
+        };
+        targetMap.set(famKey, fam);
+      }
+      fam.tiers.push({ name: id, ilvl: Number(ilvl) || 1, weight, min, max, text });
+    }
+
+    const sortTiers = (fam: ModFamily) => {
+      fam.tiers.sort((a, b) => a.ilvl - b.ilvl || (a.min ?? 0) - (b.min ?? 0));
+      return fam;
+    };
+    classes[String(classIdx)] = {
+      label: cls.type,
+      item_class: cls.type,
+      prefixes: [...prefixMap.values()].map(sortTiers),
+      suffixes: [...suffixMap.values()].map(sortTiers)
+    };
+  }
+
+  const visibleBases = (itemModsData?.bases || []).filter((b) => !b.h && classes[String(b.c)]);
+  const tree: CraftGroupEntry[] = [];
+  for (const groupDef of POB_CRAFT_GROUPS) {
+    const groupClasses: CraftClassEntry[] = [];
+    for (const typeDef of groupDef.types) {
+      const matched = visibleBases.filter((b) => {
+        if (b.t !== typeDef.type) return false;
+        if (typeDef.subType) return b.st === typeDef.subType;
+        // Avoid matching subTypes that already have their own dedicated bucket (e.g. Bucklers vs Shields, Quarterstaves vs Staves).
+        if (typeDef.type === "Shield" && b.st === "Evasion") return false;
+        if (typeDef.type === "Staff" && b.st === "Warstaff") return false;
+        return true;
+      });
+      if (!matched.length) continue;
+      const bases: CraftBaseEntry[] = matched
+        .map((b) => {
+          const site = iconByName.get(b.n.trim().toLowerCase());
+          return {
+            name: b.n,
+            slug: site?.slug || b.n.replace(/['’]/g, "").replace(/\s+/g, "_"),
+            icon: site?.icon || null,
+            attr: attrFromPobArmour(b.a),
+            req_level: Number(b.r?.[0] || 0),
+            craft_key: String(b.c),
+            implicit: b.i?.length ? b.i.join(" · ") : null
+          };
+        })
+        .sort((a, b) => a.req_level - b.req_level || a.name.localeCompare(b.name));
+      groupClasses.push({
+        label: typeDef.label,
+        attr_split: bases.some((b) => Boolean(b.attr)),
+        base_count: bases.length,
+        bases
+      });
+    }
+    if (groupClasses.length) tree.push({ group: groupDef.group, classes: groupClasses });
+  }
+
+  return { tree, classes };
+}
