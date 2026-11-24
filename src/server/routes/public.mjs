@@ -410,12 +410,17 @@ export const publicRoutes = async (app, options = {}) => {
   // Runs calculate.lua here (POB_CORE_DIR + POB_LUAJIT) or on another machine
   // (POB_REMOTE_URL), see ../pob-runner.mjs.
   const pobRunner = options.pobRunner || pobRunnerFromEnv();
+  if (!options.pobRunner && typeof pobRunner.close === "function") {
+    app.addHook("onClose", async () => {
+      await pobRunner.close();
+    });
+  }
   const CALCULATE_MAX_CONCURRENT = Number(process.env.POB_CALCULATE_MAX_CONCURRENT || 2);
   const CALCULATE_MAX_QUEUE = Number(process.env.POB_CALCULATE_MAX_QUEUE || 8);
   let calculationsRunning = 0;
   // Two kinds of request: "main" (the planner's own numbers) and "compare" (what-if
-  // previews: hover an item, gem suggestions). Main requests go first, and compares
-  // never take the last free slot, so a burst of previews cannot delay the build's
+  // previews: hover an item, gem suggestions, node deltas). Main requests go first, and
+  // compares never take the last free slot, so a burst of previews cannot delay the build's
   // own recalculation.
   const calculationQueues = { main: [], compare: [] };
   let comparesRunning = 0;
@@ -430,11 +435,18 @@ export const publicRoutes = async (app, options = {}) => {
       const kind = calculationQueues.main.length && canStart("main") ? "main"
         : calculationQueues.compare.length && canStart("compare") ? "compare" : null;
       if (!kind) return;
+      const waiter = calculationQueues[kind].shift();
+      if (waiter.aborted) continue;
+      waiter.cleanup();
       startCalculation(kind);
-      calculationQueues[kind].shift()();
+      waiter.resolve();
     }
   };
-  const acquireCalculationSlot = (kind = "main") => new Promise((resolve, reject) => {
+  const acquireCalculationSlot = (kind = "main", signal) => new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(Object.assign(new Error("Request cancelled"), { name: "AbortError", code: "ABORT_ERR" }));
+      return;
+    }
     if (canStart(kind) && (kind === "compare" || !calculationQueues.main.length)) {
       startCalculation(kind);
       resolve();
@@ -444,12 +456,37 @@ export const publicRoutes = async (app, options = {}) => {
       reject(Object.assign(new Error("Calculation service is busy, retry shortly"), { statusCode: 503 }));
       return;
     }
-    calculationQueues[kind].push(resolve);
+    const waiter = {
+      aborted: false,
+      resolve,
+      cleanup: () => {
+        if (signal && onAbort) signal.removeEventListener("abort", onAbort);
+      }
+    };
+    const onAbort = signal ? () => {
+      waiter.aborted = true;
+      const idx = calculationQueues[kind].indexOf(waiter);
+      if (idx !== -1) calculationQueues[kind].splice(idx, 1);
+      reject(Object.assign(new Error("Request cancelled"), { name: "AbortError", code: "ABORT_ERR" }));
+    } : null;
+    if (signal && onAbort) signal.addEventListener("abort", onAbort, { once: true });
+    calculationQueues[kind].push(waiter);
   });
   const releaseCalculationSlot = (kind = "main") => {
     calculationsRunning -= 1;
     if (kind === "compare") comparesRunning -= 1;
     pumpCalculations();
+  };
+  const trackClientDisconnect = (reply) => {
+    const controller = new AbortController();
+    const onClose = () => {
+      if (!reply.raw.writableEnded && !controller.signal.aborted) controller.abort();
+    };
+    reply.raw.on("close", onClose);
+    return {
+      signal: controller.signal,
+      cleanup: () => reply.raw.off("close", onClose)
+    };
   };
 
   app.post("/api/builds/calculate", { bodyLimit: 512 * 1024 }, async (request, reply) => {
@@ -487,16 +524,20 @@ export const publicRoutes = async (app, options = {}) => {
       return withItemErrors({ ok: true, data: calculationCache.get(hash) });
     }
 
-    const calcKind = buildData.calc_priority === "compare" ? "compare" : "main";
+    const calcKind = (buildData.calc_priority === "compare" || buildData.calc_priority === "background") ? "compare" : "main";
+    const priority = calcKind === "compare" ? "background" : "main";
+    const disconnect = trackClientDisconnect(reply);
     try {
-      await acquireCalculationSlot(calcKind);
+      await acquireCalculationSlot(calcKind, disconnect.signal);
     } catch (err) {
+      disconnect.cleanup();
+      if (err?.name === "AbortError") return;
       reply.header("retry-after", "2");
       return reply.status(err.statusCode || 503).send({ ok: false, error: err.message });
     }
 
     try {
-      const stats = await pobRunner.run(xmlContent);
+      const stats = await pobRunner.run(xmlContent, { priority, signal: disconnect.signal });
 
       if (calculationCache.size > 500) {
         const firstKey = calculationCache.keys().next().value;
@@ -507,17 +548,23 @@ export const publicRoutes = async (app, options = {}) => {
       return withItemErrors({ ok: true, data: stats });
 
     } catch (err) {
+      if (err?.name === "AbortError") return;
       app.log.error(err, "Failed to run PoB calculation");
+      if (err?.statusCode === 503) {
+        reply.header("retry-after", "2");
+        return reply.status(503).send({ ok: false, error: err.message || "Calculator busy, retry shortly" });
+      }
       return reply.status(500).send({ ok: false, error: err.message || "Failed to calculate build stats" });
     } finally {
+      disconnect.cleanup();
       releaseCalculationSlot(calcKind);
     }
   });
 
   // Passive node preview: what allocating (or removing) each listed node changes.
   // One PoB run loads the build and prices the whole batch with PoB's fast misc
-  // calculator, so it costs about one calculation. Runs as a "compare" job: the
-  // planner's own recalculation always goes first.
+  // calculator, so it costs about one calculation. Runs as a "background" ("compare")
+  // job: the planner's own recalculation always goes first.
   const nodeDeltasCache = new Map();
   app.post("/api/builds/node-deltas", { bodyLimit: 512 * 1024 }, async (request, reply) => {
     const buildData = request.body;
@@ -538,23 +585,32 @@ export const publicRoutes = async (app, options = {}) => {
     if (nodeDeltasCache.has(hash)) {
       return { ok: true, data: nodeDeltasCache.get(hash) };
     }
+    const disconnect = trackClientDisconnect(reply);
     try {
-      await acquireCalculationSlot("compare");
+      await acquireCalculationSlot("compare", disconnect.signal);
     } catch (err) {
+      disconnect.cleanup();
+      if (err?.name === "AbortError") return;
       reply.header("retry-after", "2");
       return reply.status(err.statusCode || 503).send({ ok: false, error: err.message });
     }
     try {
       const started = Date.now();
-      const data = await runNodeDeltas(pobRunner, xmlContent);
+      const data = await runNodeDeltas(pobRunner, xmlContent, { priority: "background", signal: disconnect.signal });
       app.log.info({ nodes: nodeIds.length, ms: Date.now() - started }, "passive node deltas");
       if (nodeDeltasCache.size >= 300) nodeDeltasCache.delete(nodeDeltasCache.keys().next().value);
       nodeDeltasCache.set(hash, data);
       return { ok: true, data };
     } catch (err) {
+      if (err?.name === "AbortError") return;
       app.log.error(err, "Failed to run PoB node deltas");
+      if (err?.statusCode === 503) {
+        reply.header("retry-after", "2");
+        return reply.status(503).send({ ok: false, error: err.message || "Calculator busy, retry shortly" });
+      }
       return reply.status(500).send({ ok: false, error: err.message || "Failed to calculate node deltas" });
     } finally {
+      disconnect.cleanup();
       releaseCalculationSlot("compare");
     }
   });

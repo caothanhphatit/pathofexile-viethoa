@@ -70,7 +70,10 @@ commit `48420ba` (2026-09-29) a server using it times out on every calculation.
 The calculation can run on another machine (`src/server/pob-runner.mjs`):
 
 1. On a PC with PoB set up (`scripts/setup-pob-local.mjs`), run the calculator with a random
-   secret: `POB_CALC_TOKEN=<secret> node scripts/pob-calc-server.mjs` (port 18766).
+   secret: `POB_CALC_TOKEN=<secret> node scripts/pob-calc-server.mjs` (port 18766; keeps a pool
+   of warm LuaJIT workers controlled by `POB_CALC_WORKERS`, `POB_CALC_PREWARM`,
+   `POB_CALC_WORKER_MAX_JOBS`, `POB_CALC_WORKER_MAX_RSS_MB`, `POB_CALC_QUEUE_MAX`, and
+   `POB_CALC_QUEUE_WAIT_MS`).
 2. Open a reverse tunnel so the server reaches it, e.g.
    `ssh -N -R 20140:127.0.0.1:18766 root@<server>`.
 3. In the server `.env`: `POB_REMOTE_URL=http://127.0.0.1:20140/calculate` and
