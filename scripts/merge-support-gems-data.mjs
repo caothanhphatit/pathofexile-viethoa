@@ -12,6 +12,7 @@ import {
   translateTags,
   withoutUnreleasedGems
 } from "./skill-gems-lib.mjs";
+import { applyPobGemIds } from "./skill-gems/pob-gem-ids.mjs";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_URL = "https://poe2db.tw/us/Support_Gems";
@@ -259,6 +260,8 @@ export const mergeSupportGemsIntoSkillData = async () => {
   };
 
   const released = withoutUnreleasedGems(data);
+  // Path of Building ids, so the planner never guesses one PoB does not know.
+  applyPobGemIds(released.gems);
   fs.writeFileSync(EXPORT_PATH, `window.POE2_SKILL_GEMS = ${JSON.stringify(released, null, 2)};\n`, "utf8");
   return { exportPath: EXPORT_PATH, active: released.active_total, support: released.support_total, total: released.total };
 };

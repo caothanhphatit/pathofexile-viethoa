@@ -23,6 +23,7 @@ import {
   translateSkillText,
   translateTags
 } from "./skill-gems-lib.mjs";
+import { applyPobGemIds } from "./skill-gems/pob-gem-ids.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, "..");
@@ -259,6 +260,8 @@ export const run = async (args) => {
   });
 
   summary.gems.idsCorrected = applyGameGemIds(gems.data.gems, report.gems.gameIdsByName || {});
+  // Then Path of Building ids for gems the game data left without one PoB knows.
+  summary.gems.pobIdsSet = applyPobGemIds(gems.data.gems).changed.length;
 
   if (!dryRun) {
     const gemList = gems.data.gems;

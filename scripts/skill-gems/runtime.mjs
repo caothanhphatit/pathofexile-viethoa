@@ -14,6 +14,7 @@ import {
 } from "../../src/localization/content-strings.mjs";
 import { retranslateContent } from "../retranslate-content.mjs";
 import { withoutUnreleasedGems } from "../skill-gems-lib.mjs";
+import { applyPobGemIds, readSkillGemsFile } from "./pob-gem-ids.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -337,6 +338,13 @@ export const exportSkillGemsPostgres = async (pool) => {
 export const writeSkillGemExportPostgres = async (pool) => {
   await retranslateContent(pool);
   const data = withoutUnreleasedGems(await exportSkillGemsPostgres(pool));
+  // official_id is not stored in Postgres: keep the ids the file already has (from the
+  // game data, see fill-missing-from-poe2db.mjs) and fill the rest from Path of Building.
+  if (fs.existsSync(EXPORT_PATH)) {
+    const previous = new Map(readSkillGemsFile(EXPORT_PATH).gems.map((gem) => [gem.slug, gem.official_id]));
+    for (const gem of data.gems) if (!gem.official_id && previous.get(gem.slug)) gem.official_id = previous.get(gem.slug);
+  }
+  applyPobGemIds(data.gems);
   fs.writeFileSync(EXPORT_PATH, `window.POE2_SKILL_GEMS = ${JSON.stringify(data, null, 2)};\n`, "utf8");
   return data;
 };

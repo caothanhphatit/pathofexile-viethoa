@@ -54,6 +54,7 @@ import {
 } from "../lib/buildPlanner";
 import { arrangeSkillCards, formatStat, groupDamageByRow, groupDamageValue, pobItemTextFromRecord, skillDpsByGroup, type PobSkillDps } from "../lib/buildStats";
 import { buildPobXml } from "../../server/pob-build-xml.mjs";
+import { pobGemId } from "../../server/pob-gem-ids.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
 import { BuildSummonStats, GemOptionControls, gemOptionBadges } from "../components/BuildGemOptions";
@@ -438,7 +439,9 @@ function compactSupportGemSlug(item: ItemRecord): string {
 function officialGemId(item: ItemRecord, prefix: "SkillGem" | "SupportGem"): string {
   if (item.official_id) return item.official_id;
   const slug = prefix === "SupportGem" ? compactSupportGemSlug(item) : compactGemSlug(item);
-  return slug ? `Metadata/Items/Gems/${prefix}${slug}` : "";
+  // A guess from the slug is often not PoB's id (HeraldofAsh vs HeraldOfAsh, Decompose is
+  // CorpseCloud); PoB would drop the gem, so use PoB's own id when it has the gem.
+  return slug ? pobGemId(`Metadata/Items/Gems/${prefix}${slug}`, item.name ?? "") : "";
 }
 
 function officialGemAliases(item: ItemRecord, prefix: "SkillGem" | "SupportGem"): string[] {

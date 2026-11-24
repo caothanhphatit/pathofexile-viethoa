@@ -6,6 +6,7 @@
 // comes from the browser: every value is escaped, clamped or whitelisted.
 
 import { plannerRequestXml } from "./pob-breakdown.mjs";
+import { pobGemId } from "./pob-gem-ids.mjs";
 
 export const escapeXml = (value) => {
   if (value === undefined || value === null) return "";
@@ -156,7 +157,11 @@ const gemXml = (gem) => {
   const siteId = String(gem.skill_id || "");
   // PoB looks a gem up by gemId and only falls back to skillId when gemId is absent,
   // so a granted skill known only by its PoB skillId ("ThornsPlayer") gets no gemId.
-  const gemId = safeId(gem.pob_gem_id) || (gem.pob_skill_id ? "" : mapGemId(siteId));
+  const wantedId = safeId(gem.pob_gem_id) || (gem.pob_skill_id ? "" : mapGemId(siteId));
+  // PoB drops a gem whose id it does not know (the card then shows Punch): a guessed id
+  // with the wrong letter case, Gem/ for Gems/ or another internal name is resolved
+  // against PoB's own ids, then by name.
+  const gemId = wantedId ? safeId(pobGemId(wantedId, gem.name_spec)) : "";
   const attrs = [
     ["gemId", gemId],
     ["variantId", safeId(gem.pob_variant_id)],
