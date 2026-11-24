@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 
+import { dropImpossibleOffHands } from "../../shared/equipment-rules.mjs";
 import { requireLocalRequest } from "../local-request.mjs";
 import { buildPobXml } from "../pob-build-xml.mjs";
 import { NODE_DELTAS_MAX_NODES, nodeDeltaIds, nodeDeltasXml, runNodeDeltas } from "../pob-node-deltas.mjs";
@@ -460,7 +461,15 @@ export const publicRoutes = async (app, options = {}) => {
     const checked = dropInvalidEditedRows(buildData.inventory_slots, calculationRowItem);
     const itemProblems = checked.problems;
     if (itemProblems.length) buildData.inventory_slots = checked.rows;
-    const withItemErrors = (body) => (itemProblems.length ? { ...body, item_errors: itemProblems } : body);
+    // An off-hand that cannot be held with its main hand (bow + shield, staff + focus...)
+    // is left out as well: PoB loads the pair from XML without checking it.
+    const weaponSets = dropImpossibleOffHands(buildData.inventory_slots, buildData.passives);
+    if (weaponSets.dropped.length) buildData.inventory_slots = weaponSets.rows;
+    const withItemErrors = (body) => ({
+      ...body,
+      ...(itemProblems.length ? { item_errors: itemProblems } : {}),
+      ...(weaponSets.dropped.length ? { equipment_dropped: weaponSets.dropped } : {})
+    });
     app.log.info({
       className: buildData.className,
       ascendancy: buildData.ascendancy,
@@ -523,7 +532,7 @@ export const publicRoutes = async (app, options = {}) => {
       return reply.status(400).send({ ok: false, error: `At most ${NODE_DELTAS_MAX_NODES} node_ids per request` });
     }
     const { node_ids: _ids, analysis: _analysis, calc_priority: _priority, ...build } = buildData;
-    build.inventory_slots = dropInvalidEditedRows(build.inventory_slots, calculationRowItem).rows;
+    build.inventory_slots = dropImpossibleOffHands(dropInvalidEditedRows(build.inventory_slots, calculationRowItem).rows, build.passives).rows;
     const xmlContent = nodeDeltasXml(build, nodeIds);
     const hash = createHash("sha256").update(xmlContent).digest("hex");
     if (nodeDeltasCache.has(hash)) {

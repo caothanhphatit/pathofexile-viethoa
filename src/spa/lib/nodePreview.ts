@@ -251,13 +251,16 @@ export interface NodeDeltaLine {
   positive: boolean;
 }
 
-const signed = (value: number, digits: number, locale: "vi" | "en") => {
-  const text = Math.abs(value).toLocaleString(locale === "vi" ? "vi-VN" : "en-US", { maximumFractionDigits: digits });
+// One number format across the planner: the game's and PoB's ("7,057", "4.2%"), which the
+// stat panels (buildStats.formatStat) use in both languages. A second format here made
+// "7.057" in a node tooltip sit next to "7,057" in the stats.
+const signed = (value: number, digits: number, _locale: "vi" | "en") => {
+  const text = Math.abs(value).toLocaleString("en-US", { maximumFractionDigits: digits });
   return `${value > 0 ? "+" : "−"}${text}`;
 };
 
 /**
- * Readable lines for a delta: "+4,2% DPS", "+35 máu", "+8% kháng lửa". DPS and EHP are
+ * Readable lines for a delta: "+4.2% DPS", "+35 máu", "+8% kháng lửa". DPS and EHP are
  * shown as a percentage of the build's own value (plus the raw DPS when the base is 0).
  */
 export function formatNodeDelta(stats: NodeDeltaStats, base: NodeDeltaStats, locale: "vi" | "en" = "vi"): NodeDeltaLine[] {

@@ -2,7 +2,7 @@
 // the "Nếu mặc vào" comparison shown with an item's tooltip, and the strip of
 // gems to try in a skill group. The page owns the state and the calculations;
 // these components only draw them.
-import { useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type MouseEvent, type ReactNode } from "react";
 
 import type { BuildStashItem } from "../lib/buildPlanner";
 import { formatStatChange, statChange, type StatFormat } from "../lib/buildStats";
@@ -69,6 +69,8 @@ export function BuildInventoryPanel(props: {
   /** Returns how many items were added, or an error message. */
   onPasteText: (text: string) => number | string;
   search: (query: string) => CatalogEntry[];
+  /** How many more items match the query outside the selected slot. */
+  searchHiddenCount?: (query: string) => number;
   onAddCatalog: (entry: CatalogEntry) => void;
   /** An item waiting for the player to pick one of several slots. */
   slotChoice?: { itemName: string; slots: Array<{ id: string; label: string }> } | null;
@@ -85,8 +87,17 @@ export function BuildInventoryPanel(props: {
   const [message, setMessage] = useState("");
   const [dropActive, setDropActive] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
-  const results = query.trim().length >= 2 ? props.search(query) : [];
+  const searching = query.trim().length >= 2;
+  const results = searching ? props.search(query) : [];
+  const hiddenResults = searching && props.selectedSlotLabel ? props.searchHiddenCount?.(query) ?? 0 : 0;
   const shown = props.selectedSlotLabel ? props.items.filter((row) => row.fits) : props.items;
+  const hiddenItems = props.items.length - shown.length;
+  // "Đã thêm…" is about the last action: it goes away by itself and when the search changes.
+  useEffect(() => {
+    if (!message) return;
+    const timer = window.setTimeout(() => setMessage(""), 5000);
+    return () => window.clearTimeout(timer);
+  }, [message]);
 
   const addPasted = (text: string) => {
     const result = props.onPasteText(text);
@@ -150,7 +161,15 @@ export function BuildInventoryPanel(props: {
 
       {props.selectedSlotLabel ? (
         <div className="pi-filter">
-          <span>{vi ? "Ô đang chọn:" : "Selected slot:"} <b>{props.selectedSlotLabel}</b> — {vi ? "chỉ hiện đồ vừa ô này" : "showing items that fit"}</span>
+          <span>
+            {vi ? "Ô đang chọn:" : "Selected slot:"} <b>{props.selectedSlotLabel}</b> — {vi ? "chỉ hiện đồ vừa ô này" : "showing items that fit"}
+            {hiddenItems > 0 ? (vi ? `, đang ẩn ${hiddenItems} món khác trong kho` : `, ${hiddenItems} other item(s) hidden`) : ""}
+          </span>
+          {hiddenItems > 0 ? (
+            <button type="button" className="pi-btn" onClick={props.onClearSlot}>
+              {vi ? "Hiện tất cả" : "Show all"}
+            </button>
+          ) : null}
           {props.selectedSlotFilled ? (
             <button type="button" className="pi-btn" onClick={props.onEditSelected}>
               <span className="material-symbols-rounded" aria-hidden="true">edit</span>
@@ -188,7 +207,7 @@ export function BuildInventoryPanel(props: {
           </button>
         </div>
       ) : null}
-      {message ? <p className="pi-message" role="status">{message}</p> : null}
+      <p className="pi-message" role="status">{message}</p>
 
       {shown.length ? (
         <div className="pi-grid" role="list">
@@ -245,8 +264,23 @@ export function BuildInventoryPanel(props: {
 
       <label className="pi-search">
         <span className="material-symbols-rounded" aria-hidden="true">search</span>
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={vi ? (props.selectedSlotLabel ? `Tìm đồ cho ô ${props.selectedSlotLabel}...` : "Tìm đồ (base hoặc unique) để thêm vào kho...") : "Search items to add..."} />
+        <input value={query} onChange={(event) => { setQuery(event.target.value); setMessage(""); }} placeholder={vi ? (props.selectedSlotLabel ? `Tìm đồ cho ô ${props.selectedSlotLabel}...` : "Tìm đồ (base hoặc unique) để thêm vào kho...") : "Search items to add..."} />
       </label>
+      {searching && (props.selectedSlotLabel || !results.length) ? (
+        <p className="pi-search-note" role="status">
+          {results.length
+            ? (vi ? `Đang tìm đồ vừa ô ${props.selectedSlotLabel}.` : `Searching items for ${props.selectedSlotLabel}.`)
+            : props.selectedSlotLabel
+              ? (vi ? `Không có món nào vừa ô ${props.selectedSlotLabel} khớp «${query.trim()}».` : `Nothing for ${props.selectedSlotLabel} matches "${query.trim()}".`)
+              : (vi ? `Không tìm thấy món nào khớp «${query.trim()}».` : `Nothing matches "${query.trim()}".`)}
+          {hiddenResults > 0 ? (
+            <>
+              {" "}{vi ? `Có ${hiddenResults} món loại khác bị ẩn vì đang lọc theo ô.` : `${hiddenResults} match(es) of other kinds are hidden by the slot filter.`}{" "}
+              <button type="button" className="pi-link" onClick={props.onClearSlot}>{vi ? "Tìm mọi loại đồ" : "Search every kind"}</button>
+            </>
+          ) : null}
+        </p>
+      ) : null}
       {results.length ? (
         <ul className="pi-results">
           {results.map((entry) => (

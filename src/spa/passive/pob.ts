@@ -48,6 +48,10 @@ export interface PobBuild {
   level: number;
   treeVersion: string;
   nodeIds: string[];
+  /** Nodes allocated to a weapon set (PoB's <WeaponSet1/2 nodes="..">): node id -> 1 or 2. */
+  weaponSets: Record<string, 1 | 2>;
+  /** What each "+5 to any Attribute" node gives (PoB's <AttributeOverride>). */
+  attributeChoices: Record<string, "str" | "dex" | "int">;
   masteries: string[];
   jewels: PobJewel[];
   stats: PobStat[];
@@ -56,6 +60,40 @@ export interface PobBuild {
   configs: PobConfig[];
   spectres: string[];
   notes: string;
+}
+
+const idList = (value: string | null | undefined): string[] => String(value ?? "").split(",").map((id) => id.trim()).filter((id) => /^\d+$/.test(id) && id !== "0");
+
+/**
+ * The allocated nodes of a PoB <Spec> with the picks PoB keeps beside them: which
+ * weapon set a node belongs to and which attribute each "+5 to any Attribute" node
+ * gives. Weapon-set nodes count as allocated even when the nodes list leaves them out.
+ */
+export function treePicksFromSpec(spec: {
+  nodes?: string | null;
+  weaponSet1?: string | null;
+  weaponSet2?: string | null;
+  strNodes?: string | null;
+  dexNodes?: string | null;
+  intNodes?: string | null;
+}): Pick<PobBuild, "nodeIds" | "weaponSets" | "attributeChoices"> {
+  const nodeIds = String(spec.nodes ?? "").split(",").map((id) => id.trim()).filter(Boolean);
+  const known = new Set(nodeIds);
+  const weaponSets: Record<string, 1 | 2> = {};
+  for (const [set, list] of [[1, spec.weaponSet1], [2, spec.weaponSet2]] as const) {
+    for (const id of idList(list)) {
+      weaponSets[id] = set;
+      if (!known.has(id)) {
+        known.add(id);
+        nodeIds.push(id);
+      }
+    }
+  }
+  const attributeChoices: Record<string, "str" | "dex" | "int"> = {};
+  for (const [choice, list] of [["str", spec.strNodes], ["dex", spec.dexNodes], ["int", spec.intNodes]] as const) {
+    for (const id of idList(list)) if (known.has(id)) attributeChoices[id] = choice;
+  }
+  return { nodeIds, weaponSets, attributeChoices };
 }
 
 const base64ToBytes = (value: string): Uint8Array => {
@@ -206,7 +244,15 @@ export const parsePobBuild = async (input: string): Promise<PobBuild> => {
   const activeSpec = attrNum(treeEl, "activeSpec") || 1;
   const spec = specs[activeSpec - 1] || specs[0] || null;
   const treeVersion = spec?.getAttribute("treeVersion") || "";
-  const nodeIds = (spec?.getAttribute("nodes") || "").split(",").map((s) => s.trim()).filter(Boolean);
+  const attributeOverride = spec?.querySelector("AttributeOverride");
+  const { nodeIds, weaponSets, attributeChoices } = treePicksFromSpec({
+    nodes: spec?.getAttribute("nodes"),
+    weaponSet1: spec?.querySelector("WeaponSet1")?.getAttribute("nodes"),
+    weaponSet2: spec?.querySelector("WeaponSet2")?.getAttribute("nodes"),
+    strNodes: attributeOverride?.getAttribute("strNodes"),
+    dexNodes: attributeOverride?.getAttribute("dexNodes"),
+    intNodes: attributeOverride?.getAttribute("intNodes")
+  });
   const masteries = (spec?.getAttribute("masteryEffects") || "").split(",").map((s) => s.trim()).filter(Boolean);
 
   // Items, mapped to the slots of the active item set.
@@ -307,5 +353,5 @@ export const parsePobBuild = async (input: string): Promise<PobBuild> => {
     skills.push(group);
   }
 
-  return { className, ascendClassName, level, treeVersion, nodeIds, masteries, jewels, stats, items, skills, configs, spectres, notes };
+  return { className, ascendClassName, level, treeVersion, nodeIds, weaponSets, attributeChoices, masteries, jewels, stats, items, skills, configs, spectres, notes };
 };

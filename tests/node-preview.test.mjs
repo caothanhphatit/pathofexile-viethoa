@@ -140,10 +140,10 @@ test("preview text in Vietnamese: DPS and EHP as a share of the build, the rest 
     { CombinedDPS: 1000, TotalEHP: 5000 },
     "vi"
   );
-  assert.deepEqual(plain(lines.map((line) => line.text)), ["+4,2% DPS", "+35 máu", "−12 mana", "+8% kháng lửa", "−4% kháng hỗn loạn", "+2% máu hiệu dụng (EHP)"]);
+  assert.deepEqual(plain(lines.map((line) => line.text)), ["+4.2% DPS", "+35 máu", "−12 mana", "+8% kháng lửa", "−4% kháng hỗn loạn", "+2% máu hiệu dụng (EHP)"]);
   assert.deepEqual(plain(lines.map((line) => line.positive)), [true, true, false, true, false, true]);
   assert.deepEqual(plain(formatNodeDelta({ CombinedDPS: 250 }, { CombinedDPS: 0 }, "en").map((line) => line.text)), ["+250 DPS"], "no base: raw DPS");
-  assert.deepEqual(plain(formatNodeDelta({ MinionDPS: -3402 }, { CombinedDPS: 0, MinionDPS: 245447 }, "vi").map((line) => line.text)), ["−1,4% DPS minion"], "summoners: the minion's DPS");
+  assert.deepEqual(plain(formatNodeDelta({ MinionDPS: -3402 }, { CombinedDPS: 0, MinionDPS: 245447 }, "vi").map((line) => line.text)), ["−1.4% DPS minion"], "summoners: the minion's DPS");
 });
 
 test("preview store: batches, urgent first, one batch at a time, cache per build", async () => {
