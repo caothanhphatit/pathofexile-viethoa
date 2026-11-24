@@ -7,6 +7,7 @@ type GlobalName =
   | "POE2_PASSIVE_TREE"
   | "POE2_CRAFT"
   | "POE2_CRAFT_INDEX"
+  | "POE2_ITEM_MODS"
   | "levelingRouteZones"
   | "POE2_BOSS_DETAILS"
   | "POE2_BOSS_IMAGES"
@@ -20,6 +21,8 @@ const passiveTreeDataVersion = "20260528-pruned-nodes";
 const itemsDataVersion = "20261107-recrawl";
 const skillGemsDataVersion = "20261124-pob-ids";
 const dictionaryDataVersion = "20261107-recrawl";
+// item-mods-data.js is generated from Path of Building (scripts/build-item-mod-pool.mjs).
+const itemModsDataVersion = "20261124-pob-bb52d6b";
 
 export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promise<T> {
   const current = window[globalName as keyof Window] as T | undefined;
@@ -70,6 +73,8 @@ export const loadBuildPlannerData = () => loadScriptGlobal<any>("/data/build-pla
 export const loadPassiveTreeData = () => loadScriptGlobal<any>(`/data/passive-tree-data.js?v=${passiveTreeDataVersion}`, "POE2_PASSIVE_TREE");
 export const loadLevelingData = () => loadScriptGlobal<any[]>("/data/leveling-data.js", "levelingRouteZones");
 export const loadCraftData = () => loadScriptGlobal<any>("/data/craft-data.js?v=20260610", "POE2_CRAFT");
+/** The Build Planner item editor's mod pool (pass it to buildModPool). The craft simulator keeps craft-data.js. */
+export const loadItemModsData = () => loadScriptGlobal<any>(`/data/item-mods-data.js?v=${itemModsDataVersion}`, "POE2_ITEM_MODS");
 export const loadCraftIndex = () => loadScriptGlobal<any>("/data/craft-index.js?v=20260610", "POE2_CRAFT_INDEX");
 
 export function useAsyncData<T>(loader: () => Promise<T>, onData: (value: T) => void, onError: (error: Error) => void): () => void {
