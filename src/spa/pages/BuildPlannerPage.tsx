@@ -73,6 +73,8 @@ import { supportFamilyConflicts } from "../../server/pob-gem-families.mjs";
 import { monsterGemTitle, monsterLibraryOf } from "../../server/pob-monster-gems.mjs";
 import type { MonsterGemPatch } from "../../server/pob-monsters.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
+import { CalcEngineSwitch } from "../components/CalcEngineSwitch";
+import { calcBackend } from "../lib/calcBackend";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
 import { BuildSummonStats, GemOptionControls, MonsterPicker, gemOptionBadges } from "../components/BuildGemOptions";
 import { hasGemChoices, plannerGemTargets, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
@@ -1584,21 +1586,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   // "What if" calculations (equip this item, use that gem): one at a time, cached by body.
   const compareQueue = useMemo(() => new CalcQueue<Record<string, unknown>>(async (body) => {
-    // The server runs these after the build's own calculation and never on its last free slot.
-    // Comparisons only read the main skill's numbers, so PoB skips every group's Full DPS.
-    const request = JSON.stringify({ ...(body as Record<string, unknown>), calc_priority: "compare", full_dps: false });
-    for (let attempt = 0; ; attempt += 1) {
-      const response = await fetch("/api/builds/calculate", { method: "POST", headers: { "Content-Type": "application/json" }, body: request });
-      const json = await response.json().catch(() => null);
-      // Busy calculator: wait and try again rather than showing an error.
-      if (response.status === 503 && attempt < 4) {
-        const wait = Math.min(Number(response.headers.get("retry-after")) || 2, 10) * 1000 * (attempt + 1);
-        await new Promise((resolve) => window.setTimeout(resolve, wait));
-        continue;
-      }
-      if (!response.ok || !json?.ok || !json.data) throw new Error(json?.error || `HTTP ${response.status}`);
-      return json.data;
-    }
+    // Routed through calcBackend: uses local PoB WASM when enabled, else server compare queue.
+    const res = await calcBackend.calculateBuild(body as Record<string, unknown>, { priority: "compare", maxRetries: 4 });
+    if (!res.ok || !res.data) throw new Error(res.error || "Calculation failed");
+    return res.data;
   }), []);
   const mainCalcKeyRef = useRef("");
   // The build changed: queued comparisons are for the old build.
@@ -1628,40 +1619,31 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     // What-if previews wait while the build's own numbers are being calculated.
     compareQueue.setPaused(true);
 
-    const attempt = async (triesLeft: number): Promise<void> => {
-      const response = await fetch("/api/builds/calculate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-      const res = await response.json().catch(() => ({ ok: false, error: `HTTP ${response.status}` }));
-      // A newer request already went out: drop this answer.
-      if (requestId !== calcRequestRef.current) return;
-      // Busy calculator: try again shortly instead of leaving the old numbers up.
-      if (response.status === 503 && triesLeft > 0) {
-        const wait = Math.min(Number(response.headers.get("retry-after")) || 2, 10) * 1000;
-        await new Promise((resolve) => window.setTimeout(resolve, wait));
-        if (requestId === calcRequestRef.current) await attempt(triesLeft - 1);
-        return;
-      }
-      setCalcError(res.ok ? "" : String(res.error || (locale === "vi" ? "Không tính được chỉ số." : "Calculation failed.")));
-      if (res.ok && res.data) {
-        compareQueue.seed(bodyKey, res.data);
-        // "What changed" compares with the calculation before this one only when both are of
-        // the same class and main skill: the first skill of a fresh build (or another main
-        // skill) has nothing to compare with, and used to read "+6161%" or "−100%".
-        const before = liveStatsRef.current;
-        setPreviousStats(before && before.__compareKey === compareKey ? before : null);
-        setLiveStats({ ...res.data, __mainGroup: listedMainGroup || 1, __compareKey: compareKey });
-        if (Array.isArray(res.item_errors) && res.item_errors.length) {
-          setCalcError(locale === "vi"
-            ? `Đã bỏ qua món đồ không hợp lệ khi tính: ${res.item_errors.map((row: { messages?: string[] }) => row.messages?.[0]).filter(Boolean).join("; ")}`
-            : `Invalid edited items were left out of the calculation.`);
+    calcBackend
+      .calculateBuild(body, {
+        priority: "main",
+        maxRetries: 3,
+        isStale: () => requestId !== calcRequestRef.current
+      })
+      .then((res) => {
+        // A newer request already went out: drop this answer.
+        if (requestId !== calcRequestRef.current) return;
+        setCalcError(res.ok ? "" : String(res.error || (locale === "vi" ? "Không tính được chỉ số." : "Calculation failed.")));
+        if (res.ok && res.data) {
+          compareQueue.seed(bodyKey, res.data);
+          // "What changed" compares with the calculation before this one only when both are of
+          // the same class and main skill: the first skill of a fresh build (or another main
+          // skill) has nothing to compare with, and used to read "+6161%" or "−100%".
+          const before = liveStatsRef.current;
+          setPreviousStats(before && before.__compareKey === compareKey ? before : null);
+          setLiveStats({ ...res.data, __mainGroup: listedMainGroup || 1, __compareKey: compareKey });
+          if (Array.isArray(res.item_errors) && res.item_errors.length) {
+            setCalcError(locale === "vi"
+              ? `Đã bỏ qua món đồ không hợp lệ khi tính: ${res.item_errors.map((row: { messages?: string[] }) => row.messages?.[0]).filter(Boolean).join("; ")}`
+              : `Invalid edited items were left out of the calculation.`);
+          }
         }
-      }
-    };
-
-    attempt(3)
+      })
       .catch((err) => {
         console.error("Failed to calculate live stats", err);
         if (requestId === calcRequestRef.current) setCalcError(locale === "vi" ? "Không kết nối được máy tính chỉ số." : "Calculator unreachable.");
@@ -3507,6 +3489,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               {isCalculating ? <span className="nj-panel-aside">{locale === "vi" ? "Đang tính..." : "Calculating..."}</span> : null}
               {!isCalculating && calcError ? <span className="nj-panel-aside nj-calc-error" role="alert">{calcError}</span> : null}
             </header>
+            <CalcEngineSwitch locale={locale} onModeChanged={runCalculation} />
             {(() => {
               // Numbers stamped in the PoB code are a fallback for when the calculator gave no answer
               // (they come from another PoB version and would change once ours arrives).
