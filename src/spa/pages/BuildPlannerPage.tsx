@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { loadBuildPlannerData, loadCraftData, loadCraftIndex, loadItemsData, loadPassiveTreeData, loadSkillGemsData } from "../lib/data";
+import { loadBuildPlannerData, loadItemModsData, loadItemsData, loadPassiveTreeData, loadSkillGemsData } from "../lib/data";
 import { buildModPool, type ModPool } from "../../shared/item-mods.mjs";
 import { ItemEditor, NewItemDialog, type NewItemChoice } from "../components/ItemEditor";
 import { displayImageUrl } from "../lib/image";
@@ -2039,8 +2039,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const ensureModPool = async (): Promise<ModPool | null> => {
     if (modPool) return modPool;
     try {
-      const [craft, index] = await Promise.all([loadCraftData(), loadCraftIndex()]);
-      const pool = buildModPool(craft, index, itemsData.filter((item) => isUniqueItem(item)).map((item) => ({ name: itemTitle(item, "en"), rarity: "unique", mods: item.mods })));
+      const itemModsData = await loadItemModsData();
+      const pool = buildModPool(itemModsData, null, itemsData.filter((item) => isUniqueItem(item)).map((item) => ({ name: itemTitle(item, "en"), rarity: "unique", mods: item.mods })));
       setModPool(pool);
       return pool;
     } catch (error) {
