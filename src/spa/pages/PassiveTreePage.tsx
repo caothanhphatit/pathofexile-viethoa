@@ -1,7 +1,9 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { loadPassiveTreeData } from "../lib/data";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
-import { matchesQuery } from "../lib/text";
+import { boundsOfPoints } from "../passive/fit";
+import { canRedo, canUndo, createHistory, historyKeyAction, recordEdit, redoEdit, sameTreeEditState, treeEditState, undoEdit, type EditHistory, type TreeEditState } from "../passive/history";
+import { searchTreeNodes, stepMatchIndex } from "../passive/search";
 import { createTreeSnapshot, deleteTreeSnapshot, passiveCount, readCurrentTreeSnapshot, readSavedTreeSnapshots, saveTreeSnapshot, WEAPON_SET_POINTS, weaponSetPointCounts, writeCurrentTreeSnapshot, type AttributeChoice, type BuildTreeSnapshot } from "../lib/buildPlanner";
 import { TreeCanvas, type CanvasCommand } from "../passive/TreeCanvas";
 import {
@@ -217,6 +219,11 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
   const [command, setCommand] = useState<CanvasCommand | null>(null);
   const [zoom, setZoom] = useState(0.035);
   const [pob, setPob] = useState<PobBuild | null>(null);
+  // Undo / redo of tree edits; starts empty for every tree that is opened or switched to.
+  const [history, setHistory] = useState<EditHistory<TreeEditState>>(() => createHistory());
+  // "build": fitting shows the allocated nodes; "tree": the whole tree.
+  const [fitMode, setFitMode] = useState<"build" | "tree">("build");
+  const [searchIndex, setSearchIndex] = useState(-1);
   const stageRef = useRef<HTMLDivElement | null>(null);
   // The tooltip's height depends on the node's lines and the planner's preview (which
   // arrives later), so it is measured after each render: when it would run past the
@@ -291,6 +298,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       setAllocatedIds(stored ? new Set(stored.allocatedIds) : new Set());
       setWeaponSets({ ...(stored?.weaponSets ?? {}) });
       setAttributeChoices({ ...(stored?.attributeChoices ?? {}) });
+      setHistory(createHistory());
       setSavedTrees(storedSavedTrees);
       setActiveSavedTreeId(storedSavedTree?.id || "");
       setSavedTreeBaseline(storedSavedTree ? treeSnapshotSignature(storedSavedTree) : "");
@@ -331,12 +339,6 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
 
   const allocationEnabled = !readOnly && activeMode === "build";
 
-  const visibleSearchIds = useMemo(() => {
-    if (!tree || !search.trim()) return new Set<string>();
-    const rows = filteredTreeNodes(tree, classFilter, ascendancyFilter);
-    return new Set(rows.filter((node) => matchesQuery(node, search, ["name", "stats", "type", "ascendancyName"])).map((node) => node.id));
-  }, [tree, search, classFilter, ascendancyFilter]);
-
   const visibleNodeIds = useMemo(() => {
     if (!tree) return new Set<string>();
     const rows = filteredTreeNodes(tree, classFilter, ascendancyFilter);
@@ -352,12 +354,24 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     return rows;
   }, [tree, classFilter, ascendancyFilter]);
 
+  // Nodes matching the search (name or stat, Vietnamese or English, accents optional),
+  // in the order "next" walks them.
+  const searchMatches = useMemo(() => search.trim() ? searchTreeNodes(targetNodeById.values(), search) : [], [targetNodeById, search]);
+  const visibleSearchIds = useMemo(() => new Set(searchMatches.map((node) => node.id)), [searchMatches]);
+  const focusedMatch = searchIndex >= 0 ? searchMatches[searchIndex] : undefined;
+  useEffect(() => setSearchIndex(-1), [searchMatches]);
+
   const graphByNodeId = useMemo(() => {
     if (!tree) return new Map<string, string[]>();
     return buildPassiveGraph(tree);
   }, [tree]);
   const selectedStartIds = useMemo(() => tree ? selectedStartNodeIds(tree, classFilter, ascendancyFilter) : new Set<string>(), [tree, classFilter, ascendancyFilter]);
   const startIds = useMemo(() => tree ? allStartNodeIds(tree) : new Set<string>(), [tree]);
+  // What "Fit" frames in build mode: the allocated nodes where they are drawn (not the start).
+  const fitBounds = useMemo(() => {
+    if (fitMode !== "build") return null;
+    return boundsOfPoints([...allocatedIds].filter((id) => !selectedStartIds.has(id)).map((id) => targetNodeById.get(id)));
+  }, [fitMode, allocatedIds, selectedStartIds, targetNodeById]);
   const selectedBuildNodes = useMemo(() => {
     return [...allocatedIds]
       .filter((id) => !selectedStartIds.has(id))
@@ -391,8 +405,53 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     setNodeMenu(null);
   };
 
+  /** Edits that can be undone: allocate, refund, attribute picks, weapon-set nodes, clear. */
+  const applyEdit = (next: { allocatedIds?: Set<string>; weaponSets?: Record<string, 1 | 2>; attributeChoices?: Record<string, AttributeChoice> }) => {
+    const before = treeEditState(allocatedIds, weaponSets, attributeChoices);
+    const after = treeEditState(next.allocatedIds ?? allocatedIds, next.weaponSets ?? weaponSets, next.attributeChoices ?? attributeChoices);
+    setHistory((current) => recordEdit(current, before, after, sameTreeEditState));
+    if (next.allocatedIds) setAllocatedIds(next.allocatedIds);
+    if (next.weaponSets) setWeaponSets(next.weaponSets);
+    if (next.attributeChoices) setAttributeChoices(next.attributeChoices);
+  };
+
+  /** Puts back a whole edit state; the planner sees the change like any click. */
+  const restoreEditState = (state: TreeEditState) => {
+    setAllocatedIds(new Set(state.allocatedIds));
+    setWeaponSets({ ...state.weaponSets });
+    setAttributeChoices({ ...state.attributeChoices } as Record<string, AttributeChoice>);
+    setNodeMenu(null);
+    setBuildLimitWarning("");
+  };
+
+  // The undo / redo button just pressed can turn disabled and drop the focus: the tree
+  // takes it back so Ctrl+Z / Ctrl+Y keep working.
+  const keepTreeFocus = () => {
+    window.requestAnimationFrame(() => {
+      const active = document.activeElement;
+      if (!active || active === document.body) stageRef.current?.focus({ preventScroll: true });
+    });
+  };
+
+  const undoTreeEdit = () => {
+    const step = undoEdit(history, treeEditState(allocatedIds, weaponSets, attributeChoices));
+    if (!step) return;
+    setHistory(step.history);
+    restoreEditState(step.state);
+    keepTreeFocus();
+  };
+
+  const redoTreeEdit = () => {
+    const step = redoEdit(history, treeEditState(allocatedIds, weaponSets, attributeChoices));
+    if (!step) return;
+    setHistory(step.history);
+    restoreEditState(step.state);
+    keepTreeFocus();
+  };
+
   const selectClass = (name: string) => {
     setBuildLimitWarning("");
+    setHistory(createHistory());
     resetTreeEdits();
     setClassFilter(name);
     const nextAscendancy = name ? tree?.classByName.get(name)?.ascendancies[0]?.name || "" : "";
@@ -405,6 +464,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
 
   const selectAscendancy = (name: string) => {
     setBuildLimitWarning("");
+    setHistory(createHistory());
     setAscendancyFilter(name);
     if (tree) {
       const nextStarts = selectedStartNodeIds(tree, classFilter, name);
@@ -419,10 +479,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     const seeded = syncSelectedStartNodeIds(allocatedIds, selectedStartIds, startIds);
     const result = refundInMode({ targetId: node.id, allocatedIds: seeded, startNodeIds: selectedStartIds, graphByNodeId, visibleNodeIds, weaponSets });
     setBuildLimitWarning("");
-    setAllocatedIds(result.allocated);
-    setWeaponSets(result.weaponSets);
-    // PoB forgets the attribute of a node once it is refunded.
-    setAttributeChoices((current) => Object.fromEntries(Object.entries(current).filter(([id]) => result.allocated.has(id))));
+    applyEdit({
+      allocatedIds: result.allocated,
+      weaponSets: result.weaponSets,
+      // PoB forgets the attribute of a node once it is refunded.
+      attributeChoices: Object.fromEntries(Object.entries(attributeChoices).filter(([id]) => result.allocated.has(id)))
+    });
     setNodeMenu(null);
   };
 
@@ -471,16 +533,61 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       return;
     }
     setBuildLimitWarning("");
-    setAllocatedIds(result.allocated);
-    setWeaponSets(result.weaponSets);
     // New attribute nodes take the attribute picked last (PoB: Strength until one is picked).
     const added = [...result.allocated].filter((id) => !seeded.has(id) && tree?.nodeById.get(id)?.isAttribute);
-    if (added.length) setAttributeChoices((current) => ({ ...current, ...Object.fromEntries(added.map((id) => [id, defaultAttribute])) }));
+    applyEdit({
+      allocatedIds: result.allocated,
+      weaponSets: result.weaponSets,
+      attributeChoices: added.length ? { ...attributeChoices, ...Object.fromEntries(added.map((id) => [id, defaultAttribute])) } : undefined
+    });
   };
 
   const chooseAttribute = (nodeId: string, choice: AttributeChoice) => {
-    setAttributeChoices((current) => ({ ...current, [nodeId]: choice }));
+    applyEdit({ attributeChoices: { ...attributeChoices, [nodeId]: choice } });
     setDefaultAttribute(choice);
+  };
+
+  const clearBuild = () => {
+    setBuildLimitWarning("");
+    setNodeMenu(null);
+    applyEdit({ allocatedIds: syncSelectedStartNodeIds(new Set(), selectedStartIds, startIds), weaponSets: {}, attributeChoices: {} });
+  };
+
+  /** Centres the view on a search match (step 1: next, -1: previous). */
+  const jumpToMatch = (step: 1 | -1) => {
+    const index = stepMatchIndex(searchIndex, searchMatches.length, step);
+    if (index < 0) return;
+    const node = searchMatches[index];
+    setSearchIndex(index);
+    runCommand("focus", { x: node.x, y: node.y, zoom: Math.max(zoom, 0.22) });
+  };
+
+  const onSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      jumpToMatch(event.shiftKey ? -1 : 1);
+    } else if (event.key === "Escape" && search) {
+      event.preventDefault();
+      event.stopPropagation();
+      setSearch("");
+    }
+  };
+
+  /** Ctrl+Z / Ctrl+Shift+Z / Ctrl+Y while the tree (or one of its buttons) has focus. */
+  const onStageKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("input, textarea, select, [contenteditable='true']")) return;
+    const action = historyKeyAction(event);
+    if (!action || readOnly) return;
+    event.preventDefault();
+    if (action === "undo") undoTreeEdit();
+    else redoTreeEdit();
+  };
+
+  const fitTo = (mode: "build" | "tree") => {
+    setFitMode(mode);
+    if (mode === "tree") runCommand("reset");
+    else runCommand("fit");
   };
 
   // Escape closes the node menu.
@@ -528,9 +635,10 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       attributeChoices,
       socketedJewels: jewels ? new Map([...jewels.socketed].map(([id, jewel]) => [id, jewel.rarity])) : undefined,
       dropSocketIds,
-      dropTargetId: dragHover?.node.id
+      dropTargetId: dragHover?.node.id,
+      focusId: focusedMatch?.id
     };
-  }, [weaponSets, attributeChoices, jewels, tree, dragHover]);
+  }, [weaponSets, attributeChoices, jewels, tree, dragHover, focusedMatch]);
 
   const applyPob = (build: PobBuild) => {
     if (!tree) return;
@@ -543,6 +651,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     const ids = new Set<string>(build.nodeIds.filter((id) => tree.nodeById.has(id)));
     setAllocatedIds(syncSelectedStartNodeIds(ids, starts, allStartNodeIds(tree)));
     resetTreeEdits();
+    setHistory(createHistory());
     setBuildLimitWarning("");
     setPob(build);
   };
@@ -610,6 +719,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     setAllocatedIds(new Set(snapshot.allocatedIds));
     setWeaponSets({ ...(snapshot.weaponSets ?? {}) });
     setAttributeChoices({ ...(snapshot.attributeChoices ?? {}) });
+    setHistory(createHistory());
     setNodeMenu(null);
     setActiveSavedTreeId(snapshot.id);
     setSavedTreeBaseline(treeSnapshotSignature(snapshot));
@@ -754,23 +864,24 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
         </label>
         <label className="passive-search">
           <span className="material-symbols-rounded" aria-hidden="true">search</span>
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={localizedText(passiveCopy.search, "", locale)} aria-label="search" />
+          <input value={search} onChange={(event) => setSearch(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={localizedText(passiveCopy.search, "", locale)} aria-label="search" />
         </label>
         <button className="passive-action passive-action--accent" type="button" onClick={() => { setImportErr(""); setImportOpen(true); }} title="Nhập build từ Path of Building" aria-label="Import POB">
           <span className="material-symbols-rounded" aria-hidden="true">content_paste</span>
           <span>Nhập POB</span>
         </button>
-        <button className="passive-action" type="button" onClick={() => runCommand("fit")} title="Fit map" aria-label="Fit map">
+        <button className="passive-action" type="button" onClick={() => fitTo("build")} title="Fit map" aria-label="Fit map">
           <span className="material-symbols-rounded" aria-hidden="true">fit_screen</span>
           <span>Fit</span>
         </button>
-        <button className="passive-action" type="button" onClick={() => runCommand("reset")} title="Reset view" aria-label="Reset view">
+        <button className="passive-action" type="button" onClick={() => fitTo("tree")} title="Reset view" aria-label="Reset view">
           <span className="material-symbols-rounded" aria-hidden="true">center_focus_strong</span>
           <span>Reset</span>
         </button>
       </div>
-      <div className="passive-stage" ref={stageRef}>
+      <div className="passive-stage" ref={stageRef} tabIndex={-1} onKeyDown={onStageKeyDown}>
         <TreeCanvas
+          fitBounds={fitBounds}
           tree={tree}
           searchIds={visibleSearchIds}
           allocatedIds={allocatedIds}
@@ -785,6 +896,55 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           dropType={jewels?.dragType}
           onNodeDrop={jewels ? onNodeDrop : undefined}
         />
+
+        <div className={`passive-overlay-tl ${embedded ? "has-search" : ""}`}>
+        <div className="passive-quickbar" role="toolbar" aria-label={vi ? "Tìm, hoàn tác, khung nhìn" : "Search, undo, view"}>
+          {embedded ? (
+            <div className={`passive-quick-search ${search.trim() && !searchMatches.length ? "is-empty" : ""}`}>
+              <span className="material-symbols-rounded" aria-hidden="true">search</span>
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                onKeyDown={onSearchKeyDown}
+                placeholder={vi ? "Tìm điểm, chỉ số…" : "Find node, stat…"}
+                aria-label={vi ? "Tìm điểm theo tên hoặc chỉ số" : "Find a node by name or stat"}
+                enterKeyHint="search"
+              />
+              {search.trim() ? (
+                <>
+                  <small aria-live="polite">{searchMatches.length ? `${searchIndex >= 0 ? searchIndex + 1 : "–"}/${searchMatches.length}` : "0"}</small>
+                  <button type="button" className="passive-quick-prev" onClick={() => jumpToMatch(-1)} disabled={!searchMatches.length} title={vi ? "Kết quả trước (Shift+Enter)" : "Previous match (Shift+Enter)"} aria-label={vi ? "Kết quả trước" : "Previous match"}>
+                    <span className="material-symbols-rounded" aria-hidden="true">chevron_left</span>
+                  </button>
+                  <button type="button" onClick={() => jumpToMatch(1)} disabled={!searchMatches.length} title={vi ? "Tới kết quả tiếp (Enter)" : "Next match (Enter)"} aria-label={vi ? "Kết quả tiếp" : "Next match"}>
+                    <span className="material-symbols-rounded" aria-hidden="true">chevron_right</span>
+                  </button>
+                </>
+              ) : null}
+            </div>
+          ) : null}
+          {!readOnly ? (
+            <div className="passive-quick-group">
+              <button type="button" onClick={undoTreeEdit} disabled={!canUndo(history)} title={vi ? "Hoàn tác (Ctrl+Z)" : "Undo (Ctrl+Z)"} aria-label={vi ? "Hoàn tác" : "Undo"}>
+                <span className="material-symbols-rounded" aria-hidden="true">undo</span>
+              </button>
+              <button type="button" onClick={redoTreeEdit} disabled={!canRedo(history)} title={vi ? "Làm lại (Ctrl+Y / Ctrl+Shift+Z)" : "Redo (Ctrl+Y / Ctrl+Shift+Z)"} aria-label={vi ? "Làm lại" : "Redo"}>
+                <span className="material-symbols-rounded" aria-hidden="true">redo</span>
+              </button>
+            </div>
+          ) : null}
+          <div className="passive-quick-group passive-quick-fit" role="group" aria-label={vi ? "Khung nhìn" : "View"}>
+            <button type="button" className={fitMode === "build" ? "is-active" : ""} onClick={() => fitTo("build")} aria-pressed={fitMode === "build"} title={vi ? "Thu phóng vừa các điểm đã chọn" : "Fit the allocated nodes"}>
+              <span className="material-symbols-rounded" aria-hidden="true">fit_screen</span>
+              <span className="passive-quick-label">{vi ? "Vừa build" : "Fit build"}</span>
+            </button>
+            <button type="button" className={fitMode === "tree" ? "is-active" : ""} onClick={() => fitTo("tree")} aria-pressed={fitMode === "tree"} title={vi ? "Xem toàn bộ cây" : "Show the whole tree"}>
+              <span className="material-symbols-rounded" aria-hidden="true">zoom_out_map</span>
+              <span className="passive-quick-label">{vi ? "Toàn cây" : "Whole tree"}</span>
+            </button>
+          </div>
+        </div>
 
         {!readOnly && activeMode === "build" ? (
           <div className="passive-alloc-mode" role="group" aria-label={vi ? "Điểm cho cây chính hay bộ vũ khí" : "Allocate to"}>
@@ -819,6 +979,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             {allocMode ? <p className="passive-alloc-mode-hint">{vi ? `Đang chọn điểm cho bộ vũ khí ${allocMode}` : `Allocating weapon set ${allocMode}`}</p> : null}
           </div>
         ) : null}
+        </div>
 
         {jewels?.carried && !jewels.carried.dragging ? (
           <div className="passive-carry-banner" role="status">
@@ -920,11 +1081,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
                           <span className="material-symbols-rounded" aria-hidden="true">save</span>
                           <span>Save</span>
                         </button>
-                        <button className="passive-build-clear" type="button" onClick={() => {
-                          setBuildLimitWarning("");
-                          resetTreeEdits();
-                          setAllocatedIds(syncSelectedStartNodeIds(new Set(), selectedStartIds, startIds));
-                        }} title={localizedText(passiveCopy.clearBuild, "", locale)} aria-label={localizedText(passiveCopy.clearBuild, "", locale)}>
+                        <button className="passive-build-clear" type="button" onClick={clearBuild} title={localizedText(passiveCopy.clearBuild, "", locale)} aria-label={localizedText(passiveCopy.clearBuild, "", locale)}>
                           <span className="material-symbols-rounded" aria-hidden="true">delete_sweep</span>
                           <span>Clear</span>
                         </button>

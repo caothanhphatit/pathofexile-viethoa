@@ -394,3 +394,212 @@
     font-size: 12px;
   }
 }
+
+/* Top left of the tree: search (planner tree), undo/redo, fit toggle, then the
+   weapon-set / attribute panel under them. */
+.passive-stage:focus {
+  outline: none;
+}
+
+.passive-overlay-tl {
+  position: absolute;
+  z-index: 20;
+  top: 10px;
+  left: 10px;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  max-width: calc(100% - 20px);
+  pointer-events: none;
+}
+
+.passive-overlay-tl.has-search {
+  right: 10px;
+}
+
+.passive-overlay-tl > * {
+  pointer-events: auto;
+}
+
+.passive-overlay-tl .passive-alloc-mode {
+  position: static;
+  max-width: 100%;
+}
+
+.passive-quickbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  font-size: 12px;
+}
+
+/* The search takes the room left; in a narrow panel the buttons wrap under it. */
+.passive-overlay-tl.has-search .passive-quickbar {
+  justify-self: stretch;
+  max-width: 640px;
+}
+
+.passive-overlay-tl.has-search .passive-quick-search {
+  flex: 1 1 170px;
+}
+
+.passive-quick-search,
+.passive-quick-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 34px;
+  padding: 2px;
+  border: 1px solid var(--passive-border, var(--line));
+  border-radius: 8px;
+  background: var(--passive-tooltip-bg, rgba(10, 12, 16, .85));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+  backdrop-filter: blur(4px);
+  color: var(--passive-tooltip-text, var(--ink));
+}
+
+.passive-quick-search {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-left: 8px;
+}
+
+.passive-quick-search:focus-within {
+  border-color: var(--gold);
+}
+
+.passive-quick-search.is-empty small {
+  color: var(--danger);
+}
+
+.passive-quick-search > .material-symbols-rounded {
+  flex: none;
+  color: var(--passive-muted, var(--muted));
+  font-size: 18px;
+}
+
+.passive-quick-search input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 60px;
+  height: 28px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  /* 16px stops iOS zooming the page when the box gets focus. */
+  font-size: 16px;
+}
+
+/* The box itself shows focus (:focus-within). */
+.passive-quick-search input:focus,
+.passive-quick-search input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.passive-quick-search input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.passive-quick-search small {
+  flex: none;
+  padding: 0 2px;
+  color: var(--passive-muted, var(--muted));
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.passive-quick-search button,
+.passive-quick-group button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.passive-quick-search button:hover:not(:disabled),
+.passive-quick-group button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--gold) 16%, transparent);
+}
+
+.passive-quick-search button:disabled,
+.passive-quick-group button:disabled {
+  opacity: .38;
+  cursor: default;
+}
+
+.passive-quick-search .material-symbols-rounded,
+.passive-quick-group .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.passive-quick-group {
+  flex: none;
+}
+
+.passive-quick-fit button.is-active {
+  background: color-mix(in srgb, var(--gold) 24%, transparent);
+  color: var(--passive-gold-strong, var(--gold));
+  font-weight: 700;
+}
+
+.passive-quick-label {
+  white-space: nowrap;
+}
+
+/* Phones: icons only, and no "previous" button (Shift+Enter still goes back). */
+@media (max-width: 720px) {
+  .passive-overlay-tl {
+    top: 6px;
+    left: 6px;
+    max-width: calc(100% - 12px);
+  }
+
+  .passive-overlay-tl.has-search {
+    right: 6px;
+  }
+
+  .passive-quick-label,
+  .passive-quick-search .passive-quick-prev {
+    display: none;
+  }
+
+  .passive-quickbar {
+    gap: 4px;
+  }
+
+  /* One row on a phone: the search shrinks before the buttons wrap. */
+  .passive-overlay-tl.has-search .passive-quickbar {
+    flex-wrap: nowrap;
+  }
+
+  .passive-overlay-tl.has-search .passive-quick-search {
+    flex: 1 1 0;
+    padding-left: 6px;
+  }
+
+  .passive-quick-search input {
+    min-width: 36px;
+  }
+
+  .passive-quick-search button,
+  .passive-quick-group button {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 4px;
+  }
+}

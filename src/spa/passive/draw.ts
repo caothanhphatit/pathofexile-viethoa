@@ -17,6 +17,8 @@ export interface RenderOptions {
   /** While a jewel is dragged: sockets that take it, and the one under the pointer. */
   dropSocketIds?: Set<string>;
   dropTargetId?: string;
+  /** The search match the view jumped to: drawn with a large marker. */
+  focusId?: string;
 }
 
 /** Weapon set colours, as PoB draws them (set 1 red, set 2 green). */
@@ -249,6 +251,7 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
   const dotBuckets = new Map<string, { color: string; alpha: number; path: Path2D }>();
   const ringBuckets = new Map<string, { color: string; path: Path2D; dashed: boolean }>();
   let hoverRing: { x: number; y: number; r: number } | null = null;
+  let focusRing: { x: number; y: number; r: number } | null = null;
   const badges: Array<{ x: number; y: number; r: number; fill: string; letter?: string; diamond?: boolean; faded?: boolean }> = [];
   const pushRing = (color: string, x: number, y: number, r: number, dashed = false) => {
     const key = `${color}:${dashed ? "dash" : "solid"}`;
@@ -321,7 +324,9 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
     ctx.arc(node.x, node.y, r + framePad, 0, Math.PI * 2);
     ctx.stroke();
 
-    if (isSearch) pushRing(palette.searchRing, node.x, node.y, r + CHANGE_RING_GAP);
+    // Search rings sit outside the allocated ring and stay visible when the tree is zoomed out.
+    if (isSearch) pushRing(palette.searchRing, node.x, node.y, Math.max(r + CHANGE_RING_GAP * 2.2, cssPx(7)));
+    if (opts.focusId === node.id) focusRing = { x: node.x, y: node.y, r: Math.max(r + CHANGE_RING_GAP * 4, cssPx(15)) };
     const nodeSet = isAllocated ? sets[node.id] : undefined;
     if (isAllocated) pushRing(nodeSet ? WEAPON_SET_COLORS[nodeSet] : palette.allocatedRing, node.x, node.y, r + CHANGE_RING_GAP);
     if (isDropSocket) pushRing(palette.searchRing, node.x, node.y, r + CHANGE_RING_GAP * 2.2, opts.dropTargetId !== node.id);
@@ -374,6 +379,21 @@ export function renderPassiveTree(ctx: CanvasRenderingContext2D, camera: Camera,
       ctx.textBaseline = "middle";
       ctx.fillText(badge.letter, badge.x, badge.y + badge.r * 0.05);
     }
+    ctx.restore();
+  }
+  if (focusRing) {
+    ctx.save();
+    ctx.strokeStyle = palette.searchRing;
+    ctx.lineWidth = frameLineWidth(8, cssPx, 2.2);
+    ctx.beginPath();
+    ctx.arc(focusRing.x, focusRing.y, focusRing.r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([cssPx(4), cssPx(4)]);
+    ctx.strokeStyle = palette.hoverRing;
+    ctx.lineWidth = frameLineWidth(3, cssPx, 1);
+    ctx.beginPath();
+    ctx.arc(focusRing.x, focusRing.y, focusRing.r + cssPx(4), 0, Math.PI * 2);
+    ctx.stroke();
     ctx.restore();
   }
   if (hoverRing) {
