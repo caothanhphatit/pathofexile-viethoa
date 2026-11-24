@@ -17,6 +17,7 @@ import {
 } from "../passive/planner";
 import { WEAPON_SET_COLORS } from "../passive/draw";
 import "../styles/planner-tree-edit.css";
+import { isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
 import { filteredTreeNodes, parsePassiveTree, projectNodeForView, type PassiveNode, type PassiveTreeModel } from "../passive/tree";
 import { parsePobBuild, type PobBuild } from "../passive/pob";
 
@@ -59,7 +60,8 @@ export interface PassiveTreeWorkspaceProps {
   /** Jewel sockets, when the tree sits in the Build Planner (it holds the jewels). */
   jewels?: TreeJewelHooks;
   /** Extra tooltip content for a hovered node (the planner's "what this node changes"). */
-  renderNodeExtra?: (node: PassiveNode, allocated: boolean) => ReactNode;
+  /** blocked: a click would not take the node (out of points), so the preview is a "would". */
+  renderNodeExtra?: (node: PassiveNode, allocated: boolean, blocked?: boolean) => ReactNode;
   /** The node under the mouse (null when none). */
   onNodeHover?: (node: PassiveNode | null, allocated: boolean) => void;
   /** The parsed tree, once loaded. */
@@ -150,7 +152,9 @@ function buildCountsForIds(ids: Iterable<string>, selectedStartIds: Set<string>,
     if (selectedStartIds.has(id)) continue;
     const node = nodeById.get(id);
     if (!node) continue;
-    if (node.ascendancyName) ascendancy += 1;
+    // PoB (PassiveSpec:CountAllocNodes): the option picked under a multiple-choice ascendancy
+    // node is not a point of its own, so 8 real points no longer read "9/8".
+    if (node.ascendancyName) ascendancy += isChoiceOptionNode(id) ? 0 : 1;
     else passive += 1;
   }
   return { passive, ascendancy, total: passive + ascendancy };
@@ -488,6 +492,62 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     setNodeMenu(null);
   };
 
+  /**
+   * What a click on an unallocated node would allocate, and why it is refused when it is
+   * (out of points, or a main-tree-only node while a weapon set is selected). The node
+   * tooltip uses the same answer, so it never promises a node the click will not take.
+   */
+  const planAllocation = (node: PassiveNode, seeded = syncSelectedStartNodeIds(allocatedIds, selectedStartIds, startIds)) => {
+    const result = allocatePathInMode({
+      targetId: node.id,
+      allocatedIds: seeded,
+      startNodeIds: selectedStartIds,
+      graphByNodeId,
+      visibleNodeIds,
+      weaponSets,
+      mode: allocMode,
+      isMainTreeOnly: (id) => isMainTreeOnlyNode(tree?.nodeById.get(id))
+    });
+    if (result.blocked) {
+      return { result, refusal: vi ? "Điểm quan trọng (keystone), ô ngọc và điểm thăng hoa chỉ chọn được ở Cây chính." : "Keystones, jewel sockets and ascendancy nodes belong to the main tree." };
+    }
+    const sets = weaponSetPointCounts(result.weaponSets, result.allocated);
+    const counts = buildCountsForIds(result.allocated, selectedStartIds, targetNodeById);
+    const before = buildCountsForIds(seeded, selectedStartIds, targetNodeById);
+    const passiveNow = counts.passive - sets.shared;
+    const passiveBefore = before.passive - weaponSetPointCounts(weaponSets, seeded).shared;
+    // Only a pool that this click makes grow past its limit refuses the node: an imported
+    // build already over one (PoB leaves free ascendancy nodes out of the count) still edits.
+    if (passiveNow > BUILD_PASSIVE_LIMIT && passiveNow > passiveBefore) {
+      const need = passiveNow - passiveBefore;
+      const left = Math.max(BUILD_PASSIVE_LIMIT - passiveBefore, 0);
+      return {
+        result,
+        refusal: vi
+          ? `Hết điểm thụ động (${passiveBefore}/${BUILD_PASSIVE_LIMIT}): node này cần ${need} điểm, còn ${left}. Hoàn lại điểm khác trước.`
+          : `Out of passive points (${passiveBefore}/${BUILD_PASSIVE_LIMIT}): this node takes ${need}, ${left} left. Refund other nodes first.`
+      };
+    }
+    if (counts.ascendancy > BUILD_ASCENDANCY_LIMIT && counts.ascendancy > before.ascendancy) {
+      const need = counts.ascendancy - before.ascendancy;
+      const left = Math.max(BUILD_ASCENDANCY_LIMIT - before.ascendancy, 0);
+      return {
+        result,
+        refusal: vi
+          ? `Hết điểm thăng hoa (${before.ascendancy}/${BUILD_ASCENDANCY_LIMIT}): node này cần ${need} điểm, còn ${left}. Hoàn lại điểm khác trước.`
+          : `Out of ascendancy points (${before.ascendancy}/${BUILD_ASCENDANCY_LIMIT}): this node takes ${need}, ${left} left. Refund other nodes first.`
+      };
+    }
+    return { result, refusal: "" };
+  };
+
+  // The out-of-points message goes away by itself; the next successful click clears it too.
+  useEffect(() => {
+    if (!buildLimitWarning) return;
+    const timer = window.setTimeout(() => setBuildLimitWarning(""), 6000);
+    return () => window.clearTimeout(timer);
+  }, [buildLimitWarning]);
+
   const toggleAllocated = (node: PassiveNode) => {
     if (!allocationEnabled) return;
     const carried = jewels?.carried;
@@ -507,29 +567,10 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
       refundNode(node);
       return;
     }
-    const result = allocatePathInMode({
-      targetId: node.id,
-      allocatedIds: seeded,
-      startNodeIds: selectedStartIds,
-      graphByNodeId,
-      visibleNodeIds,
-      weaponSets,
-      mode: allocMode,
-      isMainTreeOnly: (id) => isMainTreeOnlyNode(tree?.nodeById.get(id))
-    });
-    if (result.blocked) {
-      setBuildLimitWarning(vi ? "Điểm quan trọng (keystone), ô ngọc và điểm thăng hoa chỉ chọn được ở Cây chính." : "Keystones, jewel sockets and ascendancy nodes belong to the main tree.");
-      return;
-    }
-    const sets = weaponSetPointCounts(result.weaponSets, result.allocated);
-    const counts = buildCountsForIds(result.allocated, selectedStartIds, targetNodeById);
-    const before = buildCountsForIds(seeded, selectedStartIds, targetNodeById);
-    const passiveNow = counts.passive - sets.shared;
-    const passiveBefore = before.passive - weaponSetPointCounts(weaponSets, seeded).shared;
-    // Only a pool that this click makes grow past its limit refuses the node: an imported
-    // build already over one (PoB leaves free ascendancy nodes out of the count) still edits.
-    if ((passiveNow > BUILD_PASSIVE_LIMIT && passiveNow > passiveBefore) || (counts.ascendancy > BUILD_ASCENDANCY_LIMIT && counts.ascendancy > before.ascendancy)) {
-      setBuildLimitWarning(localizedText(passiveCopy.buildLimitReached, "", locale));
+    const { result, refusal } = planAllocation(node, seeded);
+    if (refusal) {
+      // Said where the player is looking (over the tree), not only in the side panel.
+      setBuildLimitWarning(refusal);
       return;
     }
     setBuildLimitWarning("");
@@ -651,6 +692,10 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     const ids = new Set<string>(build.nodeIds.filter((id) => tree.nodeById.has(id)));
     setAllocatedIds(syncSelectedStartNodeIds(ids, starts, allStartNodeIds(tree)));
     resetTreeEdits();
+    // The code's own weapon-set nodes and attribute picks (they used to be dropped, so
+    // every import read "Bộ 1 0/24, Bộ 2 0/24" and its "+5" nodes gave nothing).
+    setWeaponSets(Object.fromEntries(Object.entries(build.weaponSets ?? {}).filter(([id]) => ids.has(id))));
+    setAttributeChoices(Object.fromEntries(Object.entries(build.attributeChoices ?? {}).filter(([id]) => ids.has(id))));
     setHistory(createHistory());
     setBuildLimitWarning("");
     setPob(build);
@@ -1220,7 +1265,12 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           const shown = dragHover ? { ...dragHover, held: false } : hover.node ? hover : null;
           if (!shown?.node || nodeMenu) return null;
           const node = shown.node;
-          const extra = renderNodeExtra?.(node, allocatedIds.has(node.id));
+          const nodeAllocated = allocatedIds.has(node.id);
+          // Would a click take this node? If not, the tooltip says why instead of promising it.
+          const refusal = allocationEnabled && !nodeAllocated && !dragHover && !selectedStartIds.has(node.id) && !(jewels?.carried && node.jewelSocket)
+            ? planAllocation(node).refusal
+            : "";
+          const extra = renderNodeExtra?.(node, nodeAllocated, Boolean(refusal));
           const picks = nodePickTooltip(node);
           // The tooltip is placed inside the stage; embedded trees do not start at the window's corner.
           const box = embedded ? stageRef.current?.getBoundingClientRect() : null;
@@ -1235,10 +1285,17 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
               <span>{node.type}</span>
               {node.stats.slice(0, 5).map((line) => <p key={line}>{formatPassiveStatText(line)}</p>)}
               {picks}
+              {refusal ? <p className="passive-tooltip-refusal">{refusal}</p> : null}
               {extra}
             </div>
           );
         })()}
+        {buildLimitWarning ? (
+          <div className="passive-stage-toast" role="alert">
+            <span className="material-symbols-rounded" aria-hidden="true">block</span>
+            <span>{buildLimitWarning}</span>
+          </div>
+        ) : null}
         {nodeMenu ? (
           <div className="passive-node-menu-backdrop" onClick={() => setNodeMenu(null)}>
             <div

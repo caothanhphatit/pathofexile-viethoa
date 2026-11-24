@@ -603,3 +603,38 @@
     padding: 0 4px;
   }
 }
+
+/* "Out of points": said over the tree, where the click happened (the side panel may be
+   closed or far away), and in the node's tooltip. */
+.passive-stage-toast {
+  position: absolute;
+  z-index: 22;
+  top: 12px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 8px 12px;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  background: var(--passive-tooltip-bg, rgba(10, 12, 16, .94));
+  color: #fde68a;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.passive-stage-toast .material-symbols-rounded {
+  flex: none;
+  color: #f59e0b;
+  font-size: 18px;
+}
+
+.passive-tooltip p.passive-tooltip-refusal {
+  color: #fbbf24;
+  font-weight: 700;
+}

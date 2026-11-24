@@ -1,0 +1,195 @@
+/* Build Planner: equipment-rule notice under the doll, "cannot use this build yet"
+   warnings in the header, the weapon hint on a skill card (BuildPlannerPage.tsx). */
+
+/* One line under the doll. Its height is reserved so a message never pushes the panels below. */
+.build-equip-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 34px;
+  margin: 8px 0 0;
+  padding: 0;
+  color: var(--nj-text);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.build-equip-notice.is-shown {
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, #e0a83a 55%, var(--nj-line));
+  border-radius: 4px;
+  background: color-mix(in srgb, #e0a83a 10%, transparent);
+}
+
+.build-equip-notice > .material-symbols-rounded {
+  flex: none;
+  color: #e0a83a;
+  font-size: 16px;
+}
+
+.build-equip-notice > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.build-equip-notice button {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--nj-muted);
+  cursor: pointer;
+}
+
+.build-equip-notice button .material-symbols-rounded { font-size: 15px; }
+
+/* Level, attribute and passive-point warnings: non-blocking, under the level field. */
+.build-warnings {
+  margin: 0 0 6px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, #e0a83a 55%, var(--nj-line));
+  border-radius: 4px;
+  background: color-mix(in srgb, #e0a83a 9%, transparent);
+  color: var(--nj-text);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* The count next to the level field; the list is at the top of the stats panel. */
+.build-warning-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, #e0a83a 60%, var(--nj-line));
+  border-radius: 3px;
+  background: color-mix(in srgb, #e0a83a 12%, transparent);
+  color: #e0a83a;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.build-warning-chip .material-symbols-rounded { font-size: 16px; }
+
+/* Wide screens: the stats panel takes the doll's height and scrolls inside, so rows that a
+   recalculation adds or removes (recovery, main skills, warnings) never move the panels below. */
+@media (min-width: 1101px) {
+  .nj-row--top > .nj-stats {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    min-height: 100%;
+  }
+
+  .nj-row--top > .nj-stats > .nj-panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+.build-warnings-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #e0a83a;
+  font-weight: 800;
+}
+
+.build-warnings-head .material-symbols-rounded { font-size: 16px; }
+
+.build-warnings ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  max-height: 132px;
+  overflow-y: auto;
+}
+
+.build-warnings li { overflow-wrap: anywhere; }
+
+.build-warnings-note {
+  margin: 4px 0 0;
+  color: var(--nj-muted);
+  font-size: 11px;
+}
+
+/* The weapon does not fit the skill: the reason a card shows no damage. */
+.sk-hint.sk-hint--weapon {
+  padding: 5px 7px;
+  border-left: 2px solid #e0a83a;
+  background: color-mix(in srgb, #e0a83a 8%, transparent);
+  color: var(--nj-text);
+}
+
+/* "Lưu build" saves in this browser only. */
+.build-save-hint {
+  margin: 4px 0 0;
+  color: var(--nj-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* The numbers of a calculation that is running stay in place, dimmed, instead of the
+   panels changing height while the page waits. */
+.nj-stats .nj-panel-head,
+.nj-skills .nj-panel-head,
+.nj-calc-details .nj-panel-head {
+  min-height: 34px;
+}
+
+/* A status line that never changes the width of its panel head. */
+.nj-panel-aside.nj-calc-state {
+  min-width: 92px;
+  text-align: right;
+}
+
+/* Inventory search: what the slot filter is doing, and a way out of it. */
+.pi-search-note {
+  margin: 0;
+  color: var(--nj-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.pi-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--nj-blue, #7fb6ff);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
+
+/* The inventory's status line keeps its place whether it has text or not. */
+.pi-panel .pi-message { min-height: 17px; }
+
+/* Empty-slot labels are Vietnamese words now: let the longer ones wrap inside the slot. */
+.build-page .build-slot-label {
+  max-width: 100%;
+  padding: 0 2px;
+  overflow-wrap: anywhere;
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* Dialogs whose content changes while open (the gem list while typing, the PoB import
+   error line) are pinned to the top instead of re-centring with every change. */
+.build-gem-picker-backdrop,
+.build-pob-backdrop {
+  align-items: start;
+  place-items: start center;
+  padding-top: min(12vh, 96px);
+}
+
+.build-gem-picker {
+  height: min(640px, calc(100vh - min(12vh, 96px) - 24px));
+}

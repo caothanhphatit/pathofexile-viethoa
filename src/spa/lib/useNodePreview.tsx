@@ -68,11 +68,16 @@ export function useNodePreview({ body, allocatedIds, paused, locale }: Options) 
     if (allocated) store.want(nodePreviewCandidates({ edges: [], nodeById: tree.nodeById }, allocatedRef.current));
   }, [store, tree]);
 
-  const renderNodeExtra = useCallback((node: PassiveNode, allocated: boolean): ReactNode => {
+  const renderNodeExtra = useCallback((node: PassiveNode, allocated: boolean, blocked = false): ReactNode => {
     if (!body || !previewableNode(node.type)) return null;
     const vi = locale === "vi";
     const entry = store.get(node.id);
-    const title = allocated ? (vi ? "Bỏ node này" : "Removing this node") : (vi ? "Lấy node này" : "Allocating this node");
+    // blocked: the click is refused (no points left), so this is what the node would give.
+    const title = allocated
+      ? (vi ? "Bỏ node này" : "Removing this node")
+      : blocked
+        ? (vi ? "Nếu còn điểm để lấy node này" : "If you had the points for this node")
+        : (vi ? "Lấy node này" : "Allocating this node");
     let content: ReactNode;
     if (!entry || entry.status === "pending") {
       content = <p className="passive-node-delta__note">{vi ? "Đang tính…" : "Calculating…"}</p>;

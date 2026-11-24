@@ -183,7 +183,7 @@ test("planner page: inventory beside the doll, drag and drop, hover comparison, 
   const { repoRoot } = await import("../scripts/lib/planner-node.mjs");
   const page = await readFile(join(repoRoot, "src/spa/pages/BuildPlannerPage.tsx"), "utf8");
   assert.match(page, /<BuildInventoryPanel/);
-  assert.match(page, /equipStashItem\(/);
+  assert.match(page, /equipWithWeaponRules\(/, "equipping goes through the weapon-set rule");
   assert.match(page, /onContextMenu=/, "right-click unequips");
   assert.match(page, /STASH_DRAG_TYPE/, "items can be dropped on slots");
   assert.match(page, /stashFromPobImport\(pobData\)/, "PoB alternates land in the inventory");

@@ -11,6 +11,7 @@ import { SocketJewelMenu } from "../components/SocketJewelMenu";
 import { parsePassiveTree, type PassiveNode, type PassiveTreeModel } from "../passive/tree";
 import { selectedStartNodeIds } from "../passive/planner";
 import "../styles/planner-new-build.css";
+import "../styles/planner-rules.css";
 import {
   DEFAULT_CHARACTER_LEVEL,
   MAX_CHARACTER_LEVEL,
@@ -50,6 +51,7 @@ import {
   saveBuildProject,
   skillChoicesFromBuildPayload,
   treePicksFromPobImport,
+  weaponSetPointCounts,
   withTreePicksFromPayload,
   type BuildPayload,
   type BuildInventoryChoice,
@@ -88,7 +90,6 @@ import {
 } from "../components/BuildInventoryPanel";
 import {
   duplicateStashItem,
-  equipStashItem,
   equipTargets,
   isItemEdited,
   resetItemText,
@@ -108,6 +109,13 @@ import {
   socketJewel,
   unsocketJewel
 } from "../lib/buildInventory";
+import { buildWeaponFlags, enforceWeaponSets, equipWithWeaponRules, inventoryWithoutImpossibleOffHands, weaponNoticeText, weaponSlotCategories } from "../lib/weaponSets";
+import { buildWarnings, freeAllocatedNames, itemLevelRequirement, type WarningGem, type WarningItem, type WarningPoints } from "../lib/buildWarnings";
+import { isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
+import { skillWeaponHint } from "../lib/skillWeapon";
+import { treePointsSpent } from "../lib/treePoints";
+import { countMatches, searchItems } from "../lib/itemSearch";
+import { applyLocalMods } from "../lib/itemLocalStats";
 import { CalcQueue, calcKey } from "../lib/calcQueue";
 import { useNodePreview } from "../lib/useNodePreview";
 import { gemCandidates } from "../lib/gemSuggest";
@@ -355,6 +363,11 @@ const copy = {
   ok: { vi: "OK", en: "OK" },
   cancel: { vi: "Hủy", en: "Cancel" },
   savedBuildTitle: { vi: "Đã lưu build", en: "Build saved" },
+  savedBuildBody: {
+    vi: "Build nằm trong trình duyệt này (không đăng công khai, không đồng bộ sang máy khác). Muốn chia sẻ hoặc giữ bản sao: chép «PoB code» hoặc tải file .build.",
+    en: "The build is kept in this browser (not public, not synced). To share or back it up, copy the PoB code or download the .build file."
+  },
+  saveBuildHint: { vi: "Lưu trong trình duyệt này, không công khai", en: "Saved in this browser, not public" },
   savedTreeTitle: { vi: "Đã lưu tree", en: "Tree saved" },
   importedBuildTitle: { vi: "Đã import build", en: "Build imported" },
   confirmDeleteBuild: { vi: "Xóa build này?", en: "Delete this build?" },
@@ -589,7 +602,7 @@ function getGemTooltipHtml(id: string, options: ItemRecord[], prefix: "SkillGem"
   }
   if (properties.length) {
     if (h) h += '<hr class="tooltip-divider" />';
-    h += `<div class="tooltip-properties">${properties.map(tooltipPropertyHtml).join("")}</div>`;
+    h += `<div class="tooltip-properties">${properties.map((line) => tooltipPropertyHtml(line)).join("")}</div>`;
   }
   if (requirements.length) {
     if (h) h += '<hr class="tooltip-divider" />';
@@ -662,12 +675,12 @@ function itemRarity(item: ItemRecord): "normal" | "magic" | "rare" | "unique" {
 }
 
 /** "Armour: 179" -> grey label, white value; ranged values "(447-626)" are augmented (blue). */
-function tooltipPropertyHtml(line: string): string {
+function tooltipPropertyHtml(line: string, augmented = false): string {
   const split = line.indexOf(":");
   if (split < 0) return `<div class="tip-line">${escapeHtml(line)}</div>`;
   const label = line.slice(0, split + 1);
   const value = line.slice(split + 1).trim();
-  const aug = /[(—]/.test(value) ? " tip-value--aug" : "";
+  const aug = augmented || /[(—]/.test(value) ? " tip-value--aug" : "";
   return `<div class="tip-line"><span class="tip-label">${escapeHtml(label)}</span> <span class="tip-value${aug}">${escapeHtml(value)}</span></div>`;
 }
 
@@ -691,7 +704,7 @@ function getItemTooltipHtml(item: ItemRecord, locale: Locale): string {
   const sections: string[] = [];
   const head: string[] = [];
   if (itemClass) head.push(`<div class="tip-line tip-class">${escapeHtml(itemClass)}</div>`);
-  head.push(...stats.map(tooltipPropertyHtml));
+  head.push(...stats.map((line) => tooltipPropertyHtml(line)));
   if (head.length) sections.push(head.join(""));
   if (requirements.length) sections.push(requirements.map(tooltipRequirementHtml).join(""));
   if (mods.length) sections.push(`<div class="tooltip-mods">${mods.map((line) => `<div class="tooltip-mod-line">${escapeHtml(line)}</div>`).join("")}</div>`);
@@ -709,12 +722,23 @@ function getItemTooltipHtml(item: ItemRecord, locale: Locale): string {
 // Tooltip for an item that came from a PoB code or a .build file: name, rolls,
 // item level and corruption come from the item's own text; the database record
 // of its base only adds the item class, base properties and requirements.
-function getImportedItemTooltipHtml(rawText: string, record: ItemRecord | undefined, locale: Locale): string {
+// baseRecord: the record of the item's base type (a unique's own record only names its base).
+function getImportedItemTooltipHtml(rawText: string, record: ItemRecord | undefined, locale: Locale, baseRecord?: ItemRecord): string {
   const item = parsePobItemDetails(rawText);
   const rarity = item.rarity || (record ? itemRarity(record) : "normal");
-  const baseProperties = record && rarity !== "unique"
-    ? localizedLines(record, "properties", locale).map(cleanTooltipLine).filter((line) => line.includes(":"))
-    : [];
+  // The base type's numbers with the item's own local mods and quality applied, as PoB shows
+  // them (damage, attacks per second, armour, Spirit...): changed values are drawn as augmented.
+  const propertySource = baseRecord ?? (rarity !== "unique" ? record : undefined);
+  const propertyRows = (propertySource?.properties ?? []).map(String)
+    .map((line, index) => ({ line, shown: cleanTooltipLine(localizedText(propertySource?.i18n?.properties?.[index], line, locale)) }))
+    .filter((row) => row.line.includes(":"));
+  const baseProperties = applyLocalMods(propertyRows.map((row) => row.line), item.mods.map((mod) => mod.text), item.quality ?? 0).map((row) => {
+    const shown = row.index >= 0 ? propertyRows[row.index]?.shown ?? row.line : row.line;
+    if (!row.changed) return { line: shown, changed: false };
+    // Keep the localised label, show the new value.
+    const label = shown.includes(":") ? shown.slice(0, shown.indexOf(":")) : row.line.slice(0, row.line.indexOf(":"));
+    return { line: `${label}: ${row.line.slice(row.line.indexOf(":") + 1).trim()}`, changed: true };
+  });
   const requirements = record ? localizedLines(record, "requirements", locale).map(cleanTooltipLine) : [];
   const itemClass = record?.menu_label || record?.group_label || "";
   const isVi = locale === "vi";
@@ -722,7 +746,7 @@ function getImportedItemTooltipHtml(rawText: string, record: ItemRecord | undefi
   const head: string[] = [];
   if (itemClass) head.push(`<div class="tip-line tip-class">${escapeHtml(itemClass)}</div>`);
   if (item.quality) head.push(tooltipPropertyHtml(`${isVi ? "Chất lượng" : "Quality"}: +${item.quality}%`));
-  head.push(...baseProperties.map(tooltipPropertyHtml));
+  head.push(...baseProperties.map((row) => tooltipPropertyHtml(row.line, row.changed)));
 
   const meta: string[] = [];
   if (item.itemLevel) meta.push(`<div class="tooltip-item-level">${isVi ? "Cấp vật phẩm" : "Item Level"}: ${item.itemLevel}</div>`);
@@ -870,7 +894,9 @@ function inventorySignature(rows: BuildInventoryChoice[]): unknown[] {
     levelEnd: row.levelEnd || "",
     itemSlug: row.itemSlug || "",
     iconUrl: row.iconUrl || "",
-    baseName: row.baseName || ""
+    baseName: row.baseName || "",
+    // An item edited in place keeps its slot: only its text tells.
+    rawText: row.rawText || ""
   })).sort((a, b) => a.inventoryId.localeCompare(b.inventoryId));
 }
 
@@ -903,7 +929,8 @@ function buildDraftSignature(input: {
 }): string {
   return JSON.stringify({
     level: input.level,
-    stash: (input.stash ?? []).map((row) => row.id),
+    // The id alone would miss an inventory item whose mods were edited.
+    stash: (input.stash ?? []).map((row) => [row.id, row.rawText || ""]),
     name: input.name.trim(),
     author: input.author.trim(),
     description: input.description.trim(),
@@ -938,10 +965,13 @@ function hasDraftContent(input: {
   tree: BuildTreeSnapshot | null;
   inventoryCount: number;
   skillCount: number;
+  /** Items in the build's inventory (pasted, crafted, searched): work worth keeping too. */
+  stashCount: number;
   importedBuild: ImportedBuild | null;
 }): boolean {
   return Boolean(
     input.importedBuild ||
+    input.stashCount > 0 ||
     input.name.trim() ||
     input.description.trim() ||
     (input.tree && passiveCount(input.tree) > 0) ||
@@ -1068,6 +1098,14 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   // An inventory item waiting for the player to pick one of several slots.
   const [slotChoice, setSlotChoice] = useState<{ itemId: string; slots: string[] } | null>(null);
   const [dropSlotId, setDropSlotId] = useState<string | null>(null);
+  // One line under the doll: why an item moved back to the inventory or was refused.
+  const [equipNotice, setEquipNotice] = useState<{ text: string; id: number } | null>(null);
+  const notifyEquip = useCallback((text: string) => setEquipNotice({ text, id: Date.now() }), []);
+  useEffect(() => {
+    if (!equipNotice) return;
+    const timer = window.setTimeout(() => setEquipNotice((current) => (current?.id === equipNotice.id ? null : current)), 12000);
+    return () => window.clearTimeout(timer);
+  }, [equipNotice]);
   // Item editor: the mod pool loads the first time it opens.
   const [modPool, setModPool] = useState<ModPool | null>(null);
   const [editorTarget, setEditorTarget] = useState<
@@ -1163,6 +1201,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [mainSocketGroup, setMainSocketGroup] = useState<number>(1);
   const mainSocketGroupRef = useRef(mainSocketGroup);
   mainSocketGroupRef.current = mainSocketGroup;
+  // Class and main skill of the build as it is now (set once both are known, further down).
+  const compareKeyRef = useRef("");
   // PoB's calculate.lua returns totals for the main socket group only (no per-skill
   // skillsDps array), so the main skill shows CombinedDPS and the others show nothing
   // until they are picked as main.
@@ -1426,6 +1466,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     return /\bsupport\b/i.test(gem.nameSpec);
   }, [skillGemOptions, supportGemOptions]);
 
+  // The same count everywhere a tree's points are printed (start nodes are never points).
+  const treePoints = (snapshot: BuildTreeSnapshot | null) => treePointsSpent(snapshot, (id) => {
+    const node = classTree?.nodeById.get(id);
+    return Boolean(node?.isClassStart || node?.isAscendancyStart);
+  });
   const selectedPassiveCount = passiveCount(selected);
   const exportSnapshot = selected && selectedPassiveCount > 0 ? selected : null;
   // A tree whose class is one of the game's (picked in the planner, or read from a PoB code).
@@ -1453,6 +1498,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     });
   }, [exportSnapshot, importedBuild, basePayload, plannerData, name, author, description, inventory, buildSkills, level]);
 
+  compareKeyRef.current = `${buildTree?.className ?? importedBuild?.payload?.className ?? ""}|${buildSkills[mainSocketGroup - 1]?.skillId ?? ""}`;
   const canExport = Boolean(payload && (importedBuild || exportSnapshot));
   const exportDisabledHint = selected
     ? localizedText(copy.emptyTree, "", locale)
@@ -1471,6 +1517,54 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const effectiveConfigInputs = configInputs ?? importedConfigInputs;
 
   const effectiveTree = useMemo(() => withTreePicksFromPayload(buildTree, importedBuild?.payload), [buildTree, importedBuild]);
+  // Giant's Blood and the like decide which off-hands a two-hander allows (src/shared/equipment-rules.mjs).
+  const allocatedPassiveIds = effectiveTree?.allocatedIds;
+  const weaponFlagState = useMemo(() => buildWeaponFlags(inventory, allocatedPassiveIds ?? []), [inventory, allocatedPassiveIds]);
+  // An off-hand that cannot be held with its main hand goes back to the inventory: builds
+  // imported or saved with such a pair, and pairs a keystone taken off the tree made illegal.
+  useEffect(() => {
+    const fixed = enforceWeaponSets({ inventory, stash }, allocatedPassiveIds ?? []);
+    if (!fixed.notices.length) return;
+    setInventory(fixed.state.inventory);
+    setStash(fixed.state.stash);
+    notifyEquip(fixed.notices.map((notice) => weaponNoticeText(notice, locale)).join(" "));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inventory, allocatedPassiveIds]);
+  // What the character cannot use yet (level, attributes, passive points). Warnings only:
+  // PoB still counts such items and gems, so the numbers keep them too.
+  const warningList = useMemo(() => {
+    const items: WarningItem[] = inventory.filter((row) => row.itemName || row.rawText).map((row) => ({
+      slotId: row.inventoryId,
+      slotLabel: row.inventoryId,
+      name: row.rareName || (row.rawText ? parsePobItemDetails(row.rawText).name : "") || row.itemName,
+      levelReq: itemLevelRequirement(row.rawText, itemRecordForChoice(row)?.requirements)
+    }));
+    // Gems the player socketed; a skill an item or the tree grants has no gem requirement.
+    const gems: WarningGem[] = buildSkills.flatMap((skill, index) => (skill.skillId && !skill.disabled && !skill.itemSlot && !skill.itemSource && !gemOptionFor(index)?.grantedSkill) ? [
+      { name: gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || ""), gemLevel: skill.gemLevel ?? 20 },
+      ...skill.supportSkills.filter((support) => support.active && support.skillId && !support.disabled).map((support) => ({
+        name: gemChoiceLabel(support.skillId, skillGemOptions, "SkillGem", locale, support.nameSpec || ""),
+        gemLevel: support.gemLevel ?? 20
+      }))
+    ] : []);
+    let points: WarningPoints | null = null;
+    if (classTree && effectiveTree) {
+      const free = freeAllocatedNames(inventory.map((row) => row.rawText));
+      let passive = 0;
+      let ascendancy = 0;
+      for (const id of new Set(effectiveTree.allocatedIds)) {
+        const node = classTree.nodeById.get(id);
+        if (!node || node.isClassStart || node.isAscendancyStart) continue;
+        // PoB counts a multiple-choice ascendancy node once, not its chosen option.
+        if (node.ascendancyName) ascendancy += isChoiceOptionNode(id) ? 0 : 1;
+        else if (!free.includes(node.name.toLowerCase())) passive += 1;
+      }
+      const sets = weaponSetPointCounts(effectiveTree.weaponSets, effectiveTree.allocatedIds);
+      points = { passive, ascendancy, set1: sets.set1, set2: sets.set2 };
+    }
+    return buildWarnings({ level, locale, items, gems, stats: activeStats, activeWeaponSet, points });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inventory, buildSkills, classTree, effectiveTree, level, locale, activeStats, activeWeaponSet, itemRecordForChoice, skillGemOptions, gemTargets]);
   const calcRequestRef = useRef(0);
   // The calculation request for the build as it is, or with another inventory / skills /
   // main skill ("what if" comparisons use the same body, so their numbers are comparable).
@@ -1479,7 +1573,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       passives: effectiveTree?.allocatedIds || [],
       weaponSets: effectiveTree?.weaponSets,
       attributeChoices: effectiveTree?.attributeChoices,
-      inventory: overrides.inventory ?? inventory,
+      // Never an off-hand its main hand cannot hold (the server drops such a pair as well).
+      inventory: inventoryWithoutImpossibleOffHands(overrides.inventory ?? inventory, effectiveTree?.allocatedIds || []),
       skills: overrides.skills ?? buildSkills,
       activeWeaponSet,
       mainSocketGroup: overrides.mainSocketGroup ?? mainSocketGroupRef.current,
@@ -1529,6 +1624,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     if (!body) return;
     // The main group as the page lists it (the body holds PoB's number, which skips empty groups).
     const listedMainGroup = mainSocketGroupRef.current;
+    const compareKey = compareKeyRef.current;
     setIsCalculating(true);
     const requestId = ++calcRequestRef.current;
     const bodyKey = calcKey(body);
@@ -1555,8 +1651,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       setCalcError(res.ok ? "" : String(res.error || (locale === "vi" ? "Không tính được chỉ số." : "Calculation failed.")));
       if (res.ok && res.data) {
         compareQueue.seed(bodyKey, res.data);
-        if (liveStatsRef.current) setPreviousStats(liveStatsRef.current);
-        setLiveStats({ ...res.data, __mainGroup: listedMainGroup || 1 });
+        // "What changed" compares with the calculation before this one only when both are of
+        // the same class and main skill: the first skill of a fresh build (or another main
+        // skill) has nothing to compare with, and used to read "+6161%" or "−100%".
+        const before = liveStatsRef.current;
+        setPreviousStats(before && before.__compareKey === compareKey ? before : null);
+        setLiveStats({ ...res.data, __mainGroup: listedMainGroup || 1, __compareKey: compareKey });
         if (Array.isArray(res.item_errors) && res.item_errors.length) {
           setCalcError(locale === "vi"
             ? `Đã bỏ qua món đồ không hợp lệ khi tính: ${res.item_errors.map((row: { messages?: string[] }) => row.messages?.[0]).filter(Boolean).join("; ")}`
@@ -1651,20 +1751,44 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const savedBuildSignature = useMemo(() => buildProjectSignature(activeBuildProject), [activeBuildProject]);
   const hasBuildChanges = activeBuildProject
     ? currentBuildSignature !== savedBuildSignature
-    : hasDraftContent({ name, description, tree: buildTree, inventoryCount: selectedInventoryCount, skillCount: selectedSkillCount, importedBuild });
+    : hasDraftContent({ name, description, tree: buildTree, inventoryCount: selectedInventoryCount, skillCount: selectedSkillCount, stashCount: stash.length, importedBuild });
 
   // Unsaved work: the browser asks before a reload or closing the tab, and the site's own
   // links ask before leaving the build (saving stays one click: "Lưu build"). The planner's
   // own moves after a save, delete or import go through moveTo, which skips the question.
-  const leaveQuestion = locale === "vi"
-    ? "Build này còn thay đổi chưa lưu. Rời trang thì mất các thay đổi đó.\n\nVẫn rời trang?"
-    : "This build has unsaved changes that will be lost.\n\nLeave anyway?";
+  // The question is a dialog of the page (Ở lại / Rời, không lưu / Lưu rồi rời), not the
+  // browser's confirm(): automated browsers dismiss confirm() silently, which looked like
+  // "Danh sách does nothing", and a dialog of our own can offer to save.
   const skipLeaveGuard = useRef(false);
   const moveTo = (path: string) => {
     skipLeaveGuard.current = true;
     try { navigateTo(path); } finally { skipLeaveGuard.current = false; }
   };
-  const confirmDiscard = () => !hasBuildChanges || window.confirm(leaveQuestion);
+  const moveToRef = useRef(moveTo);
+  moveToRef.current = moveTo;
+  /** Runs `leave` at once when nothing is unsaved; otherwise asks first, with the option to save. */
+  const askBeforeLeaving = (leave: () => void) => {
+    if (!hasBuildChanges) {
+      leave();
+      return;
+    }
+    const vi = locale === "vi";
+    setBuildDialog({
+      title: vi ? "Build còn thay đổi chưa lưu" : "This build has unsaved changes",
+      body: vi
+        ? "Rời khỏi build này thì các thay đổi chưa lưu sẽ mất. Build được lưu trong trình duyệt này."
+        : "Leaving this build drops the unsaved changes. Builds are saved in this browser.",
+      actions: [
+        { label: vi ? "Ở lại" : "Stay", tone: "neutral", onClick: () => setBuildDialog(null) },
+        { label: vi ? "Rời, không lưu" : "Leave without saving", tone: "danger", onClick: () => { setBuildDialog(null); leave(); } },
+        { label: vi ? "Lưu rồi rời" : "Save and leave", tone: "primary", onClick: () => { setBuildDialog(null); saveBeforeLeavingRef.current(); leave(); } }
+      ]
+    });
+  };
+  const askBeforeLeavingRef = useRef(askBeforeLeaving);
+  askBeforeLeavingRef.current = askBeforeLeaving;
+  // Set below, once saveCurrentBuild exists.
+  const saveBeforeLeavingRef = useRef<() => void>(() => {});
   useEffect(() => {
     if (!hasBuildChanges) return;
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -1672,12 +1796,17 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       event.returnValue = "";
     };
     window.addEventListener("beforeunload", onBeforeUnload);
-    const removeGuard = setLeaveGuard((next) => skipLeaveGuard.current || next === window.location.pathname || window.confirm(leaveQuestion));
+    // A link of the site: stay for now and ask; "leave" then goes there without asking again.
+    const removeGuard = setLeaveGuard((next) => {
+      if (skipLeaveGuard.current || next === window.location.pathname) return true;
+      askBeforeLeavingRef.current(() => moveToRef.current(next));
+      return false;
+    });
     return () => {
       window.removeEventListener("beforeunload", onBeforeUnload);
       removeGuard();
     };
-  }, [hasBuildChanges, leaveQuestion]);
+  }, [hasBuildChanges]);
 
   const closeBuildDialog = () => setBuildDialog(null);
   const showInfoDialog = (title: string, body = "") => setBuildDialog({
@@ -1723,6 +1852,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     }
     return map;
   }, [itemsData]);
+  /** The base type's record of an item text (its damage, armour, Spirit before the item's own mods). */
+  const baseRecordForText = (text: string): ItemRecord | undefined => {
+    const record = itemByName.get(parsePobItemDetails(text).baseName.toLowerCase());
+    return record && !isUniqueItem(record) ? record : undefined;
+  };
   const stashRecord = useCallback((item: BuildStashItem): ItemRecord | undefined => {
     if (item.itemSlug) {
       const bySlug = itemsData.find((row) => row.slug === item.itemSlug);
@@ -1733,12 +1867,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   }, [itemsData, itemByName]);
   /** Slot categories of an inventory item: the site's item data first, else the item text. */
   const stashCategories = useCallback((item: BuildStashItem): string[] => {
+    // Weapons and off-hands: PoB's own tags (a wand is main hand only, a spear never off-hand).
+    const byRule = weaponSlotCategories(item, weaponFlagState);
+    if (byRule) return byRule;
     const record = stashRecord(item);
     const fromData = record ? buildSlotCategories(record) : [];
     if (fromData.length) return fromData;
     const summary = stashItemSummary(item);
     return itemCategoriesFromText(item.rawText || "", summary.baseName);
-  }, [stashRecord]);
+  }, [stashRecord, weaponFlagState]);
   const withStashIcon = useCallback((item: BuildStashItem): BuildStashItem => {
     if (item.iconUrl) return item;
     const record = stashRecord(item);
@@ -1754,15 +1891,47 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     };
     return locale === "vi" ? vi[slotId] ?? slot.label : slot.label;
   };
+  /** The word inside an empty slot: short, and Vietnamese on the Vietnamese site. */
+  const slotShortLabel = (slot: EquipmentSlot) => {
+    if (locale !== "vi") return slot.shortLabel;
+    const vi: Record<string, string> = {
+      Weapon1: "Vũ khí I", Weapon2: "Tay phụ I", Weapon3: "Vũ khí II", Weapon4: "Tay phụ II", Helm1: "Mũ", BodyArmour1: "Giáp",
+      Gloves1: "Găng", Boots1: "Giày", Amulet1: "Dây chuyền", Ring1: "Nhẫn", Ring2: "Nhẫn", Ring3: "Nhẫn", Belt1: "Đai",
+      LifeFlask1: "Máu", ManaFlask1: "Mana", Charm1: "Bùa 1", Charm2: "Bùa 2", Charm3: "Bùa 3", Trinket1: "Cổ vật"
+    };
+    return vi[slot.id] ?? slot.shortLabel;
+  };
   const availableSlotIds = useMemo(() => equipmentSlots
     .filter((slot) => slot.id !== "Ring3" || Boolean(inventoryBySlot.get("Ring3")?.itemName))
     .map((slot) => slot.id), [inventoryBySlot]);
 
+  /** Equips with the weapon-set rule; says in one line what moved back to the inventory or why not. */
+  const equipFrom = (state: { inventory: BuildInventoryChoice[]; stash: BuildStashItem[] }, itemId: string, slotId: string): boolean => {
+    const result = equipWithWeaponRules(state, itemId, slotId, effectiveTree?.allocatedIds || []);
+    if (result.notice) notifyEquip(weaponNoticeText(result.notice, locale));
+    else setEquipNotice(null);
+    if (result.notice?.rejected) return false;
+    setInventory(enrichInventoryChoices(result.state.inventory, itemsData, locale));
+    setStash(result.state.stash.map(withStashIcon));
+    return true;
+  };
   const equipItem = (itemId: string, slotId: string) => {
-    const next = equipStashItem({ inventory, stash }, itemId, slotId);
-    setInventory(enrichInventoryChoices(next.inventory, itemsData, locale));
-    setStash(next.stash);
+    equipFrom({ inventory, stash }, itemId, slotId);
     setSlotChoice(null);
+    setTooltip((prev) => ({ ...prev, visible: false }));
+  };
+  const slotRefusal = (slotId: string) => notifyEquip(locale === "vi" ? `Món này không vừa ô ${slotLabel(slotId)}.` : `This item does not fit the ${slotLabel(slotId)} slot.`);
+  /** An equipped item dragged onto another slot: moves there (rings, charms, weapon to off-hand) when it fits. */
+  const moveEquippedItem = (fromSlotId: string, toSlotId: string) => {
+    if (fromSlotId === toSlotId) return;
+    const taken = unequipSlot({ inventory, stash }, fromSlotId);
+    const item = taken.stash[0];
+    if (taken.stash.length === stash.length || !item) return;
+    if (!slotIdsForCategories(stashCategories(item)).includes(toSlotId)) {
+      slotRefusal(toSlotId);
+      return;
+    }
+    equipFrom(taken, item.id, toSlotId);
     setTooltip((prev) => ({ ...prev, visible: false }));
   };
   const unequipItem = (slotId: string) => {
@@ -1810,11 +1979,19 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     addStashItems(items);
     return items.length;
   };
-  const catalogSearch = (query: string): CatalogEntry[] => itemsData
-    .filter((item) => hasActualIcon(item) && (activeSlot ? itemFitsSlot(item, activeSlot) : buildSlotCategories(item).length > 0))
-    .filter((item) => matchesQuery({ title: itemTitle(item, locale), base: itemBaseName(item, locale) }, query, ["title", "base"]))
-    .sort((a, b) => gemNameRank(itemTitle(a, locale), query.trim().toLowerCase()) - gemNameRank(itemTitle(b, locale), query.trim().toLowerCase()))
-    .slice(0, 12)
+  // What the search box can add: with a slot selected, only what fits it. A whole word or
+  // the item class ranks first, so "wand" lists wands before "Wanderer Armour".
+  const describeForSearch = (item: ItemRecord) => ({ title: itemTitle(item, locale), base: itemBaseName(item, locale), itemClass: item.menu_label });
+  /** A catalogue item fits a slot: weapons and off-hands by PoB's rule (a wand is no off-hand), the rest by the site's data. */
+  const recordFitsSlot = (item: ItemRecord, slot: EquipmentSlot): boolean => {
+    const name = itemTitle(item, "en");
+    const byRule = weaponSlotCategories({ itemName: name, baseName: isUniqueItem(item) ? item.properties?.[0] : name, isUnique: isUniqueItem(item) }, weaponFlagState);
+    return byRule ? hasActualIcon(item) && slot.slotCategories.some((category) => byRule.includes(category)) : itemFitsSlot(item, slot);
+  };
+  const catalogPool = (slot: EquipmentSlot | null) => itemsData.filter((item) => hasActualIcon(item) && (slot ? recordFitsSlot(item, slot) : buildSlotCategories(item).length > 0));
+  /** Matches the slot filter leaves out (0 when no slot is selected). */
+  const catalogHiddenCount = (query: string): number => (activeSlot ? countMatches(catalogPool(null), query, describeForSearch) - countMatches(catalogPool(activeSlot), query, describeForSearch) : 0);
+  const catalogSearch = (query: string): CatalogEntry[] => searchItems(catalogPool(activeSlot), query, describeForSearch, 12)
     .map((item) => ({
       key: item.slug || itemTitle(item, "en"),
       name: itemTitle(item, locale),
@@ -1833,11 +2010,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       id: `stash-${Date.now().toString(36)}`, itemName: itemTitle(record, "en"), isUnique: unique, itemSlug: record.slug, iconUrl: displayImageUrl(record.icon_url), source: "search" as const
     };
     // A slot is selected and the item fits it: the player wants it there.
-    if (activeSlot && itemFitsSlot(record, activeSlot)) {
-      const next = equipStashItem({ inventory, stash: [item, ...stash] }, item.id, activeSlot.id);
-      setInventory(enrichInventoryChoices(next.inventory, itemsData, locale));
-      setStash(next.stash.map(withStashIcon));
-      return;
+    if (activeSlot && recordFitsSlot(record, activeSlot) && slotIdsForCategories(stashCategories(item)).includes(activeSlot.id)) {
+      // Refused by the weapon-set rule (a quiver without a bow): it still lands in the inventory.
+      if (equipFrom({ inventory, stash: [item, ...stash] }, item.id, activeSlot.id)) return;
     }
     addStashItems([item]);
   };
@@ -1906,7 +2081,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       itemClass: base.itemClass,
       unique: false,
       iconUrl: byName.get(base.name.toLowerCase()) ? displayImageUrl(byName.get(base.name.toLowerCase())!.icon_url) : undefined,
-      text: `Rarity: RARE\nNew Item\n${base.name}\nItem Level: 82`
+      text: `Rarity: RARE\n${locale === "vi" ? "Đồ tự tạo" : "New Item"}\n${base.name}\nItem Level: 82`
     }));
     const uniques = itemsData.filter((item) => isUniqueItem(item) && buildSlotCategories(item).length).map((item): NewItemChoice => ({
       key: `unique:${item.slug || itemTitle(item, "en")}`,
@@ -1918,7 +2093,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       text: pobItemTextFromRecord({ name: itemTitle(item, "en"), rarity: item.rarity, baseName: item.properties?.[0], mods: item.mods })
     }));
     return [...bases, ...uniques].sort((a, b) => a.name.localeCompare(b.name));
-  }, [modPool, newItemOpen, itemsData]);
+  }, [modPool, newItemOpen, itemsData, locale]);
   const pickNewItem = (choice: NewItemChoice) => {
     setNewItemOpen(false);
     // A unique starts as the game makes it (its own lines are the original); a base is built from scratch.
@@ -1994,7 +2169,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     if (!targets.length) return { title: vi ? "Nếu mặc vào" : "If equipped", baseKey: "", entries: [], note: vi ? "Không có ô nào trên hình nhân vật vừa món này." : "No slot fits this item." };
     const baseKey = requestCalc(base, priority);
     const entries = targets.slice(0, 3).map((slotId) => {
-      const body = calculationBodyFor({ inventory: equipStashItem({ inventory, stash }, item.id, slotId).inventory });
+      // As a click would equip it: the off-hand a two-hander pushes out is not counted.
+      const body = calculationBodyFor({ inventory: equipWithWeaponRules({ inventory, stash }, item.id, slotId, effectiveTree?.allocatedIds || []).state.inventory });
       const current = inventoryBySlot.get(slotId);
       const replacing = current?.itemName ? ` (${vi ? "thay" : "replacing"} ${current.rareName || current.itemName})` : "";
       return { label: targets.length > 1 || replacing ? `${slotLabel(slotId)}${replacing}` : undefined, key: body ? requestCalc(body, priority) : "" };
@@ -2103,7 +2279,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const item = stash.find((row) => row.id === itemId);
     if (!item) return;
     const record = stashRecord(item);
-    const content = item.rawText ? getImportedItemTooltipHtml(item.rawText, record, locale) : record ? getItemTooltipHtml(record, locale) : `<div class="poe-tooltip-card"><div class="tooltip-header"><div class="tooltip-name">${escapeHtml(item.itemName)}</div></div></div>`;
+    const content = item.rawText ? getImportedItemTooltipHtml(item.rawText, record, locale, baseRecordForText(item.rawText)) : record ? getItemTooltipHtml(record, locale) : `<div class="poe-tooltip-card"><div class="tooltip-header"><div class="tooltip-name">${escapeHtml(item.itemName)}</div></div></div>`;
     setTooltip({ x: event.clientX, y: event.clientY, content, visible: true, compare: stashCompareSpec(item, 10) });
   };
   // Selecting a slot also starts comparing the few items that fit it.
@@ -2174,6 +2350,37 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       : "Granted by an item or a passive, not a gem you socketed.";
     return <span className="pc-tag" title={hint}>{label}</span>;
   };
+
+  /** Why a skill shows no damage when the active weapon set does not hold what its gem requires. */
+  const weaponHintFor = (skill: BuildSkillChoice): string | null => {
+    // A skill an item grants comes with that item.
+    if (skill.itemSlot || skill.itemSource) return null;
+    const record = gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem");
+    if (!record) return null;
+    return skillWeaponHint({
+      skillName: itemTitle(record, locale),
+      requirements: record.requirements,
+      activeSet: activeWeaponSet,
+      sets: {
+        1: { main: inventoryBySlot.get("Weapon1"), off: inventoryBySlot.get("Weapon2") },
+        2: { main: inventoryBySlot.get("Weapon3"), off: inventoryBySlot.get("Weapon4") }
+      },
+      locale
+    });
+  };
+
+  // "Thêm skill" adds a group and opens the picker; closed without a pick, the empty group
+  // goes away again (a group that already holds supports is kept).
+  useEffect(() => {
+    if (activeGemPicker) return;
+    const isEmpty = (row: BuildSkillChoice) => !row.skillId.trim() && !row.supportSkills.length;
+    if (!buildSkills.some(isEmpty)) return;
+    // Keep the main skill pointing at the same group.
+    const removedBefore = buildSkills.slice(0, Math.max(mainSocketGroup - 1, 0)).filter(isEmpty).length;
+    setBuildSkills((rows) => rows.filter((row) => !isEmpty(row)));
+    if (removedBefore) setMainSocketGroup((current) => Math.max(1, current - removedBefore));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeGemPicker]);
 
   const toggleGemStrip = (skillId: string, supportId: string | "main") => {
     setActiveGemPicker(null);
@@ -2341,19 +2548,17 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setClassPickerOpen(false);
   };
 
-  const newBuildDraft = () => {
-    if (!confirmDiscard()) return;
+  const newBuildDraft = () => askBeforeLeaving(() => {
     resetBuildDraft();
     moveTo("/build/new");
-  };
+  });
 
-  const openBuildLibrary = () => {
-    if (!confirmDiscard()) return;
+  const openBuildLibrary = () => askBeforeLeaving(() => {
     moveTo("/build");
     setActiveSlotId(null);
     setActiveGemPicker(null);
     setTreeChoicesOpen(false);
-  };
+  });
 
   const applyBuildProject = (project: BuildProject) => {
     setActiveBuildId(project.id);
@@ -2424,9 +2629,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setBuildSkills(project.skills ?? []);
     setStash(project.stash ?? []);
     if (navigateAfterSave && (buildRoute.isNew || !buildRoute.projectId)) moveTo(`/build/${encodeURIComponent(project.id)}`);
-    if (showDialog) showInfoDialog(localizedText(copy.savedBuildTitle, "", locale));
+    if (showDialog) showInfoDialog(localizedText(copy.savedBuildTitle, "", locale), localizedText(copy.savedBuildBody, "", locale));
     return project;
   };
+
+  saveBeforeLeavingRef.current = () => { saveCurrentBuild({ navigateAfterSave: false }); };
 
   const deleteBuildNow = (projectId: string) => {
     setSavedBuilds(deleteBuildProject(projectId));
@@ -2733,7 +2940,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <strong>{buildTree.name}</strong>
               <small>{buildTree.className}{buildTree.ascendancyName ? ` / ${buildTree.ascendancyName}` : ""}</small>
             </span>
-            <em>{formatNumber(passiveCount(buildTree), locale)}</em>
+            <em>{formatNumber(treePoints(buildTree), locale)}</em>
             <button className="build-tree-icon-action build-tree-clear" type="button" onClick={(event) => {
               event.stopPropagation();
               clearBuildTree();
@@ -2786,7 +2993,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   <strong>{option.snapshot.name}</strong>
                   <small>{option.label} - {option.snapshot.className}{option.snapshot.ascendancyName ? ` / ${option.snapshot.ascendancyName}` : ""}</small>
                 </span>
-                <em>{formatNumber(passiveCount(option.snapshot), locale)}</em>
+                <em>{formatNumber(treePoints(option.snapshot), locale)}</em>
                 <b>{localizedText(buildTree?.id === option.snapshot.id ? copy.selectedTree : copy.addTree, "", locale)}</b>
               </button>
             ))}
@@ -2924,7 +3131,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   {buildTree.className}
                   {buildTree.ascendancyName ? ` ${buildTree.ascendancyName}` : ""}
                   {" · "}
-                  {formatNumber(passiveCount(buildTree), locale)} {locale === "vi" ? "điểm thụ động" : "passives"}
+                  {formatNumber(treePoints(buildTree), locale)} {locale === "vi" ? "điểm thụ động" : "passives"}
                 </>
               ) : (
                 <span className="is-empty">{locale === "vi" ? "Chưa chọn class / cây thụ động" : "No class / passive tree yet"}</span>
@@ -2942,6 +3149,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   value={levelText}
                   onChange={(event) => changeLevelText(event.target.value)}
                   onBlur={() => setLevelText(String(level))}
+                  onKeyDown={(event) => {
+                    if (event.key !== "Enter") return;
+                    // Enter applies the level right away (out-of-range numbers are clamped) and
+                    // shows the value in use, as leaving the field does.
+                    event.preventDefault();
+                    const typed = characterLevel(levelText.trim());
+                    applyLevel(typed ?? level);
+                    const input = event.currentTarget;
+                    window.setTimeout(() => input.select(), 0);
+                  }}
                   aria-label={localizedText(copy.characterLevel, "", locale)}
                 />
               </label>
@@ -2949,6 +3166,18 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 <span className="material-symbols-rounded" aria-hidden="true">person</span>
                 {buildTree ? localizedText(copy.changeClass, "", locale) : (locale === "vi" ? "Chọn class" : "Pick a class")}
               </button>
+              {/* Stays in this row: the list itself is at the top of the stats panel. */}
+              {warningList.length ? (
+                <button
+                  className="build-warning-chip"
+                  type="button"
+                  onClick={() => document.querySelector(".build-warnings")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                  title={warningList.map((warning) => warning.text).join("\n")}
+                >
+                  <span className="material-symbols-rounded" aria-hidden="true">warning</span>
+                  {locale === "vi" ? `${warningList.length} cảnh báo` : `${warningList.length} warning(s)`}
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -2980,7 +3209,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
             <div className="nj-hero-actions">
               <span className="nj-meta-label">{locale === "vi" ? "Thao tác" : "Actions"}</span>
               <div className="build-top-actions build-project-actions">
-                <button className={`build-btn build-btn--save ${hasBuildChanges ? "is-changed" : ""}`} type="button" onClick={() => saveCurrentBuild({ showDialog: true })}>
+                <button className={`build-btn build-btn--save ${hasBuildChanges ? "is-changed" : ""}`} type="button" onClick={() => saveCurrentBuild({ showDialog: true })} title={localizedText(copy.saveBuildHint, "", locale)}>
                   <span className="material-symbols-rounded" aria-hidden="true">save</span>
                   {localizedText(copy.saveBuild, "", locale)}
                 </button>
@@ -3011,6 +3240,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   <span className="material-symbols-rounded" aria-hidden="true">help</span>
                 </button>
               </div>
+              <p className="build-save-hint">{localizedText(copy.saveBuildHint, "", locale)}</p>
             </div>
           </div>
         </header>
@@ -3068,7 +3298,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         handleMouseLeave();
                       }}
                       onDragOver={(event) => {
-                        if ([...event.dataTransfer.types].includes(STASH_DRAG_TYPE)) {
+                        const types = [...event.dataTransfer.types];
+                        // Items from the inventory and items worn in another slot both drop here.
+                        if (types.includes(STASH_DRAG_TYPE) || types.includes(SLOT_DRAG_TYPE)) {
                           event.preventDefault();
                           setDropSlotId(slot.id);
                         }
@@ -3076,12 +3308,19 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       onDragLeave={() => setDropSlotId(null)}
                       onDrop={(event) => {
                         setDropSlotId(null);
+                        const fromSlotId = event.dataTransfer.getData(SLOT_DRAG_TYPE);
+                        if (fromSlotId) {
+                          event.preventDefault();
+                          moveEquippedItem(fromSlotId, slot.id);
+                          return;
+                        }
                         const itemId = event.dataTransfer.getData(STASH_DRAG_TYPE);
                         const item = stash.find((row) => row.id === itemId);
                         if (!item) return;
                         event.preventDefault();
+                        // Every refusal reads the same: one line under the doll.
                         if (slotIdsForCategories(stashCategories(item)).includes(slot.id)) equipItem(itemId, slot.id);
-                        else showInfoDialog(locale === "vi" ? "Không vừa ô này" : "Does not fit", locale === "vi" ? `Món này không mặc vào ô ${slotLabel(slot.id)} được.` : "");
+                        else slotRefusal(slot.id);
                       }}
                       onContextMenu={(event) => {
                         if (!hasItem) return;
@@ -3090,7 +3329,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       }}
                       onMouseEnter={(event) => {
                         const content = importedText
-                          ? getImportedItemTooltipHtml(importedText, record, locale)
+                          ? getImportedItemTooltipHtml(importedText, record, locale, baseRecordForText(importedText))
                           : record ? getItemTooltipHtml(record, locale) : "";
                         if (content) setTooltip({ x: event.clientX, y: event.clientY, content, visible: true });
                       }}
@@ -3111,7 +3350,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                           <span className="material-symbols-rounded build-slot-silhouette" aria-hidden="true">
                             {slotSilhouetteIcon(slot.area)}
                           </span>
-                          <span className="build-slot-label">{slot.shortLabel}</span>
+                          <span className="build-slot-label">{slotShortLabel(slot)}</span>
                         </>
                       )}
                     </button>
@@ -3159,6 +3398,18 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   );
                 })() : null}
               </div>
+              {/* Always there (empty or not) so a message never moves the panels below it. */}
+              <p className={`build-equip-notice ${equipNotice ? "is-shown" : ""}`} role="status" aria-live="polite">
+                {equipNotice ? (
+                  <>
+                    <span className="material-symbols-rounded" aria-hidden="true">info</span>
+                    <span>{equipNotice.text}</span>
+                    <button type="button" onClick={() => setEquipNotice(null)} aria-label={locale === "vi" ? "Đóng thông báo" : "Dismiss"}>
+                      <span className="material-symbols-rounded" aria-hidden="true">close</span>
+                    </button>
+                  </>
+                ) : null}
+              </p>
             </div>
           </section>
 
@@ -3232,6 +3483,24 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 .sort((a, b) => Number(b.index + 1 === mainSocketGroup) - Number(a.index + 1 === mainSocketGroup) || b.dps - a.dps);
               return (
                 <div className="nj-panel-body poe-no-tooltip">
+                  {warningList.length ? (
+                    <div className="build-warnings" role="status" aria-label={locale === "vi" ? "Cảnh báo về build" : "Build warnings"}>
+                      <p className="build-warnings-head">
+                        <span className="material-symbols-rounded" aria-hidden="true">warning</span>
+                        {locale === "vi"
+                          ? `Nhân vật cấp ${level} chưa dùng được hết build này (${warningList.length} cảnh báo)`
+                          : `A level ${level} character cannot use all of this build yet (${warningList.length})`}
+                      </p>
+                      <ul>
+                        {warningList.map((warning) => <li key={`${warning.kind}:${warning.text}`}>{warning.text}</li>)}
+                      </ul>
+                      <p className="build-warnings-note">
+                        {locale === "vi"
+                          ? "Chỉ là cảnh báo: chỉ số vẫn tính đủ các món này, giống Path of Building."
+                          : "Warnings only: the numbers still count these, as Path of Building does."}
+                      </p>
+                    </div>
+                  ) : null}
                   <h3 className="nj-stat-group">{locale === "vi" ? "Nhân vật" : "Character"}</h3>
                   {row(locale === "vi" ? "Thuộc tính" : "Attributes", undefined, triple([
                     { cls: "nj-c-str", value: fmtInt(str) },
@@ -3356,6 +3625,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 onDropSlot={unequipItem}
                 onPasteText={pasteStashText}
                 search={catalogSearch}
+                searchHiddenCount={catalogHiddenCount}
                 onAddCatalog={addCatalogItem}
                 slotChoice={slotChoice ? {
                   itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
@@ -3380,7 +3650,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               <h2>{locale === "vi" ? "Cây thụ động" : "Passive tree"}</h2>
               <span className="nj-badge">
                 <span className="material-symbols-rounded" aria-hidden="true">radio_button_checked</span>
-                {formatNumber(buildTree ? passiveCount(buildTree) : 0, locale)}
+                {formatNumber(treePoints(buildTree), locale)}
               </span>
             </header>
             <div className="nj-panel-body">
@@ -3494,7 +3764,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                         </small>
                       </button>
                     </div>
-                    {!skill.disabled && skill.skillId && dps === 0 && !compact && (gemOptionFor(index)?.statSets || gemOptionFor(index)?.parts) ? (
+                    {/* The real reason first: the equipped weapon does not fit the skill. */}
+                    {!skill.disabled && skill.skillId && !(dps !== undefined && dps > 0) && weaponHintFor(skill) ? (
+                      <p className="sk-hint sk-hint--weapon">{weaponHintFor(skill)}</p>
+                    ) : !skill.disabled && skill.skillId && dps === 0 && !compact && (gemOptionFor(index)?.statSets || gemOptionFor(index)?.parts) ? (
                       <p className="sk-hint">
                         {vi
                           ? "0 sát thương ở lựa chọn hiện tại — kỹ năng này có nhiều bộ chỉ số/phần, thử đổi trong «Chi tiết»."
@@ -3776,10 +4049,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               </label>
               {importError ? <p className="build-import-error">{importError}</p> : null}
               <div className="build-pob-actions">
-                <button type="button" onClick={() => setPobImportOpen(false)} disabled={pobImporting}>Close</button>
+                <button type="button" onClick={() => setPobImportOpen(false)} disabled={pobImporting}>{locale === "vi" ? "Đóng" : "Close"}</button>
                 <button type="button" onClick={importPobCode} disabled={!isPobExportCode(pobCode) || pobImporting}>
                   <span className="material-symbols-rounded" aria-hidden="true">download_for_offline</span>
-                  {pobImporting ? "Importing..." : localizedText(copy.pobImportAction, "", locale)}
+                  {pobImporting ? (locale === "vi" ? "Đang import..." : "Importing...") : localizedText(copy.pobImportAction, "", locale)}
                 </button>
               </div>
             </div>

@@ -624,7 +624,7 @@ test("Build equipment picker filters slots, unique items, icons, and base lines"
   assert.match(page, /isUniqueItem/);
   assert.match(page, /uniqueItemIconPattern/);
   assert.match(page, /displayImageUrl/);
-  assert.match(page, /itemFitsSlot\(item, activeSlot\)/, "inventory search only offers items that fit the selected slot");
+  assert.match(page, /slot \? recordFitsSlot\(item, slot\)/, "inventory search only offers items that fit the selected slot");
   assert.match(page, /itemSummaryLines/);
   assert.match(page, /itemBaseName/);
   assert.match(page, /unique \? "" : base/);
@@ -820,6 +820,6 @@ test("imported PoB item text keeps name, rolls, implicits and flags for the tool
 
 test("equipment slots show imported item rolls instead of the bare base", async () => {
   const page = await readRepoFile("src/spa/pages/BuildPlannerPage.tsx");
-  assert.match(page, /getImportedItemTooltipHtml\(importedText, record, locale\)/);
+  assert.match(page, /getImportedItemTooltipHtml\(importedText, record, locale, baseRecordForText\(importedText\)\)/);
   assert.match(page, /parsePobItemDetails\(rawText\)/);
 });
