@@ -80,6 +80,7 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
     setRecent(next);
     writeRecent(next);
     setQuery("");
+    setOpen(false);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
@@ -105,7 +106,7 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
         aria-controls="ie-mod-list"
         aria-activedescendant={open && rows[active] ? `ie-mod-${active}` : undefined}
         value={query}
-        placeholder={vi ? "Thêm mod: gõ \"máu\", \"kháng lửa\", \"tay sai\", \"54 life\"…" : "Add a mod: type \"life\", \"fire res\", \"54 life\"…"}
+        placeholder={vi ? "Chọn loại chỉ số: gõ \"máu\", \"kháng lửa\", \"tay sai\", \"spell damage\"…" : "Pick a stat type: type \"life\", \"fire res\", \"minion\"…"}
         onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         onBlur={() => window.setTimeout(() => setOpen(false), 150)}
@@ -125,10 +126,9 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
               onMouseEnter={() => setActive(index)}
               onMouseDown={(event) => { event.preventDefault(); pick(row); }}
             >
-              <span className="ie-combo-text">{row.display}</span>
-              <span className="ie-combo-meta">
+              <span className="ie-combo-row">
                 <b className={`ie-gen is-${row.gen}`}>{vi ? GEN_VI[row.gen] : row.gen}</b>
-                <span>{vi ? `Bậc tốt nhất ${row.tierLabel} · cần cấp vật phẩm ${row.tier.ilvl}` : `Best tier ${row.tierLabel} · item level ${row.tier.ilvl}`}</span>
+                <span className="ie-combo-text">{row.mod.templates.join(" / ")}</span>
               </span>
               {row.blocked ? <small className="ie-combo-reason">{row.blocked}</small> : null}
             </li>
@@ -139,17 +139,24 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
   );
 }
 
-function ModLineRow({ pool, item, line, errors, locked, removable, vi, onChange, onRemove }: {
+function ModLineRow({ pool, item, line, errors, locked, removable, autoFocusTier, vi, onChange, onRemove }: {
   pool: ModPool;
   item: EditableItem;
   line: ModLine;
   errors: string[];
   locked: boolean;
   removable: boolean;
+  autoFocusTier?: boolean;
   vi: boolean;
   onChange: (line: ModLine) => void;
   onRemove: () => void;
 }) {
+  const tierSelectRef = useRef<HTMLSelectElement>(null);
+  useEffect(() => {
+    if (!autoFocusTier) return;
+    tierSelectRef.current?.focus();
+    tierSelectRef.current?.scrollIntoView({ block: "nearest" });
+  }, [autoFocusTier]);
   const ranges = lineRanges(pool, item, line);
   const mod = line.kind === "pool" ? findPoolMod(pool, item, line.modKey) : null;
   const allowed = mod ? availableTiers(mod, item) : [];
@@ -178,7 +185,7 @@ function ModLineRow({ pool, item, line, errors, locked, removable, vi, onChange,
       <div className="ie-line-head">
         {line.kind === "pool" ? <b className={`ie-gen is-${line.gen}`}>{vi ? GEN_VI[line.gen] : line.gen}</b> : null}
         {line.kind === "pool" && tiers.length && !locked ? (
-          <select value={line.tier} onChange={(event) => setTier(Number(event.target.value))} aria-label={vi ? "Bậc mod" : "Tier"}>
+          <select ref={tierSelectRef} value={line.tier} onChange={(event) => setTier(Number(event.target.value))} aria-label={vi ? "Bậc mod" : "Tier"}>
             {tiers.map((tier) => (
               <option value={tier.tier} key={tier.tier}>
                 {tierText(tier)}{allowed.includes(tier) ? "" : vi ? ` (cần cấp vật phẩm ${tier.ilvl})` : ` (needs item level ${tier.ilvl})`}
@@ -273,6 +280,7 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
   const levelReq = requiredLevel(item, pool);
   const attributeReq = !unique && base?.req ? ([["Str", base.req.str], ["Dex", base.req.dex], ["Int", base.req.int]] as Array<[string, number]>).filter(([, value]) => value > 0) : [];
 
+  const [justAddedId, setJustAddedId] = useState<string | null>(null);
   const lastLive = useRef(text);
   useEffect(() => {
     if (!onLive || errors.length || output === lastLive.current) return;
@@ -424,6 +432,7 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
                 errors={lineErrors(line.id)}
                 locked={locked}
                 removable={!locked && !unique}
+                autoFocusTier={line.id === justAddedId}
                 vi={vi}
                 onChange={(next) => update({ mods: item.mods.map((row) => (row.id === line.id ? next : row)) })}
                 onRemove={() => update({ mods: item.mods.filter((row) => row.id !== line.id) })}
@@ -437,7 +446,21 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
               </li>
             ) : null}
           </ul>
-          {!locked && !unique ? <ModCombobox pool={pool} item={item} locale={locale} onAdd={(row) => setItem((current) => addSuggestedMod(current, row))} /> : null}
+          {!locked && !unique ? (
+            <ModCombobox
+              pool={pool}
+              item={item}
+              locale={locale}
+              onAdd={(row) => {
+                setItem((current) => {
+                  const next = addSuggestedMod(current, row);
+                  const added = next.mods[next.mods.length - 1];
+                  if (added && next.mods.length > current.mods.length) setJustAddedId(added.id);
+                  return next;
+                });
+              }}
+            />
+          ) : null}
           {unique ? <p className="ie-note">{vi ? "Đồ độc nhất có mod cố định: không thêm hay xóa dòng được, chỉ chỉnh giá trị trong khoảng roll." : "Uniques have fixed mods: lines cannot be added or removed, only rolls change."}</p> : null}
 
           {generalErrors.length ? <ul className="ie-errors">{generalErrors.map((message) => <li key={message}>{message}</li>)}</ul> : null}

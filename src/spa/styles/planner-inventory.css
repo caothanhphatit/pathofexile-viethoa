@@ -606,6 +606,7 @@
 
 .ie-combo-list li.is-active { background: var(--nj-panel-head); }
 .ie-combo-list li.is-blocked { opacity: .5; cursor: not-allowed; }
+.ie-combo-row { display: flex; align-items: baseline; gap: 8px; }
 .ie-combo-text { color: #a9a9ff; font-size: 13px; }
 .ie-combo-meta { display: flex; gap: 8px; color: var(--nj-muted); font-size: 11px; }
 .ie-combo-reason { color: #f0b27a; }
