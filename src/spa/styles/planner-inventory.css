@@ -491,6 +491,10 @@
 }
 
 .ie-section small { color: var(--nj-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.ie-base-stats { display: grid; gap: 2px; margin: 0; color: var(--nj-text); font-size: 12px; }
+.ie-base-stats b { color: var(--nj-muted); font-weight: 400; }
+.ie-fields .ie-corrupt select { max-width: 280px; }
+.ie-implicits small { color: var(--nj-muted); }
 .ie-runes, .ie-note, .ie-lock { margin: 0; color: var(--nj-muted); font-size: 12px; }
 .ie-lock { padding: 6px 8px; border: 1px solid #6b3b1f; border-radius: 6px; color: #f0b27a; }
 
@@ -578,14 +582,12 @@
 .ie-combo { position: relative; }
 .ie-combo input { width: 100%; }
 
+/* In the flow of the dialog body (which scrolls): an absolute list was cut off by the
+   body and showed one row on a small window. */
 .ie-combo-list {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(100% + 4px);
-  z-index: 5;
-  max-height: 320px;
-  margin: 0;
+  max-height: min(320px, 46vh);
+  min-height: 44px;
+  margin: 4px 0 0;
   padding: 4px;
   overflow-y: auto;
   border: 1px solid var(--nj-line);
@@ -606,7 +608,6 @@
 .ie-combo-list li.is-blocked { opacity: .5; cursor: not-allowed; }
 .ie-combo-text { color: #a9a9ff; font-size: 13px; }
 .ie-combo-meta { display: flex; gap: 8px; color: var(--nj-muted); font-size: 11px; }
-.ie-family { opacity: .8; }
 .ie-combo-reason { color: #f0b27a; }
 .ie-combo-empty { color: var(--nj-muted); cursor: default; }
 

@@ -5,19 +5,31 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react"
 
 import {
   addSuggestedMod,
+  affixLimits,
   availableTiers,
+  baseImplicitLines,
+  corruptionOptions,
+  corruptionState,
+  findBase,
   findPoolMod,
+  implicitVariantOf,
   lineRanges,
+  maxSockets,
   modLineText,
   parseEditableItem,
+  requiredLevel,
   serializeEditableItem,
+  setCorruption,
   suggestMods,
   tierLabel,
+  tierText,
   validateEditableItem,
+  withBaseImplicits,
   type EditableItem,
   type ModLine,
   type ModPool,
-  type ModSuggestion
+  type ModSuggestion,
+  type PoolBase
 } from "../../shared/item-mods.mjs";
 
 type Locale = "vi" | "en" | string;
@@ -52,6 +64,11 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
   const rows = useMemo(() => (open ? suggestMods(pool, item, query, { recent, limit: 40 }) : []), [open, pool, item, query, recent]);
 
   useEffect(() => setActive(0), [query]);
+  // The list is part of the dialog's scrolling body: bring it into view when it opens,
+  // so more than one row shows on a small window.
+  useEffect(() => {
+    if (open) listRef.current?.scrollIntoView({ block: "nearest" });
+  }, [open]);
   useEffect(() => {
     listRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`)?.scrollIntoView({ block: "nearest" });
   }, [active]);
@@ -88,7 +105,7 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
         aria-controls="ie-mod-list"
         aria-activedescendant={open && rows[active] ? `ie-mod-${active}` : undefined}
         value={query}
-        placeholder={vi ? "Thêm mod: gõ \"máu\", \"kháng lửa\", \"crit\", \"54 life\"…" : "Add a mod: type \"life\", \"fire res\", \"54 life\"…"}
+        placeholder={vi ? "Thêm mod: gõ \"máu\", \"kháng lửa\", \"tay sai\", \"54 life\"…" : "Add a mod: type \"life\", \"fire res\", \"54 life\"…"}
         onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         onBlur={() => window.setTimeout(() => setOpen(false), 150)}
@@ -111,8 +128,7 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
               <span className="ie-combo-text">{row.display}</span>
               <span className="ie-combo-meta">
                 <b className={`ie-gen is-${row.gen}`}>{vi ? GEN_VI[row.gen] : row.gen}</b>
-                <span>{row.tierLabel}</span>
-                <span className="ie-family">{row.family}</span>
+                <span>{vi ? `Bậc tốt nhất ${row.tierLabel} · cần cấp vật phẩm ${row.tier.ilvl}` : `Best tier ${row.tierLabel} · item level ${row.tier.ilvl}`}</span>
               </span>
               {row.blocked ? <small className="ie-combo-reason">{row.blocked}</small> : null}
             </li>
@@ -123,19 +139,24 @@ function ModCombobox({ pool, item, locale, onAdd }: { pool: ModPool; item: Edita
   );
 }
 
-function ModLineRow({ pool, item, line, errors, locked, vi, onChange, onRemove }: {
+function ModLineRow({ pool, item, line, errors, locked, removable, vi, onChange, onRemove }: {
   pool: ModPool;
   item: EditableItem;
   line: ModLine;
   errors: string[];
   locked: boolean;
+  removable: boolean;
   vi: boolean;
   onChange: (line: ModLine) => void;
   onRemove: () => void;
 }) {
   const ranges = lineRanges(pool, item, line);
   const mod = line.kind === "pool" ? findPoolMod(pool, item, line.modKey) : null;
-  const tiers = mod ? availableTiers(mod, item) : [];
+  const allowed = mod ? availableTiers(mod, item) : [];
+  // The line's own tier stays in the list even when the item level is too low for it:
+  // the dropdown then shows the tier the error talks about, not a different one.
+  const current = mod && line.kind === "pool" ? mod.tiers.find((row) => row.tier === line.tier) : undefined;
+  const tiers = current && !allowed.includes(current) ? [current, ...allowed] : allowed;
   const editable = !locked && (line.kind === "pool" || line.kind === "unique");
   const values = line.kind === "fixed" ? [] : line.values;
   const setValue = (index: number, raw: number) => {
@@ -151,22 +172,23 @@ function ModLineRow({ pool, item, line, errors, locked, vi, onChange, onRemove }
     const next = tier.lines.flatMap((row) => row.ranges).map(([a, b]) => Math.max(a, b));
     onChange({ ...line, tier: tierNumber, values: next });
   };
-  const text = modLineText(pool, item, line).join(" / ");
+  const text = modLineText(pool, item, line).join(" · ");
   return (
     <li className={`ie-line ${errors.length ? "has-error" : ""} ${line.kind === "fixed" ? "is-fixed" : ""}`}>
       <div className="ie-line-head">
         {line.kind === "pool" ? <b className={`ie-gen is-${line.gen}`}>{vi ? GEN_VI[line.gen] : line.gen}</b> : null}
         {line.kind === "pool" && tiers.length && !locked ? (
           <select value={line.tier} onChange={(event) => setTier(Number(event.target.value))} aria-label={vi ? "Bậc mod" : "Tier"}>
-            {tiers.map((tier) => {
-              const [a, b] = tier.lines[0].ranges[0] ?? [0, 0];
-              return <option value={tier.tier} key={tier.tier}>{`T${tier.tier} · ${a}–${b}`}</option>;
-            })}
+            {tiers.map((tier) => (
+              <option value={tier.tier} key={tier.tier}>
+                {tierText(tier)}{allowed.includes(tier) ? "" : vi ? ` (cần cấp vật phẩm ${tier.ilvl})` : ` (needs item level ${tier.ilvl})`}
+              </option>
+            ))}
           </select>
         ) : line.kind === "pool" ? <span className="ie-tier">{tierLabel(pool, item, line)}</span> : null}
         <span className="ie-line-text">{text}</span>
         {line.flags.length ? <small className="ie-flags">{line.flags.join(", ")}</small> : null}
-        {!locked ? (
+        {removable ? (
           <button type="button" className="pi-btn pi-btn--ghost" onClick={onRemove} aria-label={vi ? "Xóa dòng" : "Remove line"} title={vi ? "Xóa dòng" : "Remove"}>
             <span className="material-symbols-rounded" aria-hidden="true">delete</span>
           </button>
@@ -189,10 +211,33 @@ function ModLineRow({ pool, item, line, errors, locked, vi, onChange, onRemove }
           })}
         </div>
       ) : null}
-      {line.kind === "fixed" ? <small className="ie-note">{vi ? "Dòng gốc của món đồ (không nhận diện được trong dữ liệu mod) — chỉ xem, không sửa được." : "Original line, not in the mod data — read only."}</small> : null}
+      {line.kind === "fixed" && item.rarity !== "unique" ? <small className="ie-note">{vi ? "Dòng gốc của món đồ (không có trong các mod thường của base này) — chỉ xem, không sửa được." : "Original line, not in this base's normal mods — read only."}</small> : null}
       {errors.map((message) => <p className="ie-error" key={message}>{message}</p>)}
     </li>
   );
+}
+
+const ARMOUR_LABELS: Array<[string, string, string]> = [["Armour", "Giáp", "Armour"], ["Evasion", "Né tránh", "Evasion"], ["EnergyShield", "Khiên năng lượng", "Energy Shield"], ["Ward", "Ward", "Ward"], ["BlockChance", "Tỉ lệ chặn %", "Block %"]];
+const DAMAGE_TYPES: Array<[string, string, string]> = [["Physical", "Sát thương vật lý", "Physical damage"], ["Fire", "Sát thương lửa", "Fire damage"], ["Cold", "Sát thương băng", "Cold damage"], ["Lightning", "Sát thương sét", "Lightning damage"], ["Chaos", "Sát thương hỗn mang", "Chaos damage"]];
+
+/** The base's own numbers (before quality and mods), from PoB's base data. */
+function baseStatRows(base: PoolBase | null, vi: boolean): string[] {
+  if (!base) return [];
+  const rows: string[] = [];
+  for (const [key, viLabel, enLabel] of ARMOUR_LABELS) {
+    if (base.armour?.[key]) rows.push(`${vi ? viLabel : enLabel} ${base.armour[key]}`);
+  }
+  const weapon = base.weapon;
+  if (weapon) {
+    for (const [key, viLabel, enLabel] of DAMAGE_TYPES) {
+      if (weapon[`${key}Max`]) rows.push(`${vi ? viLabel : enLabel} ${weapon[`${key}Min`] ?? 0}–${weapon[`${key}Max`]}`);
+    }
+    if (weapon.CritChanceBase) rows.push(`${vi ? "Chí mạng" : "Crit"} ${weapon.CritChanceBase}%`);
+    if (weapon.AttackRateBase) rows.push(`${vi ? "Đòn/giây" : "Attacks/s"} ${weapon.AttackRateBase}`);
+    if (weapon.ReloadTimeBase) rows.push(`${vi ? "Nạp đạn" : "Reload"} ${weapon.ReloadTimeBase}s`);
+  }
+  if (base.spirit) rows.push(`Spirit ${base.spirit}`);
+  return rows;
 }
 
 export function ItemEditor({ pool, text, originalText, title, locale, onLive, onSave, onCancel, onReset }: {
@@ -210,13 +255,23 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
   onReset?: () => void;
 }) {
   const vi = locale === "vi";
-  const [item, setItem] = useState<EditableItem>(() => parseEditableItem(text, pool));
+  // An item built in the planner starts with its base's implicit, as the game gives it.
+  const [item, setItem] = useState<EditableItem>(() => {
+    const parsed = parseEditableItem(text, pool);
+    const hasOwnImplicit = parsed.implicits.some((line) => !line.flags.includes("rune") && !line.flags.includes("enchant"));
+    return originalText || hasOwnImplicit ? parsed : withBaseImplicits(parsed, pool);
+  });
   const original = useMemo(() => (originalText ? parseEditableItem(originalText, pool) : null), [originalText, pool]);
   const errors = useMemo(() => validateEditableItem(item, pool, original), [item, pool, original]);
   const output = useMemo(() => serializeEditableItem(item, pool), [item, pool]);
   const locked = Boolean(original?.corrupted) || item.corrupted;
+  const unique = item.rarity === "unique";
   const lineErrors = (id: string) => errors.filter((error) => error.lineId === id).map((error) => error.message);
   const generalErrors = errors.filter((error) => !error.lineId).map((error) => error.message);
+  const base = useMemo(() => findBase(pool, item.baseName), [pool, item.baseName]);
+  const baseStats = baseStatRows(unique ? null : base, vi);
+  const levelReq = requiredLevel(item, pool);
+  const attributeReq = !unique && base?.req ? ([["Str", base.req.str], ["Dex", base.req.dex], ["Int", base.req.int]] as Array<[string, number]>).filter(([, value]) => value > 0) : [];
 
   const lastLive = useRef(text);
   useEffect(() => {
@@ -227,7 +282,20 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
 
   const update = (patch: Partial<EditableItem>) => setItem((current) => ({ ...current, ...patch }));
   const counts = (gen: string) => item.mods.filter((line) => line.kind === "pool" && line.gen === gen).length;
-  const limit = item.rarity === "magic" ? 1 : item.rarity === "rare" ? 3 : 0;
+  const limits = affixLimits(item);
+  const socketMax = Math.max(maxSockets(base ?? "", item.corrupted), original?.sockets ?? 0);
+
+  const corruption = corruptionOptions(pool, item, original);
+  const corruptionNow = corruptionState(pool, item, original);
+  const corruptionValue = corruptionNow.kind === "enchant" ? `enchant:${corruptionNow.key}` : corruptionNow.kind;
+  const chosenEnchant = corruptionNow.kind === "enchant" ? corruption.enchants.find((row) => row.key === corruptionNow.key) : undefined;
+  const chooseCorruption = (value: string, values?: number[]) => setItem((current) => setCorruption(pool, current, original, value.startsWith("enchant:")
+    ? { kind: "enchant", key: value.slice("enchant:".length), values }
+    : { kind: value as "none" | "plain" | "socket" }));
+
+  // A built item on a base with alternative implicits (an amulet granting one skill of a list).
+  const variants = !original && !unique ? base?.implicitVariants ?? [] : [];
+  const variantNow = variants.length && base ? Math.max(0, implicitVariantOf(item, base)) : 0;
 
   return (
     <div className="ie-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onCancel(); }}>
@@ -236,7 +304,7 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
           <div>
             <p className="ie-eyebrow">{title}</p>
             <h2 className={`ie-name is-${item.rarity}`}>{item.name || item.baseName}</h2>
-            {item.baseName !== item.name ? <p className="ie-base">{item.baseName}</p> : null}
+            {item.baseName !== item.name ? <p className="ie-base">{item.baseName}{base ? ` · ${base.itemClass}` : ""}</p> : null}
           </div>
           <button type="button" className="pi-btn pi-btn--ghost" onClick={onCancel} aria-label={vi ? "Đóng" : "Close"}>
             <span className="material-symbols-rounded" aria-hidden="true">close</span>
@@ -248,8 +316,8 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
           <div className="ie-fields">
             <label>
               <span>{vi ? "Độ hiếm" : "Rarity"}</span>
-              <select value={item.rarity} disabled={locked || item.rarity === "unique"} onChange={(event) => update({ rarity: event.target.value as EditableItem["rarity"] })}>
-                {(item.rarity === "unique" ? ["unique"] : ["normal", "magic", "rare"]).map((rarity) => <option value={rarity} key={rarity}>{vi ? RARITY_VI[rarity] : rarity}</option>)}
+              <select value={item.rarity} disabled={locked || unique} onChange={(event) => update({ rarity: event.target.value as EditableItem["rarity"] })}>
+                {(unique ? ["unique"] : ["normal", "magic", "rare"]).map((rarity) => <option value={rarity} key={rarity}>{vi ? RARITY_VI[rarity] : rarity}</option>)}
               </select>
             </label>
             {item.rarity === "rare" ? (
@@ -266,27 +334,85 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
               <span>{vi ? "Chất lượng %" : "Quality %"}</span>
               <input type="number" min={0} max={20} value={item.quality} disabled={locked} onChange={(event) => update({ quality: Number(event.target.value) || 0 })} />
             </label>
-            <label title={vi ? "Số lỗ để gắn rune / soul core." : "Rune sockets"}>
-              <span>{vi ? "Số lỗ rune" : "Sockets"}</span>
-              <input type="number" min={0} max={3} value={item.sockets} disabled={locked} onChange={(event) => update({ sockets: Number(event.target.value) || 0 })} />
+            {socketMax > 0 || item.sockets > 0 ? (
+              <label title={vi ? "Số lỗ để gắn rune / soul core. Lỗ cuối cùng chỉ có khi corrupt ra lỗ." : "Rune sockets; the last one only comes from corruption."}>
+                <span>{vi ? `Số lỗ rune (tối đa ${socketMax})` : `Sockets (max ${socketMax})`}</span>
+                <input type="number" min={0} max={socketMax} value={item.sockets} disabled={locked} onChange={(event) => update({ sockets: Number(event.target.value) || 0 })} />
+              </label>
+            ) : null}
+            <label className="ie-corrupt" title={vi ? "Vaal Orb: corrupt khóa món đồ lại và cho một kết quả. Không bỏ corrupt được trong game." : "Vaal Orb: locks the item and gives one outcome."}>
+              <span>Corrupt (Vaal Orb)</span>
+              <select value={corruptionValue} disabled={corruption.locked} onChange={(event) => chooseCorruption(event.target.value)}>
+                {corruption.locked ? <option value={corruptionValue}>{vi ? "Đã corrupt (đồ gốc)" : "Corrupted (original)"}</option> : (
+                  <>
+                    <option value="none">{vi ? "Chưa corrupt" : "Not corrupted"}</option>
+                    <option value="plain">{vi ? "Corrupt — không đổi gì" : "Corrupted — no change"}</option>
+                    {corruption.socket ? <option value="socket">{vi ? "Corrupt — thêm 1 lỗ rune" : "Corrupted — one more socket"}</option> : null}
+                    {corruption.enchants.length ? (
+                      <optgroup label={vi ? "Corrupt — thêm 1 dòng enchant" : "Corrupted — one enchant"}>
+                        {corruption.enchants.map((row) => <option value={`enchant:${row.key}`} key={row.key}>{row.text}</option>)}
+                      </optgroup>
+                    ) : null}
+                    {corruptionNow.kind === "enchant" && !chosenEnchant ? <option value={corruptionValue}>{vi ? "Enchant không hợp lệ" : "Unknown enchant"}</option> : null}
+                  </>
+                )}
+              </select>
             </label>
-            <label className="ie-check" title={vi ? "Corrupt khóa món đồ lại, không bỏ được." : "Corruption cannot be undone."}>
-              <input type="checkbox" checked={item.corrupted} disabled={Boolean(original?.corrupted)} onChange={(event) => update({ corrupted: event.target.checked })} />
-              <span>Corrupted</span>
-            </label>
+            {chosenEnchant && !corruption.locked ? chosenEnchant.ranges.map(([a, b], index) => (a === b ? null : (
+              <label key={index}>
+                <span>{vi ? `Giá trị enchant (${Math.min(a, b)}–${Math.max(a, b)})` : `Enchant roll (${Math.min(a, b)}–${Math.max(a, b)})`}</span>
+                <input
+                  type="number"
+                  min={Math.min(a, b)}
+                  max={Math.max(a, b)}
+                  value={corruptionNow.values?.[index] ?? Math.max(a, b)}
+                  onChange={(event) => {
+                    const next = [...(corruptionNow.values ?? chosenEnchant.ranges.map(([x, y]) => Math.max(x, y)))];
+                    next[index] = Number(event.target.value) || Math.min(a, b);
+                    chooseCorruption(corruptionValue, next);
+                  }}
+                />
+              </label>
+            ))) : null}
+            {variants.length ? (
+              <label>
+                <span>{vi ? "Kỹ năng của base" : "Base skill"}</span>
+                <select value={variantNow} onChange={(event) => setItem((current) => withBaseImplicits(current, pool, Number(event.target.value)))}>
+                  {variants.map((line, index) => <option value={index} key={line}>{baseImplicitLines({ ...base!, implicit: [], implicitVariants: [line] })[0].text}</option>)}
+                </select>
+              </label>
+            ) : null}
           </div>
+          {!unique && (baseStats.length || levelReq !== null || attributeReq.length) ? (
+            <p className="ie-base-stats">
+              {baseStats.length ? <span><b>{vi ? "Chỉ số gốc của base: " : "Base stats: "}</b>{baseStats.join(" · ")}</span> : null}
+              {levelReq !== null || attributeReq.length ? (
+                <span title={vi ? "Cấp yêu cầu = cấp của base, hoặc 80% cấp của mod cao nhất (làm tròn xuống), lấy số lớn hơn." : "Base level, or 80% of the highest mod level."}>
+                  <b>{vi ? "Yêu cầu: " : "Requires: "}</b>
+                  {[levelReq !== null ? `${vi ? "Cấp" : "Level"} ${levelReq}` : "", ...attributeReq.map(([name, value]) => `${value} ${name}`)].filter(Boolean).join(" · ")}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
           {item.runes.length ? <p className="ie-runes">{vi ? "Rune đang gắn: " : "Runes: "}{item.runes.join(", ")}</p> : null}
 
           {item.implicits.length ? (
             <>
-              <h3 className="ie-section">{vi ? "Dòng ẩn (implicit, rune)" : "Implicits and runes"}</h3>
-              <ul className="ie-implicits">{item.implicits.map((line, index) => <li key={index}>{line.text}</li>)}</ul>
+              <h3 className="ie-section">{vi ? "Dòng ẩn (implicit, enchant, rune) — không sửa được" : "Implicits, enchants and runes (read only)"}</h3>
+              <ul className="ie-implicits">
+                {item.implicits.map((line, index) => (
+                  <li key={index}>
+                    {line.text}
+                    {line.flags.includes("rune") ? <small> · rune</small> : line.flags.includes("enchant") ? <small> · enchant</small> : null}
+                  </li>
+                ))}
+              </ul>
             </>
           ) : null}
 
           <h3 className="ie-section">
             {vi ? "Dòng mod" : "Mods"}
-            {limit ? <small>{vi ? ` · Tiền tố ${counts("prefix")}/${limit} · Hậu tố ${counts("suffix")}/${limit}` : ` · Prefixes ${counts("prefix")}/${limit} · Suffixes ${counts("suffix")}/${limit}`}</small> : null}
+            {limits.prefix || limits.suffix ? <small>{vi ? ` · Tiền tố ${counts("prefix")}/${limits.prefix} · Hậu tố ${counts("suffix")}/${limits.suffix}` : ` · Prefixes ${counts("prefix")}/${limits.prefix} · Suffixes ${counts("suffix")}/${limits.suffix}`}</small> : null}
           </h3>
           <ul className="ie-lines">
             {item.mods.map((line) => (
@@ -297,15 +423,22 @@ export function ItemEditor({ pool, text, originalText, title, locale, onLive, on
                 line={line}
                 errors={lineErrors(line.id)}
                 locked={locked}
+                removable={!locked && !unique}
                 vi={vi}
                 onChange={(next) => update({ mods: item.mods.map((row) => (row.id === line.id ? next : row)) })}
                 onRemove={() => update({ mods: item.mods.filter((row) => row.id !== line.id) })}
               />
             ))}
-            {!item.mods.length ? <li className="ie-note">{vi ? "Chưa có dòng mod." : "No mods yet."}</li> : null}
+            {!item.mods.length ? (
+              <li className="ie-note">
+                {item.rarity === "rare" || item.rarity === "magic"
+                  ? vi ? "Chưa có dòng mod. Vẫn lưu được (trong game, đồ bị xóa hết mod vẫn giữ độ hiếm), nhưng món đồ sẽ không cho chỉ số nào ngoài base." : "No mods yet. It can be saved, but gives nothing beyond its base."
+                  : vi ? "Chưa có dòng mod." : "No mods yet."}
+              </li>
+            ) : null}
           </ul>
-          {!locked && item.rarity !== "unique" ? <ModCombobox pool={pool} item={item} locale={locale} onAdd={(row) => setItem((current) => addSuggestedMod(current, row))} /> : null}
-          {item.rarity === "unique" ? <p className="ie-note">{vi ? "Đồ độc nhất có mod cố định: chỉ chỉnh được giá trị trong khoảng roll." : "Uniques have fixed mods; only rolls change."}</p> : null}
+          {!locked && !unique ? <ModCombobox pool={pool} item={item} locale={locale} onAdd={(row) => setItem((current) => addSuggestedMod(current, row))} /> : null}
+          {unique ? <p className="ie-note">{vi ? "Đồ độc nhất có mod cố định: không thêm hay xóa dòng được, chỉ chỉnh giá trị trong khoảng roll." : "Uniques have fixed mods: lines cannot be added or removed, only rolls change."}</p> : null}
 
           {generalErrors.length ? <ul className="ie-errors">{generalErrors.map((message) => <li key={message}>{message}</li>)}</ul> : null}
         </div>
