@@ -152,7 +152,7 @@ test("Build planner page lets users choose saved trees and item hints", async ()
   assert.match(page, /downloadBuildFile/);
   assert.match(page, /parseBuildFileText/);
   // Imports are saved immediately so a reload on /build/<id> keeps them.
-  assert.match(page, /const applyImportedBuild = [\s\S]*?setSavedBuilds\(saveBuildProject\(project\)\)[\s\S]*?navigateTo\(saved \? `\/build\/\$\{encodeURIComponent\(project\.id\)\}`/);
+  assert.match(page, /const applyImportedBuild = [\s\S]*?setSavedBuilds\(saveBuildProject\(project\)\)[\s\S]*?moveTo\(saved \? `\/build\/\$\{encodeURIComponent\(project\.id\)\}`/);
   assert.match(page, /parsePobExportCode/);
   assert.match(page, /buildPayloadFromPobImport/);
   assert.match(page, /pobImportOpen/);
@@ -253,11 +253,13 @@ test("Build planner uses separate routes for library and detail screens", async 
   assert.match(page, /className="build-library"/);
   assert.match(page, /className="build-workbench nj-page"/);
   assert.match(page, /className="build-tree-mini"/);
-  assert.match(page, /navigateTo\("\/build\/new"\)/);
-  assert.match(page, /navigateTo\(`\/build\/\$\{encodeURIComponent\(project\.id\)\}`\)/);
+  // The planner's own moves go through moveTo (navigateTo without the unsaved-changes question).
+  assert.match(page, /moveTo\("\/build\/new"\)/);
+  assert.match(page, /moveTo\(`\/build\/\$\{encodeURIComponent\(project\.id\)\}`\)/);
   assert.match(page, /hasBuildChanges/);
   assert.match(page, /openBuildLibrary/);
-  assert.match(page, /navigateTo\("\/build"\)/);
+  assert.match(page, /moveTo\("\/build"\)/);
+  assert.match(page, /setLeaveGuard\(/, "leaving with unsaved changes asks first");
   assert.doesNotMatch(page, /setEditorOpen/);
   assert.doesNotMatch(page, /treeMode/);
   assert.doesNotMatch(page, /treeView/);
