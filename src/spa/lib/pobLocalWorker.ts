@@ -19,7 +19,7 @@ type WorkerRequest =
 type WorkerResponse =
   | { id: number; type: "phase"; phase: "decompressing" | "loading_pob" }
   | { id: number; ok: true; timings?: { vmInitMs: number; pobLoadMs: number; decompressMs: number }; memory?: { luaMemoryKB: number; wasmMemoryBytes: number | null }; data?: Record<string, unknown>; ms?: number }
-  | { id: number; ok: false; error: string };
+  | { id: number; ok: false; error: string; fatal?: boolean };
 
 let engine: PobLocalEngine | null = null;
 
@@ -27,9 +27,13 @@ async function gunzipToUint8Array(gzipBytes: ArrayBuffer): Promise<Uint8Array> {
   if (typeof DecompressionStream === "undefined") {
     throw new Error("Browser does not support DecompressionStream('gzip')");
   }
-  const stream = new Blob([gzipBytes]).stream().pipeThrough(new DecompressionStream("gzip"));
-  const buffer = await new Response(stream).arrayBuffer();
-  return new Uint8Array(buffer);
+  try {
+    const stream = new Blob([gzipBytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+    const buffer = await new Response(stream).arrayBuffer();
+    return new Uint8Array(buffer);
+  } catch {
+    throw new Error("the stored PoB data could not be unpacked");
+  }
 }
 
 workerSelf.onmessage = async (event: MessageEvent<WorkerRequest>) => {
@@ -91,6 +95,8 @@ workerSelf.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    workerSelf.postMessage({ id: msg.id, ok: false, error: message });
+    // fatal === false: PoB only rejected this build; the engine itself is still fine.
+    const fatal = (error as { fatal?: boolean } | null)?.fatal;
+    workerSelf.postMessage({ id: msg.id, ok: false, error: message, ...(typeof fatal === "boolean" ? { fatal } : {}) });
   }
 };

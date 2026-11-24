@@ -4,6 +4,9 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
+  // Where the server serves public/dist/spa: URLs Vite writes itself (the local PoB worker chunk)
+  // must start there. Chunks imported with import() are relative and do not depend on it.
+  base: "/dist/spa/",
   publicDir: false,
   build: {
     outDir: "public/dist/spa",

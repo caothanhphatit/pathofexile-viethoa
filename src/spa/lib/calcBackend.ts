@@ -61,8 +61,11 @@ export interface CalcBackendState {
   progress: { received: number; total: number; percent: number } | null;
   fallbackNotice: LocalizedNotice | null;
   errorNotice: LocalizedNotice | null;
-  timings: { vmInitMs: number; pobLoadMs: number; decompressMs: number; lastCalcMs?: number } | null;
+  /** Milliseconds: totalMs is from the user's click (or page load on a remembered choice) to ready. */
+  timings: { vmInitMs: number; pobLoadMs: number; decompressMs: number; downloadMs?: number; totalMs?: number; fromCache?: boolean; lastCalcMs?: number } | null;
   memory: { luaMemoryKB: number; wasmMemoryBytes: number | null } | null;
+  /** The size notice is shown because the site has a newer bundle than the cached one. */
+  updateAvailable?: boolean;
 }
 
 export interface BuildCalcResult {
@@ -70,6 +73,7 @@ export interface BuildCalcResult {
   data?: Record<string, unknown>;
   error?: string;
   item_errors?: Array<{ messages?: string[] }>;
+  equipment_dropped?: unknown[];
 }
 
 const FLAG_STORAGE_KEY = "poevh_local_calc_flag";
@@ -94,14 +98,15 @@ function writeStorage(key: string, value: string | null): void {
   } catch { /* private browsing / quota */ }
 }
 
-/** Reads the pilot feature flag (`?localcalc=1` / `?localcalc=0` or localStorage `poevh_local_calc_flag=1`). */
+/** Reads the pilot feature flag: `?localcalc=1` turns it on for this browser (localStorage `poevh_local_calc_flag`), `?localcalc=0` off. */
 export function isLocalCalcFlagEnabled(): boolean {
   if (typeof window === "undefined") return false;
   try {
     const params = new URLSearchParams(window.location.search);
     const param = params.get("localcalc");
-    if (param === "1" || param === "true") return true;
-    if (param === "0" || param === "false") return false;
+    // The URL switch is remembered: the planner drops the query when it opens a build.
+    if (param === "1" || param === "true") { writeStorage(FLAG_STORAGE_KEY, "1"); return true; }
+    if (param === "0" || param === "false") { writeStorage(FLAG_STORAGE_KEY, null); return false; }
   } catch { /* ignore */ }
   return readStorage(FLAG_STORAGE_KEY) === "1";
 }
@@ -163,6 +168,8 @@ export async function serverCalculateBuild(
       if (isStale?.()) return { ok: false, error: "stale" };
       continue;
     }
+    // The build's own calculation gets the server's answer untouched, as before this module.
+    if (priority !== "compare") return json as BuildCalcResult;
     if (!response.ok || !json?.ok || !json.data) {
       return { ok: false, error: String(json?.error || `HTTP ${response.status}`) };
     }
@@ -246,6 +253,19 @@ async function storeCachedAssets(manifest: PobWebManifest, vfsGzip: ArrayBuffer,
   }));
 }
 
+/**
+ * The download must be the bundle the manifest describes (a proxy or an SPA fallback can
+ * answer 200 with something else): sizes always, SHA-256 where the browser offers it.
+ */
+async function verifyDownload(manifest: PobWebManifest, vfsGzip: ArrayBuffer, wasmBytes: ArrayBuffer): Promise<void> {
+  const damaged = new Error("the downloaded data is incomplete or damaged");
+  if (vfsGzip.byteLength !== manifest.gzipBytes || wasmBytes.byteLength !== manifest.wasmBytes) throw damaged;
+  if (!manifest.sha256 || typeof crypto === "undefined" || !crypto.subtle) return;
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", vfsGzip));
+  const hex = Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  if (hex !== manifest.sha256) throw damaged;
+}
+
 async function fetchWithProgress(
   url: string,
   onChunk: (chunkBytes: number) => void
@@ -298,14 +318,41 @@ function readCachedMeta(): { version: string; bytes: number; manifest?: PobWebMa
   return null;
 }
 
-function sanitizeBuildBodyForLocal(body: Record<string, unknown>): Record<string, unknown> {
+/**
+ * What the server routes do to a body before building the XML: an off-hand that cannot be
+ * held with its main hand is left out. (The server also re-validates edited item texts
+ * against the mod pool, src/server/item-validation.mjs; that check is not run locally.)
+ */
+function sanitizeBuildBodyForLocal(body: Record<string, unknown>): { body: Record<string, unknown>; dropped: unknown[] } {
   const copy = { ...body };
+  let dropped: unknown[] = [];
   if (Array.isArray(copy.inventory_slots)) {
     const weaponSets = dropImpossibleOffHands(copy.inventory_slots, Array.isArray(copy.passives) ? copy.passives : []);
-    if (weaponSets.dropped.length) copy.inventory_slots = weaponSets.rows;
+    if (weaponSets.dropped.length) {
+      copy.inventory_slots = weaponSets.rows;
+      dropped = weaponSets.dropped;
+    }
   }
-  return copy;
+  return { body: copy, dropped };
 }
+
+/** Vietnamese wording of the failures this module names itself (others show PoB's or the browser's text). */
+const VI_FAILURES: Array<[RegExp, string]> = [
+  [/downloaded data is incomplete or damaged/, "dữ liệu tải về bị thiếu hoặc hỏng"],
+  [/stored PoB data could not be unpacked/, "không giải nén được dữ liệu PoB đã lưu"],
+  [/worker script could not be loaded or crashed/, "trình duyệt không chạy được bộ tính"],
+  [/no answer from the local engine/, "bộ tính trên máy không phản hồi"],
+  [/not enough memory/, "máy không đủ bộ nhớ"]
+];
+
+/**
+ * Errors that do not mean the local engine is broken: the job was cancelled because the user
+ * switched back, or PoB rejected this one build. The request then just goes to the server.
+ */
+const isPassingError = (error: unknown): boolean => {
+  const flags = error as { cancelled?: boolean; rejectedBuild?: boolean } | null;
+  return Boolean(flags?.cancelled || flags?.rejectedBuild);
+};
 
 class CalcBackendController {
   private state: CalcBackendState;
@@ -316,7 +363,9 @@ class CalcBackendController {
   private pendingRpc = new Map<number, { resolve: (msg: Record<string, unknown>) => void; reject: (err: Error) => void }>();
   private jobQueue: WorkerJob[] = [];
   private jobRunning = false;
-  private autoResumed = false;
+  private restorePromise: Promise<void> | null = null;
+  /** How long one local calculation may take before the server is used instead. */
+  localJobTimeoutMs = 60_000;
 
   constructor() {
     const flagEnabled = isLocalCalcFlagEnabled();
@@ -353,9 +402,13 @@ class CalcBackendController {
    * previously chose local mode AND the bundle is already in Cache Storage,
    * silently warm-starts the worker from cache (zero network download).
    */
-  async restoreIfRemembered(): Promise<void> {
-    if (this.autoResumed) return;
-    this.autoResumed = true;
+  restoreIfRemembered(): Promise<void> {
+    // One restore per page; calculations asked for meanwhile wait for it (see calculateBuild).
+    this.restorePromise ??= this.restoreRemembered().catch((error) => this.failToServer(error));
+    return this.restorePromise;
+  }
+
+  private async restoreRemembered(): Promise<void> {
     const flagEnabled = isLocalCalcFlagEnabled();
     if (flagEnabled !== this.state.flagEnabled) {
       this.setState({ flagEnabled });
@@ -373,6 +426,18 @@ class CalcBackendController {
       return;
     }
 
+    // A newer bundle on the site (PoB update, new league): never download it silently.
+    // Stay on the server and show the size notice; the user decides. Offline or a failed
+    // manifest request: keep using the cached bundle.
+    try {
+      const response = await fetch(MANIFEST_URL, { cache: "no-store", signal: AbortSignal.timeout(4000) });
+      const latest = response.ok ? ((await response.json()) as PobWebManifest) : null;
+      if (latest?.version && latest.files?.vfs && latest.version !== cached.version) {
+        this.setState({ mode: "server", phase: "confirm", manifest: latest, updateAvailable: true, progress: null });
+        return;
+      }
+    } catch { /* offline: use the cache */ }
+
     const assets = await readCachedAssets(cached.manifest);
     if (!assets) {
       // Cache was cleared by the browser; stay on server until user confirms a new download.
@@ -383,9 +448,12 @@ class CalcBackendController {
     }
 
     try {
+      const startedAt = performance.now();
       await this.bootWorkerFromAssets(cached.manifest, assets.vfsGzip, assets.wasmBytes);
+      this.noteLoadTimings(startedAt, 0, true);
       this.setState({ mode: "local", phase: "ready", fallbackNotice: null, errorNotice: null });
     } catch (error) {
+      await this.forgetCachedBundle();
       this.failToServer(error);
     }
   }
@@ -409,6 +477,7 @@ class CalcBackendController {
     }
 
     this.setState({ phase: "checking", errorNotice: null, fallbackNotice: null });
+    const startedAt = performance.now();
     try {
       const response = await fetch(MANIFEST_URL, { cache: "no-store" });
       if (!response.ok) {
@@ -429,8 +498,15 @@ class CalcBackendController {
           cachedVersion: manifest.version,
           cachedBytes: cachedAssets.vfsGzip.byteLength + cachedAssets.wasmBytes.byteLength
         });
-        await this.bootWorkerFromAssets(manifest, cachedAssets.vfsGzip, cachedAssets.wasmBytes);
+        try {
+          await this.bootWorkerFromAssets(manifest, cachedAssets.vfsGzip, cachedAssets.wasmBytes);
+        } catch (error) {
+          await this.forgetCachedBundle();
+          this.failToServer(error);
+          return;
+        }
         writeStorage(MODE_STORAGE_KEY, "local");
+        this.noteLoadTimings(startedAt, 0, true);
         this.setState({ mode: "local", phase: "ready", fallbackNotice: null, errorNotice: null });
         return;
       }
@@ -452,7 +528,9 @@ class CalcBackendController {
 
   cancelConfirm(): void {
     if (this.state.phase === "confirm" || this.state.phase === "error" || this.state.phase === "unsupported") {
-      this.setState({ phase: "idle", errorNotice: null });
+      // Declining (also declining an update) leaves the choice on the server.
+      if (this.state.updateAvailable) writeStorage(MODE_STORAGE_KEY, "server");
+      this.setState({ phase: "idle", errorNotice: null, updateAvailable: false });
     }
   }
 
@@ -480,12 +558,15 @@ class CalcBackendController {
       this.setState({ progress: { received, total: denom, percent } });
     };
 
+    const startedAt = performance.now();
     try {
       const { vfsUrl, wasmUrl } = assetUrls(manifest);
       const [vfsGzip, wasmBytes] = await Promise.all([
         fetchWithProgress(vfsUrl, reportProgress),
         fetchWithProgress(wasmUrl, reportProgress)
       ]);
+      const downloadMs = performance.now() - startedAt;
+      await verifyDownload(manifest, vfsGzip, wasmBytes);
       await storeCachedAssets(manifest, vfsGzip, wasmBytes);
       this.setState({
         cachedVersion: manifest.version,
@@ -495,8 +576,10 @@ class CalcBackendController {
 
       await this.bootWorkerFromAssets(manifest, vfsGzip, wasmBytes);
       writeStorage(MODE_STORAGE_KEY, "local");
-      this.setState({ mode: "local", phase: "ready", progress: null, fallbackNotice: null, errorNotice: null });
+      this.noteLoadTimings(startedAt, downloadMs, false);
+      this.setState({ mode: "local", phase: "ready", progress: null, fallbackNotice: null, errorNotice: null, updateAvailable: false });
     } catch (error) {
+      await this.forgetCachedBundle();
       this.failToServer(error);
     }
   }
@@ -527,8 +610,36 @@ class CalcBackendController {
     });
   }
 
+  /**
+   * The stored bundle could not be started (damaged, or cut short by the browser): remove it,
+   * so the next click offers a fresh download instead of failing the same way again.
+   */
+  private async forgetCachedBundle(): Promise<void> {
+    writeStorage(CACHED_META_KEY, null);
+    if (typeof caches !== "undefined") {
+      try { await caches.delete(CACHE_NAME); } catch { /* ignore */ }
+    }
+    this.setState({ cachedVersion: null, cachedBytes: 0 });
+  }
+
   dismissFallbackNotice(): void {
     this.setState({ fallbackNotice: null, errorNotice: null });
+  }
+
+  private noteLoadTimings(startedAt: number, downloadMs: number, fromCache: boolean): void {
+    if (!this.state.timings) return;
+    this.setState({ timings: { ...this.state.timings, downloadMs, totalMs: performance.now() - startedAt, fromCache } });
+  }
+
+  /** Lua and WebAssembly memory of the worker (pilot measurements); null when it is not running. */
+  workerMemory(gc = false): Promise<CalcBackendState["memory"]> {
+    if (!this.worker) return Promise.resolve(null);
+    const worker = this.worker;
+    const id = this.nextMsgId++;
+    return new Promise((resolve, reject) => {
+      this.pendingRpc.set(id, { resolve: (msg) => resolve((msg.memory as CalcBackendState["memory"]) ?? null), reject });
+      worker.postMessage({ id, type: "memory", gc });
+    });
   }
 
   private terminateWorker(): void {
@@ -538,14 +649,18 @@ class CalcBackendController {
     }
     this.initPromise = null;
     this.jobRunning = false;
-    const err = new Error("Local PoB worker terminated");
+    const err = Object.assign(new Error("Local PoB worker terminated"), { cancelled: true });
     for (const pending of this.pendingRpc.values()) pending.reject(err);
     this.pendingRpc.clear();
     while (this.jobQueue.length) this.jobQueue.shift()!.reject(err);
   }
 
   private failToServer(error: unknown): void {
+    // A job rejected because the worker was already shut down (by the first failure or by
+    // the user) is not a second failure: keep the message that names the real cause.
+    if ((error as { cancelled?: boolean } | null)?.cancelled) return;
     const detail = error instanceof Error ? error.message : String(error);
+    const detailVi = VI_FAILURES.find(([pattern]) => pattern.test(detail))?.[1] ?? detail;
     console.warn("[calcBackend] Local PoB failed, falling back to server:", error);
     this.terminateWorker();
     writeStorage(MODE_STORAGE_KEY, "server");
@@ -554,7 +669,7 @@ class CalcBackendController {
       phase: "error",
       progress: null,
       fallbackNotice: {
-        vi: `Tính trên máy gặp lỗi (${detail}) — đã tự chuyển sang tính trên server.`,
+        vi: `Tính trên máy gặp lỗi (${detailVi}) — đã tự chuyển sang tính trên server.`,
         en: `Local calculation failed (${detail}) — automatically switched back to server.`
       }
     });
@@ -582,11 +697,11 @@ class CalcBackendController {
       if (!pending) return;
       this.pendingRpc.delete(msg.id);
       if (msg.ok) pending.resolve(msg);
-      else pending.reject(new Error(String(msg.error || "Local worker error")));
+      else pending.reject(Object.assign(new Error(String(msg.error || "Local worker error")), msg.fatal === false ? { rejectedBuild: true } : {}));
     };
 
     worker.onerror = (event: ErrorEvent) => {
-      this.failToServer(event.message || "Worker crashed");
+      this.failToServer(event.message || "the worker script could not be loaded or crashed");
     };
 
     const id = this.nextMsgId++;
@@ -627,8 +742,18 @@ class CalcBackendController {
     const job = this.jobQueue.splice(bestIdx, 1)[0];
     this.jobRunning = true;
 
+    // A worker the browser killed (out of memory on a phone) never answers and may not
+    // raise an error either: give up after a while and let the server take over.
+    const timer = window.setTimeout(() => {
+      const pending = this.pendingRpc.get(job.id);
+      if (!pending) return;
+      this.pendingRpc.delete(job.id);
+      pending.reject(new Error(`no answer from the local engine after ${Math.round(this.localJobTimeoutMs / 1000)} s`));
+    }, this.localJobTimeoutMs);
+
     this.pendingRpc.set(job.id, {
       resolve: (msg) => {
+        window.clearTimeout(timer);
         this.jobRunning = false;
         const ms = Number(msg.ms || 0);
         if (this.state.timings) {
@@ -638,6 +763,7 @@ class CalcBackendController {
         this.pumpWorkerQueue();
       },
       reject: (err) => {
+        window.clearTimeout(timer);
         this.jobRunning = false;
         job.reject(err);
         this.pumpWorkerQueue();
@@ -652,20 +778,27 @@ class CalcBackendController {
     body: Record<string, unknown>,
     options: { priority?: "main" | "compare"; maxRetries?: number; isStale?: () => boolean } = {}
   ): Promise<BuildCalcResult> {
+    // The user chose local on an earlier visit: wait for the engine to start from the
+    // browser cache instead of sending this first calculation to the server.
+    if (this.state.flagEnabled) {
+      await this.restoreIfRemembered();
+      if (options.isStale?.()) return { ok: false, error: "stale" };
+    }
     if (this.state.mode === "local" && this.worker) {
       try {
         if (this.initPromise) await this.initPromise;
         if (options.isStale?.()) return { ok: false, error: "stale" };
-        const cleanBody = sanitizeBuildBodyForLocal(
+        const { body: cleanBody, dropped } = sanitizeBuildBodyForLocal(
           options.priority === "compare" ? { ...body, full_dps: false } : body
         );
         const xml = buildPobXml(cleanBody);
         const { data } = await this.enqueueLocalXml(xml, options.priority === "compare" ? 1 : 10);
         if (options.isStale?.()) return { ok: false, error: "stale" };
-        return { ok: true, data };
+        return { ok: true, data, ...(dropped.length ? { equipment_dropped: dropped } : {}) };
       } catch (error) {
         if (options.isStale?.()) return { ok: false, error: "stale" };
-        this.failToServer(error);
+        // The user switched back (or deleted the data) while this was queued: just use the server.
+        if (!isPassingError(error)) this.failToServer(error);
         // Transparent fallback to server so the user still gets their build stats.
       }
     }
@@ -674,15 +807,16 @@ class CalcBackendController {
 
   /** Calculates passive node deltas locally if enabled, otherwise via `/api/builds/node-deltas`. */
   async calculateNodeDeltas(body: Record<string, unknown>, nodeIds: string[]): Promise<NodeDeltaBatch> {
+    if (this.state.flagEnabled) await this.restoreIfRemembered();
     if (this.state.mode === "local" && this.worker) {
       try {
         if (this.initPromise) await this.initPromise;
-        const cleanBody = sanitizeBuildBodyForLocal(body);
-        const xml = nodeDeltasXml(cleanBody, nodeIds);
+        const { node_ids: _ids, calc_priority: _priority, ...rest } = body;
+        const xml = nodeDeltasXml(sanitizeBuildBodyForLocal(rest).body, nodeIds);
         const { data } = await this.enqueueLocalXml(xml, 2);
         return nodeDeltasFromOutput(data);
       } catch (error) {
-        this.failToServer(error);
+        if (!isPassingError(error)) this.failToServer(error);
       }
     }
     return serverCalculateNodeDeltas(body, nodeIds);
@@ -690,3 +824,9 @@ class CalcBackendController {
 }
 
 export const calcBackend = new CalcBackendController();
+
+// Pilot only: with the flag on, the controller is reachable from the console for measurements
+// (window.__poevhLocalCalc.getSnapshot().timings, .workerMemory(), .calculateBuild(body)).
+if (typeof window !== "undefined" && isLocalCalcFlagEnabled()) {
+  (window as unknown as { __poevhLocalCalc?: CalcBackendController }).__poevhLocalCalc = calcBackend;
+}

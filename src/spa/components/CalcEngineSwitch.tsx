@@ -40,6 +40,14 @@ export function CalcEngineSwitch({ locale, onModeChanged }: CalcEngineSwitchProp
   const showPopover = state.phase === "confirm" || state.phase === "downloading" || state.phase === "decompressing" || state.phase === "loading_pob";
   const notice = state.fallbackNotice || state.errorNotice;
   const downloadBytes = state.manifest?.totalDownloadBytes || (state.manifest ? state.manifest.gzipBytes + state.manifest.wasmBytes : 0);
+  const seconds = (ms: number) => `${(ms / 1000).toFixed(1)}s`;
+  const statusText = isLocal && state.phase === "ready"
+    ? `${vi ? "Sẵn sàng, không gọi server" : "Ready, no server call"}${state.timings?.lastCalcMs ? ` · ${seconds(state.timings.lastCalcMs)}` : ""}`
+    : state.phase === "checking" ? (vi ? "Đang kiểm tra…" : "Checking…")
+    : state.phase === "downloading" ? `${vi ? "Đang tải" : "Downloading"} ${state.progress?.percent ?? 0}%`
+    : state.phase === "decompressing" || state.phase === "loading_pob" ? (vi ? "Đang khởi động bộ tính…" : "Starting the engine…")
+    : state.cachedVersion ? (vi ? `Đã lưu ${formatDownloadSize(state.cachedBytes)} trên máy` : `${formatDownloadSize(state.cachedBytes)} stored on this device`)
+    : (vi ? "Chưa tải gì về máy" : "Nothing downloaded yet");
 
   return (
     <div className="calc-engine-bar" data-calc-mode={state.mode} data-calc-phase={state.phase}>
@@ -72,30 +80,24 @@ export function CalcEngineSwitch({ locale, onModeChanged }: CalcEngineSwitchProp
           </button>
         </div>
 
-        <div className="calc-engine-meta">
-          {isLocal && state.phase === "ready" ? (
-            <span className="calc-engine-badge is-ready">
-              {vi ? "Sẵn sàng (offline)" : "Ready (local)"}
-              {state.timings?.lastCalcMs ? ` · ${(state.timings.lastCalcMs / 1000).toFixed(1)}s` : ""}
-            </span>
-          ) : state.phase === "checking" ? (
-            <span className="calc-engine-badge">{vi ? "Đang kiểm tra…" : "Checking…"}</span>
-          ) : null}
+      </div>
 
-          {state.cachedVersion && !busy ? (
-            <button
-              type="button"
-              className="calc-engine-clear"
-              onClick={() => void calcBackend.deleteCachedData()}
-              title={vi
-                ? `Xoá dữ liệu PoB đã lưu (${formatDownloadSize(state.cachedBytes)})`
-                : `Delete cached PoB data (${formatDownloadSize(state.cachedBytes)})`}
-            >
-              <span className="material-symbols-rounded" aria-hidden="true">delete_sweep</span>
-              <span>{vi ? "Xoá dữ liệu đã tải" : "Delete downloaded data"}</span>
-            </button>
-          ) : null}
-        </div>
+      {/* One status line of fixed height: the bar never changes size between states. */}
+      <div className="calc-engine-status">
+        <span className={`calc-engine-badge ${isLocal && state.phase === "ready" ? "is-ready" : ""}`}>{statusText}</span>
+        {state.cachedVersion && !busy ? (
+          <button
+            type="button"
+            className="calc-engine-clear"
+            onClick={() => void calcBackend.deleteCachedData()}
+            title={vi
+              ? `Xoá dữ liệu PoB đã lưu trong trình duyệt (${formatDownloadSize(state.cachedBytes)})`
+              : `Delete the PoB data stored in this browser (${formatDownloadSize(state.cachedBytes)})`}
+          >
+            <span className="material-symbols-rounded" aria-hidden="true">delete_sweep</span>
+            <span>{vi ? "Xoá dữ liệu đã tải" : "Delete downloaded data"}</span>
+          </button>
+        ) : null}
       </div>
 
       {/* Anchored popover: zero layout shift for panels below while confirming or downloading. */}
@@ -104,12 +106,14 @@ export function CalcEngineSwitch({ locale, onModeChanged }: CalcEngineSwitchProp
           {state.phase === "confirm" && state.manifest ? (
             <>
               <p className="calc-engine-popover-title">
-                {vi ? "Tải bộ tính PoB để chạy trực tiếp trên máy này?" : "Download the PoB engine to run locally?"}
+                {state.updateAvailable
+                  ? (vi ? "Có bản dữ liệu PoB mới. Tải về để tiếp tục tính trên máy này?" : "New PoB data is available. Download it to keep calculating on this device?")
+                  : (vi ? "Tải bộ tính PoB để chạy trực tiếp trên máy này?" : "Download the PoB engine to run on this device?")}
               </p>
               <p className="calc-engine-popover-desc">
                 {vi
-                  ? `Cần tải khoảng ${formatDownloadSize(downloadBytes)} (gồm bộ tính PoB ${state.manifest.pobVersion} và WebAssembly). Dữ liệu được lưu trong trình duyệt để lần sau mở nhanh, không xếp hàng chờ server. Bạn có thể đổi lại server hoặc xoá bất kỳ lúc nào.`
-                  : `Downloads about ${formatDownloadSize(downloadBytes)} (PoB ${state.manifest.pobVersion} calculation data + WebAssembly). Cached in this browser for fast startup with no server queue. You can switch back or delete it any time.`}
+                  ? `Cần tải khoảng ${formatDownloadSize(downloadBytes)} (Path of Building ${state.manifest.pobVersion}), dùng khoảng 450 MB RAM khi chạy. Dữ liệu được lưu trong trình duyệt để lần sau không phải tải lại; chỉ số được tính ngay trên máy, không phải chờ server. Bạn có thể đổi lại server hoặc xoá dữ liệu bất kỳ lúc nào.`
+                  : `About ${formatDownloadSize(downloadBytes)} to download (Path of Building ${state.manifest.pobVersion}); uses about 450 MB of RAM while running. It is stored in this browser so it is not downloaded again; stats are calculated on this device with no server queue. You can switch back or delete the data at any time.`}
               </p>
               <div className="calc-engine-popover-actions">
                 <button
@@ -161,7 +165,7 @@ export function CalcEngineSwitch({ locale, onModeChanged }: CalcEngineSwitchProp
       ) : null}
 
       {notice ? (
-        <div className="calc-engine-notice" role="status" aria-live="polite">
+        <div className="calc-engine-popover calc-engine-notice" role="status" aria-live="polite">
           <span className="material-symbols-rounded" aria-hidden="true">warning</span>
           <span>{vi ? notice.vi : notice.en}</span>
           <button

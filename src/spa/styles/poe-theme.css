@@ -1775,11 +1775,25 @@ body:has(.build-page) {
 
 .calc-engine-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  min-height: 32px;
+}
+
+/* Fixed height, one line: text is cut with an ellipsis rather than wrapping. */
+.calc-engine-status {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px 10px;
-  min-height: 30px;
+  gap: 8px;
+  height: 24px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.calc-engine-status .calc-engine-badge {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .calc-engine-switch {
@@ -1847,6 +1861,7 @@ body:has(.build-page) {
 }
 
 .calc-engine-clear {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1962,15 +1977,14 @@ body:has(.build-page) {
   50% { opacity: 1; }
 }
 
+/* Shown over the stats like the popover, so a message never moves the panel. */
 .calc-engine-notice {
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  margin-top: 8px;
-  padding: 6px 8px;
-  border: 1px solid rgba(255, 184, 74, .35);
-  border-radius: 3px;
-  background: rgba(255, 184, 74, .08);
+  padding: 8px 10px;
+  border-color: rgba(255, 184, 74, .45);
+  background: #241d10;
   color: #f4d399;
   font-size: 12px;
   line-height: 1.4;
