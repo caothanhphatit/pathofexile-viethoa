@@ -7,6 +7,7 @@ import Fastify from "fastify";
 import { closePool, createPglitePool, createPool, databaseUrlFromEnv, isPgliteUrl } from "../db/pool.mjs";
 import { adminRoutes } from "./routes/admin.mjs";
 import { authRoutes } from "./routes/auth.mjs";
+import { donateRoutes } from "./routes/donate.mjs";
 import { levelingAccountRoutes } from "./routes/leveling-account.mjs";
 import { premiumRoutes } from "./routes/premium.mjs";
 import { publicRoutes } from "./routes/public.mjs";
@@ -106,6 +107,7 @@ export const buildApp = async (options = {}) => {
   await app.register(levelingAccountRoutes);
   await app.register(translationCommentRoutes);
   await app.register(premiumRoutes, { premiumSigner: options.premiumSigner });
+  await app.register(donateRoutes, { env: options.donateEnv });
   await app.register(publicRoutes, { pobRunner: options.pobRunner, preloadModPool: options.preloadModPool });
   await app.register(adminRoutes);
 

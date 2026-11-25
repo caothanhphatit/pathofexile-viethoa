@@ -27,6 +27,7 @@ import { PassiveTreePage } from "./pages/PassiveTreePage";
 import { CraftSimPage } from "./pages/CraftSimPage";
 import { BuildPlannerPage } from "./pages/BuildPlannerPage";
 import { PremiumPage } from "./pages/PremiumPage";
+import { DonatePage } from "./pages/DonatePage";
 import { InstallPage } from "./pages/InstallPage";
 import { BossDetailPage, BossListPage } from "./pages/BossPages";
 import { BrandMark } from "./components/BrandMark";
@@ -244,6 +245,15 @@ export function App() {
         </nav>
         <div className="app-actions">
           <HeaderAuth locale={locale} currentPath={route.path} />
+          <a
+            className={route.key === "donate" ? "donate-button is-active" : "donate-button"}
+            href="/donate"
+            title={locale === "vi" ? "Ủng hộ trang" : "Support the site"}
+            aria-label={locale === "vi" ? "Ủng hộ trang" : "Support the site"}
+          >
+            <span className="material-symbols-rounded" aria-hidden="true">favorite</span>
+            <span className="donate-button-label">{locale === "vi" ? "Ủng hộ" : "Support"}</span>
+          </a>
           <a className="facebook-button" href={facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook POE Việt hóa" title="Facebook POE Việt hóa">
             <span aria-hidden="true">f</span>
           </a>
@@ -305,6 +315,8 @@ function renderRoute(route: AppRoute, locale: Locale) {
       return <CraftSimPage locale={locale} />;
     case "premium":
       return <PremiumPage locale={locale} />;
+    case "donate":
+      return <DonatePage locale={locale} />;
     case "install":
       return <InstallPage locale={locale} />;
     case "boss":

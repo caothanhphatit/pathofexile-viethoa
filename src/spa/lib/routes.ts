@@ -21,7 +21,8 @@ export type RouteKey =
   | "boss"
   | "bossDetail"
   | "install"
-  | "premium";
+  | "premium"
+  | "donate";
 
 export interface AppRoute {
   key: RouteKey;
@@ -245,6 +246,15 @@ export const routes: AppRoute[] = [
     icon: "workspace_premium",
     navOrder: 90,
     aliases: ["/account/premium"]
+  },
+  {
+    key: "donate",
+    path: "/donate",
+    title: "Ủng hộ POE2 Việt Hóa",
+    shortTitle: "Ủng hộ",
+    description: "Ủng hộ trang bằng chuyển khoản: mã QR, mã chuyển khoản riêng và bảng người ủng hộ.",
+    icon: "favorite",
+    aliases: ["/ung-ho"]
   }
 ];
 
@@ -397,6 +407,13 @@ const routeCopy: Partial<Record<RouteKey, Partial<Record<Locale, Partial<RouteTe
       shortTitle: "Premium",
       description: "Premium plan status, the key for client apps, and the activated device."
     }
+  },
+  donate: {
+    en: {
+      title: "Support POE2 Viet hoa",
+      shortTitle: "Support",
+      description: "Support the site by bank transfer: QR code, a personal transfer code and the supporter wall."
+    }
   }
 };
 
@@ -520,7 +537,7 @@ export const navEntries: NavEntry[] = [
     id: "app",
     icon: "install_desktop",
     label: { vi: "App POEVH", en: "POEVH App" },
-    matchKeys: ["install", "premium"],
+    matchKeys: ["install", "premium", "donate"],
     items: [
       {
         routeKey: "install",
@@ -529,6 +546,10 @@ export const navEntries: NavEntry[] = [
       {
         routeKey: "premium",
         hint: { vi: "Trạng thái gói & key kích hoạt", en: "Plan status & license keys" }
+      },
+      {
+        routeKey: "donate",
+        hint: { vi: "Ủng hộ trang bằng chuyển khoản", en: "Support the site by bank transfer" }
       }
     ]
   }

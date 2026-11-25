@@ -67,6 +67,8 @@ const cleanRouteFiles = new Map([
   ["/boss", "/index.html"],
   ["/boss-detail", "/index.html"],
   ["/boss_detail", "/index.html"],
+  ["/donate", "/index.html"],
+  ["/ung-ho", "/index.html"],
   // Static legal pages: full HTML without JavaScript (Google OAuth verification reads them).
   ["/privacy", "/privacy/index.html"],
   ["/terms", "/terms/index.html"]

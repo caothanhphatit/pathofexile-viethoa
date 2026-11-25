@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Locale } from "../lib/locale";
+import { TierBadge } from "../pages/DonatePage";
 import "../styles/header-auth.css";
 
 export interface AuthUser {
@@ -63,6 +64,7 @@ export function HeaderAuth({ locale, currentPath }: { locale: Locale; currentPat
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [avatarFailed, setAvatarFailed] = useState(false);
+  const [tier, setTier] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   const refreshAuth = async () => {
@@ -74,8 +76,16 @@ export function HeaderAuth({ locale, currentPath }: { locale: Locale; currentPat
       const cfg = (cfgRes.ok ? await cfgRes.json() : null) as AuthConfigResponse | null;
       const ses = (sesRes.ok ? await sesRes.json() : null) as AuthSessionResponse | null;
       setGoogleEnabled(Boolean(cfg?.data?.googleEnabled));
-      setUser(ses?.data?.authenticated && ses.data.user ? ses.data.user : null);
+      const signedIn = Boolean(ses?.data?.authenticated && ses.data.user);
+      setUser(signedIn ? ses!.data!.user! : null);
       setAvatarFailed(false);
+      // Supporter tier badge; missing when the donate API is unavailable.
+      if (signedIn) {
+        const me = await fetch("/api/donate/me", { credentials: "include" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+        setTier(me?.data?.tier ?? null);
+      } else {
+        setTier(null);
+      }
     } catch {
       // Backend offline or static-only mode: keep hidden cleanly.
       setGoogleEnabled(false);
@@ -166,6 +176,7 @@ export function HeaderAuth({ locale, currentPath }: { locale: Locale; currentPat
           )}
         </span>
         <span className="ha-user-name">{shortName}</span>
+        <TierBadge tier={tier} />
         <span className="material-symbols-rounded ha-chevron" aria-hidden="true">expand_more</span>
       </button>
 
@@ -183,6 +194,10 @@ export function HeaderAuth({ locale, currentPath }: { locale: Locale; currentPat
             <a href="/leveling" role="menuitem" onClick={() => setOpen(false)}>
               <span className="material-symbols-rounded" aria-hidden="true">route</span>
               <span>{vi ? "Tiến độ Leveling" : "Leveling progress"}</span>
+            </a>
+            <a href="/donate" role="menuitem" onClick={() => setOpen(false)}>
+              <span className="material-symbols-rounded" aria-hidden="true">favorite</span>
+              <span>{vi ? "Ủng hộ trang" : "Support the site"}</span>
             </a>
             <a href="/premium" role="menuitem" onClick={() => setOpen(false)}>
               <span className="material-symbols-rounded" aria-hidden="true">workspace_premium</span>
