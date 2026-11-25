@@ -304,9 +304,11 @@ test("CoC / Meta socketed active spells stay visible in sockets, Gemcutting moda
     readRepoFile("src/spa/pages/BuildPlannerPage.tsx")
   ]);
 
-  // Socket bar renders ALL supportSkills (including active triggered spells) with triggered styling.
+  // Socket bar renders ALL supportSkills (including active triggered spells) with triggered styling,
+  // and keeps the original skill order without auto-reordering by DPS.
   assert.match(panel, /const socketedGems = skill\.supportSkills;/);
   assert.match(panel, /support\.active \? "sk-socket--triggered" : ""/);
+  assert.doesNotMatch(panel, /arrangeSkillCards\(/);
 
   // Gemcutting modal renders active triggered spells in sidebar and routes clicks to skill-gem mode with supportId.
   assert.match(modal, /kind: "skill"; skillId: string; supportId\?: string/);

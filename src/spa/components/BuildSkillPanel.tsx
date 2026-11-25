@@ -9,8 +9,8 @@ import {
   type BuildSkillChoice,
   type BuildSupportSkillChoice
 } from "../lib/buildPlanner";
-import { arrangeSkillCards, cardDamageNeedsNames, cardDamageOwners, type CardDamageLine } from "../lib/buildStats";
-import { hasGemChoices, type PobGemOptions } from "../lib/gemOptions";
+import { cardDamageNeedsNames, cardDamageOwners, type CardDamageLine } from "../lib/buildStats";
+import { type PobGemOptions } from "../lib/gemOptions";
 import type { CalcQueue } from "../lib/calcQueue";
 import { supportFamilyConflicts } from "../../server/pob-gem-families.mjs";
 import { monsterLibraryOf } from "../../server/pob-monster-gems.mjs";
@@ -268,14 +268,10 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     if (openSkillId && openIndex < 0) onOpenSkillChange(null);
   }, [openSkillId, openIndex, onOpenSkillChange]);
 
-  const arranged = arrangeSkillCards(buildSkills.map((skill, index) => ({
-    index,
-    hasSkill: Boolean(skill.skillId),
-    disabled: Boolean(skill.disabled),
-    dps: currentGroupDps?.[index],
-    isMain: index + 1 === mainSocketGroup,
-    hasChoices: hasGemChoices(gemOptionFor(index)) || Boolean(skill.skillId && monsterLibraryOf(skill))
-  })).filter((card) => !foldedGroups.has(card.index)));
+  // Keep the build's exact skill order (no auto-reordering by DPS or tucking rows away).
+  const visibleIndices = buildSkills
+    .map((_, index) => index)
+    .filter((index) => !foldedGroups.has(index));
 
   const weaponSetRoman = activeWeaponSet === 2 ? "II" : "I";
 
@@ -455,7 +451,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                 name={skillMeta.label}
                 isEmpty={!skill.skillId}
                 suffix={ownerSuffix}
-                hasWarning={hasWarning}
+                hasWarning={hasWarning && !primaryIssue}
                 vi={vi}
               />
               {primaryIssue ? (
@@ -634,21 +630,9 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     <div className={`sk-layout ${openIndex >= 0 ? "has-detail" : ""}`}>
       <div className="sk-list-col">
         <div className="sk-list-stage">
-          <div className="sk-list" role="list" aria-label={vi ? "Danh sách kỹ năng chính" : "Primary skills"}>
-            {arranged.primary.map((index) => renderRow(index))}
+          <div className="sk-list" role="list" aria-label={vi ? "Danh sách kỹ năng" : "Skills"}>
+            {visibleIndices.map((index) => renderRow(index))}
           </div>
-
-          {arranged.secondary.length ? (
-            <details className="sk-secondary">
-              <summary>
-                {vi ? `Kỹ năng phụ (${arranged.secondary.length})` : `Other skills (${arranged.secondary.length})`}
-                <small>{vi ? " — aura, buff, kỹ năng không gây sát thương và nhóm đang tắt" : " — auras, buffs, no-damage and disabled groups"}</small>
-              </summary>
-              <div className="sk-list sk-list--secondary" role="list" aria-label={vi ? "Danh sách kỹ năng phụ" : "Other skills"}>
-                {arranged.secondary.map((index) => renderRow(index))}
-              </div>
-            </details>
-          ) : null}
         </div>
       </div>
 
