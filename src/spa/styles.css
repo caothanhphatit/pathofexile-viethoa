@@ -185,7 +185,9 @@ textarea:focus-visible {
   top: 0;
   z-index: 50;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  /* Equal side columns keep the nav centred on the page; each side never shrinks below
+     its own content, so on tighter widths the nav just drifts instead of overlapping. */
+  grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
   gap: clamp(8px, 1.2vw, 16px);
   align-items: center;
   min-height: 64px;
@@ -427,6 +429,7 @@ textarea:focus-visible {
   z-index: 1;
   display: flex;
   align-items: center;
+  justify-self: end;
   flex-shrink: 0;
   gap: 8px;
 }
