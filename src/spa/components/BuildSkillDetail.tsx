@@ -1,6 +1,6 @@
 // Skill detail panel opened beside the compact skill list on desktop or inline under
 // a skill block on narrow screens, using PoE2's base-art ratios (P = 890 reference).
-import { useEffect, useMemo, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 
 import { MAX_SUPPORT_SOCKETS, supportSocketStepperBounds, type BuildSkillChoice, type BuildSupportSkillChoice } from "../lib/buildPlanner";
 import { cardDamageNeedsNames, formatStat, type CardDamageLine } from "../lib/buildStats";
@@ -87,8 +87,8 @@ export interface BuildSkillDetailProps {
   damageLines: CardDamageLine[];
   activeStats: Record<string, unknown> | null;
   compareQueue?: CalcQueue<Record<string, unknown>>;
-  /** Calculation body with main_socket_group pointing to this skill (for non-main breakdown). */
-  skillCalcBody?: Record<string, unknown> | null;
+  /** Builds a calculation request for any skill group (and optional sub-skill index for CoC/Meta). */
+  calculationBodyForSkill?: (groupNumber: number, mainActiveSkill?: number) => Record<string, unknown> | null;
   locale: string;
   skillMeta: SkillGemMeta;
   resolveSupportGem: (support: BuildSupportSkillChoice) => SkillGemMeta;
@@ -131,7 +131,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     damageLines,
     activeStats,
     compareQueue,
-    skillCalcBody,
+    calculationBodyForSkill,
     locale,
     skillMeta,
     resolveSupportGem,
@@ -162,28 +162,60 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
 
   const vi = locale === "vi";
   useQueueVersion(compareQueue);
-  const perSkillRequest = useMemo(
-    () => (!isMain && skill.skillId && !skill.disabled && skillCalcBody ? skillCalcBody : null),
-    [isMain, skill.skillId, skill.disabled, skillCalcBody]
-  );
+  const [selectedSubId, setSelectedSubId] = useState<string>("main");
+  const firstTriggeredId = triggered[0]?.id ?? "";
+  // When opening a CoC / Meta group with socketed spells, focus the first socketed spell
+  // right away (matching PoE2's in-game Cast on Critical detail screen).
+  useEffect(() => {
+    setSelectedSubId(firstTriggeredId || "main");
+  }, [skill.id, firstTriggeredId]);
+
+  const selectedTriggeredIndex = selectedSubId === "main"
+    ? -1
+    : triggered.findIndex((sup) => sup.id === selectedSubId);
+  const selectedTriggered = selectedTriggeredIndex >= 0 ? triggered[selectedTriggeredIndex] : null;
+  const selectedTriggeredMeta = selectedTriggered ? resolveSupportGem(selectedTriggered) : null;
+  const selectedTriggeredOption = selectedTriggered ? gemOptionFor(index, selectedTriggered.id) : undefined;
+  const selectedMainActiveSkill = selectedTriggered
+    ? (selectedTriggeredOption?.skill ?? (selectedTriggeredIndex + 2))
+    : 1;
+  const defaultMainActiveSkill = skill.mainActiveSkill ?? 1;
+  const canUseActiveStatsDirectly = isMain && selectedMainActiveSkill === defaultMainActiveSkill;
+
+  const perSkillRequest = useMemo(() => {
+    if (canUseActiveStatsDirectly || !skill.skillId || skill.disabled || !calculationBodyForSkill) return null;
+    return calculationBodyForSkill(index + 1, selectedMainActiveSkill);
+  }, [canUseActiveStatsDirectly, skill.skillId, skill.disabled, calculationBodyForSkill, index, selectedMainActiveSkill]);
   const perSkillKey = useMemo(() => (perSkillRequest ? calcKey(perSkillRequest) : ""), [perSkillRequest]);
   useEffect(() => {
     if (compareQueue && perSkillRequest) compareQueue.request(perSkillRequest, 8);
   }, [compareQueue, perSkillRequest]);
   const perSkillEntry = compareQueue && perSkillKey ? compareQueue.get(perSkillKey) : undefined;
   const loadingPerSkill = Boolean(perSkillRequest && (!perSkillEntry || (perSkillEntry.status !== "done" && perSkillEntry.status !== "error")));
-  const details: Record<string, unknown> | null = isMain
+  const details: Record<string, unknown> | null = canUseActiveStatsDirectly
     ? activeStats
     : (perSkillEntry?.status === "done" ? (perSkillEntry.result ?? null) : null);
 
   const mainOption = gemOptionFor(index);
-  const statSets = mainOption?.statSets && mainOption.statSets.length > 1 ? mainOption.statSets : null;
-  const skillParts = !statSets && mainOption?.parts && mainOption.parts.length > 1 ? mainOption.parts : null;
-  const activeStatSet = mainOption && statSets ? pickedStatSet(skill.pobAttrs, mainOption.grantedEffect) : 1;
-  const activeSkillPart = mainOption && skillParts ? (Number(skill.pobAttrs?.skillPart) || mainOption.part || 1) : 1;
+  const activeOption = selectedTriggered ? selectedTriggeredOption : mainOption;
+  const activeAttrs = selectedTriggered ? selectedTriggered.pobAttrs : skill.pobAttrs;
+  const statSets = activeOption?.statSets && activeOption.statSets.length > 1 ? activeOption.statSets : null;
+  const skillParts = !statSets && activeOption?.parts && activeOption.parts.length > 1 ? activeOption.parts : null;
+  const activeStatSet = activeOption && statSets ? pickedStatSet(activeAttrs, activeOption.grantedEffect) : 1;
+  const activeSkillPart = activeOption && skillParts ? (Number(activeAttrs?.skillPart) || activeOption.part || 1) : 1;
+  const activeMeta = selectedTriggeredMeta ?? skillMeta;
+  const activeGemLevel = selectedTriggered ? (selectedTriggered.gemLevel ?? 20) : (skill.gemLevel ?? 20);
+  const activeGemQuality = selectedTriggered ? (selectedTriggered.gemQuality ?? 0) : (skill.gemQuality ?? 0);
   const monsterLibrary = skill.skillId ? monsterLibraryOf(skill) : null;
   const pickMonster = (monsterId: string, gem: MonsterGemPatch) =>
     onUpdateSkill(skill.id, { ...gem, pobAttrs: withGemOption(skill.pobAttrs, { kind: "minion", value: monsterId }) });
+
+  const subDamageLineFor = (label: string, isOwn: boolean) => {
+    if (isOwn) return damageLines.find((line) => line.own);
+    const key = label.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    return damageLines.find((line) => !line.own && line.name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() === key)
+      ?? damageLines.find((line) => !line.own && line.name.toLowerCase().includes(key));
+  };
 
   const minionStats = details && details.Minion && typeof details.Minion === "object"
     ? details.Minion as Record<string, unknown>
@@ -443,38 +475,97 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
         </button>
       </header>
 
-      {/* Icon band: gem medallion 17.4% P (155x155 @ P=890) with ~11% P circular icon inside */}
+      {/* Icon band: single medallion normally, or multi-medallion selector for CoC / Meta skills */}
       <div className="sk-detail-band">
-        <button
-          type="button"
-          className="sk-detail-medallion"
-          onClick={() => onOpenSkillGemPicker(skill.id)}
-          onMouseEnter={(event) => skill.skillId && onHoverMainGem(skill, event)}
-          onMouseMove={onMoveTooltip}
-          onMouseLeave={onLeaveTooltip}
-          aria-label={vi ? `Đổi kỹ năng ${skillMeta.label}` : `Swap ${skillMeta.label}`}
-          title={vi ? "Bấm để đổi kỹ năng" : "Click to swap skill"}
-        >
-          <span className="sk-detail-orb-icon">
-            {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
-          </span>
-        </button>
+        {triggered.length > 0 ? (
+          <div className="sk-detail-medallions" role="tablist" aria-label={vi ? "Kỹ năng trong nhóm" : "Skills in this group"}>
+            {(() => {
+              const mainSelected = !selectedTriggered;
+              const mainLine = subDamageLineFor(skillMeta.label, true);
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mainSelected}
+                  className={`sk-detail-medallion sk-detail-medallion--sub ${mainSelected ? "is-selected" : ""}`}
+                  onClick={() => {
+                    if (mainSelected) onOpenSkillGemPicker(skill.id);
+                    else setSelectedSubId("main");
+                  }}
+                  onMouseEnter={(event) => skill.skillId && onHoverMainGem(skill, event)}
+                  onMouseMove={onMoveTooltip}
+                  onMouseLeave={onLeaveTooltip}
+                  title={mainSelected
+                    ? (vi ? `${skillMeta.label} — bấm lần nữa để đổi kỹ năng` : `${skillMeta.label} — click again to swap`)
+                    : (vi ? `Xem chỉ số ${skillMeta.label}` : `View ${skillMeta.label} breakdown`)}
+                >
+                  <span className="sk-detail-orb-icon">
+                    {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+                  </span>
+                  <span className="sk-detail-medallion-label">
+                    <strong>{skillMeta.label}</strong>
+                    {mainLine && mainLine.value > 0 ? (
+                      <small>{formatBadgeNumber(mainLine.value)}{mainLine.perHit ? (vi ? "/đòn" : "/hit") : " DPS"}</small>
+                    ) : null}
+                  </span>
+                </button>
+              );
+            })()}
+            {triggered.map((sup) => {
+              const meta = resolveSupportGem(sup);
+              const selected = selectedTriggered?.id === sup.id;
+              const line = subDamageLineFor(meta.label, false);
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  className={`sk-detail-medallion sk-detail-medallion--sub ${selected ? "is-selected" : ""}`}
+                  key={sup.id}
+                  onClick={() => setSelectedSubId(sup.id)}
+                  title={vi ? `Xem breakdown của ${meta.label}` : `View ${meta.label} breakdown`}
+                >
+                  <span className="sk-detail-orb-icon">
+                    {meta.icon ? <img key={meta.icon} src={meta.icon} alt="" loading="lazy" /> : <span className="sk-support-initial" aria-hidden="true">{supportInitials(meta.label)}</span>}
+                  </span>
+                  <span className="sk-detail-medallion-label">
+                    <strong>{meta.label}</strong>
+                    {line && line.value > 0 ? (
+                      <small>{formatBadgeNumber(line.value)}{line.perHit ? (vi ? "/đòn" : "/hit") : " DPS"}</small>
+                    ) : null}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="sk-detail-medallion"
+            onClick={() => onOpenSkillGemPicker(skill.id)}
+            onMouseEnter={(event) => skill.skillId && onHoverMainGem(skill, event)}
+            onMouseMove={onMoveTooltip}
+            onMouseLeave={onLeaveTooltip}
+            aria-label={vi ? `Đổi kỹ năng ${skillMeta.label}` : `Swap ${skillMeta.label}`}
+            title={vi ? "Bấm để đổi kỹ năng" : "Click to swap skill"}
+          >
+            <span className="sk-detail-orb-icon">
+              {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+            </span>
+          </button>
+        )}
         <div className="sk-detail-chips">
-          {skill.skillId ? <span className="sk-badge">{vi ? `Cấp ${skill.gemLevel ?? 20}` : `Lv ${skill.gemLevel ?? 20}`}</span> : null}
-          {skill.gemQuality ? <span className="sk-badge">Q {skill.gemQuality}%</span> : null}
-          {grantedTag}
-          {optionBadges.map((tag) => <span className="sk-badge sk-badge--option" key={tag}>{tag}</span>)}
+          {selectedTriggered ? <span className="sk-badge sk-badge--option">{selectedTriggeredMeta?.label}</span> : null}
+          {skill.skillId ? <span className="sk-badge">{vi ? `Cấp ${activeGemLevel}` : `Lv ${activeGemLevel}`}</span> : null}
+          {activeGemQuality ? <span className="sk-badge">Q {activeGemQuality}%</span> : null}
+          {!selectedTriggered ? grantedTag : null}
+          {!selectedTriggered ? optionBadges.map((tag) => <span className="sk-badge sk-badge--option" key={tag}>{tag}</span>) : null}
         </div>
-        {triggered.length ? (
-          <p className="sk-detail-triggered">
-            → {triggered.map((sup) => resolveSupportGem(sup).label).join(", ")}
-          </p>
-        ) : null}
       </div>
 
       {/* Content frame: inset 3.5% P from both sides, 1px bronze border, internal scroll */}
       <div className="sk-detail-frame">
-        {statSets && mainOption ? (
+        {statSets && activeOption ? (
           <div className="sk-tabs" role="tablist" aria-label={vi ? "Chế độ chỉ số" : "Stat sets"}>
             {statSets.map((name, idx) => {
               const setIndex = idx + 1;
@@ -485,10 +576,12 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                   role="tab"
                   aria-selected={selected}
                   className={`sk-tab ${selected ? "is-active" : ""}`}
-                  key={`${mainOption.grantedEffect}:${setIndex}`}
-                  onClick={() => onUpdateSkill(skill.id, {
-                    pobAttrs: withGemOption(skill.pobAttrs, { kind: "statSet", grantedEffect: mainOption.grantedEffect, value: setIndex })
-                  })}
+                  key={`${activeOption.grantedEffect}:${setIndex}`}
+                  onClick={() => {
+                    const nextAttrs = withGemOption(activeAttrs, { kind: "statSet", grantedEffect: activeOption.grantedEffect, value: setIndex });
+                    if (selectedTriggered) onUpdateSupport(skill.id, selectedTriggered.id, { pobAttrs: nextAttrs });
+                    else onUpdateSkill(skill.id, { pobAttrs: nextAttrs });
+                  }}
                 >
                   {optionLabel(name, locale) || `${setIndex}`}
                 </button>
@@ -507,9 +600,11 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                   aria-selected={selected}
                   className={`sk-tab ${selected ? "is-active" : ""}`}
                   key={`part:${partIndex}`}
-                  onClick={() => onUpdateSkill(skill.id, {
-                    pobAttrs: withGemOption(skill.pobAttrs, { kind: "part", value: partIndex })
-                  })}
+                  onClick={() => {
+                    const nextAttrs = withGemOption(activeAttrs, { kind: "part", value: partIndex });
+                    if (selectedTriggered) onUpdateSupport(skill.id, selectedTriggered.id, { pobAttrs: nextAttrs });
+                    else onUpdateSkill(skill.id, { pobAttrs: nextAttrs });
+                  }}
                 >
                   {optionLabel(name, locale) || `${partIndex}`}
                 </button>
@@ -519,8 +614,8 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
         ) : null}
 
         <div className="sk-frame-inner">
-          {skillMeta.description ? (
-            <p className="sk-detail-desc">{skillMeta.description}</p>
+          {activeMeta.description ? (
+            <p className="sk-detail-desc">{activeMeta.description}</p>
           ) : null}
 
           {!skill.disabled && skill.skillId && !(dps !== undefined && dps > 0) && weaponHint ? (

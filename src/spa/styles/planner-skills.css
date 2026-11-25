@@ -819,6 +819,80 @@
   border-color: var(--poe-gem, #1ba29b);
 }
 
+/* Multi-skill medallion row for Cast on Critical / Meta skills (matches PoE2 in-game header) */
+.sk-detail-medallions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.sk-detail-medallion--sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: auto;
+  height: auto;
+  min-width: 72px;
+  max-width: 112px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(91, 74, 47, .65);
+  background: rgba(14, 13, 11, .75);
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+}
+
+.sk-detail-medallion--sub .sk-detail-orb-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.sk-detail-medallion--sub.is-selected {
+  border-color: #d4b06a;
+  background: rgba(58, 45, 24, .55);
+  box-shadow: 0 0 0 1px rgba(212, 176, 106, .35), 0 4px 12px rgba(0, 0, 0, .45);
+}
+
+.sk-detail-medallion--sub.is-selected .sk-detail-orb-icon {
+  border-color: #e6c67e;
+}
+
+.sk-detail-medallion-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  max-width: 100%;
+  text-align: center;
+}
+
+.sk-detail-medallion-label strong {
+  display: block;
+  max-width: 96px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #e6dfd0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.sk-detail-medallion--sub.is-selected .sk-detail-medallion-label strong {
+  color: #f6e2b3;
+}
+
+.sk-detail-medallion-label small {
+  color: #a59c8a;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
 .sk-detail-orb-icon {
   position: relative;
   display: grid;

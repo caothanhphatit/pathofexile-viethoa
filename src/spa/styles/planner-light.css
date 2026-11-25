@@ -1178,6 +1178,29 @@ html:not(.dark) .sk-detail-band {
   border-bottom: 1px solid #ece7dc;
 }
 
+html:not(.dark) .sk-detail-medallion--sub {
+  border-color: #d6cfc0;
+  background: #ffffff;
+}
+
+html:not(.dark) .sk-detail-medallion--sub.is-selected {
+  border-color: #a68240;
+  background: #faf4e6;
+  box-shadow: 0 0 0 1px rgba(166, 130, 64, .3), 0 2px 6px rgba(28, 27, 25, .08);
+}
+
+html:not(.dark) .sk-detail-medallion-label strong {
+  color: #2c2a26;
+}
+
+html:not(.dark) .sk-detail-medallion--sub.is-selected .sk-detail-medallion-label strong {
+  color: #6b4e1e;
+}
+
+html:not(.dark) .sk-detail-medallion-label small {
+  color: #6b675e;
+}
+
 html:not(.dark) .sk-badge,
 html:not(.dark) .sk-chip-btn,
 html:not(.dark) .sk-mini-btn {
