@@ -75,6 +75,7 @@ import { monsterGemTitle } from "../../server/pob-monster-gems.mjs";
 import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanels";
 import { CalcEngineSwitch } from "../components/CalcEngineSwitch";
 import { calcBackend } from "../lib/calcBackend";
+import { setBrowserModPool } from "../lib/modPool";
 import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
 import { BuildSummonStats } from "../components/BuildGemOptions";
 import { BuildSkillPanel } from "../components/BuildSkillPanel";
@@ -2005,6 +2006,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     try {
       const itemModsData = await loadItemModsData();
       const pool = buildModPool(itemModsData, null, itemsData.filter((item) => isUniqueItem(item)).map((item) => ({ name: itemTitle(item, "en"), rarity: "unique", mods: item.mods })));
+      setBrowserModPool(pool);
       setModPool(pool);
       return pool;
     } catch (error) {

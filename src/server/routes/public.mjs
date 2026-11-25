@@ -1,11 +1,14 @@
 import { createHash, randomBytes } from "node:crypto";
 
-import { dropImpossibleOffHands } from "../../shared/equipment-rules.mjs";
+import {
+  formatCalculateResponse,
+  formatNodeDeltasResponse,
+  prepareCalculateRequest,
+  prepareNodeDeltasRequest
+} from "../../shared/build-calculation.mjs";
 import { requireLocalRequest } from "../local-request.mjs";
-import { buildPobXml } from "../pob-build-xml.mjs";
-import { NODE_DELTAS_MAX_NODES, nodeDeltaIds, nodeDeltasXml, runNodeDeltas } from "../pob-node-deltas.mjs";
 import { pobRunnerFromEnv } from "../pob-runner.mjs";
-import { calculationRowItem, dropInvalidEditedRows, editedItemErrors, itemErrorSummary, projectRowItem, serverModPool } from "../item-validation.mjs";
+import { editedItemErrors, itemErrorSummary, projectRowItem, serverModPool } from "../item-validation.mjs";
 
 const newSharedBuildId = () => randomBytes(9).toString("base64url");
 const hashEditToken = (token) => createHash("sha256").update(String(token)).digest("hex");
@@ -401,9 +404,6 @@ export const publicRoutes = async (app, options = {}) => {
 
   const calculationCache = new Map();
 
-  // XML building lives in ../pob-build-xml.mjs so tests and the parity check share it.
-  const buildXml = buildPobXml;
-
   // Each calculation spawns a LuaJIT process. Bound how many run at once and
   // how long each may take so a burst of planner requests cannot pile up
   // dozens of interpreters or hang a worker on a pathological build.
@@ -490,23 +490,11 @@ export const publicRoutes = async (app, options = {}) => {
   };
 
   app.post("/api/builds/calculate", { bodyLimit: 512 * 1024 }, async (request, reply) => {
-    const buildData = request.body;
-    if (!buildData || typeof buildData !== "object") {
-      return reply.status(400).send({ ok: false, error: "Missing build data" });
+    const prep = prepareCalculateRequest(request.body, { modPool: serverModPool() });
+    if (!prep.ok) {
+      return reply.status(prep.statusCode).send({ ok: false, error: prep.error });
     }
-    // Edited items that break the rules are left out (and reported), not the whole build.
-    const checked = dropInvalidEditedRows(buildData.inventory_slots, calculationRowItem);
-    const itemProblems = checked.problems;
-    if (itemProblems.length) buildData.inventory_slots = checked.rows;
-    // An off-hand that cannot be held with its main hand (bow + shield, staff + focus...)
-    // is left out as well: PoB loads the pair from XML without checking it.
-    const weaponSets = dropImpossibleOffHands(buildData.inventory_slots, buildData.passives);
-    if (weaponSets.dropped.length) buildData.inventory_slots = weaponSets.rows;
-    const withItemErrors = (body) => ({
-      ...body,
-      ...(itemProblems.length ? { item_errors: itemProblems } : {}),
-      ...(weaponSets.dropped.length ? { equipment_dropped: weaponSets.dropped } : {})
-    });
+    const { build: buildData, xml: xmlContent } = prep;
     app.log.info({
       className: buildData.className,
       ascendancy: buildData.ascendancy,
@@ -518,10 +506,9 @@ export const publicRoutes = async (app, options = {}) => {
       inventoryCount: buildData.inventory_slots?.length
     }, "build calculate request");
 
-    const xmlContent = buildXml(buildData);
     const hash = createHash("sha256").update(xmlContent).digest("hex");
     if (calculationCache.has(hash)) {
-      return withItemErrors({ ok: true, data: calculationCache.get(hash) });
+      return formatCalculateResponse(calculationCache.get(hash), prep);
     }
 
     const calcKind = (buildData.calc_priority === "compare" || buildData.calc_priority === "background") ? "compare" : "main";
@@ -545,7 +532,7 @@ export const publicRoutes = async (app, options = {}) => {
       }
       calculationCache.set(hash, stats);
 
-      return withItemErrors({ ok: true, data: stats });
+      return formatCalculateResponse(stats, prep);
 
     } catch (err) {
       if (err?.name === "AbortError") return;
@@ -567,20 +554,11 @@ export const publicRoutes = async (app, options = {}) => {
   // job: the planner's own recalculation always goes first.
   const nodeDeltasCache = new Map();
   app.post("/api/builds/node-deltas", { bodyLimit: 512 * 1024 }, async (request, reply) => {
-    const buildData = request.body;
-    if (!buildData || typeof buildData !== "object") {
-      return reply.status(400).send({ ok: false, error: "Missing build data" });
+    const prep = prepareNodeDeltasRequest(request.body, { modPool: serverModPool() });
+    if (!prep.ok) {
+      return reply.status(prep.statusCode).send({ ok: false, error: prep.error });
     }
-    const nodeIds = nodeDeltaIds(buildData.node_ids);
-    if (!nodeIds.length) {
-      return reply.status(400).send({ ok: false, error: "node_ids must list passive node ids" });
-    }
-    if (nodeIds.length > NODE_DELTAS_MAX_NODES) {
-      return reply.status(400).send({ ok: false, error: `At most ${NODE_DELTAS_MAX_NODES} node_ids per request` });
-    }
-    const { node_ids: _ids, analysis: _analysis, calc_priority: _priority, ...build } = buildData;
-    build.inventory_slots = dropImpossibleOffHands(dropInvalidEditedRows(build.inventory_slots, calculationRowItem).rows, build.passives).rows;
-    const xmlContent = nodeDeltasXml(build, nodeIds);
+    const { nodeIds, xml: xmlContent } = prep;
     const hash = createHash("sha256").update(xmlContent).digest("hex");
     if (nodeDeltasCache.has(hash)) {
       return { ok: true, data: nodeDeltasCache.get(hash) };
@@ -596,11 +574,12 @@ export const publicRoutes = async (app, options = {}) => {
     }
     try {
       const started = Date.now();
-      const data = await runNodeDeltas(pobRunner, xmlContent, { priority: "background", signal: disconnect.signal });
+      const output = await pobRunner.run(xmlContent, { priority: "background", signal: disconnect.signal });
+      const formatted = formatNodeDeltasResponse(output);
       app.log.info({ nodes: nodeIds.length, ms: Date.now() - started }, "passive node deltas");
       if (nodeDeltasCache.size >= 300) nodeDeltasCache.delete(nodeDeltasCache.keys().next().value);
-      nodeDeltasCache.set(hash, data);
-      return { ok: true, data };
+      nodeDeltasCache.set(hash, formatted.data);
+      return formatted;
     } catch (err) {
       if (err?.name === "AbortError") return;
       app.log.error(err, "Failed to run PoB node deltas");

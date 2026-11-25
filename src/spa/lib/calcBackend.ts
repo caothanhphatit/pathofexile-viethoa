@@ -4,9 +4,13 @@
 //
 // Behind a feature flag (off by default: `?localcalc=1` or localStorage `poevh_local_calc_flag=1`).
 // Nothing is fetched or initialized until the user explicitly opts in.
-import { buildPobXml } from "../../server/pob-build-xml.mjs";
-import { nodeDeltasFromOutput, nodeDeltasXml } from "../../server/pob-node-deltas.mjs";
-import { dropImpossibleOffHands } from "../../shared/equipment-rules.mjs";
+import {
+  formatCalculateResponse,
+  formatNodeDeltasResponse,
+  prepareCalculateRequest,
+  prepareNodeDeltasRequest
+} from "../../shared/build-calculation.mjs";
+import { ensureBrowserModPool } from "./modPool";
 import type { NodeDeltaBatch } from "./nodePreview";
 
 export type CalcEngineMode = "server" | "local";
@@ -318,22 +322,10 @@ function readCachedMeta(): { version: string; bytes: number; manifest?: PobWebMa
   return null;
 }
 
-/**
- * What the server routes do to a body before building the XML: an off-hand that cannot be
- * held with its main hand is left out. (The server also re-validates edited item texts
- * against the mod pool, src/server/item-validation.mjs; that check is not run locally.)
- */
-function sanitizeBuildBodyForLocal(body: Record<string, unknown>): { body: Record<string, unknown>; dropped: unknown[] } {
-  const copy = { ...body };
-  let dropped: unknown[] = [];
-  if (Array.isArray(copy.inventory_slots)) {
-    const weaponSets = dropImpossibleOffHands(copy.inventory_slots, Array.isArray(copy.passives) ? copy.passives : []);
-    if (weaponSets.dropped.length) {
-      copy.inventory_slots = weaponSets.rows;
-      dropped = weaponSets.dropped;
-    }
-  }
-  return { body: copy, dropped };
+function hasItemTextToValidate(body: unknown): boolean {
+  if (!body || typeof body !== "object") return false;
+  const slots = (body as { inventory_slots?: unknown }).inventory_slots;
+  return Array.isArray(slots) && slots.some((row) => Boolean(row && typeof row === "object" && typeof (row as { raw_text?: unknown }).raw_text === "string" && (row as { raw_text: string }).raw_text));
 }
 
 /** Vietnamese wording of the failures this module names itself (others show PoB's or the browser's text). */
@@ -788,13 +780,16 @@ class CalcBackendController {
       try {
         if (this.initPromise) await this.initPromise;
         if (options.isStale?.()) return { ok: false, error: "stale" };
-        const { body: cleanBody, dropped } = sanitizeBuildBodyForLocal(
-          options.priority === "compare" ? { ...body, full_dps: false } : body
-        );
-        const xml = buildPobXml(cleanBody);
-        const { data } = await this.enqueueLocalXml(xml, options.priority === "compare" ? 1 : 10);
+        const payload = options.priority === "compare"
+          ? { ...body, calc_priority: "compare", full_dps: false }
+          : body;
+        const modPool = hasItemTextToValidate(payload) ? await ensureBrowserModPool() : null;
         if (options.isStale?.()) return { ok: false, error: "stale" };
-        return { ok: true, data, ...(dropped.length ? { equipment_dropped: dropped } : {}) };
+        const prep = prepareCalculateRequest(payload, { modPool });
+        if (!prep.ok) return { ok: false, error: prep.error };
+        const { data } = await this.enqueueLocalXml(prep.xml, options.priority === "compare" ? 1 : 10);
+        if (options.isStale?.()) return { ok: false, error: "stale" };
+        return formatCalculateResponse(data, prep);
       } catch (error) {
         if (options.isStale?.()) return { ok: false, error: "stale" };
         // The user switched back (or deleted the data) while this was queued: just use the server.
@@ -809,12 +804,14 @@ class CalcBackendController {
   async calculateNodeDeltas(body: Record<string, unknown>, nodeIds: string[]): Promise<NodeDeltaBatch> {
     if (this.state.flagEnabled) await this.restoreIfRemembered();
     if (this.state.mode === "local" && this.worker) {
+      const requestBody = { ...body, node_ids: nodeIds };
+      const modPool = hasItemTextToValidate(requestBody) ? await ensureBrowserModPool() : null;
+      const prep = prepareNodeDeltasRequest(requestBody, { modPool });
+      if (!prep.ok) throw new Error(prep.error);
       try {
         if (this.initPromise) await this.initPromise;
-        const { node_ids: _ids, calc_priority: _priority, ...rest } = body;
-        const xml = nodeDeltasXml(sanitizeBuildBodyForLocal(rest).body, nodeIds);
-        const { data } = await this.enqueueLocalXml(xml, 2);
-        return nodeDeltasFromOutput(data);
+        const { data } = await this.enqueueLocalXml(prep.xml, 2);
+        return formatNodeDeltasResponse(data).data as NodeDeltaBatch;
       } catch (error) {
         if (!isPassingError(error)) this.failToServer(error);
       }
