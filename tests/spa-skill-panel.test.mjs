@@ -466,3 +466,12 @@ test("per-weapon-set skill flags (set1/set2) serialize to PoB XML only when rest
   assert.match(blocks[1][1], /set1="false" set2="true"/, "emits set1=false set2=true for set II only skill");
   assert.match(blocks[2][1], /set1="true" set2="false"/, "emits set1=true set2=false for set I only skill");
 });
+
+test("closed GemCuttingModal does not clear page tooltips on re-render", async () => {
+  const modal = await readRepoFile("src/spa/components/GemCuttingModal.tsx");
+  assert.match(
+    modal,
+    /if \(!open \|\| !target\) \{\s*if \(prevTargetKeyRef\.current\) \{\s*prevTargetKeyRef\.current = "";\s*onLeaveTooltip\(\);\s*\}\s*return;\s*\}/,
+    "GemCuttingModal must only call onLeaveTooltip() when closing from an open state"
+  );
+});

@@ -226,8 +226,10 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
   const prevTargetKeyRef = useRef<string>("");
   useEffect(() => {
     if (!open || !target) {
-      prevTargetKeyRef.current = "";
-      onLeaveTooltip();
+      if (prevTargetKeyRef.current) {
+        prevTargetKeyRef.current = "";
+        onLeaveTooltip();
+      }
       return;
     }
     const key = `${target.kind}:${target.skillId}:${target.supportId || "new"}`;

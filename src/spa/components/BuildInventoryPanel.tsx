@@ -214,7 +214,14 @@ export function BuildInventoryPanel(props: {
 
       <div className="pi-grid pi-grid--poe" role="list">
         {shown.map((row) => (
-          <div className="pi-cell-wrap" role="listitem" key={row.item.id}>
+          <div
+            className="pi-cell-wrap"
+            role="listitem"
+            key={row.item.id}
+            onMouseEnter={(event) => props.onItemEnter(row.item.id, event)}
+            onMouseMove={props.onItemMove}
+            onMouseLeave={props.onItemLeave}
+          >
             <button
               type="button"
               className={`pi-cell is-${row.rarity}${slotSelected ? (row.fits ? " is-fit" : " is-unfit") : ""}`}
@@ -227,9 +234,6 @@ export function BuildInventoryPanel(props: {
               }}
               onDragEnd={() => props.onItemDragEnd?.()}
               onClick={() => props.onItemClick(row.item.id)}
-              onMouseEnter={(event) => props.onItemEnter(row.item.id, event)}
-              onMouseMove={props.onItemMove}
-              onMouseLeave={props.onItemLeave}
               onFocus={(event) => props.onItemEnter(row.item.id, event as unknown as MouseEvent)}
               onBlur={props.onItemLeave}
               aria-label={`${row.name} (${vi ? RARITY_LABEL[row.rarity] ?? row.rarity : row.rarity}) — ${row.clickHint ?? (vi ? "bấm để mặc" : "click to equip")}`}

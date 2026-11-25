@@ -4496,8 +4496,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       {tooltip.visible && (
         <div ref={tooltipRef} className="poe-tooltip-float poe-no-tooltip" style={{
           position: "fixed",
-          left: 0,
-          top: 0,
           pointerEvents: "none",
           zIndex: 9999,
           maxWidth: "400px"
