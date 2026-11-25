@@ -119,6 +119,9 @@ export interface BuildSkillChoice extends BuildGemDetails {
   itemSource?: string;
   /** Which active gem of the group PoB calculates (1 = the first). */
   mainActiveSkill?: number;
+  /** Whether this skill group is enabled on Weapon Set I / II (PoB <Skill set1/set2>; undefined = true). */
+  weaponSet1?: boolean;
+  weaponSet2?: boolean;
 }
 
 export const MIN_SUPPORT_SOCKETS = 2;
@@ -257,6 +260,8 @@ export interface PobSkillGroup {
   gems: PobGem[];
   source?: string;
   mainActiveSkill?: number;
+  set1?: boolean;
+  set2?: boolean;
 }
 
 export interface PobTreeSpec {
@@ -485,7 +490,9 @@ const normalizeSkillChoices = (rows: unknown): BuildSkillChoice[] => {
     ...(row.gemDisabled ? { gemDisabled: true } : {}),
     ...(row.itemSlot ? { itemSlot: row.itemSlot } : {}),
     ...(row.itemSource ? { itemSource: row.itemSource } : {}),
-    ...((row.mainActiveSkill ?? 1) > 1 ? { mainActiveSkill: row.mainActiveSkill } : {})
+    ...((row.mainActiveSkill ?? 1) > 1 ? { mainActiveSkill: row.mainActiveSkill } : {}),
+    ...(row.weaponSet1 === false ? { weaponSet1: false } : {}),
+    ...(row.weaponSet2 === false ? { weaponSet2: false } : {})
   }));
 };
 
@@ -1136,12 +1143,16 @@ export function parsePobXmlDocument(doc: Document): PobImportData {
         variantId: xmlAttribute(gem, "variantId") || undefined,
         extra: pobGemExtraAttributes(gem)
       }));
+      const set1Attr = xmlAttribute(skill, "set1");
+      const set2Attr = xmlAttribute(skill, "set2");
       // Empty groups are kept: PoB's mainSocketGroup counts them.
       skillGroups.push({
         enabled: xmlAttribute(skill, "enabled", "true") !== "false",
         slot: xmlAttribute(skill, "slot"),
         source: xmlAttribute(skill, "source") || undefined,
         mainActiveSkill: parseWholeNumber(xmlAttribute(skill, "mainActiveSkill", "1"), 1) || 1,
+        ...(set1Attr === "false" ? { set1: false } : {}),
+        ...(set2Attr === "false" ? { set2: false } : {}),
         gems
       });
     }
@@ -1352,6 +1363,8 @@ export function pobSkillGroupChoices(data: PobImportData, options: PobSkillChoic
     if (group.slot) choice.itemSlot = group.slot;
     if (group.source) choice.itemSource = group.source;
     if (group.mainActiveSkill && group.mainActiveSkill > 1) choice.mainActiveSkill = group.mainActiveSkill;
+    if (group.set1 === false) choice.weaponSet1 = false;
+    if (group.set2 === false) choice.weaponSet2 = false;
     groupIndex.push(choices.length);
     choices.push(choice);
   }
@@ -1855,6 +1868,8 @@ export function skillChoiceFromBuildSkill(value: unknown): BuildSkillChoice | nu
     if (typeof value.item_source === "string" && value.item_source) choice.itemSource = value.item_source;
     const mainActive = Number(value.main_active_skill);
     if (Number.isInteger(mainActive) && mainActive > 1) choice.mainActiveSkill = mainActive;
+    if (value.set1 === false || value.weaponSet1 === false) choice.weaponSet1 = false;
+    if (value.set2 === false || value.weaponSet2 === false) choice.weaponSet2 = false;
     const sockets = clampSupportSockets(value.support_sockets ?? value.supportSockets);
     if (sockets !== undefined) choice.supportSockets = sockets;
   }
@@ -1962,7 +1977,7 @@ export function buildSkill(choice: BuildSkillChoice): string | Record<string, un
   const supportSkills = choice.supportSkills.map(buildSupportSkill).filter((row): row is string | Record<string, unknown> => Boolean(row));
   if (!skillId) return null;
   const sockets = clampSupportSockets(choice.supportSockets);
-  const hasGroupDetails = choice.disabled || choice.gemDisabled || choice.itemSlot || choice.itemSource || (choice.mainActiveSkill ?? 1) > 1 || sockets !== undefined;
+  const hasGroupDetails = choice.disabled || choice.gemDisabled || choice.itemSlot || choice.itemSource || (choice.mainActiveSkill ?? 1) > 1 || choice.weaponSet1 === false || choice.weaponSet2 === false || sockets !== undefined;
   if (!note && levelInterval === undefined && !supportSkills.length && !hasGemDetails(choice) && !hasGroupDetails) return skillId;
   const row: Record<string, unknown> = { id: skillId };
   if (levelInterval !== undefined) row.level_interval = levelInterval;
@@ -1975,6 +1990,8 @@ export function buildSkill(choice: BuildSkillChoice): string | Record<string, un
   if (choice.itemSlot) row.item_slot = choice.itemSlot;
   if (choice.itemSource) row.item_source = choice.itemSource;
   if ((choice.mainActiveSkill ?? 1) > 1) row.main_active_skill = choice.mainActiveSkill;
+  if (choice.weaponSet1 === false) row.set1 = false;
+  if (choice.weaponSet2 === false) row.set2 = false;
   return row;
 }
 
@@ -2201,6 +2218,8 @@ export function calculationRequestBody(input: CalculationRequestInput): Record<s
         if (row.itemSlot) group.slot = row.itemSlot;
         if (row.itemSource) group.source = row.itemSource;
         if (row.mainActiveSkill) group.main_active_skill = row.mainActiveSkill;
+        if (row.weaponSet1 === false) group.set1 = false;
+        if (row.weaponSet2 === false) group.set2 = false;
         return group;
       }),
     activeWeaponSet: input.activeWeaponSet,

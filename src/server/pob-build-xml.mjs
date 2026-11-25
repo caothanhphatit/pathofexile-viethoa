@@ -229,6 +229,10 @@ const skillGroupXml = (group, fullDps = false, slotItemIds = undefined) => {
   const slotName = group.slot ? String(group.slot).replace(/[^A-Za-z0-9 ]/g, "").slice(0, 30) : "";
   if (slotName) attrs.push(["slot", slotName]);
   if (group.source) attrs.push(["source", groupSource(group.source, slotName, slotItemIds)]);
+  if (group.set1 === false || group.set2 === false) {
+    attrs.push(["set1", group.set1 === false ? "false" : "true"]);
+    attrs.push(["set2", group.set2 === false ? "false" : "true"]);
+  }
   return `\t\t\t<Skill ${attrs.map(([key, value]) => `${key}="${escapeXml(value)}"`).join(" ")}>\n\t\t\t\t${gems.join("\n\t\t\t\t")}\n\t\t\t</Skill>`;
 };
 

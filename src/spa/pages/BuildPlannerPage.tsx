@@ -1616,6 +1616,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       granted,
       tags: record?.tags,
       requirements: record?.requirements,
+      weaponSet1: skill.weaponSet1,
+      weaponSet2: skill.weaponSet2,
       characterLevel: level,
       activeSet: activeWeaponSet,
       sets,
@@ -1633,6 +1635,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         granted: false,
         tags: supRec?.tags,
         requirements: supRec?.requirements,
+        weaponSet1: skill.weaponSet1,
+        weaponSet2: skill.weaponSet2,
         characterLevel: level,
         activeSet: activeWeaponSet,
         sets,
@@ -2444,8 +2448,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
   /** Why a skill shows no damage when the active weapon set does not hold what its gem requires. */
   const weaponHintFor = (skill: BuildSkillChoice): string | null => {
-    // A skill an item grants comes with that item.
+    // A skill an item grants comes with that item; a skill disabled for the active weapon set does not use it.
     if (skill.itemSlot || skill.itemSource) return null;
+    if ((activeWeaponSet === 1 && skill.weaponSet1 === false) || (activeWeaponSet === 2 && skill.weaponSet2 === false)) return null;
     const record = gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem");
     if (!record) return null;
     return skillWeaponHint({

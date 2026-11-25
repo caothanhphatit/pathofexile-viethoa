@@ -39,6 +39,16 @@ const ATTR_KEYS = [
  * - exact per-gem attribute requirement (only when supplied directly, never linearly guessed)
  * - negative unreserved Spirit from PoB for Persistent skills
  */
+export function isSkillActiveOnWeaponSet(
+  skill: { weaponSet1?: boolean; weaponSet2?: boolean },
+  activeSet: 1 | 2
+): boolean {
+  const s1 = skill.weaponSet1 !== false;
+  const s2 = skill.weaponSet2 !== false;
+  if (!s1 && !s2) return true;
+  return activeSet === 1 ? s1 : s2;
+}
+
 export function skillUsabilityIssues(input: {
   skillName: string;
   gemLevel: number;
@@ -47,6 +57,8 @@ export function skillUsabilityIssues(input: {
   tags?: string[];
   requirements?: string[];
   gemReq?: Partial<Record<"Str" | "Dex" | "Int", number>>;
+  weaponSet1?: boolean;
+  weaponSet2?: boolean;
   characterLevel: number;
   activeSet: 1 | 2;
   sets: Record<1 | 2, WeaponHands>;
@@ -56,9 +68,13 @@ export function skillUsabilityIssues(input: {
   if (input.disabled) return [];
   const vi = input.locale === "vi";
   const issues: SkillUsabilityIssue[] = [];
+  const activeOnCurrentSet = isSkillActiveOnWeaponSet(
+    { weaponSet1: input.weaponSet1, weaponSet2: input.weaponSet2 },
+    input.activeSet
+  );
 
-  // 1. Weapon compatibility (Attack skills & weapon-specific skills vs active Weapon Set I/II).
-  if (!input.granted) {
+  // 1. Weapon compatibility (only when the skill is enabled for the currently active Weapon Set).
+  if (!input.granted && activeOnCurrentSet) {
     const need = skillWeaponNeed(input.requirements);
     if (need && skillWeaponMissing(need, input.sets[input.activeSet])) {
       const hint = skillWeaponHint({
@@ -117,16 +133,17 @@ export function skillUsabilityIssues(input: {
     }
   }
 
-  // 4. Spirit over-reservation (Persistent / Aura / Herald / Meta skills when SpiritUnreserved < 0).
-  if (stats && isSpiritReservingSkill(input.tags)) {
+  // 4. Spirit over-reservation (only for Persistent skills actually enabled on the active Weapon Set).
+  if (stats && activeOnCurrentSet && isSpiritReservingSkill(input.tags)) {
     const unreserved = typeof stats.SpiritUnreserved === "number" ? stats.SpiritUnreserved : undefined;
     if (unreserved !== undefined && unreserved < 0) {
+      const setRoman = input.activeSet === 2 ? "II" : "I";
       issues.push({
         kind: "spirit",
-        shortLabel: vi ? `Thiếu ${Math.abs(Math.round(unreserved))} Spirit` : `Need ${Math.abs(Math.round(unreserved))} Spirit`,
+        shortLabel: vi ? `Thiếu ${Math.abs(Math.round(unreserved))} Spirit (${setRoman})` : `Need ${Math.abs(Math.round(unreserved))} Spirit (${setRoman})`,
         message: vi
-          ? `Không đủ Spirit để bật hết kỹ năng duy trì (đang thiếu ${Math.abs(Math.round(unreserved))} Spirit).`
-          : `Not enough Spirit for active persistent skills (short by ${Math.abs(Math.round(unreserved))} Spirit).`
+          ? `Không đủ Spirit ở Bộ vũ khí ${setRoman} để bật hết kỹ năng duy trì (thiếu ${Math.abs(Math.round(unreserved))} Spirit). Bạn có thể tắt bớt hoặc chỉ bật kỹ năng này cho 1 bộ vũ khí.`
+          : `Not enough Spirit on Weapon Set ${setRoman} for active persistent skills (short by ${Math.abs(Math.round(unreserved))} Spirit).`
       });
     }
   }

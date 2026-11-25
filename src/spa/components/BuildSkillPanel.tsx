@@ -424,9 +424,14 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
       : (isOpen ? "up" : "down");
     const dmgLenClass = badge.value.length >= 9 ? "is-long" : badge.value.length >= 7 ? "is-med" : "";
 
+    const set1On = skill.weaponSet1 !== false;
+    const set2On = skill.weaponSet2 !== false;
+    const activeOnCurrentSet = (!set1On && !set2On) || (activeWeaponSet === 1 ? set1On : set2On);
+    const skillSetBadge = set1On && !set2On ? "I" : (!set1On && set2On ? "II" : weaponSetRoman);
+
     return (
       <div className="sk-item" key={skill.id}>
-        <article className={`sk-row ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""} ${isUnusable ? "is-unusable" : ""} ${isOpen ? "is-open" : ""}`}>
+        <article className={`sk-row ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""} ${!activeOnCurrentSet ? "is-other-set" : ""} ${isUnusable ? "is-unusable" : ""} ${isOpen ? "is-open" : ""}`}>
           {/* Header bar (840 x 80 = 9.52% W): flush above socket bar, icon 7.6% W @ 8.7% W */}
           <div className="sk-row-head">
             <span className="sk-collapse-stub" aria-hidden="true" />
@@ -493,7 +498,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                 : (isOpen ? `Close ${skillMeta.label} details` : `Open ${skillMeta.label} details${badge.exact ? ` (${badge.exact})` : ""}`)}
               title={badge.exact || (vi ? (isOpen ? "Đóng chi tiết" : "Mở chi tiết") : (isOpen ? "Close details" : "Open details"))}
             >
-              <span className="sk-dmg-set" aria-hidden="true">{weaponSetRoman}</span>
+              <span className="sk-dmg-set" aria-hidden="true">{skillSetBadge}</span>
               <span className={`sk-dmg-val ${dmgLenClass}`}>
                 {badge.kind ? <span className="sk-dmg-kind">{badge.kind}: </span> : null}
                 <b>{badge.value}</b>

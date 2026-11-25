@@ -160,11 +160,12 @@ export function buildWarnings(input: {
     const spiritUnreserved = number("SpiritUnreserved");
     if (spiritUnreserved !== undefined && spiritUnreserved < 0) {
       const deficit = Math.abs(Math.round(spiritUnreserved));
+      const setRoman = (input.activeWeaponSet ?? 1) === 2 ? "II" : "I";
       warnings.push({
         kind: "spirit",
         text: vi
-          ? `Thiếu ${deficit} Spirit: các kỹ năng duy trì đang bật vượt quá tổng Spirit hiện có.`
-          : `Not enough Spirit (short by ${deficit}): active persistent skills exceed total Spirit.`
+          ? `Thiếu ${deficit} Spirit ở Bộ vũ khí ${setRoman}: các kỹ năng duy trì đang bật trên Bộ ${setRoman} vượt quá tổng Spirit hiện có.`
+          : `Not enough Spirit on Weapon Set ${setRoman} (short by ${deficit}): active persistent skills on Set ${setRoman} exceed total Spirit.`
       });
     }
   }

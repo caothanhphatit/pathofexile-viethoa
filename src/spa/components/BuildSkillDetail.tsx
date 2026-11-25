@@ -883,6 +883,47 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
       <footer className="sk-detail-foot">
         {skill.skillId ? (
           <div className="sk-foot-row">
+            <span className="sk-foot-label">{vi ? "Dùng với bộ vũ khí" : "Used with weapon set"}</span>
+            {(() => {
+              const s1 = skill.weaponSet1 !== false;
+              const s2 = skill.weaponSet2 !== false;
+              const toggleSet = (which: 1 | 2) => {
+                const next1 = which === 1 ? !s1 : s1;
+                const next2 = which === 2 ? !s2 : s2;
+                // Keep at least one weapon set enabled (matches PoB2 / in-game PoE2).
+                if (!next1 && !next2) return;
+                onUpdateSkill(skill.id, {
+                  weaponSet1: next1 ? undefined : false,
+                  weaponSet2: next2 ? undefined : false
+                });
+              };
+              return (
+                <div className="sk-wset-group" role="group" aria-label={vi ? "Dùng với bộ vũ khí" : "Used with weapon set"}>
+                  <button
+                    type="button"
+                    className={`sk-wset-btn ${s1 ? "is-on" : ""}`}
+                    onClick={() => toggleSet(1)}
+                    aria-pressed={s1}
+                    title={vi ? "Bật kỹ năng này cho Bộ vũ khí I" : "Enable for Weapon Set I"}
+                  >
+                    I
+                  </button>
+                  <button
+                    type="button"
+                    className={`sk-wset-btn ${s2 ? "is-on" : ""}`}
+                    onClick={() => toggleSet(2)}
+                    aria-pressed={s2}
+                    title={vi ? "Bật kỹ năng này cho Bộ vũ khí II" : "Enable for Weapon Set II"}
+                  >
+                    II
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+        ) : null}
+        {skill.skillId ? (
+          <div className="sk-foot-row">
             <span className="sk-foot-label">{vi ? "Bật nhóm kỹ năng" : "Enable skill group"}</span>
             <button
               type="button"

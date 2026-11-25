@@ -1630,3 +1630,15 @@ html:not(.dark) .build-change-banner-close:hover {
 html:not(.dark) .build-change-banner-list li.is-alert {
   color: #a62218;
 }
+
+html:not(.dark) .sk-wset-btn {
+  border-color: #d6cfc0;
+  background: #f5f3ee;
+  color: #767168;
+}
+
+html:not(.dark) .sk-wset-btn.is-on {
+  border-color: #9e7d43;
+  background: #f7ebd2;
+  color: #5c4314;
+}

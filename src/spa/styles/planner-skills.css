@@ -1466,6 +1466,44 @@
   letter-spacing: 0;
 }
 
+.sk-row.is-other-set {
+  opacity: .72;
+}
+
+.sk-wset-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sk-wset-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid #4d3f29;
+  border-radius: 2px;
+  background: #14110e;
+  color: #8f8470;
+  font-family: var(--poe-game, var(--font-body));
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease;
+}
+
+.sk-wset-btn:hover {
+  border-color: #9e8252;
+  color: #e6d7b8;
+}
+
+.sk-wset-btn.is-on {
+  border-color: #c9a45a;
+  background: rgba(201, 164, 90, .2);
+  color: #f6e3b6;
+}
+
 .sk-delete-btn {
   display: inline-flex;
   align-items: center;

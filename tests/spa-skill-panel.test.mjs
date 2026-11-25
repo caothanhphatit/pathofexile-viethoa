@@ -401,19 +401,36 @@ test("skillUsability distinguishes Attack weapon requirements vs Spell, attribut
   });
   assert.equal(sparkIssues.length, 0);
 
-  // Persistent Spirit skill when SpiritUnreserved < 0 -> Spirit error.
-  const cocIssues = mod.skillUsabilityIssues({
+  // Persistent Spirit skill when SpiritUnreserved < 0 -> Spirit error ONLY on the weapon set where the skill is enabled.
+  const cocIssuesSet1 = mod.skillUsabilityIssues({
     skillName: "Cast on Critical",
     gemLevel: 20,
     tags: ["Buff", "Persistent", "Trigger", "Meta"],
     requirements: ["Requires: Level (1—90), (4—157) Int"],
+    weaponSet1: true,
+    weaponSet2: false,
     characterLevel: 95,
     activeSet: 1,
     sets: wandSets,
     stats: { Str: 40, Dex: 80, Int: 250, ReqInt: 157, SpiritUnreserved: -30 },
     locale: "vi"
   });
-  assert.equal(cocIssues.some((i) => i.kind === "spirit" && /30 Spirit/.test(i.shortLabel)), true);
+  assert.equal(cocIssuesSet1.some((i) => i.kind === "spirit" && /30 Spirit/.test(i.shortLabel)), true);
+
+  const cocIssuesInactiveSet = mod.skillUsabilityIssues({
+    skillName: "Cast on Critical",
+    gemLevel: 20,
+    tags: ["Buff", "Persistent", "Trigger", "Meta"],
+    requirements: ["Requires: Level (1—90), (4—157) Int"],
+    weaponSet1: false,
+    weaponSet2: true,
+    characterLevel: 95,
+    activeSet: 1,
+    sets: wandSets,
+    stats: { Str: 40, Dex: 80, Int: 250, ReqInt: 157, SpiritUnreserved: -30 },
+    locale: "vi"
+  });
+  assert.equal(cocIssuesInactiveSet.some((i) => i.kind === "spirit"), false, "no Spirit warning when skill is disabled on active weapon set");
 
   // Unusable equipped item detection by slot (level & attribute requirements).
   const badItems = mod.unusableItemReasonsBySlot({
@@ -430,4 +447,22 @@ test("skillUsability distinguishes Attack weapon requirements vs Spell, attribut
   assert.equal(badItems.has("BodyArmour1"), true);
   assert.match(badItems.get("Helm1")[0], /Thiếu 40 Int/);
   assert.match(badItems.get("BodyArmour1")[0], /Cần cấp 92/);
+});
+
+test("per-weapon-set skill flags (set1/set2) serialize to PoB XML only when restricted", async () => {
+  const { buildPobXml } = await import("../src/server/pob-build-xml.mjs");
+  const xml = buildPobXml({
+    className: "Mercenary",
+    level: 100,
+    skills: [
+      { skill_id: "Metadata/Items/Gems/SkillGemHeraldOfIce", name_spec: "Herald of Ice", level: 20, set1: true, set2: true },
+      { skill_id: "Metadata/Items/Gems/SkillGemTrinity", name_spec: "Trinity", level: 20, set1: false, set2: true },
+      { skill_id: "Metadata/Items/Gems/SkillGemWindDancer", name_spec: "Wind Dancer", level: 20, set1: true, set2: false }
+    ]
+  });
+  const blocks = [...xml.matchAll(/<Skill\b([^>]*)>([\s\S]*?)<\/Skill>/g)];
+  assert.equal(blocks.length, 3);
+  assert.doesNotMatch(blocks[0][1], /\bset1=/, "omits set1/set2 when enabled on both sets");
+  assert.match(blocks[1][1], /set1="false" set2="true"/, "emits set1=false set2=true for set II only skill");
+  assert.match(blocks[2][1], /set1="true" set2="false"/, "emits set1=true set2=false for set I only skill");
 });
