@@ -1690,6 +1690,21 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     }) : null, [calcPayload, inventory, buildSkills, effectiveTree, activeWeaponSet, configInputs, itemRecordForChoice]);
   const currentCalculationBody = useCallback(() => calculationBodyFor(), [calculationBodyFor]);
 
+  const calculationBodyForSkill = useCallback((groupNumber: number, mainActiveSkill?: number) => {
+    const base = currentCalculationBody();
+    if (!base) return null;
+    const idx = groupNumber - 1;
+    if (idx < 0 || idx >= buildSkills.length || !buildSkills[idx]?.skillId.trim()) return null;
+    const row = buildSkills.slice(0, idx).filter((item) => item.skillId.trim()).length + 1;
+    if (mainActiveSkill && mainActiveSkill > 0 && Array.isArray(base.skills)) {
+      const nextSkills = (base.skills as Array<Record<string, unknown>>).map((entry, entryIdx) => (
+        entryIdx === row - 1 ? { ...entry, main_active_skill: mainActiveSkill } : entry
+      ));
+      return { ...base, skills: nextSkills, main_socket_group: row, full_dps: false };
+    }
+    return { ...base, main_socket_group: row, full_dps: false };
+  }, [currentCalculationBody, buildSkills]);
+
   // "What if" calculations (equip this item, use that gem): one at a time, cached by body.
   const compareQueue = useMemo(() => new CalcQueue<Record<string, unknown>>(async (body) => {
     // Routed through calcBackend: uses local PoB WASM when enabled, else server compare queue.
@@ -4164,20 +4179,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 onOpenSkillChange={setExpandedSkill}
                 modalOpen={Boolean(activeModal || activeGemPicker || buildDialog || showBuildHelp || pobImportOpen || editorTarget || newItemOpen || explainStat)}
                 compareQueue={compareQueue}
-                calculationBodyForSkill={(groupNumber, mainActiveSkill) => {
-                  const base = currentCalculationBody();
-                  if (!base) return null;
-                  const idx = groupNumber - 1;
-                  if (idx < 0 || idx >= buildSkills.length || !buildSkills[idx]?.skillId.trim()) return null;
-                  const row = buildSkills.slice(0, idx).filter((item) => item.skillId.trim()).length + 1;
-                  if (mainActiveSkill && mainActiveSkill > 0 && Array.isArray(base.skills)) {
-                    const nextSkills = (base.skills as Array<Record<string, unknown>>).map((entry, entryIdx) => (
-                      entryIdx === row - 1 ? { ...entry, main_active_skill: mainActiveSkill } : entry
-                    ));
-                    return { ...base, skills: nextSkills, main_socket_group: row, full_dps: false };
-                  }
-                  return { ...base, main_socket_group: row, full_dps: false };
-                }}
+                calculationBodyForSkill={calculationBodyForSkill}
                 activeGemStrip={gemStrip}
                 renderGemStrip={gemStripFor}
                 resolveSkillGem={(skill) => {

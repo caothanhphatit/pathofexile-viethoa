@@ -6,6 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEv
 import {
   effectiveSupportSockets,
   MAX_SUPPORT_SOCKETS,
+  supportSocketStepperBounds,
   type BuildSkillChoice,
   type BuildSupportSkillChoice
 } from "../lib/buildPlanner";
@@ -580,21 +581,43 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                   </span>
                 );
               })}
-              {Array.from({ length: freeSockets }).map((_, slotIdx) => (
-                <span className="sk-socket-wrap" role="listitem" key={`free-${slotIdx}`}>
-                  <button
-                    type="button"
-                    className="sk-socket sk-socket--empty"
-                    onClick={() => onAddSupport(skill.id)}
-                    aria-label={vi ? `Thêm gem hỗ trợ vào ${skillMeta.label}` : `Add support gem to ${skillMeta.label}`}
-                    title={vi ? "Thêm gem hỗ trợ (gợi ý theo DPS tăng thêm)" : "Add a support (ranked by DPS gain)"}
-                  >
-                    <span className="sk-socket-disc">
-                      <span className="sk-socket-plus material-symbols-rounded" aria-hidden="true">add</span>
-                    </span>
-                  </button>
-                </span>
-              ))}
+              {Array.from({ length: freeSockets }).map((_, slotIdx) => {
+                const socketBounds = supportSocketStepperBounds(skill);
+                const canRemoveSocket = slotIdx === freeSockets - 1 && socketBounds.canDecrease;
+                const shrinkSocket = () => onUpdateSkill(skill.id, { supportSockets: socketBounds.current - 1 });
+                return (
+                  <span className="sk-socket-wrap" role="listitem" key={`free-${slotIdx}`}>
+                    <button
+                      type="button"
+                      className="sk-socket sk-socket--empty"
+                      onClick={() => onAddSupport(skill.id)}
+                      onContextMenu={canRemoveSocket ? (event) => {
+                        event.preventDefault();
+                        shrinkSocket();
+                      } : undefined}
+                      aria-label={vi ? `Thêm gem hỗ trợ vào ${skillMeta.label}` : `Add support gem to ${skillMeta.label}`}
+                      title={canRemoveSocket
+                        ? (vi ? "Thêm gem hỗ trợ (chuột phải hoặc bấm − để giảm ô support)" : "Add support (right-click or press − to remove this socket)")
+                        : (vi ? "Thêm gem hỗ trợ (gợi ý theo DPS tăng thêm)" : "Add a support (ranked by DPS gain)")}
+                    >
+                      <span className="sk-socket-disc">
+                        <span className="sk-socket-plus material-symbols-rounded" aria-hidden="true">add</span>
+                      </span>
+                    </button>
+                    {canRemoveSocket ? (
+                      <button
+                        type="button"
+                        className="sk-socket-shrink"
+                        onClick={shrinkSocket}
+                        aria-label={vi ? `Giảm số ô support của ${skillMeta.label}` : `Decrease support sockets for ${skillMeta.label}`}
+                        title={vi ? "Giảm 1 ô support" : "Remove 1 support socket"}
+                      >
+                        −
+                      </button>
+                    ) : null}
+                  </span>
+                );
+              })}
               {Array.from({ length: lockedRecesses }).map((_, slotIdx) => (
                 <span className="sk-socket-wrap" role="listitem" key={`recess-${slotIdx}`}>
                   <button

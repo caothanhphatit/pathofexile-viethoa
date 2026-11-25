@@ -8,7 +8,10 @@ import { deflateSync } from "node:zlib";
 import ts from "typescript";
 import vm from "node:vm";
 
+import * as pobConfigStrings from "../src/shared/pob-config-strings.mjs";
+
 const require = createRequire(import.meta.url);
+const sharedRequire = (id) => (id === "../../shared/pob-config-strings.mjs" ? pobConfigStrings : require(id));
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const readRepoFile = (filename) => readFile(join(repoRoot, filename), "utf8");
 const plain = (value) => JSON.parse(JSON.stringify(value));
@@ -22,7 +25,7 @@ const loadBuildPlannerModule = async (contextOverrides = {}) => {
   vm.runInNewContext(js, {
     module,
     exports: module.exports,
-    require,
+    require: sharedRequire,
     console,
     Date,
     Math,

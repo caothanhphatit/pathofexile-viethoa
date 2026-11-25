@@ -1,6 +1,6 @@
 // Skill detail panel opened beside the compact skill list on desktop or inline under
 // a skill block on narrow screens, using PoE2's base-art ratios (P = 890 reference).
-import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { type BuildSkillChoice, type BuildSupportSkillChoice } from "../lib/buildPlanner";
 import { cardDamageNeedsNames, formatStat, type CardDamageLine } from "../lib/buildStats";
@@ -173,10 +173,16 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     return calculationBodyForSkill(index + 1, selectedMainActiveSkill);
   }, [canUseActiveStatsDirectly, skill.skillId, skill.disabled, calculationBodyForSkill, index, selectedMainActiveSkill]);
   const perSkillKey = useMemo(() => (perSkillRequest ? calcKey(perSkillRequest) : ""), [perSkillRequest]);
+  const perSkillRequestRef = useRef(perSkillRequest);
+  perSkillRequestRef.current = perSkillRequest;
   useEffect(() => {
-    if (compareQueue && perSkillRequest) compareQueue.request(perSkillRequest, 8);
-  }, [compareQueue, perSkillRequest]);
+    if (!compareQueue || !perSkillKey || !perSkillRequestRef.current) return;
+    // Do not auto-requeue entries that are already queued, running, done, or errored.
+    if (compareQueue.get(perSkillKey)) return;
+    compareQueue.request(perSkillRequestRef.current, 8);
+  }, [compareQueue, perSkillKey]);
   const perSkillEntry = compareQueue && perSkillKey ? compareQueue.get(perSkillKey) : undefined;
+  const perSkillFailed = Boolean(perSkillRequest && perSkillEntry?.status === "error");
   const loadingPerSkill = Boolean(perSkillRequest && (!perSkillEntry || (perSkillEntry.status !== "done" && perSkillEntry.status !== "error")));
   const details: Record<string, unknown> | null = canUseActiveStatsDirectly
     ? activeStats
@@ -613,17 +619,25 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             </p>
           ) : null}
 
-          {!skill.disabled ? familyConflicts.map((conflict) => {
-            const names = conflict.gems.map((gemIdx) => resolveSupportGem(supports[gemIdx]).label);
-            const kept = resolveSupportGem(supports[conflict.kept]).label;
-            return (
-              <p className="sk-hint sk-hint--warn sk-frame-pad" role="alert" key={conflict.gems.join("-")}>
-                {vi
-                  ? `${names.join(" và ")} cùng một họ gem hỗ trợ: trong game mỗi kỹ năng chỉ dùng được một gem của họ này. PoB chỉ tính ${kept}; hãy gỡ gem còn lại.`
-                  : `${names.join(" and ")} are the same support family: only one of them works on a skill. PoB counts ${kept} only; remove the other.`}
-              </p>
-            );
-          }) : null}
+          {!skill.disabled && familyConflicts.length > 0 ? (() => {
+            const pureSupports = supports.filter((sup) => !sup.active);
+            return familyConflicts.map((conflict) => {
+              const names = conflict.gems
+                .map((gemIdx) => pureSupports[gemIdx])
+                .filter((gem): gem is BuildSupportSkillChoice => Boolean(gem))
+                .map((gem) => resolveSupportGem(gem).label);
+              const keptGem = pureSupports[conflict.kept];
+              if (!names.length || !keptGem) return null;
+              const kept = resolveSupportGem(keptGem).label;
+              return (
+                <p className="sk-hint sk-hint--warn sk-frame-pad" role="alert" key={conflict.gems.join("-")}>
+                  {vi
+                    ? `${names.join(" và ")} cùng một họ gem hỗ trợ: trong game mỗi kỹ năng chỉ dùng được một gem của họ này. PoB chỉ tính ${kept}; hãy gỡ gem còn lại.`
+                    : `${names.join(" and ")} are the same support family: only one of them works on a skill. PoB counts ${kept} only; remove the other.`}
+                </p>
+              );
+            });
+          })() : null}
 
           {(activeMeta.description || usabilityIssues.length > 0 || weaponHint || showZeroChoiceHint || familyConflicts.length > 0) ? (
             <hr className="sk-frame-divider" />
@@ -648,6 +662,19 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                 {vi ? "Đang tính chi tiết kỹ năng từ Path of Building…" : "Calculating skill breakdown in Path of Building…"}
               </p>
             </>
+          ) : !details && perSkillFailed ? (
+            <p className="sk-note sk-frame-pad" role="alert">
+              {vi ? "Không tính được chi tiết kỹ năng từ Path of Building." : "Could not calculate skill breakdown in Path of Building."}{" "}
+              {compareQueue && perSkillRequest ? (
+                <button
+                  type="button"
+                  className="sk-chip-btn"
+                  onClick={() => compareQueue.request(perSkillRequest, 8)}
+                >
+                  {vi ? "Thử lại" : "Retry"}
+                </button>
+              ) : null}
+            </p>
           ) : !details && skill.disabled ? (
             <p className="sk-note sk-frame-pad">
               {vi ? "Nhóm kỹ năng đang tắt — bật lại bên dưới để PoB tính chỉ số." : "This skill group is disabled — enable it below to calculate stats."}

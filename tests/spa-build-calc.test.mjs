@@ -10,19 +10,11 @@ import vm from "node:vm";
 import ts from "typescript";
 
 import { buildPobXml } from "../src/server/pob-build-xml.mjs";
-import { loadPlannerLib, plannerCalculationRequest, repoRoot } from "../scripts/lib/planner-node.mjs";
+import { loadPlannerLib, loadSpaLib, plannerCalculationRequest, repoRoot } from "../scripts/lib/planner-node.mjs";
 import { readFixtures } from "../scripts/check-pob-parity.mjs";
 
-const require = createRequire(import.meta.url);
 const plain = (value) => JSON.parse(JSON.stringify(value));
-
-const loadStatsLib = async () => {
-  const source = await readFile(join(repoRoot, "src/spa/lib/buildStats.ts"), "utf8");
-  const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021 } }).outputText;
-  const module = { exports: {} };
-  vm.runInNewContext(js, { module, exports: module.exports, require, Math, Number, String, Array, Infinity });
-  return module.exports;
-};
+const loadStatsLib = () => loadSpaLib("buildStats");
 
 test("conditions panel edits PoB config inputs and keeps the rest", async () => {
   const stats = await loadStatsLib();
@@ -265,33 +257,6 @@ test("every skill group gets its own DPS from PoB's per-skill list", async () =>
   assert.deepEqual(plain(stats.skillDpsByGroup([{ name: "Arc (part 2)", dps: 70 }], [["Arc"]])), [70]);
 });
 
-test("skills panel: damaging skills first by DPS, auras and disabled groups tucked away", async () => {
-  const stats = await loadStatsLib();
-  const card = (index, dps, extra = {}) => ({ index, hasSkill: true, disabled: false, dps, isMain: false, ...extra });
-  const arranged = stats.arrangeSkillCards([
-    card(0, 0),
-    card(1, 300),
-    card(2, 900, { isMain: true }),
-    card(3, 500, { disabled: true }),
-    { index: 4, hasSkill: false, disabled: false, dps: undefined, isMain: false },
-    card(5, 1200)
-  ]);
-  assert.deepEqual(plain(arranged), { primary: [5, 2, 1, 4], secondary: [0, 3] });
-  const before = stats.arrangeSkillCards([card(0, undefined), card(1, undefined)]);
-  assert.deepEqual(plain(before), { primary: [0, 1], secondary: [] }, "no numbers yet: keep the build's order");
-  const mainWithoutDamage = stats.arrangeSkillCards([card(0, 0, { isMain: true }), card(1, 10)]);
-  assert.deepEqual(plain(mainWithoutDamage.primary), [1, 0], "the main skill always stays visible");
-});
-
-test("skills panel: groups whose DPS is unknown stay visible", async () => {
-  const stats = await loadStatsLib();
-  const arranged = stats.arrangeSkillCards([
-    { index: 0, hasSkill: true, disabled: false, dps: 500, isMain: true },
-    { index: 1, hasSkill: true, disabled: false, dps: undefined, isMain: false }
-  ]);
-  assert.deepEqual(plain(arranged), { primary: [0, 1], secondary: [] });
-});
-
 test("skills panel: GroupDPS rows map to the groups that have a gem, per hit kept apart", async () => {
   const stats = await loadStatsLib();
   const skills = [{ skillId: "A" }, { skillId: "" }, { skillId: "B" }, { skillId: "C" }];
@@ -299,11 +264,4 @@ test("skills panel: GroupDPS rows map to the groups that have a gem, per hit kep
   assert.deepEqual(plain(damage), [{ dps: 100 }, null, { dps: 0, average: 40 }, { dps: 0 }]);
   assert.deepEqual(damage.map(stats.groupDamageValue), [100, undefined, 40, 0]);
   assert.equal(stats.groupDamageByRow(undefined, skills), undefined, "older calculator: no GroupDPS");
-});
-
-test("skills panel: a 0-damage skill with stat-set choices stays among the main cards", async () => {
-  const stats = await loadStatsLib();
-  const card = (index, dps, extra = {}) => ({ index, hasSkill: true, disabled: false, dps, isMain: false, ...extra });
-  const arranged = stats.arrangeSkillCards([card(0, 0, { hasChoices: true }), card(1, 0), card(2, 50)]);
-  assert.deepEqual(plain(arranged), { primary: [2, 0], secondary: [1] });
 });

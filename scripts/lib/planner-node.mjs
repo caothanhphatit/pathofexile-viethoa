@@ -6,7 +6,7 @@ import { readFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import vm from "node:vm";
 
 const require = createRequire(import.meta.url);
@@ -83,6 +83,10 @@ async function loadSpaModule(name, chain) {
   const deps = new Map();
   for (const match of js.matchAll(/require\("\.\/([\w-]+)"\)/g)) {
     deps.set(`./${match[1]}`, await loadSpaLib(match[1], chain));
+  }
+  for (const match of js.matchAll(/require\("\.\.\/\.\.\/shared\/([\w.-]+)"\)/g)) {
+    const mod = await import(pathToFileURL(join(repoRoot, "src/shared", match[1])).href);
+    deps.set(`../../shared/${match[1]}`, mod);
   }
   const module = { exports: {} };
   const context = vm.createContext({

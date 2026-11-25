@@ -27,48 +27,17 @@ export function isSpiritReservingSkill(tags: string[] | undefined): boolean {
 }
 
 const ATTR_KEYS = [
-  { key: "Str", pattern: /(?:\((\d+)\s*[—–-]\s*(\d+)\)|(\d+))\s*Str\b/i, vi: "Str", en: "Str" },
-  { key: "Dex", pattern: /(?:\((\d+)\s*[—–-]\s*(\d+)\)|(\d+))\s*Dex\b/i, vi: "Dex", en: "Dex" },
-  { key: "Int", pattern: /(?:\((\d+)\s*[—–-]\s*(\d+)\)|(\d+))\s*Int\b/i, vi: "Int", en: "Int" }
+  { key: "Str", vi: "Str", en: "Str" },
+  { key: "Dex", vi: "Dex", en: "Dex" },
+  { key: "Int", vi: "Int", en: "Int" }
 ] as const;
 
 /**
- * Estimates a gem's Str/Dex/Int requirement at `gemLevel` from the site's official
- * requirement line ("Requires: Level (1—90), (4—157) Dex").
- */
-export function gemAttributeRequirements(
-  requirements: string[] | undefined,
-  gemLevel: number
-): Partial<Record<"Str" | "Dex" | "Int", number>> {
-  const out: Partial<Record<"Str" | "Dex" | "Int", number>> = {};
-  const level = Math.max(1, Math.min(40, Math.round(gemLevel || 1)));
-  const charReq = gemLevelRequirement(Math.min(level, 20)) ?? 90;
-  // Scale smoothly across gem levels 1..20 (charReq 1..90); levels > 20 use max (PoB covers exact Req*).
-  const t = Math.max(0, Math.min(1, (charReq - 1) / 89));
-
-  for (const line of requirements ?? []) {
-    if (!/^Requires:/i.test(line)) continue;
-    for (const attr of ATTR_KEYS) {
-      const match = line.match(attr.pattern);
-      if (!match) continue;
-      if (match[1] && match[2]) {
-        const min = Number(match[1]);
-        const max = Number(match[2]);
-        if (Number.isFinite(min) && Number.isFinite(max)) {
-          out[attr.key] = Math.round(min + (max - min) * t);
-        }
-      } else if (match[3]) {
-        const fixed = Number(match[3]);
-        if (Number.isFinite(fixed) && fixed > 0) out[attr.key] = fixed;
-      }
-    }
-  }
-  return out;
-}
-
-/**
- * All reasons an enabled skill group cannot currently be used (wrong weapon for an
- * Attack skill, character level too low, missing STR/DEX/INT, or negative unreserved Spirit).
+ * All exact reasons an enabled skill group cannot currently be used:
+ * - wrong weapon for an Attack/weapon-restricted skill vs active Weapon Set I/II
+ * - character level below PoB's gem level requirement
+ * - exact per-gem attribute requirement (only when supplied directly, never linearly guessed)
+ * - negative unreserved Spirit from PoB for Persistent skills
  */
 export function skillUsabilityIssues(input: {
   skillName: string;
@@ -77,6 +46,7 @@ export function skillUsabilityIssues(input: {
   granted?: boolean;
   tags?: string[];
   requirements?: string[];
+  gemReq?: Partial<Record<"Str" | "Dex" | "Int", number>>;
   characterLevel: number;
   activeSet: 1 | 2;
   sets: Record<1 | 2, WeaponHands>;
@@ -125,26 +95,23 @@ export function skillUsabilityIssues(input: {
     }
   }
 
-  // 3. Attribute requirements (STR/DEX/INT) — cross-checked against PoB ReqStr/ReqDex/ReqInt
-  //    so builds with reduced attribute requirement mods never get false positives.
+  // 3. Per-gem attribute requirements — only when exact per-gem values are provided
+  //    (avoids false positives from linear interpolation against build-wide ReqStr/Dex/Int).
   const stats = input.stats;
-  if (!input.granted && stats) {
+  if (!input.granted && stats && input.gemReq) {
     const statNum = (key: string) => (typeof stats[key] === "number" ? (stats[key] as number) : undefined);
-    const attrReqs = gemAttributeRequirements(input.requirements, input.gemLevel);
     for (const attr of ATTR_KEYS) {
-      const need = attrReqs[attr.key];
+      const need = input.gemReq[attr.key];
       if (!need) continue;
       const have = statNum(attr.key);
-      const pobBuildReq = statNum(`Req${attr.key}`);
-      if (have === undefined) continue;
-      if (need > have && (pobBuildReq === undefined || pobBuildReq > have)) {
+      if (have !== undefined && need > have) {
         const missing = Math.ceil(need - have);
         issues.push({
           kind: "attribute",
           shortLabel: vi ? `Thiếu ${missing} ${attr.vi}` : `-${missing} ${attr.en}`,
           message: vi
-            ? `${input.skillName} (Lv ${input.gemLevel}) cần ~${need} ${attr.vi}, nhân vật hiện có ${Math.round(have)}.`
-            : `${input.skillName} (Lv ${input.gemLevel}) requires ~${need} ${attr.en}, character has ${Math.round(have)}.`
+            ? `${input.skillName} (Lv ${input.gemLevel}) cần ${Math.round(need)} ${attr.vi}, nhân vật hiện có ${Math.round(have)}.`
+            : `${input.skillName} (Lv ${input.gemLevel}) requires ${Math.round(need)} ${attr.en}, character has ${Math.round(have)}.`
         });
       }
     }

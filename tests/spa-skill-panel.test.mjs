@@ -357,20 +357,35 @@ test("skillUsability distinguishes Attack weapon requirements vs Spell, attribut
     2: { main: { itemName: "Dualstring Bow", baseName: "Dualstring Bow" }, off: null }
   };
 
-  // Attack skill (Lightning Arrow) with Wand in set I -> weapon error + suggests set II Bow.
+  // Attack skill (Lightning Arrow) with Wand in set I -> weapon error + no false-positive guessed attribute error.
   const laIssues = mod.skillUsabilityIssues({
     skillName: "Lightning Arrow",
-    gemLevel: 20,
+    gemLevel: 12,
     tags: ["Attack", "Projectile", "Lightning"],
     requirements: ["Requires: Level (1—90), (4—157) Dex", "Requires: Bows"],
     characterLevel: 95,
     activeSet: 1,
     sets: wandSets,
-    stats: { Str: 40, Dex: 80, Int: 250, ReqDex: 157, SpiritUnreserved: 40 },
+    stats: { Str: 40, Dex: 100, Int: 250, ReqDex: 120, SpiritUnreserved: 40 },
     locale: "vi"
   });
   assert.equal(laIssues.some((i) => i.kind === "weapon" && /Bows/i.test(i.shortLabel)), true);
-  assert.equal(laIssues.some((i) => i.kind === "attribute" && /Dex/i.test(i.shortLabel)), true);
+  assert.equal(laIssues.some((i) => i.kind === "attribute"), false, "never guess per-gem attributes via linear interpolation");
+
+  // Exact per-gem requirement supplied -> flags exact shortage.
+  const exactAttrIssues = mod.skillUsabilityIssues({
+    skillName: "Lightning Arrow",
+    gemLevel: 20,
+    tags: ["Attack", "Projectile", "Lightning"],
+    requirements: ["Requires: Level (1—90), (4—157) Dex", "Requires: Bows"],
+    gemReq: { Dex: 157 },
+    characterLevel: 95,
+    activeSet: 2,
+    sets: wandSets,
+    stats: { Str: 40, Dex: 100, Int: 250, SpiritUnreserved: 40 },
+    locale: "vi"
+  });
+  assert.equal(exactAttrIssues.some((i) => i.kind === "attribute" && /57 Dex/i.test(i.shortLabel)), true);
 
   // Spell skill (Spark) with Wand -> no weapon error; enough Int -> 0 issues.
   const sparkIssues = mod.skillUsabilityIssues({

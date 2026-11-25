@@ -1,6 +1,7 @@
 // What the Build Planner shows from Path of Building's output, and the PoB
 // Configuration inputs it lets the player change, with plain Vietnamese labels
 // and one-line explanations (players should not need to know PoB's terms).
+import { POB_MULTILINE_CONFIG_STRINGS } from "../../shared/pob-config-strings.mjs";
 import type { PobConfigInput } from "./buildPlanner";
 
 export type StatFormat = "int" | "short" | "pct" | "pct1" | "mult" | "rate" | "speed" | "seconds" | "metres" | "modpct";
@@ -206,8 +207,8 @@ export const CONFIG_GROUPS: ConfigGroup[] = [
         "Act 2 · Valley of the Titans (Medallion)",
         "Phần thưởng chọn 1 trong 2 tại Valley of the Titans (Act 2).",
         [
-          { value: "30% increased Charm Charges Gained\n\t+1 Charm Slot", vi: "+30% lượng nạp Charm · +1 ô Charm", en: "30% increased Charm Charges Gained, +1 Charm Slot" },
-          { value: "30% increased Charm Effect Duration\n\t+1 Charm Slot", vi: "+30% thời lượng Charm · +1 ô Charm", en: "30% increased Charm Effect Duration, +1 Charm Slot" }
+          { value: POB_MULTILINE_CONFIG_STRINGS["questAct 2Valley of the TitansMedallion"][0], vi: "+30% lượng nạp Charm · +1 ô Charm", en: "30% increased Charm Charges Gained, +1 Charm Slot" },
+          { value: POB_MULTILINE_CONFIG_STRINGS["questAct 2Valley of the TitansMedallion"][1], vi: "+30% thời lượng Charm · +1 ô Charm", en: "30% increased Charm Effect Duration, +1 Charm Slot" }
         ]
       ),
       questChoice(
@@ -239,7 +240,7 @@ export const CONFIG_GROUPS: ConfigGroup[] = [
         [
           { value: "30% increased Global Armour, Evasion and Energy Shield", vi: "+30% Giáp, Né & Khiên năng lượng", en: "30% increased Global Armour, Evasion and Energy Shield" },
           {
-            value: "+15% of Armour also applies to Elemental Damage\n\tGain Deflection Rating equal to 12% of Evasion Rating\n\t12% faster start of Energy Shield Recharge",
+            value: POB_MULTILINE_CONFIG_STRINGS["questAct 4Eye of HinekoraTribal Medicine"][0],
             vi: "+15% Giáp đỡ nguyên tố · +12% Deflection · ES hồi nhanh 12%",
             en: "+15% Armour to Elemental, 12% Evasion as Deflection, 12% faster ES Recharge"
           }
@@ -288,7 +289,7 @@ export const CONFIG_GROUPS: ConfigGroup[] = [
           { value: "12% increased Cooldown Recovery Rate", vi: "+12% tốc độ hồi chiêu (CDR)", en: "12% increased Cooldown Recovery Rate" },
           { value: "+5 to all Attributes", vi: "+5 tất cả thuộc tính (STR/DEX/INT)", en: "+5 to all Attributes" },
           {
-            value: "5% increased Experience Gain\n\t-5% to all Elemental Resistances\n\t3% reduced Movement Speed\n\t15% reduced Global Armour, Evasion and Energy Shield\n\t20% reduced Presence Area Of Effect\n\t12% reduced Cooldown Recovery Rate\n\t5% reduced Attributes",
+            value: POB_MULTILINE_CONFIG_STRINGS["questInterlude 2QimahSeven Pillars"][0],
             vi: "+5% kinh nghiệm (giảm kháng, tốc chạy, phòng thủ, thuộc tính)",
             en: "5% increased Experience Gain (with stat penalties)"
           }
@@ -640,45 +641,6 @@ export const stampedStatsUsable = (state: { calculated: boolean; calculating: bo
 /** The number a card shows: its DPS, or its average hit when it deals damage only per hit. */
 export const groupDamageValue = (damage: GroupDamage | undefined): number | undefined =>
   damage === undefined ? undefined : damage.dps > 0 ? damage.dps : damage.average ?? 0;
-
-export interface SkillCardInput {
-  index: number;
-  /** Group has an active gem picked. */
-  hasSkill: boolean;
-  disabled: boolean;
-  /** Its DPS from the last calculation; undefined while unknown. */
-  dps: number | undefined;
-  isMain: boolean;
-  /** PoB offers a stat set / part / minion choice: its damage may be in another one. */
-  hasChoices?: boolean;
-}
-
-/**
- * Skills panel order: damaging skills first (highest DPS first, the main skill on
- * ties), then new empty groups; disabled groups and skills without damage (auras,
- * buffs, utility) go to "Kỹ năng phụ" — unless PoB offers a choice for them (stat set,
- * part, minion): the damage may be in another choice, so they stay in view. Before the first calculation everything
- * stays in the build's own order.
- */
-export function arrangeSkillCards(cards: SkillCardInput[]): { primary: number[]; secondary: number[] } {
-  const known = cards.some((card) => card.dps !== undefined);
-  const primary: SkillCardInput[] = [];
-  const secondary: SkillCardInput[] = [];
-  for (const card of cards) {
-    if (card.disabled) secondary.push(card);
-    else if (!card.hasSkill) primary.push(card);
-    // Unknown DPS (not calculated yet, or an older calculator) stays visible.
-    else if (card.dps === undefined || card.isMain || card.dps > 0 || card.hasChoices) primary.push(card);
-    else secondary.push(card);
-  }
-  if (known) {
-    primary.sort((a, b) => Number(b.hasSkill) - Number(a.hasSkill)
-      || (b.dps ?? 0) - (a.dps ?? 0)
-      || Number(b.isMain) - Number(a.isMain)
-      || a.index - b.index);
-  }
-  return { primary: primary.map((card) => card.index), secondary: secondary.map((card) => card.index) };
-}
 
 /**
  * A resistance the way PoB's sidebar shows it: the capped percentage, except chaos with

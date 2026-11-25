@@ -1,3 +1,5 @@
+import { restorePobConfigString } from "../../shared/pob-config-strings.mjs";
+
 export const CURRENT_TREE_KEY = "poe2-build-current-tree-v1";
 export const SAVED_TREES_KEY = "poe2-build-saved-trees-v1";
 export const SAVED_BUILDS_KEY = "poe2-build-saved-builds-v1";
@@ -1030,29 +1032,6 @@ function pobGemExtraAttributes(gem: Element): Record<string, string> | undefined
   if (statSets.length) extra.statSets = statSets.join(",");
   else delete extra.statSets;
   return Object.keys(extra).length ? extra : undefined;
-}
-
-// Browser DOMParser normalizes raw \n and \t inside XML attributes to spaces (XML 1.0),
-// which would otherwise break PoB's exact lookup for multi-line quest reward choices.
-const POB_MULTILINE_CONFIG_STRINGS: Record<string, string[]> = {
-  "questAct 2Valley of the TitansMedallion": [
-    "30% increased Charm Charges Gained\n\t+1 Charm Slot",
-    "30% increased Charm Effect Duration\n\t+1 Charm Slot"
-  ],
-  "questAct 4Eye of HinekoraTribal Medicine": [
-    "+15% of Armour also applies to Elemental Damage\n\tGain Deflection Rating equal to 12% of Evasion Rating\n\t12% faster start of Energy Shield Recharge"
-  ],
-  "questInterlude 2QimahSeven Pillars": [
-    "5% increased Experience Gain\n\t-5% to all Elemental Resistances\n\t3% reduced Movement Speed\n\t15% reduced Global Armour, Evasion and Energy Shield\n\t20% reduced Presence Area Of Effect\n\t12% reduced Cooldown Recovery Rate\n\t5% reduced Attributes"
-  ]
-};
-
-function restorePobConfigString(name: string, value: string): string {
-  const candidates = POB_MULTILINE_CONFIG_STRINGS[name];
-  if (!candidates || candidates.includes(value)) return value;
-  const collapsed = value.replace(/\s+/g, " ").trim();
-  const match = candidates.find((candidate) => candidate.replace(/\s+/g, " ").trim() === collapsed);
-  return match ?? value;
 }
 
 function pobConfigInputs(configEl: Element): PobConfigInput[] {
