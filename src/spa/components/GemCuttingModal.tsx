@@ -2,15 +2,15 @@
 //
 // - Support Gems mode:
 //     Left sidebar: build's skill groups (active group shows circular support sockets);
-//                   bottom button switches to Skill Gems.
-//     Right panel:  Recommended | All Valid | All tabs, compact search, 4-column stone grid
+//                   bottom button toggles All Gems (all support gems).
+//     Right panel:  Recommended | All Valid tabs, compact search, 4-column stone grid
 //                   of circular gem orbs grouped by Uncut Support Tier (I..V, L).
 // - Skill Gems mode:
 //     Left sidebar: PoE2 weapon/school categories (Spear, Bow, Quarterstaff, Elemental,
 //                   Occult, Primal, Mace, Crossbow, Spirit...) + Equipped Gems / All Gems.
 //     Right panel:  compact search, 4-column stone grid of square framed skill icons
 //                   grouped by Uncut Skill Gem Tier (I, III, V, VII, IX, XI, XIII...).
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type MouseEvent } from "react";
 
 import {
   effectiveSupportSockets,
@@ -73,13 +73,15 @@ export interface GemCuttingModalProps {
   resolveSkillRecord: (skill: BuildSkillChoice) => GemCuttingRecord | undefined;
   resolveSupportRecord: (support: BuildSupportSkillChoice) => GemCuttingRecord | undefined;
   onChangeTarget: (next: GemCuttingTarget) => void;
-  onAddNewSkillGroup: () => void;
   onSelectGem: (record: GemCuttingRecord, target: GemCuttingTarget) => void;
   onRemoveCurrent: (target: GemCuttingTarget) => void;
+  onHoverGem: (record: GemCuttingRecord, kind: "skill" | "support", event: MouseEvent) => void;
+  onMoveTooltip: (event: MouseEvent) => void;
+  onLeaveTooltip: () => void;
   onClose: () => void;
 }
 
-type SupportTab = "recommended" | "valid" | "all";
+type SupportTab = "recommended" | "valid";
 type SkillCategoryView = ActiveSkillCategory | "equipped" | "all";
 
 const gemRecordId = (record: GemCuttingRecord, prefix: "SkillGem" | "SupportGem"): string =>
@@ -123,9 +125,11 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
     resolveSkillRecord,
     resolveSupportRecord,
     onChangeTarget,
-    onAddNewSkillGroup,
     onSelectGem,
     onRemoveCurrent,
+    onHoverGem,
+    onMoveTooltip,
+    onLeaveTooltip,
     onClose
   } = props;
 
@@ -136,8 +140,8 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
 
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<SupportTab>("recommended");
+  const [showAllSupports, setShowAllSupports] = useState(false);
   const [skillCategory, setSkillCategory] = useState<SkillCategoryView>("all");
-  const [hoveredGem, setHoveredGem] = useState<GemCuttingRecord | null>(null);
 
   const activeGroup = useMemo(
     () => (target ? buildSkills.find((row) => row.id === target.skillId) ?? null : null),
@@ -217,23 +221,23 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
   useEffect(() => {
     if (!open || !target) {
       prevTargetKeyRef.current = "";
+      onLeaveTooltip();
       return;
     }
     const key = `${target.kind}:${target.skillId}:${target.kind === "support" ? target.supportId || "new" : ""}`;
     if (prevTargetKeyRef.current !== key) {
       prevTargetKeyRef.current = key;
       setQuery("");
-      setHoveredGem(null);
+      setShowAllSupports(false);
+      onLeaveTooltip();
       if (target.kind === "support") {
         setTab(recommendedResult.source === "ggpk" && recommendedResult.items.length > 0 ? "recommended" : "valid");
       } else {
-        // Default to the current skill's weapon/school category when swapping, or "bow"/"all" on new skill.
         const currentCat = damageSkillRecord ? activeSkillCategory(damageSkillRecord, gemCompat) : null;
         setSkillCategory(currentCat || "all");
       }
-      requestAnimationFrame(() => searchInputRef.current?.focus({ preventScroll: true }));
     }
-  }, [open, target, recommendedResult.source, recommendedResult.items.length, damageSkillRecord, gemCompat]);
+  }, [open, target, recommendedResult.source, recommendedResult.items.length, damageSkillRecord, gemCompat, onLeaveTooltip]);
 
   // Body scroll lock & Escape handler.
   useEffect(() => {
@@ -299,12 +303,12 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
       } else {
         basePool = skillGemOptions.filter((g) => activeSkillCategory(g, gemCompat) === skillCategory);
       }
+    } else if (showAllSupports) {
+      basePool = supportGemOptions;
     } else if (tab === "recommended") {
       basePool = q ? validSupports : recommendedResult.items;
-    } else if (tab === "valid") {
-      basePool = validSupports;
     } else {
-      basePool = supportGemOptions;
+      basePool = validSupports;
     }
 
     const filtered = q
@@ -323,9 +327,9 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
         || gemDisplayTitle(a, locale).localeCompare(gemDisplayTitle(b, locale))
       );
     }
-    if (isSupport && tab === "recommended") return filtered;
+    if (isSupport && !showAllSupports && tab === "recommended") return filtered;
     return [...filtered].sort((a, b) => gemDisplayTitle(a, locale).localeCompare(gemDisplayTitle(b, locale)));
-  }, [target, query, tab, skillCategory, locale, skillGemOptions, supportGemOptions, validSupports, recommendedResult.items, equippedSkillNames, gemCompat]);
+  }, [target, query, tab, showAllSupports, skillCategory, locale, skillGemOptions, supportGemOptions, validSupports, recommendedResult.items, equippedSkillNames, gemCompat]);
 
   // Group into clean PoE2 tier blocks (I, III, V, VII, IX, XI, XIII... for skills; I..V, L for supports).
   const groupedSections = useMemo(() => {
@@ -359,7 +363,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
       return sections;
     }
 
-    if (tab === "recommended") {
+    if (!showAllSupports && tab === "recommended") {
       return [{ key: "rec", roman: "★", items: filteredGems }];
     }
 
@@ -376,13 +380,12 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
         roman: SUPPORT_TIER_LABELS[key].roman,
         items: buckets.get(key)!
       }));
-  }, [target, query, tab, filteredGems, gemCompat]);
+  }, [target, query, tab, showAllSupports, filteredGems, gemCompat]);
 
   if (!open || !target) return null;
 
   const isSupport = target.kind === "support";
   const canRemove = Boolean(currentSelectedId);
-  const previewGem = hoveredGem ?? filteredGems[0] ?? null;
 
   const renderGemCard = (record: GemCuttingRecord) => {
     const title = gemDisplayTitle(record, locale);
@@ -396,7 +399,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
       : equippedSkillNames.has(keyLower);
     const hasFamilyConflict = isSupport && !isAlreadySocketed
       && supportFamilies(record.name, gemCompat).some((fam) => socketedFamilies.has(fam));
-    const isIncompatible = isSupport && tab === "all" && damageSkillRecord && !validSupportNames.has(keyLower);
+    const isIncompatible = isSupport && showAllSupports && damageSkillRecord && !validSupportNames.has(keyLower);
 
     return (
       <button
@@ -411,9 +414,13 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
           hasFamilyConflict ? "is-conflict" : "",
           isIncompatible ? "is-invalid" : ""
         ].filter(Boolean).join(" ")}
-        onClick={() => onSelectGem(record, target)}
-        onMouseEnter={() => setHoveredGem(record)}
-        onFocus={() => setHoveredGem(record)}
+        onClick={() => {
+          onLeaveTooltip();
+          onSelectGem(record, target);
+        }}
+        onMouseEnter={(event) => onHoverGem(record, isSupport ? "support" : "skill", event)}
+        onMouseMove={onMoveTooltip}
+        onMouseLeave={onLeaveTooltip}
       >
         <span className={`${isSupport ? "gc-orb" : "gc-square"} ${gemColorClass(record.color)}`}>
           {icon ? (
@@ -454,7 +461,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
               <div className="gc-sidebar-list">
                 {buildSkills.map((group) => {
                   const meta = resolveSkillGem(group);
-                  const isSelected = group.id === target.skillId;
+                  const isSelected = !showAllSupports && group.id === target.skillId;
                   const supports = group.supportSkills.filter((row) => !row.active);
                   const socketCount = effectiveSupportSockets(group);
                   const freeCount = Math.max(0, socketCount - supports.length);
@@ -465,6 +472,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
                         type="button"
                         className="gc-skill-btn"
                         onClick={() => {
+                          setShowAllSupports(false);
                           if (group.skillId) onChangeTarget({ kind: "support", skillId: group.id });
                           else onChangeTarget({ kind: "skill", skillId: group.id });
                         }}
@@ -520,11 +528,11 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
               <div className="gc-sidebar-foot">
                 <button
                   type="button"
-                  className="gc-foot-btn"
-                  onClick={() => (activeGroup ? onChangeTarget({ kind: "skill", skillId: activeGroup.id }) : onAddNewSkillGroup())}
+                  className={`gc-foot-btn ${showAllSupports ? "is-selected" : ""}`}
+                  onClick={() => setShowAllSupports((prev) => !prev)}
                 >
                   <span className="material-symbols-rounded" aria-hidden="true">sell</span>
-                  <span>{vi ? "All Skill Gems" : "All Skill Gems"}</span>
+                  <span>All Gems</span>
                 </button>
               </div>
             </>
@@ -584,14 +592,17 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
               <h2 id={titleId} className="gc-title">Gemcutting</h2>
               <p className="gc-subtitle">
                 {isSupport
-                  ? (damageSkillRecord?.name ? `Support Gems · ${damageSkillRecord.name}` : "Support Gems")
+                  ? (showAllSupports ? "Support Gems" : (damageSkillRecord?.name ? `Support Gems · ${damageSkillRecord.name}` : "Support Gems"))
                   : "Skill Gems"}
               </p>
             </div>
             <button
               type="button"
               className="gc-close"
-              onClick={onClose}
+              onClick={() => {
+                onLeaveTooltip();
+                onClose();
+              }}
               aria-label={vi ? "Đóng" : "Close"}
               title={vi ? "Đóng (Esc)" : "Close (Esc)"}
             >
@@ -599,9 +610,9 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
             </button>
           </header>
 
-          {/* Compact single-area bar: Tabs (support mode) + Search */}
+          {/* Compact single-area bar: Recommended / All Valid tabs (support mode) + Search */}
           <div className="gc-bar">
-            {isSupport ? (
+            {isSupport && !showAllSupports ? (
               <div className="gc-tabs" role="tablist" aria-label={vi ? "Bộ lọc Support Gem" : "Support filter"}>
                 <button
                   type="button"
@@ -619,16 +630,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
                   className={`gc-tab ${tab === "valid" ? "is-active" : ""}`}
                   onClick={() => setTab("valid")}
                 >
-                  All Valid ({validSupports.length})
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === "all"}
-                  className={`gc-tab ${tab === "all" ? "is-active" : ""}`}
-                  onClick={() => setTab("all")}
-                >
-                  All
+                  All Valid
                 </button>
               </div>
             ) : null}
@@ -661,7 +663,14 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
               </label>
 
               {canRemove ? (
-                <button type="button" className="gc-remove-btn" onClick={() => onRemoveCurrent(target)}>
+                <button
+                  type="button"
+                  className="gc-remove-btn"
+                  onClick={() => {
+                    onLeaveTooltip();
+                    onRemoveCurrent(target);
+                  }}
+                >
                   <span className="material-symbols-rounded" aria-hidden="true">delete_outline</span>
                   <span>{vi ? "Tháo gem" : "Remove"}</span>
                 </button>
@@ -686,27 +695,14 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
             ) : (
               <div className="gc-empty">
                 <p>{query ? (vi ? `Không tìm thấy "${query}".` : `No gems match "${query}".`) : (vi ? "Không có gem phù hợp." : "No gems found.")}</p>
-                {isSupport && tab !== "all" ? (
-                  <button type="button" className="gc-empty-btn" onClick={() => setTab("all")}>
+                {isSupport && !showAllSupports ? (
+                  <button type="button" className="gc-empty-btn" onClick={() => setShowAllSupports(true)}>
                     {vi ? "Xem tất cả Support Gems" : "Show all supports"}
                   </button>
                 ) : null}
               </div>
             )}
           </div>
-
-          {/* Minimal fixed-height bottom preview bar */}
-          <footer className="gc-preview" aria-live="polite">
-            {previewGem ? (
-              <p className="gc-preview-line">
-                <strong className={gemColorClass(previewGem.color)}>{gemDisplayTitle(previewGem, locale)}</strong>
-                {previewGem.tags?.length ? <span className="gc-preview-tags"> [{previewGem.tags.slice(0, 4).join(", ")}]</span> : null}
-                <span> — {gemDisplaySummary(previewGem, locale) || gemSearchLines(previewGem, locale)[0] || (vi ? "Bấm để gắn" : "Click to socket")}</span>
-              </p>
-            ) : (
-              <p className="gc-preview-line">{vi ? "Rê chuột lên gem để xem mô tả, bấm để chọn." : "Hover a gem to inspect, click to select."}</p>
-            )}
-          </footer>
         </section>
       </div>
     </div>

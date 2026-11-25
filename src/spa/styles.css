@@ -157,8 +157,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--teal) 34%, transparent);
-  outline-offset: 2px;
+  outline: none;
 }
 
 .app {

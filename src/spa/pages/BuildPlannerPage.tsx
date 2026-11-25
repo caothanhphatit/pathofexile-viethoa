@@ -4023,10 +4023,26 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         resolveSkillRecord={(skill) => (skill.skillId ? (gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem") as GemCuttingRecord | undefined) : undefined)}
         resolveSupportRecord={(support) => (support.skillId ? (gemChoiceItem(support.skillId, support.active ? skillGemOptions : supportGemOptions, support.active ? "SkillGem" : "SupportGem") as GemCuttingRecord | undefined) : undefined)}
         onChangeTarget={(next) => setActiveGemPicker(next)}
-        onAddNewSkillGroup={addBuildSkill}
         onSelectGem={selectGem}
         onRemoveCurrent={removeGemForTarget}
-        onClose={() => setActiveGemPicker(null)}
+        onHoverGem={(record, kind, event) => {
+          const prefix = kind === "support" ? "SupportGem" : "SkillGem";
+          const pool = kind === "support" ? supportGemOptions : skillGemOptions;
+          const id = officialGemId(record as ItemRecord, prefix);
+          const hasMods = Boolean(
+            (Array.isArray(record.mods) && record.mods.length > 0)
+            || (Array.isArray(record.i18n?.mods) && record.i18n.mods.length > 0)
+          );
+          const fallbackNote = !hasMods ? localizedText(record.i18n?.summary, record.summary_en ?? "", locale) : undefined;
+          const html = getGemTooltipHtml(id, pool, prefix, locale, fallbackNote || undefined);
+          if (html) setTooltip({ x: event.clientX, y: event.clientY, content: html, visible: true });
+        }}
+        onMoveTooltip={handleMouseMove}
+        onLeaveTooltip={handleMouseLeave}
+        onClose={() => {
+          handleMouseLeave();
+          setActiveGemPicker(null);
+        }}
       />
 
 

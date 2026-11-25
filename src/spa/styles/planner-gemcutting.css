@@ -23,6 +23,12 @@
   font-family: var(--poe-chrome, var(--font-body, inherit));
 }
 
+.app .gc-shell :is(button, input, a):is(:focus, :focus-visible),
+.gc-shell :is(button, input, a):is(:focus, :focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
 /* ── Left Sidebar ──────────────────────────────────────────────────────────── */
 .gc-sidebar {
   display: flex;
@@ -342,7 +348,7 @@
   color: #9b8a6d;
 }
 
-.gc-search:focus-within { border-color: #c59f5c; }
+.gc-search:focus-within { border-color: #6b5839; }
 .gc-search .material-symbols-rounded { font-size: 16px; }
 .gc-search input {
   flex: 1;
@@ -353,6 +359,7 @@
   font: inherit;
   font-size: 13px;
   outline: none;
+  box-shadow: none;
 }
 .gc-search input::placeholder { color: #756957; }
 .gc-search-clear {
@@ -453,9 +460,7 @@
   transition: border-color 0.12s ease, background 0.12s ease;
 }
 
-.gc-card:hover,
-.gc-card:focus-visible {
-  outline: none;
+.gc-card:hover {
   border-color: #cfa968;
   background:
     radial-gradient(circle at 50% 34%, rgba(214, 173, 98, 0.14), transparent 64%),
@@ -548,39 +553,6 @@
   cursor: pointer;
 }
 
-/* ── Minimal Fixed-Height Bottom Preview Strip ─────────────────────────────── */
-.gc-preview {
-  flex: none;
-  padding: 8px 12px;
-  border-top: 1px solid #4a3b25;
-  background: #0d0b09;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-}
-
-.gc-preview-line {
-  margin: 0;
-  color: #cfc5b2;
-  font-size: 12.5px;
-  line-height: 1.38;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.gc-preview-line strong {
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: 13.5px;
-  letter-spacing: 0.03em;
-  color: #f3dfb5;
-}
-.gc-preview-line strong.is-color-red { color: #f28a7e; }
-.gc-preview-line strong.is-color-green { color: #7ee094; }
-.gc-preview-line strong.is-color-blue { color: #83bef7; }
-.gc-preview-tags { color: #9c8d72; font-size: 11.5px; }
-
 /* ── Responsive ────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .gc-shell {
@@ -629,5 +601,18 @@
 
   .gc-grid.is-centered .gc-card {
     width: calc(50% - 2px);
+  }
+}
+
+/* Phones: the three tabs share the row instead of overflowing it. */
+@media (max-width: 580px) {
+  .gc-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11.5px;
   }
 }
