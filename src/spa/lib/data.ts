@@ -8,6 +8,7 @@ type GlobalName =
   | "POE2_CRAFT"
   | "POE2_CRAFT_INDEX"
   | "POE2_ITEM_MODS"
+  | "POE2_GEM_COMPAT"
   | "levelingRouteZones"
   | "POE2_BOSS_DETAILS"
   | "POE2_BOSS_IMAGES"
@@ -24,6 +25,7 @@ const skillGemsDataVersion = "20261124-standalone";
 const dictionaryDataVersion = "20261107-recrawl";
 // item-mods-data.js is generated from Path of Building (scripts/build-item-mod-pool.mjs).
 const itemModsDataVersion = "20261124-pob-601768b";
+const gemCompatDataVersion = "20261125-pob-601768b";
 
 export function loadScriptGlobal<T>(src: string, globalName: GlobalName): Promise<T> {
   const current = window[globalName as keyof Window] as T | undefined;
@@ -76,6 +78,8 @@ export const loadLevelingData = () => loadScriptGlobal<any[]>("/data/leveling-da
 export const loadCraftData = () => loadScriptGlobal<any>("/data/craft-data.js?v=20260610", "POE2_CRAFT");
 /** PoB item mod pool used by both the Build Planner item editor and the Craft Simulator. */
 export const loadItemModsData = () => loadScriptGlobal<any>(`/data/item-mods-data.js?v=${itemModsDataVersion}`, "POE2_ITEM_MODS");
+/** PoB support compatibility + GGPK official recommended supports + tiers for Gemcutting modal. */
+export const loadGemCompatData = () => loadScriptGlobal<any>(`/data/gem-compat-data.js?v=${gemCompatDataVersion}`, "POE2_GEM_COMPAT");
 export const loadCraftIndex = () => loadScriptGlobal<any>("/data/craft-index.js?v=20260610", "POE2_CRAFT_INDEX");
 
 export function useAsyncData<T>(loader: () => Promise<T>, onData: (value: T) => void, onError: (error: Error) => void): () => void {

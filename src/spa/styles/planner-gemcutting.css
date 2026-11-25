@@ -1,0 +1,633 @@
+/* Clean, minimal PoE2 Gemcutting popup modal (Support Gems & Skill Gems).
+   Matches PoE2's dark obsidian stone grid, gold Roman tier badges (I, III, V...),
+   circular orbs for supports, square framed icons for active skills. */
+
+.gc-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 2vw, 24px);
+  background: rgba(4, 5, 8, 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.gc-shell {
+  display: grid;
+  grid-template-columns: 212px minmax(0, 1fr);
+  width: min(980px, 95vw);
+  height: min(84dvh, 780px);
+  color: #e6dcc8;
+  font-family: var(--poe-chrome, var(--font-body, inherit));
+}
+
+/* ── Left Sidebar ──────────────────────────────────────────────────────────── */
+.gc-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: 38px;
+  margin-bottom: 14px;
+  border: 1px solid #59482e;
+  border-right: 0;
+  background: linear-gradient(180deg, #171410 0%, #0d0c0a 100%);
+  box-shadow: -8px 12px 32px rgba(0, 0, 0, 0.65);
+}
+
+.gc-sidebar-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Support mode: skill group items */
+.gc-skill-item {
+  border: 1px solid #332a1d;
+  background: #14120f;
+}
+
+.gc-skill-item:hover {
+  border-color: #6b5635;
+}
+
+.gc-skill-item.is-selected {
+  border-color: #b59052;
+  background: linear-gradient(180deg, #272015 0%, #16130e 100%);
+}
+
+.gc-skill-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  background: transparent;
+  color: #e2d6be;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gc-skill-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #5e4c31;
+  background: #0b0a08;
+  overflow: hidden;
+}
+
+.gc-skill-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gc-skill-name {
+  min-width: 0;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gc-skill-sockets {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px 7px;
+  border-top: 1px solid rgba(138, 114, 72, 0.22);
+  background: rgba(6, 5, 4, 0.55);
+}
+
+.gc-mini-socket {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid #6b5636;
+  background: radial-gradient(circle at 50% 45%, #1a1611, #080706);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.gc-mini-socket:hover { border-color: #d6b26f; }
+.gc-mini-socket.is-active {
+  border-color: #f0c975;
+  box-shadow: 0 0 0 2px rgba(240, 201, 117, 0.32);
+}
+.gc-mini-socket.is-color-red { border-color: #b44b42; }
+.gc-mini-socket.is-color-green { border-color: #499d5e; }
+.gc-mini-socket.is-color-blue { border-color: #4b82c7; }
+.gc-mini-socket img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Skill mode: weapon & school category buttons */
+.gc-cat-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 1px solid #30281c;
+  background: linear-gradient(180deg, #191612 0%, #12100d 100%);
+  color: #cbbda2;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.gc-cat-btn:hover {
+  border-color: #77603c;
+  color: #f3e6cc;
+}
+
+.gc-cat-btn.is-selected {
+  border-color: #c29b59;
+  background: linear-gradient(90deg, rgba(164, 128, 66, 0.28) 0%, #1c1710 100%);
+  color: #fff3d6;
+}
+
+.gc-cat-icon {
+  font-size: 18px;
+  color: #b79c6d;
+}
+
+.gc-cat-label {
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gc-sidebar-foot {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  border-top: 1px solid #403320;
+  background: #0f0d0a;
+}
+
+.gc-foot-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid #59472c;
+  background: linear-gradient(180deg, #241e15 0%, #15120d 100%);
+  color: #e2d3b5;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.gc-foot-btn:hover,
+.gc-foot-btn.is-selected {
+  border-color: #cfa968;
+  background: linear-gradient(180deg, #352b1b 0%, #201910 100%);
+  color: #fff2d4;
+}
+
+.gc-foot-btn .material-symbols-rounded { font-size: 16px; }
+
+/* ── Main Panel ────────────────────────────────────────────────────────────── */
+.gc-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid #755e3b;
+  background: linear-gradient(180deg, #14120f 0%, #0d0b09 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(196, 158, 92, 0.14),
+    0 24px 64px rgba(0, 0, 0, 0.85);
+}
+
+.gc-header {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 44px 8px;
+  border-bottom: 1px solid #57452b;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(194, 152, 82, 0.16), transparent 68%),
+    linear-gradient(180deg, #241e15 0%, #14110c 100%);
+}
+
+.gc-plaque { text-align: center; }
+
+.gc-title {
+  margin: 0;
+  color: #f2ddb2;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.gc-subtitle {
+  margin: 2px 0 0;
+  color: #b7a178;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gc-close {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1.5px solid #944d36;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #7a2b1a, #2b0f09);
+  color: #f6e7cb;
+  cursor: pointer;
+}
+
+.gc-close:hover {
+  border-color: #d97654;
+  color: #fff;
+}
+
+.gc-close .material-symbols-rounded { font-size: 16px; }
+
+/* ── Compact Bar: Tabs + Search ────────────────────────────────────────────── */
+.gc-bar {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #352b1d;
+  background: #12100d;
+}
+
+.gc-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.gc-tab {
+  min-width: 132px;
+  height: 29px;
+  padding: 0 14px;
+  border: 1px solid #524229;
+  background: linear-gradient(180deg, #1f1a13 0%, #14110d 100%);
+  color: #b09e7d;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.gc-tab:hover {
+  border-color: #9c7e4e;
+  color: #f0e3c7;
+}
+
+.gc-tab.is-active {
+  border-color: #cfa968;
+  background: linear-gradient(180deg, #392d1c 0%, #231c11 100%);
+  color: #fff2d4;
+}
+
+.gc-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gc-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid #473925;
+  background: #0a0907;
+  color: #9b8a6d;
+}
+
+.gc-search:focus-within { border-color: #c59f5c; }
+.gc-search .material-symbols-rounded { font-size: 16px; }
+.gc-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #f2ead8;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.gc-search input::placeholder { color: #756957; }
+.gc-search-clear {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #9c8c70;
+  cursor: pointer;
+}
+
+.gc-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #7a3630;
+  background: rgba(124, 42, 34, 0.25);
+  color: #ffb8b0;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.gc-remove-btn:hover { background: rgba(154, 48, 38, 0.42); color: #fff; }
+.gc-remove-btn .material-symbols-rounded { font-size: 15px; }
+
+/* ── 4-Column PoE2 Stone Grid ──────────────────────────────────────────────── */
+.gc-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gc-tier-block {
+  position: relative;
+  padding: 6px;
+  border: 1px solid #2e261a;
+  background: rgba(10, 9, 8, 0.6);
+}
+
+.gc-tier-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 5px;
+  border: 1px solid #b58f50;
+  background: linear-gradient(180deg, #4d3b1f 0%, #261d0f 100%);
+  color: #f6e1b2;
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.gc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.gc-grid.is-centered {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gc-grid.is-centered .gc-card {
+  width: calc(25% - 3px);
+}
+
+.gc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  min-height: 102px;
+  padding: 12px 6px 9px;
+  border: 1px solid #352c1f;
+  background: linear-gradient(180deg, #1b1814 0%, #12100d 100%);
+  color: #e6dbc5;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.gc-card:hover,
+.gc-card:focus-visible {
+  outline: none;
+  border-color: #cfa968;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(214, 173, 98, 0.14), transparent 64%),
+    linear-gradient(180deg, #292218 0%, #18140f 100%);
+}
+
+.gc-card.is-current { border-color: #e5be75; }
+.gc-card.is-socketed { border-color: #3f6e4f; }
+.gc-card.is-invalid { opacity: 0.48; }
+.gc-card.is-invalid:hover { opacity: 0.9; }
+
+/* Circular orb for Support Gems */
+.gc-orb {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #6b5839;
+  background: radial-gradient(circle at 50% 45%, #241f18, #0b0a08);
+  overflow: hidden;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8), 0 3px 10px rgba(0, 0, 0, 0.6);
+}
+
+.gc-orb.is-color-red { border-color: #b8483c; box-shadow: 0 0 10px rgba(184, 72, 60, 0.25); }
+.gc-orb.is-color-green { border-color: #45a05a; box-shadow: 0 0 10px rgba(69, 160, 90, 0.25); }
+.gc-orb.is-color-blue { border-color: #4683cf; box-shadow: 0 0 10px rgba(70, 131, 207, 0.25); }
+.gc-orb img { width: 92%; height: 92%; object-fit: contain; }
+
+/* Square framed icon for Active Skill Gems (matches PoE2 Gemcutting Skill Gems) */
+.gc-square {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid #6e5a3b;
+  background: #0c0a08;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.7), 0 3px 10px rgba(0, 0, 0, 0.65);
+}
+
+.gc-square.is-color-red { border-color: #9e473c; }
+.gc-square.is-color-green { border-color: #458e55; }
+.gc-square.is-color-blue { border-color: #4877b5; }
+.gc-square img { width: 100%; height: 100%; object-fit: cover; }
+
+.gc-orb-fallback {
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 15px;
+  color: #d6c39e;
+}
+
+.gc-card-name {
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  line-height: 1.22;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+/* Subtle status dot in top-right (zero text clutter) */
+.gc-dot-mark {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.gc-dot-mark.is-current { background: #f2c974; box-shadow: 0 0 6px #f2c974; }
+.gc-dot-mark.is-socketed { background: #52c978; box-shadow: 0 0 6px #52c978; }
+.gc-dot-mark.is-conflict { background: #e09a3c; }
+
+.gc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 16px;
+  color: #9a8b71;
+  text-align: center;
+}
+.gc-empty-btn {
+  padding: 6px 12px;
+  border: 1px solid #8a6e42;
+  background: #221c13;
+  color: #f2dfb8;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+/* ── Minimal Fixed-Height Bottom Preview Strip ─────────────────────────────── */
+.gc-preview {
+  flex: none;
+  padding: 8px 12px;
+  border-top: 1px solid #4a3b25;
+  background: #0d0b09;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.gc-preview-line {
+  margin: 0;
+  color: #cfc5b2;
+  font-size: 12.5px;
+  line-height: 1.38;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.gc-preview-line strong {
+  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
+  color: #f3dfb5;
+}
+.gc-preview-line strong.is-color-red { color: #f28a7e; }
+.gc-preview-line strong.is-color-green { color: #7ee094; }
+.gc-preview-line strong.is-color-blue { color: #83bef7; }
+.gc-preview-tags { color: #9c8d72; font-size: 11.5px; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .gc-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 92dvh;
+  }
+
+  .gc-sidebar {
+    margin: 0;
+    border-right: 1px solid #59482e;
+    border-bottom: 0;
+    max-height: 124px;
+  }
+
+  .gc-sidebar-list {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .gc-skill-item,
+  .gc-cat-btn {
+    flex: none;
+    width: auto;
+    min-width: 120px;
+  }
+
+  .gc-sidebar-foot {
+    flex-direction: row;
+  }
+
+  .gc-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .gc-grid.is-centered .gc-card {
+    width: calc(33.33% - 3px);
+  }
+}
+
+@media (max-width: 580px) {
+  .gc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gc-grid.is-centered .gc-card {
+    width: calc(50% - 2px);
+  }
+}

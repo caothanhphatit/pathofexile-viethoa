@@ -1,7 +1,9 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { loadBuildPlannerData, loadItemModsData, loadItemsData, loadPassiveTreeData, loadSkillGemsData } from "../lib/data";
+import { loadBuildPlannerData, loadGemCompatData, loadItemModsData, loadItemsData, loadPassiveTreeData, loadSkillGemsData } from "../lib/data";
 import { buildModPool, type ModPool } from "../../shared/item-mods.mjs";
 import { ItemEditor, NewItemDialog, type NewItemChoice } from "../components/ItemEditor";
+import { GemCuttingModal, type GemCuttingRecord, type GemCuttingTarget } from "../components/GemCuttingModal";
+import type { GemCompatData } from "../lib/gemCompat";
 import { displayImageUrl } from "../lib/image";
 import { formatNumber, localizedText, type Locale, uiText } from "../lib/locale";
 import { navigateTo, setLeaveGuard } from "../lib/routes";
@@ -136,9 +138,7 @@ type ImportedBuild = {
   importedAt: string;
 };
 
-type GemPickerTarget =
-  | { kind: "skill"; skillId: string }
-  | { kind: "support"; skillId: string; supportId: string };
+type GemPickerTarget = GemCuttingTarget;
 
 type BuildRouteState = {
   screen: "library" | "detail";
@@ -1141,8 +1141,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     };
   }, [slotMenuAt]);
   const [activeWeaponSet, setActiveWeaponSet] = useState<1 | 2>(1);
+  const [rightPanelTab, setRightPanelTab] = useState<"stats" | "inventory">("stats");
   const [activeGemPicker, setActiveGemPicker] = useState<GemPickerTarget | null>(null);
-  const [gemPickerQuery, setGemPickerQuery] = useState("");
+  const [gemCompat, setGemCompat] = useState<GemCompatData | null>(null);
   const [showBuildHelp, setShowBuildHelp] = useState(false);
   const [treeChoicesOpen, setTreeChoicesOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<BuildModalKind | null>(null);
@@ -1284,6 +1285,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     }).catch((error: Error) => {
       if (alive) setLoadError(error.message);
     });
+    loadGemCompatData().then((compat) => {
+      if (alive && compat) setGemCompat(compat as GemCompatData);
+    }).catch(() => { /* fallback tag rules stay active */ });
     return () => {
       alive = false;
     };
@@ -1425,40 +1429,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const gemOptionFor = (group: number, supportId?: string): PobGemOptions | undefined =>
     gemTargets.find((target) => target.group === group && target.supportId === supportId)?.option;
 
-  const gemPickerItems = useMemo(() => {
-    const kind = activeGemPicker?.kind ?? "skill";
-    const prefix = kind === "support" ? "SupportGem" : "SkillGem";
-    const rows = kind === "support" ? supportGemOptions : skillGemOptions;
-    const query = gemPickerQuery.trim().toLowerCase();
-    return rows
-      .filter((item) => matchesQuery({
-        title: itemTitle(item, locale),
-        id: officialGemId(item, prefix),
-        tags: item.tags ?? [],
-        summary: localizedText(item.i18n?.summary, item.summary_en ?? "", locale),
-        lines: itemSummaryLines(item, locale, 4)
-      }, gemPickerQuery, ["title", "id", "tags", "summary", "lines"]))
-      // Name hits first ("Arc" before gems that only match through a "Warcry" tag);
-      // the sort is stable, so each group keeps alphabetical order.
-      .sort((a, b) => gemNameRank(itemTitle(a, locale), query) - gemNameRank(itemTitle(b, locale), query))
-      .slice(0, 80);
-  }, [activeGemPicker, gemPickerQuery, locale, skillGemOptions, supportGemOptions]);
-  const currentSupportGemId = useMemo(() => {
-    if (!activeGemPicker || activeGemPicker.kind !== "support") return "";
-    const skill = buildSkills.find(s => s.id === activeGemPicker.skillId);
-    const support = skill?.supportSkills.find(sup => sup.id === activeGemPicker.supportId);
-    return support?.skillId || "";
-  }, [activeGemPicker, buildSkills]);
-
-  const currentSkillGemId = useMemo(() => {
-    if (!activeGemPicker || activeGemPicker.kind !== "skill") return "";
-    const skill = buildSkills.find(s => s.id === activeGemPicker.skillId);
-    return skill?.skillId || "";
-  }, [activeGemPicker, buildSkills]);
-
-  const activeGemPickerLabel = activeGemPicker?.kind === "support"
-    ? localizedText(copy.chooseSupportGem, "", locale)
-    : localizedText(copy.chooseSkillGem, "", locale);
   const resolvePobSkillId = useCallback((gem: PobGem) => {
     const match = pobGemRecord(gem, skillGemOptions, "SkillGem");
     return match ? officialGemId(match, "SkillGem") : "";
@@ -2274,7 +2244,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const addBuildSkill = () => {
     const skill = newBuildSkillChoice();
     setBuildSkills((rows) => [...rows, skill]);
-    setGemPickerQuery("");
+    setGemStrip(null);
     setActiveGemPicker({ kind: "skill", skillId: skill.id });
   };
 
@@ -2288,25 +2258,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setGemStrip((current) => (current?.skillId === skillId ? null : current));
   };
 
+  /** Open the PoE2 Gemcutting popup modal to add a new support gem to `skillId`. */
   const addSupportSkill = (skillId: string) => {
-    const support = newSupportSkillChoice();
-    setBuildSkills((rows) => rows.map((row) => {
-      if (row.id !== skillId) return row;
-      const nextSupports = [...row.supportSkills, support];
-      const nonActiveCount = nextSupports.filter((item) => !item.active).length;
-      const currentSockets = effectiveSupportSockets(row);
-      const nextSockets = nonActiveCount > currentSockets && currentSockets < MAX_SUPPORT_SOCKETS
-        ? Math.min(MAX_SUPPORT_SOCKETS, nonActiveCount)
-        : row.supportSockets;
-      return {
-        ...row,
-        supportSkills: nextSupports,
-        ...(nextSockets !== undefined ? { supportSockets: nextSockets } : {})
-      };
-    }));
-    setGemPickerQuery("");
-    setActiveGemPicker(null);
-    setGemStrip({ skillId, supportId: support.id });
+    setActiveSlotId(null);
+    setTreeChoicesOpen(false);
+    setGemStrip(null);
+    setActiveGemPicker({ kind: "support", skillId });
   };
 
   const updateSupportSkill = (skillId: string, supportId: string, patch: Partial<BuildSupportSkillChoice>) => {
@@ -2487,29 +2444,55 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const openSkillGemPicker = (skillId: string) => {
     setActiveSlotId(null);
     setTreeChoicesOpen(false);
-    setGemPickerQuery("");
+    setGemStrip(null);
     setActiveGemPicker({ kind: "skill", skillId });
   };
 
-  const openSupportGemPicker = (skillId: string, supportId: string) => {
+  const openSupportGemPicker = (skillId: string, supportId?: string) => {
     setActiveSlotId(null);
     setTreeChoicesOpen(false);
-    setGemPickerQuery("");
-    setActiveGemPicker({ kind: "support", skillId, supportId });
+    setGemStrip(null);
+    setActiveGemPicker({ kind: "support", skillId, ...(supportId ? { supportId } : {}) });
   };
 
-  const selectGem = (item: ItemRecord) => {
-    if (!activeGemPicker) return;
+  const selectGem = (item: GemCuttingRecord, targetOverride?: GemPickerTarget) => {
+    const target = targetOverride ?? activeGemPicker;
+    if (!target) return;
     // A new gem drops the PoB ids/settings of the gem it replaces (level and quality stay).
-    const target = activeGemPicker;
     if (target.kind === "skill") {
-      const skillId = officialGemId(item, "SkillGem");
+      const skillId = officialGemId(item as ItemRecord, "SkillGem");
       setBuildSkills((rows) => rows.map((row) => row.id === target.skillId && row.skillId !== skillId ? { ...withoutPobGemDetails(row), skillId } : row));
-    } else {
-      const skillId = officialGemId(item, "SupportGem");
+    } else if (target.supportId) {
+      const skillId = officialGemId(item as ItemRecord, "SupportGem");
       setBuildSkills((rows) => rows.map((row) => row.id === target.skillId
         ? { ...row, supportSkills: row.supportSkills.map((support) => support.id === target.supportId && support.skillId !== skillId ? { ...withoutPobGemDetails(support), skillId } : support) }
         : row));
+    } else {
+      const skillId = officialGemId(item as ItemRecord, "SupportGem");
+      const created = { ...newSupportSkillChoice(), skillId };
+      setBuildSkills((rows) => rows.map((row) => {
+        if (row.id !== target.skillId) return row;
+        const nextSupports = [...row.supportSkills, created];
+        const nonActiveCount = nextSupports.filter((sup) => !sup.active).length;
+        const currentSockets = effectiveSupportSockets(row);
+        const nextSockets = nonActiveCount > currentSockets && currentSockets < MAX_SUPPORT_SOCKETS
+          ? Math.min(MAX_SUPPORT_SOCKETS, nonActiveCount)
+          : row.supportSockets;
+        return {
+          ...row,
+          supportSkills: nextSupports,
+          ...(nextSockets !== undefined ? { supportSockets: nextSockets } : {})
+        };
+      }));
+    }
+    setActiveGemPicker(null);
+  };
+
+  const removeGemForTarget = (target: GemPickerTarget) => {
+    if (target.kind === "skill") {
+      updateBuildSkill(target.skillId, { skillId: "" });
+    } else if (target.supportId) {
+      removeSupportSkill(target.skillId, target.supportId);
     }
     setActiveGemPicker(null);
   };
@@ -3467,11 +3450,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   const choice = inventoryBySlot.get(activeSlotId);
                   const filled = Boolean(choice?.itemName);
                   const fitting = stashViews.filter((view) => view.fits).length;
-                  // The slot stays selected (the inventory filters to it); only the menu closes.
+                  // Switch the right-hand panel beside Equipment straight to the Inventory tab.
                   const toInventory = () => {
                     setSlotMenuAt(null);
-                    const panel = document.querySelector<HTMLElement>(".nj-inventory");
-                    panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    setRightPanelTab("inventory");
                   };
                   return (
                     <div className="build-slot-menu" role="menu" aria-label={slotLabel(activeSlotId)} style={{ left: slotMenuAt.left, top: slotMenuAt.top, minWidth: Math.max(180, slotMenuAt.width) }}>
@@ -3520,12 +3502,74 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
           <section className="nj-panel nj-stats">
             <header className="nj-panel-head">
-              <h2>{locale === "vi" ? "Chỉ số" : "Stats"}</h2>
-              {isCalculating ? <span className="nj-panel-aside">{locale === "vi" ? "Đang tính..." : "Calculating..."}</span> : null}
-              {!isCalculating && calcError ? <span className="nj-panel-aside nj-calc-error" role="alert">{calcError}</span> : null}
+              <div className="nj-panel-tabs" role="tablist" aria-label={locale === "vi" ? "Chỉ số và Kho đồ" : "Stats and Inventory"}>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={rightPanelTab === "stats"}
+                  className={`nj-panel-tab ${rightPanelTab === "stats" ? "is-active" : ""}`}
+                  onClick={() => setRightPanelTab("stats")}
+                >
+                  {locale === "vi" ? "Chỉ số" : "Stats"}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={rightPanelTab === "inventory"}
+                  className={`nj-panel-tab ${rightPanelTab === "inventory" ? "is-active" : ""}`}
+                  onClick={() => setRightPanelTab("inventory")}
+                  onDragOver={(event) => {
+                    if ([...event.dataTransfer.types].includes(SLOT_DRAG_TYPE)) {
+                      event.preventDefault();
+                      setRightPanelTab("inventory");
+                    }
+                  }}
+                >
+                  <span>{locale === "vi" ? "Kho đồ" : "Inventory"}</span>
+                  {stashViews.length > 0 ? <small>{stashViews.length}</small> : null}
+                </button>
+              </div>
+              {rightPanelTab === "stats" && isCalculating ? <span className="nj-panel-aside">{locale === "vi" ? "Đang tính..." : "Calculating..."}</span> : null}
+              {rightPanelTab === "stats" && !isCalculating && calcError ? <span className="nj-panel-aside nj-calc-error" role="alert">{calcError}</span> : null}
             </header>
-            <CalcEngineSwitch locale={locale} onModeChanged={runCalculation} />
-            {(() => {
+            {rightPanelTab === "inventory" ? (
+              <div className="nj-panel-body">
+                <BuildInventoryPanel
+                  embedded
+                  locale={locale}
+                  items={stashViews}
+                  selectedSlotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined}
+                  selectedSlotFilled={Boolean(activeSlotId && inventoryBySlot.get(activeSlotId)?.itemName)}
+                  onClearSlot={() => setActiveSlotId(null)}
+                  onUnequipSelected={() => activeSlotId && unequipItem(activeSlotId)}
+                  onItemClick={clickStashItem}
+                  onItemEnter={enterStashItem}
+                  onItemMove={handleMouseMove}
+                  onItemLeave={handleMouseLeave}
+                  onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
+                  onEdit={editStashItem}
+                  onDuplicate={(itemId) => setStash((rows) => duplicateStashItem(rows, itemId))}
+                  onNewItem={openNewItem}
+                  onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
+                  onDropSlot={unequipItem}
+                  onPasteText={pasteStashText}
+                  slotChoice={slotChoice ? {
+                    itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
+                    slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
+                  } : null}
+                  onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
+                  onCancelChoice={() => setSlotChoice(null)}
+                  onItemDragStart={(itemId) => {
+                    const item = stash.find((row) => row.id === itemId);
+                    if (item && isJewelText(item.rawText || "", item.baseName)) setDraggedJewelId(itemId);
+                  }}
+                  onItemDragEnd={() => setDraggedJewelId(null)}
+                />
+              </div>
+            ) : (
+              <>
+                <CalcEngineSwitch locale={locale} onModeChanged={runCalculation} />
+                {(() => {
               // Numbers stamped in the PoB code are a fallback for when the calculator gave no answer
               // (they come from another PoB version and would change once ours arrives).
               const payloadStats = stampedStatsUsable({ calculated: Boolean(activeStats), calculating: isCalculating, failed: Boolean(calcError) })
@@ -3707,6 +3751,8 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 </div>
               );
             })()}
+              </>
+            )}
           </section>
         </div>
 
@@ -3818,42 +3864,6 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 </button>
               </div>
             )}
-          </div>
-        </section>
-
-        {/* Build inventory ("Kho đồ") */}
-        <section className="nj-panel nj-inventory" aria-label={locale === "vi" ? "Kho đồ" : "Inventory"}>
-          <div className="nj-panel-body">
-            <BuildInventoryPanel
-              locale={locale}
-              items={stashViews}
-              selectedSlotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined}
-              selectedSlotFilled={Boolean(activeSlotId && inventoryBySlot.get(activeSlotId)?.itemName)}
-              onClearSlot={() => setActiveSlotId(null)}
-              onUnequipSelected={() => activeSlotId && unequipItem(activeSlotId)}
-              onItemClick={clickStashItem}
-              onItemEnter={enterStashItem}
-              onItemMove={handleMouseMove}
-              onItemLeave={handleMouseLeave}
-              onRemove={(itemId) => setStash((rows) => removeStashItem({ inventory, stash: rows }, itemId).stash)}
-              onEdit={editStashItem}
-              onDuplicate={(itemId) => setStash((rows) => duplicateStashItem(rows, itemId))}
-              onNewItem={openNewItem}
-              onEditSelected={() => activeSlotId && editSlotItem(activeSlotId)}
-              onDropSlot={unequipItem}
-              onPasteText={pasteStashText}
-              slotChoice={slotChoice ? {
-                itemName: stashViews.find((row) => row.item.id === slotChoice.itemId)?.name ?? "",
-                slots: slotChoice.slots.map((id) => ({ id, label: slotLabel(id) }))
-              } : null}
-              onChooseSlot={(slotId) => slotChoice && equipItem(slotChoice.itemId, slotId)}
-              onCancelChoice={() => setSlotChoice(null)}
-              onItemDragStart={(itemId) => {
-                const item = stash.find((row) => row.id === itemId);
-                if (item && isJewelText(item.rawText || "", item.baseName)) setDraggedJewelId(itemId);
-              }}
-              onItemDragEnd={() => setDraggedJewelId(null)}
-            />
           </div>
         </section>
 
@@ -3978,90 +3988,46 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         </div>
       ) : null}
 
-      {editorOpen && activeGemPicker ? (
-        <div className="build-picker-backdrop build-gem-picker-backdrop" role="presentation" onMouseDown={(event) => {
-          if (event.target === event.currentTarget) setActiveGemPicker(null);
-        }}>
-          <section className="build-gem-picker" role="dialog" aria-modal="true" aria-label={activeGemPickerLabel}>
-            <div className="build-picker-head">
-              <div>
-                <p className="eyebrow">Gem</p>
-                <h2>{activeGemPickerLabel}</h2>
-              </div>
-              <button type="button" onClick={() => setActiveGemPicker(null)} aria-label="Close">
-                <span className="material-symbols-rounded" aria-hidden="true">close</span>
-              </button>
-            </div>
-            <div className="build-picker-controls build-gem-picker-controls" style={{ display: "flex", gap: "10px", alignItems: "center", width: "100%" }}>
-              <label className="build-picker-search" style={{ flex: 1 }}>
-                <span className="material-symbols-rounded" aria-hidden="true">search</span>
-                <input value={gemPickerQuery} onChange={(event) => setGemPickerQuery(event.target.value)} placeholder={localizedText(copy.searchGem, "", locale)} autoFocus />
-              </label>
-              {activeGemPicker?.kind === "support" && currentSupportGemId && (
-                <button className="build-picker-clear" type="button" onClick={() => {
-                  removeSupportSkill(activeGemPicker.skillId, activeGemPicker.supportId);
-                  setActiveGemPicker(null);
-                }} style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  height: "38px",
-                  border: "1px solid rgba(255, 82, 82, 0.3)",
-                  borderRadius: "7px",
-                  background: "rgba(255, 82, 82, 0.08)",
-                  color: "#ff5252",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "0 12px",
-                  whiteSpace: "nowrap"
-                }}>
-                  <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "16px" }}>backspace</span>
-                  {locale === "vi" ? "Gỡ bỏ" : "Remove"}
-                </button>
-              )}
-              {activeGemPicker?.kind === "skill" && currentSkillGemId && (
-                <button className="build-picker-clear" type="button" onClick={() => {
-                  updateBuildSkill(activeGemPicker.skillId, { skillId: "" });
-                  setActiveGemPicker(null);
-                }} style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  height: "38px",
-                  border: "1px solid rgba(255, 82, 82, 0.3)",
-                  borderRadius: "7px",
-                  background: "rgba(255, 82, 82, 0.08)",
-                  color: "#ff5252",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "0 12px",
-                  whiteSpace: "nowrap"
-                }}>
-                  <span className="material-symbols-rounded" aria-hidden="true" style={{ fontSize: "16px" }}>backspace</span>
-                  {locale === "vi" ? "Gỡ bỏ" : "Remove"}
-                </button>
-              )}
-            </div>
-            <div className="build-picker-list build-gem-list">
-              {gemPickerItems.length ? gemPickerItems.map((item) => {
-                const iconUrl = displayImageUrl(item.icon_url);
-                return (
-                  <button className="build-picker-result build-gem-result build-gem-choice" type="button" onClick={() => selectGem(item)} key={`${item.menu_key}:${item.slug ?? item.name}`}>
-                    <span className="build-picker-icon build-gem-picker-icon">
-                      {iconUrl ? <img src={iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">auto_awesome_motion</span>}
-                    </span>
-                    <span className="build-picker-copy build-gem-picker-copy">
-                      <strong>{itemTitle(item, locale)}</strong>
-                    </span>
-                  </button>
-                );
-              }) : <p className="build-picker-empty">{localizedText(copy.noGems, "", locale)}</p>}
-            </div>
-          </section>
-        </div>
-      ) : null}
+      <GemCuttingModal
+        open={Boolean(editorOpen && activeGemPicker)}
+        target={activeGemPicker}
+        locale={locale}
+        buildSkills={buildSkills}
+        skillGemOptions={skillGemOptions as GemCuttingRecord[]}
+        supportGemOptions={supportGemOptions as GemCuttingRecord[]}
+        gemCompat={gemCompat}
+        resolveSkillGem={(skill) => {
+          const record = skill.skillId ? gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem") : undefined;
+          return {
+            label: skill.skillId
+              ? monsterGemTitle(skill) || gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "Empty")
+              : (locale === "vi" ? "Chọn kỹ năng" : "Choose a skill"),
+            icon: skill.skillId ? gemChoiceIcon(skill.skillId, skillGemOptions, "SkillGem") : "",
+            description: record ? localizedText(record.i18n?.summary, record.summary_en ?? "", locale) : "",
+            color: record?.color
+          };
+        }}
+        resolveSupportGem={(support) => {
+          const options = support.active ? skillGemOptions : supportGemOptions;
+          const prefix = support.active ? "SkillGem" : "SupportGem";
+          const record = support.skillId ? gemChoiceItem(support.skillId, options, prefix) : undefined;
+          return {
+            label: support.skillId
+              ? gemChoiceLabel(support.skillId, options, prefix, locale, support.nameSpec || "")
+              : (locale === "vi" ? "Ô trống" : "Empty"),
+            icon: support.skillId ? gemChoiceIcon(support.skillId, options, prefix) : "",
+            rawName: support.nameSpec || record?.name,
+            color: record?.color
+          };
+        }}
+        resolveSkillRecord={(skill) => (skill.skillId ? (gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem") as GemCuttingRecord | undefined) : undefined)}
+        resolveSupportRecord={(support) => (support.skillId ? (gemChoiceItem(support.skillId, support.active ? skillGemOptions : supportGemOptions, support.active ? "SkillGem" : "SupportGem") as GemCuttingRecord | undefined) : undefined)}
+        onChangeTarget={(next) => setActiveGemPicker(next)}
+        onAddNewSkillGroup={addBuildSkill}
+        onSelectGem={selectGem}
+        onRemoveCurrent={removeGemForTarget}
+        onClose={() => setActiveGemPicker(null)}
+      />
 
 
       {editorOpen && showBuildHelp ? (

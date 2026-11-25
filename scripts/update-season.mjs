@@ -76,6 +76,7 @@ function main() {
 
   runStep("4/7 Refresh Build Planner & Craft PoB datasets", process.execPath, ["scripts/refresh-pob-gem-ids.mjs"]);
   runStep("    Refresh PoB gem families & monsters", process.execPath, ["scripts/refresh-pob-planner-data.mjs"]);
+  runStep("    Rebuild PoB + GGPK gem compatibility & recommended supports", process.execPath, ["scripts/build-gem-compat-data.mjs", ...(skipGgpk ? ["--skip-ggpk"] : gameArg)]);
   runStep("    Rebuild PoB item mod pool (Build Planner + Craft Simulator)", process.execPath, ["scripts/build-item-mod-pool.mjs"]);
   runStep("    Rebuild PoB equipment rules", process.execPath, ["scripts/build-equipment-rules-data.mjs"]);
 

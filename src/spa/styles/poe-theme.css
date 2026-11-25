@@ -227,6 +227,50 @@ body:has(.build-page) {
   text-transform: none;
 }
 
+/* Tabbed header for right-hand Stats | Inventory panel beside Equipment. */
+.nj-panel-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nj-panel-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--nj-muted);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color .14s ease, background .14s ease, border-color .14s ease;
+}
+
+.nj-panel-tab:hover {
+  color: var(--nj-text-strong);
+  background: rgba(255, 255, 255, .05);
+}
+
+.nj-panel-tab.is-active {
+  border-color: var(--nj-line);
+  background: var(--nj-panel);
+  color: var(--nj-text-strong);
+}
+
+.nj-panel-tab small {
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .09);
+  color: var(--nj-text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .nj-panel-aside {
   color: var(--nj-muted);
   font-size: 12px;

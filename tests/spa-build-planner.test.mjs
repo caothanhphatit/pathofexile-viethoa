@@ -163,14 +163,11 @@ test("Build planner page lets users choose saved trees and item hints", async ()
   assert.match(page, /buildSkills/);
   assert.match(page, /supportSkills/);
   assert.match(page, /activeGemPicker/);
-  assert.match(page, /gemPickerItems/);
+  assert.match(page, /<GemCuttingModal/);
   assert.match(page, /openSkillGemPicker/);
   assert.match(page, /openSupportGemPicker/);
   assert.match(page, /selectGem/);
   assert.match(page, /officialGemId/);
-  assert.match(page, /build-gem-choice/);
-  assert.match(page, /build-gem-picker/);
-  assert.match(page, /build-gem-result/);
   assert.doesNotMatch(page, /className="build-skill-note"/);
   assert.doesNotMatch(page, /className="build-support-note"/);
   assert.match(page, /type="file"/);
@@ -194,7 +191,8 @@ test("Build planner uses the shared skill gem SOT for active and support pickers
   assert.match(page, /setGemsData\(Array\.isArray\(gemData\?\.gems\)\s*\?\s*gemData\.gems\s*:\s*\[\]\)/);
   assert.match(page, /skillGemOptions = useMemo\(\(\) => gemPickerOptions\(gemsData, "skill"\)/);
   assert.match(page, /supportGemOptions = useMemo\(\(\) => gemPickerOptions\(gemsData, "support"\)/);
-  assert.match(page, /const rows = kind === "support" \? supportGemOptions : skillGemOptions/);
+  assert.match(page, /supportGemOptions=\{supportGemOptions/);
+  assert.match(page, /skillGemOptions=\{skillGemOptions/);
   assert.match(page, /official_id/);
   assert.match(page, /compactSupportGemSlug/);
   assert.match(page, /officialGemAliases/);

@@ -18,6 +18,18 @@
   outline: none;
 }
 
+.pi-panel--embedded {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  align-content: start;
+}
+
+.pi-panel--embedded .pi-head .pi-btn--ghost {
+  margin-left: auto;
+}
+
 .pi-panel:focus-visible,
 .pi-panel.is-drop {
   border-color: var(--poe-unique, #af6025);
@@ -187,6 +199,58 @@
 .pi-cell.is-unique { box-shadow: inset 0 0 0 1px rgba(175, 96, 37, .55); }
 .pi-cell.is-rare { box-shadow: inset 0 0 0 1px rgba(255, 255, 119, .35); }
 .pi-cell.is-magic { box-shadow: inset 0 0 0 1px rgba(136, 136, 255, .45); }
+
+/* PoE-style recessed square inventory grid (6 cols x 5 rows default; empty squares when empty). */
+.pi-grid.pi-grid--poe {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid #3c3428;
+  border-radius: 3px;
+  background: #0b0a09;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, .75);
+}
+
+.pi-grid.pi-grid--poe .pi-cell-wrap,
+.pi-grid.pi-grid--poe .pi-empty-cell {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.pi-grid.pi-grid--poe .pi-cell {
+  grid-template-rows: minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 4px 3px 3px;
+  gap: 2px;
+  border-radius: 2px;
+}
+
+.pi-grid.pi-grid--poe .pi-cell img {
+  max-width: 78%;
+  max-height: 78%;
+}
+
+.pi-grid.pi-grid--poe .pi-cell-label {
+  font-size: 9.5px;
+  line-height: 1.15;
+}
+
+.pi-empty-cell {
+  border: 1px solid #23201b;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .016), transparent 72%),
+    #11100e;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, .55);
+}
+
+@media (max-width: 520px) {
+  .pi-grid.pi-grid--poe {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
 
 .pi-initial {
   font: 700 20px var(--poe-num, serif);

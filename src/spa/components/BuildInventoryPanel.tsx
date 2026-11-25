@@ -50,6 +50,8 @@ function ItemIcon({ iconUrl, name, rarity }: { iconUrl?: string; name: string; r
 
 export function BuildInventoryPanel(props: {
   locale: Locale;
+  /** Rendered inside the Stats/Inventory tabbed panel next to Equipment. */
+  embedded?: boolean;
   items: StashItemView[];
   selectedSlotLabel?: string;
   selectedSlotFilled?: boolean;
@@ -122,9 +124,14 @@ export function BuildInventoryPanel(props: {
     }
   };
 
+  const POE_GRID_COLS = 6;
+  const POE_GRID_MIN_SLOTS = 30;
+  const totalSlots = Math.max(POE_GRID_MIN_SLOTS, Math.ceil(shown.length / POE_GRID_COLS) * POE_GRID_COLS);
+  const emptySlots = Math.max(0, totalSlots - shown.length);
+
   return (
     <section
-      className={`pi-panel poe-no-tooltip ${dropActive ? "is-drop" : ""}`}
+      className={`pi-panel poe-no-tooltip ${props.embedded ? "pi-panel--embedded" : ""} ${dropActive ? "is-drop" : ""}`}
       tabIndex={0}
       onPaste={onPaste}
       onDragOver={(event) => {
@@ -138,8 +145,12 @@ export function BuildInventoryPanel(props: {
       aria-label={vi ? "Kho đồ của build" : "Build inventory"}
     >
       <header className="pi-head">
-        <h3>{vi ? "Kho đồ" : "Inventory"}</h3>
-        <span className="pi-count">{props.items.length}</span>
+        {!props.embedded ? (
+          <>
+            <h3>{vi ? "Kho đồ" : "Inventory"}</h3>
+            <span className="pi-count">{props.items.length}</span>
+          </>
+        ) : null}
         <button type="button" className="pi-btn pi-btn--primary" onClick={props.onNewItem}>
           <span className="material-symbols-rounded" aria-hidden="true">add_box</span>
           {props.selectedSlotLabel
@@ -203,56 +214,51 @@ export function BuildInventoryPanel(props: {
           </button>
         </div>
       ) : null}
-      <p className="pi-message" role="status">{message}</p>
+      {message ? <p className="pi-message" role="status">{message}</p> : null}
 
-      {shown.length ? (
-        <div className="pi-grid" role="list">
-          {shown.map((row) => (
-            <div className="pi-cell-wrap" role="listitem" key={row.item.id}>
-              <button
-                type="button"
-                className={`pi-cell is-${row.rarity}`}
-                draggable
-                onDragStart={(event) => {
-                  event.dataTransfer.setData(STASH_DRAG_TYPE, row.item.id);
-                  event.dataTransfer.effectAllowed = "move";
-                  props.onItemLeave();
-                  props.onItemDragStart?.(row.item.id);
-                }}
-                onDragEnd={() => props.onItemDragEnd?.()}
-                onClick={() => props.onItemClick(row.item.id)}
-                onMouseEnter={(event) => props.onItemEnter(row.item.id, event)}
-                onMouseMove={props.onItemMove}
-                onMouseLeave={props.onItemLeave}
-                onFocus={(event) => props.onItemEnter(row.item.id, event as unknown as MouseEvent)}
-                onBlur={props.onItemLeave}
-                aria-label={`${row.name} (${vi ? RARITY_LABEL[row.rarity] ?? row.rarity : row.rarity}) — ${row.clickHint ?? (vi ? "bấm để mặc" : "click to equip")}`}
-              >
-                <ItemIcon iconUrl={row.iconUrl} name={row.name} rarity={row.rarity} />
-                <span className="pi-cell-label">{row.name}</span>
-                {row.edited ? <span className="pi-edited">{vi ? "Đã sửa" : "Edited"}</span> : null}
+      <div className="pi-grid pi-grid--poe" role="list">
+        {shown.map((row) => (
+          <div className="pi-cell-wrap" role="listitem" key={row.item.id}>
+            <button
+              type="button"
+              className={`pi-cell is-${row.rarity}`}
+              draggable
+              onDragStart={(event) => {
+                event.dataTransfer.setData(STASH_DRAG_TYPE, row.item.id);
+                event.dataTransfer.effectAllowed = "move";
+                props.onItemLeave();
+                props.onItemDragStart?.(row.item.id);
+              }}
+              onDragEnd={() => props.onItemDragEnd?.()}
+              onClick={() => props.onItemClick(row.item.id)}
+              onMouseEnter={(event) => props.onItemEnter(row.item.id, event)}
+              onMouseMove={props.onItemMove}
+              onMouseLeave={props.onItemLeave}
+              onFocus={(event) => props.onItemEnter(row.item.id, event as unknown as MouseEvent)}
+              onBlur={props.onItemLeave}
+              aria-label={`${row.name} (${vi ? RARITY_LABEL[row.rarity] ?? row.rarity : row.rarity}) — ${row.clickHint ?? (vi ? "bấm để mặc" : "click to equip")}`}
+            >
+              <ItemIcon iconUrl={row.iconUrl} name={row.name} rarity={row.rarity} />
+              <span className="pi-cell-label">{row.name}</span>
+              {row.edited ? <span className="pi-edited">{vi ? "Đã sửa" : "Edited"}</span> : null}
+            </button>
+            <span className="pi-cell-actions">
+              <button type="button" onClick={() => props.onEdit(row.item.id)} aria-label={vi ? `Sửa ${row.name}` : `Edit ${row.name}`} title={vi ? "Sửa chỉ số" : "Edit"}>
+                <span className="material-symbols-rounded" aria-hidden="true">edit</span>
               </button>
-              <span className="pi-cell-actions">
-                <button type="button" onClick={() => props.onEdit(row.item.id)} aria-label={vi ? `Sửa ${row.name}` : `Edit ${row.name}`} title={vi ? "Sửa chỉ số" : "Edit"}>
-                  <span className="material-symbols-rounded" aria-hidden="true">edit</span>
-                </button>
-                <button type="button" onClick={() => props.onDuplicate(row.item.id)} aria-label={vi ? `Nhân bản ${row.name}` : `Duplicate ${row.name}`} title={vi ? "Nhân bản để thử biến thể" : "Duplicate"}>
-                  <span className="material-symbols-rounded" aria-hidden="true">content_copy</span>
-                </button>
-              </span>
-              <button type="button" className="pi-remove" onClick={() => props.onRemove(row.item.id)} aria-label={vi ? `Bỏ ${row.name} khỏi kho` : `Remove ${row.name}`} title={vi ? "Bỏ khỏi kho" : "Remove"}>
-                <span className="material-symbols-rounded" aria-hidden="true">close</span>
+              <button type="button" onClick={() => props.onDuplicate(row.item.id)} aria-label={vi ? `Nhân bản ${row.name}` : `Duplicate ${row.name}`} title={vi ? "Nhân bản để thử biến thể" : "Duplicate"}>
+                <span className="material-symbols-rounded" aria-hidden="true">content_copy</span>
               </button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="pi-empty">
-          {props.selectedSlotLabel
-            ? (vi ? `Kho chưa có món nào vừa ô ${props.selectedSlotLabel}. Bấm «Tạo đồ cho ${props.selectedSlotLabel}» hoặc dán đồ từ game.` : `Nothing in the inventory fits ${props.selectedSlotLabel}. Click "New item" or paste an item from the game.`)
-            : (vi ? "Kho đồ trống. Bấm «Tạo đồ mới» để tự tạo trang bị, hoặc dán đồ từ game / PoB." : "Empty. Click \"New item\" to craft equipment, or paste items from the game / PoB.")}
-        </p>
-      )}
+            </span>
+            <button type="button" className="pi-remove" onClick={() => props.onRemove(row.item.id)} aria-label={vi ? `Bỏ ${row.name} khỏi kho` : `Remove ${row.name}`} title={vi ? "Bỏ khỏi kho" : "Remove"}>
+              <span className="material-symbols-rounded" aria-hidden="true">close</span>
+            </button>
+          </div>
+        ))}
+        {Array.from({ length: emptySlots }).map((_, idx) => (
+          <div className="pi-empty-cell" key={`empty-${idx}`} aria-hidden="true" />
+        ))}
+      </div>
       {helpOpen ? <p className="pi-help">
         {vi
           ? "Bấm «Tạo đồ mới» để chọn base/unique rồi gắn mod, chọn Tier và chỉ số. Bấm một món trong kho để mặc vào (hoặc kéo thả lên ô đồ). Rê chuột để xem chỉ số đổi bao nhiêu. Bấm chuột phải vào ô đồ để tháo ra."
