@@ -20,6 +20,7 @@ import { createRequire } from "node:module";
 
 import { LuaFactory } from "wasmoon";
 import { desugarPobLua } from "./lib/pob-lua-desugar.mjs";
+import { isHeadlessUnusedDataFile } from "../src/shared/pob-local-engine.mjs";
 import { packPobVfs } from "../src/shared/pob-local-vfs.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -98,10 +99,17 @@ export function collectPobBundleFiles(pobDir, { treeVersions = SUPPORTED_TREE_VE
   for (const entry of fs.readdirSync(dataDir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
     const full = path.join(dataDir, entry.name);
     if (entry.isDirectory()) {
-      if (entry.name === "StatDescriptions") continue;
-      walkLuaFiles(full, srcDir, "", files);
+      // StatDescriptions (UI tooltip formatter) and Uniques (UI item browser DB) are never read headless.
+      if (entry.name === "StatDescriptions" || entry.name === "Uniques") continue;
+      const sub = [];
+      walkLuaFiles(full, srcDir, "", sub);
+      for (const item of sub) {
+        if (!isHeadlessUnusedDataFile(item[0])) files.push(item);
+      }
     } else if (entry.name.endsWith(".lua")) {
-      files.push([`Data/${entry.name}`, full]);
+      const rel = `Data/${entry.name}`;
+      if (isHeadlessUnusedDataFile(rel)) continue;
+      files.push([rel, full]);
     }
   }
 

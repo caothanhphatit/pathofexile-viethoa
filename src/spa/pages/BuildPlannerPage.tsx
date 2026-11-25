@@ -1307,6 +1307,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setInventory((rows) => enrichInventoryChoices(rows, itemsData, locale));
   }, [itemsData, locale]);
 
+  // Warm-start the local PoB engine as soon as the Build Planner page opens
+  // (even on the build library screen) if the user previously chose local mode.
+  useEffect(() => {
+    void calcBackend.restoreIfRemembered();
+  }, []);
+
   useEffect(() => {
     const syncPath = () => setBuildPath(window.location.pathname);
     window.addEventListener("popstate", syncPath);
