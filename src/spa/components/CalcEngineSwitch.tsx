@@ -1,5 +1,5 @@
-// Optional "calculate on this device" switch for the Build Planner (behind feature flag).
-// Renders nothing unless the pilot flag (?localcalc=1 or localStorage poevh_local_calc_flag=1) is enabled.
+// Optional "calculate on this device" switch for the Build Planner.
+// Visible by default (default mode stays "server"); `?localcalc=0` hides it and forces server mode.
 // Nothing is downloaded until the user explicitly clicks the download button after seeing the size.
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import {

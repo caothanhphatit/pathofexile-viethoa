@@ -2,8 +2,9 @@
 // what-if comparisons (items, jewels, support suggestions), and passive node previews
 // through either the default server API or the optional in-browser PoB WASM Web Worker.
 //
-// Behind a feature flag (off by default: `?localcalc=1` or localStorage `poevh_local_calc_flag=1`).
-// Nothing is fetched or initialized until the user explicitly opts in.
+// Visible to everyone (default stays "server"; nothing is fetched or initialized until
+// the user explicitly opts in). `?localcalc=0` acts as a kill switch that hides the
+// switch and forces server mode.
 import {
   formatCalculateResponse,
   formatNodeDeltasResponse,
@@ -20,6 +21,7 @@ import {
   isValidPobManifest,
   manifestAssetUrls,
   manifestDownloadBytes,
+  resolveLocalCalcVisibility,
   staleCacheUrls,
   type DeviceCapabilityAssessment,
   type LocalizedMessage
@@ -120,17 +122,29 @@ function writeStorage(key: string, value: string | null): void {
   } catch { /* private browsing / quota */ }
 }
 
-/** Reads the pilot feature flag: `?localcalc=1` turns it on for this browser (localStorage `poevh_local_calc_flag`), `?localcalc=0` off. */
+/**
+ * Visible by default for everyone; `?localcalc=0` (or `false`) acts as a kill switch
+ * that hides the switch and forces server mode (`?localcalc=1` re-enables it).
+ */
 export function isLocalCalcFlagEnabled(): boolean {
-  if (typeof window === "undefined") return false;
+  if (typeof window === "undefined") return true;
+  let queryParam: string | null = null;
   try {
-    const params = new URLSearchParams(window.location.search);
-    const param = params.get("localcalc");
-    // The URL switch is remembered: the planner drops the query when it opens a build.
-    if (param === "1" || param === "true") { writeStorage(FLAG_STORAGE_KEY, "1"); return true; }
-    if (param === "0" || param === "false") { writeStorage(FLAG_STORAGE_KEY, null); return false; }
+    queryParam = new URLSearchParams(window.location.search).get("localcalc");
   } catch { /* ignore */ }
-  return readStorage(FLAG_STORAGE_KEY) === "1";
+  const storedKillSwitch = readStorage(FLAG_STORAGE_KEY);
+  const { visible, persistKillSwitch } = resolveLocalCalcVisibility({
+    queryParam,
+    storedKillSwitch,
+    defaultVisible: true
+  });
+  if (persistKillSwitch !== undefined) {
+    writeStorage(FLAG_STORAGE_KEY, persistKillSwitch);
+  }
+  if (!visible) {
+    writeStorage(MODE_STORAGE_KEY, "server");
+  }
+  return visible;
 }
 
 /** Checks browser primitives and device memory / mobile hints before any download. */
@@ -412,7 +426,11 @@ class CalcBackendController {
     if (flagEnabled !== this.state.flagEnabled) {
       this.setState({ flagEnabled });
     }
-    if (!flagEnabled) return;
+    if (!flagEnabled) {
+      this.terminateWorker();
+      this.setState({ mode: "server", phase: "idle", updateAvailable: false });
+      return;
+    }
 
     const rememberedMode = readStorage(MODE_STORAGE_KEY);
     const cached = readCachedMeta();
@@ -917,9 +935,3 @@ class CalcBackendController {
 }
 
 export const calcBackend = new CalcBackendController();
-
-// Pilot only: with the flag on, the controller is reachable from the console for measurements
-// (window.__poevhLocalCalc.getSnapshot().timings, .workerMemory(), .calculateBuild(body)).
-if (typeof window !== "undefined" && isLocalCalcFlagEnabled()) {
-  (window as unknown as { __poevhLocalCalc?: CalcBackendController }).__poevhLocalCalc = calcBackend;
-}

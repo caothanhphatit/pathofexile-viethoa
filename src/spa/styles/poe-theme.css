@@ -1764,7 +1764,7 @@ body:has(.build-page) {
   }
 }
 
-/* ── Optional local calculation switch (behind ?localcalc=1 flag) ──────── */
+/* ── Optional local calculation switch ─────────────────────────────────── */
 
 .calc-engine-bar {
   position: relative;
@@ -2083,6 +2083,26 @@ body:has(.build-page) {
     font-size: 11px;
     white-space: normal;
     text-align: center;
+  }
+  .calc-engine-status {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 24px;
+    row-gap: 4px;
+    overflow: visible;
+  }
+  .calc-engine-status .calc-engine-badge {
+    white-space: normal;
+    line-height: 1.3;
+  }
+  .calc-engine-status-actions {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .calc-engine-clear,
+  .calc-engine-update {
+    padding: 0 7px;
+    font-size: 10.5px;
   }
   .calc-engine-popover {
     left: 6px;

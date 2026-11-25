@@ -247,9 +247,9 @@ test("Skills panel matches PoE2 base-art cqw proportions, 7.6cqw icon, clickable
   assert.match(styles, /width:\s*max\(46px,\s*11\.0cqw\)/);
   assert.match(styles, /#8888ff/);
 
-  assert.match(html, /\/dist\/app\.css\?v=20261124-skillpanel4/);
-  assert.match(html, /\/dist\/spa\/assets\/app\.css\?v=20261124-skillpanel4/);
-  assert.match(html, /\/dist\/spa\/assets\/app\.js\?v=20261124-skillpanel4/);
+  assert.match(html, /\/dist\/app\.css\?v=20261125-localcalc2/);
+  assert.match(html, /\/dist\/spa\/assets\/app\.css\?v=20261125-localcalc2/);
+  assert.match(html, /\/dist\/spa\/assets\/app\.js\?v=20261125-localcalc2/);
 });
 
 test("Build detail popups restore focus reliably across all three modals and nested StatBreakdownDialog", async () => {
