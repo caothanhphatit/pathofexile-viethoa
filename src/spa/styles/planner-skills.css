@@ -705,11 +705,11 @@
 @media (min-width: 1024px) {
   .sk-detail-col {
     position: sticky;
-    top: 12px;
+    top: calc(var(--app-header-height, 66px) + 12px);
   }
 
   .sk-detail {
-    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - var(--app-header-height, 66px) - 24px);
   }
 }
 

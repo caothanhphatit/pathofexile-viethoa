@@ -162,6 +162,7 @@ textarea:focus-visible {
 }
 
 .app {
+  --app-header-height: 66px;
   min-height: 100dvh;
   background:
     linear-gradient(180deg, rgba(185, 130, 43, .08), transparent 280px),
