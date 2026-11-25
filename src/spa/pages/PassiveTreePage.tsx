@@ -475,7 +475,29 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
     setAscendancyFilter(name);
     if (tree) {
       const nextStarts = selectedStartNodeIds(tree, classFilter, name);
-      setAllocatedIds((current) => syncSelectedStartNodeIds(current, nextStarts, startIds));
+      setAllocatedIds((current) => {
+        const kept: string[] = [];
+        for (const rawId of current) {
+          const id = String(rawId);
+          if (startIds.has(id)) continue;
+          const node = tree.nodeById.get(id);
+          // Switching ascendancy automatically refunds only the previous ascendancy's points.
+          if (node?.isAscendancyStart || node?.ascendancyName) continue;
+          kept.push(id);
+        }
+        const nextSet = syncSelectedStartNodeIds(kept, nextStarts, startIds);
+        setWeaponSets((prev) => {
+          const next: Record<string, 1 | 2> = {};
+          for (const [k, v] of Object.entries(prev)) if (nextSet.has(k)) next[k] = v;
+          return next;
+        });
+        setAttributeChoices((prev) => {
+          const next: typeof prev = {};
+          for (const [k, v] of Object.entries(prev)) if (nextSet.has(k)) next[k] = v;
+          return next;
+        });
+        return nextSet;
+      });
     }
   };
 

@@ -1,0 +1,783 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Light Mode for the Build Planner (scoped strictly to html:not(.dark) so
+   Dark Mode stays 100% unchanged). Matches the site's warm-paper palette
+   (#f6f5f2 canvas, #ffffff cards, #1c1b19 ink) while keeping PoE2 item slots,
+   gem orbs, Gemcutting modal, and in-game PoE tooltips dark-framed so dark
+   game art and rarity colours remain crisp and authentic.
+   ────────────────────────────────────────────────────────────────────────── */
+
+html:not(.dark) {
+  --nj-bg: #f6f5f2;
+  --nj-hero: #ffffff;
+  --nj-panel: #ffffff;
+  --nj-panel-head: #f5f3ee;
+  --nj-well: #f8f6f2;
+  --nj-slot: #ffffff;
+  --nj-slot-empty: #ece8df;
+  --nj-line: #dad5c9;
+  --nj-line-soft: #e6e2d8;
+  --nj-text: #2c2a26;
+  --nj-text-strong: #151412;
+  --nj-muted: #66625a;
+  --nj-green: #1c1b19;
+  --nj-green-deep: #6b675e;
+  --nj-red: #c43227;
+  --nj-blue: #235ec4;
+  --nj-shadow: 0 1px 2px rgba(28, 27, 25, .06);
+
+  --poe-ui-text: #755e36;
+  --poe-ui-title: #1c1b19;
+  --poe-gold-dim: #8a6d3b;
+  --poe-text-strong: #151412;
+  --poe-muted: #66625a;
+
+  /* WCAG-AA element and stat colours on light cards */
+  --poe-normal: #4a4843;
+  --poe-magic: #3d42c4;
+  --poe-rare: #8a6700;
+  --poe-unique: #9e4810;
+  --poe-gem: #0d7a74;
+  --poe-life: #c43227;
+  --poe-mana: #2557bd;
+  --poe-es: #1c6ca3;
+  --poe-fire: #c43c1d;
+  --poe-cold: #1a6cb5;
+  --poe-lightning: #9a6c00;
+  --poe-chaos: #8a2496;
+  --poe-good: #1f7a38;
+  --poe-grey: #6b6860;
+}
+
+/* ── Page shell & Hero ─────────────────────────────────────────────────── */
+
+html:not(.dark) body:has(.build-page),
+html:not(.dark) .build-page {
+  background: var(--bg);
+  color: var(--nj-text);
+}
+
+html:not(.dark) .build-page .nj-hero {
+  border-color: var(--nj-line);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(28, 27, 25, .06);
+}
+
+html:not(.dark) .build-page .nj-hero-eyebrow {
+  color: #7a5c2c;
+}
+
+html:not(.dark) .build-page .nj-hero-title,
+html:not(.dark) .build-page .build-name-input {
+  color: #151412;
+}
+
+html:not(.dark) .build-page .nj-hero-sub {
+  color: #5c5850;
+}
+
+html:not(.dark) .build-page .nj-meta > div > strong.is-changed {
+  color: #9a6400;
+}
+
+html:not(.dark) .build-page .nj-meta > div > strong.is-saved {
+  color: #1f7a38;
+}
+
+/* Unified light buttons inside hero, toolbar, and panels */
+html:not(.dark) .build-page :is(
+  .build-btn,
+  .build-back-btn,
+  .build-help-button,
+  .build-import-button,
+  .build-library-toolbar button,
+  .build-library-card-actions button,
+  .build-tree-icon-action,
+  .build-picker-mode button,
+  .build-picker-clear,
+  .build-project-load,
+  .build-project-actions button,
+  .build-action-dialog-actions button,
+  .build-empty .build-btn,
+  .nj-btn
+) {
+  border: 1px solid #d6d0c4;
+  background: #f5f3ee;
+  color: #1c1b19;
+  box-shadow: none;
+}
+
+html:not(.dark) .build-page :is(
+  .build-btn,
+  .build-back-btn,
+  .build-help-button,
+  .build-import-button,
+  .build-library-toolbar button,
+  .build-library-card-actions button,
+  .build-tree-icon-action,
+  .build-picker-mode button,
+  .build-picker-clear,
+  .build-project-load,
+  .build-project-actions button,
+  .build-action-dialog-actions button,
+  .build-empty .build-btn,
+  .nj-btn
+):hover:not(:disabled) {
+  border-color: #b8b0a0;
+  background: #eae6dc;
+  color: #151412;
+}
+
+html:not(.dark) .build-page :is(
+  .build-btn--save,
+  .build-btn--primary,
+  .build-pob-actions button:last-child,
+  .build-library-toolbar button:last-child,
+  .nj-btn--primary
+) {
+  border-color: #1c1b19;
+  background: #1c1b19;
+  color: #ffffff;
+}
+
+html:not(.dark) .build-page :is(
+  .build-btn--save,
+  .build-btn--primary,
+  .build-pob-actions button:last-child,
+  .build-library-toolbar button:last-child,
+  .nj-btn--primary
+):hover:not(:disabled) {
+  border-color: #33312c;
+  background: #33312c;
+  color: #ffffff;
+}
+
+html:not(.dark) .build-page :is(.nj-btn--outline, .build-btn--import) {
+  border-color: #cfc8ba;
+  background: #ffffff;
+  color: #1c1b19;
+}
+
+html:not(.dark) .build-page :is(.nj-btn--outline, .build-btn--import):hover:not(:disabled) {
+  border-color: #b5ad9c;
+  background: #f3f0e8;
+  color: #151412;
+}
+
+html:not(.dark) .build-page :is(.build-btn--delete, .build-project-delete) {
+  border-color: #e8c4c0;
+  background: #fff5f4;
+  color: #c43227;
+}
+
+html:not(.dark) .build-page :is(.build-btn--delete, .build-project-delete):hover:not(:disabled) {
+  border-color: #c43227;
+  background: #fde8e6;
+  color: #a6251b;
+}
+
+/* Hero level, class, ascendancy, warnings */
+html:not(.dark) .build-page .build-level-field input,
+html:not(.dark) .build-page .nj-hero-level-row select,
+html:not(.dark) .build-page .build-class-picker-row select {
+  border-color: #d4cec2;
+  background: #ffffff;
+  color: #151412;
+}
+
+html:not(.dark) .build-page .build-change-class,
+html:not(.dark) .build-page .build-class-picker-actions button {
+  border-color: #d6d0c4;
+  background: #f5f3ee;
+  color: #1c1b19;
+}
+
+html:not(.dark) .build-page .build-change-class:hover,
+html:not(.dark) .build-page .build-class-picker-actions button:hover {
+  border-color: #b8b0a0;
+  background: #ebe7dd;
+}
+
+html:not(.dark) .build-page .build-warning-chip {
+  border-color: #dfb96d;
+  background: #fff8e7;
+  color: #8a5a00;
+}
+
+html:not(.dark) .build-page .build-warnings {
+  border-color: #e2c27a;
+  background: #fffaf0;
+  color: #362e1e;
+}
+
+html:not(.dark) .build-page .build-warnings-head {
+  color: #8a5a00;
+}
+
+/* ── Panels & Tabs ─────────────────────────────────────────────────────── */
+
+html:not(.dark) .build-page .nj-panel {
+  border-color: var(--nj-line);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(28, 27, 25, .05);
+}
+
+html:not(.dark) .build-page .nj-panel-head {
+  border-bottom-color: var(--nj-line-soft);
+  background: #f6f4ef;
+}
+
+html:not(.dark) .build-page .nj-panel-head h2 {
+  color: #1c1b19;
+}
+
+html:not(.dark) .build-page .nj-panel-tab {
+  color: #66625a;
+}
+
+html:not(.dark) .build-page .nj-panel-tab:hover {
+  background: rgba(28, 27, 25, .05);
+  color: #151412;
+}
+
+html:not(.dark) .build-page .nj-panel-tab.is-active {
+  border-color: #d6d0c4;
+  background: #ffffff;
+  color: #151412;
+  box-shadow: 0 1px 2px rgba(28, 27, 25, .06);
+}
+
+html:not(.dark) .build-page .nj-panel-tab small {
+  background: #ebe7de;
+  color: #4a4740;
+}
+
+/* ── Stats panel & Calc engine toggle ──────────────────────────────────── */
+
+html:not(.dark) .build-page .calc-engine-bar {
+  border-bottom-color: var(--nj-line-soft);
+  background: #faf8f4;
+}
+
+html:not(.dark) .build-page .calc-engine-switch {
+  border-color: #dad4c8;
+  background: #ece8df;
+}
+
+html:not(.dark) .build-page .calc-engine-option {
+  color: #5c5850;
+}
+
+html:not(.dark) .build-page .calc-engine-option:hover:not(:disabled) {
+  color: #151412;
+}
+
+html:not(.dark) .build-page .calc-engine-option.is-active {
+  background: #ffffff;
+  color: #151412;
+  box-shadow: 0 1px 2px rgba(28, 27, 25, .10), inset 0 0 0 1px #d6d0c4;
+}
+
+html:not(.dark) .build-page .calc-engine-badge.is-ready {
+  color: #1f7a38;
+}
+
+html:not(.dark) .build-page .nj-stat-row > span {
+  color: #4a4740;
+}
+
+html:not(.dark) .build-page .nj-stat-row > strong {
+  color: #151412;
+}
+
+/* ── Equipment paper doll & Inventory grid ─────────────────────────────── */
+
+html:not(.dark) .build-page .build-weapon-set-switch button {
+  border-color: #d4cec2;
+  background: #f5f3ee;
+  color: #5c5850;
+}
+
+html:not(.dark) .build-page .build-weapon-set-switch button.is-active {
+  border-color: #1c1b19;
+  background: #1c1b19;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+/* Empty slots blend cleanly into Light Mode; filled slots stay dark-recessed so PoE2 gear art pops */
+html:not(.dark) .build-page .build-equip-slot {
+  border-color: #d8d1c3;
+  background: #f3f0e8;
+  box-shadow: inset 0 1px 2px rgba(28, 27, 25, .06);
+}
+
+html:not(.dark) .build-page .build-equip-slot:hover {
+  border-color: #b59862;
+  background: #ece8dc;
+}
+
+html:not(.dark) .build-page .build-equip-slot.has-item {
+  border-color: #9e9688;
+  background: radial-gradient(ellipse at 50% 45%, rgba(200, 200, 200, .08), transparent 70%), #181715;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .55);
+}
+
+html:not(.dark) .build-page .build-equip-slot.has-item:hover {
+  border-color: #8a6d3b;
+  background: #22201d;
+}
+
+html:not(.dark) .build-page .build-equip-slot.has-item.is-magic {
+  border-color: #5458b8;
+  background: radial-gradient(ellipse at 50% 45%, rgba(136, 136, 255, .16), transparent 70%), #141421;
+}
+
+html:not(.dark) .build-page .build-equip-slot.has-item.is-rare {
+  border-color: #a8933c;
+  background: radial-gradient(ellipse at 50% 45%, rgba(255, 255, 119, .12), transparent 70%), #1b1912;
+}
+
+html:not(.dark) .build-page .build-equip-slot.has-item.is-unique {
+  border-color: #b5652e;
+  background: radial-gradient(ellipse at 50% 45%, rgba(175, 96, 37, .20), transparent 70%), #1d1510;
+}
+
+html:not(.dark) .build-page .build-slot-label {
+  color: #6b655a;
+}
+
+html:not(.dark) .build-page .build-equip-slot.has-item .build-slot-label {
+  color: #b8b2a6;
+}
+
+/* Inventory tab: warm stone tray with recessed light empty cells */
+html:not(.dark) .build-page .pi-btn {
+  border-color: #d6d0c4;
+  background: #f5f3ee;
+  color: #1c1b19;
+}
+
+html:not(.dark) .build-page .pi-btn:hover {
+  border-color: #b8b0a0;
+  background: #ebe7dd;
+}
+
+html:not(.dark) .build-page .pi-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: #5c5850;
+}
+
+html:not(.dark) .build-page .pi-btn--primary {
+  border-color: #1c1b19;
+  background: #1c1b19;
+  color: #ffffff;
+}
+
+html:not(.dark) .build-page .pi-grid,
+html:not(.dark) .build-page .pi-grid.pi-grid--poe {
+  border-color: #d6d0c4;
+  background: #e6e2d8;
+  box-shadow: inset 0 1px 3px rgba(28, 27, 25, .08);
+}
+
+html:not(.dark) .build-page .pi-grid.pi-grid--poe .pi-empty-cell,
+html:not(.dark) .build-page .pi-empty-cell {
+  border: 1px solid #d6d0c3;
+  background: #f4f1ea;
+  box-shadow: inset 0 1px 2px rgba(28, 27, 25, .06);
+}
+
+html:not(.dark) .build-page .pi-grid.pi-grid--poe .pi-empty-cell:hover,
+html:not(.dark) .build-page .pi-empty-cell:hover {
+  border-color: #b5a37e;
+  background: #ffffff;
+}
+
+/* Filled inventory item cells stay dark so PoE2 item icons & rarity colours pop */
+html:not(.dark) .build-page .pi-cell .pi-cell-label {
+  color: #e7e6e2;
+}
+html:not(.dark) .build-page .pi-cell.is-unique .pi-cell-label { color: #e8924f; }
+html:not(.dark) .build-page .pi-cell.is-rare .pi-cell-label { color: #f5eb78; }
+html:not(.dark) .build-page .pi-cell.is-magic .pi-cell-label { color: #9fa3ff; }
+
+/* ── Compact Drawer Bar (Passive Tree, Conditions, Detailed Stats) ─────── */
+
+html:not(.dark) .nj-drawer-btn {
+  border-color: #ddd8cc;
+  background: #ffffff;
+  color: #1c1b19;
+  box-shadow: 0 1px 2px rgba(28, 27, 25, .05);
+}
+
+html:not(.dark) .nj-drawer-btn:hover {
+  border-color: #b89a64;
+  background: #faf8f3;
+}
+
+html:not(.dark) .nj-drawer-icon {
+  border-color: #dfd8ca;
+  background: #f5f2ea;
+  color: #7a5c2c;
+}
+
+html:not(.dark) .nj-drawer-title strong {
+  color: #151412;
+  font-weight: 600;
+}
+
+html:not(.dark) .nj-drawer-pill {
+  border-color: #ddd6c7;
+  background: #f5f2ea;
+  color: #5c5342;
+}
+
+html:not(.dark) .nj-drawer-pill.is-accent {
+  border-color: rgba(61, 66, 196, .3);
+  background: #eff1ff;
+  color: #3d42c4;
+}
+
+html:not(.dark) .nj-drawer-pill.is-warn {
+  border-color: #dfb96d;
+  background: #fff8e7;
+  color: #8a5a00;
+}
+
+html:not(.dark) .nj-drawer-btn:hover .nj-drawer-open {
+  color: #1c1b19;
+}
+
+/* ── Shared Modals (Conditions, Detailed Stats, Passive Tree) ──────────── */
+
+html:not(.dark) .bm-backdrop {
+  background: rgba(28, 27, 25, .44);
+}
+
+html:not(.dark) .bm-dialog {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  color: #2c2a26;
+  box-shadow: 0 24px 60px rgba(28, 27, 25, .24);
+}
+
+html:not(.dark) .bm-head {
+  border-bottom-color: #e4dfd4;
+  background: #f5f3ee;
+}
+
+html:not(.dark) .bm-head h2 {
+  color: #151412;
+  font-weight: 600;
+}
+
+html:not(.dark) .bm-head-badge {
+  border-color: #dad3c4;
+  background: #ffffff;
+  color: #5c5342;
+}
+
+html:not(.dark) .bm-close {
+  border-color: #d4cec2;
+  background: #ffffff;
+  color: #4a4740;
+}
+
+html:not(.dark) .bm-close:hover {
+  border-color: #9c9484;
+  background: #f3f0e8;
+  color: #151412;
+}
+
+html:not(.dark) .pc-label,
+html:not(.dark) .pc-config-row {
+  color: #3a3833;
+}
+
+html:not(.dark) .pc-change.is-better {
+  color: #1f7a38;
+}
+
+html:not(.dark) .pc-hint::after {
+  border-color: #3a3833;
+  background: #1c1b19;
+  color: #f4f3f0;
+}
+
+/* ── Skills Panel & Detail Panel ───────────────────────────────────────── */
+
+html:not(.dark) .sk-row {
+  border-color: #dad3c4;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(28, 27, 25, .05);
+}
+
+html:not(.dark) .sk-row.is-open,
+html:not(.dark) .sk-row.is-main {
+  border-color: #b89656;
+}
+
+html:not(.dark) .sk-row-head {
+  border-bottom-color: #e6e1d6;
+  background: #f6f3ec;
+}
+
+html:not(.dark) .sk-collapse-stub {
+  border-color: #d4ccb8;
+  background: #ece8de;
+}
+
+html:not(.dark) .sk-row-name {
+  color: #1c1b19;
+}
+
+html:not(.dark) .sk-row-owner,
+html:not(.dark) .sk-lvl-label {
+  color: #746956;
+}
+
+html:not(.dark) .sk-lvl-num {
+  color: #3d42c4;
+}
+
+html:not(.dark) .sk-dmg-badge {
+  border-color: #d4ccb8;
+  background: #ffffff;
+  box-shadow: none;
+  color: #151412;
+}
+
+html:not(.dark) .sk-dmg-badge:hover {
+  border-color: #b59862;
+  background: #faf8f3;
+}
+
+html:not(.dark) .sk-dmg-badge.is-open {
+  border-color: #a68240;
+  background: #f7f2e6;
+}
+
+html:not(.dark) .sk-dmg-set {
+  border-right-color: #e2dcd0;
+  color: #746956;
+}
+
+html:not(.dark) .sk-dmg-val {
+  color: #151412;
+}
+
+html:not(.dark) .sk-dmg-kind,
+html:not(.dark) .sk-dmg-arrow {
+  color: #6b6252;
+}
+
+html:not(.dark) .sk-sockets-bar {
+  background: #faf8f4;
+}
+
+html:not(.dark) .sk-socket-recess {
+  border-color: #ddd6c7;
+  background: #f0ede5;
+  color: #8c8475;
+}
+
+html:not(.dark) .sk-socket-recess:hover {
+  border-color: #b59862;
+  color: #4a453b;
+}
+
+html:not(.dark) .sk-detail {
+  border-color: #d6ccb8;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(28, 27, 25, .07);
+}
+
+html:not(.dark) .sk-detail-titlebar {
+  border-bottom-color: #e2dcd0;
+  background: #f5f2ea;
+}
+
+html:not(.dark) .sk-detail-title {
+  color: #151412;
+}
+
+html:not(.dark) .sk-detail-close {
+  border-color: #d4cec2;
+  background: #ffffff;
+  color: #4a4740;
+}
+
+html:not(.dark) .sk-detail-close:hover {
+  border-color: #c43227;
+  background: #fff5f4;
+  color: #c43227;
+}
+
+html:not(.dark) .sk-detail-band {
+  background: #faf8f3;
+  border-bottom: 1px solid #ece7dc;
+}
+
+html:not(.dark) .sk-badge,
+html:not(.dark) .sk-chip-btn {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  color: #4a453b;
+}
+
+html:not(.dark) .sk-chip-btn:hover {
+  border-color: #9e7d43;
+  color: #151412;
+}
+
+html:not(.dark) .sk-detail-frame {
+  border-color: #e2dcd0;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+html:not(.dark) .sk-tabs {
+  border-bottom-color: #e2dcd0;
+  background: #f6f3ec;
+}
+
+html:not(.dark) .sk-tab {
+  border-color: #dfd8ca;
+  border-bottom-color: #e2dcd0;
+  background: #f0ede5;
+  color: #6b6252;
+}
+
+html:not(.dark) .sk-tab:hover {
+  color: #1c1b19;
+}
+
+html:not(.dark) .sk-tab.is-active {
+  border-color: #cfc6b4;
+  border-bottom-color: #ffffff;
+  background: #ffffff;
+  color: #151412;
+}
+
+html:not(.dark) .sk-detail-desc,
+html:not(.dark) .sk-opt-label,
+html:not(.dark) .sk-foot-label,
+html:not(.dark) .sk-detail .gx-field {
+  color: #4a463f;
+}
+
+html:not(.dark) .sk-frame-divider {
+  background: #e6e1d6;
+}
+
+html:not(.dark) .sk-section-heading {
+  color: #151412;
+}
+
+html:not(.dark) .sk-stat-row:nth-child(even) {
+  background: #faf8f4;
+}
+
+html:not(.dark) .sk-stat-list--sub .sk-stat-row dt {
+  color: #5c574d;
+}
+
+html:not(.dark) .sk-stat-list--sub .sk-stat-row dd {
+  color: #151412;
+}
+
+html:not(.dark) .sk-socket-stepper {
+  border-color: #d4cec2;
+  background: #ffffff;
+}
+
+html:not(.dark) .sk-step-btn {
+  color: #4a453b;
+}
+
+html:not(.dark) .sk-step-btn:hover:not(:disabled) {
+  background: #f3efe6;
+  color: #151412;
+}
+
+html:not(.dark) .sk-step-val {
+  color: #151412;
+}
+
+html:not(.dark) .sk-detail .gx-field select,
+html:not(.dark) .sk-detail .gx-field input {
+  border-color: #d4cec2;
+  background: #ffffff;
+  color: #151412;
+}
+
+html:not(.dark) .sk-detail-foot {
+  border-top-color: #e2dcd0;
+  background: #f8f6f1;
+}
+
+html:not(.dark) .sk-foot-row {
+  border-top-color: #e8e3d8;
+}
+
+html:not(.dark) .sk-toggle {
+  border-color: #d4cec2;
+  background: #ffffff;
+  color: #5c574d;
+}
+
+html:not(.dark) .sk-toggle.is-on {
+  border-color: #b59656;
+  background: #faf5e8;
+  color: #7a5c2c;
+}
+
+html:not(.dark) .sk-detail-empty {
+  border-color: #dfd9cc;
+  background: #faf8f4;
+  color: #66625a;
+}
+
+html:not(.dark) .sk-secondary {
+  border-color: #e0dad0;
+  background: #faf8f4;
+}
+
+/* ── Build Library & Dialogs ───────────────────────────────────────────── */
+
+html:not(.dark) .build-library-card-head > .material-symbols-rounded,
+html:not(.dark) .build-library-empty .material-symbols-rounded {
+  background: #f0ede5;
+  color: #5c574d;
+}
+
+html:not(.dark) :is(.build-pob-import, .build-help-dialog, .build-action-dialog) {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  color: #2c2a26;
+  box-shadow: 0 24px 60px rgba(28, 27, 25, .22);
+}
+
+/* ── Keep in-game PoE Tooltips & Gemcutting Modal authentic dark ───────── */
+
+html:not(.dark) .poe-tooltip-card {
+  --poe-normal: #c8c8c8;
+  --poe-magic: #8888ff;
+  --poe-rare: #ffff77;
+  --poe-unique: #af6025;
+  --poe-gem: #1ba29b;
+  --poe-label: #96948e;
+  --poe-mod: #8888ff;
+  --poe-rune-mod: #b4b4ff;
+}
+
+html:not(.dark) .gc-shell .gc-search input {
+  background: transparent;
+  color: #f2ead8;
+  border: 0;
+}
+
+html:not(.dark) .gc-shell .gc-search input::placeholder {
+  color: #756957;
+}

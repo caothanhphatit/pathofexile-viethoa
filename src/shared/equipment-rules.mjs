@@ -254,3 +254,13 @@ export function passivePointUse({ pointsUsed = 0, set1 = 0, set2 = 0, extra = 0 
   }
   return { used: pointsUsed - shared, max: MAX_PASSIVE_POINTS + extra, requiredLevel: level };
 }
+
+/** Available passive points at a given character level (level - 1 + act quest points + ExtraPoints). */
+export function passivePointsForLevel(level = 100, extra = 0) {
+  const lv = Math.max(1, Math.min(100, Math.floor(Number(level) || 1)));
+  let quest = 0;
+  for (const act of PASSIVE_POINT_ACTS) {
+    if (lv >= act.level && act.questPoints > quest) quest = act.questPoints;
+  }
+  return Math.max(0, lv - 1 + quest + (Number(extra) || 0));
+}

@@ -457,7 +457,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
         backdropDownRef.current = false;
       }}
     >
-      <div className="gc-shell" role="dialog" aria-modal="true" aria-labelledby={titleId}>
+      <div className="gc-shell poe-no-tooltip" role="dialog" aria-modal="true" aria-labelledby={titleId}>
         {/* Left Sidebar: Skill categories (in Skill mode) OR Build's skills + sockets (in Support mode) */}
         <aside className="gc-sidebar" aria-label={isSupport ? (vi ? "Kỹ năng trong build" : "Build skills") : (vi ? "Nhóm kỹ năng" : "Skill categories")}>
           {isSupport ? (

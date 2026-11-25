@@ -6,6 +6,7 @@ import "./styles/poe-theme.css";
 import "./styles/boss.css";
 import "./styles/theme.css";
 import "./styles/planner-game.css";
+import "./styles/planner-light.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

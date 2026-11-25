@@ -20,6 +20,8 @@
   width: min(980px, 95vw);
   height: min(84dvh, 780px);
   color: #e6dcc8;
+  color-scheme: dark;
+  scrollbar-color: #4a3d28 #12100d;
   font-family: var(--poe-chrome, var(--font-body, inherit));
 }
 
@@ -366,6 +368,10 @@
   box-shadow: none;
 }
 .gc-search input::placeholder { color: #756957; }
+.gc-search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
 .gc-search-clear {
   display: grid;
   place-items: center;

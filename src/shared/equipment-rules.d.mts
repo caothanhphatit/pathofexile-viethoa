@@ -46,4 +46,5 @@ export declare const MAX_ASCENDANCY_POINTS: number;
 export declare const WEAPON_SET_POINT_LIMIT: number;
 export declare const MAX_PASSIVE_POINTS: number;
 export declare function passivePointUse(input?: { pointsUsed?: number; set1?: number; set2?: number; extra?: number }): { used: number; max: number; requiredLevel: number };
+export declare function passivePointsForLevel(level?: number, extra?: number): number;
 export declare const isChoiceOptionNode: (id: string | number) => boolean;

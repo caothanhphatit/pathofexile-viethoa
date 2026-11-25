@@ -118,7 +118,7 @@ import {
 } from "../lib/buildInventory";
 import { buildWeaponFlags, enforceWeaponSets, equipWithWeaponRules, inventoryWithoutImpossibleOffHands, weaponNoticeText, weaponSlotCategories } from "../lib/weaponSets";
 import { buildWarnings, freeAllocatedNames, itemLevelRequirement, type WarningGem, type WarningItem, type WarningPoints } from "../lib/buildWarnings";
-import { TREE_VERSION, isChoiceOptionNode } from "../../shared/equipment-rules.mjs";
+import { MAX_ASCENDANCY_POINTS, TREE_VERSION, isChoiceOptionNode, passivePointUse, passivePointsForLevel } from "../../shared/equipment-rules.mjs";
 import { skillWeaponHint } from "../lib/skillWeapon";
 import { treePointsSpent } from "../lib/treePoints";
 import { applyLocalMods } from "../lib/itemLocalStats";
@@ -1521,6 +1521,33 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   }, [inventory, allocatedPassiveIds]);
   // What the character cannot use yet (level, attributes, passive points). Warnings only:
   // PoB still counts such items and gems, so the numbers keep them too.
+  const treePointCounts = useMemo(() => {
+    if (!classTree || !effectiveTree) return null;
+    const free = freeAllocatedNames(inventory.map((row) => row.rawText));
+    let passive = 0;
+    let ascendancy = 0;
+    for (const rawId of new Set(effectiveTree.allocatedIds)) {
+      const id = String(rawId);
+      const node = classTree.nodeById.get(id);
+      if (!node || node.isClassStart || node.isAscendancyStart) continue;
+      // PoB counts a multiple-choice ascendancy node once, not its chosen option.
+      if (node.ascendancyName) ascendancy += isChoiceOptionNode(id) ? 0 : 1;
+      else if (!free.includes(node.name.toLowerCase())) passive += 1;
+    }
+    const sets = weaponSetPointCounts(effectiveTree.weaponSets, effectiveTree.allocatedIds);
+    const extra = activeStats && typeof activeStats.ExtraPoints === "number" ? activeStats.ExtraPoints : 0;
+    const use = passivePointUse({ pointsUsed: passive, set1: sets.set1, set2: sets.set2, extra });
+    return {
+      passive,
+      ascendancy,
+      set1: sets.set1,
+      set2: sets.set2,
+      passiveUsed: use.used,
+      passiveMax: passivePointsForLevel(level, extra),
+      ascendancyMax: MAX_ASCENDANCY_POINTS
+    };
+  }, [classTree, effectiveTree, inventory, activeStats, level]);
+
   const warningList = useMemo(() => {
     const items: WarningItem[] = inventory.filter((row) => row.itemName || row.rawText).map((row) => ({
       slotId: row.inventoryId,
@@ -1536,24 +1563,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         gemLevel: support.gemLevel ?? 20
       }))
     ] : []);
-    let points: WarningPoints | null = null;
-    if (classTree && effectiveTree) {
-      const free = freeAllocatedNames(inventory.map((row) => row.rawText));
-      let passive = 0;
-      let ascendancy = 0;
-      for (const id of new Set(effectiveTree.allocatedIds)) {
-        const node = classTree.nodeById.get(id);
-        if (!node || node.isClassStart || node.isAscendancyStart) continue;
-        // PoB counts a multiple-choice ascendancy node once, not its chosen option.
-        if (node.ascendancyName) ascendancy += isChoiceOptionNode(id) ? 0 : 1;
-        else if (!free.includes(node.name.toLowerCase())) passive += 1;
-      }
-      const sets = weaponSetPointCounts(effectiveTree.weaponSets, effectiveTree.allocatedIds);
-      points = { passive, ascendancy, set1: sets.set1, set2: sets.set2 };
-    }
+    const points: WarningPoints | null = treePointCounts
+      ? { passive: treePointCounts.passive, ascendancy: treePointCounts.ascendancy, set1: treePointCounts.set1, set2: treePointCounts.set2 }
+      : null;
     return buildWarnings({ level, locale, items, gems, stats: activeStats, activeWeaponSet, points });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inventory, buildSkills, classTree, effectiveTree, level, locale, activeStats, activeWeaponSet, itemRecordForChoice, skillGemOptions, gemTargets]);
+  }, [inventory, buildSkills, treePointCounts, level, locale, activeStats, activeWeaponSet, itemRecordForChoice, skillGemOptions, gemTargets]);
   const calcRequestRef = useRef(0);
   // The calculation request for the build as it is, or with another inventory / skills /
   // main skill ("what if" comparisons use the same body, so their numbers are comparable).
@@ -2698,25 +2713,39 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setTreeChoicesOpen(false);
   };
 
-  /** Change ascendancy within the build's locked class (never changes the class). */
+  /** Change ascendancy within the build's locked class: auto-refunds old ascendancy points only. */
   const changeBuildAscendancy = (nextAscendancy: string) => {
     if (!buildTree || !classTree) return;
+    if (nextAscendancy === (buildTree.ascendancyName || "")) return;
     const allowed = classAscendancies(buildTree.className);
     if (nextAscendancy && !allowed.includes(nextAscendancy)) return;
     const nextStarts = [...selectedStartNodeIds(classTree, buildTree.className, nextAscendancy)];
-    const oldStarts = new Set(buildTree.startIds || []);
-    const keepNodes = (buildTree.allocatedIds || []).filter((id) => {
-      if (oldStarts.has(id)) return false;
-      const node = classTree.nodeById.get(id);
-      if (node?.ascendancyName && node.ascendancyName !== nextAscendancy) return false;
-      return true;
-    });
+    const oldStarts = new Set((buildTree.startIds || []).map(String));
+    const keepNodes = (buildTree.allocatedIds || [])
+      .map(String)
+      .filter((id) => {
+        if (oldStarts.has(id)) return false;
+        const node = classTree.nodeById.get(id);
+        if (node?.isAscendancyStart || node?.ascendancyName) return false;
+        return true;
+      });
     const nextAllocated = [...new Set([...nextStarts, ...keepNodes])];
+    const nextAllocatedSet = new Set(nextAllocated);
+    const nextWeaponSets: Record<string, 1 | 2> = {};
+    for (const [k, v] of Object.entries(buildTree.weaponSets ?? {})) {
+      if (nextAllocatedSet.has(k)) nextWeaponSets[k] = v;
+    }
+    const nextAttributes: Record<string, "str" | "dex" | "int"> = {};
+    for (const [k, v] of Object.entries(buildTree.attributeChoices ?? {})) {
+      if (nextAllocatedSet.has(k)) nextAttributes[k] = v;
+    }
     setBuildTree({
       ...buildTree,
       ascendancyName: nextAscendancy,
       startIds: nextStarts,
       allocatedIds: nextAllocated,
+      weaponSets: nextWeaponSets,
+      attributeChoices: nextAttributes,
       updatedAt: new Date().toISOString()
     });
   };
@@ -3778,6 +3807,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               statsBtnRef={statsBtnRef}
               treeName={buildTree?.name || ""}
               treePoints={treePoints(buildTree)}
+              passiveUsed={treePointCounts?.passiveUsed}
+              passiveMax={treePointCounts?.passiveMax}
+              ascendancyUsed={treePointCounts?.ascendancy}
+              ascendancyMax={treePointCounts?.ascendancyMax}
               weaponSet1Points={weaponSets.set1}
               weaponSet2Points={weaponSets.set2}
               treeOverLimit={treeOverLimit}

@@ -26,6 +26,10 @@ export interface BuildDrawerBarProps {
   statsBtnRef: RefObject<HTMLButtonElement>;
   treeName: string;
   treePoints: number;
+  passiveUsed?: number;
+  passiveMax?: number;
+  ascendancyUsed?: number;
+  ascendancyMax?: number;
   weaponSet1Points: number;
   weaponSet2Points: number;
   treeOverLimit: boolean;
@@ -42,6 +46,10 @@ export function BuildDrawerBar({
   statsBtnRef,
   treeName,
   treePoints,
+  passiveUsed,
+  passiveMax,
+  ascendancyUsed,
+  ascendancyMax = 8,
   weaponSet1Points,
   weaponSet2Points,
   treeOverLimit,
@@ -50,8 +58,27 @@ export function BuildDrawerBar({
 }: BuildDrawerBarProps) {
   const vi = locale === "vi";
   const hasWeaponSetPoints = weaponSet1Points > 0 || weaponSet2Points > 0;
-  const pointsText = `${formatNumber(treePoints, locale)} ${vi ? "điểm" : "pts"}`;
+  const hasBreakdown = typeof passiveUsed === "number" && typeof passiveMax === "number" && typeof ascendancyUsed === "number";
+  const passiveUnused = hasBreakdown ? Math.max(0, passiveMax - passiveUsed) : 0;
+  const passiveOver = hasBreakdown ? Math.max(0, passiveUsed - passiveMax) : 0;
+  const ascendancyUnused = hasBreakdown ? Math.max(0, ascendancyMax - ascendancyUsed) : 0;
+  const ascendancyOver = hasBreakdown ? Math.max(0, ascendancyUsed - ascendancyMax) : 0;
+
+  const pointsText = hasBreakdown
+    ? `${formatNumber(passiveUsed, locale)}/${formatNumber(passiveMax, locale)}`
+    : `${formatNumber(treePoints, locale)} ${vi ? "điểm" : "pts"}`;
   const weaponSetText = hasWeaponSetPoints ? `I: ${weaponSet1Points} · II: ${weaponSet2Points}` : "";
+
+  const unusedSummary = hasBreakdown
+    ? [
+        passiveOver > 0
+          ? (vi ? `Vượt ${formatNumber(passiveOver, locale)} thụ động` : `${formatNumber(passiveOver, locale)} passive over`)
+          : (vi ? `Còn ${formatNumber(passiveUnused, locale)} thụ động chưa dùng` : `${formatNumber(passiveUnused, locale)} passive unused`),
+        ascendancyOver > 0
+          ? (vi ? `vượt ${ascendancyOver} ascendancy` : `${ascendancyOver} asc over`)
+          : (vi ? `${ascendancyUnused} ascendancy chưa dùng` : `${ascendancyUnused} asc unused`)
+      ].join(" · ")
+    : treeName;
 
   return (
     <nav className="nj-drawer-bar poe-no-tooltip" aria-label={vi ? "Chi tiết build" : "Build detail panels"}>
@@ -78,8 +105,13 @@ export function BuildDrawerBar({
               {pointsText}
               {weaponSetText ? <small> · {weaponSetText}</small> : null}
             </span>
+            {hasBreakdown ? (
+              <span className={`nj-drawer-pill ${ascendancyOver > 0 ? "is-warn" : ascendancyUnused > 0 ? "is-accent" : ""}`}>
+                Asc {ascendancyUsed}/{ascendancyMax}
+              </span>
+            ) : null}
           </span>
-          {treeName ? <span className="nj-drawer-sub">{treeName}</span> : null}
+          {unusedSummary ? <span className="nj-drawer-sub">{unusedSummary}</span> : null}
         </span>
         <span className="nj-drawer-open material-symbols-rounded" aria-hidden="true">open_in_full</span>
       </button>
