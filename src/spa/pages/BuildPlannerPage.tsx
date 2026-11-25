@@ -1601,14 +1601,14 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     locale
   }), [warningItems, level, activeWeaponSet, activeStats, locale]);
 
-  const skillUsabilityFor = useCallback((skill: BuildSkillChoice): SkillUsabilityIssue[] => {
+  const skillUsabilityFor = useCallback((skill: BuildSkillChoice, index: number): SkillUsabilityIssue[] => {
     if (!skill.skillId || skill.disabled) return [];
     const sets = {
       1: { main: inventoryBySlot.get("Weapon1"), off: inventoryBySlot.get("Weapon2") },
       2: { main: inventoryBySlot.get("Weapon3"), off: inventoryBySlot.get("Weapon4") }
     };
     const record = gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem");
-    const granted = Boolean(skill.itemSlot || skill.itemSource || gemOptionFor(buildSkills.indexOf(skill))?.grantedSkill);
+    const granted = Boolean(skill.itemSlot || skill.itemSource || gemOptionFor(index)?.grantedSkill);
     const issues = skillUsabilityIssues({
       skillName: record ? itemTitle(record, locale) : (skill.nameSpec || skill.skillId),
       gemLevel: skill.gemLevel ?? 20,
@@ -1659,8 +1659,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       }))
     ] : []);
     const skillWeaponWarnings = buildSkills
-      .filter((skill) => skill.skillId && !skill.disabled)
-      .flatMap((skill) => skillUsabilityFor(skill).filter((issue) => issue.kind === "weapon").map((issue) => issue.message));
+      .flatMap((skill, index) => (skill.skillId && !skill.disabled
+        ? skillUsabilityFor(skill, index).filter((issue) => issue.kind === "weapon").map((issue) => issue.message)
+        : []));
     const points: WarningPoints | null = treePointCounts
       ? { passive: treePointCounts.passive, ascendancy: treePointCounts.ascendancy, set1: treePointCounts.set1, set2: treePointCounts.set2 }
       : null;
@@ -3539,9 +3540,9 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           const currentAscUsed = treePointCounts?.ascendancy ?? 0;
           const currentAscUnspent = ascendancyNotice.to ? Math.max(0, MAX_ASCENDANCY_POINTS - currentAscUsed) : 0;
           const unusableSkillList = buildSkills
-            .filter((skill) => skill.skillId && !skill.disabled)
-            .map((skill) => {
-              const issues = skillUsabilityFor(skill);
+            .map((skill, index) => {
+              if (!skill.skillId || skill.disabled) return null;
+              const issues = skillUsabilityFor(skill, index);
               if (!issues.length) return null;
               const label = gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "");
               return `${label} (${issues.map((i) => i.shortLabel).join(", ")})`;

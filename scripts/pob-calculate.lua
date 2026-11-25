@@ -466,15 +466,20 @@ local function calculateBuild(xmlText)
         -- places attack weapon stats on MainHand / OffHand. Ensure calcsOutput targets the
         -- same mainSocketGroup as mainOutput (otherwise calcsTab.input.skill_number may lag
         -- behind in the persistent worker), then promote the ranges onto cleanOutput.
+        -- Guarded in pcall so upstream PoB internal refactors can never fail a calculation.
         local calcsOut = build.calcsTab and build.calcsTab.calcsOutput
-        if build.calcsTab and build.calcsTab.input and build.mainSocketGroup
-            and build.calcsTab.input.skill_number ~= build.mainSocketGroup then
-            build.calcsTab.input.skill_number = build.mainSocketGroup
-            local okCalcs, envCalcs = pcall(build.calcsTab.calcs.buildOutput, build, "CALCS")
-            if okCalcs and envCalcs and envCalcs.player then
-                calcsOut = envCalcs.player.output
+        pcall(function()
+            local tab = build.calcsTab
+            if tab and tab.input and build.mainSocketGroup
+                and tab.input.skill_number ~= build.mainSocketGroup
+                and tab.calcs and type(tab.calcs.buildOutput) == "function" then
+                tab.input.skill_number = build.mainSocketGroup
+                local envCalcs = tab.calcs.buildOutput(build, "CALCS")
+                if envCalcs and envCalcs.player and type(envCalcs.player.output) == "table" then
+                    calcsOut = envCalcs.player.output
+                end
             end
-        end
+        end)
         local sources = {}
         if type(calcsOut) == "table" then
             if type(calcsOut.MainHand) == "table" then sources[#sources + 1] = calcsOut.MainHand end

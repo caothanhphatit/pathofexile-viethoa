@@ -171,7 +171,7 @@ export interface BuildSkillPanelProps {
   resolveSkillGem: (skill: BuildSkillChoice) => SkillGemMeta;
   resolveSupportGem: (support: BuildSupportSkillChoice) => SkillGemMeta;
   weaponHintFor: (skill: BuildSkillChoice) => string | null;
-  usabilityFor?: (skill: BuildSkillChoice) => SkillUsabilityIssue[];
+  usabilityFor?: (skill: BuildSkillChoice, index: number) => SkillUsabilityIssue[];
   grantedSkillTag: (skill: BuildSkillChoice) => ReactNode;
   gemOptionFor: (groupIndex: number, supportId?: string) => PobGemOptions | undefined;
   gemLevelControls: (gem: { gemLevel?: number; gemQuality?: number }, onPatch: (patch: { gemLevel?: number; gemQuality?: number }) => void) => ReactNode;
@@ -312,7 +312,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     );
     const supports = socketedGems;
     const weaponHint = weaponHintFor(skill);
-    const usabilityIssues = usabilityFor ? usabilityFor(skill) : [];
+    const usabilityIssues = usabilityFor ? usabilityFor(skill, index) : [];
     const hasWeaponError = usabilityIssues.some((issue) => issue.kind === "weapon");
     const isUnusable = !skill.disabled && usabilityIssues.length > 0;
     const displayBadge = hasWeaponError
@@ -366,24 +366,17 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
         resolveSupportGem={resolveSupportGem}
         supports={model.supports}
         triggered={model.triggered}
-        freeSockets={model.freeSockets}
         familyConflicts={model.familyConflicts}
-        supersededSupports={model.supersededSupports}
         weaponHint={model.weaponHint}
         usabilityIssues={model.usabilityIssues}
         grantedTag={grantedSkillTag(model.skill)}
         gemOptionFor={gemOptionFor}
         gemLevelControls={gemLevelControls}
-        activeGemStrip={activeGemStrip}
-        renderGemStrip={renderGemStrip}
         onClose={() => closeDetail(true)}
         onSelectMain={onSelectMain}
-        onToggleGemStrip={onToggleGemStrip}
         onUpdateSkill={onUpdateSkill}
         onRemoveSkill={onRemoveSkill}
-        onAddSupport={onAddSupport}
         onUpdateSupport={onUpdateSupport}
-        onRemoveSupport={onRemoveSupport}
         onHoverMainGem={onHoverMainGem}
         onMoveTooltip={onMoveTooltip}
         onLeaveTooltip={onLeaveTooltip}

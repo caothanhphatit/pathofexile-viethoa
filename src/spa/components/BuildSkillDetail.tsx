@@ -94,24 +94,17 @@ export interface BuildSkillDetailProps {
   resolveSupportGem: (support: BuildSupportSkillChoice) => SkillGemMeta;
   supports: BuildSupportSkillChoice[];
   triggered: BuildSupportSkillChoice[];
-  freeSockets: number;
   familyConflicts: SupportConflict[];
-  supersededSupports: Set<string>;
   weaponHint: string | null;
   usabilityIssues?: Array<{ kind: "weapon" | "level" | "attribute" | "spirit"; shortLabel: string; message: string }>;
   grantedTag: ReactNode;
   gemOptionFor: (groupIndex: number, supportId?: string) => PobGemOptions | undefined;
   gemLevelControls: (gem: { gemLevel?: number; gemQuality?: number }, onPatch: (patch: { gemLevel?: number; gemQuality?: number }) => void) => ReactNode;
-  activeGemStrip: { skillId: string; supportId: string | "main" } | null;
-  renderGemStrip: (skillId: string, supportId: string | "main") => ReactNode;
   onClose: () => void;
   onSelectMain: (groupNumber: number) => void;
-  onToggleGemStrip: (skillId: string, supportId: string | "main") => void;
   onUpdateSkill: (skillId: string, patch: Partial<BuildSkillChoice>) => void;
   onRemoveSkill: (skillId: string) => void;
-  onAddSupport: (skillId: string) => void;
   onUpdateSupport: (skillId: string, supportId: string, patch: Partial<BuildSupportSkillChoice>) => void;
-  onRemoveSupport: (skillId: string, supportId: string) => void;
   onHoverMainGem: (skill: BuildSkillChoice, event: MouseEvent) => void;
   onMoveTooltip: (event: MouseEvent) => void;
   onLeaveTooltip: () => void;
@@ -137,24 +130,17 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     resolveSupportGem,
     supports,
     triggered,
-    freeSockets,
     familyConflicts,
-    supersededSupports,
     weaponHint,
     usabilityIssues = [],
     grantedTag,
     gemOptionFor,
     gemLevelControls,
-    activeGemStrip,
-    renderGemStrip,
     onClose,
     onSelectMain,
-    onToggleGemStrip,
     onUpdateSkill,
     onRemoveSkill,
-    onAddSupport,
     onUpdateSupport,
-    onRemoveSupport,
     onHoverMainGem,
     onMoveTooltip,
     onLeaveTooltip

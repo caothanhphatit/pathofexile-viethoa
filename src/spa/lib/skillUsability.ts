@@ -1,7 +1,7 @@
 // Per-skill and per-item usability checks (weapon compatibility, gem level,
 // STR/DEX/INT requirements, and Spirit overflow), plus Meta/trigger skill detection.
 import { gemLevelRequirement } from "../../shared/equipment-rules.mjs";
-import { itemLevelRequirement, pobRequirementSlot, type WarningItem } from "./buildWarnings";
+import { pobRequirementSlot, type WarningItem } from "./buildWarnings";
 import { skillWeaponHint, skillWeaponMissing, skillWeaponNeed, type WeaponHands } from "./skillWeapon";
 
 export type SkillUsabilityKind = "weapon" | "level" | "attribute" | "spirit";
