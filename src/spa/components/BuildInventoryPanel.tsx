@@ -286,8 +286,9 @@ const COMPARE_ROWS: Array<{ stat: string; vi: string; format: StatFormat; higher
   { stat: "TotalEHP", vi: "Máu hiệu dụng", format: "short" }
 ];
 
-export function useQueueVersion(queue: CalcQueue<Stats>): number {
-  return useSyncExternalStore((listener) => queue.subscribe(listener), () => queue.snapshot, () => 0);
+const NOOP_SUB = () => () => {};
+export function useQueueVersion(queue: CalcQueue<Stats> | undefined): number {
+  return useSyncExternalStore((listener) => (queue ? queue.subscribe(listener) : NOOP_SUB()), () => queue?.snapshot ?? 0, () => 0);
 }
 
 /** Changes for one candidate against the base build, or a "calculating" line. */

@@ -3924,6 +3924,14 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 onOpenSkillChange={setExpandedSkill}
                 modalOpen={Boolean(activeModal || activeGemPicker || buildDialog || showBuildHelp || pobImportOpen || editorTarget || newItemOpen || explainStat)}
                 compareQueue={compareQueue}
+                calculationBodyForSkill={(groupNumber) => {
+                  const base = currentCalculationBody();
+                  if (!base) return null;
+                  const idx = groupNumber - 1;
+                  if (idx < 0 || idx >= buildSkills.length || !buildSkills[idx]?.skillId.trim()) return null;
+                  const row = buildSkills.slice(0, idx).filter((item) => item.skillId.trim()).length + 1;
+                  return { ...base, main_socket_group: row, full_dps: false };
+                }}
                 activeGemStrip={gemStrip}
                 renderGemStrip={gemStripFor}
                 resolveSkillGem={(skill) => {

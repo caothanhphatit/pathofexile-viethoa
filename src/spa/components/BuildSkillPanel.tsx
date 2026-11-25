@@ -164,6 +164,7 @@ export interface BuildSkillPanelProps {
   /** True while a modal picker/dialog is open so Escape closes only the modal. */
   modalOpen?: boolean;
   compareQueue: CalcQueue<Record<string, unknown>>;
+  calculationBodyForSkill?: (groupNumber: number) => Record<string, unknown> | null;
   activeGemStrip: { skillId: string; supportId: string | "main" } | null;
   renderGemStrip: (skillId: string, supportId: string | "main") => ReactNode;
   resolveSkillGem: (skill: BuildSkillChoice) => SkillGemMeta;
@@ -204,6 +205,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     onOpenSkillChange,
     modalOpen = false,
     compareQueue,
+    calculationBodyForSkill,
     activeGemStrip,
     renderGemStrip,
     resolveSkillGem,
@@ -346,6 +348,8 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
         badge={model.badge}
         damageLines={model.damageLines}
         activeStats={activeStats}
+        compareQueue={compareQueue}
+        skillCalcBody={calculationBodyForSkill?.(index + 1) ?? null}
         locale={locale}
         skillMeta={model.skillMeta}
         resolveSupportGem={resolveSupportGem}

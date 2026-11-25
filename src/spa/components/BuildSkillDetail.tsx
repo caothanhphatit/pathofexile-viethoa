@@ -1,13 +1,15 @@
 // Skill detail panel opened beside the compact skill list on desktop or inline under
 // a skill block on narrow screens, using PoE2's base-art ratios (P = 890 reference).
-import type { MouseEvent, ReactNode } from "react";
+import { useEffect, useMemo, type MouseEvent, type ReactNode } from "react";
 
 import { MAX_SUPPORT_SOCKETS, supportSocketStepperBounds, type BuildSkillChoice, type BuildSupportSkillChoice } from "../lib/buildPlanner";
 import { cardDamageNeedsNames, formatStat, type CardDamageLine } from "../lib/buildStats";
+import { calcKey, type CalcQueue } from "../lib/calcQueue";
 import { hasGemChoices, optionLabel, pickedStatSet, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
 import { monsterLibraryOf } from "../../server/pob-monster-gems.mjs";
 import type { MonsterGemPatch } from "../../server/pob-monsters.mjs";
 import { GemOptionControls, MonsterPicker, gemOptionBadges } from "./BuildGemOptions";
+import { useQueueVersion } from "./BuildInventoryPanel";
 
 export interface SkillGemMeta {
   label: string;
@@ -84,6 +86,9 @@ export interface BuildSkillDetailProps {
   badge: SkillDamageBadge;
   damageLines: CardDamageLine[];
   activeStats: Record<string, unknown> | null;
+  compareQueue?: CalcQueue<Record<string, unknown>>;
+  /** Calculation body with main_socket_group pointing to this skill (for non-main breakdown). */
+  skillCalcBody?: Record<string, unknown> | null;
   locale: string;
   skillMeta: SkillGemMeta;
   resolveSupportGem: (support: BuildSupportSkillChoice) => SkillGemMeta;
@@ -125,6 +130,8 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     badge,
     damageLines,
     activeStats,
+    compareQueue,
+    skillCalcBody,
     locale,
     skillMeta,
     resolveSupportGem,
@@ -154,6 +161,21 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
   } = props;
 
   const vi = locale === "vi";
+  useQueueVersion(compareQueue);
+  const perSkillRequest = useMemo(
+    () => (!isMain && skill.skillId && !skill.disabled && skillCalcBody ? skillCalcBody : null),
+    [isMain, skill.skillId, skill.disabled, skillCalcBody]
+  );
+  const perSkillKey = useMemo(() => (perSkillRequest ? calcKey(perSkillRequest) : ""), [perSkillRequest]);
+  useEffect(() => {
+    if (compareQueue && perSkillRequest) compareQueue.request(perSkillRequest, 8);
+  }, [compareQueue, perSkillRequest]);
+  const perSkillEntry = compareQueue && perSkillKey ? compareQueue.get(perSkillKey) : undefined;
+  const loadingPerSkill = Boolean(perSkillRequest && (!perSkillEntry || (perSkillEntry.status !== "done" && perSkillEntry.status !== "error")));
+  const details: Record<string, unknown> | null = isMain
+    ? activeStats
+    : (perSkillEntry?.status === "done" ? (perSkillEntry.result ?? null) : null);
+
   const mainOption = gemOptionFor(index);
   const statSets = mainOption?.statSets && mainOption.statSets.length > 1 ? mainOption.statSets : null;
   const skillParts = !statSets && mainOption?.parts && mainOption.parts.length > 1 ? mainOption.parts : null;
@@ -163,7 +185,6 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
   const pickMonster = (monsterId: string, gem: MonsterGemPatch) =>
     onUpdateSkill(skill.id, { ...gem, pobAttrs: withGemOption(skill.pobAttrs, { kind: "minion", value: monsterId }) });
 
-  const details = isMain && activeStats ? activeStats : null;
   const minionStats = details && details.Minion && typeof details.Minion === "object"
     ? details.Minion as Record<string, unknown>
     : null;
@@ -196,10 +217,17 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     const totalDotDps = Number(details.TotalDotDPS) || 0;
     const projectiles = Number(details.ProjectileCount) || 0;
     const aoeRadius = Number(details.AreaOfEffectRadiusMetres) || 0;
+    const aoeMod = Number(details.AreaOfEffectMod) || 0;
     const manaCost = Number(details.ManaCost) || 0;
+    const manaPerSec = Number(details.ManaPerSecondCost) || 0;
+    const lifeCost = Number(details.LifeCost) || 0;
+    const cooldown = Number(details.Cooldown) || 0;
+    const duration = Number(details.Duration) || 0;
+    const durationMod = Number(details.DurationMod) || 0;
+    const hasHitOrDps = combinedDps >= 0.5 || totalDps >= 0.5 || avgDamage >= 0.5 || damageTypes.length > 0;
 
-    if (combinedDps > 0) primaryStats.push({ label: vi ? "Sát thương mỗi giây" : "Damage per second", value: fmtExactDps(combinedDps) });
-    if (avgDamage > 0) primaryStats.push({ label: vi ? "Sát thương trung bình mỗi lần dùng" : "Average damage per use", value: fmtExactDps(avgDamage) });
+    if (combinedDps >= 0.5) primaryStats.push({ label: vi ? "Sát thương mỗi giây" : "Damage per second", value: fmtExactDps(combinedDps) });
+    if (avgDamage >= 0.5) primaryStats.push({ label: vi ? "Sát thương trung bình mỗi lần dùng" : "Average damage per use", value: fmtExactDps(avgDamage) });
     if (damageTypes.length > 1) {
       const totalMin = damageTypes.reduce((sum, p) => sum + p.min, 0);
       const totalMax = damageTypes.reduce((sum, p) => sum + p.max, 0);
@@ -208,7 +236,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     for (const part of damageTypes) {
       primaryStats.push({ label: part.rowLabel, value: fmtRange(part.min, part.max) });
     }
-    if (speed > 0) {
+    if (hasHitOrDps && speed > 0) {
       primaryStats.push({ label: vi ? "Thời gian mỗi lần dùng" : "Attack / Cast time", value: formatStat(1 / speed, "seconds") });
       primaryStats.push({ label: vi ? "Số lần dùng mỗi giây" : "Uses per second", value: formatStat(speed, "speed") });
     }
@@ -219,7 +247,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
       primaryStats.push({ label: vi ? "DPS theo thời gian" : "Damage over time DPS", value: fmtExactDps(totalDotDps) });
     }
 
-    if (combinedDps <= 0 && minionStats) {
+    if (combinedDps < 0.5 && minionStats) {
       const mDps = Number(minionStats.CombinedDPS) || 0;
       const mAvg = Number(minionStats.AverageDamage) || 0;
       const mSpeed = Number(minionStats.Speed) || 0;
@@ -230,18 +258,32 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
       if (mLife > 0) primaryStats.push({ label: vi ? "Máu minion" : "Minion life", value: formatStat(mLife, "int") });
     }
 
-    if (totalDps > 0 && Math.abs(totalDps - combinedDps) > 1) {
-      damageSectionRows.push({ label: vi ? "DPS đòn đánh trực tiếp" : "Hit DPS", value: fmtExactDps(totalDps) });
-    }
-    if (critChance > 0) damageSectionRows.push({ label: vi ? "Tỉ lệ chí mạng" : "Critical hit chance", value: formatStat(critChance, "pct1") });
-    if (critMult > 0) damageSectionRows.push({ label: vi ? "Hệ số chí mạng" : "Critical multiplier", value: formatStat(critMult, "mult") });
-    if (hitChance !== undefined && Number.isFinite(hitChance)) {
-      damageSectionRows.push({ label: vi ? "Tỉ lệ đánh trúng" : "Estimated chance to hit", value: formatStat(hitChance, "pct") });
+    if (hasHitOrDps) {
+      if (totalDps >= 0.5 && Math.abs(totalDps - combinedDps) > 1) {
+        damageSectionRows.push({ label: vi ? "DPS đòn đánh trực tiếp" : "Hit DPS", value: fmtExactDps(totalDps) });
+      }
+      if (critChance > 0) damageSectionRows.push({ label: vi ? "Tỉ lệ chí mạng" : "Critical hit chance", value: formatStat(critChance, "pct1") });
+      if (critMult > 0) damageSectionRows.push({ label: vi ? "Hệ số chí mạng" : "Critical multiplier", value: formatStat(critMult, "mult") });
+      if (hitChance !== undefined && Number.isFinite(hitChance)) {
+        damageSectionRows.push({ label: vi ? "Tỉ lệ đánh trúng" : "Estimated chance to hit", value: formatStat(hitChance, "pct") });
+      }
     }
 
     if (manaCost > 0) usageSectionRows.push({ label: vi ? "Mana mỗi lần dùng" : "Mana cost", value: formatStat(manaCost, "int") });
+    if (manaPerSec > 0 && Math.abs(manaPerSec - manaCost) > 0.5) {
+      usageSectionRows.push({ label: vi ? "Mana mỗi giây" : "Mana per second", value: formatStat(manaPerSec, "rate") });
+    }
+    if (lifeCost > 0) usageSectionRows.push({ label: vi ? "Máu mỗi lần dùng" : "Life cost", value: formatStat(lifeCost, "int") });
+    if (cooldown > 0) usageSectionRows.push({ label: vi ? "Thời gian hồi chiêu" : "Cooldown", value: formatStat(cooldown, "seconds") });
+    if (duration > 0) usageSectionRows.push({ label: vi ? "Thời lượng" : "Duration", value: formatStat(duration, "seconds") });
     if (projectiles > 0) usageSectionRows.push({ label: vi ? "Số đạn" : "Projectiles", value: formatStat(projectiles, "int") });
     if (aoeRadius > 0) usageSectionRows.push({ label: vi ? "Bán kính vùng ảnh hưởng" : "Area radius", value: formatStat(aoeRadius, "metres") });
+    else if (aoeMod > 0 && Math.abs(aoeMod - 1) > 0.005) {
+      usageSectionRows.push({ label: vi ? "Vùng ảnh hưởng" : "Area of effect", value: formatStat(aoeMod, "modpct") });
+    }
+    if (duration <= 0 && durationMod > 0 && Math.abs(durationMod - 1) > 0.005 && !hasHitOrDps) {
+      usageSectionRows.push({ label: vi ? "Hệ số thời lượng" : "Skill effect duration", value: formatStat(durationMod, "modpct") });
+    }
   }
 
   const showZeroChoiceHint = !skill.disabled && Boolean(skill.skillId) && dps === 0 && Boolean(mainOption?.statSets || mainOption?.parts);
@@ -387,10 +429,10 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                   </div>
                 ))}
               </dl>
-            ) : (
-              <p className="sk-note sk-frame-pad">{vi ? "Kỹ năng này không có chỉ số sát thương trực tiếp." : "This skill has no direct damage stats."}</p>
-            )
-          ) : (
+            ) : !usageSectionRows.length ? (
+              <p className="sk-note sk-frame-pad">{vi ? "Kỹ năng hỗ trợ / duy trì này không có chỉ số sát thương trực tiếp (hiệu ứng đã cộng vào chỉ số nhân vật)." : "This buff/utility skill has no direct damage stats (its effects are applied to character stats)."}</p>
+            ) : null
+          ) : loadingPerSkill ? (
             <>
               {badge.kind ? (
                 <dl className="sk-stat-list sk-stat-list--primary">
@@ -403,21 +445,16 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                   </div>
                 </dl>
               ) : null}
-              <div className="sk-main-prompt sk-frame-pad">
-                <p className="sk-note">
-                  {vi
-                    ? "Đặt làm kỹ năng chính để xem đầy đủ bảng chỉ số (tốc độ, chí mạng, từng hệ sát thương)."
-                    : "Set as main skill to see the full stat breakdown."}
-                </p>
-                {skill.skillId ? (
-                  <button type="button" className="sk-mini-btn" onClick={() => onSelectMain(index + 1)}>
-                    <span className="material-symbols-rounded" aria-hidden="true">star</span>
-                    {vi ? "Chọn làm kỹ năng chính" : "Set as main skill"}
-                  </button>
-                ) : null}
-              </div>
+              <p className="sk-note sk-frame-pad">
+                <span className="pi-spinner" aria-hidden="true" />{" "}
+                {vi ? "Đang tính chi tiết kỹ năng từ Path of Building…" : "Calculating skill breakdown in Path of Building…"}
+              </p>
             </>
-          )}
+          ) : skill.disabled ? (
+            <p className="sk-note sk-frame-pad">
+              {vi ? "Nhóm kỹ năng đang tắt — bật lại bên dưới để PoB tính chỉ số." : "This skill group is disabled — enable it below to calculate stats."}
+            </p>
+          ) : null}
 
           {/* Section: "Sát thương" (Damage) */}
           {(damageTotal > 0 || damageSectionRows.length > 0 || cardDamageNeedsNames(damageLines)) ? (
