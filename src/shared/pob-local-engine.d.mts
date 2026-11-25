@@ -24,6 +24,9 @@ export interface CreatePobLocalEngineOptions {
   deflate?: (data: string) => string;
 }
 
+export declare const HEADLESS_UI_EMPTY_TABLE_FILES: Set<string>;
+export declare const HEADLESS_UI_NOOP_FUNC_FILES: Set<string>;
+export declare function isHeadlessUnusedDataFile(vfsPath: string): boolean;
 export declare function buildPersistentCalculateScript(calculateLuaSource: string): string;
 export declare function normalizeVfsPath(relPath: string): string;
 export declare function createPobLocalEngine(options: CreatePobLocalEngineOptions): Promise<PobLocalEngine>;

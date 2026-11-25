@@ -173,12 +173,25 @@ local function stripShebang(src)
   return src
 end
 
+-- Cache compiled prototypes for small modules PoB reloads on every build
+-- (CalcBreakdown, Calcs, CalcSections, ConfigOptions, BuildDisplayStats...).
+-- Large data files (> 256 KB) are loaded once and left uncached to keep memory low.
+local _chunk_cache = {}
 function loadfile(filename, mode, env)
+  if not env and (not mode or mode == "t") then
+    local cached = _chunk_cache[filename]
+    if cached then return cached end
+  end
   local src = __pob_vfs_read(filename)
   if not src then return nil, "cannot open " .. tostring(filename) .. ": No such file or directory" end
   src = stripShebang(src)
-  if env then return load(src, "@" .. filename, mode or "t", env) end
-  return load(src, "@" .. filename, mode or "t")
+  local fn, err
+  if env then fn, err = load(src, "@" .. filename, mode or "t", env)
+  else fn, err = load(src, "@" .. filename, mode or "t") end
+  if fn and not env and (not mode or mode == "t") and #src <= 262144 then
+    _chunk_cache[filename] = fn
+  end
+  return fn, err
 end
 
 function dofile(filename)
@@ -349,6 +362,10 @@ function pobCalculateXml(xmlText)
     encoded = dkjson.encode({ ok = true, data = cleanOutput })
   end
   cleanOutput = nil
+  -- Release the finished build and reclaim its dead tables right after encoding so the
+  -- next calculation starts from the ~55-75 MB baseline instead of peaking at 2x build memory.
+  resetBetweenBuilds()
+  collectgarbage("collect")
   return encoded
 end
 -- Frees the finished build (the next request would do the same reset first).
@@ -367,6 +384,92 @@ export function normalizeVfsPath(relPath) {
   if (norm.startsWith("/")) return norm.slice(1);
   return norm;
 }
+
+/**
+ * UI-only PoB data files that headless build calculation never reads (item browser,
+ * trade query, sprite sheets, flavour tooltips, world area lists). Returning empty
+ * stubs avoids parsing ~2.5 MB of Lua tables and allows dropping them from the bundle.
+ */
+export const HEADLESS_UI_EMPTY_TABLE_FILES = new Set([
+  "Data/Rares.lua",
+  "Data/FlavourText.lua",
+  "Data/Assets.lua",
+  "Data/Skills/SkillAssets.lua",
+  "Data/Essence.lua",
+  "Data/ModMap.lua",
+  "Data/TradeSiteStats.lua",
+  "Data/QueryMods.lua",
+  "Data/Uniques/Special/race.lua"
+]);
+
+export const HEADLESS_UI_NOOP_FUNC_FILES = new Set([
+  "Data/WorldAreas.lua",
+  "Data/Uniques/Special/New.lua"
+]);
+
+// Data/Uniques/Special/Generated.lua builds UI templates for data.uniques.generated (unused
+// headless), AND as a side effect rewrites "Spectre: {0}" / "Companion: {0}" gem names on
+// data.gems so Prism of Belief ("+2 to Level of all Tamed Companion Skills") matches them.
+const GENERATED_UNIQUES_HEADLESS_STUB = `
+data.uniques.generated = {}
+local excluded = { ["Detonate Minion"] = true, ["Rhoa Mount"] = true }
+for _, gemData in pairs(data.gems) do
+  if not gemData.tags.support and not excluded[gemData.name] and not gemData.grantedEffect.hidden and not gemData.grantedEffect.fromItem and not gemData.grantedEffect.fromTree then
+    gemData.name = gemData.name:gsub("Spectre: {0}", "Summon Spectre"):gsub("Companion: {0}", "Tamed Companion")
+  end
+end
+`;
+
+/** True when `vfsPath` is a UI-only PoB data file unused by headless calculation. */
+export function isHeadlessUnusedDataFile(vfsPath) {
+  const key = normalizeVfsPath(vfsPath);
+  return HEADLESS_UI_EMPTY_TABLE_FILES.has(key)
+    || HEADLESS_UI_NOOP_FUNC_FILES.has(key)
+    || key === "Data/Uniques/Special/Generated.lua"
+    || (key.startsWith("Data/Uniques/") && key.endsWith(".lua"));
+}
+
+/**
+ * Heavy item-crafting mod tables (Data/ModItemExclusive 1.78 MB, Data/ModItem 1.02 MB,
+ * etc.) that are loaded eagerly by Modules/Data.lua for the item crafter UI, but only
+ * accessed in headless calculation for rare edge cases (e.g. advancedCopy uniques).
+ * Loaded lazily on first access via a Lua metatable proxy so results stay 100% identical.
+ */
+const LAZY_ITEM_MOD_FILES = new Set([
+  "Data/ModItem.lua",
+  "Data/ModFlask.lua",
+  "Data/ModCharm.lua",
+  "Data/ModIncursionLimb.lua",
+  "Data/ModJewel.lua",
+  "Data/ModCorrupted.lua",
+  "Data/ModItemExclusive.lua",
+  "Data/ModVeiled.lua"
+]);
+
+/**
+ * One-shot static data files loaded once into Lua globals during PoB startup and
+ * never re-read afterwards: safe to release from the JS VFS Map after startup.
+ */
+const RELEASABLE_AFTER_INIT_PREFIXES = [
+  "Data/Skills/",
+  "Data/Bases/"
+];
+const RELEASABLE_AFTER_INIT_FILES = new Set([
+  "Data/ModCache.lua",
+  "Data/Gems.lua",
+  "Data/Spectres.lua",
+  "Data/Minions.lua",
+  "Data/ModScalability.lua",
+  "Data/SkillStatMap.lua",
+  "Data/Misc.lua",
+  "Data/Global.lua",
+  "Data/Bosses.lua",
+  "Data/BossSkills.lua",
+  "Data/QuestRewards.lua",
+  "Data/Costs.lua",
+  "Data/ModRunes.lua",
+  "__planner_calculate.lua"
+]);
 
 /**
  * Starts wasmoon, loads Path of Building headless once from `vfs`, and returns a
@@ -390,10 +493,28 @@ export async function createPobLocalEngine({ vfs, calculateScript, wasmUri, infl
   const lua = await factory.createEngine({ openStandardLibs: true });
   const vmInitMs = performance.now() - t0;
 
+  const readDuringInit = new Set();
   // Bind VFS reader: must return `undefined` (not `null`) on miss so wasmoon pushes Lua nil.
   lua.global.set("__pob_vfs_read", (filePath) => {
     const key = normalizeVfsPath(filePath);
+    if (key === "Data/Uniques/Special/Generated.lua") return GENERATED_UNIQUES_HEADLESS_STUB;
+    if (HEADLESS_UI_NOOP_FUNC_FILES.has(key)) return "return function() end";
+    if (HEADLESS_UI_EMPTY_TABLE_FILES.has(key) || (key.startsWith("Data/Uniques/") && key.endsWith(".lua"))) {
+      return "return {}";
+    }
+    if (LAZY_ITEM_MOD_FILES.has(key) && vfs.has(key)) {
+      return `return __pob_make_lazy_mod_table(${JSON.stringify(key)})`;
+    }
     const value = vfs.get(key);
+    if (value !== undefined) readDuringInit.add(key);
+    return value !== undefined ? value : undefined;
+  });
+
+  // Raw VFS reader used when a lazy mod table is actually materialized on demand.
+  lua.global.set("__pob_vfs_read_raw", (filePath) => {
+    const key = normalizeVfsPath(filePath);
+    const value = vfs.get(key);
+    if (value !== undefined) vfs.delete(key);
     return value !== undefined ? value : undefined;
   });
 
@@ -405,21 +526,109 @@ export async function createPobLocalEngine({ vfs, calculateScript, wasmUri, infl
     await lua.doString(LUA54_POB_BOOTSTRAP);
     const persistentRunner = buildPersistentCalculateScript(calcSource);
     await lua.doString(`
-      dofile("HeadlessWrapper.lua")
+      -- Keep GC tight during startup: Launch.lua sets pause=400% for LuaJIT, which on
+      -- Lua 5.4 lets ~190 MB of startup garbage pile up and permanently expands WASM
+      -- linear memory before startup even finishes.
+      local _orig_collectgarbage = collectgarbage
+      collectgarbage = function(opt, ...)
+        if opt == "setpause" then return _orig_collectgarbage("incremental", 120, 200) end
+        return _orig_collectgarbage(opt, ...)
+      end
+      _orig_collectgarbage("incremental", 120, 200)
+
+      -- Lazy proxy for heavy Data/Mod*.lua tables: only parsed if a build accesses them.
+      function __pob_make_lazy_mod_table(vfsPath)
+        local real = nil
+        local inDataInit = true
+        local function materialize()
+          if real then return real end
+          local src = __pob_vfs_read_raw(vfsPath)
+          real = src and assert(load(src, "@" .. vfsPath))() or {}
+          -- Mirror Modules/Data.lua lines 705-717 JewelRadius prefix rewrite on demand.
+          if vfsPath == "Data/ModJewel.lua" or vfsPath == "Data/ModVeiled.lua" then
+            for index, value in pairs(real) do
+              if (index:find("JewelRadius") or index:find("AbyssModRadiusJewel")) and value.nodeType and value[1] then
+                if value.nodeType == 1 then
+                  value[1] = "Small Passive Skills in Radius also grant " .. value[1]
+                elseif value.nodeType == 2 then
+                  value[1] = "Notable Passive Skills in Radius also grant " .. value[1]
+                end
+              end
+            end
+          end
+          return real
+        end
+        local proxy = {}
+        proxy.__pob_lazy_done_init = function() inDataInit = false end
+        return setmetatable(proxy, {
+          __index = function(_, k) return materialize()[k] end,
+          __newindex = function(_, k, v) materialize()[k] = v end,
+          __pairs = function()
+            if inDataInit then return next, {}, nil end
+            return pairs(materialize())
+          end,
+          __len = function() return #materialize() end
+        })
+      end
+
+      -- HeadlessWrapper.lua startup sequence, skipping the Frame-1 LoadItems unique/rare
+      -- DB coroutine (~1.2 s + ~148 MB WASM) and the initial empty "Unnamed build" Init
+      -- (~0.5 s) that resetBetweenBuilds() immediately discards on the first build.
+      dofile("_SimpleGraphic.def.lua")
+      function GetVirtualScreenSize() return 1920, 1080 end
+      __callbackTable__ = {}
+      function runCallback(name, ...)
+        if __callbackTable__[name] then
+          return __callbackTable__[name](...)
+        elseif __mainObject__ and __mainObject__[name] then
+          return __mainObject__[name](__mainObject__, ...)
+        end
+      end
+      local _l_require = require
+      function require(name)
+        if name == "lcurl.safe" then return end
+        return _l_require(name)
+      end
+      dofile("Launch.lua")
+      __mainObject__.continuousIntegrationMode = os.getenv("CI")
+      runCallback("OnInit")
+      if data and data.itemMods then
+        for _, tbl in pairs(data.itemMods) do
+          local done = type(tbl) == "table" and rawget(tbl, "__pob_lazy_done_init")
+          if done then
+            done()
+            rawset(tbl, "__pob_lazy_done_init", nil)
+          end
+        end
+      end
+      if __mainObject__ and __mainObject__.main then
+        local m = __mainObject__.main
+        m.disableDevAutoSave = true
+        if m.onFrameFuncs then m.onFrameFuncs["LoadItems"] = nil end
+        m.newMode = nil
+        m.newModeArgs = nil
+      end
+      runCallback("OnFrame")
       if __mainObject__ and __mainObject__.promptMsg then
         error("PoB startup failed: " .. tostring(__mainObject__.promptMsg))
+      end
+      build = __mainObject__.main.modes["BUILD"]
+      function newBuild()
+        if GlobalCache and GlobalCache.cachedData then wipeGlobalCache() end
+        __mainObject__.main:SetMode("BUILD", false, "Help, I'm stuck in Path of Building!")
+        runCallback("OnFrame")
+      end
+      function loadBuildFromXML(xmlText, name)
+        __mainObject__.main:SetMode("BUILD", false, name or "", xmlText)
+        runCallback("OnFrame")
       end
       ${COPY_TABLE_SAFE_SHIM}
       if __pob_inflate then Inflate = __pob_inflate end
       if __pob_deflate then Deflate = __pob_deflate end
       ${persistentRunner}
-      -- Launch.lua sets a 400% GC pause for LuaJIT. On Lua 5.4 that lets garbage pile up to
-      -- four times the live data (~90 MB static + the build) before a cycle starts, and
-      -- WebAssembly memory never shrinks: 430-515 MB after a few builds. Generational mode
-      -- collects each build's short-lived tables without re-walking the static data, for
-      -- about the same calculation time (scripts/bench-pob-local.mjs). The pause is put back
-      -- to Lua's default first: generational mode falls back on it after a "bad" major
-      -- collection, and 400% there would again mean waiting for 4x the heap.
+      -- Restore collectgarbage and switch to generational GC so per-build short-lived
+      -- tables are reclaimed without re-walking static data or growing WASM linear memory.
+      collectgarbage = _orig_collectgarbage
       collectgarbage("collect")
       collectgarbage("incremental", 200, 200)
       collectgarbage("generational")
@@ -429,6 +638,21 @@ export async function createPobLocalEngine({ vfs, calculateScript, wasmUri, infl
     throw error;
   }
   const pobLoadMs = performance.now() - tLoad0;
+
+  // Release static startup files that are already inside Lua and never re-read,
+  // freeing ~15-20 MB of JS heap strings immediately after boot.
+  for (const key of readDuringInit) {
+    const isLoadedTree = key.startsWith("TreeData/") && key.endsWith("/tree.lua");
+    if (
+      isLoadedTree
+      || RELEASABLE_AFTER_INIT_FILES.has(key)
+      || RELEASABLE_AFTER_INIT_PREFIXES.some((prefix) => key.startsWith(prefix))
+    ) {
+      vfs.delete(key);
+    }
+  }
+  vfs.delete("__planner_calculate.lua");
+  readDuringInit.clear();
 
   const calcFn = lua.global.get("pobCalculateXml");
   const gcCountFn = await lua.doString('return function() return collectgarbage("count") end');

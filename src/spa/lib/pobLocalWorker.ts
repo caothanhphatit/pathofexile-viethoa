@@ -23,12 +23,17 @@ type WorkerResponse =
 
 let engine: PobLocalEngine | null = null;
 
-async function gunzipToUint8Array(gzipBytes: ArrayBuffer): Promise<Uint8Array> {
+async function decodeVfsBytes(vfsBytes: ArrayBuffer): Promise<Uint8Array> {
+  const view = new Uint8Array(vfsBytes);
+  // If already unpacked by HTTP Content-Encoding (POBV magic), skip manual gunzip.
+  if (view.byteLength >= 4 && view[0] === 0x50 && view[1] === 0x4f && view[2] === 0x42 && view[3] === 0x56) {
+    return view;
+  }
   if (typeof DecompressionStream === "undefined") {
     throw new Error("Browser does not support DecompressionStream('gzip')");
   }
   try {
-    const stream = new Blob([gzipBytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+    const stream = new Blob([vfsBytes]).stream().pipeThrough(new DecompressionStream("gzip"));
     const buffer = await new Response(stream).arrayBuffer();
     return new Uint8Array(buffer);
   } catch {
@@ -48,12 +53,17 @@ workerSelf.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       }
       workerSelf.postMessage({ id: msg.id, type: "phase", phase: "decompressing" });
       const tDec0 = performance.now();
-      const rawBytes = await gunzipToUint8Array(msg.vfsGzip);
+      let rawBytes: Uint8Array | null = await decodeVfsBytes(msg.vfsGzip);
+      // Release the transferred compressed buffer before unpacking into strings.
+      msg.vfsGzip = new ArrayBuffer(0);
       const vfs = unpackPobVfs(rawBytes);
+      // Release the ~30 MB unpacked binary buffer before starting the WASM Lua VM.
+      rawBytes = null;
       const decompressMs = performance.now() - tDec0;
 
       workerSelf.postMessage({ id: msg.id, type: "phase", phase: "loading_pob" });
       const wasmUrl = URL.createObjectURL(new Blob([msg.wasmBytes], { type: "application/wasm" }));
+      msg.wasmBytes = new ArrayBuffer(0);
       try {
         engine = await createPobLocalEngine({ vfs, wasmUri: wasmUrl });
       } finally {
