@@ -833,6 +833,14 @@
   border-color: var(--poe-gem, #1ba29b);
 }
 
+.sk-detail-medallion--static {
+  cursor: default;
+}
+
+.sk-detail-medallion--static:hover {
+  border-color: #5b4a2f;
+}
+
 /* Multi-skill medallion row for Cast on Critical / Meta skills (matches PoE2 in-game header) */
 .sk-detail-medallions {
   display: flex;

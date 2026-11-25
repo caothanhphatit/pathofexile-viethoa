@@ -120,6 +120,7 @@ import { buildWeaponFlags, enforceWeaponSets, equipWithWeaponRules, inventoryWit
 import { buildWarnings, freeAllocatedNames, itemLevelRequirement, type WarningGem, type WarningItem, type WarningPoints } from "../lib/buildWarnings";
 import { MAX_ASCENDANCY_POINTS, TREE_VERSION, isChoiceOptionNode, passivePointUse, passivePointsForLevel } from "../../shared/equipment-rules.mjs";
 import { skillWeaponHint } from "../lib/skillWeapon";
+import { isMetaTriggerSkill, skillUsabilityIssues, unusableItemReasonsBySlot, type SkillUsabilityIssue } from "../lib/skillUsability";
 import { treePointsSpent } from "../lib/treePoints";
 import { applyLocalMods } from "../lib/itemLocalStats";
 import { CalcQueue, calcKey } from "../lib/calcQueue";
@@ -1101,6 +1102,16 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [dropSlotId, setDropSlotId] = useState<string | null>(null);
   // One line under the doll: why an item moved back to the inventory or was refused.
   const [equipNotice, setEquipNotice] = useState<{ text: string; id: number } | null>(null);
+  // Summary banner shown after switching Ascendancy (refunded points, unspent 0 -> 8, lost skills/items).
+  const [ascendancyNotice, setAscendancyNotice] = useState<{
+    id: number;
+    from: string;
+    to: string;
+    refundedPoints: number;
+    unspentBefore: number;
+    unspentAfter: number;
+    lostSkills: string[];
+  } | null>(null);
   const notifyEquip = useCallback((text: string) => setEquipNotice({ text, id: Date.now() }), []);
   useEffect(() => {
     if (!equipNotice) return;
@@ -1575,13 +1586,70 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     };
   }, [classTree, effectiveTree, inventory, activeStats, level]);
 
+  const warningItems = useMemo<WarningItem[]>(() => inventory.filter((row) => row.itemName || row.rawText).map((row) => ({
+    slotId: row.inventoryId,
+    slotLabel: row.inventoryId,
+    name: row.rareName || (row.rawText ? parsePobItemDetails(row.rawText).name : "") || row.itemName,
+    levelReq: itemLevelRequirement(row.rawText, itemRecordForChoice(row)?.requirements)
+  })), [inventory, itemRecordForChoice]);
+
+  const unusableSlotReasons = useMemo(() => unusableItemReasonsBySlot({
+    items: warningItems,
+    characterLevel: level,
+    activeWeaponSet,
+    stats: activeStats,
+    locale
+  }), [warningItems, level, activeWeaponSet, activeStats, locale]);
+
+  const skillUsabilityFor = useCallback((skill: BuildSkillChoice): SkillUsabilityIssue[] => {
+    if (!skill.skillId || skill.disabled) return [];
+    const sets = {
+      1: { main: inventoryBySlot.get("Weapon1"), off: inventoryBySlot.get("Weapon2") },
+      2: { main: inventoryBySlot.get("Weapon3"), off: inventoryBySlot.get("Weapon4") }
+    };
+    const record = gemChoiceItem(skill.skillId, skillGemOptions, "SkillGem");
+    const granted = Boolean(skill.itemSlot || skill.itemSource || gemOptionFor(buildSkills.indexOf(skill))?.grantedSkill);
+    const issues = skillUsabilityIssues({
+      skillName: record ? itemTitle(record, locale) : (skill.nameSpec || skill.skillId),
+      gemLevel: skill.gemLevel ?? 20,
+      disabled: Boolean(skill.disabled),
+      granted,
+      tags: record?.tags,
+      requirements: record?.requirements,
+      characterLevel: level,
+      activeSet: activeWeaponSet,
+      sets,
+      stats: activeStats,
+      locale
+    });
+    // Also surface level/attribute issues on socketed active spells (e.g. Comet inside CoC).
+    for (const sup of skill.supportSkills) {
+      if (!sup.active || !sup.skillId || sup.disabled) continue;
+      const supRec = gemChoiceItem(sup.skillId, skillGemOptions, "SkillGem");
+      const supIssues = skillUsabilityIssues({
+        skillName: supRec ? itemTitle(supRec, locale) : (sup.nameSpec || sup.skillId),
+        gemLevel: sup.gemLevel ?? 20,
+        disabled: Boolean(sup.disabled),
+        granted: false,
+        tags: supRec?.tags,
+        requirements: supRec?.requirements,
+        characterLevel: level,
+        activeSet: activeWeaponSet,
+        sets,
+        stats: activeStats,
+        locale
+      });
+      for (const issue of supIssues) {
+        if (!issues.some((existing) => existing.kind === issue.kind && existing.shortLabel === issue.shortLabel)) {
+          issues.push(issue);
+        }
+      }
+    }
+    return issues;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inventoryBySlot, skillGemOptions, buildSkills, level, activeWeaponSet, activeStats, locale, gemTargets]);
+
   const warningList = useMemo(() => {
-    const items: WarningItem[] = inventory.filter((row) => row.itemName || row.rawText).map((row) => ({
-      slotId: row.inventoryId,
-      slotLabel: row.inventoryId,
-      name: row.rareName || (row.rawText ? parsePobItemDetails(row.rawText).name : "") || row.itemName,
-      levelReq: itemLevelRequirement(row.rawText, itemRecordForChoice(row)?.requirements)
-    }));
     // Gems the player socketed; a skill an item or the tree grants has no gem requirement.
     const gems: WarningGem[] = buildSkills.flatMap((skill, index) => (skill.skillId && !skill.disabled && !skill.itemSlot && !skill.itemSource && !gemOptionFor(index)?.grantedSkill) ? [
       { name: gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || ""), gemLevel: skill.gemLevel ?? 20 },
@@ -1590,12 +1658,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         gemLevel: support.gemLevel ?? 20
       }))
     ] : []);
+    const skillWeaponWarnings = buildSkills
+      .filter((skill) => skill.skillId && !skill.disabled)
+      .flatMap((skill) => skillUsabilityFor(skill).filter((issue) => issue.kind === "weapon").map((issue) => issue.message));
     const points: WarningPoints | null = treePointCounts
       ? { passive: treePointCounts.passive, ascendancy: treePointCounts.ascendancy, set1: treePointCounts.set1, set2: treePointCounts.set2 }
       : null;
-    return buildWarnings({ level, locale, items, gems, stats: activeStats, activeWeaponSet, points });
+    return buildWarnings({ level, locale, items: warningItems, gems, skillWeaponWarnings, stats: activeStats, activeWeaponSet, points });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inventory, buildSkills, treePointCounts, level, locale, activeStats, activeWeaponSet, itemRecordForChoice, skillGemOptions, gemTargets]);
+  }, [warningItems, buildSkills, treePointCounts, level, locale, activeStats, activeWeaponSet, skillGemOptions, gemTargets, skillUsabilityFor]);
   const calcRequestRef = useRef(0);
   // The calculation request for the build as it is, or with another inventory / skills /
   // main skill ("what if" comparisons use the same body, so their numbers are comparable).
@@ -2529,7 +2600,21 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
         : row));
     } else if (target.kind === "skill") {
       const skillId = officialGemId(item as ItemRecord, "SkillGem");
-      setBuildSkills((rows) => rows.map((row) => row.id === target.skillId && row.skillId !== skillId ? { ...withoutPobGemDetails(row), skillId } : row));
+      const keepsTriggered = isMetaTriggerSkill(item.tags);
+      setBuildSkills((rows) => rows.map((row) => {
+        if (row.id !== target.skillId || row.skillId === skillId) return row;
+        const cleaned = withoutPobGemDetails(row);
+        return {
+          ...cleaned,
+          skillId,
+          // Swapping from a Meta skill (e.g. Cast on Critical -> Lightning Arrow) drops stale triggered spells
+          // and resets mainActiveSkill so PoB never calculates an orphan Comet under Lightning Arrow!
+          ...(keepsTriggered ? {} : {
+            mainActiveSkill: undefined,
+            supportSkills: cleaned.supportSkills.filter((sup) => !sup.active)
+          })
+        };
+      }));
     } else if (target.supportId) {
       const skillId = officialGemId(item as ItemRecord, "SupportGem");
       setBuildSkills((rows) => rows.map((row) => row.id === target.skillId
@@ -2582,6 +2667,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setBuildTree(null);
     setImportedBuild(null);
     setImportError("");
+    setAscendancyNotice(null);
     setName("");
     setAuthor("");
     setDescription("");
@@ -2761,17 +2847,25 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   /** Change ascendancy within the build's locked class: auto-refunds old ascendancy points only. */
   const changeBuildAscendancy = (nextAscendancy: string) => {
     if (!buildTree || !classTree) return;
-    if (nextAscendancy === (buildTree.ascendancyName || "")) return;
+    const prevAscendancy = buildTree.ascendancyName || "";
+    if (nextAscendancy === prevAscendancy) return;
     const allowed = classAscendancies(buildTree.className);
     if (nextAscendancy && !allowed.includes(nextAscendancy)) return;
     const nextStarts = [...selectedStartNodeIds(classTree, buildTree.className, nextAscendancy)];
     const oldStarts = new Set((buildTree.startIds || []).map(String));
+    let refundedPoints = 0;
+    const removedAscendancyNodeNames = new Set<string>();
     const keepNodes = (buildTree.allocatedIds || [])
       .map(String)
       .filter((id) => {
         if (oldStarts.has(id)) return false;
         const node = classTree.nodeById.get(id);
-        if (node?.isAscendancyStart || node?.ascendancyName) return false;
+        if (node?.isAscendancyStart) return false;
+        if (node?.ascendancyName) {
+          if (!isChoiceOptionNode(id)) refundedPoints += 1;
+          if (node.name) removedAscendancyNodeNames.add(node.name.toLowerCase());
+          return false;
+        }
         return true;
       });
     const nextAllocated = [...new Set([...nextStarts, ...keepNodes])];
@@ -2784,6 +2878,19 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     for (const [k, v] of Object.entries(buildTree.attributeChoices ?? {})) {
       if (nextAllocatedSet.has(k)) nextAttributes[k] = v;
     }
+    const lostSkills = buildSkills
+      .filter((skill) => {
+        if (!skill.skillId || skill.disabled) return false;
+        const src = String(skill.itemSource || "").toLowerCase();
+        if (!src) return false;
+        return src.startsWith("tree:") && (
+          (prevAscendancy && src.includes(prevAscendancy.toLowerCase())) ||
+          [...removedAscendancyNodeNames].some((nodeName) => src.includes(nodeName))
+        );
+      })
+      .map((skill) => gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || ""));
+    const unspentBefore = prevAscendancy ? Math.max(0, MAX_ASCENDANCY_POINTS - refundedPoints) : 0;
+    const unspentAfter = nextAscendancy ? MAX_ASCENDANCY_POINTS : 0;
     setBuildTree({
       ...buildTree,
       ascendancyName: nextAscendancy,
@@ -2792,6 +2899,15 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       weaponSets: nextWeaponSets,
       attributeChoices: nextAttributes,
       updatedAt: new Date().toISOString()
+    });
+    setAscendancyNotice({
+      id: Date.now(),
+      from: prevAscendancy,
+      to: nextAscendancy,
+      refundedPoints,
+      unspentBefore,
+      unspentAfter,
+      lostSkills
     });
   };
 
@@ -3418,6 +3534,101 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
 
         {loadError ? <div className="error-panel">{uiText("loadFailed", locale)}: {loadError}</div> : null}
 
+        {ascendancyNotice ? (() => {
+          const vi = locale === "vi";
+          const currentAscUsed = treePointCounts?.ascendancy ?? 0;
+          const currentAscUnspent = ascendancyNotice.to ? Math.max(0, MAX_ASCENDANCY_POINTS - currentAscUsed) : 0;
+          const unusableSkillList = buildSkills
+            .filter((skill) => skill.skillId && !skill.disabled)
+            .map((skill) => {
+              const issues = skillUsabilityFor(skill);
+              if (!issues.length) return null;
+              const label = gemChoiceLabel(skill.skillId, skillGemOptions, "SkillGem", locale, skill.nameSpec || "");
+              return `${label} (${issues.map((i) => i.shortLabel).join(", ")})`;
+            })
+            .filter((row): row is string => Boolean(row));
+          const unusableItemList = warningItems
+            .filter((item) => unusableSlotReasons.has(item.slotId))
+            .map((item) => `${item.name} (${(unusableSlotReasons.get(item.slotId) ?? []).join(", ")})`);
+          const spiritUnreserved = activeStats && typeof activeStats.SpiritUnreserved === "number" ? activeStats.SpiritUnreserved : undefined;
+
+          return (
+            <section className="build-change-banner" role="status" aria-live="polite">
+              <div className="build-change-banner-head">
+                <span className="material-symbols-rounded" aria-hidden="true">notifications_active</span>
+                <strong>
+                  {vi
+                    ? `Đã đổi Ascendancy: ${ascendancyNotice.from || "Chưa chọn"} → ${ascendancyNotice.to || "Chưa chọn"}`
+                    : `Ascendancy changed: ${ascendancyNotice.from || "None"} → ${ascendancyNotice.to || "None"}`}
+                </strong>
+                <div className="build-change-banner-actions">
+                  {ascendancyNotice.to && currentAscUnspent > 0 ? (
+                    <button
+                      type="button"
+                      className="build-change-banner-cta"
+                      onClick={() => setActiveModal("tree")}
+                    >
+                      <span className="material-symbols-rounded" aria-hidden="true">account_tree</span>
+                      {vi ? `Cộng ${currentAscUnspent} điểm Ascendancy` : `Allocate ${currentAscUnspent} Ascendancy pts`}
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="build-change-banner-close"
+                    onClick={() => setAscendancyNotice(null)}
+                    aria-label={vi ? "Đóng thông báo" : "Dismiss"}
+                  >
+                    <span className="material-symbols-rounded" aria-hidden="true">close</span>
+                  </button>
+                </div>
+              </div>
+              <ul className="build-change-banner-list">
+                {ascendancyNotice.to ? (
+                  <li>
+                    {vi
+                      ? `Điểm Ascendancy chưa phân bổ: ${ascendancyNotice.unspentBefore} → ${currentAscUnspent}/${MAX_ASCENDANCY_POINTS} điểm${ascendancyNotice.refundedPoints > 0 ? ` (đã hoàn lại ${ascendancyNotice.refundedPoints} điểm từ ${ascendancyNotice.from})` : ""}.`
+                      : `Unallocated Ascendancy points: ${ascendancyNotice.unspentBefore} → ${currentAscUnspent}/${MAX_ASCENDANCY_POINTS}${ascendancyNotice.refundedPoints > 0 ? ` (${ascendancyNotice.refundedPoints} refunded from ${ascendancyNotice.from})` : ""}.`}
+                  </li>
+                ) : ascendancyNotice.refundedPoints > 0 ? (
+                  <li>
+                    {vi
+                      ? `Đã hoàn lại ${ascendancyNotice.refundedPoints} điểm Ascendancy từ ${ascendancyNotice.from}.`
+                      : `Refunded ${ascendancyNotice.refundedPoints} Ascendancy points from ${ascendancyNotice.from}.`}
+                  </li>
+                ) : null}
+                {ascendancyNotice.lostSkills.length ? (
+                  <li className="is-alert">
+                    {vi
+                      ? `Kỹ năng từ Ascendancy cũ bị mất hiệu lực: ${ascendancyNotice.lostSkills.join(", ")}.`
+                      : `Skills from previous Ascendancy are no longer granted: ${ascendancyNotice.lostSkills.join(", ")}.`}
+                  </li>
+                ) : null}
+                {unusableSkillList.length ? (
+                  <li className="is-alert">
+                    {vi
+                      ? `Kỹ năng chưa đủ điều kiện dùng (${unusableSkillList.length}): ${unusableSkillList.slice(0, 4).join("; ")}${unusableSkillList.length > 4 ? ` và ${unusableSkillList.length - 4} kỹ năng khác` : ""}.`
+                      : `Unusable skills (${unusableSkillList.length}): ${unusableSkillList.slice(0, 4).join("; ")}${unusableSkillList.length > 4 ? ` and ${unusableSkillList.length - 4} more` : ""}.`}
+                  </li>
+                ) : null}
+                {unusableItemList.length ? (
+                  <li className="is-alert">
+                    {vi
+                      ? `Trang bị không đủ yêu cầu (${unusableItemList.length}): ${unusableItemList.slice(0, 3).join("; ")}${unusableItemList.length > 3 ? ` và ${unusableItemList.length - 3} món khác` : ""}.`
+                      : `Unusable items (${unusableItemList.length}): ${unusableItemList.slice(0, 3).join("; ")}${unusableItemList.length > 3 ? ` and ${unusableItemList.length - 3} more` : ""}.`}
+                  </li>
+                ) : null}
+                {spiritUnreserved !== undefined && spiritUnreserved < 0 ? (
+                  <li className="is-alert">
+                    {vi
+                      ? `Thiếu ${Math.abs(Math.round(spiritUnreserved))} Spirit cho các kỹ năng duy trì đang bật.`
+                      : `Short by ${Math.abs(Math.round(spiritUnreserved))} Spirit for active persistent skills.`}
+                  </li>
+                ) : null}
+              </ul>
+            </section>
+          );
+        })() : null}
+
         {/* Row 1: Equipment | Stats */}
         <div className="nj-row nj-row--top">
           <section className="nj-panel nj-equipment">
@@ -3449,9 +3660,11 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   const importedRarity = importedText ? parsePobItemDetails(importedText).rarity : "";
                   const rarity = importedRarity || (record ? itemRarity(record) : (choice?.isUnique ? "unique" : "normal"));
                   const hasTooltip = Boolean(record || importedText);
+                  const slotErrors = hasItem ? unusableSlotReasons.get(slot.id) : undefined;
+                  const isSlotUnusable = Boolean(slotErrors && slotErrors.length > 0);
                   return (
                     <button
-                      className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""} ${activeSlotId === slot.id ? "is-selected" : ""} ${dropSlotId === slot.id ? "is-drop-target" : ""}`}
+                      className={`build-equip-slot build-equip-slot--${slot.area} ${slot.size ? `is-${slot.size}` : ""} ${hasItem ? `has-item is-${rarity}` : ""} ${isSlotUnusable ? "is-unusable" : ""} ${activeSlotId === slot.id ? "is-selected" : ""} ${dropSlotId === slot.id ? "is-drop-target" : ""}`}
                       type="button"
                       onClick={(event) => {
                         const button = event.currentTarget;
@@ -3508,12 +3721,19 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       onMouseLeave={hasTooltip ? handleMouseLeave : undefined}
                       style={{ gridArea: slot.area }}
                       key={slot.id}
-                      aria-label={`${slotLabel(slot.id)}${choice?.itemName ? `: ${choice.rareName || choice.itemName}` : ""}`}
-                      title={locale === "vi" ? "Bấm để chọn ô (kho đồ lọc theo ô này). Kéo đồ từ kho thả vào để mặc. Chuột phải để tháo." : "Click to select; drop an item to equip; right-click to unequip."}
+                      aria-label={`${slotLabel(slot.id)}${choice?.itemName ? `: ${choice.rareName || choice.itemName}` : ""}${isSlotUnusable ? ` (${slotErrors!.join(", ")})` : ""}`}
+                      title={isSlotUnusable
+                        ? `${locale === "vi" ? "Không đủ điều kiện mặc" : "Cannot use item"}: ${slotErrors!.join(" · ")}`
+                        : (locale === "vi" ? "Bấm để chọn ô (kho đồ lọc theo ô này). Kéo đồ từ kho thả vào để mặc. Chuột phải để tháo." : "Click to select; drop an item to equip; right-click to unequip.")}
                     >
                       {hasItem ? (
                         <>
                           {choice?.iconUrl ? <img src={choice.iconUrl} alt="" loading="lazy" /> : <span className="material-symbols-rounded build-slot-fallback" aria-hidden="true">inventory_2</span>}
+                          {isSlotUnusable ? (
+                            <span className="build-slot-unusable" title={slotErrors!.join(" · ")} aria-hidden="true">
+                              <span className="material-symbols-rounded">error</span>
+                            </span>
+                          ) : null}
                           {choice && isItemEdited(choice) ? <span className="pi-edited">{locale === "vi" ? "Đã sửa" : "Edited"}</span> : null}
                         </>
                       ) : (
@@ -3985,6 +4205,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                   };
                 }}
                 weaponHintFor={weaponHintFor}
+                usabilityFor={skillUsabilityFor}
                 grantedSkillTag={grantedSkillTag}
                 gemOptionFor={gemOptionFor}
                 gemLevelControls={gemLevelControls}

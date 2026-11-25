@@ -193,3 +193,188 @@
 .build-gem-picker {
   height: min(640px, calc(100vh - min(12vh, 96px) - 24px));
 }
+
+/* ── Unusable skill card & detail error alert (wrong weapon, level, attrs, Spirit) ── */
+.sk-row.is-unusable .sk-row-head,
+.sk-row.is-unusable .sk-sockets-bar {
+  border-color: rgba(214, 72, 62, .72);
+}
+
+.sk-row.is-unusable .sk-row-head {
+  background:
+    linear-gradient(90deg, rgba(168, 38, 32, .22), rgba(22, 16, 14, .92) 48%, rgba(168, 38, 32, .12));
+}
+
+.sk-row.is-unusable .sk-socket--active {
+  box-shadow:
+    0 0 0 1.5px #18140f,
+    0 0 0 3px #c83e35,
+    0 3px 10px rgba(0, 0, 0, .85);
+}
+
+.sk-row.is-unusable .sk-dmg-val {
+  color: #f08a82;
+}
+
+.sk-unusable-pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  max-width: 148px;
+  padding: 1px 6px;
+  border: 1px solid rgba(224, 84, 74, .65);
+  border-radius: 3px;
+  background: rgba(168, 34, 28, .28);
+  color: #ffb4ae;
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sk-unusable-pill .material-symbols-rounded {
+  flex: none;
+  font-size: 13px;
+  color: #ff6b60;
+}
+
+.sk-hint.sk-hint--unusable {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 8px;
+  border-left: 2px solid #e05246;
+  background: rgba(190, 42, 34, .14);
+  color: #ffd3cf;
+}
+
+.sk-hint.sk-hint--unusable .material-symbols-rounded {
+  flex: none;
+  font-size: 16px;
+  color: #ff6b60;
+  margin-top: 1px;
+}
+
+/* ── Unusable equipped item on character doll (PoE2 red unusable border) ── */
+.build-equip-slot.is-unusable {
+  border-color: #d9483b !important;
+  box-shadow: inset 0 0 0 1px rgba(217, 72, 59, .55), inset 0 0 18px rgba(180, 32, 26, .32);
+}
+
+.build-slot-unusable {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 3;
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(188, 38, 30, .94);
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+  pointer-events: none;
+}
+
+.build-slot-unusable .material-symbols-rounded {
+  font-size: 12px;
+}
+
+/* ── Ascendancy switch impact banner ── */
+.build-change-banner {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(214, 168, 72, .55);
+  border-left: 3px solid #e0a83a;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(58, 44, 20, .34), rgba(22, 18, 13, .85));
+  color: var(--nj-text);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.build-change-banner-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.build-change-banner-head > .material-symbols-rounded {
+  color: #f0be59;
+  font-size: 18px;
+}
+
+.build-change-banner-head strong {
+  color: #f6e2b3;
+  font-size: 13px;
+}
+
+.build-change-banner-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.build-change-banner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid #cfa048;
+  border-radius: 4px;
+  background: rgba(214, 168, 72, .18);
+  color: #f8e5ba;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.build-change-banner-cta:hover {
+  background: rgba(214, 168, 72, .3);
+  color: #fff;
+}
+
+.build-change-banner-cta .material-symbols-rounded {
+  font-size: 15px;
+}
+
+.build-change-banner-close {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--nj-muted);
+  cursor: pointer;
+}
+
+.build-change-banner-close:hover {
+  border-color: rgba(255, 255, 255, .18);
+  color: #fff;
+}
+
+.build-change-banner-close .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.build-change-banner-list {
+  margin: 6px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 3px;
+}
+
+.build-change-banner-list li.is-alert {
+  color: #ffb8b2;
+}

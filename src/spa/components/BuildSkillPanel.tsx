@@ -14,6 +14,7 @@ import { hasGemChoices, type PobGemOptions } from "../lib/gemOptions";
 import type { CalcQueue } from "../lib/calcQueue";
 import { supportFamilyConflicts } from "../../server/pob-gem-families.mjs";
 import { monsterLibraryOf } from "../../server/pob-monster-gems.mjs";
+import type { SkillUsabilityIssue } from "../lib/skillUsability";
 import { SupportValue } from "./BuildInventoryPanel";
 import { BuildSkillDetail, formatBadgeNumber, skillDamageBadge, supportInitials, type SkillGemMeta } from "./BuildSkillDetail";
 import "../styles/planner-skills.css";
@@ -170,6 +171,7 @@ export interface BuildSkillPanelProps {
   resolveSkillGem: (skill: BuildSkillChoice) => SkillGemMeta;
   resolveSupportGem: (support: BuildSupportSkillChoice) => SkillGemMeta;
   weaponHintFor: (skill: BuildSkillChoice) => string | null;
+  usabilityFor?: (skill: BuildSkillChoice) => SkillUsabilityIssue[];
   grantedSkillTag: (skill: BuildSkillChoice) => ReactNode;
   gemOptionFor: (groupIndex: number, supportId?: string) => PobGemOptions | undefined;
   gemLevelControls: (gem: { gemLevel?: number; gemQuality?: number }, onPatch: (patch: { gemLevel?: number; gemQuality?: number }) => void) => ReactNode;
@@ -211,6 +213,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     resolveSkillGem,
     resolveSupportGem,
     weaponHintFor,
+    usabilityFor,
     grantedSkillTag,
     gemOptionFor,
     gemLevelControls,
@@ -313,8 +316,15 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     );
     const supports = socketedGems;
     const weaponHint = weaponHintFor(skill);
+    const usabilityIssues = usabilityFor ? usabilityFor(skill) : [];
+    const hasWeaponError = usabilityIssues.some((issue) => issue.kind === "weapon");
+    const isUnusable = !skill.disabled && usabilityIssues.length > 0;
+    const displayBadge = hasWeaponError
+      ? { kind: undefined, value: "—", unit: "", exact: usabilityIssues[0]?.message || weaponHint || "" }
+      : badge;
     const missingMonster = Boolean(skill.skillId && monsterLibraryOf(skill) && !skill.pobAttrs?.skillMinion);
     const hasWarning = !skill.disabled && Boolean(
+      isUnusable ||
       (skill.skillId && !(dps !== undefined && dps > 0) && weaponHint) ||
       familyConflicts.length > 0 ||
       missingMonster
@@ -323,18 +333,20 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
       skill,
       index,
       isMain,
-      dps,
-      badge,
+      dps: hasWeaponError ? 0 : dps,
+      badge: displayBadge,
       skillMeta,
       triggered,
       supports,
       socketCount,
       freeSockets,
       lockedRecesses,
-      damageLines,
+      damageLines: hasWeaponError ? [] : damageLines,
       familyConflicts,
       supersededSupports,
       weaponHint,
+      usabilityIssues,
+      isUnusable,
       hasWarning
     };
   };
@@ -362,6 +374,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
         familyConflicts={model.familyConflicts}
         supersededSupports={model.supersededSupports}
         weaponHint={model.weaponHint}
+        usabilityIssues={model.usabilityIssues}
         grantedTag={grantedSkillTag(model.skill)}
         gemOptionFor={gemOptionFor}
         gemLevelControls={gemLevelControls}
@@ -369,7 +382,6 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
         renderGemStrip={renderGemStrip}
         onClose={() => closeDetail(true)}
         onSelectMain={onSelectMain}
-        onOpenSkillGemPicker={onOpenSkillGemPicker}
         onToggleGemStrip={onToggleGemStrip}
         onUpdateSkill={onUpdateSkill}
         onRemoveSkill={onRemoveSkill}
@@ -397,8 +409,11 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
       lockedRecesses,
       damageLines,
       supersededSupports,
+      usabilityIssues,
+      isUnusable,
       hasWarning
     } = model;
+    const primaryIssue = usabilityIssues[0] ?? null;
     const isOpen = openSkillId === skill.id;
     const detailId = `sk-detail-${skill.id}`;
     const toggleDetail = () => {
@@ -410,7 +425,10 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
       : triggered.length
         ? triggered.slice(0, 2).map((sup) => resolveSupportGem(sup).label).join(", ")
         : "";
-    const fullHeaderTitle = ownerSuffix ? `${skillMeta.label} → ${ownerSuffix}` : skillMeta.label;
+    const fullHeaderTitle = [
+      ownerSuffix ? `${skillMeta.label} → ${ownerSuffix}` : skillMeta.label,
+      ...usabilityIssues.map((issue) => issue.message)
+    ].join("\n");
     const arrowDirection: "right" | "left" | "down" | "up" = isDesktop
       ? (isOpen ? "left" : "right")
       : (isOpen ? "up" : "down");
@@ -418,7 +436,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
 
     return (
       <div className="sk-item" key={skill.id}>
-        <article className={`sk-row ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""} ${isOpen ? "is-open" : ""}`}>
+        <article className={`sk-row ${isMain ? "is-main" : ""} ${skill.disabled ? "is-disabled" : ""} ${isUnusable ? "is-unusable" : ""} ${isOpen ? "is-open" : ""}`}>
           {/* Header bar (840 x 80 = 9.52% W): flush above socket bar, icon 7.6% W @ 8.7% W */}
           <div className="sk-row-head">
             <span className="sk-collapse-stub" aria-hidden="true" />
@@ -440,6 +458,12 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                 hasWarning={hasWarning}
                 vi={vi}
               />
+              {primaryIssue ? (
+                <span className="sk-unusable-pill" title={usabilityIssues.map((i) => i.message).join("\n")}>
+                  <span className="material-symbols-rounded" aria-hidden="true">error</span>
+                  <span>{primaryIssue.shortLabel}</span>
+                </span>
+              ) : null}
               {skill.skillId ? (
                 <span className="sk-row-lvl">
                   <span className="sk-lvl-label">

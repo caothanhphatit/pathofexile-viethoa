@@ -224,10 +224,10 @@ test("Skills panel matches PoE2 base-art cqw proportions, 7.6cqw icon, clickable
   assert.match(panel, /Thêm ô support/);
   assert.match(panel, /supportSockets:\s*Math\.min\(MAX_SUPPORT_SOCKETS,\s*socketCount \+ 1\)/);
 
-  // Detail panel: "Số ô support" 2-5 stepper.
-  assert.match(detail, /supportSocketStepperBounds\(skill\)/);
-  assert.match(detail, /Số ô support/);
-  assert.match(detail, /className="sk-socket-stepper"/);
+  // Detail panel is strictly view-only for skills & sockets (swapping/socket edits live on the left skill panel).
+  assert.doesNotMatch(detail, /onOpenSkillGemPicker/);
+  assert.doesNotMatch(detail, /className="sk-socket-stepper"/);
+  assert.match(detail, /sk-detail-medallion--static/);
 
   // Real PoE2 base-art ratios + exact 7.6cqw header icon at left 8.7cqw.
   assert.match(styles, /grid-template-columns:\s*minmax\(0,\s*52\.2fr\)\s+minmax\(0,\s*47\.8fr\)/);
@@ -323,4 +323,94 @@ test("CoC / Meta socketed active spells stay visible in sockets, Gemcutting moda
   assert.match(detail, /calculationBodyForSkill\(index \+ 1, selectedMainActiveSkill\)/);
   assert.match(detail, /className="sk-detail-medallions"/);
   assert.match(detail, /gemLevelControls\(selectedTriggered/);
+
+  // Swapping from Meta skill to non-Meta skill strips stale triggered spells & resets mainActiveSkill.
+  assert.match(page, /const keepsTriggered = isMetaTriggerSkill\(item\.tags\)/);
+  assert.match(page, /supportSkills: cleaned\.supportSkills\.filter\(\(sup\) => !sup\.active\)/);
+
+  // Ascendancy switch shows change impact banner (refunded points, unspent 0 -> 8, lost/unusable skills & items).
+  assert.match(page, /setAscendancyNotice\(/);
+  assert.match(page, /className="build-change-banner"/);
+  assert.match(page, /isSlotUnusable \? "is-unusable" : ""/);
+});
+
+test("skillUsability distinguishes Attack weapon requirements vs Spell, attributes, Spirit, and unusable items", async () => {
+  const { build } = await import("esbuild");
+  const nodePath = await import("node:path");
+  const built = await build({
+    entryPoints: [nodePath.resolve(process.cwd(), "src/spa/lib/skillUsability.ts")],
+    bundle: true,
+    format: "esm",
+    platform: "neutral",
+    write: false
+  });
+  const modUrl = `data:text/javascript;base64,${Buffer.from(built.outputFiles[0].text, "utf8").toString("base64")}`;
+  const mod = await import(modUrl);
+
+  assert.equal(mod.isMetaTriggerSkill(["Buff", "Persistent", "Trigger", "Meta"]), true);
+  assert.equal(mod.isMetaTriggerSkill(["Attack", "Projectile", "Lightning"]), false);
+
+  const wandSets = {
+    1: { main: { itemName: "Siphoning Wand", baseName: "Siphoning Wand" }, off: null },
+    2: { main: { itemName: "Dualstring Bow", baseName: "Dualstring Bow" }, off: null }
+  };
+
+  // Attack skill (Lightning Arrow) with Wand in set I -> weapon error + suggests set II Bow.
+  const laIssues = mod.skillUsabilityIssues({
+    skillName: "Lightning Arrow",
+    gemLevel: 20,
+    tags: ["Attack", "Projectile", "Lightning"],
+    requirements: ["Requires: Level (1—90), (4—157) Dex", "Requires: Bows"],
+    characterLevel: 95,
+    activeSet: 1,
+    sets: wandSets,
+    stats: { Str: 40, Dex: 80, Int: 250, ReqDex: 157, SpiritUnreserved: 40 },
+    locale: "vi"
+  });
+  assert.equal(laIssues.some((i) => i.kind === "weapon" && /Bows/i.test(i.shortLabel)), true);
+  assert.equal(laIssues.some((i) => i.kind === "attribute" && /Dex/i.test(i.shortLabel)), true);
+
+  // Spell skill (Spark) with Wand -> no weapon error; enough Int -> 0 issues.
+  const sparkIssues = mod.skillUsabilityIssues({
+    skillName: "Spark",
+    gemLevel: 20,
+    tags: ["Spell", "Projectile", "Lightning"],
+    requirements: ["Requires: Level (1—90), (4—157) Int"],
+    characterLevel: 95,
+    activeSet: 1,
+    sets: wandSets,
+    stats: { Str: 40, Dex: 80, Int: 250, ReqInt: 157, SpiritUnreserved: 40 },
+    locale: "vi"
+  });
+  assert.equal(sparkIssues.length, 0);
+
+  // Persistent Spirit skill when SpiritUnreserved < 0 -> Spirit error.
+  const cocIssues = mod.skillUsabilityIssues({
+    skillName: "Cast on Critical",
+    gemLevel: 20,
+    tags: ["Buff", "Persistent", "Trigger", "Meta"],
+    requirements: ["Requires: Level (1—90), (4—157) Int"],
+    characterLevel: 95,
+    activeSet: 1,
+    sets: wandSets,
+    stats: { Str: 40, Dex: 80, Int: 250, ReqInt: 157, SpiritUnreserved: -30 },
+    locale: "vi"
+  });
+  assert.equal(cocIssues.some((i) => i.kind === "spirit" && /30 Spirit/.test(i.shortLabel)), true);
+
+  // Unusable equipped item detection by slot (level & attribute requirements).
+  const badItems = mod.unusableItemReasonsBySlot({
+    items: [
+      { slotId: "Helm1", slotLabel: "Helm1", name: "Kamasan Tiara", levelReq: 78 },
+      { slotId: "BodyArmour1", slotLabel: "BodyArmour1", name: "Vile Robe", levelReq: 92 }
+    ],
+    characterLevel: 85,
+    activeWeaponSet: 1,
+    stats: { Int: 120, IntRequirementsOnHelmet: 160, IntRequirementsOnBodyArmour: 100 },
+    locale: "vi"
+  });
+  assert.equal(badItems.has("Helm1"), true);
+  assert.equal(badItems.has("BodyArmour1"), true);
+  assert.match(badItems.get("Helm1")[0], /Thiếu 40 Int/);
+  assert.match(badItems.get("BodyArmour1")[0], /Cần cấp 92/);
 });

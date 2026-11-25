@@ -1552,3 +1552,81 @@ html:not(.dark) .gc-shell .gc-search input {
 html:not(.dark) .gc-shell .gc-search input::placeholder {
   color: #756957;
 }
+
+/* ── Unusable skills, unusable items & Ascendancy switch banner (Light Mode) ── */
+html:not(.dark) .sk-row.is-unusable .sk-row-head,
+html:not(.dark) .sk-row.is-unusable .sk-sockets-bar {
+  border-color: #d9534f;
+}
+
+html:not(.dark) .sk-row.is-unusable .sk-row-head {
+  background: linear-gradient(90deg, #fff1f0, #ffffff 55%, #fff5f5);
+}
+
+html:not(.dark) .sk-row.is-unusable .sk-dmg-val {
+  color: #b42318;
+}
+
+html:not(.dark) .sk-unusable-pill {
+  border-color: #f0a19b;
+  background: #feeceb;
+  color: #9e1c14;
+}
+
+html:not(.dark) .sk-unusable-pill .material-symbols-rounded {
+  color: #c83228;
+}
+
+html:not(.dark) .sk-hint.sk-hint--unusable {
+  border-left-color: #c83228;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+html:not(.dark) .sk-hint.sk-hint--unusable .material-symbols-rounded {
+  color: #c83228;
+}
+
+html:not(.dark) .build-equip-slot.is-unusable {
+  border-color: #c83228 !important;
+  box-shadow: inset 0 0 0 1px rgba(200, 50, 40, .45), inset 0 0 12px rgba(200, 50, 40, .14);
+}
+
+html:not(.dark) .build-change-banner {
+  border-color: #dfb96d;
+  border-left-color: #b45309;
+  background: #fffbeb;
+  color: #362e1e;
+}
+
+html:not(.dark) .build-change-banner-head > .material-symbols-rounded {
+  color: #b45309;
+}
+
+html:not(.dark) .build-change-banner-head strong {
+  color: #5c3a07;
+}
+
+html:not(.dark) .build-change-banner-cta {
+  border-color: #b45309;
+  background: #fef3c7;
+  color: #78350f;
+}
+
+html:not(.dark) .build-change-banner-cta:hover {
+  background: #fde68a;
+  color: #451a03;
+}
+
+html:not(.dark) .build-change-banner-close {
+  color: #6b675e;
+}
+
+html:not(.dark) .build-change-banner-close:hover {
+  border-color: #d6cfc0;
+  color: #151412;
+}
+
+html:not(.dark) .build-change-banner-list li.is-alert {
+  color: #a62218;
+}

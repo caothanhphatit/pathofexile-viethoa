@@ -12,7 +12,15 @@
 // - gem level and passive points: PoB's data and formula (src/shared/equipment-rules.mjs).
 import { MAX_ASCENDANCY_POINTS, WEAPON_SET_POINT_LIMIT, gemLevelRequirement, passivePointUse } from "../../shared/equipment-rules.mjs";
 
-export type BuildWarningKind = "item-level" | "gem-level" | "attribute" | "passive-points" | "ascendancy-points" | "weapon-set-points";
+export type BuildWarningKind =
+  | "item-level"
+  | "gem-level"
+  | "attribute"
+  | "skill-weapon"
+  | "spirit"
+  | "passive-points"
+  | "ascendancy-points"
+  | "weapon-set-points";
 
 export interface BuildWarning {
   kind: BuildWarningKind;
@@ -90,6 +98,8 @@ export function buildWarnings(input: {
   locale: string;
   items?: WarningItem[];
   gems?: WarningGem[];
+  /** Enabled skill gems whose active weapon set cannot use them (e.g. Bow skill with Wand). */
+  skillWeaponWarnings?: string[];
   /** PoB's output for the build, or null while it has not been calculated. */
   stats?: Record<string, unknown> | null;
   activeWeaponSet?: 1 | 2;
@@ -147,6 +157,20 @@ export function buildWarnings(input: {
           : `Not enough ${attribute.en}: ${Math.round(need)} needed, ${Math.round(have)} available. Required by: ${from}.`
       });
     }
+    const spiritUnreserved = number("SpiritUnreserved");
+    if (spiritUnreserved !== undefined && spiritUnreserved < 0) {
+      const deficit = Math.abs(Math.round(spiritUnreserved));
+      warnings.push({
+        kind: "spirit",
+        text: vi
+          ? `Thiếu ${deficit} Spirit: các kỹ năng duy trì đang bật vượt quá tổng Spirit hiện có.`
+          : `Not enough Spirit (short by ${deficit}): active persistent skills exceed total Spirit.`
+      });
+    }
+  }
+
+  for (const text of input.skillWeaponWarnings ?? []) {
+    if (text) warnings.push({ kind: "skill-weapon", text });
   }
 
   const points = input.points;

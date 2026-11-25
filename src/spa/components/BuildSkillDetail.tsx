@@ -2,7 +2,7 @@
 // a skill block on narrow screens, using PoE2's base-art ratios (P = 890 reference).
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 
-import { MAX_SUPPORT_SOCKETS, supportSocketStepperBounds, type BuildSkillChoice, type BuildSupportSkillChoice } from "../lib/buildPlanner";
+import { type BuildSkillChoice, type BuildSupportSkillChoice } from "../lib/buildPlanner";
 import { cardDamageNeedsNames, formatStat, type CardDamageLine } from "../lib/buildStats";
 import { calcKey, type CalcQueue } from "../lib/calcQueue";
 import { hasGemChoices, optionLabel, pickedStatSet, withGemOption, type GemOptionChange, type PobGemOptions } from "../lib/gemOptions";
@@ -98,6 +98,7 @@ export interface BuildSkillDetailProps {
   familyConflicts: SupportConflict[];
   supersededSupports: Set<string>;
   weaponHint: string | null;
+  usabilityIssues?: Array<{ kind: "weapon" | "level" | "attribute" | "spirit"; shortLabel: string; message: string }>;
   grantedTag: ReactNode;
   gemOptionFor: (groupIndex: number, supportId?: string) => PobGemOptions | undefined;
   gemLevelControls: (gem: { gemLevel?: number; gemQuality?: number }, onPatch: (patch: { gemLevel?: number; gemQuality?: number }) => void) => ReactNode;
@@ -105,7 +106,6 @@ export interface BuildSkillDetailProps {
   renderGemStrip: (skillId: string, supportId: string | "main") => ReactNode;
   onClose: () => void;
   onSelectMain: (groupNumber: number) => void;
-  onOpenSkillGemPicker: (skillId: string) => void;
   onToggleGemStrip: (skillId: string, supportId: string | "main") => void;
   onUpdateSkill: (skillId: string, patch: Partial<BuildSkillChoice>) => void;
   onRemoveSkill: (skillId: string) => void;
@@ -141,6 +141,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     familyConflicts,
     supersededSupports,
     weaponHint,
+    usabilityIssues = [],
     grantedTag,
     gemOptionFor,
     gemLevelControls,
@@ -148,7 +149,6 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     renderGemStrip,
     onClose,
     onSelectMain,
-    onOpenSkillGemPicker,
     onToggleGemStrip,
     onUpdateSkill,
     onRemoveSkill,
@@ -488,16 +488,11 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                   role="tab"
                   aria-selected={mainSelected}
                   className={`sk-detail-medallion sk-detail-medallion--sub ${mainSelected ? "is-selected" : ""}`}
-                  onClick={() => {
-                    if (mainSelected) onOpenSkillGemPicker(skill.id);
-                    else setSelectedSubId("main");
-                  }}
+                  onClick={() => setSelectedSubId("main")}
                   onMouseEnter={(event) => skill.skillId && onHoverMainGem(skill, event)}
                   onMouseMove={onMoveTooltip}
                   onMouseLeave={onLeaveTooltip}
-                  title={mainSelected
-                    ? (vi ? `${skillMeta.label} — bấm lần nữa để đổi kỹ năng` : `${skillMeta.label} — click again to swap`)
-                    : (vi ? `Xem chỉ số ${skillMeta.label}` : `View ${skillMeta.label} breakdown`)}
+                  title={vi ? `Xem chỉ số ${skillMeta.label}` : `View ${skillMeta.label} breakdown`}
                 >
                   <span className="sk-detail-orb-icon">
                     {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
@@ -539,20 +534,17 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             })}
           </div>
         ) : (
-          <button
-            type="button"
-            className="sk-detail-medallion"
-            onClick={() => onOpenSkillGemPicker(skill.id)}
+          <div
+            className="sk-detail-medallion sk-detail-medallion--static"
             onMouseEnter={(event) => skill.skillId && onHoverMainGem(skill, event)}
             onMouseMove={onMoveTooltip}
             onMouseLeave={onLeaveTooltip}
-            aria-label={vi ? `Đổi kỹ năng ${skillMeta.label}` : `Swap ${skillMeta.label}`}
-            title={vi ? "Bấm để đổi kỹ năng" : "Click to swap skill"}
+            aria-label={skillMeta.label}
           >
             <span className="sk-detail-orb-icon">
-              {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+              {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">auto_awesome</span>}
             </span>
-          </button>
+          </div>
         )}
         <div className="sk-detail-chips">
           {selectedTriggered ? <span className="sk-badge sk-badge--option">{selectedTriggeredMeta?.label}</span> : null}
@@ -618,7 +610,14 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             <p className="sk-detail-desc">{activeMeta.description}</p>
           ) : null}
 
-          {!skill.disabled && skill.skillId && !(dps !== undefined && dps > 0) && weaponHint ? (
+          {!skill.disabled && skill.skillId && usabilityIssues.length > 0 ? (
+            usabilityIssues.map((issue) => (
+              <p className="sk-hint sk-hint--unusable sk-frame-pad" role="alert" key={`${issue.kind}:${issue.shortLabel}`}>
+                <span className="material-symbols-rounded" aria-hidden="true">error</span>
+                <span>{issue.message}</span>
+              </p>
+            ))
+          ) : !skill.disabled && skill.skillId && !(dps !== undefined && dps > 0) && weaponHint ? (
             <p className="sk-hint sk-hint--weapon sk-frame-pad">{weaponHint}</p>
           ) : showZeroChoiceHint ? (
             <p className="sk-hint sk-frame-pad">
@@ -640,7 +639,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             );
           }) : null}
 
-          {(activeMeta.description || weaponHint || showZeroChoiceHint || familyConflicts.length > 0) ? (
+          {(activeMeta.description || usabilityIssues.length > 0 || weaponHint || showZeroChoiceHint || familyConflicts.length > 0) ? (
             <hr className="sk-frame-divider" />
           ) : null}
 
@@ -827,35 +826,6 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                     <div className="sk-opt-ctrl">{gemLevelControls(skill, (patch) => onUpdateSkill(skill.id, patch))}</div>
                   </div>
                 )}
-                {(() => {
-                  const bounds = supportSocketStepperBounds(skill);
-                  return (
-                    <div className="sk-opt-row sk-sockets-stepper-row">
-                      <span className="sk-opt-label">{vi ? "Số ô support" : "Support sockets"}</span>
-                      <div className="sk-socket-stepper" role="group" aria-label={vi ? "Số ô support" : "Support sockets"}>
-                        <button
-                          type="button"
-                          className="sk-step-btn"
-                          disabled={!bounds.canDecrease}
-                          onClick={() => onUpdateSkill(skill.id, { supportSockets: bounds.current - 1 })}
-                          aria-label={vi ? "Giảm số ô support" : "Decrease support sockets"}
-                        >
-                          −
-                        </button>
-                        <span className="sk-step-val" aria-live="polite">{bounds.current}</span>
-                        <button
-                          type="button"
-                          className="sk-step-btn"
-                          disabled={!bounds.canIncrease}
-                          onClick={() => onUpdateSkill(skill.id, { supportSockets: bounds.current + 1 })}
-                          aria-label={vi ? "Tăng số ô support" : "Increase support sockets"}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })()}
                 {monsterLibrary ? (
                   <div className="sk-opt-block">
                     <MonsterPicker library={monsterLibrary} value={skill.pobAttrs?.skillMinion} onPick={pickMonster} locale={locale} />
