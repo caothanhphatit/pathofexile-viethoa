@@ -1,30 +1,23 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   Build planner in the game's own look, measured from the official trade site
-   (pathofexile.com/trade2) item cards: Fontin SmallCaps, a black card, a
-   rarity-coloured header band (34px for one line, 54px for name + base),
-   rarity-tinted rules between sections, grey labels with white values,
-   #8888ff mods and #b4b4ff rune lines.
-
-   Fontin has no Vietnamese letters (53 of 58 missing), so Vietnamese text uses
-   Alegreya Sans SC, the closest small-caps face that has them: whole runs are
-   switched (.tip-vi in tooltips, the chrome by html[lang]) so a word is never
-   drawn in two fonts. Loaded after the other stylesheets.
+   Build planner styling (Inter unified across UI chrome, numbers, skills,
+   and in-game style item / gem tooltips with rarity colours and rules).
+   Loaded after the other stylesheets.
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  --poe-game: "Fontin SmallCaps", "Alegreya Sans SC", "Be Vietnam Pro", serif;
-  --poe-game-vi: "Alegreya Sans SC", "Be Vietnam Pro", sans-serif;
-  --poe-chrome: var(--poe-game);
+  --poe-game: var(--font-body);
+  --poe-game-vi: var(--font-body);
+  --poe-chrome: var(--font-body);
   /* The game's beige UI text and its brighter title tone. */
   --poe-ui-text: #a38d6d;
-  --poe-ui-title: #d2bf98;
-  --poe-label: #7f7f7f;
+  --poe-ui-title: #e6d7b8;
+  --poe-label: #96948e;
   --poe-mod: #8888ff;
   --poe-rune-mod: #b4b4ff;
 }
 
 html[lang="vi"] {
-  --poe-chrome: var(--poe-game-vi);
+  --poe-chrome: var(--font-body);
 }
 
 /* ── Item and gem tooltip ──────────────────────────────────────────────── */
@@ -32,24 +25,24 @@ html[lang="vi"] {
 .poe-tooltip-float,
 .build-picker-tooltip,
 .poe-tooltip-card {
-  font-family: var(--poe-game);
+  font-family: var(--font-body);
 }
 
 .poe-tooltip-card {
   min-width: 300px;
   max-width: 400px;
-  padding: 0 0 7px;
+  padding: 0 0 8px;
   border: 0;
   background: rgba(0, 0, 0, .95);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, .04), 0 14px 32px rgba(0, 0, 0, .85);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 14px 32px rgba(0, 0, 0, .85);
   color: var(--poe-label);
-  font-size: 14.3px;
-  line-height: 1.3;
+  font-size: 13px;
+  line-height: 1.42;
 }
 
 .poe-tooltip-card .tip-vi {
-  font-family: var(--poe-game-vi);
-  font-size: .96em;
+  font-family: var(--font-body);
+  font-size: 1em;
 }
 
 /* Header colours follow the trade site's per-rarity header art. */
@@ -82,9 +75,10 @@ html[lang="vi"] {
 
 .poe-tooltip-card :is(.tooltip-name, .tooltip-base) {
   color: var(--tip-name);
-  font-family: var(--poe-game);
-  font-size: 19px;
-  line-height: 22px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .poe-tooltip-card .tooltip-section {
@@ -132,8 +126,8 @@ html[lang="vi"] {
 }
 
 .build-page :is(.nj-panel-head h2, .nj-stat-group, .nj-hero-eyebrow, .nj-meta-label, .nj-meta span, .build-slot-label, .nj-panel-aside) {
-  font-family: var(--poe-chrome);
-  letter-spacing: .02em;
+  font-family: var(--font-body);
+  letter-spacing: 0;
   text-transform: none;
 }
 
@@ -144,8 +138,9 @@ html[lang="vi"] {
 
 .build-page .nj-panel-head h2 {
   color: var(--poe-ui-title);
-  font-size: 17px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .01em;
 }
 
 .build-page :is(.nj-panel-aside, .nj-stat-group, .nj-meta-label, .nj-meta span) {
@@ -153,15 +148,18 @@ html[lang="vi"] {
 }
 
 .build-page .nj-stat-group {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: .06em;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
 }
 
 .build-page .nj-hero-eyebrow {
   color: var(--poe-ui-text);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 
 .build-page .nj-hero {
@@ -170,22 +168,23 @@ html[lang="vi"] {
 }
 
 .build-page .nj-hero-title {
-  font-family: var(--poe-chrome);
+  font-family: var(--font-body);
   color: var(--poe-ui-title);
-  font-weight: 500;
-  letter-spacing: .01em;
+  font-size: clamp(22px, 2.3vw, 28px);
+  font-weight: 700;
+  letter-spacing: -.02em;
 }
 
-/* Gem and item names are English game data: always the game face. */
 .build-page .nj-gem-name {
-  font-family: var(--poe-game);
-  font-size: 14.5px;
-  font-weight: 400;
-  letter-spacing: .01em;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
 .build-page .nj-gem-name.is-empty {
-  font-family: var(--poe-chrome);
+  font-family: var(--font-body);
+  font-weight: 500;
 }
 
 /* ── Equipment cells, tinted by rarity like the inventory ──────────────── */

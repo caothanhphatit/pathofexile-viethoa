@@ -25,8 +25,8 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ["\"Be Vietnam Pro\"", "system-ui", "-apple-system", "BlinkMacSystemFont", "\"Segoe UI\"", "sans-serif"],
-        display: ["\"Be Vietnam Pro\"", "system-ui", "-apple-system", "BlinkMacSystemFont", "\"Segoe UI\"", "sans-serif"]
+        sans: ["\"Inter\"", "system-ui", "-apple-system", "BlinkMacSystemFont", "\"Segoe UI\"", "sans-serif"],
+        display: ["\"Inter\"", "system-ui", "-apple-system", "BlinkMacSystemFont", "\"Segoe UI\"", "sans-serif"]
       },
       boxShadow: {
         md1: "0 1px 2px rgba(60,64,67,.24), 0 1px 3px rgba(60,64,67,.12)",

@@ -99,11 +99,11 @@
 
 .gc-skill-name {
   min-width: 0;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-family: var(--font-body);
   font-size: 12.5px;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -174,9 +174,10 @@
 }
 
 .gc-cat-label {
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: 13px;
-  letter-spacing: 0.06em;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
@@ -200,9 +201,10 @@
   border: 1px solid #59472c;
   background: linear-gradient(180deg, #241e15 0%, #15120d 100%);
   color: #e2d3b5;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: 12.5px;
-  letter-spacing: 0.05em;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -247,20 +249,21 @@
 .gc-title {
   margin: 0;
   color: #f2ddb2;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  line-height: 1.1;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 
 .gc-subtitle {
   margin: 2px 0 0;
   color: #b7a178;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-family: var(--font-body);
   font-size: 11.5px;
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -312,9 +315,10 @@
   border: 1px solid #524229;
   background: linear-gradient(180deg, #1f1a13 0%, #14110d 100%);
   color: #b09e7d;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -421,7 +425,7 @@
   border: 1px solid #b58f50;
   background: linear-gradient(180deg, #4d3b1f 0%, #261d0f 100%);
   color: #f6e1b2;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   pointer-events: none;
@@ -508,17 +512,18 @@
 .gc-square img { width: 100%; height: 100%; object-fit: cover; }
 
 .gc-orb-fallback {
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: 15px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
   color: #d6c39e;
 }
 
 .gc-card-name {
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  line-height: 1.22;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.28;
   overflow-wrap: anywhere;
 }
 

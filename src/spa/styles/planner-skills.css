@@ -199,12 +199,12 @@
 }
 
 .sk-row-name {
-  color: #c8b68c;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: max(12px, 3.0cqw);
-  font-weight: 400;
-  letter-spacing: .02em;
-  line-height: 1.15;
+  color: #e6d7b8;
+  font-family: var(--font-body);
+  font-size: clamp(12.5px, 2.5cqw, 14.5px);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
@@ -254,8 +254,9 @@
 /* "LEVEL:" in dim gold, number in periwinkle blue (#8888ff); right edge at 66cqw */
 .sk-row-lvl {
   flex: none;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: max(11px, 3.0cqw);
+  font-family: var(--font-body);
+  font-size: clamp(11px, 2.2cqw, 12.5px);
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   line-height: 1;
   white-space: nowrap;
@@ -321,7 +322,7 @@
     inset 0 0 0 1px rgba(138, 116, 72, .14),
     inset 0 1px 2px rgba(0, 0, 0, .85);
   color: #f2ead8;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
+  font-family: var(--font-body);
   cursor: pointer;
   transition: border-color .12s ease, background-color .12s ease;
 }
@@ -742,11 +743,11 @@
 .sk-detail-title {
   margin: 0;
   color: #f2ead8;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: max(16px, 3.4cqw);
-  font-weight: 400;
-  letter-spacing: .04em;
-  line-height: 1.15;
+  font-family: var(--font-body);
+  font-size: clamp(15px, 3cqw, 18px);
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.2;
   text-align: center;
   overflow-wrap: anywhere;
 }
@@ -914,10 +915,11 @@
   border-bottom: 1px solid #5b4a2f;
   border-radius: 3px 3px 0 0;
   background: #100e0b;
-  color: #8f8064;
-  font-family: var(--poe-game, "Fontin SmallCaps", "Alegreya Sans SC", serif);
-  font-size: max(11px, 2.05cqw);
-  letter-spacing: .03em;
+  color: #9e9177;
+  font-family: var(--font-body);
+  font-size: clamp(11.5px, 2cqw, 12.5px);
+  font-weight: 500;
+  letter-spacing: 0;
   cursor: pointer;
   transition: color .12s ease, background-color .12s ease;
 }
@@ -946,9 +948,9 @@
   margin: 0 0 max(6px, 1.4cqw);
   padding: 0 max(12px, 5.0cqw) 0 max(12px, 2.6cqw);
   color: #c8b68c;
-  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
-  font-size: max(12px, 2.25cqw);
-  line-height: 1.35;
+  font-family: var(--font-body);
+  font-size: clamp(12.5px, 2.1cqw, 13.5px);
+  line-height: 1.48;
   overflow-wrap: anywhere;
 }
 
@@ -978,10 +980,10 @@
   justify-content: space-between;
   gap: 10px;
   min-height: max(20px, 3.6cqw);
-  padding: 1px max(12px, 5.0cqw) 1px max(12px, 2.6cqw);
-  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
-  font-size: max(12px, 2.4cqw);
-  line-height: 1.25;
+  padding: 2px max(12px, 5.0cqw) 2px max(12px, 2.6cqw);
+  font-family: var(--font-body);
+  font-size: clamp(12px, 2.1cqw, 13px);
+  line-height: 1.35;
   min-width: 0;
 }
 
@@ -1036,10 +1038,11 @@
   margin: 0 0 max(4px, 1.0cqw);
   padding: 0 max(12px, 5.0cqw) 0 max(12px, 2.6cqw);
   color: #f2ead8;
-  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
-  font-size: max(16px, 3.8cqw);
-  font-weight: 400;
-  line-height: 1.2;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 2.3cqw, 14.5px);
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1.25;
 }
 
 .sk-section-heading-row .sk-section-heading {
@@ -1326,9 +1329,10 @@
 
 .sk-foot-label {
   color: #c8b68c;
-  font-family: var(--poe-chrome, "Alegreya Sans SC", "Fontin SmallCaps", serif);
-  font-size: max(12px, 2.25cqw);
-  letter-spacing: .02em;
+  font-family: var(--font-body);
+  font-size: clamp(12px, 2.1cqw, 13px);
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .sk-delete-btn {
