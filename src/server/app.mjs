@@ -4,7 +4,8 @@ import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import Fastify from "fastify";
 
-import { closePool, createPool, databaseUrlFromEnv } from "../db/pool.mjs";
+import { closePool, createPglitePool, createPool, databaseUrlFromEnv, isPgliteUrl } from "../db/pool.mjs";
+import { migrate } from "../db/migrate.mjs";
 import { adminRoutes } from "./routes/admin.mjs";
 import { authRoutes } from "./routes/auth.mjs";
 import { levelingAccountRoutes } from "./routes/leveling-account.mjs";
@@ -61,7 +62,15 @@ export const buildApp = async (options = {}) => {
   });
   await app.register(compress);
 
-  const db = options.db || (databaseUrlFromEnv() ? createPool() : null);
+  let db = options.db || null;
+  if (!db && databaseUrlFromEnv()) {
+    if (isPgliteUrl()) {
+      db = await createPglitePool();
+      await migrate(db);
+    } else {
+      db = createPool();
+    }
+  }
   const auth = createAuthService({
     env: process.env,
     sessionSecret: options.sessionSecret,

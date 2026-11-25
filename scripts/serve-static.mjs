@@ -120,8 +120,12 @@ const proxyApi = async (request, response) => {
     });
     const outHeaders = {};
     upstream.headers.forEach((value, key) => {
-      if (!["content-encoding", "content-length", "transfer-encoding", "connection"].includes(key)) outHeaders[key] = value;
+      if (!["content-encoding", "content-length", "transfer-encoding", "connection", "set-cookie"].includes(key)) {
+        outHeaders[key] = value;
+      }
     });
+    const setCookies = typeof upstream.headers.getSetCookie === "function" ? upstream.headers.getSetCookie() : [];
+    if (setCookies.length) outHeaders["set-cookie"] = setCookies;
     response.writeHead(upstream.status, outHeaders);
     response.end(Buffer.from(await upstream.arrayBuffer()));
   } catch (error) {

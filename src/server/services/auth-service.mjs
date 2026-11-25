@@ -103,12 +103,23 @@ export const createAuthService = (options = {}) => {
     expires
   });
 
+  const appendSetCookie = (reply, serialized) => {
+    const existing = reply.getHeader("set-cookie");
+    if (!existing) {
+      reply.header("set-cookie", serialized);
+    } else if (Array.isArray(existing)) {
+      reply.header("set-cookie", [...existing, serialized]);
+    } else {
+      reply.header("set-cookie", [String(existing), serialized]);
+    }
+  };
+
   const setCookie = (reply, name, value, expires) => {
-    reply.header("set-cookie", serializeCookie(name, value, cookieOptions(expires)));
+    appendSetCookie(reply, serializeCookie(name, value, cookieOptions(expires)));
   };
 
   const clearCookie = (reply, name) => {
-    reply.header("set-cookie", serializeCookie(name, "", {
+    appendSetCookie(reply, serializeCookie(name, "", {
       path: "/",
       httpOnly: true,
       sameSite: "Lax",

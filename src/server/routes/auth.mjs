@@ -44,7 +44,16 @@ export const authRoutes = async (app) => {
 
   app.get("/api/auth/google/callback", async (request, reply) => {
     if (request.query.error) {
-      return reply.redirect(`${app.auth.appUrl}/leveling?auth=cancelled`);
+      let cancelReturn = "/";
+      try {
+        const verified = app.auth.verifyGoogleState(request, String(request.query.state || ""));
+        if (verified?.returnTo) cancelReturn = verified.returnTo;
+      } catch {
+        // State cookie missing or expired: fall back to home.
+      }
+      app.auth.clearGoogleStateCookie(reply);
+      const sep = cancelReturn.includes("?") ? "&" : "?";
+      return reply.redirect(`${app.auth.appUrl}${cancelReturn}${sep}auth=cancelled`);
     }
     const code = String(request.query.code || "");
     const state = String(request.query.state || "");

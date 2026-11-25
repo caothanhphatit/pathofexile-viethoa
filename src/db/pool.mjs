@@ -13,6 +13,35 @@ export const DEFAULT_CONNECTION_TIMEOUT_MS = 10000;
 
 export const databaseUrlFromEnv = () => process.env.POE2_DATABASE_URL || "";
 
+export const isPgliteUrl = (value = databaseUrlFromEnv()) => /^pglite:\/\//i.test(String(value || "").trim());
+
+export const createPglitePool = async (connectionString = databaseUrlFromEnv()) => {
+  const { PGlite } = await import("@electric-sql/pglite");
+  const rawPath = String(connectionString || "").replace(/^pglite:\/\//i, "").trim();
+  const pg = rawPath && rawPath !== "memory" ? new PGlite(rawPath) : new PGlite();
+  await pg.waitReady;
+  const runQuery = async (text, params = []) => {
+    if (params.length === 0 && /;\s*\S/.test(String(text))) {
+      const results = await pg.exec(text);
+      const last = results[results.length - 1];
+      return { rows: last?.rows ?? [], rowCount: last?.affectedRows ?? last?.rows?.length ?? 0 };
+    }
+    const result = await pg.query(text, params);
+    return { rows: result.rows, rowCount: result.affectedRows ?? result.rows.length };
+  };
+  const client = { query: runQuery, release() {} };
+  return {
+    isPglite: true,
+    query: runQuery,
+    async connect() {
+      return client;
+    },
+    async end() {
+      await pg.close();
+    }
+  };
+};
+
 export const createPool = (options = {}) => {
   const connectionString = options.connectionString || databaseUrlFromEnv();
   if (!connectionString) {

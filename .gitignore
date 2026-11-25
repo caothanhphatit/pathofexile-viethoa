@@ -37,6 +37,7 @@ Thumbs.db
 
 # local POB clone + scratch fixtures (dev only, never commit)
 /scratch/
+/.local-db/
 
 # game data cross-check reports
 data/game-extract/check/
