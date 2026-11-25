@@ -2502,6 +2502,12 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     setActiveSlotId(null);
     setTreeChoicesOpen(false);
     setGemStrip(null);
+    const parent = buildSkills.find((row) => row.id === skillId);
+    const targetSupport = supportId ? parent?.supportSkills.find((sup) => sup.id === supportId) : undefined;
+    if (targetSupport?.active && supportId) {
+      setActiveGemPicker({ kind: "skill", skillId, supportId });
+      return;
+    }
     setActiveGemPicker({ kind: "support", skillId, ...(supportId ? { supportId } : {}) });
   };
 
@@ -2509,7 +2515,19 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     const target = targetOverride ?? activeGemPicker;
     if (!target) return;
     // A new gem drops the PoB ids/settings of the gem it replaces (level and quality stay).
-    if (target.kind === "skill") {
+    if (target.kind === "skill" && target.supportId) {
+      const skillId = officialGemId(item as ItemRecord, "SkillGem");
+      setBuildSkills((rows) => rows.map((row) => row.id === target.skillId
+        ? {
+            ...row,
+            supportSkills: row.supportSkills.map((support) => (
+              support.id === target.supportId && support.skillId !== skillId
+                ? { ...withoutPobGemDetails(support), skillId, active: true }
+                : support
+            ))
+          }
+        : row));
+    } else if (target.kind === "skill") {
       const skillId = officialGemId(item as ItemRecord, "SkillGem");
       setBuildSkills((rows) => rows.map((row) => row.id === target.skillId && row.skillId !== skillId ? { ...withoutPobGemDetails(row), skillId } : row));
     } else if (target.supportId) {
@@ -2523,10 +2541,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
       setBuildSkills((rows) => rows.map((row) => {
         if (row.id !== target.skillId) return row;
         const nextSupports = [...row.supportSkills, created];
-        const nonActiveCount = nextSupports.filter((sup) => !sup.active).length;
+        const filledCount = nextSupports.length;
         const currentSockets = effectiveSupportSockets(row);
-        const nextSockets = nonActiveCount > currentSockets && currentSockets < MAX_SUPPORT_SOCKETS
-          ? Math.min(MAX_SUPPORT_SOCKETS, nonActiveCount)
+        const nextSockets = filledCount > currentSockets && currentSockets < MAX_SUPPORT_SOCKETS
+          ? Math.min(MAX_SUPPORT_SOCKETS, filledCount)
           : row.supportSockets;
         return {
           ...row,
@@ -2539,10 +2557,10 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   };
 
   const removeGemForTarget = (target: GemPickerTarget) => {
-    if (target.kind === "skill") {
-      updateBuildSkill(target.skillId, { skillId: "" });
-    } else if (target.supportId) {
+    if (target.supportId) {
       removeSupportSkill(target.skillId, target.supportId);
+    } else if (target.kind === "skill") {
+      updateBuildSkill(target.skillId, { skillId: "" });
     }
     setActiveGemPicker(null);
   };
@@ -3961,6 +3979,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                       ? gemChoiceLabel(support.skillId, options, prefix, locale, support.nameSpec || "")
                       : (locale === "vi" ? "Ô trống" : "Empty"),
                     icon: support.skillId ? gemChoiceIcon(support.skillId, options, prefix) : "",
+                    description: record ? localizedText(record.i18n?.summary, record.summary_en ?? "", locale) : "",
                     rawName: support.nameSpec || record?.name,
                     color: record?.color
                   };
@@ -4149,6 +4168,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
               ? gemChoiceLabel(support.skillId, options, prefix, locale, support.nameSpec || "")
               : (locale === "vi" ? "Ô trống" : "Empty"),
             icon: support.skillId ? gemChoiceIcon(support.skillId, options, prefix) : "",
+            description: record ? localizedText(record.i18n?.summary, record.summary_en ?? "", locale) : "",
             rawName: support.nameSpec || record?.name,
             color: record?.color
           };

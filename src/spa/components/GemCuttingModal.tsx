@@ -57,7 +57,7 @@ export interface GemCuttingRecord {
 }
 
 export type GemCuttingTarget =
-  | { kind: "skill"; skillId: string }
+  | { kind: "skill"; skillId: string; supportId?: string }
   | { kind: "support"; skillId: string; supportId?: string };
 
 export interface GemCuttingModalProps {
@@ -185,12 +185,18 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
   const equippedSkillNames = useMemo(() => {
     const set = new Set<string>();
     for (const group of buildSkills) {
-      if (!group.skillId) continue;
-      const rec = resolveSkillRecord(group);
-      if (rec?.name) set.add(rec.name.trim().toLowerCase());
+      if (group.skillId) {
+        const rec = resolveSkillRecord(group);
+        if (rec?.name) set.add(rec.name.trim().toLowerCase());
+      }
+      for (const sup of group.supportSkills) {
+        if (!sup.active || !sup.skillId) continue;
+        const rec = resolveSupportRecord(sup);
+        if (rec?.name) set.add(rec.name.trim().toLowerCase());
+      }
     }
     return set;
-  }, [buildSkills, resolveSkillRecord]);
+  }, [buildSkills, resolveSkillRecord, resolveSupportRecord]);
 
   // Official GGG Recommended Supports + exact PoB All Valid supports for the selected skill group.
   const recommendedResult = useMemo(
@@ -224,7 +230,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
       onLeaveTooltip();
       return;
     }
-    const key = `${target.kind}:${target.skillId}:${target.kind === "support" ? target.supportId || "new" : ""}`;
+    const key = `${target.kind}:${target.skillId}:${target.supportId || "new"}`;
     if (prevTargetKeyRef.current !== key) {
       prevTargetKeyRef.current = key;
       setQuery("");
@@ -233,11 +239,15 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
       if (target.kind === "support") {
         setTab(recommendedResult.source === "ggpk" && recommendedResult.items.length > 0 ? "recommended" : "valid");
       } else {
-        const currentCat = damageSkillRecord ? activeSkillCategory(damageSkillRecord, gemCompat) : null;
+        const sub = target.supportId && activeGroup
+          ? activeGroup.supportSkills.find((s) => s.id === target.supportId)
+          : undefined;
+        const currentRec = sub ? resolveSupportRecord(sub) : damageSkillRecord;
+        const currentCat = currentRec ? activeSkillCategory(currentRec, gemCompat) : null;
         setSkillCategory(currentCat || "all");
       }
     }
-  }, [open, target, recommendedResult.source, recommendedResult.items.length, damageSkillRecord, gemCompat, onLeaveTooltip]);
+  }, [open, target, activeGroup, recommendedResult.source, recommendedResult.items.length, damageSkillRecord, resolveSupportRecord, gemCompat, onLeaveTooltip]);
 
   // Body scroll lock & Escape handler.
   useEffect(() => {
@@ -264,15 +274,18 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
     let currentId = "";
     if (!activeGroup || !target) return { socketedNames: names, socketedFamilies: families, currentSelectedId: currentId };
     if (target.kind === "skill") {
-      currentId = activeGroup.skillId || "";
+      const sub = target.supportId
+        ? activeGroup.supportSkills.find((sup) => sup.id === target.supportId)
+        : undefined;
+      currentId = sub ? (sub.skillId || "") : (activeGroup.skillId || "");
       return { socketedNames: names, socketedFamilies: families, currentSelectedId: currentId };
     }
     for (const sup of activeGroup.supportSkills) {
-      if (sup.active) continue;
       if (target.supportId && sup.id === target.supportId) {
         currentId = sup.skillId || "";
         continue;
       }
+      if (sup.active) continue;
       if (!sup.skillId) continue;
       const rec = resolveSupportRecord(sup);
       const name = rec?.name || sup.nameSpec || "";
@@ -466,7 +479,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
                 {buildSkills.map((group) => {
                   const meta = resolveSkillGem(group);
                   const isSelected = !showAllSupports && group.id === target.skillId;
-                  const supports = group.supportSkills.filter((row) => !row.active);
+                  const supports = group.supportSkills;
                   const socketCount = effectiveSupportSockets(group);
                   const freeCount = Math.max(0, socketCount - supports.length);
 
@@ -495,13 +508,13 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
                         <div className="gc-skill-sockets" role="list">
                           {supports.map((sup) => {
                             const supMeta = resolveSupportGem(sup);
-                            const isTargetSlot = target.kind === "support" && target.supportId === sup.id;
+                            const isTargetSlot = target.supportId === sup.id;
                             return (
                               <button
                                 key={sup.id}
                                 type="button"
-                                className={`gc-mini-socket is-filled ${gemColorClass(supMeta.color)} ${isTargetSlot ? "is-active" : ""}`}
-                                onClick={() => onChangeTarget({ kind: "support", skillId: group.id, supportId: sup.id })}
+                                className={`gc-mini-socket is-filled ${sup.active ? "is-triggered" : gemColorClass(supMeta.color)} ${isTargetSlot ? "is-active" : ""}`}
+                                onClick={() => onChangeTarget({ kind: sup.active ? "skill" : "support", skillId: group.id, supportId: sup.id })}
                                 title={supMeta.label}
                                 aria-label={supMeta.label}
                               >
@@ -597,7 +610,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
               <p className="gc-subtitle">
                 {isSupport
                   ? (showAllSupports ? "Support Gems" : (damageSkillRecord?.name ? `Support Gems · ${damageSkillRecord.name}` : "Support Gems"))
-                  : "Skill Gems"}
+                  : (target.supportId && activeGroup ? `Skill Gems · ${resolveSkillGem(activeGroup).label}` : "Skill Gems")}
               </p>
             </div>
             <button

@@ -136,7 +136,7 @@ export function clampSupportSockets(value: unknown): number | undefined {
  * and never drops below the number of supports already socketed (up to 5).
  */
 export function effectiveSupportSockets(skill: { supportSockets?: number; supportSkills: Array<{ active?: boolean }> }): number {
-  const socketed = skill.supportSkills.filter((support) => !support.active).length;
+  const socketed = skill.supportSkills.length;
   const minAllowed = Math.min(MAX_SUPPORT_SOCKETS, Math.max(MIN_SUPPORT_SOCKETS, socketed));
   const stored = clampSupportSockets(skill.supportSockets);
   return stored === undefined ? minAllowed : Math.min(MAX_SUPPORT_SOCKETS, Math.max(minAllowed, stored));
@@ -150,7 +150,7 @@ export function supportSocketStepperBounds(skill: { supportSockets?: number; sup
   canDecrease: boolean;
   canIncrease: boolean;
 } {
-  const socketed = skill.supportSkills.filter((support) => !support.active).length;
+  const socketed = skill.supportSkills.length;
   const min = Math.min(MAX_SUPPORT_SOCKETS, Math.max(MIN_SUPPORT_SOCKETS, socketed));
   const current = effectiveSupportSockets(skill);
   return {

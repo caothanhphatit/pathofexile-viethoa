@@ -640,7 +640,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             );
           }) : null}
 
-          {(skillMeta.description || weaponHint || showZeroChoiceHint || familyConflicts.length > 0) ? (
+          {(activeMeta.description || weaponHint || showZeroChoiceHint || familyConflicts.length > 0) ? (
             <hr className="sk-frame-divider" />
           ) : null}
 
@@ -812,10 +812,21 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             <div className="sk-section">
               <h4 className="sk-section-heading">{vi ? "Tuỳ chọn" : "Options"}</h4>
               <div className="sk-options-rows">
-                <div className="sk-opt-row">
-                  <span className="sk-opt-label">{vi ? "Cấp & Chất lượng gem" : "Gem level & quality"}</span>
-                  <div className="sk-opt-ctrl">{gemLevelControls(skill, (patch) => onUpdateSkill(skill.id, patch))}</div>
-                </div>
+                {selectedTriggered ? (
+                  <div className="sk-opt-row">
+                    <span className="sk-opt-label">
+                      {vi
+                        ? `Cấp & Chất lượng (${selectedTriggeredMeta?.label})`
+                        : `${selectedTriggeredMeta?.label} level & quality`}
+                    </span>
+                    <div className="sk-opt-ctrl">{gemLevelControls(selectedTriggered, (patch) => onUpdateSupport(skill.id, selectedTriggered.id, patch))}</div>
+                  </div>
+                ) : (
+                  <div className="sk-opt-row">
+                    <span className="sk-opt-label">{vi ? "Cấp & Chất lượng gem" : "Gem level & quality"}</span>
+                    <div className="sk-opt-ctrl">{gemLevelControls(skill, (patch) => onUpdateSkill(skill.id, patch))}</div>
+                  </div>
+                )}
                 {(() => {
                   const bounds = supportSocketStepperBounds(skill);
                   return (
@@ -872,6 +883,8 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                         attrs={sup.pobAttrs}
                         locale={locale}
                         corrupt={Boolean(sup.active)}
+                        hideStatSets={Boolean(selectedTriggered?.id === sup.id && statSets)}
+                        hideParts={Boolean(selectedTriggered?.id === sup.id && skillParts)}
                         onChange={(change: GemOptionChange) => onUpdateSupport(skill.id, sup.id, { pobAttrs: withGemOption(sup.pobAttrs, change) })}
                       />
                     </div>

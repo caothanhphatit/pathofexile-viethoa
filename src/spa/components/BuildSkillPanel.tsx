@@ -292,13 +292,15 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     });
     const skillMeta = resolveSkillGem(skill);
     const triggered = skill.supportSkills.filter((support) => support.active && !support.disabled);
-    const supports = skill.supportSkills.filter((support) => !support.active);
+    const socketedGems = skill.supportSkills;
+    const pureSupports = skill.supportSkills.filter((support) => !support.active);
     // Real unlocked sockets (2-5): positions 1..socketCount are rings, socketCount+1..5 are recesses.
+    // In PoE2, spells socketed into Meta/CoC skills (e.g. Comet in Cast on Critical) occupy a socket too.
     const socketCount = effectiveSupportSockets(skill);
-    const freeSockets = Math.max(0, socketCount - supports.length);
-    const lockedRecesses = Math.max(0, MAX_SUPPORT_SOCKETS - Math.max(socketCount, supports.length));
+    const freeSockets = Math.max(0, socketCount - socketedGems.length);
+    const lockedRecesses = Math.max(0, MAX_SUPPORT_SOCKETS - Math.max(socketCount, socketedGems.length));
     const damageLines = skill.disabled ? [] : groupDamageLines[index] ?? [];
-    const familyConflicts = supportFamilyConflicts(supports.map((support) => {
+    const familyConflicts = supportFamilyConflicts(pureSupports.map((support) => {
       const meta = resolveSupportGem(support);
       return {
         id: support.pobGemId || support.skillId,
@@ -307,8 +309,9 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
       };
     }));
     const supersededSupports = new Set(
-      familyConflicts.flatMap((conflict) => conflict.gems.filter((gem) => gem !== conflict.kept).map((gem) => supports[gem].id))
+      familyConflicts.flatMap((conflict) => conflict.gems.filter((gem) => gem !== conflict.kept).map((gem) => pureSupports[gem].id))
     );
+    const supports = socketedGems;
     const weaponHint = weaponHintFor(skill);
     const missingMonster = Boolean(skill.skillId && monsterLibraryOf(skill) && !skill.pobAttrs?.skillMinion);
     const hasWarning = !skill.disabled && Boolean(
@@ -524,13 +527,13 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                     onMouseEnter={() => setHoveredSupport({
                       skillId: skill.id,
                       supportId: support.id,
-                      keys: support.skillId && !support.disabled && !skill.disabled ? supportValueKeys(skill.id, support.id) : null
+                      keys: !support.active && support.skillId && !support.disabled && !skill.disabled ? supportValueKeys(skill.id, support.id) : null
                     })}
                     onMouseLeave={() => setHoveredSupport(null)}
                   >
                     <button
                       type="button"
-                      className={`sk-socket sk-socket--support ${colorCls}`}
+                      className={`sk-socket sk-socket--support ${support.active ? "sk-socket--triggered" : ""} ${colorCls}`}
                       onClick={() => onOpenSupportGemPicker(skill.id, support.id)}
                       aria-label={`${meta.label} — ${vi ? "bấm để đổi hoặc tháo" : "click to swap or remove"}`}
                       title={superseded
@@ -552,7 +555,9 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                       <span className="sk-support-tip" role="tooltip">
                         <b>{meta.label}</b>
                         {support.gemLevel ? <small> · Lv {support.gemLevel}</small> : null}
-                        {support.disabled ? (
+                        {support.active ? (
+                          <span className="sk-value">{vi ? "Kỹ năng được gắn" : "Socketed skill"}</span>
+                        ) : support.disabled ? (
                           <span className="sk-value">{vi ? "Đang tắt" : "Disabled"}</span>
                         ) : keys ? (
                           <SupportValue queue={compareQueue} withKey={keys.withKey} withoutKey={keys.withoutKey} locale={locale} />

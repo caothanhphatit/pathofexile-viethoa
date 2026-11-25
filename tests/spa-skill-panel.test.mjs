@@ -124,8 +124,8 @@ test("supportSockets defaults to max(2, socketed) capped at 5, respects stepper 
   assert.equal(lib.effectiveSupportSockets({ supportSkills: [sup("1"), sup("2")] }), 2);
   assert.equal(lib.effectiveSupportSockets({ supportSkills: [sup("1"), sup("2"), sup("3")] }), 3);
   assert.equal(lib.effectiveSupportSockets({ supportSkills: [sup("1"), sup("2"), sup("3"), sup("4"), sup("5"), sup("6")] }), 5);
-  // Active triggered gems (e.g. Comet in Cast on Critical) do not count as support sockets.
-  assert.equal(lib.effectiveSupportSockets({ supportSkills: [sup("c1", true), sup("c2", true), sup("s1")] }), 2);
+  // Triggered active spells (e.g. Comet in Cast on Critical) occupy a socket in PoE2 just like supports.
+  assert.equal(lib.effectiveSupportSockets({ supportSkills: [sup("c1", true), sup("c2", true), sup("s1")] }), 3);
 
   // Explicit stored value is clamped to [max(2, socketed), 5].
   assert.equal(lib.effectiveSupportSockets({ supportSockets: 4, supportSkills: [sup("1")] }), 4);
@@ -294,4 +294,33 @@ test("Build detail popups restore focus reliably across all three modals and nes
   assert.match(bar, /Cây thụ động/);
   assert.match(bar, /Điều kiện/);
   assert.match(bar, /Chỉ số chi tiết/);
+});
+
+test("CoC / Meta socketed active spells stay visible in sockets, Gemcutting modal, and skill detail medallions", async () => {
+  const [panel, detail, modal, page] = await Promise.all([
+    readRepoFile("src/spa/components/BuildSkillPanel.tsx"),
+    readRepoFile("src/spa/components/BuildSkillDetail.tsx"),
+    readRepoFile("src/spa/components/GemCuttingModal.tsx"),
+    readRepoFile("src/spa/pages/BuildPlannerPage.tsx")
+  ]);
+
+  // Socket bar renders ALL supportSkills (including active triggered spells) with triggered styling.
+  assert.match(panel, /const socketedGems = skill\.supportSkills;/);
+  assert.match(panel, /support\.active \? "sk-socket--triggered" : ""/);
+
+  // Gemcutting modal renders active triggered spells in sidebar and routes clicks to skill-gem mode with supportId.
+  assert.match(modal, /kind: "skill"; skillId: string; supportId\?: string/);
+  assert.match(modal, /sup\.active \? "is-triggered" : gemColorClass/);
+  assert.match(modal, /kind: sup\.active \? "skill" : "support", skillId: group\.id, supportId: sup\.id/);
+
+  // BuildPlannerPage swaps & removes socketed active spells without wiping the parent Meta skill.
+  assert.match(page, /if \(targetSupport\?\.active && supportId\) \{\s*setActiveGemPicker\(\{ kind: "skill", skillId, supportId \}\);/);
+  assert.match(page, /if \(target\.kind === "skill" && target\.supportId\)/);
+  assert.match(page, /const removeGemForTarget = \(target: GemPickerTarget\) => \{\s*if \(target\.supportId\) \{\s*removeSupportSkill/);
+
+  // Skill detail auto-selects the first triggered spell, renders medallion tabs, and queries PoB for its main_active_skill.
+  assert.match(detail, /setSelectedSubId\(firstTriggeredId \|\| "main"\)/);
+  assert.match(detail, /calculationBodyForSkill\(index \+ 1, selectedMainActiveSkill\)/);
+  assert.match(detail, /className="sk-detail-medallions"/);
+  assert.match(detail, /gemLevelControls\(selectedTriggered/);
 });
