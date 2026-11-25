@@ -58,25 +58,35 @@ body,
   font-weight: 600;
 }
 
-.app .nav-rail a {
+.app .nav-rail .nav-top-link,
+.app .nav-rail .nav-trigger {
   position: relative;
   border-radius: var(--radius-s);
   color: var(--muted);
   font-weight: 600;
 }
 
-.app .nav-rail a:hover {
+.app .nav-rail .nav-top-link:hover,
+.app .nav-rail .nav-trigger:hover,
+.app .nav-rail .nav-trigger.is-open {
   background: var(--surface-2);
   color: var(--ink);
 }
 
-.app .nav-rail a.is-active {
+.app .nav-rail .nav-top-link.is-active,
+.app .nav-rail .nav-trigger.is-active {
   background: transparent;
   color: var(--ink);
 }
 
-/* The current page gets a thin accent bar, nothing louder. */
-.app .nav-rail a.is-active::after {
+.app .nav-rail .nav-trigger.is-active:hover,
+.app .nav-rail .nav-trigger.is-active.is-open {
+  background: var(--surface-2);
+}
+
+/* The current top-level group gets a thin accent bar, nothing louder. */
+.app .nav-rail .nav-top-link.is-active::after,
+.app .nav-rail .nav-trigger.is-active::after {
   content: "";
   position: absolute;
   right: 8px;
@@ -85,13 +95,6 @@ body,
   height: 2px;
   border-radius: 2px;
   background: var(--gold);
-}
-
-@media (min-width: 1024px) and (max-width: 1559px) {
-  .app .nav-rail a.is-active::after {
-    right: 6px;
-    left: 6px;
-  }
 }
 
 .app .segmented {
@@ -344,18 +347,13 @@ body,
     background: var(--surface);
   }
 
-  .app .nav-rail.is-open a.is-active {
-    background: var(--surface-2);
-    color: var(--ink);
+  .app .nav-rail.is-open .nav-top-link.is-active {
+    background: var(--gold-soft);
+    color: var(--gold-strong);
   }
 
-  .app .nav-rail.is-open a.is-active::after {
-    top: 6px;
-    right: auto;
-    bottom: 6px;
-    left: 0;
-    width: 3px;
-    height: auto;
+  .app .nav-rail.is-open .nav-top-link.is-active::after {
+    display: none;
   }
 }
 

@@ -192,7 +192,7 @@ export const routes: AppRoute[] = [
     title: "Build POE2",
     shortTitle: "Build",
     description: "Tạo và xuất file .build cho Path of Exile 2 từ passive tree và item hint đã chọn.",
-    icon: "download_for_offline",
+    icon: "shield",
     navOrder: 67,
     aliases: ["/build-planner", "/builds"]
   },
@@ -407,6 +407,132 @@ for (const route of routes) {
 }
 
 export const navRoutes = routes.filter((route) => Number.isFinite(route.navOrder)).sort((a, b) => (a.navOrder ?? 0) - (b.navOrder ?? 0));
+
+export interface NavSubItem {
+  routeKey: RouteKey;
+  label?: { vi: string; en: string };
+  hint: { vi: string; en: string };
+  /** Extra route keys (detail or child pages) that highlight this menu item. */
+  matchKeys?: RouteKey[];
+}
+
+export type NavEntry =
+  | {
+      kind: "link";
+      id: string;
+      routeKey: RouteKey;
+      matchKeys?: RouteKey[];
+    }
+  | {
+      kind: "group";
+      id: string;
+      icon: string;
+      label: { vi: string; en: string };
+      matchKeys: RouteKey[];
+      items: NavSubItem[];
+    };
+
+export const navEntries: NavEntry[] = [
+  {
+    kind: "link",
+    id: "build",
+    routeKey: "buildPlanner"
+  },
+  {
+    kind: "group",
+    id: "tools",
+    icon: "construction",
+    label: { vi: "Công cụ", en: "Tools" },
+    matchKeys: ["passiveTree", "craftSim"],
+    items: [
+      {
+        routeKey: "passiveTree",
+        hint: { vi: "Cây kỹ năng & lập kế hoạch", en: "Interactive passive tree" }
+      },
+      {
+        routeKey: "craftSim",
+        label: { vi: "Bàn Craft", en: "Craft sim" },
+        hint: { vi: "Mô phỏng craft trang bị", en: "Stash-style crafting simulator" }
+      }
+    ]
+  },
+  {
+    kind: "group",
+    id: "lookup",
+    icon: "travel_explore",
+    label: { vi: "Tra cứu", en: "Lookup" },
+    matchKeys: ["lookup", "skillgems", "skillgemDetail", "items", "currency", "currencyDetail", "dictionary"],
+    items: [
+      {
+        routeKey: "lookup",
+        label: { vi: "Tổng quan tra cứu", en: "Lookup hub" },
+        hint: { vi: "Trung tâm tra cứu nhanh", en: "Quick lookup hub" }
+      },
+      {
+        routeKey: "skillgems",
+        matchKeys: ["skillgems", "skillgemDetail"],
+        hint: { vi: "Kỹ năng chủ động & hỗ trợ", en: "Active & support gems" }
+      },
+      {
+        routeKey: "items",
+        hint: { vi: "Trang bị & base item", en: "Base items & uniques" }
+      },
+      {
+        routeKey: "currency",
+        matchKeys: ["currency", "currencyDetail"],
+        hint: { vi: "Orb, essence, omen & rune", en: "Orbs, essences & runes" }
+      },
+      {
+        routeKey: "dictionary",
+        hint: { vi: "Thuật ngữ & cơ chế game", en: "Terms & mechanics" }
+      }
+    ]
+  },
+  {
+    kind: "group",
+    id: "guides",
+    icon: "menu_book",
+    label: { vi: "Hướng dẫn", en: "Guides" },
+    matchKeys: ["leveling", "boss", "bossDetail", "newbie", "beginner", "craft", "weapon", "patchnote"],
+    items: [
+      {
+        routeKey: "leveling",
+        hint: { vi: "Checklist chiến dịch Act 1–4", en: "Campaign leveling checklist" }
+      },
+      {
+        routeKey: "boss",
+        matchKeys: ["boss", "bossDetail"],
+        hint: { vi: "Cơ chế, chiến thuật & drop", en: "Mechanics, strategy & drops" }
+      },
+      {
+        routeKey: "newbie",
+        matchKeys: ["newbie", "beginner", "craft", "weapon"],
+        hint: { vi: "Nhập môn, vũ khí & craft cơ bản", en: "New player, weapons & basics" }
+      },
+      {
+        routeKey: "patchnote",
+        hint: { vi: "Ghi chú bản cập nhật", en: "Patch notes & changes" }
+      }
+    ]
+  },
+  {
+    kind: "group",
+    id: "app",
+    icon: "install_desktop",
+    label: { vi: "App POEVH", en: "POEVH App" },
+    matchKeys: ["install", "premium"],
+    items: [
+      {
+        routeKey: "install",
+        hint: { vi: "Tải POEVH cho Windows", en: "Download Windows desktop app" }
+      },
+      {
+        routeKey: "premium",
+        hint: { vi: "Trạng thái gói & key kích hoạt", en: "Plan status & license keys" }
+      }
+    ]
+  }
+];
 
 export function normalizePath(pathname = "/"): string {
   const clean = pathname.replace(/\/+$/, "") || "/";

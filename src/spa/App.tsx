@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  activeNavKey,
-  navRoutes,
+  navEntries,
   navigateTo,
+  routeForKey,
   routeText,
   routeFromLocation,
   routes,
   type AppRoute
 } from "./lib/routes";
-import { normalizeLocale, type Locale, uiText } from "./lib/locale";
+import { localizedText, normalizeLocale, type Locale, uiText } from "./lib/locale";
 import { usePoeTermTooltips } from "./lib/poeTerms";
 import { updateSeo } from "./lib/seo";
 import { HomePage } from "./pages/HomePage";
@@ -30,6 +30,7 @@ import { PremiumPage } from "./pages/PremiumPage";
 import { InstallPage } from "./pages/InstallPage";
 import { BossDetailPage, BossListPage } from "./pages/BossPages";
 import { BrandMark } from "./components/BrandMark";
+import { HeaderAuth } from "./components/HeaderAuth";
 
 const facebookUrl = "https://www.facebook.com/poeviethoa";
 
@@ -48,10 +49,33 @@ export function App() {
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
   const [locale, setLocale] = useState<Locale>(() => normalizeLocale(localStorage.getItem("poe-locale") || document.documentElement.lang));
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const headerRef = useRef<HTMLElement>(null);
-  const activeNav = activeNavKey(route);
+  const hoverTimerRef = useRef<number | null>(null);
   const isPassive = route.key === "passiveTree";
   const currentRouteText = routeText(route, locale);
+
+  const clearHoverTimer = () => {
+    if (hoverTimerRef.current !== null) {
+      window.clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  };
+
+  const openGroupOnHover = (id: string) => {
+    clearHoverTimer();
+    setOpenGroup(id);
+  };
+
+  const scheduleCloseGroup = () => {
+    clearHoverTimer();
+    hoverTimerRef.current = window.setTimeout(() => {
+      setOpenGroup(null);
+      hoverTimerRef.current = null;
+    }, 120);
+  };
+
+  useEffect(() => () => clearHoverTimer(), []);
 
   usePoeTermTooltips(locale, route.key);
 
@@ -61,16 +85,21 @@ export function App() {
 
   useEffect(() => {
     setMenuOpen(false);
+    setOpenGroup(null);
   }, [route]);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen && !openGroup) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        setOpenGroup(null);
+      }
     };
     const onPointerDown = (event: MouseEvent) => {
       if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
+        setOpenGroup(null);
       }
     };
     document.addEventListener("keydown", onKeyDown);
@@ -79,15 +108,7 @@ export function App() {
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("mousedown", onPointerDown);
     };
-  }, [menuOpen]);
-
-  // On narrow screens the nav scrolls sideways; bring the current page into view.
-  useEffect(() => {
-    const active = document.querySelector<HTMLElement>(".nav-rail a.is-active");
-    const rail = active?.parentElement;
-    if (!active || !rail || rail.scrollWidth <= rail.clientWidth) return;
-    rail.scrollTo({ left: active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2, behavior: "auto" });
-  }, [activeNav]);
+  }, [menuOpen, openGroup]);
 
   useEffect(() => {
     const handler = (event: MouseEvent) => {
@@ -95,9 +116,9 @@ export function App() {
       const anchor = (event.target as Element | null)?.closest?.("a[href]");
       if (!anchor) return;
       const href = anchor.getAttribute("href") || "";
-      if (!href || anchor.hasAttribute("download") || href.startsWith("#") || /^(https?:|mailto:|tel:|blob:|data:)/i.test(href)) return;
+      if (!href || anchor.hasAttribute("download") || anchor.hasAttribute("data-no-spa") || href.startsWith("#") || href.startsWith("/api/") || /^(https?:|mailto:|tel:|blob:|data:)/i.test(href)) return;
       const url = new URL(href, window.location.href);
-      if (url.origin !== window.location.origin) return;
+      if (url.origin !== window.location.origin || url.pathname.startsWith("/api/")) return;
       event.preventDefault();
       navigateTo(`${url.pathname}${url.search}${url.hash}`);
     };
@@ -136,23 +157,93 @@ export function App() {
           className={menuOpen ? "nav-rail is-open" : "nav-rail"}
           aria-label={uiText("mainNav", locale)}
         >
-          {navRoutes.map((item) => {
-            const itemText = routeText(item, locale);
+          {navEntries.map((entry) => {
+            if (entry.kind === "link") {
+              const target = routeForKey(entry.routeKey);
+              const itemText = routeText(target, locale);
+              const isActive = (entry.matchKeys ?? [entry.routeKey]).includes(route.key);
+              return (
+                <a
+                  className={isActive ? "nav-top-link is-active" : "nav-top-link"}
+                  href={target.path}
+                  key={entry.id}
+                  title={itemText.shortTitle}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setOpenGroup(null);
+                  }}
+                >
+                  <span className="material-symbols-rounded" aria-hidden="true">{target.icon}</span>
+                  <span className="nav-label">{itemText.shortTitle}</span>
+                </a>
+              );
+            }
+
+            const isGroupActive = entry.matchKeys.includes(route.key);
+            const isGroupOpen = openGroup === entry.id;
+            const groupLabel = localizedText(entry.label, "", locale);
+
             return (
-              <a
-                className={activeNav === item.key ? "is-active" : ""}
-                href={item.path}
-                key={item.key}
-                title={itemText.shortTitle}
-                onClick={() => setMenuOpen(false)}
+              <div
+                className={`nav-group${isGroupOpen ? " is-open" : ""}${isGroupActive ? " is-active" : ""}`}
+                key={entry.id}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") openGroupOnHover(entry.id);
+                }}
+                onPointerLeave={(event) => {
+                  if (event.pointerType === "mouse") scheduleCloseGroup();
+                }}
               >
-                <span className="material-symbols-rounded" aria-hidden="true">{item.icon}</span>
-                <span className="nav-label">{itemText.shortTitle}</span>
-              </a>
+                <button
+                  type="button"
+                  className={`nav-trigger${isGroupActive ? " is-active" : ""}${isGroupOpen ? " is-open" : ""}`}
+                  aria-expanded={isGroupOpen}
+                  aria-haspopup="menu"
+                  onClick={() => {
+                    clearHoverTimer();
+                    setOpenGroup((prev) => (prev === entry.id ? null : entry.id));
+                  }}
+                >
+                  <span className="material-symbols-rounded" aria-hidden="true">{entry.icon}</span>
+                  <span className="nav-label">{groupLabel}</span>
+                  <span className="material-symbols-rounded nav-chevron" aria-hidden="true">expand_more</span>
+                </button>
+                <div className="nav-menu" role="menu" aria-label={groupLabel}>
+                  <span className="nav-menu-heading" aria-hidden="true">{groupLabel}</span>
+                  <div className="nav-menu-list">
+                    {entry.items.map((sub) => {
+                      const target = routeForKey(sub.routeKey);
+                      const text = routeText(target, locale);
+                      const subLabel = sub.label ? localizedText(sub.label, text.shortTitle, locale) : text.shortTitle;
+                      const subHint = localizedText(sub.hint, "", locale);
+                      const isSubActive = (sub.matchKeys ?? [sub.routeKey]).includes(route.key);
+                      return (
+                        <a
+                          role="menuitem"
+                          key={sub.routeKey}
+                          href={target.path}
+                          className={isSubActive ? "nav-menu-item is-active" : "nav-menu-item"}
+                          onClick={() => {
+                            setMenuOpen(false);
+                            setOpenGroup(null);
+                          }}
+                        >
+                          <span className="material-symbols-rounded nav-menu-icon" aria-hidden="true">{target.icon}</span>
+                          <span className="nav-menu-copy">
+                            <strong>{subLabel}</strong>
+                            <small>{subHint}</small>
+                          </span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             );
           })}
         </nav>
         <div className="app-actions">
+          <HeaderAuth locale={locale} currentPath={route.path} />
           <a className="facebook-button" href={facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook POE Việt hóa" title="Facebook POE Việt hóa">
             <span aria-hidden="true">f</span>
           </a>

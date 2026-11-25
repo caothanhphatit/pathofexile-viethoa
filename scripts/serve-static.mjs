@@ -6,7 +6,8 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootArg = process.argv[2] || "public";
 const rootDir = path.resolve(__dirname, "..", rootArg);
-const port = Number(process.env.PORT || process.argv[3] || 8022);
+// An explicit port argument wins over PORT (a local .env may set PORT for the API).
+const port = Number(process.argv[3] || process.env.PORT || 8022);
 const host = process.env.HOST || "127.0.0.1";
 // The SPA calls same-origin /api/* (e.g. /api/poe2db-image for item icons). In production
 // nginx forwards it to the Node backend; locally forward it to `npm run server`.
@@ -65,7 +66,10 @@ const cleanRouteFiles = new Map([
   ["/poevh", "/index.html"],
   ["/boss", "/index.html"],
   ["/boss-detail", "/index.html"],
-  ["/boss_detail", "/index.html"]
+  ["/boss_detail", "/index.html"],
+  // Static legal pages: full HTML without JavaScript (Google OAuth verification reads them).
+  ["/privacy", "/privacy/index.html"],
+  ["/terms", "/terms/index.html"]
 ]);
 
 const goneRoutes = new Set([

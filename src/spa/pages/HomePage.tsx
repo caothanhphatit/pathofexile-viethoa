@@ -56,6 +56,11 @@ export function HomePage({ locale }: { locale: Locale }) {
           );
         })}
       </section>
+      <p className="home-legal">
+        <a href="/privacy" data-no-spa>{locale === "vi" ? "Chính sách bảo mật" : "Privacy Policy"}</a>
+        <span aria-hidden="true"> · </span>
+        <a href="/terms" data-no-spa>{locale === "vi" ? "Điều khoản sử dụng" : "Terms of Service"}</a>
+      </p>
     </main>
   );
 }
