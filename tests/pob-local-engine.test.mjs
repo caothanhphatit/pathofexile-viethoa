@@ -9,10 +9,10 @@
 //
 // Skipped when PoB or the bundle is not on this machine.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
-import { gunzipSync } from "node:zlib";
+import { brotliDecompressSync, gunzipSync } from "node:zlib";
 
 import { buildApp } from "../src/server/app.mjs";
 import { serverModPool } from "../src/server/item-validation.mjs";
@@ -64,7 +64,7 @@ test("the local runner is cut from the current scripts/pob-calculate.lua", () =>
   assert.throws(() => buildPersistentCalculateScript("print('something else')"), /changed shape/);
 });
 
-test("the bundle carries the current calculate script and PoB's licence", { skip: !bundle && "PoB web bundle not built (npm run build:pob-web)" }, () => {
+test("the bundle carries the current calculate script, PoB's licence, and precompressed .gz/.br siblings", { skip: !bundle && "PoB web bundle not built (npm run build:pob-web)" }, () => {
   const vfs = unpackPobVfs(gunzipSync(readFileSync(bundle.vfsPath)));
   assert.equal(
     vfs.get("__planner_calculate.lua"),
@@ -72,6 +72,13 @@ test("the bundle carries the current calculate script and PoB's licence", { skip
     "public/pob-web is stale: run npm run build:pob-web"
   );
   assert.match(readFileSync(join(bundle.dir, "LICENSE.md"), "utf8"), /MIT/);
+  for (const name of ["pob-vfs.bin", "wasmoon.wasm", "LICENSE.md", "manifest.json"]) {
+    const raw = readFileSync(join(bundle.dir, name));
+    assert.ok(existsSync(join(bundle.dir, `${name}.gz`)), `missing ${name}.gz`);
+    assert.ok(existsSync(join(bundle.dir, `${name}.br`)), `missing ${name}.br`);
+    assert.equal(gunzipSync(readFileSync(join(bundle.dir, `${name}.gz`))).equals(raw), true, `${name}.gz round-trip`);
+    assert.equal(brotliDecompressSync(readFileSync(join(bundle.dir, `${name}.br`))).equals(raw), true, `${name}.br round-trip`);
+  }
 });
 
 for (const fixture of fixtures) {

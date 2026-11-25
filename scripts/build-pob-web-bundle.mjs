@@ -214,8 +214,14 @@ export async function buildPobWebBundle({
   if (!fs.existsSync(licenseSrc)) {
     throw new Error(`PoB LICENSE.md not found at ${licenseSrc}`);
   }
+  const licenseRaw = fs.readFileSync(licenseSrc);
+  const licenseGzip = zlib.gzipSync(licenseRaw, { level: 9 });
+  const licenseBrotli = zlib.brotliCompressSync(licenseRaw, {
+    params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 11 }
+  });
 
   const sha256 = createHash("sha256").update(gzipped).digest("hex");
+  const packSha256 = createHash("sha256").update(packed).digest("hex");
   // Version = PoB commit + hash of the packed files and the VM: a change of our calculate
   // script or of wasmoon gives a new URL too, so a browser never reuses a stale cached bundle.
   const contentHash = createHash("sha256").update(packed).update(wasmRaw).digest("hex").slice(0, 8);
@@ -231,9 +237,19 @@ export async function buildPobWebBundle({
   }
   fs.mkdirSync(outDir, { recursive: true });
 
+  // Write every bundle file alongside its precompressed .gz and .br siblings so nginx
+  // can serve them statically via `brotli_static on; gzip_static on;` with zero CPU cost.
+  fs.writeFileSync(path.join(outDir, "pob-vfs.bin"), packed);
   fs.writeFileSync(path.join(outDir, "pob-vfs.bin.gz"), gzipped);
+  fs.writeFileSync(path.join(outDir, "pob-vfs.bin.br"), brotli);
+
   fs.writeFileSync(path.join(outDir, "wasmoon.wasm"), wasmRaw);
-  fs.copyFileSync(licenseSrc, path.join(outDir, "LICENSE.md"));
+  fs.writeFileSync(path.join(outDir, "wasmoon.wasm.gz"), wasmGzip);
+  fs.writeFileSync(path.join(outDir, "wasmoon.wasm.br"), wasmBrotli);
+
+  fs.writeFileSync(path.join(outDir, "LICENSE.md"), licenseRaw);
+  fs.writeFileSync(path.join(outDir, "LICENSE.md.gz"), licenseGzip);
+  fs.writeFileSync(path.join(outDir, "LICENSE.md.br"), licenseBrotli);
 
   const manifest = {
     version,
@@ -251,40 +267,63 @@ export async function buildPobWebBundle({
     wasmBytes: wasmRaw.length,
     wasmGzipBytes: wasmGzip.length,
     wasmBrotliBytes: wasmBrotli.length,
+    licenseBytes: licenseRaw.length,
+    licenseGzipBytes: licenseGzip.length,
+    licenseBrotliBytes: licenseBrotli.length,
     // Actual bytes fetched by the browser over HTTP (pob-vfs.bin.gz + raw wasmoon.wasm without HTTP gzip).
     totalDownloadBytes: gzipped.length + wasmRaw.length,
     totalGzipDownloadBytes: gzipped.length + wasmGzip.length,
     totalBrotliDownloadBytes: brotli.length + wasmBrotli.length,
     sha256,
+    packSha256,
     files: {
       vfs: "pob-vfs.bin.gz",
+      vfsRaw: "pob-vfs.bin",
       wasm: "wasmoon.wasm",
       license: "LICENSE.md"
     }
   };
 
-  fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
-  fs.writeFileSync(path.join(outBaseDir, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
+  const manifestBuf = Buffer.from(JSON.stringify(manifest, null, 2) + "\n", "utf8");
+  const manifestGzip = zlib.gzipSync(manifestBuf, { level: 9 });
+  const manifestBrotli = zlib.brotliCompressSync(manifestBuf, {
+    params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 11 }
+  });
 
-  return { outDir, manifest };
+  for (const dir of [outDir, outBaseDir]) {
+    fs.writeFileSync(path.join(dir, "manifest.json"), manifestBuf);
+    fs.writeFileSync(path.join(dir, "manifest.json.gz"), manifestGzip);
+    fs.writeFileSync(path.join(dir, "manifest.json.br"), manifestBrotli);
+  }
+
+  const precompressedSizes = [
+    { file: "pob-vfs.bin", raw: packed.length, gzip: gzipped.length, brotli: brotli.length },
+    { file: "wasmoon.wasm", raw: wasmRaw.length, gzip: wasmGzip.length, brotli: wasmBrotli.length },
+    { file: "LICENSE.md", raw: licenseRaw.length, gzip: licenseGzip.length, brotli: licenseBrotli.length },
+    { file: "manifest.json", raw: manifestBuf.length, gzip: manifestGzip.length, brotli: manifestBrotli.length }
+  ];
+
+  return { outDir, manifest, precompressedSizes };
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const pobDir = path.resolve(process.argv[2] || process.env.POB_DIR || path.join(REPO_ROOT, "..", "pob-core"));
   try {
-    const { outDir, manifest } = await buildPobWebBundle({ pobDir });
+    const { outDir, manifest, precompressedSizes } = await buildPobWebBundle({ pobDir });
     const mb = (n) => `${(n / (1024 * 1024)).toFixed(2)} MB`;
-    const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
+    const fmt = (n) => (n >= 1024 * 1024 ? mb(n) : `${(n / 1024).toFixed(1)} KB`);
     console.log(`Built PoB web bundle at ${outDir}`);
     console.log(`  PoB version : ${manifest.pobVersion} (bundle ${manifest.version})`);
     console.log(`  Tree versions: ${manifest.treeVersions.join(", ")}`);
     console.log(`  Files       : ${manifest.fileCount} (${manifest.desugaredCount} desugared for Lua 5.4)`);
-    console.log(`  VFS raw     : ${mb(manifest.rawBytes)} (${manifest.rawBytes.toLocaleString()} B)`);
-    console.log(`  VFS gzip    : ${mb(manifest.gzipBytes)} (${manifest.gzipBytes.toLocaleString()} B)`);
-    console.log(`  VFS brotli  : ${mb(manifest.brotliBytes)} (${manifest.brotliBytes.toLocaleString()} B)`);
-    console.log(`  wasmoon.wasm: ${kb(manifest.wasmBytes)} raw / ${kb(manifest.wasmGzipBytes)} gzip / ${kb(manifest.wasmBrotliBytes)} brotli`);
-    console.log(`  First download (vfs.gz + wasm): ${mb(manifest.totalDownloadBytes)} (${mb(manifest.totalGzipDownloadBytes)} if server gzips wasm)`);
+    console.log("  Precompressed bundle files (raw / .gz / .br):");
+    for (const row of precompressedSizes) {
+      console.log(`    ${row.file.padEnd(15)} ${fmt(row.raw).padStart(9)} raw | ${fmt(row.gzip).padStart(9)} .gz | ${fmt(row.brotli).padStart(9)} .br`);
+    }
+    console.log(`  Client download (today, vfs.gz + raw wasm)        : ${mb(manifest.totalDownloadBytes)} (${manifest.totalDownloadBytes.toLocaleString()} B)`);
+    console.log(`  Client download (+ gzip_static on wasm)           : ${mb(manifest.totalGzipDownloadBytes)} (${manifest.totalGzipDownloadBytes.toLocaleString()} B)`);
+    console.log(`  Client download (+ brotli_static on vfs.bin+wasm) : ${mb(manifest.totalBrotliDownloadBytes)} (${manifest.totalBrotliDownloadBytes.toLocaleString()} B)`);
   } catch (error) {
     console.error(error.message || error);
     process.exitCode = 1;
