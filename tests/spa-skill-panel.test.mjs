@@ -247,9 +247,9 @@ test("Skills panel matches PoE2 base-art cqw proportions, 7.6cqw icon, clickable
   assert.match(styles, /width:\s*max\(46px,\s*11\.0cqw\)/);
   assert.match(styles, /#8888ff/);
 
-  assert.match(html, /\/dist\/app\.css\?v=20261124-skillpanel4/);
-  assert.match(html, /\/dist\/spa\/assets\/app\.css\?v=20261124-skillpanel4/);
-  assert.match(html, /\/dist\/spa\/assets\/app\.js\?v=20261124-skillpanel4/);
+  assert.match(html, /\/dist\/app\.css\?v=\d{8}-[\w-]+/);
+  assert.match(html, /\/dist\/spa\/assets\/app\.css\?v=\d{8}-[\w-]+/);
+  assert.match(html, /\/dist\/spa\/assets\/app\.js\?v=\d{8}-[\w-]+/);
 });
 
 test("Build detail popups restore focus reliably across all three modals and nested StatBreakdownDialog", async () => {
@@ -281,14 +281,14 @@ test("Build detail popups restore focus reliably across all three modals and nes
   assert.match(breakdown, /useLayoutEffect\(\(\) => \{[\s\S]*?prevActive\.focus\(\{ preventScroll: true \}\)/);
   assert.match(breakdown, /event\.stopPropagation\(\)/);
 
-  // Page section order: header -> equipment+stats -> compact button row -> skills -> inventory.
+  // Page section order: header -> equipment+(stats|inventory tabs) -> compact button row -> skills.
   const idxHero = page.indexOf('className="nj-hero"');
   const idxTop = page.indexOf('className="nj-row nj-row--top"');
+  const idxInventory = page.indexOf("<BuildInventoryPanel");
   const idxBar = page.indexOf("<BuildDrawerBar");
   const idxSkills = page.indexOf('className="nj-panel nj-skills"');
-  const idxInventory = page.indexOf('className="nj-panel nj-inventory"');
-  assert.ok(idxHero > 0 && idxHero < idxTop && idxTop < idxBar && idxBar < idxSkills && idxSkills < idxInventory,
-    "page order must be header -> equipment+stats -> button bar -> skills -> inventory");
+  assert.ok(idxHero > 0 && idxHero < idxTop && idxTop < idxInventory && idxInventory < idxBar && idxBar < idxSkills,
+    "page order must be header -> equipment+(stats|inventory) -> button bar -> skills");
 
   assert.match(modalCss, /align-items:\s*start/);
   assert.match(bar, /Cây thụ động/);

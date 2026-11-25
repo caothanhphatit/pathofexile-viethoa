@@ -401,10 +401,13 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
       && supportFamilies(record.name, gemCompat).some((fam) => socketedFamilies.has(fam));
     const isIncompatible = isSupport && showAllSupports && damageSkillRecord && !validSupportNames.has(keyLower);
 
+    const isDuplicateSupport = isSupport && isAlreadySocketed;
+
     return (
       <button
         key={`${record.slug || record.name}-${id}`}
         type="button"
+        aria-disabled={isDuplicateSupport || undefined}
         className={[
           "gc-card",
           isSupport ? "gc-card--support" : "gc-card--skill",
@@ -415,6 +418,7 @@ export function GemCuttingModal(props: GemCuttingModalProps) {
           isIncompatible ? "is-invalid" : ""
         ].filter(Boolean).join(" ")}
         onClick={() => {
+          if (isDuplicateSupport) return;
           onLeaveTooltip();
           onSelectGem(record, target);
         }}

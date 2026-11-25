@@ -175,6 +175,7 @@ export interface BuildSkillPanelProps {
   supportValueKeys: (skillId: string, supportId: string) => { withKey: string; withoutKey: string } | null;
   onSelectMain: (groupNumber: number) => void;
   onOpenSkillGemPicker: (skillId: string) => void;
+  onOpenSupportGemPicker: (skillId: string, supportId: string) => void;
   onToggleGemStrip: (skillId: string, supportId: string | "main") => void;
   onUpdateSkill: (skillId: string, patch: Partial<BuildSkillChoice>) => void;
   onRemoveSkill: (skillId: string) => void;
@@ -214,6 +215,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
     supportValueKeys,
     onSelectMain,
     onOpenSkillGemPicker,
+    onOpenSupportGemPicker,
     onToggleGemStrip,
     onUpdateSkill,
     onRemoveSkill,
@@ -402,7 +404,6 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
         ? triggered.slice(0, 2).map((sup) => resolveSupportGem(sup).label).join(", ")
         : "";
     const fullHeaderTitle = ownerSuffix ? `${skillMeta.label} → ${ownerSuffix}` : skillMeta.label;
-    const showInlineStrip = Boolean(!isOpen && activeGemStrip && activeGemStrip.skillId === skill.id);
     const arrowDirection: "right" | "left" | "down" | "up" = isDesktop
       ? (isOpen ? "left" : "right")
       : (isOpen ? "up" : "down");
@@ -487,8 +488,8 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
           <div className="sk-sockets-bar">
             <button
               type="button"
-              className={`sk-socket sk-socket--active ${activeGemStrip?.skillId === skill.id && activeGemStrip.supportId === "main" ? "is-open" : ""}`}
-              onClick={() => (skill.skillId ? onToggleGemStrip(skill.id, "main") : onOpenSkillGemPicker(skill.id))}
+              className="sk-socket sk-socket--active"
+              onClick={() => onOpenSkillGemPicker(skill.id)}
               onMouseEnter={(event) => skill.skillId && onHoverMainGem(skill, event)}
               onMouseMove={onMoveTooltip}
               onMouseLeave={onLeaveTooltip}
@@ -498,7 +499,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
               title={skill.skillId ? (vi ? `${skillMeta.label} — bấm để đổi kỹ năng` : `${skillMeta.label} — click to swap`) : (vi ? "Chọn kỹ năng" : "Choose a skill")}
             >
               <span className="sk-socket-disc">
-                {skillMeta.icon ? <img src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+                {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
               </span>
             </button>
 
@@ -508,13 +509,12 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                 const hovered = hoveredSupport?.skillId === skill.id && hoveredSupport.supportId === support.id;
                 const keys = hovered ? hoveredSupport.keys : null;
                 const superseded = supersededSupports.has(support.id);
-                const isStripOpen = activeGemStrip?.skillId === skill.id && activeGemStrip.supportId === support.id;
                 const colorCls = support.skillId && (meta.color === "red" || meta.color === "green" || meta.color === "blue")
                   ? `is-color-${meta.color}`
                   : "";
                 return (
                   <span
-                    className={`sk-socket-wrap ${support.disabled ? "is-disabled" : ""} ${superseded ? "is-superseded" : ""} ${isStripOpen ? "is-open" : ""}`}
+                    className={`sk-socket-wrap ${support.disabled ? "is-disabled" : ""} ${superseded ? "is-superseded" : ""}`}
                     role="listitem"
                     key={support.id}
                     onMouseEnter={() => setHoveredSupport({
@@ -527,8 +527,8 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                     <button
                       type="button"
                       className={`sk-socket sk-socket--support ${colorCls}`}
-                      onClick={() => onToggleGemStrip(skill.id, support.id)}
-                      aria-label={`${meta.label} — ${vi ? "bấm để đổi" : "click to swap"}`}
+                      onClick={() => onOpenSupportGemPicker(skill.id, support.id)}
+                      aria-label={`${meta.label} — ${vi ? "bấm để đổi hoặc tháo" : "click to swap or remove"}`}
                       title={superseded
                         ? (vi ? `${meta.label} — Không có tác dụng: nhóm đã có gem khác cùng họ` : `${meta.label} — No effect: another support of the same family is socketed`)
                         : undefined}
@@ -540,7 +540,7 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
                           <span className="sk-socket-plus material-symbols-rounded" aria-hidden="true">add</span>
                         )}
                         {meta.icon ? (
-                          <img src={meta.icon} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} />
+                          <img key={meta.icon} src={meta.icon} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} />
                         ) : null}
                       </span>
                     </button>
@@ -589,10 +589,6 @@ export function BuildSkillPanel(props: BuildSkillPanelProps) {
             </div>
           </div>
         </article>
-
-        {showInlineStrip && activeGemStrip ? (
-          <div className="sk-row-strip">{renderGemStrip(skill.id, activeGemStrip.supportId)}</div>
-        ) : null}
 
         {!isDesktop && isOpen ? (
           <div className="sk-inline-detail">{renderDetailFor(index)}</div>

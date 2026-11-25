@@ -275,7 +275,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
         <button
           type="button"
           className="sk-detail-medallion"
-          onClick={() => (skill.skillId ? onToggleGemStrip(skill.id, "main") : onOpenSkillGemPicker(skill.id))}
+          onClick={() => onOpenSkillGemPicker(skill.id)}
           onMouseEnter={(event) => skill.skillId && onHoverMainGem(skill, event)}
           onMouseMove={onMoveTooltip}
           onMouseLeave={onLeaveTooltip}
@@ -283,7 +283,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
           title={vi ? "Bấm để đổi kỹ năng" : "Click to swap skill"}
         >
           <span className="sk-detail-orb-icon">
-            {skillMeta.icon ? <img src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
+            {skillMeta.icon ? <img key={skillMeta.icon} src={skillMeta.icon} alt="" loading="lazy" /> : <span className="material-symbols-rounded" aria-hidden="true">add</span>}
           </span>
         </button>
         <div className="sk-detail-chips">
@@ -294,7 +294,7 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
           <button
             type="button"
             className="sk-chip-btn"
-            onClick={() => (skill.skillId ? onToggleGemStrip(skill.id, "main") : onOpenSkillGemPicker(skill.id))}
+            onClick={() => onOpenSkillGemPicker(skill.id)}
           >
             {vi ? "Đổi gem" : "Swap gem"}
           </button>
@@ -305,10 +305,6 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
           </p>
         ) : null}
       </div>
-
-      {activeGemStrip && activeGemStrip.skillId === skill.id && activeGemStrip.supportId === "main" ? (
-        <div className="sk-detail-strip">{renderGemStrip(skill.id, "main")}</div>
-      ) : null}
 
       {/* Content frame: inset 3.5% P from both sides, 1px bronze border, internal scroll */}
       <div className="sk-detail-frame">
@@ -498,6 +494,35 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                   <span className="sk-opt-label">{vi ? "Cấp & Chất lượng gem" : "Gem level & quality"}</span>
                   <div className="sk-opt-ctrl">{gemLevelControls(skill, (patch) => onUpdateSkill(skill.id, patch))}</div>
                 </div>
+                {(() => {
+                  const bounds = supportSocketStepperBounds(skill);
+                  return (
+                    <div className="sk-opt-row sk-sockets-stepper-row">
+                      <span className="sk-opt-label">{vi ? "Số ô support" : "Support sockets"}</span>
+                      <div className="sk-socket-stepper" role="group" aria-label={vi ? "Số ô support" : "Support sockets"}>
+                        <button
+                          type="button"
+                          className="sk-step-btn"
+                          disabled={!bounds.canDecrease}
+                          onClick={() => onUpdateSkill(skill.id, { supportSockets: bounds.current - 1 })}
+                          aria-label={vi ? "Giảm số ô support" : "Decrease support sockets"}
+                        >
+                          −
+                        </button>
+                        <span className="sk-step-val" aria-live="polite">{bounds.current}</span>
+                        <button
+                          type="button"
+                          className="sk-step-btn"
+                          disabled={!bounds.canIncrease}
+                          onClick={() => onUpdateSkill(skill.id, { supportSockets: bounds.current + 1 })}
+                          aria-label={vi ? "Tăng số ô support" : "Increase support sockets"}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
                 {monsterLibrary ? (
                   <div className="sk-opt-block">
                     <MonsterPicker library={monsterLibrary} value={skill.pobAttrs?.skillMinion} onPick={pickMonster} locale={locale} />
@@ -517,145 +542,22 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                     />
                   </div>
                 ) : null}
+                {triggered.map((sup) => (
+                  sup.skillId ? (
+                    <div className="sk-opt-block" key={sup.id}>
+                      <GemOptionControls
+                        option={gemOptionFor(index, sup.id)}
+                        attrs={sup.pobAttrs}
+                        locale={locale}
+                        corrupt={Boolean(sup.active)}
+                        onChange={(change: GemOptionChange) => onUpdateSupport(skill.id, sup.id, { pobAttrs: withGemOption(sup.pobAttrs, change) })}
+                      />
+                    </div>
+                  ) : null
+                ))}
               </div>
             </div>
           ) : null}
-
-          {/* Section: "Gem hỗ trợ" (Supports) */}
-          <div className="sk-section">
-            <div className="sk-section-heading-row">
-              <h4 className="sk-section-heading">{vi ? "Gem hỗ trợ" : "Supports"}</h4>
-              {supports.length < MAX_SUPPORT_SOCKETS && skill.skillId ? (
-                <button
-                  type="button"
-                  className="sk-mini-btn"
-                  onClick={() => onAddSupport(skill.id)}
-                  title={vi ? "Thêm gem hỗ trợ (gợi ý theo DPS tăng thêm)" : "Add a support (ranked by DPS gain)"}
-                >
-                  <span className="material-symbols-rounded" aria-hidden="true">add</span>
-                  {freeSockets > 0
-                    ? (vi ? `Thêm (${freeSockets} ô trống)` : `Add (${freeSockets} free)`)
-                    : (vi ? "Thêm (+1 ô)" : "Add (+1 socket)")}
-                </button>
-              ) : null}
-            </div>
-
-            {skill.skillId ? (() => {
-              const bounds = supportSocketStepperBounds(skill);
-              return (
-                <div className="sk-opt-row sk-sockets-stepper-row">
-                  <span className="sk-opt-label">{vi ? "Số ô support" : "Support sockets"}</span>
-                  <div className="sk-socket-stepper" role="group" aria-label={vi ? "Số ô support" : "Support sockets"}>
-                    <button
-                      type="button"
-                      className="sk-step-btn"
-                      disabled={!bounds.canDecrease}
-                      onClick={() => onUpdateSkill(skill.id, { supportSockets: bounds.current - 1 })}
-                      aria-label={vi ? "Giảm số ô support" : "Decrease support sockets"}
-                    >
-                      −
-                    </button>
-                    <span className="sk-step-val" aria-live="polite">{bounds.current}</span>
-                    <button
-                      type="button"
-                      className="sk-step-btn"
-                      disabled={!bounds.canIncrease}
-                      onClick={() => onUpdateSkill(skill.id, { supportSockets: bounds.current + 1 })}
-                      aria-label={vi ? "Tăng số ô support" : "Increase support sockets"}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              );
-            })() : null}
-
-            {activeGemStrip && activeGemStrip.skillId === skill.id && activeGemStrip.supportId !== "main" ? (
-              <div className="sk-detail-strip">{renderGemStrip(skill.id, activeGemStrip.supportId)}</div>
-            ) : null}
-
-            {skill.supportSkills.length ? (
-              <ul className="sk-gem-list">
-                {skill.supportSkills.map((support) => {
-                  const meta = resolveSupportGem(support);
-                  const superseded = supersededSupports.has(support.id);
-                  const isStripOpen = activeGemStrip?.skillId === skill.id && activeGemStrip.supportId === support.id;
-                  const colorCls = meta.color === "red" || meta.color === "green" || meta.color === "blue" ? `is-color-${meta.color}` : "";
-                  return (
-                    <li
-                      key={support.id}
-                      className={`sk-gem-item ${support.disabled ? "is-disabled" : ""} ${superseded ? "is-superseded" : ""} ${isStripOpen ? "is-strip-open" : ""}`}
-                    >
-                      <div className="sk-gem-item-main">
-                        <button
-                          type="button"
-                          className="sk-gem-item-swap"
-                          onClick={() => onToggleGemStrip(skill.id, support.id)}
-                          aria-label={`${meta.label} — ${vi ? "bấm để đổi hoặc xem gợi ý" : "click to swap or see suggestions"}`}
-                          title={vi ? "Bấm để đổi hoặc xem gợi ý theo DPS" : "Click to swap or see DPS suggestions"}
-                        >
-                          <span className={`sk-gem-item-icon ${colorCls}`}>
-                            {support.skillId ? (
-                              <span className="sk-support-initial" aria-hidden="true">{supportInitials(meta.label)}</span>
-                            ) : (
-                              <span className="material-symbols-rounded" aria-hidden="true">add</span>
-                            )}
-                            {meta.icon ? (
-                              <img src={meta.icon} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} />
-                            ) : null}
-                          </span>
-                          <span className="sk-gem-item-name">
-                            {meta.label}
-                            {support.active ? <small> · {vi ? "kỹ năng" : "skill"}</small> : null}
-                            {superseded ? <small className="sk-gem-item-warn"> · {vi ? "trùng họ" : "same family"}</small> : null}
-                          </span>
-                        </button>
-                        <div className="sk-gem-item-controls">
-                          {support.skillId ? gemLevelControls(support, (patch) => onUpdateSupport(skill.id, support.id, patch)) : null}
-                          {support.skillId ? (
-                            <button
-                              type="button"
-                              className={`nj-icon-btn ${support.disabled ? "" : "is-on"}`}
-                              onClick={() => onUpdateSupport(skill.id, support.id, { disabled: !support.disabled })}
-                              aria-pressed={!support.disabled}
-                              aria-label={vi ? `${support.disabled ? "Bật" : "Tắt"} ${meta.label}` : `${support.disabled ? "Enable" : "Disable"} ${meta.label}`}
-                              title={vi ? "Bật / tắt gem" : "Enable / disable"}
-                            >
-                              <span className="material-symbols-rounded" aria-hidden="true">{support.disabled ? "toggle_off" : "toggle_on"}</span>
-                            </button>
-                          ) : null}
-                          <button
-                            type="button"
-                            className="nj-icon-btn nj-icon-btn--danger"
-                            onClick={() => onRemoveSupport(skill.id, support.id)}
-                            aria-label={vi ? `Gỡ ${meta.label}` : `Remove ${meta.label}`}
-                            title={vi ? "Gỡ gem này" : "Remove support"}
-                          >
-                            <span className="material-symbols-rounded" aria-hidden="true">close</span>
-                          </button>
-                        </div>
-                      </div>
-                      {support.skillId ? (
-                        <GemOptionControls
-                          option={gemOptionFor(index, support.id)}
-                          attrs={support.pobAttrs}
-                          locale={locale}
-                          corrupt={Boolean(support.active)}
-                          onChange={(change: GemOptionChange) => onUpdateSupport(skill.id, support.id, { pobAttrs: withGemOption(support.pobAttrs, change) })}
-                        />
-                      ) : null}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="sk-note sk-frame-pad">
-                {vi
-                  ? "Chưa có gem hỗ trợ. Bấm một ô trống ở danh sách hoặc nút Thêm ở trên để chọn và xem gợi ý theo DPS."
-                  : "No support gems yet. Click an empty socket or Add above to pick supports ranked by DPS."}
-              </p>
-            )}
-          </div>
         </div>
       </div>
 

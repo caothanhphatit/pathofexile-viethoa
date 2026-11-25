@@ -3840,6 +3840,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 supportValueKeys={supportValueKeys}
                 onSelectMain={setMainSocketGroup}
                 onOpenSkillGemPicker={openSkillGemPicker}
+                onOpenSupportGemPicker={openSupportGemPicker}
                 onToggleGemStrip={toggleGemStrip}
                 onUpdateSkill={updateBuildSkill}
                 onRemoveSkill={removeBuildSkill}
