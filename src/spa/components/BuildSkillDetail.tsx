@@ -291,13 +291,6 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
           {skill.gemQuality ? <span className="sk-badge">Q {skill.gemQuality}%</span> : null}
           {grantedTag}
           {optionBadges.map((tag) => <span className="sk-badge sk-badge--option" key={tag}>{tag}</span>)}
-          <button
-            type="button"
-            className="sk-chip-btn"
-            onClick={() => onOpenSkillGemPicker(skill.id)}
-          >
-            {vi ? "Đổi gem" : "Swap gem"}
-          </button>
         </div>
         {triggered.length ? (
           <p className="sk-detail-triggered">

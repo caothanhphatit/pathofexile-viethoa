@@ -86,8 +86,10 @@ export function BuildInventoryPanel(props: {
   const [message, setMessage] = useState("");
   const [dropActive, setDropActive] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
-  const shown = props.selectedSlotLabel ? props.items.filter((row) => row.fits) : props.items;
-  const hiddenItems = props.items.length - shown.length;
+  // The grid always shows every item; with a slot selected, items that do not fit it are dimmed.
+  const shown = props.items;
+  const slotSelected = Boolean(props.selectedSlotLabel);
+  const fittingItems = slotSelected ? props.items.filter((row) => row.fits).length : props.items.length;
   // "Đã thêm…" is about the last action: it goes away by itself and when the search changes.
   useEffect(() => {
     if (!message) return;
@@ -169,14 +171,8 @@ export function BuildInventoryPanel(props: {
       {props.selectedSlotLabel ? (
         <div className="pi-filter">
           <span>
-            {vi ? "Ô đang chọn:" : "Selected slot:"} <b>{props.selectedSlotLabel}</b> — {vi ? "chỉ hiện đồ vừa ô này" : "showing items that fit"}
-            {hiddenItems > 0 ? (vi ? `, đang ẩn ${hiddenItems} món khác trong kho` : `, ${hiddenItems} other item(s) hidden`) : ""}
+            {vi ? "Ô đang chọn:" : "Selected slot:"} <b>{props.selectedSlotLabel}</b> — {vi ? `${fittingItems} món vừa ô này được làm nổi` : `${fittingItems} fitting item(s) highlighted`}
           </span>
-          {hiddenItems > 0 ? (
-            <button type="button" className="pi-btn" onClick={props.onClearSlot}>
-              {vi ? "Hiện tất cả" : "Show all"}
-            </button>
-          ) : null}
           {props.selectedSlotFilled ? (
             <button type="button" className="pi-btn" onClick={props.onEditSelected}>
               <span className="material-symbols-rounded" aria-hidden="true">edit</span>
@@ -221,7 +217,7 @@ export function BuildInventoryPanel(props: {
           <div className="pi-cell-wrap" role="listitem" key={row.item.id}>
             <button
               type="button"
-              className={`pi-cell is-${row.rarity}`}
+              className={`pi-cell is-${row.rarity}${slotSelected ? (row.fits ? " is-fit" : " is-unfit") : ""}`}
               draggable
               onDragStart={(event) => {
                 event.dataTransfer.setData(STASH_DRAG_TYPE, row.item.id);

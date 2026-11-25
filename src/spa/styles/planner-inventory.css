@@ -1134,3 +1134,8 @@ button.nj-main-skill.is-main { box-shadow: inset 3px 0 0 var(--poe-unique, #af60
 .build-slot-menu > button:hover:not(:disabled) { background: rgba(255, 255, 255, .06); }
 .build-slot-menu > button:disabled { opacity: .5; cursor: default; }
 .build-slot-menu > button .material-symbols-rounded { font-size: 18px; color: var(--nj-muted); }
+
+/* A slot is selected: every item stays visible; the ones that fit it stand out. */
+.pi-cell.is-unfit { opacity: 0.38; filter: saturate(0.5); }
+.pi-cell.is-unfit:hover, .pi-cell.is-unfit:focus-visible { opacity: 0.8; }
+.pi-cell.is-fit { box-shadow: inset 0 0 0 1px var(--poe-gold, #c8a45a); }
