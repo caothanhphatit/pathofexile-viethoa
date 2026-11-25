@@ -462,6 +462,43 @@ local function calculateBuild(xmlText)
                 cleanOutput[k] = v
             end
         end
+        -- PoB only populates per-element Min/Max on calcsOutput (env.mode == "CALCS") and
+        -- places attack weapon stats on MainHand / OffHand. Ensure calcsOutput targets the
+        -- same mainSocketGroup as mainOutput (otherwise calcsTab.input.skill_number may lag
+        -- behind in the persistent worker), then promote the ranges onto cleanOutput.
+        local calcsOut = build.calcsTab and build.calcsTab.calcsOutput
+        if build.calcsTab and build.calcsTab.input and build.mainSocketGroup
+            and build.calcsTab.input.skill_number ~= build.mainSocketGroup then
+            build.calcsTab.input.skill_number = build.mainSocketGroup
+            local okCalcs, envCalcs = pcall(build.calcsTab.calcs.buildOutput, build, "CALCS")
+            if okCalcs and envCalcs and envCalcs.player then
+                calcsOut = envCalcs.player.output
+            end
+        end
+        local sources = {}
+        if type(calcsOut) == "table" then
+            if type(calcsOut.MainHand) == "table" then sources[#sources + 1] = calcsOut.MainHand end
+            if type(calcsOut.OffHand) == "table" then sources[#sources + 1] = calcsOut.OffHand end
+            sources[#sources + 1] = calcsOut
+        end
+        if type(output.MainHand) == "table" then sources[#sources + 1] = output.MainHand end
+        if type(output.OffHand) == "table" then sources[#sources + 1] = output.OffHand end
+        local handKeys = {
+            "PhysicalMin", "PhysicalMax", "FireMin", "FireMax", "ColdMin", "ColdMax",
+            "LightningMin", "LightningMax", "ChaosMin", "ChaosMax",
+            "TotalMin", "TotalMax",
+            "PhysicalHitAverage", "FireHitAverage", "ColdHitAverage", "LightningHitAverage", "ChaosHitAverage",
+            "IgniteDPS", "BleedDPS", "PoisonDPS",
+            "IgniteChance", "BleedChance", "PoisonChance", "ShockChance", "FreezeChance",
+            "LifeOnHit", "ManaOnHit", "EnergyShieldOnHit", "LifeLeechPerHit", "ManaLeechPerHit"
+        }
+        for _, src in ipairs(sources) do
+            for _, hk in ipairs(handKeys) do
+                if (cleanOutput[hk] == nil or cleanOutput[hk] == 0) and type(src[hk]) == "number" and src[hk] ~= 0 then
+                    cleanOutput[hk] = src[hk]
+                end
+            end
+        end
         -- MainSkillDPS: the main skill's damage as its card shows it (the GroupDPS rule above).
         -- PoB shows some skills per hit (CombinedDPS is then the average hit); when it has a rate
         -- for them this is damage per second. The node preview prices the same number.

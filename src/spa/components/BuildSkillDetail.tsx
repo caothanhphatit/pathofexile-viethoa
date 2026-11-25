@@ -189,102 +189,233 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
     ? details.Minion as Record<string, unknown>
     : null;
   const damageTypes = details ? ([
-    ["nj-dps-phys", vi ? "Sát thương vật lý" : "Physical damage", vi ? "Vật lý" : "Physical", Number(details.PhysicalMin) || 0, Number(details.PhysicalMax) || 0],
-    ["nj-dps-fire", vi ? "Sát thương lửa" : "Fire damage", vi ? "Lửa" : "Fire", Number(details.FireMin) || 0, Number(details.FireMax) || 0],
-    ["nj-dps-cold", vi ? "Sát thương băng" : "Cold damage", vi ? "Băng" : "Cold", Number(details.ColdMin) || 0, Number(details.ColdMax) || 0],
-    ["nj-dps-lightning", vi ? "Sát thương sét" : "Lightning damage", vi ? "Sét" : "Lightning", Number(details.LightningMin) || 0, Number(details.LightningMax) || 0],
-    ["nj-dps-chaos", vi ? "Sát thương hỗn mang" : "Chaos damage", vi ? "Hỗn mang" : "Chaos", Number(details.ChaosMin) || 0, Number(details.ChaosMax) || 0]
-  ] as Array<[string, string, string, number, number]>)
-    .map(([barCls, rowLabel, shortLabel, min, max]) => ({ barCls, rowLabel, shortLabel, min, max, avg: (min + max) / 2 }))
+    ["nj-dps-phys", vi ? "Sát thương vật lý" : "Physical damage", vi ? "Vật lý" : "Physical", Number(details.PhysicalMin) || 0, Number(details.PhysicalMax) || 0, Number(details.PhysicalStoredCombinedAvg) || 0],
+    ["nj-dps-fire", vi ? "Sát thương lửa" : "Fire damage", vi ? "Lửa" : "Fire", Number(details.FireMin) || 0, Number(details.FireMax) || 0, Number(details.FireStoredCombinedAvg) || 0],
+    ["nj-dps-cold", vi ? "Sát thương băng" : "Cold damage", vi ? "Băng" : "Cold", Number(details.ColdMin) || 0, Number(details.ColdMax) || 0, Number(details.ColdStoredCombinedAvg) || 0],
+    ["nj-dps-lightning", vi ? "Sát thương sét" : "Lightning damage", vi ? "Sét" : "Lightning", Number(details.LightningMin) || 0, Number(details.LightningMax) || 0, Number(details.LightningStoredCombinedAvg) || 0],
+    ["nj-dps-chaos", vi ? "Sát thương hỗn mang" : "Chaos damage", vi ? "Hỗn mang" : "Chaos", Number(details.ChaosMin) || 0, Number(details.ChaosMax) || 0, Number(details.ChaosStoredCombinedAvg) || 0]
+  ] as Array<[string, string, string, number, number, number]>)
+    .map(([barCls, rowLabel, shortLabel, min, max, fallbackAvg]) => {
+      const hasRange = min > 0 || max > 0;
+      const avg = hasRange ? (min + max) / 2 : fallbackAvg;
+      return { barCls, rowLabel, shortLabel, min, max, hasRange, avg };
+    })
     .filter((part) => part.avg > 0) : [];
   const damageTotal = damageTypes.reduce((sum, part) => sum + part.avg, 0);
 
-  const primaryStats: Array<{ label: string; value: string }> = [];
-  const damageSectionRows: Array<{ label: string; value: string }> = [];
-  const usageSectionRows: Array<{ label: string; value: string }> = [];
+  type StatRow = { label: string; value: string; cls?: string };
+  const damageRows: StatRow[] = [];
+  const usageRows: StatRow[] = [];
+  const areaDurationRows: StatRow[] = [];
+  const critRows: StatRow[] = [];
+  const ailmentRows: StatRow[] = [];
+  const onHitRows: StatRow[] = [];
+  const onKillRows: StatRow[] = [];
 
   if (details) {
-    const combinedDps = Number(details.CombinedDPS) || 0;
-    const totalDps = Number(details.TotalDPS) || 0;
-    const avgDamage = Number(details.AverageDamage) || 0;
-    const speed = Number(details.Speed) || 0;
-    const critChance = Number(details.CritChance) || 0;
-    const critMult = Number(details.CritMultiplier) || 0;
+    const num = (key: string) => {
+      const v = Number(details[key]);
+      return Number.isFinite(v) ? v : 0;
+    };
+    const combinedDps = num("CombinedDPS");
+    const totalDps = num("TotalDPS");
+    const avgDamage = num("AverageDamage");
+    const speed = num("Speed");
+    const castTime = num("Time") || (speed > 0 ? 1 / speed : 0);
+    const critChance = num("CritChance");
+    const critMult = num("CritMultiplier");
     const hitChance = details.HitChance !== undefined ? Number(details.HitChance) : undefined;
-    const igniteDps = Number(details.IgniteDPS) || 0;
-    const poisonDps = Number(details.PoisonDPS) || 0;
-    const bleedDps = Number(details.BleedDPS) || 0;
-    const totalDotDps = Number(details.TotalDotDPS) || 0;
-    const projectiles = Number(details.ProjectileCount) || 0;
-    const aoeRadius = Number(details.AreaOfEffectRadiusMetres) || 0;
-    const aoeMod = Number(details.AreaOfEffectMod) || 0;
-    const manaCost = Number(details.ManaCost) || 0;
-    const manaPerSec = Number(details.ManaPerSecondCost) || 0;
-    const lifeCost = Number(details.LifeCost) || 0;
-    const cooldown = Number(details.Cooldown) || 0;
-    const duration = Number(details.Duration) || 0;
-    const durationMod = Number(details.DurationMod) || 0;
+    const igniteDps = num("IgniteDPS");
+    const igniteChance = num("IgniteChance");
+    const igniteDuration = num("IgniteDuration");
+    const poisonDps = num("PoisonDPS");
+    const poisonChance = num("PoisonChance");
+    const poisonDuration = num("PoisonDuration");
+    const poisonStacksMax = num("PoisonStacksMax");
+    const bleedDps = num("BleedDPS");
+    const bleedChance = num("BleedChance");
+    const bleedDuration = num("BleedDuration");
+    const totalDotDps = num("TotalDotDPS");
+    const shockChance = num("ShockChance");
+    const shockDuration = num("ShockDuration");
+    const currentChill = num("CurrentChill");
+    const freezeBuildup = num("FreezeBuildupAvg");
+    const heavyStunBuildup = num("HeavyStunBuildupAvg");
+    const projectiles = num("ProjectileCount");
+    const projSpeedMod = num("ProjectileSpeedMod");
+    const pierceCount = num("PierceCount");
+    const sealMax = num("SealMax");
+    const aoeRadius = num("AreaOfEffectRadiusMetres");
+    const aoeMod = num("AreaOfEffectMod");
+    const manaCost = num("ManaCost");
+    const manaPerSec = num("ManaPerSecondCost");
+    const lifeCost = num("LifeCost");
+    const cooldown = num("Cooldown");
+    const duration = num("Duration");
+    const durationMod = num("DurationMod");
+    const moveWhileUsing = num("MovementSpeedWhileUsingSkillPercent");
+    const lifeLeechPerHit = num("LifeLeechPerHit");
+    const lifeLeechRate = num("LifeLeechGainRate");
+    const manaLeechPerHit = num("ManaLeechPerHit");
+    const manaLeechRate = num("ManaLeechGainRate");
+    const lifeOnHit = num("LifeOnHit");
+    const manaOnHit = num("ManaOnHit");
+    const armourBreak = num("ArmourBreakPerHit");
+    const cullPct = num("CullPercent");
+    const rarityMod = num("EffectiveLootRarityMod");
+    const lifeOnKill = num("LifeOnKill");
+    const manaOnKill = num("ManaOnKill");
+    const esOnKill = num("EnergyShieldOnKill");
     const hasHitOrDps = combinedDps >= 0.5 || totalDps >= 0.5 || avgDamage >= 0.5 || damageTypes.length > 0;
 
-    if (combinedDps >= 0.5) primaryStats.push({ label: vi ? "Sát thương mỗi giây" : "Damage per second", value: fmtExactDps(combinedDps) });
-    if (avgDamage >= 0.5) primaryStats.push({ label: vi ? "Sát thương trung bình mỗi lần dùng" : "Average damage per use", value: fmtExactDps(avgDamage) });
-    if (damageTypes.length > 1) {
-      const totalMin = damageTypes.reduce((sum, p) => sum + p.min, 0);
-      const totalMax = damageTypes.reduce((sum, p) => sum + p.max, 0);
-      primaryStats.push({ label: vi ? "Tổng sát thương mỗi đòn" : "Total damage", value: fmtRange(totalMin, totalMax) });
+    // 1. Damage
+    if (combinedDps >= 0.5) damageRows.push({ label: vi ? "Sát thương mỗi giây" : "Damage per second", value: fmtExactDps(combinedDps) });
+    if (totalDps >= 0.5 && Math.abs(totalDps - combinedDps) > 1) {
+      damageRows.push({ label: vi ? "DPS đòn đánh trực tiếp" : "Hit DPS", value: fmtExactDps(totalDps) });
+    }
+    if (avgDamage >= 0.5) damageRows.push({ label: vi ? "Sát thương trung bình mỗi đòn" : "Average damage per hit", value: fmtExactDps(avgDamage) });
+    const rangedParts = damageTypes.filter((p) => p.hasRange);
+    if (rangedParts.length > 1) {
+      const totalMin = rangedParts.reduce((sum, p) => sum + p.min, 0);
+      const totalMax = rangedParts.reduce((sum, p) => sum + p.max, 0);
+      damageRows.push({ label: vi ? "Tổng sát thương mỗi đòn" : "Total damage", value: fmtRange(totalMin, totalMax) });
     }
     for (const part of damageTypes) {
-      primaryStats.push({ label: part.rowLabel, value: fmtRange(part.min, part.max) });
+      damageRows.push({
+        label: part.rowLabel,
+        value: part.hasRange ? fmtRange(part.min, part.max) : fmtExactDps(part.avg),
+        cls: part.barCls.replace("nj-dps-", "nj-c-")
+      });
     }
-    if (hasHitOrDps && speed > 0) {
-      primaryStats.push({ label: vi ? "Thời gian mỗi lần dùng" : "Attack / Cast time", value: formatStat(1 / speed, "seconds") });
-      primaryStats.push({ label: vi ? "Số lần dùng mỗi giây" : "Uses per second", value: formatStat(speed, "speed") });
-    }
-    if (igniteDps > 0) primaryStats.push({ label: vi ? "DPS đốt (Ignite)" : "Estimated Ignite DPS", value: fmtExactDps(igniteDps) });
-    if (poisonDps > 0) primaryStats.push({ label: vi ? "DPS độc (Poison)" : "Estimated Poison DPS", value: fmtExactDps(poisonDps) });
-    if (bleedDps > 0) primaryStats.push({ label: vi ? "DPS chảy máu (Bleed)" : "Estimated Bleed DPS", value: fmtExactDps(bleedDps) });
-    if (totalDotDps > 0 && !igniteDps && !poisonDps && !bleedDps) {
-      primaryStats.push({ label: vi ? "DPS theo thời gian" : "Damage over time DPS", value: fmtExactDps(totalDotDps) });
-    }
-
     if (combinedDps < 0.5 && minionStats) {
       const mDps = Number(minionStats.CombinedDPS) || 0;
       const mAvg = Number(minionStats.AverageDamage) || 0;
       const mSpeed = Number(minionStats.Speed) || 0;
       const mLife = Number(minionStats.Life) || 0;
-      if (mDps > 0) primaryStats.push({ label: vi ? "DPS của minion" : "Minion DPS", value: fmtExactDps(mDps) });
-      if (mAvg > 0) primaryStats.push({ label: vi ? "Mỗi đòn minion" : "Minion average hit", value: fmtExactDps(mAvg) });
-      if (mSpeed > 0) primaryStats.push({ label: vi ? "Tốc độ minion" : "Minion speed", value: formatStat(mSpeed, "speed") });
-      if (mLife > 0) primaryStats.push({ label: vi ? "Máu minion" : "Minion life", value: formatStat(mLife, "int") });
+      if (mDps > 0) damageRows.push({ label: vi ? "DPS của minion" : "Minion DPS", value: fmtExactDps(mDps) });
+      if (mAvg > 0) damageRows.push({ label: vi ? "Mỗi đòn minion" : "Minion average hit", value: fmtExactDps(mAvg) });
+      if (mSpeed > 0) usageRows.push({ label: vi ? "Tốc độ minion" : "Minion speed", value: formatStat(mSpeed, "speed") });
+      if (mLife > 0) usageRows.push({ label: vi ? "Máu minion" : "Minion life", value: formatStat(mLife, "int") });
     }
 
-    if (hasHitOrDps) {
-      if (totalDps >= 0.5 && Math.abs(totalDps - combinedDps) > 1) {
-        damageSectionRows.push({ label: vi ? "DPS đòn đánh trực tiếp" : "Hit DPS", value: fmtExactDps(totalDps) });
-      }
-      if (critChance > 0) damageSectionRows.push({ label: vi ? "Tỉ lệ chí mạng" : "Critical hit chance", value: formatStat(critChance, "pct1") });
-      if (critMult > 0) damageSectionRows.push({ label: vi ? "Hệ số chí mạng" : "Critical multiplier", value: formatStat(critMult, "mult") });
-      if (hitChance !== undefined && Number.isFinite(hitChance)) {
-        damageSectionRows.push({ label: vi ? "Tỉ lệ đánh trúng" : "Estimated chance to hit", value: formatStat(hitChance, "pct") });
-      }
+    // 2. Usage
+    if (hasHitOrDps && castTime > 0) {
+      usageRows.push({ label: vi ? "Thời gian mỗi lần dùng" : "Attack / Cast time", value: formatStat(castTime, "seconds") });
     }
-
-    if (manaCost > 0) usageSectionRows.push({ label: vi ? "Mana mỗi lần dùng" : "Mana cost", value: formatStat(manaCost, "int") });
+    if (hasHitOrDps && speed > 0) {
+      usageRows.push({ label: vi ? "Số lần dùng mỗi giây" : "Uses per second", value: formatStat(speed, "speed") });
+    }
+    if (manaCost > 0) usageRows.push({ label: vi ? "Mana mỗi lần dùng" : "Mana cost", value: formatStat(manaCost, "int") });
     if (manaPerSec > 0 && Math.abs(manaPerSec - manaCost) > 0.5) {
-      usageSectionRows.push({ label: vi ? "Mana mỗi giây" : "Mana per second", value: formatStat(manaPerSec, "rate") });
+      usageRows.push({ label: vi ? "Mana mỗi giây" : "Mana per second", value: formatStat(manaPerSec, "rate") });
     }
-    if (lifeCost > 0) usageSectionRows.push({ label: vi ? "Máu mỗi lần dùng" : "Life cost", value: formatStat(lifeCost, "int") });
-    if (cooldown > 0) usageSectionRows.push({ label: vi ? "Thời gian hồi chiêu" : "Cooldown", value: formatStat(cooldown, "seconds") });
-    if (duration > 0) usageSectionRows.push({ label: vi ? "Thời lượng" : "Duration", value: formatStat(duration, "seconds") });
-    if (projectiles > 0) usageSectionRows.push({ label: vi ? "Số đạn" : "Projectiles", value: formatStat(projectiles, "int") });
-    if (aoeRadius > 0) usageSectionRows.push({ label: vi ? "Bán kính vùng ảnh hưởng" : "Area radius", value: formatStat(aoeRadius, "metres") });
-    else if (aoeMod > 0 && Math.abs(aoeMod - 1) > 0.005) {
-      usageSectionRows.push({ label: vi ? "Vùng ảnh hưởng" : "Area of effect", value: formatStat(aoeMod, "modpct") });
+    if (lifeCost > 0) usageRows.push({ label: vi ? "Máu mỗi lần dùng" : "Life cost", value: formatStat(lifeCost, "int") });
+    if (cooldown > 0) usageRows.push({ label: vi ? "Thời gian hồi chiêu" : "Cooldown", value: formatStat(cooldown, "seconds") });
+    if (projectiles > 0) usageRows.push({ label: vi ? "Số đạn" : "Projectiles", value: formatStat(projectiles, "int") });
+    if (projSpeedMod > 0 && Math.abs(projSpeedMod - 1) > 0.005) {
+      usageRows.push({ label: vi ? "Tốc độ đạn" : "Projectile speed", value: formatStat(projSpeedMod, "modpct") });
     }
-    if (duration <= 0 && durationMod > 0 && Math.abs(durationMod - 1) > 0.005 && !hasHitOrDps) {
-      usageSectionRows.push({ label: vi ? "Hệ số thời lượng" : "Skill effect duration", value: formatStat(durationMod, "modpct") });
+    if (pierceCount > 0) usageRows.push({ label: vi ? "Số mục tiêu xuyên (Pierce)" : "Pierce targets", value: pierceCount >= 99 ? (vi ? "Vô hạn" : "All") : formatStat(pierceCount, "int") });
+    if (sealMax > 0) usageRows.push({ label: vi ? "Số Seal tối đa" : "Max seals", value: formatStat(sealMax, "int") });
+    if (hasHitOrDps && moveWhileUsing > 0 && moveWhileUsing < 100) {
+      usageRows.push({ label: vi ? "Tốc chạy khi dùng kỹ năng" : "Movement speed while using", value: formatStat(moveWhileUsing, "pct") });
+    }
+
+    // 3. Area and Duration
+    if (aoeRadius > 0) areaDurationRows.push({ label: vi ? "Bán kính vùng ảnh hưởng" : "Area radius", value: formatStat(aoeRadius, "metres") });
+    if (aoeMod > 0 && Math.abs(aoeMod - 1) > 0.005) {
+      areaDurationRows.push({ label: vi ? "Hệ số vùng ảnh hưởng" : "Area of effect modifier", value: formatStat(aoeMod, "modpct") });
+    }
+    if (duration > 0) areaDurationRows.push({ label: vi ? "Thời lượng kỹ năng" : "Skill duration", value: formatStat(duration, "seconds") });
+    if (durationMod > 0 && Math.abs(durationMod - 1) > 0.005) {
+      areaDurationRows.push({ label: vi ? "Hệ số thời lượng" : "Duration modifier", value: formatStat(durationMod, "modpct") });
+    }
+
+    // 4. Critical Hits
+    if (hasHitOrDps) {
+      if (critChance > 0) critRows.push({ label: vi ? "Tỉ lệ chí mạng" : "Critical hit chance", value: formatStat(critChance, "pct1") });
+      if (critMult > 1) {
+        critRows.push({
+          label: vi ? "Sát thương chí mạng cộng thêm" : "Critical damage bonus",
+          value: `+${Math.round((critMult - 1) * 100).toLocaleString("en-US")}%`
+        });
+      }
+      if (hitChance !== undefined && Number.isFinite(hitChance)) {
+        critRows.push({ label: vi ? "Tỉ lệ đánh trúng" : "Estimated chance to hit", value: formatStat(hitChance, "pct") });
+      }
+    }
+
+    // 5. Ailments
+    if (hasHitOrDps) {
+      if (igniteDps >= 0.5) ailmentRows.push({ label: vi ? "DPS đốt ước tính (Ignite)" : "Estimated Ignite DPS", value: fmtExactDps(igniteDps) });
+      if (igniteChance >= 0.1 && (igniteDps >= 0.5 || igniteChance >= 1)) {
+        ailmentRows.push({ label: vi ? "Tỉ lệ đốt (Ignite)" : "Ignite chance", value: formatStat(igniteChance, "pct1") });
+      }
+      if (igniteDps >= 0.5 && igniteDuration > 0) {
+        ailmentRows.push({ label: vi ? "Thời lượng đốt (Ignite)" : "Ignite duration", value: formatStat(igniteDuration, "seconds") });
+      }
+      if (bleedDps >= 0.5) ailmentRows.push({ label: vi ? "DPS chảy máu ước tính (Bleed)" : "Estimated Bleed DPS", value: fmtExactDps(bleedDps) });
+      if (bleedChance >= 0.1 && (bleedDps >= 0.5 || bleedChance >= 1)) {
+        ailmentRows.push({ label: vi ? "Tỉ lệ chảy máu (Bleed)" : "Bleed chance", value: formatStat(bleedChance, "pct1") });
+      }
+      if (bleedDps >= 0.5 && bleedDuration > 0) {
+        ailmentRows.push({ label: vi ? "Thời lượng chảy máu" : "Bleed duration", value: formatStat(bleedDuration, "seconds") });
+      }
+      if (poisonDps >= 0.5) ailmentRows.push({ label: vi ? "DPS độc ước tính (Poison)" : "Estimated Poison DPS", value: fmtExactDps(poisonDps) });
+      if (poisonChance >= 0.1 && (poisonDps >= 0.5 || poisonChance >= 1)) {
+        ailmentRows.push({ label: vi ? "Tỉ lệ độc (Poison)" : "Poison chance", value: formatStat(poisonChance, "pct1") });
+      }
+      if (poisonDps >= 0.5 && poisonDuration > 0) {
+        ailmentRows.push({ label: vi ? "Thời lượng độc" : "Poison duration", value: formatStat(poisonDuration, "seconds") });
+      }
+      if (poisonDps >= 0.5 && poisonStacksMax > 1) {
+        ailmentRows.push({ label: vi ? "Số lớp độc tối đa" : "Max Poison stacks", value: formatStat(poisonStacksMax, "int") });
+      }
+      if (totalDotDps >= 0.5 && !igniteDps && !poisonDps && !bleedDps) {
+        ailmentRows.push({ label: vi ? "DPS theo thời gian" : "Damage over time DPS", value: fmtExactDps(totalDotDps) });
+      }
+      if (shockChance >= 0.1) {
+        ailmentRows.push({ label: vi ? "Tỉ lệ sốc (Shock)" : "Shock chance", value: formatStat(shockChance, "pct1") });
+        if (shockDuration > 0) ailmentRows.push({ label: vi ? "Thời lượng sốc (Shock)" : "Shock duration", value: formatStat(shockDuration, "seconds") });
+      }
+      if (currentChill > 0 && damageTypes.some((d) => d.barCls === "nj-dps-cold")) {
+        ailmentRows.push({ label: vi ? "Làm lạnh (Chill)" : "Chill magnitude", value: formatStat(currentChill, "pct") });
+      }
+      if (freezeBuildup >= 0.01) {
+        ailmentRows.push({ label: vi ? "Tích tụ đóng băng (Freeze)" : "Freeze buildup / hit", value: `${Math.round(freezeBuildup * 100)}%` });
+      }
+    }
+
+    // 6. On Hit Effects
+    if (hasHitOrDps) {
+      if (heavyStunBuildup >= 0.01) {
+        onHitRows.push({ label: vi ? "Tích tụ choáng nặng / đòn" : "Heavy Stun buildup / hit", value: `${Math.round(heavyStunBuildup * 100)}%` });
+      }
+      if (armourBreak > 0) onHitRows.push({ label: vi ? "Phá giáp mỗi đòn" : "Armour break per hit", value: formatStat(armourBreak, "int") });
+      if (lifeLeechPerHit >= 0.5) onHitRows.push({ label: vi ? "Hút máu mỗi đòn" : "Life leech per hit", value: formatStat(lifeLeechPerHit, "int") });
+      else if (lifeLeechRate >= 0.5) onHitRows.push({ label: vi ? "Tốc độ hút máu" : "Life leech rate", value: formatStat(lifeLeechRate, "rate") });
+      if (manaLeechPerHit >= 0.5) onHitRows.push({ label: vi ? "Hút mana mỗi đòn" : "Mana leech per hit", value: formatStat(manaLeechPerHit, "int") });
+      else if (manaLeechRate >= 0.5) onHitRows.push({ label: vi ? "Tốc độ hút mana" : "Mana leech rate", value: formatStat(manaLeechRate, "rate") });
+      if (lifeOnHit > 0) onHitRows.push({ label: vi ? "Hồi máu khi đánh trúng" : "Life gained on hit", value: formatStat(lifeOnHit, "int") });
+      if (manaOnHit > 0) onHitRows.push({ label: vi ? "Hồi mana khi đánh trúng" : "Mana gained on hit", value: formatStat(manaOnHit, "int") });
+      if (cullPct > 0) onHitRows.push({ label: vi ? "Kết liễu (Culling Strike)" : "Culling strike threshold", value: formatStat(cullPct, "pct") });
+    }
+
+    // 7. On Kill Effects
+    if (hasHitOrDps) {
+      if (rarityMod > 0 && Math.abs(rarityMod - 1) > 0.005) {
+        onKillRows.push({
+          label: vi ? "Tỉ lệ hiếm vật phẩm rơi ra (Rarity)" : "Slain monster item drop Rarity",
+          value: formatStat(rarityMod, "modpct")
+        });
+      }
+      if (lifeOnKill > 0) onKillRows.push({ label: vi ? "Hồi máu khi hạ gục" : "Life gained on kill", value: formatStat(lifeOnKill, "int") });
+      if (manaOnKill > 0) onKillRows.push({ label: vi ? "Hồi mana khi hạ gục" : "Mana gained on kill", value: formatStat(manaOnKill, "int") });
+      if (esOnKill > 0) onKillRows.push({ label: vi ? "Hồi ES khi hạ gục" : "Energy Shield on kill", value: formatStat(esOnKill, "int") });
     }
   }
+
+  const hasAnyStatSection = damageRows.length > 0 || usageRows.length > 0 || areaDurationRows.length > 0 || critRows.length > 0 || ailmentRows.length > 0 || onHitRows.length > 0 || onKillRows.length > 0;
 
   const showZeroChoiceHint = !skill.disabled && Boolean(skill.skillId) && dps === 0 && Boolean(mainOption?.statSets || mainOption?.parts);
   const showGemOptions = hasGemChoices(mainOption) || !(skill.itemSlot || skill.itemSource || mainOption?.grantedSkill);
@@ -418,21 +549,8 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             <hr className="sk-frame-divider" />
           ) : null}
 
-          {/* Primary two-column periwinkle (#8888ff) stat list */}
-          {details ? (
-            primaryStats.length ? (
-              <dl className="sk-stat-list sk-stat-list--primary">
-                {primaryStats.map((row) => (
-                  <div className="sk-stat-row" key={row.label}>
-                    <dt>{row.label}</dt>
-                    <dd>{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : !usageSectionRows.length ? (
-              <p className="sk-note sk-frame-pad">{vi ? "Kỹ năng hỗ trợ / duy trì này không có chỉ số sát thương trực tiếp (hiệu ứng đã cộng vào chỉ số nhân vật)." : "This buff/utility skill has no direct damage stats (its effects are applied to character stats)."}</p>
-            ) : null
-          ) : loadingPerSkill ? (
+          {/* PoE2 in-game breakdown sections: Damage, Usage, Area & Duration, Critical Hits, Ailments, On Hit, On Kill */}
+          {!details && loadingPerSkill ? (
             <>
               {badge.kind ? (
                 <dl className="sk-stat-list sk-stat-list--primary">
@@ -450,16 +568,30 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                 {vi ? "Đang tính chi tiết kỹ năng từ Path of Building…" : "Calculating skill breakdown in Path of Building…"}
               </p>
             </>
-          ) : skill.disabled ? (
+          ) : !details && skill.disabled ? (
             <p className="sk-note sk-frame-pad">
               {vi ? "Nhóm kỹ năng đang tắt — bật lại bên dưới để PoB tính chỉ số." : "This skill group is disabled — enable it below to calculate stats."}
             </p>
+          ) : details && !hasAnyStatSection ? (
+            <p className="sk-note sk-frame-pad">
+              {vi ? "Kỹ năng hỗ trợ / duy trì này không có chỉ số sát thương trực tiếp (hiệu ứng đã cộng vào chỉ số nhân vật)." : "This buff/utility skill has no direct damage stats (its effects are applied to character stats)."}
+            </p>
           ) : null}
 
-          {/* Section: "Sát thương" (Damage) */}
-          {(damageTotal > 0 || damageSectionRows.length > 0 || cardDamageNeedsNames(damageLines)) ? (
+          {/* Section 1: "Sát thương" (Damage) */}
+          {(damageRows.length > 0 || damageTotal > 0 || cardDamageNeedsNames(damageLines)) ? (
             <div className="sk-section">
               <h4 className="sk-section-heading">{vi ? "Sát thương" : "Damage"}</h4>
+              {damageRows.length ? (
+                <dl className="sk-stat-list sk-stat-list--primary">
+                  {damageRows.map((row) => (
+                    <div className="sk-stat-row" key={row.label}>
+                      <dt>{row.label}</dt>
+                      <dd className={row.cls}>{row.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
               {damageTotal > 0 ? (
                 <div className="sk-damage sk-frame-pad">
                   <i className="sk-damage-bar">
@@ -476,16 +608,6 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
                   </span>
                 </div>
               ) : null}
-              {damageSectionRows.length ? (
-                <dl className="sk-stat-list sk-stat-list--sub">
-                  {damageSectionRows.map((row) => (
-                    <div className="sk-stat-row" key={row.label}>
-                      <dt>{row.label}</dt>
-                      <dd>{row.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              ) : null}
               {cardDamageNeedsNames(damageLines) ? (
                 <ul className="sk-lines poe-no-tooltip" aria-label={vi ? "Sát thương của từng kỹ năng trong nhóm" : "Damage of each skill in the group"}>
                   {damageLines.map((line, lineIndex) => (
@@ -500,12 +622,87 @@ export function BuildSkillDetail(props: BuildSkillDetailProps) {
             </div>
           ) : null}
 
-          {/* Section: "Sử dụng" (Usage) */}
-          {usageSectionRows.length ? (
+          {/* Section 2: "Sử dụng" (Usage) */}
+          {usageRows.length ? (
             <div className="sk-section">
               <h4 className="sk-section-heading">{vi ? "Sử dụng" : "Usage"}</h4>
               <dl className="sk-stat-list sk-stat-list--sub">
-                {usageSectionRows.map((row) => (
+                {usageRows.map((row) => (
+                  <div className="sk-stat-row" key={row.label}>
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
+
+          {/* Section 3: "Vùng ảnh hưởng & Thời lượng" (Area and Duration) */}
+          {areaDurationRows.length ? (
+            <div className="sk-section">
+              <h4 className="sk-section-heading">{vi ? "Vùng ảnh hưởng & Thời lượng" : "Area and Duration"}</h4>
+              <dl className="sk-stat-list sk-stat-list--sub">
+                {areaDurationRows.map((row) => (
+                  <div className="sk-stat-row" key={row.label}>
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
+
+          {/* Section 4: "Chí mạng" (Critical Hits) */}
+          {critRows.length ? (
+            <div className="sk-section">
+              <h4 className="sk-section-heading">{vi ? "Chí mạng" : "Critical Hits"}</h4>
+              <dl className="sk-stat-list sk-stat-list--sub">
+                {critRows.map((row) => (
+                  <div className="sk-stat-row" key={row.label}>
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
+
+          {/* Section 5: "Hiệu ứng bất lợi" (Ailments) */}
+          {ailmentRows.length ? (
+            <div className="sk-section">
+              <h4 className="sk-section-heading">{vi ? "Hiệu ứng bất lợi" : "Ailments"}</h4>
+              <dl className="sk-stat-list sk-stat-list--sub">
+                {ailmentRows.map((row) => (
+                  <div className="sk-stat-row" key={row.label}>
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
+
+          {/* Section 6: "Hiệu ứng khi đánh trúng" (On Hit Effects) */}
+          {onHitRows.length ? (
+            <div className="sk-section">
+              <h4 className="sk-section-heading">{vi ? "Hiệu ứng khi đánh trúng" : "On Hit Effects"}</h4>
+              <dl className="sk-stat-list sk-stat-list--sub">
+                {onHitRows.map((row) => (
+                  <div className="sk-stat-row" key={row.label}>
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
+
+          {/* Section 7: "Hiệu ứng khi hạ gục" (On Kill Effects) */}
+          {onKillRows.length ? (
+            <div className="sk-section">
+              <h4 className="sk-section-heading">{vi ? "Hiệu ứng khi hạ gục" : "On Kill Effects"}</h4>
+              <dl className="sk-stat-list sk-stat-list--sub">
+                {onKillRows.map((row) => (
                   <div className="sk-stat-row" key={row.label}>
                     <dt>{row.label}</dt>
                     <dd>{row.value}</dd>

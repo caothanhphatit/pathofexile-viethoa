@@ -3771,6 +3771,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     { cls: "nj-c-int", value: fmtInt(int) }
                   ]))}
                   {row(locale === "vi" ? "Tốc độ di chuyển" : "Movement speed", fmtMod(readStat("EffectiveMovementSpeedMod")), undefined, "EffectiveMovementSpeedMod")}
+                  {readStat("EffectiveLootRarityMod") !== undefined ? row(locale === "vi" ? "Tỉ lệ hiếm vật phẩm" : "Item rarity", fmtMod(readStat("EffectiveLootRarityMod"))) : null}
 
                   <h3 className="nj-stat-group">{locale === "vi" ? "Phòng thủ" : "Defensive"}</h3>
                   {row("Life", fmtInt(readStat("Life")), undefined, "Life")}
