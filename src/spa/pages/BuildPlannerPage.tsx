@@ -1708,7 +1708,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
     if (baseVal === 0) return null;
     const delta = Math.round(currentVal - baseVal);
     if (delta === 0) return null;
-    const color = delta > 0 ? "#2af598" : "#ff5252";
+    const color = delta > 0 ? "var(--poe-good)" : "var(--nj-red)";
     const sign = delta > 0 ? "+" : "";
     return (
       <span style={{ fontSize: "10px", color, marginLeft: "4px", fontWeight: "bold" }}>

@@ -1073,15 +1073,15 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           position: "absolute",
           right: "16px",
           bottom: "16px",
-          background: "rgba(10, 12, 16, 0.85)",
-          border: "1px solid var(--line)",
+          background: "var(--passive-tooltip-bg, rgba(10, 12, 16, 0.85))",
+          border: "1px solid var(--passive-border, var(--line))",
           borderRadius: "8px",
           padding: "6px 10px",
           display: "flex",
           alignItems: "center",
           gap: "8px",
           zIndex: 100,
-          boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.25)",
           backdropFilter: "blur(4px)"
         }}>
           <button
@@ -1090,7 +1090,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             style={{
               background: "transparent",
               border: "none",
-              color: "var(--muted)",
+              color: "var(--passive-muted, var(--muted))",
               cursor: "pointer",
               display: "grid",
               placeItems: "center",
@@ -1109,9 +1109,9 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
             style={{
               width: embedded ? "80px" : "110px",
-              accentColor: "var(--gold)",
+              accentColor: "var(--passive-gold, var(--gold))",
               cursor: "pointer",
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--passive-border-soft, rgba(255,255,255,0.1))",
               height: "4px",
               borderRadius: "2px",
               outline: "none"
@@ -1123,7 +1123,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
             style={{
               background: "transparent",
               border: "none",
-              color: "var(--muted)",
+              color: "var(--passive-muted, var(--muted))",
               cursor: "pointer",
               display: "grid",
               placeItems: "center",
@@ -1133,7 +1133,7 @@ export function PassiveTreeWorkspace({ locale, embedded = false, readOnly = fals
           >
             <span className="material-symbols-rounded" style={{ fontSize: "16px" }}>add</span>
           </button>
-          <span style={{ fontSize: "10px", color: "var(--gold)", minWidth: "32px", textAlign: "right", fontWeight: "bold" }}>
+          <span style={{ fontSize: "10px", color: "var(--passive-gold-strong, var(--gold))", minWidth: "32px", textAlign: "right", fontWeight: "bold" }}>
             {Math.round(zoom * 100)}%
           </span>
         </div>

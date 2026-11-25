@@ -10,6 +10,7 @@ html:not(.dark) {
   --nj-bg: #f6f5f2;
   --nj-hero: #ffffff;
   --nj-panel: #ffffff;
+  --nj-panel-strong: #ffffff;
   --nj-panel-head: #f5f3ee;
   --nj-well: #f8f6f2;
   --nj-slot: #ffffff;
@@ -97,7 +98,9 @@ html:not(.dark) .build-page :is(
   .build-project-load,
   .build-project-actions button,
   .build-action-dialog-actions button,
+  .build-pob-actions button,
   .build-empty .build-btn,
+  .build-empty > button:not(.poe-term),
   .nj-btn
 ) {
   border: 1px solid #d6d0c4;
@@ -119,7 +122,9 @@ html:not(.dark) .build-page :is(
   .build-project-load,
   .build-project-actions button,
   .build-action-dialog-actions button,
+  .build-pob-actions button,
   .build-empty .build-btn,
+  .build-empty > button:not(.poe-term),
   .nj-btn
 ):hover:not(:disabled) {
   border-color: #b8b0a0;
@@ -132,6 +137,7 @@ html:not(.dark) .build-page :is(
   .build-btn--primary,
   .build-pob-actions button:last-child,
   .build-library-toolbar button:last-child,
+  .build-picker-mode button.is-active,
   .nj-btn--primary
 ) {
   border-color: #1c1b19;
@@ -144,6 +150,7 @@ html:not(.dark) .build-page :is(
   .build-btn--primary,
   .build-pob-actions button:last-child,
   .build-library-toolbar button:last-child,
+  .build-picker-mode button.is-active,
   .nj-btn--primary
 ):hover:not(:disabled) {
   border-color: #33312c;
@@ -163,13 +170,13 @@ html:not(.dark) .build-page :is(.nj-btn--outline, .build-btn--import):hover:not(
   color: #151412;
 }
 
-html:not(.dark) .build-page :is(.build-btn--delete, .build-project-delete) {
+html:not(.dark) .build-page :is(.build-btn--delete, .build-project-delete, .build-library-card-actions button:last-child) {
   border-color: #e8c4c0;
   background: #fff5f4;
   color: #c43227;
 }
 
-html:not(.dark) .build-page :is(.build-btn--delete, .build-project-delete):hover:not(:disabled) {
+html:not(.dark) .build-page :is(.build-btn--delete, .build-project-delete, .build-library-card-actions button:last-child):hover:not(:disabled) {
   border-color: #c43227;
   background: #fde8e6;
   color: #a6251b;
@@ -185,16 +192,41 @@ html:not(.dark) .build-page .build-class-picker-row select {
 }
 
 html:not(.dark) .build-page .build-change-class,
-html:not(.dark) .build-page .build-class-picker-actions button {
+html:not(.dark) .build-page .build-class-picker-actions button:not(.build-class-picker-create) {
   border-color: #d6d0c4;
   background: #f5f3ee;
   color: #1c1b19;
 }
 
 html:not(.dark) .build-page .build-change-class:hover,
-html:not(.dark) .build-page .build-class-picker-actions button:hover {
+html:not(.dark) .build-page .build-class-picker-actions button:not(.build-class-picker-create):hover,
+html:not(.dark) .build-page .build-create-gate-actions button:not(.build-class-picker-create):hover,
+html:not(.dark) .build-page .build-tree-copy-btn:hover {
   border-color: #b8b0a0;
   background: #ebe7dd;
+}
+
+html:not(.dark) .build-page .build-class-picker-create {
+  border-color: #1c1b19;
+  background: #1c1b19;
+  color: #ffffff;
+}
+
+html:not(.dark) .build-page .build-class-picker-create:hover:not(:disabled) {
+  border-color: #33312c;
+  background: #33312c;
+  color: #ffffff;
+}
+
+html:not(.dark) .build-page .build-create-class-btn:hover {
+  border-color: #b8b0a0;
+  background: #f3f0e8;
+}
+
+html:not(.dark) .build-page .build-create-class-btn.is-selected {
+  border-color: #1c1b19;
+  background: #f3f0e8;
+  box-shadow: inset 0 0 0 1px #1c1b19;
 }
 
 html:not(.dark) .build-page .build-warning-chip {
@@ -281,12 +313,118 @@ html:not(.dark) .build-page .calc-engine-badge.is-ready {
   color: #1f7a38;
 }
 
+html:not(.dark) .build-page .calc-engine-badge.is-update {
+  color: #9a6400;
+}
+
+html:not(.dark) .build-page .calc-engine-update {
+  border-color: #9bb8e8;
+  background: #eff5ff;
+  color: #1d4ed8;
+}
+
+html:not(.dark) .build-page .calc-engine-update:hover {
+  border-color: #235ec4;
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+html:not(.dark) .build-page .calc-engine-warn,
+html:not(.dark) .build-page .calc-engine-notice {
+  border-color: #dfb96d;
+  background: #fff8e7;
+  color: #7a4f00;
+}
+
+html:not(.dark) .build-page .calc-engine-clear {
+  border-color: #d6d0c4;
+  background: #ffffff;
+  color: #5c5850;
+}
+
+html:not(.dark) .build-page .calc-engine-clear:hover {
+  border-color: #c43227;
+  background: #fff5f4;
+  color: #c43227;
+}
+
+html:not(.dark) .build-page .calc-engine-popover {
+  border-color: #c4d4ee;
+  background: #ffffff;
+  color: #2c2a26;
+  box-shadow: 0 12px 28px rgba(28, 27, 25, .18);
+}
+
+html:not(.dark) .build-page .calc-engine-popover-desc {
+  color: #4a4740;
+}
+
+html:not(.dark) .build-page .calc-engine-btn {
+  border-color: #d6d0c4;
+  background: #f5f3ee;
+  color: #1c1b19;
+}
+
+html:not(.dark) .build-page .calc-engine-btn:hover {
+  border-color: #b8b0a0;
+  background: #eae6dc;
+}
+
+html:not(.dark) .build-page .calc-engine-btn.is-primary {
+  border-color: #1c1b19;
+  background: #1c1b19;
+  color: #ffffff;
+}
+
+html:not(.dark) .build-page .calc-engine-btn.is-primary:hover {
+  border-color: #33312c;
+  background: #33312c;
+}
+
+html:not(.dark) .build-page .calc-engine-progress {
+  background: #e6e2d8;
+}
+
 html:not(.dark) .build-page .nj-stat-row > span {
   color: #4a4740;
 }
 
 html:not(.dark) .build-page .nj-stat-row > strong {
   color: #151412;
+}
+
+html:not(.dark) .nj-c-dex,
+html:not(.dark) .nj-main-skill-copy small b,
+html:not(.dark) .pg-chip .is-better,
+html:not(.dark) .sk-dps em.is-better,
+html:not(.dark) .sk-value.is-better,
+html:not(.dark) .sk-stat-row em.is-better {
+  color: #1f7a38;
+}
+
+html:not(.dark) button.nj-main-skill:hover {
+  background: rgba(28, 27, 25, .04);
+}
+
+html:not(.dark) .nj-dps > span,
+html:not(.dark) .nj-gem-aside .nj-dps-mini {
+  border: 1px solid #dad4c8;
+  background: #f0ede5;
+  color: #151412;
+}
+
+html:not(.dark) .nj-dps > i {
+  background: #e2ddd2;
+}
+
+html:not(.dark) .nj-dps-phys {
+  background: #7a766e;
+}
+
+html:not(.dark) .nj-badge {
+  border: 1px solid #dad4c8;
+  background: #f0ede5;
+  color: #1c1b19;
 }
 
 /* ── Equipment paper doll & Inventory grid ─────────────────────────────── */
@@ -311,9 +449,22 @@ html:not(.dark) .build-page .build-equip-slot {
   box-shadow: inset 0 1px 2px rgba(28, 27, 25, .06);
 }
 
-html:not(.dark) .build-page .build-equip-slot:hover {
+html:not(.dark) .build-page .build-equip-slot:hover,
+html:not(.dark) .build-page .build-equip-slot:focus-visible {
   border-color: #b59862;
   background: #ece8dc;
+}
+
+html:not(.dark) .build-page .build-equip-slot.is-drop-target {
+  outline-color: #1f7a38;
+}
+
+html:not(.dark) .build-page .build-slot-silhouette {
+  color: rgba(92, 84, 70, .30);
+}
+
+html:not(.dark) .build-page .build-equip-slot:hover .build-slot-silhouette {
+  color: rgba(92, 84, 70, .60);
 }
 
 html:not(.dark) .build-page .build-equip-slot.has-item {
@@ -350,27 +501,67 @@ html:not(.dark) .build-page .build-equip-slot.has-item .build-slot-label {
   color: #b8b2a6;
 }
 
-/* Inventory tab: warm stone tray with recessed light empty cells */
-html:not(.dark) .build-page .pi-btn {
+html:not(.dark) .build-equip-notice.is-shown {
+  border-color: #dfb96d;
+  background: #fff8e7;
+  color: #362e1e;
+}
+
+html:not(.dark) .build-equip-notice > .material-symbols-rounded {
+  color: #b45309;
+}
+
+/* Equipment slot click context menu */
+html:not(.dark) .build-slot-menu {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  color: #2c2a26;
+  box-shadow: 0 12px 32px rgba(28, 27, 25, .18);
+}
+
+html:not(.dark) .build-slot-menu > button:hover:not(:disabled) {
+  background: #f3f0e8;
+  color: #151412;
+}
+
+html:not(.dark) .build-slot-menu-close:hover {
+  color: #151412;
+}
+
+/* Inventory tab & shared pi-btn controls (also used inside dialogs) */
+html:not(.dark) .pi-btn {
   border-color: #d6d0c4;
   background: #f5f3ee;
   color: #1c1b19;
 }
 
-html:not(.dark) .build-page .pi-btn:hover {
+html:not(.dark) .pi-btn:hover:not(:disabled) {
   border-color: #b8b0a0;
   background: #ebe7dd;
+  color: #151412;
 }
 
-html:not(.dark) .build-page .pi-btn--ghost {
+html:not(.dark) .pi-btn--ghost {
   border-color: transparent;
   background: transparent;
   color: #5c5850;
 }
 
-html:not(.dark) .build-page .pi-btn--primary {
+html:not(.dark) .pi-btn--ghost:hover:not(:disabled) {
+  border-color: #d6d0c4;
+  background: #f3f0e8;
+  color: #151412;
+}
+
+html:not(.dark) .pi-btn--primary {
   border-color: #1c1b19;
   background: #1c1b19;
+  color: #ffffff;
+}
+
+html:not(.dark) .pi-btn--primary:hover:not(:disabled) {
+  border-color: #33312c;
+  background: #33312c;
   color: #ffffff;
 }
 
@@ -402,6 +593,17 @@ html:not(.dark) .build-page .pi-cell.is-unique .pi-cell-label { color: #e8924f; 
 html:not(.dark) .build-page .pi-cell.is-rare .pi-cell-label { color: #f5eb78; }
 html:not(.dark) .build-page .pi-cell.is-magic .pi-cell-label { color: #9fa3ff; }
 
+html:not(.dark) .pi-remove,
+html:not(.dark) .pi-cell-actions button {
+  background: rgba(18, 17, 15, .82);
+  color: #d6d2c8;
+}
+
+html:not(.dark) .pi-remove:hover,
+html:not(.dark) .pi-cell-actions button:hover {
+  color: #ffffff;
+}
+
 /* ── Compact Drawer Bar (Passive Tree, Conditions, Detailed Stats) ─────── */
 
 html:not(.dark) .nj-drawer-btn {
@@ -411,9 +613,16 @@ html:not(.dark) .nj-drawer-btn {
   box-shadow: 0 1px 2px rgba(28, 27, 25, .05);
 }
 
-html:not(.dark) .nj-drawer-btn:hover {
+html:not(.dark) .nj-drawer-btn:hover,
+html:not(.dark) .nj-drawer-btn:focus-visible {
   border-color: #b89a64;
   background: #faf8f3;
+}
+
+html:not(.dark) .nj-drawer-btn.is-active {
+  border-color: #a68240;
+  background: #faf5e8;
+  box-shadow: inset 0 0 0 1px rgba(166, 130, 64, .28);
 }
 
 html:not(.dark) .nj-drawer-icon {
@@ -525,6 +734,171 @@ html:not(.dark) .pc-hint::after {
   color: #f4f3f0;
 }
 
+/* ── Stat Breakdown Modal ("Chỉ số này từ đâu ra?") ────────────────────── */
+
+html:not(.dark) .sb-backdrop {
+  background: rgba(28, 27, 25, .44);
+}
+
+html:not(.dark) .sb-dialog {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  color: #2c2a26;
+  box-shadow: 0 24px 60px rgba(28, 27, 25, .24);
+}
+
+html:not(.dark) .sb-head {
+  border-bottom-color: #e4dfd4;
+  background: #f5f3ee;
+}
+
+html:not(.dark) .sb-eyebrow {
+  color: #7a5c2c;
+}
+
+html:not(.dark) .sb-head h2 {
+  color: #151412;
+}
+
+html:not(.dark) .sb-head h2 b {
+  color: #7a5c2c;
+}
+
+html:not(.dark) .sb-head .pi-btn--ghost {
+  border-color: #d4cec2;
+  background: #ffffff;
+  color: #4a4740;
+}
+
+html:not(.dark) .sb-head .pi-btn--ghost:hover {
+  border-color: #9c9484;
+  background: #f3f0e8;
+  color: #151412;
+}
+
+html:not(.dark) .sb-calc ol {
+  border: 1px solid #e6e2d8;
+  background: #f8f6f2;
+  color: #2c2a26;
+}
+
+html:not(.dark) .sb-summary {
+  color: #4a4740;
+}
+
+html:not(.dark) .sb-summary span {
+  color: #151412;
+}
+
+html:not(.dark) .sb-source {
+  color: #2c2a26;
+}
+
+html:not(.dark) .sb-value {
+  color: #151412;
+}
+
+html:not(.dark) .sb-value.is-inc {
+  color: #235ec4;
+}
+
+html:not(.dark) .sb-value.is-more {
+  color: #9a6400;
+}
+
+html:not(.dark) .sb-value.is-negative {
+  color: #c43227;
+}
+
+/* ── Item Editor Modal (ItemEditor.tsx) ────────────────────────────────── */
+
+html:not(.dark) .ie-backdrop {
+  background: rgba(28, 27, 25, .44);
+}
+
+html:not(.dark) .ie-dialog {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  color: #2c2a26;
+  box-shadow: 0 24px 60px rgba(28, 27, 25, .24);
+}
+
+html:not(.dark) .ie-head {
+  border-bottom-color: #e4dfd4;
+  background: #f5f3ee;
+}
+
+html:not(.dark) .ie-foot {
+  border-top-color: #e4dfd4;
+  background: #f8f6f2;
+}
+
+html:not(.dark) .ie-eyebrow {
+  color: #7a5c2c;
+}
+
+html:not(.dark) .ie-head h2 {
+  color: #151412;
+}
+
+html:not(.dark) .ie-lock {
+  border-color: #dfb96d;
+  background: #fff8e7;
+  color: #8a5a00;
+}
+
+html:not(.dark) .ie-implicits li,
+html:not(.dark) .ie-line-text,
+html:not(.dark) .ie-combo-text {
+  color: #3d42c4;
+}
+
+html:not(.dark) .ie-gen.is-prefix {
+  background: #e8efff;
+  color: #235ec4;
+}
+
+html:not(.dark) .ie-gen.is-suffix {
+  background: #fdf0e2;
+  color: #9a5412;
+}
+
+html:not(.dark) .ie-combo-list {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(28, 27, 25, .08);
+}
+
+html:not(.dark) .ie-combo-list li:hover,
+html:not(.dark) .ie-combo-list li.is-active {
+  background: #f5f3ee;
+}
+
+html:not(.dark) .ie-combo-reason {
+  color: #9a5412;
+}
+
+html:not(.dark) .ie-tabs button {
+  border-color: #d6d0c4;
+  background: #f5f3ee;
+  color: #5c5850;
+}
+
+html:not(.dark) .ie-tabs button:hover {
+  border-color: #b8b0a0;
+  color: #151412;
+}
+
+html:not(.dark) .ie-tabs button.is-active {
+  border-color: #1c1b19;
+  background: #1c1b19;
+  color: #ffffff;
+}
+
+html:not(.dark) .ie-pick-list button:hover {
+  background: #f5f3ee;
+}
+
 /* ── Skills Panel & Detail Panel ───────────────────────────────────────── */
 
 html:not(.dark) .sk-row {
@@ -539,8 +913,29 @@ html:not(.dark) .sk-row.is-main {
 }
 
 html:not(.dark) .sk-row-head {
+  border-color: #dad3c4;
   border-bottom-color: #e6e1d6;
   background: #f6f3ec;
+  box-shadow: none;
+}
+
+html:not(.dark) .sk-row:hover .sk-row-head {
+  border-color: #b89656;
+}
+
+html:not(.dark) .sk-row.is-main .sk-row-head {
+  border-color: #b89656;
+  box-shadow: inset 3px 0 0 #b87900;
+}
+
+html:not(.dark) .sk-row.is-open .sk-row-head {
+  border-color: #a68240;
+  box-shadow: 0 2px 8px rgba(28, 27, 25, .08);
+}
+
+html:not(.dark) .sk-row.is-main.is-open .sk-row-head {
+  border-color: #a68240;
+  box-shadow: inset 3px 0 0 #b87900, 0 2px 8px rgba(28, 27, 25, .08);
 }
 
 html:not(.dark) .sk-collapse-stub {
@@ -555,6 +950,20 @@ html:not(.dark) .sk-row-name {
 html:not(.dark) .sk-row-owner,
 html:not(.dark) .sk-lvl-label {
   color: #746956;
+}
+
+html:not(.dark) .sk-row-warn,
+html:not(.dark) .sk-gem-item-warn {
+  color: #b45309;
+}
+
+html:not(.dark) .sk-star-btn {
+  color: #9c9486;
+}
+
+html:not(.dark) .sk-star-btn:hover,
+html:not(.dark) .sk-star-btn.is-main {
+  color: #b87900;
 }
 
 html:not(.dark) .sk-lvl-num {
@@ -587,24 +996,81 @@ html:not(.dark) .sk-dmg-val {
   color: #151412;
 }
 
-html:not(.dark) .sk-dmg-kind,
-html:not(.dark) .sk-dmg-arrow {
+html:not(.dark) .sk-dmg-kind {
   color: #6b6252;
 }
 
+html:not(.dark) .sk-dmg-arrow {
+  border-left-color: #e2dcd0;
+  background: #f5f3ee;
+  color: #5c5342;
+}
+
+html:not(.dark) .sk-dmg-badge.is-open .sk-dmg-arrow {
+  background: #ede4cf;
+  color: #7a5c2c;
+}
+
 html:not(.dark) .sk-sockets-bar {
+  border-color: #dad3c4;
+  border-top: 0;
   background: #faf8f4;
+  box-shadow: none;
+}
+
+html:not(.dark) .sk-row.is-main .sk-sockets-bar {
+  border-color: #b89656;
+}
+
+html:not(.dark) .sk-row.is-open .sk-sockets-bar {
+  border-color: #a68240;
+}
+
+html:not(.dark) .sk-socket {
+  box-shadow:
+    0 0 0 1px rgba(28, 27, 25, .20),
+    0 2px 5px rgba(28, 27, 25, .18);
+}
+
+html:not(.dark) .sk-socket--active {
+  box-shadow:
+    0 0 0 1.5px #d6cfc0,
+    0 0 0 3px #b89a64,
+    0 2px 8px rgba(28, 27, 25, .20);
 }
 
 html:not(.dark) .sk-socket-recess {
-  border-color: #ddd6c7;
-  background: #f0ede5;
-  color: #8c8475;
+  border: 1px dashed #cfc7b8;
+  background: #efebe2;
+  box-shadow: inset 0 1px 2px rgba(28, 27, 25, .07);
+  color: #7a7264;
 }
 
-html:not(.dark) .sk-socket-recess:hover {
+html:not(.dark) .sk-socket-recess:hover,
+html:not(.dark) .sk-socket-recess:focus-visible {
   border-color: #b59862;
-  color: #4a453b;
+  background: #e8e3d7;
+  box-shadow: none;
+  color: #3a3630;
+}
+
+html:not(.dark) .sk-support-tip {
+  border-color: #3a3833;
+  background: #1c1b19;
+  color: #f4f3f0;
+  box-shadow: 0 8px 20px rgba(28, 27, 25, .24);
+}
+
+html:not(.dark) .sk-support-tip .sk-value {
+  color: #b8b4aa;
+}
+
+html:not(.dark) .sk-support-tip .sk-value.is-better {
+  color: #4ade80;
+}
+
+html:not(.dark) .sk-support-tip .sk-value.is-worse {
+  color: #ff6b6b;
 }
 
 html:not(.dark) .sk-detail {
@@ -616,6 +1082,7 @@ html:not(.dark) .sk-detail {
 html:not(.dark) .sk-detail-titlebar {
   border-bottom-color: #e2dcd0;
   background: #f5f2ea;
+  box-shadow: none;
 }
 
 html:not(.dark) .sk-detail-title {
@@ -640,14 +1107,23 @@ html:not(.dark) .sk-detail-band {
 }
 
 html:not(.dark) .sk-badge,
-html:not(.dark) .sk-chip-btn {
+html:not(.dark) .sk-chip-btn,
+html:not(.dark) .sk-mini-btn {
   border-color: #d6cfc0;
   background: #ffffff;
   color: #4a453b;
 }
 
-html:not(.dark) .sk-chip-btn:hover {
+html:not(.dark) .sk-badge--option {
+  border-color: #dfb96d;
+  background: #fff8e7;
+  color: #8a5a00;
+}
+
+html:not(.dark) .sk-chip-btn:hover,
+html:not(.dark) .sk-mini-btn:hover {
   border-color: #9e7d43;
+  background: #f5f2ea;
   color: #151412;
 }
 
@@ -695,8 +1171,17 @@ html:not(.dark) .sk-section-heading {
   color: #151412;
 }
 
-html:not(.dark) .sk-stat-row:nth-child(even) {
+html:not(.dark) .sk-stat-row:nth-child(even),
+html:not(.dark) .sk-gem-item:nth-child(even) {
   background: #faf8f4;
+}
+
+html:not(.dark) .sk-gem-item-swap {
+  color: #1c1b19;
+}
+
+html:not(.dark) .sk-gem-item-swap:hover .sk-gem-item-name {
+  color: #000000;
 }
 
 html:not(.dark) .sk-stat-list--sub .sk-stat-row dt {
@@ -705,6 +1190,21 @@ html:not(.dark) .sk-stat-list--sub .sk-stat-row dt {
 
 html:not(.dark) .sk-stat-list--sub .sk-stat-row dd {
   color: #151412;
+}
+
+html:not(.dark) .sk-damage-bar {
+  background: #e6e2d8;
+}
+
+html:not(.dark) .gx-monster-note,
+html:not(.dark) .sk-hint.sk-hint--warn {
+  color: #9a5a00;
+}
+
+html:not(.dark) .sk-hint.sk-hint--weapon {
+  border-left-color: #b45309;
+  background: #fff8e7;
+  color: #4a3b18;
 }
 
 html:not(.dark) .sk-socket-stepper {
@@ -753,6 +1253,22 @@ html:not(.dark) .sk-toggle.is-on {
   color: #7a5c2c;
 }
 
+html:not(.dark) .sk-toggle.is-on .material-symbols-rounded {
+  color: #9a6400;
+}
+
+html:not(.dark) .sk-delete-btn {
+  border-color: #e8c4c0;
+  background: #fff5f4;
+  color: #c43227;
+}
+
+html:not(.dark) .sk-delete-btn:hover {
+  border-color: #c43227;
+  background: #fde8e6;
+  color: #a6251b;
+}
+
 html:not(.dark) .sk-detail-empty {
   border-color: #dfd9cc;
   background: #faf8f4;
@@ -764,7 +1280,92 @@ html:not(.dark) .sk-secondary {
   background: #faf8f4;
 }
 
-/* ── Build Library & Dialogs ───────────────────────────────────────────── */
+html:not(.dark) .sk-card,
+html:not(.dark) .nj-skill-card {
+  border-color: #dad3c4;
+  background: #ffffff;
+}
+
+html:not(.dark) .nj-gem-row--support .nj-gem-name {
+  color: #3a3833;
+}
+
+html:not(.dark) .nj-icon-btn.is-on {
+  color: #b87900;
+}
+
+html:not(.dark) .nj-icon-btn:hover,
+html:not(.dark) .nj-gem-row:hover,
+html:not(.dark) .nj-gem-pick:hover,
+html:not(.dark) .nj-gem-row--add:hover {
+  background: rgba(28, 27, 25, .05);
+}
+
+html:not(.dark) .nj-gem-row--add .nj-gem-icon {
+  border-color: #c8c1b4;
+}
+
+/* ── Passive Tree Modal & Overlays ─────────────────────────────────────── */
+
+html:not(.dark) .bm-body--tree .build-tree-mini,
+html:not(.dark) .nj-tree .build-tree-mini {
+  border-color: #d6cfc0;
+  background: #eef2f7;
+}
+
+html:not(.dark) .passive-stage-toast {
+  border-color: #d97706;
+  background: #fffbeb;
+  color: #92400e;
+  box-shadow: 0 6px 18px rgba(28, 27, 25, .14);
+}
+
+html:not(.dark) .passive-stage-toast .material-symbols-rounded {
+  color: #d97706;
+}
+
+html:not(.dark) .passive-tooltip p.passive-tooltip-refusal {
+  color: #b45309;
+}
+
+html:not(.dark) .passive-carry-banner {
+  border-color: #0f766e;
+  background: rgba(255, 255, 255, .96);
+  color: #1c1b19;
+  box-shadow: 0 6px 18px rgba(28, 27, 25, .14);
+}
+
+html:not(.dark) .passive-carry-banner .material-symbols-rounded {
+  color: #0f766e;
+}
+
+html:not(.dark) .passive-tooltip .pc-cmp {
+  border-color: #dad3c4;
+  background: #f5f3ee;
+  color: #2c2a26;
+}
+
+html:not(.dark) .passive-tooltip .pc-cmp-title {
+  color: #7a5c2c;
+}
+
+html:not(.dark) .passive-tooltip .pc-cmp-rows .is-better {
+  color: #1f7a38;
+}
+
+html:not(.dark) .passive-tooltip .pc-cmp-rows .is-worse {
+  color: #c43227;
+}
+
+html:not(.dark) .passive-pob-mods {
+  background: #f5f3ee;
+}
+
+html:not(.dark) .passive-pob-mods p {
+  color: #3d42c4;
+}
+
+/* ── Build Library, Pickers & Dialogs ──────────────────────────────────── */
 
 html:not(.dark) .build-library-card-head > .material-symbols-rounded,
 html:not(.dark) .build-library-empty .material-symbols-rounded {
@@ -772,11 +1373,52 @@ html:not(.dark) .build-library-empty .material-symbols-rounded {
   color: #5c574d;
 }
 
-html:not(.dark) :is(.build-pob-import, .build-help-dialog, .build-action-dialog) {
+html:not(.dark) :is(.build-picker-backdrop, .build-action-dialog-backdrop, .build-help-backdrop) {
+  background: rgba(28, 27, 25, .44);
+}
+
+html:not(.dark) :is(.build-item-picker, .build-gem-picker, .build-pob-import, .build-help-dialog, .build-action-dialog) {
   border-color: #d6cfc0;
   background: #ffffff;
   color: #2c2a26;
   box-shadow: 0 24px 60px rgba(28, 27, 25, .22);
+}
+
+html:not(.dark) :is(.build-picker-head, .build-help-head) > button {
+  border-color: #d4cec2;
+  background: #ffffff;
+  color: #4a4740;
+}
+
+html:not(.dark) :is(.build-picker-head, .build-help-head) > button:hover {
+  border-color: #9c9484;
+  background: #f3f0e8;
+  color: #151412;
+}
+
+html:not(.dark) .build-gem-result:hover,
+html:not(.dark) .build-gem-choice.is-active {
+  border-color: #d6cfc0;
+  background: #f3f0e8;
+}
+
+html:not(.dark) .build-empty,
+html:not(.dark) .build-warning {
+  border-color: #cfc7b8;
+  background: #f6f4ef;
+}
+
+html:not(.dark) .nj-tree .build-tree-list > article,
+html:not(.dark) .nj-tree .build-tree-list > button {
+  border-color: #dad4c8;
+  background: #ffffff;
+  color: #1c1b19;
+}
+
+html:not(.dark) .nj-tree .build-tree-list > article:hover,
+html:not(.dark) .nj-tree .build-tree-list > button:hover {
+  border-color: #b8b0a0;
+  background: #f5f3ee;
 }
 
 /* ── Keep in-game PoE Tooltips & Gemcutting Modal authentic dark ───────── */
@@ -787,9 +1429,23 @@ html:not(.dark) .poe-tooltip-card {
   --poe-rare: #ffff77;
   --poe-unique: #af6025;
   --poe-gem: #1ba29b;
+  --poe-life: #e04a3c;
+  --poe-mana: #5b7fe0;
+  --poe-es: #9fd3ff;
+  --poe-fire: #ff6a3d;
+  --poe-cold: #5fb2ff;
+  --poe-lightning: #ffd84a;
+  --poe-chaos: #d85ddb;
+  --poe-good: #8ad46c;
+  --poe-grey: #7f7f7f;
   --poe-label: #96948e;
   --poe-mod: #8888ff;
   --poe-rune-mod: #b4b4ff;
+}
+
+html:not(.dark) .poe-tooltip-float .pc-cmp {
+  --nj-muted: #a3a19b;
+  --nj-red: #ff5a5a;
 }
 
 html:not(.dark) .gc-shell .gc-search input {
