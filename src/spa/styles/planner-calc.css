@@ -215,6 +215,108 @@
   accent-color: var(--nj-green);
 }
 
+.pc-config-group--quests {
+  gap: 8px;
+}
+
+.pc-quest-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--nj-line-soft);
+}
+
+.pc-quest-head legend {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.pc-quest-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--nj-line);
+  border-radius: 6px;
+  background: var(--nj-slot);
+}
+
+.pc-quest-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--nj-muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pc-quest-tab.is-active {
+  background: rgba(255, 255, 255, .1);
+  color: var(--nj-text-strong);
+}
+
+.pc-quest-badge {
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, .24);
+  color: #fbbf24;
+  font-size: 10px;
+}
+
+.pc-config-row--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.pc-config-row-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pc-config-row--stacked select {
+  margin-left: 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 5px 8px;
+}
+
+.pc-quest-note {
+  margin: 2px 0 0;
+  color: var(--nj-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.pc-quest-fixed {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--nj-line-soft);
+}
+
+.pc-quest-subhead {
+  margin-bottom: 2px;
+  color: var(--nj-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
 .pc-reset {
   justify-self: start;
 }

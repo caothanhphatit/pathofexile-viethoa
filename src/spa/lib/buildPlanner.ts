@@ -1032,6 +1032,29 @@ function pobGemExtraAttributes(gem: Element): Record<string, string> | undefined
   return Object.keys(extra).length ? extra : undefined;
 }
 
+// Browser DOMParser normalizes raw \n and \t inside XML attributes to spaces (XML 1.0),
+// which would otherwise break PoB's exact lookup for multi-line quest reward choices.
+const POB_MULTILINE_CONFIG_STRINGS: Record<string, string[]> = {
+  "questAct 2Valley of the TitansMedallion": [
+    "30% increased Charm Charges Gained\n\t+1 Charm Slot",
+    "30% increased Charm Effect Duration\n\t+1 Charm Slot"
+  ],
+  "questAct 4Eye of HinekoraTribal Medicine": [
+    "+15% of Armour also applies to Elemental Damage\n\tGain Deflection Rating equal to 12% of Evasion Rating\n\t12% faster start of Energy Shield Recharge"
+  ],
+  "questInterlude 2QimahSeven Pillars": [
+    "5% increased Experience Gain\n\t-5% to all Elemental Resistances\n\t3% reduced Movement Speed\n\t15% reduced Global Armour, Evasion and Energy Shield\n\t20% reduced Presence Area Of Effect\n\t12% reduced Cooldown Recovery Rate\n\t5% reduced Attributes"
+  ]
+};
+
+function restorePobConfigString(name: string, value: string): string {
+  const candidates = POB_MULTILINE_CONFIG_STRINGS[name];
+  if (!candidates || candidates.includes(value)) return value;
+  const collapsed = value.replace(/\s+/g, " ").trim();
+  const match = candidates.find((candidate) => candidate.replace(/\s+/g, " ").trim() === collapsed);
+  return match ?? value;
+}
+
 function pobConfigInputs(configEl: Element): PobConfigInput[] {
   const sets = [...configEl.querySelectorAll("ConfigSet")];
   const activeId = xmlAttribute(configEl, "activeConfigSet", "1");
@@ -1042,7 +1065,7 @@ function pobConfigInputs(configEl: Element): PobConfigInput[] {
     if (!name) continue;
     if (input.hasAttribute("boolean")) inputs.push({ name, kind: "boolean", value: xmlAttribute(input, "boolean") === "true" });
     else if (input.hasAttribute("number")) inputs.push({ name, kind: "number", value: Number(xmlAttribute(input, "number")) || 0 });
-    else if (input.hasAttribute("string")) inputs.push({ name, kind: "string", value: xmlAttribute(input, "string") });
+    else if (input.hasAttribute("string")) inputs.push({ name, kind: "string", value: restorePobConfigString(name, xmlAttribute(input, "string")) });
   }
   return inputs;
 }
@@ -2161,7 +2184,12 @@ export function calculationMainGroup(skills: Array<{ skillId: string }>, listed:
 export function calculationRequestBody(input: CalculationRequestInput): Record<string, unknown> {
   const { payload } = input;
   const text = (key: string) => (typeof payload[key] === "string" ? String(payload[key]) : "");
-  const configInputs = input.configInputs ?? (Array.isArray(payload.config_inputs) ? payload.config_inputs as PobConfigInput[] : undefined);
+  const rawConfigInputs = input.configInputs ?? (Array.isArray(payload.config_inputs) ? payload.config_inputs as PobConfigInput[] : undefined);
+  const configInputs = rawConfigInputs?.map((row) => (
+    row.kind === "string" && typeof row.value === "string"
+      ? { ...row, value: restorePobConfigString(row.name, row.value) }
+      : row
+  ));
   return {
     className: text("className") || "Witch",
     ascendancy: text("ascendancy") || "None",

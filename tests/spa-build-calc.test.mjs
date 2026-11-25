@@ -29,23 +29,41 @@ test("conditions panel edits PoB config inputs and keeps the rest", async () => 
   const boss = stats.CONFIG_OPTIONS.find((option) => option.name === "enemyIsBoss");
   const shocked = stats.CONFIG_OPTIONS.find((option) => option.name === "conditionEnemyShocked");
   const nearby = stats.CONFIG_OPTIONS.find((option) => option.name === "multiplierNearbyEnemies");
+  const candlemass = stats.CONFIG_OPTIONS.find((option) => option.name === "questAct 1Ogham ManorCandlemass");
+  const medallion = stats.CONFIG_OPTIONS.find((option) => option.name === "questAct 2Valley of the TitansMedallion");
   const imported = [
     { name: "enemyIsBoss", kind: "string", value: "None" },
     { name: "conditionEnemyChilled", kind: "boolean", value: true },
-    { name: "questAct 3Venom CryptsVenom Draught", kind: "string", value: "25% increased Mana Regeneration Rate" }
+    { name: "questAct 3Venom CryptsVenom Draught", kind: "string", value: "25% increased Mana Regeneration Rate" },
+    { name: "questAct 2Valley of the TitansMedallion", kind: "string", value: "30% increased Charm Charges Gained  +1 Charm Slot" },
+    { name: "enemyLevel", kind: "number", value: 82 }
   ];
   assert.equal(stats.configInputValue(imported, boss), "None");
   assert.equal(stats.configInputValue(imported, shocked), false);
   assert.equal(stats.configInputValue([], boss), "Pinnacle", "PoB's default enemy is a pinnacle boss");
+  assert.equal(stats.configInputValue([], candlemass), true, "fixed campaign quest rewards default to enabled");
+  assert.equal(
+    stats.configInputValue(imported, medallion),
+    "30% increased Charm Charges Gained\n\t+1 Charm Slot",
+    "DOMParser-flattened multiline quest choice strings restore their PoB \\n\\t separator"
+  );
 
   let next = stats.setConfigInput(imported, shocked, true);
   assert.deepEqual(plain(next.find((row) => row.name === "conditionEnemyShocked")), { name: "conditionEnemyShocked", kind: "boolean", value: true });
   next = stats.setConfigInput(next, shocked, false);
   assert.equal(next.some((row) => row.name === "conditionEnemyShocked"), false, "unticking removes the input");
+  next = stats.setConfigInput(next, candlemass, false);
+  assert.deepEqual(
+    plain(next.find((row) => row.name === "questAct 1Ogham ManorCandlemass")),
+    { name: "questAct 1Ogham ManorCandlemass", kind: "boolean", value: false },
+    "unticking a default-true quest reward keeps an explicit false"
+  );
+  next = stats.setConfigInput(next, candlemass, true);
+  assert.equal(next.some((row) => row.name === "questAct 1Ogham ManorCandlemass"), false, "re-enabling back to default removes the input");
   next = stats.setConfigInput(next, boss, "Pinnacle");
   assert.equal(next.some((row) => row.name === "enemyIsBoss"), false, "back to PoB's default removes the input");
   assert.equal(stats.setConfigInput([], nearby, 1000).at(-1).value, 100, "numbers are clamped");
-  assert.deepEqual(plain(stats.otherConfigInputs(imported).map((row) => row.name)), ["questAct 3Venom CryptsVenom Draught"]);
+  assert.deepEqual(plain(stats.otherConfigInputs(imported).map((row) => row.name)), ["enemyLevel"]);
 
   for (const option of stats.CONFIG_OPTIONS) {
     assert.ok(option.vi && option.hint, `${option.name} needs a Vietnamese label and hint`);
@@ -56,8 +74,34 @@ test("conditions and stats only use names Path of Building knows", { skip: !exis
   const stats = await loadStatsLib();
   const pobSrc = join(repoRoot, "..", "pob-core", "src");
   const configSource = readFileSync(join(pobSrc, "Modules", "ConfigOptions.lua"), "utf8");
+  const questSource = readFileSync(join(pobSrc, "Data", "QuestRewards.lua"), "utf8");
+  // Build the exact set of dynamic quest keys PoB constructs in ConfigOptions.lua:
+  // "quest" .. quest.Description .. quest.Area .. quest.Info
+  const questKeys = new Set();
+  const questBlocks = questSource.split(/\n\t\{\r?\n/).slice(1);
+  for (const block of questBlocks) {
+    if (!/\["useConfig"\]\s*=\s*true/.test(block)) continue;
+    const desc = block.match(/\["Description"\]\s*=\s*"([^"]+)"/)?.[1];
+    const area = block.match(/\["Area"\]\s*=\s*"([^"]+)"/)?.[1];
+    const info = block.match(/\["Info"\]\s*=\s*"([^"]+)"/)?.[1];
+    if (desc && area && info) questKeys.add(`quest${desc}${area}${info}`);
+  }
   for (const option of stats.CONFIG_OPTIONS) {
-    assert.match(configSource, new RegExp(`var = "${option.name}"`), option.name);
+    if (option.name.startsWith("quest")) {
+      assert.ok(questKeys.has(option.name), `unknown PoB quest reward key: ${option.name}`);
+      for (const choice of option.choices ?? []) {
+        if (choice.value === "None") continue;
+        const luaEscaped = choice.value.replace(/\n/g, "\\n").replace(/\t/g, "\\t");
+        assert.ok(questSource.includes(`"${luaEscaped}"`), `unknown PoB quest option for ${option.name}: ${choice.value}`);
+      }
+    } else {
+      assert.match(configSource, new RegExp(`var = "${option.name}"`), option.name);
+    }
+  }
+  // Ensure every PoB useConfig quest reward is represented in CONFIG_OPTIONS.
+  const configuredQuestKeys = new Set(stats.CONFIG_OPTIONS.filter((o) => o.name.startsWith("quest")).map((o) => o.name));
+  for (const key of questKeys) {
+    assert.ok(configuredQuestKeys.has(key), `missing PoB quest reward in CONFIG_OPTIONS: ${key}`);
   }
   const calcSource = ["CalcOffence.lua", "CalcDefence.lua", "CalcPerform.lua", "Calcs.lua"]
     .map((file) => readFileSync(join(pobSrc, "Modules", file), "utf8")).join("\n");

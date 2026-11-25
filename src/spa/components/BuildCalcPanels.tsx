@@ -147,7 +147,13 @@ export function BuildStatDetails({ stats, previous, locale, calculating, onExpla
   );
 }
 
-function ConfigControl({ option, inputs, onChange, vi }: { option: ConfigOption; inputs: PobConfigInput[]; onChange: (next: PobConfigInput[]) => void; vi: boolean }) {
+function ConfigControl({ option, inputs, onChange, vi, stacked = false }: {
+  option: ConfigOption;
+  inputs: PobConfigInput[];
+  onChange: (next: PobConfigInput[]) => void;
+  vi: boolean;
+  stacked?: boolean;
+}) {
   const value = configInputValue(inputs, option);
   const label = vi ? option.vi : option.en;
   if (option.kind === "boolean") {
@@ -175,6 +181,21 @@ function ConfigControl({ option, inputs, onChange, vi }: { option: ConfigOption;
       </label>
     );
   }
+  if (stacked) {
+    return (
+      <label className="pc-config-row pc-config-row--stacked">
+        <span className="pc-config-row-head">
+          <span>{label}</span>
+          <Hint text={option.hint} />
+        </span>
+        <select value={String(value)} onChange={(event) => onChange(setConfigInput(inputs, option, event.target.value))}>
+          {(option.choices ?? []).map((choice) => (
+            <option value={choice.value} key={choice.value}>{vi ? choice.vi : choice.en}</option>
+          ))}
+        </select>
+      </label>
+    );
+  }
   return (
     <label className="pc-config-row">
       <span>{label}</span>
@@ -197,15 +218,68 @@ export function BuildConfigPanel({ inputs, onChange, onReset, changed, locale }:
   locale: Locale;
 }) {
   const vi = locale === "vi";
+  const [questTab, setQuestTab] = useState<"choices" | "all">("choices");
   const others = otherConfigInputs(inputs);
+  const choiceQuests = CONFIG_GROUPS.find((group) => group.id === "quests_choice");
+  const fixedQuests = CONFIG_GROUPS.find((group) => group.id === "quests_fixed");
+  const standardGroups = CONFIG_GROUPS.filter((group) => group.id !== "quests_choice" && group.id !== "quests_fixed");
+  const disabledFixedCount = (fixedQuests?.options ?? []).filter((option) => configInputValue(inputs, option) === false).length;
+
   return (
     <div className="pc-config poe-no-tooltip">
       <p className="pc-legend">
         {vi
-          ? "Tình huống Path of Building giả định khi tính DPS và phòng thủ. Đổi ở đây thì số liệu được tính lại ngay."
-          : "The situation Path of Building assumes for DPS and defences. Changing it recalculates right away."}
+          ? "Tình huống và phần thưởng nhiệm vụ Path of Building giả định khi tính DPS và phòng thủ. Đổi ở đây thì số liệu được tính lại ngay."
+          : "Conditions and quest rewards Path of Building assumes for DPS and defences. Changing them recalculates right away."}
       </p>
-      {CONFIG_GROUPS.map((group) => (
+      {choiceQuests ? (
+        <fieldset className="pc-config-group pc-config-group--quests">
+          <div className="pc-quest-head">
+            <legend>{vi ? "Phần thưởng nhiệm vụ" : "Quest rewards"}</legend>
+            <div className="pc-quest-tabs" role="tablist" aria-label={vi ? "Chế độ xem phần thưởng nhiệm vụ" : "Quest rewards view"}>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={questTab === "choices"}
+                className={`pc-quest-tab ${questTab === "choices" ? "is-active" : ""}`}
+                onClick={() => setQuestTab("choices")}
+              >
+                {vi ? "Lựa chọn" : "Choices"}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={questTab === "all"}
+                className={`pc-quest-tab ${questTab === "all" ? "is-active" : ""}`}
+                onClick={() => setQuestTab("all")}
+              >
+                {vi ? "Tất cả" : "All"}
+                {disabledFixedCount > 0 ? <small className="pc-quest-badge">{disabledFixedCount}</small> : null}
+              </button>
+            </div>
+          </div>
+          {choiceQuests.options.map((option) => (
+            <ConfigControl option={option} inputs={inputs} onChange={onChange} vi={vi} stacked key={option.name} />
+          ))}
+          {questTab === "choices" ? (
+            <p className="pc-quest-note">
+              {vi
+                ? "9 phần thưởng cốt truyện cố định (+20 & +5% Máu, +100 Spirit, +10% kháng Lửa/Băng/Sét, +5% Mana) mặc định đã bật. Bấm \"Tất cả\" nếu muốn bật/tắt từng mục."
+                : "All 9 fixed campaign bonuses (+20 & +5% Life, +100 Spirit, +10% Fire/Cold/Lightning Res, +5% Mana) are enabled by default. Switch to \"All\" to toggle them."}
+            </p>
+          ) : fixedQuests ? (
+            <div className="pc-quest-fixed">
+              <div className="pc-quest-subhead">
+                {vi ? "Phần thưởng cố định theo cốt truyện (mặc định bật)" : "Fixed campaign quest bonuses (enabled by default)"}
+              </div>
+              {fixedQuests.options.map((option) => (
+                <ConfigControl option={option} inputs={inputs} onChange={onChange} vi={vi} key={option.name} />
+              ))}
+            </div>
+          ) : null}
+        </fieldset>
+      ) : null}
+      {standardGroups.map((group) => (
         <fieldset className="pc-config-group" key={group.id}>
           <legend>{vi ? group.vi : group.en}</legend>
           {group.options.map((option) => (

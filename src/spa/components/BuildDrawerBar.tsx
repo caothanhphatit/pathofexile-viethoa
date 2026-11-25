@@ -135,7 +135,7 @@ export function BuildDrawerBar({
             </span>
           </span>
           <span className="nj-drawer-sub">
-            {vi ? "Boss, trạng thái kẻ địch & buff nhân vật" : "Enemy type, ailments & character buffs"}
+            {vi ? "Phần thưởng nhiệm vụ, boss & buff nhân vật" : "Quest rewards, enemy & character buffs"}
           </span>
         </span>
         <span className="nj-drawer-open material-symbols-rounded" aria-hidden="true">open_in_new</span>

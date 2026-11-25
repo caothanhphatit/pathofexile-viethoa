@@ -175,11 +175,143 @@ export interface ConfigGroup {
   options: ConfigOption[];
 }
 
-const flag = (name: string, vi: string, en: string, hint: string): ConfigOption => ({ name, kind: "boolean", vi, en, hint, defaultValue: false });
+const flag = (name: string, vi: string, en: string, hint: string, defaultValue = false): ConfigOption => ({ name, kind: "boolean", vi, en, hint, defaultValue });
 const count = (name: string, vi: string, en: string, hint: string, defaultValue: number, min = 0, max = 999): ConfigOption => ({ name, kind: "number", vi, en, hint, defaultValue, min, max });
+const questChoice = (
+  name: string,
+  vi: string,
+  en: string,
+  hint: string,
+  choices: Array<{ value: string; vi: string; en: string }>
+): ConfigOption => ({
+  name,
+  kind: "string",
+  vi,
+  en,
+  hint,
+  defaultValue: "None",
+  choices: [{ value: "None", vi: "Chưa chọn", en: "None" }, ...choices]
+});
 
 /** The PoB options that matter for most builds, in plain words. */
 export const CONFIG_GROUPS: ConfigGroup[] = [
+  {
+    id: "quests_choice",
+    vi: "Phần thưởng nhiệm vụ (Lựa chọn)",
+    en: "Quest rewards (Choices)",
+    options: [
+      questChoice(
+        "questAct 2Valley of the TitansMedallion",
+        "Act 2 · Valley of the Titans (Medallion)",
+        "Act 2 · Valley of the Titans (Medallion)",
+        "Phần thưởng chọn 1 trong 2 tại Valley of the Titans (Act 2).",
+        [
+          { value: "30% increased Charm Charges Gained\n\t+1 Charm Slot", vi: "+30% lượng nạp Charm · +1 ô Charm", en: "30% increased Charm Charges Gained, +1 Charm Slot" },
+          { value: "30% increased Charm Effect Duration\n\t+1 Charm Slot", vi: "+30% thời lượng Charm · +1 ô Charm", en: "30% increased Charm Effect Duration, +1 Charm Slot" }
+        ]
+      ),
+      questChoice(
+        "questAct 3Venom CryptsVenom Draught",
+        "Act 3 · Venom Crypts (Venom Draught)",
+        "Act 3 · Venom Crypts (Venom Draught)",
+        "Thuốc thưởng chọn 1 trong 3 từ Servi sau khi xong Venom Crypts (Act 3).",
+        [
+          { value: "25% increased Stun Threshold", vi: "+25% ngưỡng choáng (Stun Threshold)", en: "25% increased Stun Threshold" },
+          { value: "30% increased Elemental Ailment Threshold", vi: "+30% ngưỡng hiệu ứng nguyên tố", en: "30% increased Elemental Ailment Threshold" },
+          { value: "25% increased Mana Regeneration Rate", vi: "+25% tốc độ hồi Mana", en: "25% increased Mana Regeneration Rate" }
+        ]
+      ),
+      questChoice(
+        "questAct 4Abandoned PrisonGoddess of Justice",
+        "Act 4 · Abandoned Prison (Goddess of Justice)",
+        "Act 4 · Abandoned Prison (Goddess of Justice)",
+        "Phần thưởng hồi phục từ bình tại Abandoned Prison (Act 4).",
+        [
+          { value: "30% increased Life Recovery from Flasks", vi: "+30% hồi Máu từ bình (Life Flask)", en: "30% increased Life Recovery from Flasks" },
+          { value: "30% increased Mana Recovery from Flasks", vi: "+30% hồi Mana từ bình (Mana Flask)", en: "30% increased Mana Recovery from Flasks" }
+        ]
+      ),
+      questChoice(
+        "questAct 4Eye of HinekoraTribal Medicine",
+        "Act 4 · Eye of Hinekora / Whakapanu (Tribal Medicine)",
+        "Act 4 · Eye of Hinekora (Tribal Medicine)",
+        "Phần thưởng phòng thủ chọn 1 trong 2 (Tribal Medicine / Great White One, Act 4).",
+        [
+          { value: "30% increased Global Armour, Evasion and Energy Shield", vi: "+30% Giáp, Né & Khiên năng lượng", en: "30% increased Global Armour, Evasion and Energy Shield" },
+          {
+            value: "+15% of Armour also applies to Elemental Damage\n\tGain Deflection Rating equal to 12% of Evasion Rating\n\t12% faster start of Energy Shield Recharge",
+            vi: "+15% Giáp đỡ nguyên tố · +12% Deflection · ES hồi nhanh 12%",
+            en: "+15% Armour to Elemental, 12% Evasion as Deflection, 12% faster ES Recharge"
+          }
+        ]
+      ),
+      questChoice(
+        "questAct 4Halls Of The DeadNgamahu's Test",
+        "Act 4 · Halls of the Dead (Ngamahu)",
+        "Act 4 · Halls of the Dead (Ngamahu)",
+        "Hình xăm thưởng từ thử thách Ngamahu tại Halls of the Dead (Act 4).",
+        [
+          { value: "+5 to Strength", vi: "+5 Sức mạnh (Strength)", en: "+5 to Strength" },
+          { value: "+5% to Fire Resistance", vi: "+5% kháng Lửa (Fire)", en: "+5% to Fire Resistance" }
+        ]
+      ),
+      questChoice(
+        "questAct 4Halls Of The DeadTasalio's Test",
+        "Act 4 · Halls of the Dead (Tasalio)",
+        "Act 4 · Halls of the Dead (Tasalio)",
+        "Hình xăm thưởng từ thử thách Tasalio tại Halls of the Dead (Act 4).",
+        [
+          { value: "+5 to Intelligence", vi: "+5 Trí tuệ (Intelligence)", en: "+5 to Intelligence" },
+          { value: "+5% to Cold Resistance", vi: "+5% kháng Băng (Cold)", en: "+5% to Cold Resistance" }
+        ]
+      ),
+      questChoice(
+        "questAct 4Halls Of The DeadTawhoa's Test",
+        "Act 4 · Halls of the Dead (Tawhoa)",
+        "Act 4 · Halls of the Dead (Tawhoa)",
+        "Hình xăm thưởng từ thử thách Tawhoa tại Halls of the Dead (Act 4).",
+        [
+          { value: "+5 to Dexterity", vi: "+5 Nhanh nhẹn (Dexterity)", en: "+5 to Dexterity" },
+          { value: "+5% to Lightning Resistance", vi: "+5% kháng Sét (Lightning)", en: "+5% to Lightning Resistance" }
+        ]
+      ),
+      questChoice(
+        "questInterlude 2QimahSeven Pillars",
+        "Interlude 2 · Qimah (Seven Pillars)",
+        "Interlude 2 · Qimah (Seven Pillars)",
+        "Chọn 1 trong 7 trụ buff tại Qimah (Interlude 2).",
+        [
+          { value: "+5% to all Elemental Resistances", vi: "+5% tất cả kháng nguyên tố", en: "+5% to all Elemental Resistances" },
+          { value: "3% increased Movement Speed", vi: "+3% tốc độ di chuyển", en: "3% increased Movement Speed" },
+          { value: "15% increased Global Armour, Evasion and Energy Shield", vi: "+15% Giáp, Né & Khiên năng lượng", en: "15% increased Global Armour, Evasion and Energy Shield" },
+          { value: "20% increased Presence Area Of Effect", vi: "+20% phạm vi Presence", en: "20% increased Presence Area Of Effect" },
+          { value: "12% increased Cooldown Recovery Rate", vi: "+12% tốc độ hồi chiêu (CDR)", en: "12% increased Cooldown Recovery Rate" },
+          { value: "+5 to all Attributes", vi: "+5 tất cả thuộc tính (STR/DEX/INT)", en: "+5 to all Attributes" },
+          {
+            value: "5% increased Experience Gain\n\t-5% to all Elemental Resistances\n\t3% reduced Movement Speed\n\t15% reduced Global Armour, Evasion and Energy Shield\n\t20% reduced Presence Area Of Effect\n\t12% reduced Cooldown Recovery Rate\n\t5% reduced Attributes",
+            vi: "+5% kinh nghiệm (giảm kháng, tốc chạy, phòng thủ, thuộc tính)",
+            en: "5% increased Experience Gain (with stat penalties)"
+          }
+        ]
+      )
+    ]
+  },
+  {
+    id: "quests_fixed",
+    vi: "Phần thưởng nhiệm vụ cố định (Cốt truyện)",
+    en: "Campaign quest bonuses (Fixed)",
+    options: [
+      flag("questAct 1ClearfellBeira", "Act 1 · Clearfell (Beira): +10% kháng Băng", "Act 1 · Clearfell (Beira): +10% Cold Resistance", "Phần thưởng cố định từ boss Beira ở Clearfell (PoB mặc định bật sẵn).", true),
+      flag("questAct 1FreythornKing In The Mists", "Act 1 · Freythorn (King in the Mists): +30 Spirit", "Act 1 · Freythorn (King in the Mists): +30 Spirit", "Phần thưởng cố định từ King in the Mists ở Freythorn (PoB mặc định bật sẵn).", true),
+      flag("questAct 1Ogham ManorCandlemass", "Act 1 · Ogham Manor (Candlemass): +20 Máu tối đa", "Act 1 · Ogham Manor (Candlemass): +20 maximum Life", "Phần thưởng cố định từ Candlemass ở Ogham Manor (PoB mặc định bật sẵn).", true),
+      flag("questAct 2Spires of DesharSisters of Garukhan Shrine", "Act 2 · Spires of Deshar: +10% kháng Sét", "Act 2 · Spires of Deshar: +10% Lightning Resistance", "Phần thưởng cố định tại đền Sisters of Garukhan (PoB mặc định bật sẵn).", true),
+      flag("questAct 3Azak BogIgnagduk", "Act 3 · Azak Bog (Ignagduk): +30 Spirit", "Act 3 · Azak Bog (Ignagduk): +30 Spirit", "Phần thưởng cố định từ Ignagduk ở Azak Bog (PoB mặc định bật sẵn).", true),
+      flag("questAct 3Jiquani's MachinariumBlackjaw", "Act 3 · Jiquani's Machinarium (Blackjaw): +10% kháng Lửa", "Act 3 · Jiquani's Machinarium (Blackjaw): +10% Fire Resistance", "Phần thưởng cố định từ Blackjaw (PoB mặc định bật sẵn).", true),
+      flag("questAct 4Eye of HinekoraSilent Hall", "Act 4 · Eye of Hinekora (Silent Hall): +5% Mana tối đa", "Act 4 · Eye of Hinekora (Silent Hall): +5% maximum Mana", "Phần thưởng cố định tại Silent Hall (PoB mặc định bật sẵn).", true),
+      flag("questInterlude 2Khari CrossingMolten Shrine", "Interlude 2 · Khari Crossing (Molten Shrine): +5% Máu tối đa", "Interlude 2 · Khari Crossing (Molten Shrine): +5% maximum Life", "Phần thưởng cố định +5% Máu tối đa tại Khari Crossing (PoB mặc định bật sẵn).", true),
+      flag("questInterlude 3Kriar VillageLythara", "Interlude 3 · Kriar Village (Lythara): +40 Spirit", "Interlude 3 · Kriar Village (Lythara): +40 Spirit", "Phần thưởng cố định +40 Spirit từ Lythara (PoB mặc định bật sẵn).", true)
+    ]
+  },
   {
     id: "enemy",
     vi: "Kẻ địch",
@@ -236,12 +368,29 @@ export const CONFIG_GROUPS: ConfigGroup[] = [
 
 export const CONFIG_OPTIONS: ConfigOption[] = CONFIG_GROUPS.flatMap((group) => group.options);
 
+const CONFIG_OPTION_BY_NAME = new Map<string, ConfigOption>(CONFIG_OPTIONS.map((option) => [option.name, option]));
+
+const collapseWs = (value: string) => value.replace(/\s+/g, " ").trim();
+
+/**
+ * Restores PoB's canonical multi-line option string (with `\n\t`) when browser DOMParser
+ * normalized raw newline/tab characters in an XML attribute into spaces on PoB import.
+ */
+export function normalizeConfigInputString(name: string, value: string): string {
+  const option = CONFIG_OPTION_BY_NAME.get(name);
+  if (!option?.choices?.length) return value;
+  if (option.choices.some((choice) => choice.value === value)) return value;
+  const collapsed = collapseWs(value);
+  const match = option.choices.find((choice) => collapseWs(choice.value) === collapsed);
+  return match ? match.value : value;
+}
+
 export function configInputValue(inputs: PobConfigInput[] | undefined, option: ConfigOption): boolean | number | string {
   const input = inputs?.find((row) => row.name === option.name);
   if (!input) return option.defaultValue;
   if (option.kind === "boolean") return input.value === true || input.value === "true";
   if (option.kind === "number") return Number(input.value) || 0;
-  return String(input.value);
+  return normalizeConfigInputString(option.name, String(input.value));
 }
 
 /** New input list with `name` set; removing it when it equals PoB's default keeps the config small. */
@@ -251,8 +400,10 @@ export function setConfigInput(inputs: PobConfigInput[] | undefined, option: Con
   if (option.kind === "number") {
     const n = Number(value);
     next = Number.isFinite(n) ? Math.min(Math.max(n, option.min ?? -Infinity), option.max ?? Infinity) : 0;
+  } else if (option.kind === "string") {
+    next = normalizeConfigInputString(option.name, String(value));
   }
-  if (next === option.defaultValue || (option.kind === "boolean" && !next)) return rest;
+  if (next === option.defaultValue) return rest;
   return [...rest, { name: option.name, kind: option.kind, value: next }];
 }
 

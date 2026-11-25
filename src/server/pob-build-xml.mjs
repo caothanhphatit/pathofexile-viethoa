@@ -105,6 +105,28 @@ const nodeIds = (value) => (Array.isArray(value) ? value : String(value || "").s
 const safeId = (value) => String(value || "").replace(/[^\w/.:-]/g, "");
 const isTrue = (value, fallback = true) => (value === undefined || value === null ? fallback : value !== false && value !== "false");
 
+// Restores PoB's exact `\n\t` separators in multi-line quest reward choices when an older
+// browser DOMParser normalized raw newlines/tabs in XML attributes into spaces.
+const POB_MULTILINE_CONFIG_STRINGS = {
+  "questAct 2Valley of the TitansMedallion": [
+    "30% increased Charm Charges Gained\n\t+1 Charm Slot",
+    "30% increased Charm Effect Duration\n\t+1 Charm Slot"
+  ],
+  "questAct 4Eye of HinekoraTribal Medicine": [
+    "+15% of Armour also applies to Elemental Damage\n\tGain Deflection Rating equal to 12% of Evasion Rating\n\t12% faster start of Energy Shield Recharge"
+  ],
+  "questInterlude 2QimahSeven Pillars": [
+    "5% increased Experience Gain\n\t-5% to all Elemental Resistances\n\t3% reduced Movement Speed\n\t15% reduced Global Armour, Evasion and Energy Shield\n\t20% reduced Presence Area Of Effect\n\t12% reduced Cooldown Recovery Rate\n\t5% reduced Attributes"
+  ]
+};
+
+const normalizeConfigString = (name, value) => {
+  const candidates = POB_MULTILINE_CONFIG_STRINGS[name];
+  if (!candidates || candidates.includes(value)) return value;
+  const collapsed = value.replace(/\s+/g, " ").trim();
+  return candidates.find((candidate) => candidate.replace(/\s+/g, " ").trim() === collapsed) ?? value;
+};
+
 /**
  * Config inputs ({ name, kind, value }) -> <Config>. `kind` is boolean, number or string,
  * as in PoB's ConfigSet <Input boolean=".." / number=".." / string=".."> elements.
@@ -127,7 +149,7 @@ export const configXml = (inputs) => {
       if (!Number.isFinite(n)) continue;
       value = String(n);
     } else {
-      value = String(input.value ?? "").slice(0, 400);
+      value = normalizeConfigString(name, String(input.value ?? "").slice(0, 400));
     }
     rows.push(`<Input name="${escapeXml(name)}" ${kind}="${escapeXml(value)}"/>`);
   }
