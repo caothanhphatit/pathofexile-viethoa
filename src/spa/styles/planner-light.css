@@ -810,6 +810,78 @@ html:not(.dark) .sb-value.is-negative {
   color: #c43227;
 }
 
+html:not(.dark) .build-page .nj-stat-row.is-explainable:hover,
+html:not(.dark) .build-page .nj-stat-row.is-explainable:focus-visible {
+  background: #f3f0e8;
+}
+
+html:not(.dark) .build-page .nj-stat-row.is-explainable > span {
+  text-decoration-color: rgba(116, 105, 86, .45);
+}
+
+html:not(.dark) .build-page .nj-stat-res-btn:hover,
+html:not(.dark) .build-page .nj-stat-res-btn:focus-visible {
+  background: #ece8de;
+}
+
+html:not(.dark) .sb-hover {
+  border-color: #d6cfc0;
+  background: #ffffff;
+  color: #2c2a26;
+  box-shadow: 0 14px 36px rgba(28, 27, 25, .18);
+}
+
+html:not(.dark) .sb-hover-head {
+  background: #f5f3ee;
+  border-bottom-color: #e4dfd4;
+}
+
+html:not(.dark) .sb-hover-title,
+html:not(.dark) .sb-hover-val {
+  color: #151412;
+}
+
+html:not(.dark) .sb-hover-sec-head {
+  background: #e7f4ee;
+  color: #14532d;
+}
+
+html:not(.dark) .sb-hover-sec-head strong {
+  color: #14532d;
+}
+
+html:not(.dark) .sb-hover-src {
+  color: #2c2a26;
+}
+
+html:not(.dark) .sb-hover-src.is-kind-item { color: #8a5a00; }
+html:not(.dark) .sb-hover-src.is-kind-gem { color: #0d7a74; }
+html:not(.dark) .sb-hover-src.is-kind-quest { color: #1f7a38; }
+
+html:not(.dark) .sb-hover-row.is-rest,
+html:not(.dark) .sb-hover-kind,
+html:not(.dark) .sb-hover-msg {
+  color: #6b675e;
+}
+
+html:not(.dark) .sb-hover-num {
+  color: #151412;
+}
+
+html:not(.dark) .sb-hover-num.is-negative {
+  color: #c43227;
+}
+
+html:not(.dark) .sb-hover-lines {
+  color: #2c2a26;
+}
+
+html:not(.dark) .sb-hover-foot {
+  border-top-color: #e4dfd4;
+  background: #f8f6f2;
+  color: #6b675e;
+}
+
 /* ── Item Editor Modal (ItemEditor.tsx) ────────────────────────────────── */
 
 html:not(.dark) .ie-backdrop {

@@ -78,7 +78,7 @@ import { BuildConfigPanel, BuildStatDetails } from "../components/BuildCalcPanel
 import { CalcEngineSwitch } from "../components/CalcEngineSwitch";
 import { calcBackend } from "../lib/calcBackend";
 import { setBrowserModPool } from "../lib/modPool";
-import { StatBreakdownDialog, type ExplainTarget } from "../components/StatBreakdown";
+import { StatBreakdownDialog, StatBreakdownHoverCard, canExplainStat, type ExplainTarget, type HoverBreakdownTarget } from "../components/StatBreakdown";
 import { BuildSummonStats } from "../components/BuildGemOptions";
 import { BuildSkillPanel } from "../components/BuildSkillPanel";
 import { BuildModal } from "../components/BuildModal";
@@ -1119,6 +1119,33 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
   const [calcError, setCalcError] = useState("");
   // Stat whose "where does it come from" breakdown is open.
   const [explainStat, setExplainStat] = useState<ExplainTarget | null>(null);
+  const [hoverStat, setHoverStat] = useState<HoverBreakdownTarget | null>(null);
+  const hoverStatTimerRef = useRef<number | null>(null);
+  const showHoverStat = useCallback((target: ExplainTarget, el: HTMLElement) => {
+    if (hoverStatTimerRef.current !== null) {
+      window.clearTimeout(hoverStatTimerRef.current);
+      hoverStatTimerRef.current = null;
+    }
+    const rect = el.getBoundingClientRect();
+    const payload: HoverBreakdownTarget = {
+      ...target,
+      rect: { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right, height: rect.height }
+    };
+    hoverStatTimerRef.current = window.setTimeout(() => {
+      hoverStatTimerRef.current = null;
+      setHoverStat(payload);
+    }, 65);
+  }, []);
+  const clearHoverStat = useCallback(() => {
+    if (hoverStatTimerRef.current !== null) {
+      window.clearTimeout(hoverStatTimerRef.current);
+      hoverStatTimerRef.current = null;
+    }
+    setHoverStat(null);
+  }, []);
+  useEffect(() => () => {
+    if (hoverStatTimerRef.current !== null) window.clearTimeout(hoverStatTimerRef.current);
+  }, []);
   // Skill whose detail panel is open, and gem whose alternatives strip is shown ("main" = active skill gem).
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
   const [gemStrip, setGemStrip] = useState<{ skillId: string; supportId: string | "main"; limit?: number } | null>(null);
@@ -3637,20 +3664,69 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 if (value >= 1e3) return `${(value / 1e3).toFixed(1)}k`;
                 return Math.round(value).toLocaleString("en-US");
               };
-              const row = (label: string, value: string | undefined, node?: React.ReactNode) => (
-                <div className="nj-stat-row" key={label}>
-                  <span>{label}</span>
-                  {node ?? <strong className={value === undefined ? "is-empty" : ""}>{value ?? "-"}</strong>}
-                </div>
-              );
-              const triple = (parts: Array<{ cls: string; value: string | undefined }>) => (
+              const row = (label: string, value: string | undefined, node?: React.ReactNode, statKey?: string) => {
+                const explainable = Boolean(statKey && canExplainStat(statKey) && value !== undefined);
+                if (!explainable) {
+                  return (
+                    <div className="nj-stat-row" key={label}>
+                      <span>{label}</span>
+                      {node ?? <strong className={value === undefined ? "is-empty" : ""}>{value ?? "-"}</strong>}
+                    </div>
+                  );
+                }
+                const target: ExplainTarget = { stat: statKey!, label, valueText: value! };
+                return (
+                  <div
+                    className="nj-stat-row is-explainable"
+                    key={label}
+                    role="button"
+                    tabIndex={0}
+                    onMouseEnter={(event) => showHoverStat(target, event.currentTarget)}
+                    onMouseLeave={clearHoverStat}
+                    onClick={() => {
+                      clearHoverStat();
+                      setExplainStat(target);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        clearHoverStat();
+                        setExplainStat(target);
+                      }
+                    }}
+                  >
+                    <span>{label}</span>
+                    {node ?? <strong>{value}</strong>}
+                  </div>
+                );
+              };
+              const triple = (parts: Array<{ cls: string; value: string | undefined; stat?: string; label?: string }>) => (
                 <strong>
-                  {parts.map((part, index) => (
-                    <Fragment key={part.cls}>
-                      {index ? <span className="nj-stat-sep">/</span> : null}
-                      <span className={part.cls}>{part.value ?? "-"}</span>
-                    </Fragment>
-                  ))}
+                  {parts.map((part, index) => {
+                    const explainable = Boolean(part.stat && canExplainStat(part.stat) && part.value !== undefined);
+                    return (
+                      <Fragment key={part.cls}>
+                        {index ? <span className="nj-stat-sep">/</span> : null}
+                        {explainable ? (
+                          <button
+                            type="button"
+                            className={`nj-stat-res-btn ${part.cls}`}
+                            onMouseEnter={(event) => showHoverStat({ stat: part.stat!, label: part.label ?? part.stat!, valueText: part.value! }, event.currentTarget)}
+                            onMouseLeave={clearHoverStat}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              clearHoverStat();
+                              setExplainStat({ stat: part.stat!, label: part.label ?? part.stat!, valueText: part.value! });
+                            }}
+                          >
+                            {part.value}
+                          </button>
+                        ) : (
+                          <span className={part.cls}>{part.value ?? "-"}</span>
+                        )}
+                      </Fragment>
+                    );
+                  })}
                 </strong>
               );
               const str = readStat("Str");
@@ -3669,7 +3745,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                 // Main skill first, then the hardest hitting.
                 .sort((a, b) => Number(b.index + 1 === mainSocketGroup) - Number(a.index + 1 === mainSocketGroup) || b.dps - a.dps);
               return (
-                <div className="nj-panel-body poe-no-tooltip">
+                <div className="nj-panel-body poe-no-tooltip" onScroll={clearHoverStat} onMouseLeave={clearHoverStat}>
                   {warningList.length ? (
                     <div className="build-warnings" role="status" aria-label={locale === "vi" ? "Cảnh báo về build" : "Build warnings"}>
                       <p className="build-warnings-head">
@@ -3694,32 +3770,32 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
                     { cls: "nj-c-dex", value: fmtInt(dex) },
                     { cls: "nj-c-int", value: fmtInt(int) }
                   ]))}
-                  {row(locale === "vi" ? "Tốc độ di chuyển" : "Movement speed", fmtMod(readStat("EffectiveMovementSpeedMod")))}
+                  {row(locale === "vi" ? "Tốc độ di chuyển" : "Movement speed", fmtMod(readStat("EffectiveMovementSpeedMod")), undefined, "EffectiveMovementSpeedMod")}
 
                   <h3 className="nj-stat-group">{locale === "vi" ? "Phòng thủ" : "Defensive"}</h3>
-                  {row("Life", fmtInt(readStat("Life")))}
-                  {row("Energy shield", fmtInt(readStat("EnergyShield")))}
-                  {row("Mana", fmtInt(readStat("Mana")))}
-                  {row("Spirit", fmtInt(readStat("Spirit")))}
-                  {row("Armour", fmtInt(readStat("Armour")))}
-                  {row("Evasion rating", fmtInt(readStat("Evasion")))}
-                  {row(locale === "vi" ? "Tỉ lệ né" : "Evade chance", fmtPct(readStat("MeleeEvadeChance")))}
-                  {row(locale === "vi" ? "Tỉ lệ chặn" : "Block chance", fmtPct(readStat("BlockChance")))}
+                  {row("Life", fmtInt(readStat("Life")), undefined, "Life")}
+                  {row("Energy shield", fmtInt(readStat("EnergyShield")), undefined, "EnergyShield")}
+                  {row("Mana", fmtInt(readStat("Mana")), undefined, "Mana")}
+                  {row("Spirit", fmtInt(readStat("Spirit")), undefined, "Spirit")}
+                  {row("Armour", fmtInt(readStat("Armour")), undefined, "Armour")}
+                  {row("Evasion rating", fmtInt(readStat("Evasion")), undefined, "Evasion")}
+                  {row(locale === "vi" ? "Tỉ lệ né" : "Evade chance", fmtPct(readStat("MeleeEvadeChance")), undefined, "EvadeChance")}
+                  {row(locale === "vi" ? "Tỉ lệ chặn" : "Block chance", fmtPct(readStat("BlockChance")), undefined, "BlockChance")}
                   {row(locale === "vi" ? "Giảm sát thương vật lý" : "Physical damage reduction", fmtPct(readStat("PhysicalDamageReduction")))}
                   {row(locale === "vi" ? "Kháng" : "Resistances", undefined, triple([
-                    { cls: "nj-c-fire", value: fire === undefined ? undefined : `${Math.round(fire)}%` },
-                    { cls: "nj-c-cold", value: cold === undefined ? undefined : `${Math.round(cold)}%` },
-                    { cls: "nj-c-lightning", value: lightning === undefined ? undefined : `${Math.round(lightning)}%` },
+                    { cls: "nj-c-fire", value: fire === undefined ? undefined : `${Math.round(fire)}%`, stat: "FireResist", label: locale === "vi" ? "Kháng lửa" : "Fire resistance" },
+                    { cls: "nj-c-cold", value: cold === undefined ? undefined : `${Math.round(cold)}%`, stat: "ColdResist", label: locale === "vi" ? "Kháng băng" : "Cold resistance" },
+                    { cls: "nj-c-lightning", value: lightning === undefined ? undefined : `${Math.round(lightning)}%`, stat: "LightningResist", label: locale === "vi" ? "Kháng sét" : "Lightning resistance" },
                     // As PoB shows it: "Immune" with Chaos Inoculation.
-                    { cls: "nj-c-chaos", value: resistanceText(activeStats, "ChaosResist", locale, chaos) }
+                    { cls: "nj-c-chaos", value: resistanceText(activeStats, "ChaosResist", locale, chaos), stat: "ChaosResist", label: locale === "vi" ? "Kháng hỗn mang" : "Chaos resistance" }
                   ]))}
                   {row(locale === "vi" ? "Máu hiệu dụng (EHP)" : "Effective Health Pool", readStat("TotalEHP") === undefined ? undefined : fmtShort(readStat("TotalEHP") as number))}
 
                   {(lifeRegen !== undefined || manaRegen !== undefined || esRecharge !== undefined) ? (
                     <>
                       <h3 className="nj-stat-group">{locale === "vi" ? "Hồi phục" : "Recovery"}</h3>
-                      {lifeRegen !== undefined ? row("Life regen", fmtRate(lifeRegen)) : null}
-                      {manaRegen !== undefined ? row("Mana regen", fmtRate(manaRegen)) : null}
+                      {lifeRegen !== undefined ? row("Life regen", fmtRate(lifeRegen), undefined, "LifeRegenRecovery") : null}
+                      {manaRegen !== undefined ? row("Mana regen", fmtRate(manaRegen), undefined, "ManaRegenRecovery") : null}
                       {esRecharge !== undefined ? row("Energy shield recharge", fmtRate(esRecharge)) : null}
                     </>
                   ) : null}
@@ -4149,6 +4225,7 @@ export function BuildPlannerPage({ locale }: { locale: Locale }) {
           onReset={editorModel.canReset ? resetEditor : undefined}
         />
       ) : null}
+      {hoverStat && !explainStat ? <StatBreakdownHoverCard queue={compareQueue} body={currentCalculationBody()} target={hoverStat} locale={locale} /> : null}
       {explainStat ? <StatBreakdownDialog queue={compareQueue} body={currentCalculationBody()} target={explainStat} locale={locale} onClose={() => setExplainStat(null)} /> : null}
       {newItemOpen ? <NewItemDialog choices={newItemChoices} slotLabel={activeSlotId ? slotLabel(activeSlotId) : undefined} locale={locale} onPick={pickNewItem} onCancel={() => setNewItemOpen(false)} /> : null}
 

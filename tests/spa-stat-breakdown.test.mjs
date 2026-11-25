@@ -44,5 +44,27 @@ test("planner page opens the breakdown from the stat sheet with a few lines", as
   const { repoRoot } = await import("../scripts/lib/planner-node.mjs");
   const page = await readFile(join(repoRoot, "src/spa/pages/BuildPlannerPage.tsx"), "utf8");
   assert.match(page, /<StatBreakdownDialog/);
+  assert.match(page, /<StatBreakdownHoverCard/);
   assert.match(page, /onExplain=\{setExplainStat\}/);
+});
+
+test("hover breakdown groups sources by Base / Increased / More with top-4 rollup", async () => {
+  const lib = await loadSpaLib("statBreakdown");
+  const phases = lib.groupBreakdownByPhase([
+    { type: "BASE", value: 1216, name: "Life", kind: "base", label: "" },
+    { type: "BASE", value: 142, name: "Life", kind: "strength", label: "Strength" },
+    { type: "BASE", value: 115, name: "Life", kind: "item", label: "Entropy Coil, Unset Ring" },
+    { type: "BASE", value: 42, name: "Life", kind: "item", label: "Headhunter, Heavy Belt" },
+    { type: "BASE", value: 37, name: "Life", kind: "item", label: "Yoke of Suffering" },
+    { type: "BASE", value: 20, name: "Life", kind: "quest", label: "Act 1: Ogham Manor" },
+    { type: "INC", value: 10, name: "Life", kind: "gem", label: "Virtuous Barrier" },
+    { type: "INC", value: 5, name: "Life", kind: "quest", label: "Interlude 2: Khari Crossing" },
+    { type: "MORE", value: 20, name: "EnergyShield", kind: "gem", label: "Charge Regulation" }
+  ], 4);
+  assert.deepEqual(plain(phases.map((p) => [p.phase, p.totalText])), [["BASE", "1,572"], ["INC", "+15%"], ["MORE", "+20%"]]);
+  assert.equal(phases[0].rows.length, 4);
+  assert.equal(phases[0].restCount, 2);
+  assert.equal(phases[0].restText, "57");
+  assert.equal(phases[0].rows[1].kindBadge, "ATTRIBUTE");
+  assert.equal(phases[1].rows[0].kindBadge, "SKILL");
 });

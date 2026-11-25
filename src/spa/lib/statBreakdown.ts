@@ -116,3 +116,96 @@ export function breakdownTotals(sources: BreakdownSource[]): { base: number; inc
   }
   return { base, increased, more };
 }
+
+const KIND_BADGES: Record<string, string> = {
+  base: "BASE",
+  strength: "ATTRIBUTE",
+  dexterity: "ATTRIBUTE",
+  intelligence: "ATTRIBUTE",
+  attribute: "ATTRIBUTE",
+  item: "ITEM",
+  tree: "TREE",
+  gem: "SKILL",
+  quest: "QUEST",
+  config: "CONFIG",
+  other: "OTHER"
+};
+
+export interface BreakdownPhaseRow {
+  label: string;
+  kindBadge: string;
+  kind: string;
+  value: number;
+  text: string;
+  nameVi: string;
+}
+
+export interface BreakdownPhaseSection {
+  phase: "BASE" | "INC" | "MORE";
+  titleVi: string;
+  titleEn: string;
+  totalText: string;
+  rows: BreakdownPhaseRow[];
+  restCount: number;
+  restText: string;
+}
+
+const fmtCompactNum = (value: number, signed: boolean, pct: boolean) => {
+  const rounded = round(Math.abs(value));
+  const num = rounded.toLocaleString("en-US");
+  const sign = value < 0 ? "−" : signed ? "+" : "";
+  return `${sign}${num}${pct ? "%" : ""}`;
+};
+
+/**
+ * Compact poe.ninja-style breakdown grouped by calculation phase (Base, Increased, More),
+ * showing the top `maxRows` contributors per phase and rolling the rest into `...N more`.
+ */
+export function groupBreakdownByPhase(sources: BreakdownSource[], maxRows = 4): BreakdownPhaseSection[] {
+  const buckets: Record<"BASE" | "INC" | "MORE", BreakdownSource[]> = { BASE: [], INC: [], MORE: [] };
+  for (const row of sources ?? []) {
+    if (row.type === "BASE" || row.type === "INC" || row.type === "MORE") {
+      buckets[row.type].push(row);
+    }
+  }
+  const defs: Array<{ phase: "BASE" | "INC" | "MORE"; titleVi: string; titleEn: string; pct: boolean; signed: boolean }> = [
+    { phase: "BASE", titleVi: "Gốc", titleEn: "Base", pct: false, signed: false },
+    { phase: "INC", titleVi: "Tăng", titleEn: "Increased", pct: true, signed: true },
+    { phase: "MORE", titleVi: "Nhân thêm", titleEn: "More", pct: true, signed: true }
+  ];
+  const sections: BreakdownPhaseSection[] = [];
+  for (const def of defs) {
+    const list = [...buckets[def.phase]].sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+    if (!list.length) continue;
+    const totalVal = def.phase === "MORE"
+      ? (list.reduce((acc, row) => acc * (1 + row.value / 100), 1) - 1) * 100
+      : list.reduce((acc, row) => acc + row.value, 0);
+    const visible = list.slice(0, maxRows).map((row): BreakdownPhaseRow => {
+      const kindLower = String(row.kind || "other").toLowerCase();
+      const attrLabel = ATTRIBUTE_SOURCES[kindLower];
+      const badge = KIND_BADGES[kindLower] ?? "OTHER";
+      return {
+        label: row.label || attrLabel || (def.phase === "BASE" ? "Base" : "Other"),
+        kindBadge: badge,
+        kind: kindLower,
+        value: row.value,
+        text: fmtCompactNum(row.value, def.signed, def.pct),
+        nameVi: modNameVi(row.name)
+      };
+    });
+    const rest = list.slice(maxRows);
+    const restVal = def.phase === "MORE"
+      ? (rest.reduce((acc, row) => acc * (1 + row.value / 100), 1) - 1) * 100
+      : rest.reduce((acc, row) => acc + row.value, 0);
+    sections.push({
+      phase: def.phase,
+      titleVi: def.titleVi,
+      titleEn: def.titleEn,
+      totalText: fmtCompactNum(totalVal, def.signed, def.pct),
+      rows: visible,
+      restCount: rest.length,
+      restText: rest.length ? fmtCompactNum(restVal, def.signed, def.pct) : ""
+    });
+  }
+  return sections;
+}

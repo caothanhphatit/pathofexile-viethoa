@@ -480,3 +480,185 @@
 .sb-value.is-more { color: #e9b44c; }
 .sb-value.is-negative { color: var(--nj-red); }
 .sb-note, .sb-help { margin: 0; color: var(--nj-muted); font-size: 12px; line-height: 1.5; }
+
+/* Explainable rows in the right-hand Stats panel & poe.ninja-style hover breakdown card. */
+.nj-stat-row.is-explainable {
+  margin: 0 -6px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.nj-stat-row.is-explainable:hover,
+.nj-stat-row.is-explainable:focus-visible {
+  background: rgba(255, 255, 255, .06);
+  outline: none;
+}
+
+.nj-stat-row.is-explainable > span {
+  text-decoration: underline dotted rgba(160, 160, 155, .45);
+  text-underline-offset: 3px;
+}
+
+.nj-stat-res-btn {
+  padding: 0 2px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nj-stat-res-btn:hover,
+.nj-stat-res-btn:focus-visible {
+  background: rgba(255, 255, 255, .09);
+  outline: none;
+}
+
+.sb-hover {
+  position: fixed;
+  z-index: 8800;
+  width: min(340px, calc(100vw - 24px));
+  pointer-events: none;
+  border: 1px solid #2b3546;
+  border-radius: 8px;
+  background: #141923;
+  color: #e6eaf2;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .65);
+  overflow: hidden;
+  transition: opacity 90ms ease;
+}
+
+.sb-hover-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #10151e;
+  border-bottom: 1px solid #253041;
+}
+
+.sb-hover-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f4f6fa;
+}
+
+.sb-hover-val {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #f8fafc;
+}
+
+.sb-hover-body {
+  display: grid;
+  gap: 8px;
+  padding: 8px 10px 10px;
+}
+
+.sb-hover-section {
+  display: grid;
+  gap: 4px;
+}
+
+.sb-hover-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(16, 118, 80, .38);
+  color: #d1fae5;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sb-hover-sec-head strong {
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.sb-hover-rows {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0 4px;
+  list-style: none;
+}
+
+.sb-hover-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.sb-hover-row.is-rest {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.sb-hover-src {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #dce3ee;
+}
+
+.sb-hover-src.is-kind-item { color: #f6e08a; }
+.sb-hover-src.is-kind-gem { color: #67e8f9; }
+.sb-hover-src.is-kind-quest { color: #a7f3d0; }
+
+.sb-hover-kind {
+  color: #7c8aa0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.sb-hover-num {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #f1f5f9;
+}
+
+.sb-hover-num.is-negative { color: #f87171; }
+
+.sb-hover-lines {
+  margin: 0;
+  padding: 2px 6px;
+  list-style: none;
+  display: grid;
+  gap: 3px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.sb-hover-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 2px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.sb-hover-foot {
+  padding: 6px 12px;
+  border-top: 1px solid #253041;
+  background: #10151e;
+  color: #94a3b8;
+  font-size: 11px;
+  text-align: center;
+}
